@@ -240,16 +240,39 @@ describe("DS-4: CommentLayer", () => {
     const clusterPin = container.querySelector('.st-review-layer__pins button[data-pin-variant="cluster"]');
     expect(clusterPin).toBeTruthy();
 
-    // Activate cluster pin -> opens cluster popover listing both threads
-    await fireEvent.click(clusterPin!);
-    const popover = container.querySelector(".st-review-layer__cluster-popover");
-    expect(popover).toBeTruthy();
-    expect(popover?.textContent).toContain("First thread on shared paragraph");
-    expect(popover?.textContent).toContain("Second thread on shared paragraph");
+    // Activate cluster pin -> opens cluster popover listing both threads and focuses first item
+    const windowEscSpy = vi.fn();
+    const onWindowKeydown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") windowEscSpy();
+    };
+    window.addEventListener("keydown", onWindowKeydown);
+    try {
+      await fireEvent.click(clusterPin!);
+      const popover = container.querySelector(".st-review-layer__cluster-popover");
+      expect(popover).toBeTruthy();
+      expect(popover?.textContent).toContain("First thread on shared paragraph");
+      expect(popover?.textContent).toContain("Second thread on shared paragraph");
 
-    // Escape closes cluster popover
-    await fireEvent.keyDown(popover!, { key: "Escape" });
-    expect(container.querySelector(".st-review-layer__cluster-popover")).toBeNull();
+      const firstItem = popover?.querySelector(".st-review-layer__cluster-item");
+      expect(document.activeElement).toBe(firstItem);
+
+      // Escape pressed on document.activeElement closes cluster popover ONLY (no bubble to window) and restores focus to cluster pin
+      await fireEvent.keyDown(document.activeElement!, { key: "Escape" });
+      expect(container.querySelector(".st-review-layer__cluster-popover")).toBeNull();
+      expect(windowEscSpy).not.toHaveBeenCalled();
+      expect(document.activeElement).toBe(clusterPin);
+
+      // Even if focus is moved back to the cluster pin invoker while popover is open, Escape still closes popover only
+      await fireEvent.click(clusterPin!);
+      expect(container.querySelector(".st-review-layer__cluster-popover")).toBeTruthy();
+      (clusterPin as HTMLElement).focus();
+      await fireEvent.keyDown(document.activeElement!, { key: "Escape" });
+      expect(container.querySelector(".st-review-layer__cluster-popover")).toBeNull();
+      expect(windowEscSpy).not.toHaveBeenCalled();
+      expect(document.activeElement).toBe(clusterPin);
+    } finally {
+      window.removeEventListener("keydown", onWindowKeydown);
+    }
 
     // Reopen and pick second thread
     await fireEvent.click(clusterPin!);
@@ -366,6 +389,8 @@ describe("DS-4: CommentLayer", () => {
     await fireEvent.click(screen.getByRole("button", { name: "Comment" }));
 
     await waitFor(() => expect(onCreate).toHaveBeenCalledTimes(1));
+    // Focus must not drop to document.body after composer submission
+    expect(document.activeElement).not.toBe(document.body);
     const firstCall = onCreate.mock.calls[0]![0];
     expect(firstCall.target.kind).toBe("artifact");
     expect(firstCall.target.id).toBe("art-doc-1");
@@ -420,8 +445,13 @@ describe("DS-4: CommentLayer", () => {
     expect(screen.getByRole("textbox", { name: "Comment body" })).toBeTruthy();
   });
 
-  it("confirms exit when switching from review to view with an unsaved draft and supports custom composer slot", async () => {
+  it("confirms exit when switching from review to view with an unsaved draft, traps focus/Esc in alertdialog, restores focus, and supports custom composer slot", async () => {
     const root = makeArtifactRoot(`<p data-anchor-id="draft-p">Draft target.</p>`);
+    const toggleBtn = document.createElement("button");
+    toggleBtn.type = "button";
+    toggleBtn.textContent = "Toggle Review";
+    document.body.appendChild(toggleBtn);
+
     const onModeChange = vi.fn();
 
     const { rerender } = render(CommentLayer, {
@@ -440,22 +470,48 @@ describe("DS-4: CommentLayer", () => {
     const textarea = screen.getByRole("textbox");
     await fireEvent.input(textarea, { target: { value: "Unsaved draft content" } });
 
-    // Host flips mode to "view" -> confirmation dialog appears instead of silently losing draft
+    // Host flips mode to "view" (e.g. via external ReviewModeToggle) -> alertdialog appears and traps focus
+    toggleBtn.focus();
     await rerender({ mode: "view" });
     const confirmDialog = screen.getByRole("alertdialog");
     expect(confirmDialog.textContent).toMatch(/discard/i);
 
-    // Keep editing restores review mode via onModeChange
-    await fireEvent.click(screen.getByRole("button", { name: "Keep editing" }));
-    expect(onModeChange).toHaveBeenCalledWith("review");
-    await rerender({ mode: "review" });
-    expect((screen.getByRole("textbox") as HTMLTextAreaElement).value).toBe("Unsaved draft content");
+    const keepBtn = screen.getByRole("button", { name: "Keep editing" });
+    const discardBtn = screen.getByRole("button", { name: "Discard draft" });
+    expect(document.activeElement).toBe(keepBtn);
 
-    // Flip to view again and confirm discard
+    // Tab / Shift+Tab focus trap inside alertdialog
+    await fireEvent.keyDown(keepBtn, { key: "Tab", shiftKey: true });
+    expect(document.activeElement).toBe(discardBtn);
+    await fireEvent.keyDown(discardBtn, { key: "Tab" });
+    expect(document.activeElement).toBe(keepBtn);
+
+    // Escape closes alertdialog via Keep editing without bubbling to window
+    const windowEscSpy = vi.fn();
+    const onWindowKeydown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") windowEscSpy();
+    };
+    window.addEventListener("keydown", onWindowKeydown);
+    try {
+      await fireEvent.keyDown(document.activeElement!, { key: "Escape" });
+      expect(onModeChange).toHaveBeenCalledWith("review");
+      expect(windowEscSpy).not.toHaveBeenCalled();
+    } finally {
+      window.removeEventListener("keydown", onWindowKeydown);
+    }
+
+    await rerender({ mode: "review" });
+    const restoredTextarea = screen.getByRole("textbox") as HTMLTextAreaElement;
+    expect(restoredTextarea.value).toBe("Unsaved draft content");
+    expect(document.activeElement).toBe(restoredTextarea);
+
+    // Flip to view again from toggleBtn and confirm discard -> focus restores to toggleBtn
+    toggleBtn.focus();
     await rerender({ mode: "view" });
     await fireEvent.click(screen.getByRole("button", { name: "Discard draft" }));
     expect(screen.queryByRole("alertdialog")).toBeNull();
     expect(screen.queryByRole("textbox")).toBeNull();
+    await waitFor(() => expect(document.activeElement).toBe(toggleBtn));
 
     // Custom composer snippet slot
     const customComposer = createRawSnippet(

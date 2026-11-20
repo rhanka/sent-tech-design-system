@@ -274,8 +274,15 @@ describe("DS-5: ThreadPanel", () => {
     expect(container.querySelector(".st-empty-state")).toBeTruthy();
   });
 
-  it("renders inside Drawer side='bottom' at <48rem and scopes Escape to the active inner layer only", async () => {
+  it("renders inside Drawer side='bottom' at <48rem with focus trap, heading focus, return focus, and Escape layering", async () => {
     const { attached, orphaned, ids } = await seedMixedThreads();
+    const invokerBtn = document.createElement("button");
+    invokerBtn.type = "button";
+    invokerBtn.textContent = "Open comments";
+    document.body.appendChild(invokerBtn);
+    invokerBtn.focus();
+    expect(document.activeElement).toBe(invokerBtn);
+
     const onClose = vi.fn();
     const onSelect = vi.fn();
     const onReply = vi.fn();
@@ -295,10 +302,28 @@ describe("DS-5: ThreadPanel", () => {
       },
     });
 
-    // <48rem uses Drawer with side="bottom" (modal bottom sheet)
-    const drawer = container.querySelector("aside.st-drawer.st-drawer--bottom");
+    // <48rem uses Drawer with side="bottom" (modal bottom sheet) and moves focus inside
+    const drawer = container.querySelector("aside.st-drawer.st-drawer--bottom") as HTMLElement;
     expect(drawer).toBeTruthy();
-    expect(drawer?.getAttribute("aria-modal")).toBe("true");
+    expect(drawer.getAttribute("aria-modal")).toBe("true");
+    await waitFor(() => expect(drawer.contains(document.activeElement)).toBe(true));
+
+    // Focus trap cycles Tab / Shift+Tab within the <48rem bottom sheet
+    const drawerCloseBtn = drawer.querySelector("button.st-drawer__close") as HTMLElement;
+    const replySubmitBtn = screen.getByRole("button", { name: "Reply" });
+    drawerCloseBtn.focus();
+    await fireEvent.keyDown(drawerCloseBtn, { key: "Tab", shiftKey: true });
+    expect(document.activeElement).toBe(replySubmitBtn);
+    await fireEvent.keyDown(replySubmitBtn, { key: "Tab" });
+    expect(document.activeElement).toBe(drawerCloseBtn);
+
+    // Selecting a new thread in <48rem compact mode focuses the bottom sheet heading (.st-drawer__title)
+    await rerender({ activeThreadId: ids.tAgent.threadId });
+    await waitFor(() => {
+      const drawerTitle = drawer.querySelector(".st-drawer__title");
+      expect(document.activeElement).toBe(drawerTitle);
+    });
+    await rerender({ activeThreadId: ids.tAlice.threadId });
 
     // Open inline edit composer inside the bottom sheet and press Escape -> ONLY the edit composer closes, bottom sheet stays OPEN!
     const editBtn = container.querySelector('button[aria-label="Edit comment"]')!;
@@ -312,17 +337,26 @@ describe("DS-5: ThreadPanel", () => {
     expect(container.querySelector("aside.st-drawer.st-drawer--bottom")).toBeTruthy();
     expect(onClose).not.toHaveBeenCalled();
 
+    // Pressing Escape inside the permanent reply composer (no onCancel) bubbles to close the bottom sheet and restores focus to invokerBtn!
+    const replyTextarea = container.querySelector(".st-review-thread__reply textarea") as HTMLTextAreaElement;
+    replyTextarea.focus();
+    await fireEvent.keyDown(replyTextarea, { key: "Escape" });
+    expect(onClose).toHaveBeenCalledTimes(1);
+    await rerender({ open: false });
+    await waitFor(() => expect(document.activeElement).toBe(invokerBtn));
+
     // Verify heading receives focus when selecting a new thread in desktop aside mode
-    await rerender({ compact: false, activeThreadId: null });
-    await rerender({ compact: false, activeThreadId: ids.tAgent.threadId });
+    await rerender({ open: true, compact: false, activeThreadId: null });
+    await rerender({ open: true, compact: false, activeThreadId: ids.tAgent.threadId });
     await waitFor(() => {
       const heading = container.querySelector(".st-review-panel__heading");
       expect(document.activeElement).toBe(heading);
     });
 
-    // Pressing Escape on the non-modal aside with an active thread returns to list (calls onSelect(null)), NOT pre-empting composers
-    const aside = container.querySelector("aside.st-review-panel")!;
-    await fireEvent.keyDown(aside, { key: "Escape" });
+    // Pressing Escape inside the permanent reply composer in desktop aside exits thread detail (calls onSelect(null))
+    const desktopReplyTextarea = container.querySelector(".st-review-thread__reply textarea") as HTMLTextAreaElement;
+    desktopReplyTextarea.focus();
+    await fireEvent.keyDown(desktopReplyTextarea, { key: "Escape" });
     expect(onSelect).toHaveBeenCalledWith(null);
   });
 });
