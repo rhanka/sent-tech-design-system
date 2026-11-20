@@ -428,4 +428,30 @@ describe('scene host DOM and camera/fold behavior', () => {
     }
     vi.unstubAllGlobals();
   });
+  it('should keep icon none without unknown fallback or warning under strict DiagramSceneFigure on Svelte and Vue', async () => {
+    frame();
+    const base = sceneOf('icon-none-host', [
+      { id: 'zone', container: true },
+      { id: 'card', parent: 'zone' },
+    ]);
+    const presentation = {
+      ...base.presentation,
+      entities: {
+        [occurrence('zone')]: { ...base.presentation.entities[occurrence('zone')], icon: 'none' },
+        [occurrence('card')]: { ...base.presentation.entities[occurrence('card')], icon: 'none' },
+      },
+    } as unknown as ScenePresentation;
+    const props = { ...host, ...base, presentation, strictIcons: true };
+    const vue = mount(SceneFigure, { props }); const svelte = render(SvelteScene, { props });
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    expect(vue.element.querySelector('[data-diagram-icon]')).toBeNull();
+    expect(vue.element.querySelector('[data-card-icon-unknown]')).toBeNull();
+    expect(vue.element.querySelector('[data-zone-icon-unknown]')).toBeNull();
+    const layoutEvent = vue.emitted('layout')?.at(-1)?.[0] as { status?: string; warnings?: readonly { code: string }[] } | undefined;
+    expect(layoutEvent?.status).toBe('laid-out');
+    expect(layoutEvent?.warnings?.filter(w => w.code === 'card-icon-missing') ?? []).toEqual([]);
+    vue.unmount(); svelte.unmount();
+    vi.unstubAllGlobals();
+  });
 });
