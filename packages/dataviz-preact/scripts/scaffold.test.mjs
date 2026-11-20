@@ -137,6 +137,8 @@ test("coverage manifest owns the expected ported modules of lot P6", () => {
       "ViolinChart",
       "WaffleChart",
       "WaterfallChart",
+      "WindBarbChart",
+      "WordCloudChart",
     ],
   );
   assert.deepEqual(

@@ -130,6 +130,8 @@ import * as handWrittenVennChart from "../../dataviz-react/src/lib/VennChart.js"
 import * as handWrittenViolinChart from "../../dataviz-react/src/lib/ViolinChart.js";
 import * as handWrittenWaffleChart from "../../dataviz-react/src/lib/WaffleChart.js";
 import * as handWrittenWaterfallChart from "../../dataviz-react/src/lib/WaterfallChart.js";
+import * as handWrittenWindBarbChart from "../../dataviz-react/src/lib/WindBarbChart.js";
+import * as handWrittenWordCloudChart from "../../dataviz-react/src/lib/WordCloudChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -281,6 +283,8 @@ const switched = [
   "ViolinChart",
   "WaffleChart",
   "WaterfallChart",
+  "WindBarbChart",
+  "WordCloudChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -424,6 +428,8 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   ViolinChart: handWrittenViolinChart.ViolinChart,
   WaffleChart: handWrittenWaffleChart.WaffleChart,
   WaterfallChart: handWrittenWaterfallChart.WaterfallChart,
+  WindBarbChart: handWrittenWindBarbChart.WindBarbChart,
+  WordCloudChart: handWrittenWordCloudChart.WordCloudChart,
 };
 
 describe("dataviz React leg provenance", () => {
@@ -438,6 +444,10 @@ describe("dataviz React leg provenance", () => {
   it("constant exports match between emitted and barrel", () => {
     expect(emitted.DEFAULT_URL_SYNC_PARAM).toBe(handWrittenUrlSync.DEFAULT_URL_SYNC_PARAM);
     expect(barrel.DEFAULT_URL_SYNC_PARAM).toBe(emitted.DEFAULT_URL_SYNC_PARAM);
+  });
+
+  it("emitted barrel exports the complete runtime surface of dataviz-react", () => {
+    expect(Object.keys(emitted).sort()).toEqual(Object.keys(barrel).sort());
   });
 
   it("internal derivation helpers emit distinct module instances ready for React-leg switching", () => {
