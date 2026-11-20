@@ -13,12 +13,16 @@ import { render, cleanup } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import DiagramCard from './DiagramCard.vue';
+import DiagramCardHeader from './DiagramCardHeader.vue';
 import DiagramZone from './DiagramZone.vue';
+import DiagramZoneHeader from './DiagramZoneHeader.vue';
 import DiagramIcon from './diagram-icons/DiagramIcon.vue';
 import GraphLegend from './GraphLegend.vue';
 import ForceGraph from './ForceGraph.vue';
 import SvelteCard from '../../components-svelte/src/lib/DiagramCard.svelte';
+import SvelteCardHeader from '../../components-svelte/src/lib/DiagramCardHeader.svelte';
 import SvelteZone from '../../components-svelte/src/lib/DiagramZone.svelte';
+import SvelteZoneHeader from '../../components-svelte/src/lib/DiagramZoneHeader.svelte';
 import SvelteIcon from '../../components-svelte/src/lib/diagram-icons/DiagramIcon.svelte';
 import SvelteLegend from '../../components-svelte/src/lib/GraphLegend.svelte';
 import SvelteForce from '../../components-svelte/src/lib/ForceGraph.svelte';
@@ -161,6 +165,9 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
         expect(vue.element.getAttribute('style') ?? '').toContain('height: 200px');
         expect(vue.element.classList.contains('st-diagramCard--center')).toBe(false);
         expect(vue.element.classList.contains('st-diagramCard--v2')).toBe(false);
+        // W1-19 / W1-40 / W1-52: clean fallback-v1 without truncation never sets data-card-overflow.
+        expect(vue.element.getAttribute('data-card-overflow')).toBeNull();
+        expect(svelte.container.querySelector('.st-diagramCard')?.getAttribute('data-card-overflow')).toBeNull();
       }
       await vue.trigger('click'); expect(vue.emitted('select')).toEqual([[{ entityId: props.entityId }]]);
       vue.unmount(); svelte.unmount();
@@ -351,6 +358,48 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
     expect(nested.element.querySelector<SVGSVGElement>('.st-diagramCard .st-diagramCardHeader-icon')?.getAttribute('width')).toBe('70');
     nested.unmount();
     vueOuter.unmount(); svelteOuter.unmount();
+  });
+  it('should compute toggle offset from headerInset/toggleTopOffset without CSS var cascade identically on Svelte and Vue (W1-46, W1-58)', async () => {
+    const zhProps = {
+      kicker: [],
+      title: [{ text: 'Zone', x: 0, baseline: 30, size: 32, weight: 700, secondary: false }],
+      subtitle: [],
+      headerInset: 12,
+      headerTextWidth: 300,
+      headerBlockHeight: 52,
+      subtitleWidth: 300,
+      toggle: { collapsed: false, label: 'Collapse' },
+      toggleTopInset: 8,
+    };
+    const vueZh = mount(DiagramZoneHeader, { props: zhProps });
+    const svelteZh = render(SvelteZoneHeader, { props: zhProps });
+    await nextTick(); await tick();
+    expect(dom(vueZh.element)).toEqual(dom(withControlIconTokens(svelteZh.container.firstElementChild!)));
+    for (const root of [vueZh.element, svelteZh.container]) {
+      const toggle = root.querySelector<HTMLElement>('.st-diagramCard-toggle')!;
+      expect(toggle.style.top).toBe('calc(var(--st-component-diagramZone-toggleInset, 8px) - 12px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+      expect(toggle.style.right).toBe(toggle.style.top);
+    }
+    vueZh.unmount(); svelteZh.unmount();
+
+    const chProps = {
+      kicker: [],
+      title: [{ text: 'Card', x: 0, baseline: 30, size: 32, weight: 700, secondary: false }],
+      headerTextWidth: 300,
+      headerBlockHeight: 70,
+      toggle: { collapsed: false, label: 'Collapse' },
+      toggleTopOffset: -6,
+    };
+    const vueCh = mount(DiagramCardHeader, { props: chProps });
+    const svelteCh = render(SvelteCardHeader, { props: chProps });
+    await nextTick(); await tick();
+    expect(dom(vueCh.element)).toEqual(dom(withControlIconTokens(svelteCh.container.firstElementChild!)));
+    for (const root of [vueCh.element, svelteCh.container]) {
+      const toggle = root.querySelector<HTMLElement>('.st-diagramCard-toggle')!;
+      expect(toggle.style.top).toBe('calc(-6px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+      expect(toggle.style.right).toBe(toggle.style.top);
+    }
+    vueCh.unmount(); svelteCh.unmount();
   });
   for (const name of DIAGRAM_GLYPH_NAMES) it(`should match icon ${name}`, () => {
     const vue = mount(DiagramIcon, { props: { name } }); const svelte = render(SvelteIcon, { props: { name } });

@@ -104,6 +104,8 @@ export const CARD_GEOMETRY_V2 = {
   headerInset: 12,
   iconSize: 52,
   iconTextGap: 4,
+  /** Preserves v1's −2 px body-vs-header offset (`10 − 12 = −2`, matching `14 − 16`). */
+  bodyInsetFromBar: 10,
   foldedHeaderTextWidth: 210,
   /** Title on one line first (addendum 8); v1 keeps two lines. */
   allocatedLines: { kicker: 1, title: 1, body: 2, footer: 1 },
@@ -1241,9 +1243,10 @@ export const ZONE_GEOMETRY = {
 
 /**
  * Compact zone geometry (`diagram-anatomy/v2`): the collapsed zone IS the
- * compact card (`352 × 154`, collapsed subtitle measure `352 − 2 × 32`);
- * expanded chrome follows the compact insets (header `12`, icon `52`,
- * gap `4`). Unlisted leaves keep v1 values; type scale unchanged.
+ * compact card (`352 × 154`, collapsed subtitle measure `352 − 2 × 24 = 304`,
+ * preserving v1's ~86 % width ratio); expanded chrome follows the compact
+ * insets (header `12`, icon `52`, gap `4`). Unlisted leaves keep v1 values;
+ * type scale unchanged.
  */
 export const ZONE_GEOMETRY_V2 = {
   ...ZONE_GEOMETRY,
@@ -1258,6 +1261,8 @@ export const ZONE_GEOMETRY_V2 = {
   headerTextInset: 154,
   collapsedWidth: CARD_GEOMETRY_V2.width,
   collapsedHeight: CARD_GEOMETRY_V2.height,
+  collapsedInset: 12,
+  collapsedSubtitleMarginInline: 12,
   allocatedLines: { kicker: 1, title: 1, subtitle: 2, footer: 1 },
 } as const;
 

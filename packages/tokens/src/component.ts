@@ -1849,7 +1849,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       bodyFontSize: "var(--st-component-diagramCard-bodyFontSize)",
       bodyFontWeight: "var(--st-component-diagramCard-bodyFontWeight)",
       bodyLineHeight: "var(--st-component-diagramCard-bodyLineHeight)",
-      bodyInsetFromBar: "var(--st-component-diagramCard-bodyInsetFromBar)",
+      bodyInsetFromBar: "10px",
       ruleHeight: "var(--st-component-diagramCard-ruleHeight)",
       ruleMargin: "var(--st-component-diagramCard-ruleMargin)",
       ruleInsetStart: "var(--st-component-diagramCard-ruleInsetStart)",

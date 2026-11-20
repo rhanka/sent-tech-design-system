@@ -105,7 +105,9 @@
   );
 
   const overflowSlot = $derived(
-    layout.diagnostics.find((diagnostic) => diagnostic.code === "card-overflow")?.slot,
+    layout.diagnostics.find(
+      (diagnostic) => diagnostic.code === "card-overflow" && diagnostic.reason !== "fallback-v1",
+    )?.slot,
   );
   const unknownIcon = $derived(
     layout.diagnostics.some((diagnostic) => diagnostic.code === "card-icon-unknown"),
