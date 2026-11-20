@@ -413,8 +413,12 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     fill: none;
     stroke: var(--st-component-diagramScene-edgeStroke, var(--st-semantic-border-strong));
     stroke-linejoin: round;
-    stroke-width: var(--st-component-diagramZone-borderWidth, 1.5px);
+    stroke-width: var(--st-component-diagramScene-linkStrokeWidth, 2.5px);
     vector-effect: non-scaling-stroke;
+  }
+  .st-diagramSceneFigure-edge[data-edge-emphasis="emphasis"] {
+    stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
+    stroke-width: var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px);
   }
   .st-diagramSceneFigure-edgeLabel {
     box-sizing: border-box;
@@ -425,7 +429,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     display: flex;
     flex-direction: column;
     font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
-    font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
+    font-size: var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px));
     justify-content: center;
     line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
     pointer-events: none;

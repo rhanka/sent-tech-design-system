@@ -23,7 +23,12 @@ import {
   clampZoom,
   CONTENT_INSET,
   DEFAULT_ALLOCATED_LINES,
+  DEFAULT_EDGE_LABEL_SIZE,
   DEFAULT_LAYOUT_METRICS,
+  DEFAULT_LINK_EMPHASIS_STROKE_WIDTH,
+  DEFAULT_LINK_PRIMARY_STROKE_WIDTH,
+  DEFAULT_LINK_RELATED_STROKE_WIDTH,
+  DEFAULT_LINK_STROKE_WIDTH,
   DEFAULT_MIN_READABLE_SCALE,
   FIT_PAINT_INSET,
   layoutFolded,
@@ -54,6 +59,13 @@ import type { EntityPresentation } from "@sentropic/diagram-core";
 import type { AlignPinned, AnatomyPinned, DepthPinned, DiagramAnatomy } from "./diagramCardModel.js";
 
 export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
+export {
+  DEFAULT_EDGE_LABEL_SIZE,
+  DEFAULT_LINK_STROKE_WIDTH,
+  DEFAULT_LINK_RELATED_STROKE_WIDTH,
+  DEFAULT_LINK_PRIMARY_STROKE_WIDTH,
+  DEFAULT_LINK_EMPHASIS_STROKE_WIDTH,
+};
 
 /** The semantic document the layout engine reads. */
 export type SceneDocument = Parameters<typeof layoutMeasured>[0];
@@ -474,8 +486,9 @@ export function resolveScene(
   );
   const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
   // Non-scaling connector paint is widest in world units at the readability
-  // floor. Reserve it as well as the label-padding token supplied by hosts.
-  const paintClearance = margin + ZONE_GEOMETRY.borderWidth / (2 * DEFAULT_MIN_READABLE_SCALE);
+  // floor. Reserve the dedicated link stroke token (DE-2), never the zone border.
+  const linkStrokeWidth = input.metrics?.linkStrokeWidth ?? DEFAULT_LINK_STROKE_WIDTH;
+  const paintClearance = margin + linkStrokeWidth / (2 * DEFAULT_MIN_READABLE_SCALE);
   const zoneInset = input.metrics?.containerPadding ?? ZONE_GEOMETRY.contentInsetInline;
   for (const node of nodes) {
     if (node.kind !== "zone" || node.collapsed) {

@@ -18,10 +18,20 @@ export const DEFAULT_MAX_DISPLAY_SCALE = 0.62;
  * floor; 0.42 gives 7.56) and the 22 px kicker (22 × 0.45 = 9.9 CSS px).
  */
 export const DEFAULT_MIN_READABLE_SCALE = 0.45;
-/** World font size of an edge label, px (token `diagramScene.edgeLabelFontSize`). */
-export const DEFAULT_EDGE_LABEL_FONT_SIZE = 18;
+/** World font size of an edge label, px (token `diagramScene.edgeLabelSize` / `edgeLabelFontSize`). */
+export const DEFAULT_EDGE_LABEL_SIZE = 18;
+/** Alias of `DEFAULT_EDGE_LABEL_SIZE` (token `diagramScene.edgeLabelFontSize`). */
+export const DEFAULT_EDGE_LABEL_FONT_SIZE = DEFAULT_EDGE_LABEL_SIZE;
 /** World line box of an edge label, px (token `diagramScene.edgeLabelLineHeight`). */
 export const DEFAULT_EDGE_LABEL_LINE_HEIGHT = 22;
+/** Dedicated resting connector stroke width, CSS px (token `diagramScene.linkStrokeWidth`, DE-2). */
+export const DEFAULT_LINK_STROKE_WIDTH = 2.5;
+/** Related flow connector stroke width, CSS px (token `diagramScene.linkRelatedStrokeWidth`, DE-2). */
+export const DEFAULT_LINK_RELATED_STROKE_WIDTH = 3;
+/** Primary flow connector stroke width, CSS px (token `diagramScene.linkPrimaryStrokeWidth`, DE-2). */
+export const DEFAULT_LINK_PRIMARY_STROKE_WIDTH = 3.5;
+/** Emphasized connector stroke width, CSS px (token `diagramScene.linkEmphasisStrokeWidth`, DE-2 / G6). */
+export const DEFAULT_LINK_EMPHASIS_STROKE_WIDTH = 3.5;
 /** Minimum rendered edge-label size, CSS px. */
 export const MIN_EDGE_LABEL_CSS_PX = 8;
 /** Share of the window height a figure may take (§5.1 fit box). */

@@ -23,9 +23,9 @@ function paintFlowWorld() {
   let grown = 0;
   const sheet = document.createElement("style");
   sheet.textContent = `
-    .st-diagramSceneFigure-edge { fill: none; stroke: rgb(100, 116, 139); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
-    .st-diagramSceneFigure-edge[data-flow-state="primary"] { stroke-width: 2.5px !important; }
-    .st-diagramSceneFigure-edge[data-flow-state="related"] { stroke-width: 2px !important; }
+    .st-diagramSceneFigure-edge { fill: none; stroke: rgb(100, 116, 139); stroke-width: 2.5px; vector-effect: non-scaling-stroke; }
+    .st-diagramSceneFigure-edge[data-flow-state="primary"] { stroke-width: 3.5px !important; }
+    .st-diagramSceneFigure-edge[data-flow-state="related"] { stroke-width: 3px !important; }
     .st-diagramSceneFigure-flowHit { fill: none; stroke: rgba(0, 0, 0, 0); stroke-width: 16px; }
     .st-diagramSceneFigure-flowNode { opacity: 0; }
     .st-diagramSceneFigure-flowDescription { position: absolute; clip-path: inset(50%); width: 0; height: 0; overflow: hidden; }
@@ -143,7 +143,7 @@ export async function runRenderedBoundsHostCase(mount: HostMount, tick: () => Pr
     expect(settled.zoom).toBeLessThan(DEFAULT_MAX_DISPLAY_SCALE);
     const edge = root.querySelector("[data-scene-edge]")!;
     expect(getComputedStyle(edge).vectorEffect).toBe("non-scaling-stroke");
-    expect(getComputedStyle(edge).strokeWidth).toBe("1.5px");
+    expect(getComputedStyle(edge).strokeWidth).toBe("2.5px");
     await fit();
     expect(state(), "Fit again").toEqual(settled);
 
@@ -168,7 +168,7 @@ export async function runRenderedBoundsHostCase(mount: HostMount, tick: () => Pr
     await fireEvent.click(badge);
     await flush();
     const primary = root.querySelector('[data-scene-edge][data-flow-state="primary"]')!;
-    expect(getComputedStyle(primary).strokeWidth).toBe("2.5px");
+    expect(getComputedStyle(primary).strokeWidth).toBe("3.5px");
     await fit();
     expect(state(), "Fit with a highlighted flow step").toEqual(settled);
     await zoomIn();
