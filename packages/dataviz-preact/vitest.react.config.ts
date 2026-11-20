@@ -55,6 +55,7 @@ const reactTests: string[] = [
   "lib/url-sync.test.tsx", // emitted lib/url-sync.ts + lib/useUrlSync.ts
   "lib/AdvancedPivotDataTable.test.tsx", // emitted AdvancedPivotDataTable + advancedPivotData
   "lib/AnalyticsCharts.test.tsx", // emitted AnalyticsClusterPlot + analyticsDsData
+  "lib/BookmarkNavigator.test.tsx", // emitted BookmarkNavigator
 ];
 
 export default defineConfig({

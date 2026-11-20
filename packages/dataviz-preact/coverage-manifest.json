@@ -9,7 +9,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
-  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 batches 1-2 (10 files: all remaining helpers including useUrlSync, plus AdvancedPivotDataTable, AnalyticsClusterPlot, AnimatedBubbleChart, AnomalySwimLaneChart).",
+  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 batches 1-3 (15 files: all remaining helpers + AdvancedPivotDataTable, AnalyticsClusterPlot, AnimatedBubbleChart, AnomalySwimLaneChart, ArcDiagramChart, AreaRangeChart, AreaSplineRangeChart, BellCurveChart, BookmarkNavigator).",
   "modules": [
     {
       "module": "adapter",
@@ -231,6 +231,51 @@
       "module": "AnomalySwimLaneChart",
       "file": "src/lib/AnomalySwimLaneChart.tsx",
       "reactSource": "dataviz-react/src/lib/AnomalySwimLaneChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ArcDiagramChart",
+      "file": "src/lib/ArcDiagramChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ArcDiagramChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "AreaRangeChart",
+      "file": "src/lib/AreaRangeChart.tsx",
+      "reactSource": "dataviz-react/src/lib/AreaRangeChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "AreaSplineRangeChart",
+      "file": "src/lib/AreaSplineRangeChart.tsx",
+      "reactSource": "dataviz-react/src/lib/AreaSplineRangeChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "BellCurveChart",
+      "file": "src/lib/BellCurveChart.tsx",
+      "reactSource": "dataviz-react/src/lib/BellCurveChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "BookmarkNavigator",
+      "file": "src/lib/BookmarkNavigator.tsx",
+      "reactSource": "dataviz-react/src/lib/BookmarkNavigator.tsx",
       "kind": "component",
       "lot": "P6",
       "renderable": true,

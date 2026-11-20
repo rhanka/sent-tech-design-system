@@ -52,6 +52,11 @@ export type PropsParity = [
   Expect<Equal<Emitted.AnalyticsClusterPlotProps, HandWritten.AnalyticsClusterPlotProps>>,
   Expect<Equal<Emitted.AnimatedBubbleChartProps, HandWritten.AnimatedBubbleChartProps>>,
   Expect<Equal<Emitted.AnomalySwimLaneChartProps, HandWritten.AnomalySwimLaneChartProps>>,
+  Expect<Equal<Emitted.ArcDiagramChartProps, HandWritten.ArcDiagramChartProps>>,
+  Expect<Equal<Emitted.AreaRangeChartProps, HandWritten.AreaRangeChartProps>>,
+  Expect<Equal<Emitted.AreaSplineRangeChartProps, HandWritten.AreaSplineRangeChartProps>>,
+  Expect<Equal<Emitted.BellCurveChartProps, HandWritten.BellCurveChartProps>>,
+  Expect<Equal<Emitted.BookmarkNavigatorProps, HandWritten.BookmarkNavigatorProps>>,
 ];
 
 export type ComponentParity = [
@@ -69,6 +74,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.AnalyticsClusterPlot, typeof HandWritten.AnalyticsClusterPlot>>,
   Expect<Equal<typeof Emitted.AnimatedBubbleChart, typeof HandWritten.AnimatedBubbleChart>>,
   Expect<Equal<typeof Emitted.AnomalySwimLaneChart, typeof HandWritten.AnomalySwimLaneChart>>,
+  Expect<Equal<typeof Emitted.ArcDiagramChart, typeof HandWritten.ArcDiagramChart>>,
+  Expect<Equal<typeof Emitted.AreaRangeChart, typeof HandWritten.AreaRangeChart>>,
+  Expect<Equal<typeof Emitted.AreaSplineRangeChart, typeof HandWritten.AreaSplineRangeChart>>,
+  Expect<Equal<typeof Emitted.BellCurveChart, typeof HandWritten.BellCurveChart>>,
+  Expect<Equal<typeof Emitted.BookmarkNavigator, typeof HandWritten.BookmarkNavigator>>,
 ];
 
 export type ValueParity = [
