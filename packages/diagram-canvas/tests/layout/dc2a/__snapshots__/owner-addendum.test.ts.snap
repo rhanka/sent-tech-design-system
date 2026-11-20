@@ -2218,80 +2218,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 180,
         "width": 320,
-        "x": 802.3333333333333,
-        "y": 477.6666666666667,
-      },
-    ],
-    [
-      "occurrence:r.link.e-ai-sec",
-      [
-        "Custody and rights",
-      ],
-      {
-        "height": 22,
-        "width": 165.7721472,
-        "x": 1533.6139264,
-        "y": 1220.2291666666667,
-      },
-    ],
-    [
-      "occurrence:r.link.e-artifacts-infra",
-      [
-        "Release to deploy",
-      ],
-      {
-        "height": 22,
-        "width": 158.90101440000004,
-        "x": 939.4323189333332,
-        "y": 1220.2291666666667,
-      },
-    ],
-    [
-      "occurrence:r.link.e-canvas-mcp",
-      [
-        "MCP / ui:// connection",
-      ],
-      {
-        "height": 22,
-        "width": 208.86777600000008,
-        "x": 1245.566112,
-        "y": 1255.7291666666667,
-      },
-    ],
-    [
-      "occurrence:r.link.e-catalog-artifacts",
-      [
-        "References / hosting",
-      ],
-      {
-        "height": 22,
-        "width": 187.92032640000008,
-        "x": 403.5398368,
-        "y": 1257.8958333333333,
-      },
-    ],
-    [
-      "occurrence:r.link.e-comments-sec",
-      [
-        "Authorisation",
-      ],
-      {
-        "height": 22,
-        "width": 117.41999999999999,
-        "x": 1790.9133333333332,
-        "y": 716.2291666666666,
-      },
-    ],
-    [
-      "occurrence:r.link.e-comments-store",
-      [
-        "Persists annotation",
-      ],
-      {
-        "height": 22,
-        "width": 172.58421120000008,
-        "x": 925.7491221333332,
-        "y": 924.2291666666666,
+        "x": -333.6666666666667,
+        "y": 114.5,
       },
     ],
     [
@@ -2305,8 +2233,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 120,
         "width": 320,
-        "x": 2473.6666666666665,
-        "y": -125.66666666666667,
+        "x": -333.6666666666667,
+        "y": 473.5,
       },
     ],
     [
@@ -2317,8 +2245,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 22,
         "width": 143.23024320000002,
-        "x": 2104.3848784,
-        "y": -190.33333333333334,
+        "x": 441.3848784,
+        "y": 265.3333333333333,
       },
     ],
     [
@@ -2332,8 +2260,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 120,
         "width": 320,
-        "x": 1421,
-        "y": -190.33333333333334,
+        "x": 404,
+        "y": 838.6666666666666,
       },
     ],
     [
@@ -2344,8 +2272,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 22,
         "width": 152.9163168,
-        "x": 1543.5418416,
-        "y": 213.66666666666666,
+        "x": 450.5418416,
+        "y": 222.83333333333334,
       },
     ],
     [
@@ -2356,8 +2284,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 22,
         "width": 152.4830784,
-        "x": 1262.2584608,
-        "y": -223.66666666666666,
+        "x": -2.333333333333334,
+        "y": 273.3333333333333,
       },
     ],
     [
@@ -2371,7 +2299,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 120,
         "width": 320,
-        "x": -116.66666666666666,
+        "x": -95.66666666666666,
         "y": -125.66666666666667,
       },
     ],
@@ -2383,8 +2311,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 22,
         "width": 164.13817920000002,
-        "x": 616.1951541333333,
-        "y": -35.666666666666664,
+        "x": 249.66666666666666,
+        "y": 256.1666666666667,
       },
     ],
     [
@@ -2395,20 +2323,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 22,
         "width": 205.18656000000004,
-        "x": 680.8134399999999,
-        "y": -223.66666666666666,
-      },
-    ],
-    [
-      "occurrence:r.link.e-infra-observe",
-      [
-        "Deployment receipts",
-      ],
-      {
-        "height": 22,
-        "width": 181.85700480000006,
-        "x": 805.6666666666666,
-        "y": 1255.7291666666667,
+        "x": 590.2817882666667,
+        "y": 256.1666666666667,
       },
     ],
     [
@@ -2419,44 +2335,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 22,
         "width": 132.401904,
-        "x": 544.4115359999998,
-        "y": -190.33333333333334,
-      },
-    ],
-    [
-      "occurrence:r.link.e-sec-observe",
-      [
-        "Access audit",
-      ],
-      {
-        "height": 22,
-        "width": 113.83655999999999,
-        "x": 1340.6666666666667,
-        "y": 1220.2291666666667,
-      },
-    ],
-    [
-      "occurrence:r.link.e-ui-artifacts",
-      [
-        "UI / app hosting",
-      ],
-      {
-        "height": 22,
-        "width": 145.25773440000003,
-        "x": 720.3711327999999,
-        "y": 1499.2291666666667,
-      },
-    ],
-    [
-      "occurrence:r.link.e-ui-resources",
-      [
-        "Logical catalogue",
-      ],
-      {
-        "height": 22,
-        "width": 154.09749120000004,
-        "x": 430.9512544,
-        "y": 1220.2291666666667,
+        "x": 242.66666666666666,
+        "y": 222.83333333333334,
       },
     ],
   ],
@@ -2466,8 +2346,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 200,
         "width": 460,
-        "x": 1112,
-        "y": 0,
+        "x": 0,
+        "y": 301,
       },
     ],
     [
@@ -2475,8 +2355,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 200,
         "width": 460,
-        "x": 2224,
-        "y": 0,
+        "x": 0,
+        "y": 573,
       },
     ],
     [
@@ -2484,8 +2364,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 200,
         "width": 460,
-        "x": 1668,
-        "y": 0,
+        "x": 566,
+        "y": 301,
       },
     ],
     [
@@ -2502,8 +2382,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 200,
         "width": 460,
-        "x": 0,
-        "y": 272,
+        "x": 566,
+        "y": 573,
       },
     ],
     [
@@ -2511,125 +2391,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 200,
         "width": 460,
-        "x": 556,
+        "x": 566,
         "y": 0,
-      },
-    ],
-    [
-      "occurrence:e.cat-mcp",
-      {
-        "height": 662.5625,
-        "width": 1048,
-        "x": 1112,
-        "y": 272,
-      },
-    ],
-    [
-      "occurrence:e.cat-ai",
-      {
-        "height": 200,
-        "width": 460,
-        "x": 556,
-        "y": 272,
-      },
-    ],
-    [
-      "occurrence:e.cat-resources",
-      {
-        "height": 200,
-        "width": 460,
-        "x": 0,
-        "y": 1006.5625,
-      },
-    ],
-    [
-      "occurrence:e.cat-ui",
-      {
-        "height": 200,
-        "width": 460,
-        "x": 556,
-        "y": 1006.5625,
-      },
-    ],
-    [
-      "occurrence:e.cluster-infra",
-      {
-        "height": 200,
-        "width": 460,
-        "x": 1112,
-        "y": 1006.5625,
-      },
-    ],
-    [
-      "occurrence:e.cluster-instances",
-      {
-        "height": 200,
-        "width": 460,
-        "x": 1668,
-        "y": 1006.5625,
-      },
-    ],
-    [
-      "occurrence:e.mcp-comments",
-      {
-        "height": 200,
-        "width": 460,
-        "x": 1128,
-        "y": 446.5625,
-      },
-    ],
-    [
-      "occurrence:e.mcp-connectors",
-      {
-        "height": 200,
-        "width": 460,
-        "x": 1128,
-        "y": 718.5625,
-      },
-    ],
-    [
-      "occurrence:e.mcp-tools",
-      {
-        "height": 200,
-        "width": 460,
-        "x": 1684,
-        "y": 446.5625,
-      },
-    ],
-    [
-      "occurrence:e.sec-access",
-      {
-        "height": 200,
-        "width": 460,
-        "x": 2224,
-        "y": 1006.5625,
-      },
-    ],
-    [
-      "occurrence:e.sec-observe",
-      {
-        "height": 200,
-        "width": 460,
-        "x": 0,
-        "y": 1293.5625,
-      },
-    ],
-    [
-      "occurrence:e.store-artifacts",
-      {
-        "height": 200,
-        "width": 460,
-        "x": 556,
-        "y": 1293.5625,
-      },
-    ],
-    [
-      "occurrence:e.store-models",
-      {
-        "height": 200,
-        "width": 460,
-        "x": 1112,
-        "y": 1293.5625,
       },
     ],
   ],

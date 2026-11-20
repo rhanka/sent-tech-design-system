@@ -83,6 +83,85 @@ export function centredBodyFindings({ nodes, labels, text, bodyCx, minTop, maxBo
   return findings;
 }
 
+/**
+ * DE-1 compact-face gate: verifies 352 × 154 card dimensions, centred body
+ * block within 1/64 px of body-area centre on both axes, and title/body text
+ * ink strictly inside their slots and inside the card box (including at phone
+ * width). `expectedWidth`/`expectedHeight` are card px scaled by `scale`;
+ * `epsilon` is the CSS precision bound (default 1/64 px).
+ */
+export function compactCardFindings({ cardSlots, labels, bodyText = 'First paint', expectedWidth = 352, expectedHeight = 154, scale, epsilon = 1 / 64, inkTolerance = 2 }) {
+  const findings = [];
+  if (cardSlots.length === 0) return ['compact scene has no rendered cards'];
+  for (const slot of cardSlots) {
+    const wantW = expectedWidth * scale;
+    const wantH = expectedHeight * scale;
+    if (Math.abs(slot.card.width - wantW) > Math.max(epsilon, 0.5)) {
+      findings.push(`card ${slot.id} compact width ${slot.card.width} != ${wantW}`);
+    }
+    if (Math.abs(slot.card.height - wantH) > Math.max(epsilon, 0.5)) {
+      findings.push(`card ${slot.id} compact height ${slot.card.height} != ${wantH}`);
+    }
+    if (!slot.bodyArea || slot.bodyLines.length === 0) {
+      findings.push(`card ${slot.id} missing compact body slot`);
+    } else {
+      const areaCx = (slot.bodyArea.left + slot.bodyArea.right) / 2;
+      const areaCy = (slot.bodyArea.top + slot.bodyArea.bottom) / 2;
+      const blockLeft = Math.min(...slot.bodyLines.map(line => line.left));
+      const blockRight = Math.max(...slot.bodyLines.map(line => line.right));
+      const blockTop = Math.min(...slot.bodyLines.map(line => line.top));
+      const blockBottom = Math.max(...slot.bodyLines.map(line => line.bottom));
+      const blockCx = (blockLeft + blockRight) / 2;
+      const blockCy = (blockTop + blockBottom) / 2;
+      if (Math.abs(blockCx - areaCx) > epsilon) {
+        findings.push(`card ${slot.id} body block centre-x ${blockCx} != ${areaCx} within ${epsilon}`);
+      }
+      if (Math.abs(blockCy - areaCy) > epsilon) {
+        findings.push(`card ${slot.id} body block centre-y ${blockCy} != ${areaCy} within ${epsilon}`);
+      }
+    }
+    if (!slot.headerText || slot.titleLines.length === 0) {
+      findings.push(`card ${slot.id} missing compact title slot`);
+    }
+    const cardInk = labels.filter(label =>
+      label.left >= slot.card.left - inkTolerance && label.right <= slot.card.right + inkTolerance
+      && label.top >= slot.card.top - inkTolerance && label.bottom <= slot.card.bottom + inkTolerance);
+    const bodyInk = cardInk.filter(label => label.id === bodyText);
+    if (bodyInk.length === 0) {
+      findings.push(`card ${slot.id} has no "${bodyText}" body ink`);
+    } else if (slot.bodyArea) {
+      const areaCx = (slot.bodyArea.left + slot.bodyArea.right) / 2;
+      for (const ink of bodyInk) {
+        if (ink.left < slot.bodyArea.left - epsilon || ink.right > slot.bodyArea.right + epsilon
+            || ink.top < slot.bodyArea.top - epsilon || ink.bottom > slot.bodyArea.bottom + epsilon) {
+          findings.push(`card ${slot.id} body ink outside body slot`);
+        }
+        const inkCx = (ink.left + ink.right) / 2;
+        if (Math.abs(inkCx - areaCx) > inkTolerance) {
+          findings.push(`card ${slot.id} body ink off-centre: ${inkCx} != ${areaCx}`);
+        }
+      }
+    }
+    const titleInk = cardInk.filter(label => label.id !== bodyText);
+    if (titleInk.length === 0) {
+      findings.push(`card ${slot.id} has no title ink`);
+    } else if (slot.headerText) {
+      const headerCx = (slot.headerText.left + slot.headerText.right) / 2;
+      for (const ink of titleInk) {
+        if (ink.left < slot.headerText.left - epsilon || ink.right > slot.headerText.right + epsilon
+            || ink.top < slot.card.top - epsilon || ink.bottom > slot.card.bottom + epsilon) {
+          findings.push(`card ${slot.id} title ink outside header slot`);
+        }
+        const inkCx = (ink.left + ink.right) / 2;
+        if (Math.abs(inkCx - headerCx) > inkTolerance) {
+          findings.push(`card ${slot.id} title ink off-centre: ${inkCx} != ${headerCx}`);
+        }
+      }
+    }
+  }
+  return findings;
+}
+
 /** Distance from a point to the border of a box: 0 on the border, positive inside and outside alike. */
 export function borderDistance(point, box) {
   const dx = Math.max(box.left - point.x, 0, point.x - box.right);

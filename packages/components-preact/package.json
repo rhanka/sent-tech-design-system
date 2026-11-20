@@ -41,7 +41,7 @@
     "probe:preact": "node scripts/probe-preact-major.mjs --write"
   },
   "dependencies": {
-    "@sentropic/design-system-themes": "0.14.0",
+    "@sentropic/design-system-themes": "0.15.0",
     "lucide-preact": "0.562.0"
   },
   "peerDependencies": {

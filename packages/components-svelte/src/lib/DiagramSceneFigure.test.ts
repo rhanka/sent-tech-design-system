@@ -801,6 +801,149 @@ describe("DiagramSceneFigure folds", () => {
     expect(view.toggle("a").getAttribute("aria-label")).toBe("Déplier Zone a");
     expect(document.activeElement).toBe(view.toggle("a"));
   });
+
+  it("localizes containment relations in the accessible fallback text with default and overridden labels (DE-1b)", async () => {
+    const defaultView = mount(WIDE);
+    await tick();
+    const defaultRows = [...defaultView.root.querySelectorAll(".st-diagramSceneFigure-fallback p")].map((p) => p.textContent);
+    expect(defaultRows).toContain("a → a1 · includes");
+    expect(defaultRows).toContain("a1 → c · calls");
+    expect(defaultRows.some((row) => row?.includes("· contains"))).toBe(false);
+    defaultView.unmount();
+
+    const frenchView = mount(WIDE, { labels: { contains: "contient" } });
+    await tick();
+    const frenchRows = [...frenchView.root.querySelectorAll(".st-diagramSceneFigure-fallback p")].map((p) => p.textContent);
+    expect(frenchRows).toContain("a → a1 · contient");
+    expect(frenchRows).toContain("a1 → c · calls");
+    expect(frenchRows.some((row) => row?.includes("· contains"))).toBe(false);
+    frenchView.unmount();
+  });
+
+  it("folds and unfolds a v2 multi-container nested scene hiding all descendants, reflowing neighbours and bundling links within 1/64 px", async () => {
+    reducedMotion = true;
+    const base = sceneOf(
+      "v2-nested-fold",
+      [
+        { id: "outerA", container: true },
+        { id: "innerA", container: true, parent: "outerA" },
+        { id: "a1", parent: "innerA" },
+        { id: "a2", parent: "innerA" },
+        { id: "aSibling", parent: "outerA" },
+        { id: "outerB", container: true },
+        { id: "b1", parent: "outerB" },
+        { id: "ext" },
+      ],
+      [
+        { from: "a1", to: "a2", label: "inner" },
+        { from: "a1", to: "aSibling", label: "sibling" },
+        { from: "a1", to: "b1", label: "sync1" },
+        { from: "a2", to: "b1", label: "sync2" },
+        { from: "aSibling", to: "b1", label: "sync3" },
+        { from: "a2", to: "ext", label: "pub" },
+      ],
+    );
+    const v2Entities = Object.fromEntries(
+      Object.entries(base.presentation.entities).map(([id, entry]) => [
+        id,
+        entry.form === "container"
+          ? { form: "container", text: { title: entry.text.title, subtitle: "Sub" }, anatomy: "v2" }
+          : { form: "card", text: { title: entry.text.title, body: "Work" }, anatomy: "v2" },
+      ]),
+    );
+    const nested = {
+      ...base,
+      presentation: { ...base.presentation, entities: v2Entities } as unknown as ScenePresentation,
+    };
+
+    const expectWithinUnit = (actual: Rect, expected: Rect): void => {
+      for (const key of ["x", "y", "width", "height"] as const) {
+        expect(Math.abs(actual[key] - expected[key])).toBeLessThanOrEqual(1 / 64);
+      }
+    };
+
+    const view = mount(nested);
+    await tick();
+    const initialModel = modelOf(nested, []).model;
+    expect(view.drawn().sort()).toEqual([
+      occurrence("a1"),
+      occurrence("a2"),
+      occurrence("aSibling"),
+      occurrence("b1"),
+      occurrence("ext"),
+      occurrence("innerA"),
+      occurrence("outerA"),
+      occurrence("outerB"),
+    ]);
+    expect(view.rectOf("a1")).toMatchObject({ width: 352, height: 154 });
+    expect(view.root.querySelectorAll("polyline[data-scene-edge]")).toHaveLength(6);
+    const innerExpandedStyle = view.root.querySelector(`[data-scene-occurrence="${occurrence("innerA")}"] .st-diagramZone`)?.getAttribute("style") ?? "";
+    expect(innerExpandedStyle).toContain("--st-component-diagramZone-surface2");
+    for (const node of initialModel.nodes) {
+      expectWithinUnit(view.rectOf(node.occurrence.replace("occurrence:e.", "")), node.rect);
+    }
+
+    // Fold innerA first: a1/a2 hide, innerA collapses to 352x154 keeping surface2, 2 cross-links bundle.
+    await fireEvent.click(view.toggle("innerA"));
+    await tick();
+    const innerFoldModel = modelOf(nested, ["innerA"]).model;
+    expect(view.drawn().sort()).toEqual([
+      occurrence("aSibling"),
+      occurrence("b1"),
+      occurrence("ext"),
+      occurrence("innerA"),
+      occurrence("outerA"),
+      occurrence("outerB"),
+    ]);
+    expect(view.rectOf("innerA")).toMatchObject({ width: 352, height: 154 });
+    const innerFoldedStyle = view.root.querySelector(`[data-scene-occurrence="${occurrence("innerA")}"] .st-diagramCard`)?.getAttribute("style") ?? "";
+    expect(innerFoldedStyle).toContain("--st-component-diagramZone-surface2");
+    expect(view.root.querySelectorAll("polyline[data-scene-edge]")).toHaveLength(4);
+    expect(view.root.querySelectorAll("[data-bundle-relation]")).toHaveLength(2);
+    for (const node of innerFoldModel.nodes) {
+      expectWithinUnit(view.rectOf(node.occurrence.replace("occurrence:e.", "")), node.rect);
+    }
+
+    // Unfold innerA, then fold outerA while innerA is expanded: ALL descendants hide (no ejected grandchildren!).
+    await fireEvent.click(view.toggle("innerA"));
+    await tick();
+    const outerBBefore = view.rectOf("outerB");
+    const extBefore = view.rectOf("ext");
+    await fireEvent.click(view.toggle("outerA"));
+    await tick();
+    await tick();
+    const outerFoldModel = modelOf(nested, ["outerA"]).model;
+    expect(view.drawn().sort()).toEqual([
+      occurrence("b1"),
+      occurrence("ext"),
+      occurrence("outerA"),
+      occurrence("outerB"),
+    ]);
+    expect(view.rectOf("outerA")).toMatchObject({ width: 352, height: 154 });
+    expect(view.toggle("outerA").getAttribute("aria-expanded")).toBe("false");
+    expect(document.activeElement).toBe(view.toggle("outerA"));
+    const outerBAfter = view.rectOf("outerB");
+    const extAfter = view.rectOf("ext");
+    expect(
+      outerBBefore.x !== outerBAfter.x || outerBBefore.y !== outerBAfter.y ||
+      extBefore.x !== extAfter.x || extBefore.y !== extAfter.y,
+    ).toBe(true);
+    expect(view.root.querySelectorAll("polyline[data-scene-edge]")).toHaveLength(2);
+    expect(view.root.querySelectorAll("[data-bundle-relation]")).toHaveLength(3);
+    for (const node of outerFoldModel.nodes) {
+      expectWithinUnit(view.rectOf(node.occurrence.replace("occurrence:e.", "")), node.rect);
+    }
+
+    // Unfold outerA: exact same structure, geometry, edges and depth surfaces restored.
+    await fireEvent.click(view.toggle("outerA"));
+    await tick();
+    expect(view.drawn().sort()).toEqual(initialModel.nodes.map((n) => n.occurrence).sort());
+    expect(view.root.querySelectorAll("polyline[data-scene-edge]")).toHaveLength(6);
+    expect(view.root.querySelector(`[data-scene-occurrence="${occurrence("innerA")}"] .st-diagramZone`)?.getAttribute("style") ?? "").toContain("--st-component-diagramZone-surface2");
+    for (const node of initialModel.nodes) {
+      expectWithinUnit(view.rectOf(node.occurrence.replace("occurrence:e.", "")), node.rect);
+    }
+  });
 });
 
 /* ── transition ──────────────────────────────────────────────────── */

@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-svelte",
-  "version": "0.41.5",
+  "version": "0.42.0",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
@@ -64,8 +64,8 @@
   "dependencies": {
     "@lucide/svelte": "^0.562.0",
     "@sentropic/design-system-rich-text": "0.1.1",
-    "@sentropic/design-system-themes": "0.14.0",
-    "@sentropic/diagram-canvas": "0.2.5",
+    "@sentropic/design-system-themes": "0.15.0",
+    "@sentropic/diagram-canvas": "0.3.0",
     "@sentropic/graph": "0.3.1"
   },
   "peerDependencies": {
@@ -97,7 +97,7 @@
   },
   "devDependencies": {
     "@sentropic/design-system-theme-dsfr": "0.2.2",
-    "@sentropic/design-system-themes": "0.14.0",
+    "@sentropic/design-system-themes": "0.15.0",
     "@sveltejs/package": "^2.5.0",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@testing-library/svelte": "^5.2.8",

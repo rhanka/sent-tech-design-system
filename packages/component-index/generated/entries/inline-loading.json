@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/InlineLoading.svelte",
-      "version": "0.41.5"
+      "version": "0.42.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/InlineLoading.vue",
-      "version": "0.41.0-next.7"
+      "version": "0.41.0-next.8"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Inline loading indicator paired with a label.",
     "fr": "Indicateur de chargement inline accompagné d’un libellé."
   },
-  "digest": "sha256:f4d11bf410e6c31f6b768b6347abf22694d256731388b1f717b714ddb3fd2ca1",
+  "digest": "sha256:5ddf080a40d8ea9aa2ed1d9be162404fff1ddc30d3a07a77b4a80a4f760215f4",
   "displayName": "InlineLoading",
   "format": "component-entry/v1",
   "frameworks": [
