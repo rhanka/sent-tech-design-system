@@ -34,7 +34,14 @@ describe('ERD measured layout and SVG', () => {
     expect(rendered.svg.match(/data-erd-field=/g)).toHaveLength(Object.keys(data.document.ports).length);
     expect(rendered.svg.match(/data-erd-marker=/g)).toHaveLength(2 * scenes[0]!.relations.length);
     expect(rendered.svg).not.toContain('marker-end="url(#scene-arrow)"');
-    for (const label of rendered.scene.labels.filter(label => label.leader)) expect(rendered.svg).toContain(connectorPath(label.leader!));
+    for (const label of rendered.scene.labels.filter(label => label.leader)) {
+      const match = rendered.svg.match(new RegExp(`<path data-scene-leader="${label.occurrence.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^>]*/>`));
+      expect(match, `missing leader path for ${label.occurrence}`).not.toBeNull();
+      expect(match![0]).toContain(connectorPath(label.leader!));
+      expect(match![0]).toContain('stroke-width="2.5"');
+      expect(match![0]).toContain('vector-effect="non-scaling-stroke"');
+      expect(match![0]).toContain('stroke-linejoin="round"');
+    }
   });
   for (const source of scenes)
     it('should validate and render every row and relation in ' + source.id, () => {
