@@ -1,0 +1,101 @@
+import { existsSync } from "node:fs";
+import { dirname, relative, resolve, sep } from "node:path";
+import { fileURLToPath } from "node:url";
+import { defineConfig, type Plugin } from "vite";
+
+// React leg: the unmodified test files of `dataviz-react` run against the
+// React tree emitted from the single JSX source (`npm run emit:react`).
+const here = dirname(fileURLToPath(import.meta.url));
+const packagesDir = resolve(here, "..");
+const handWritten = resolve(packagesDir, "dataviz-react/src");
+const emitted = resolve(here, ".react-emit/src");
+
+/**
+ * Module-level switch. Inside the hand-written `dataviz-react/src` tree (both
+ * root `src/` and `src/lib/`), a relative import of `./...js` or `../...js`
+ * resolves to the emitted module whenever the emission holds one at that
+ * relative path. `index.ts` stays the hand-written barrel so unported exports
+ * still load alongside the emitted modules under test.
+ */
+function emittedReactModules(): Plugin {
+  return {
+    name: "st-dataviz-emitted-react-modules",
+    enforce: "pre",
+    resolveId(source, importer) {
+      if (!importer) return null;
+      const cleanImporter = importer.split("?")[0];
+      const relImporter = relative(handWritten, cleanImporter);
+      if (relImporter.startsWith("..") || relImporter === "") return null;
+      if (!source.startsWith("./") && !source.startsWith("../")) return null;
+      if (!source.endsWith(".js")) return null;
+      const target = resolve(dirname(cleanImporter), source);
+      const relTarget = relative(handWritten, target).split(sep).join("/");
+      if (relTarget.startsWith("..") || relTarget === "index.js") return null;
+      const stem = relTarget.slice(0, -3);
+      for (const extension of [".tsx", ".ts"]) {
+        const candidate = resolve(emitted, stem + extension);
+        if (existsSync(candidate)) return candidate;
+      }
+      return null;
+    },
+  };
+}
+
+/** Existing `dataviz-react` test files (relative to `dataviz-react/src`) that exercise an emitted module. */
+const reactTests: string[] = [
+  "index.test.ts", // emitted adapter.ts (useDashboard + core re-exports)
+  "lib/drill.test.tsx", // emitted lib/drill.ts + DrillChart (with DrillBarChart, DonutChart, TreemapChart)
+  "lib/CategoricalCharts.test.tsx", // emitted AreaChart, ComboChart, LollipopChart, StackedBarChart, StepLineChart + categoricalData
+  "lib/CrossfilteredBarChart.test.tsx", // emitted CrossfilteredBarChart (vertical DS BarChart + horizontal SVG)
+  "lib/TimeSeriesLineChart.test.tsx", // emitted TimeSeriesLineChart (native SVG time-series)
+  "lib/DivergingBarChart.test.tsx", // emitted DivergingBarChart
+  "lib/ParetoChart.test.tsx", // emitted ParetoChart
+  "lib/DateHistogramChart.test.tsx", // emitted DateHistogramChart
+  "lib/chart-export.test.ts", // emitted lib/chart-export.ts
+  "lib/url-sync.test.tsx", // emitted lib/url-sync.ts + lib/useUrlSync.ts
+  "lib/AdvancedPivotDataTable.test.tsx", // emitted AdvancedPivotDataTable + advancedPivotData
+  "lib/AnalyticsCharts.test.tsx", // emitted AnalyticsClusterPlot, ErrorBarsChart, ForecastLineChart, PercentileBandChart, ReferenceLineChart, TrendLineChart + analyticsDsData
+  "lib/BookmarkNavigator.test.tsx", // emitted BookmarkNavigator
+  "lib/DistributionCharts.test.tsx", // emitted BoxPlotChart, BulletChart, CalendarHeatmapChart, GaugeChart, HeatmapChart, HistogramChart + distributionData
+  "lib/CalculationEditor.test.tsx", // emitted CalculationEditor
+  "lib/ExportMenu.test.tsx", // emitted ExportMenu + rowsToCsv
+  "lib/ChartExport.test.tsx", // emitted ChartExport + ExportMenu + chart-export
+  "lib/PartOfWholeCharts.test.tsx", // emitted ChordChart, DonutChart, TreemapChart, FunnelChart, MekkoChart, PackedBubbleChart, RadarChart, RoseChart, SankeyChart, SunburstChart, WaterfallChart + partOfWholeData
+  "lib/GeoCharts.test.tsx", // emitted ChoroplethMap, GeoClusterMap, GeoDensityMap, GeoFlowMap, GeoHexbinMap, GeoJsonMap, GeoPointMap + geoMapLayers
+  "lib/DashboardActiveFilters.test.tsx", // emitted DashboardActiveFilters
+  "lib/DashboardFilterBar.test.tsx", // emitted DashboardFilterBar
+  "lib/DashboardGrid.test.tsx", // emitted DashboardGrid
+  "lib/DateRangeFilter.test.tsx", // emitted DateRangeFilter + dateRangeToSpec
+  "lib/DrillBarChart.test.tsx", // emitted DrillBarChart
+  "lib/DrillBreadcrumb.test.tsx", // emitted DrillBreadcrumb
+  "lib/FieldPane.test.tsx", // emitted FieldPane
+  "lib/FormatPanel.test.tsx", // emitted FormatPanel
+  "lib/KpiCardGroup.test.tsx", // emitted KpiCardGroup
+  "lib/ObjectLayers.test.tsx", // emitted ObjectLayers (WebFrame, DataImage, ObjectLayerPanel)
+  "lib/PivotDataTable.test.tsx", // emitted PivotDataTable
+  "lib/QueryBar.test.tsx", // emitted QueryBar
+  "lib/RangeSliderFilter.test.tsx", // emitted RangeSliderFilter + numericDomain + rangeBoundsToSpec
+  "lib/RecordsTable.test.tsx", // emitted RecordsTable
+  "lib/RelativeDateFilter.test.tsx", // emitted RelativeDateFilter + relativeRangeToSpec + DEFAULT_RELATIVE_PRESETS
+  "lib/SelectionLegend.test.tsx", // emitted SelectionLegend
+  "lib/SmallMultiples.test.tsx", // emitted SmallMultiples
+  "lib/TopNFilter.test.tsx", // emitted TopNFilter
+  "lib/ValueSlicer.test.tsx", // emitted ValueSlicer
+];
+
+export default defineConfig({
+  root: packagesDir,
+  cacheDir: resolve(here, "node_modules/.vite-react-leg"),
+  plugins: [emittedReactModules()],
+  resolve: { dedupe: ["react", "react-dom"] },
+  test: {
+    environment: "jsdom",
+    setupFiles: [resolve(packagesDir, "dataviz-react/vitest-setup.ts")],
+    testTimeout: 20000,
+    include: [
+      ...reactTests.map((name) => `dataviz-react/src/${name}`),
+      // React-leg checks of this package: provenance and adapter twins.
+      "dataviz-preact/react/*.test.{ts,tsx}",
+    ],
+  },
+});
