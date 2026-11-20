@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { renderZoneSvg as ownerZoneSvg } from "./diagram-render/renderZoneSvg.js";
 import { render } from "@testing-library/svelte";
 import { createRawSnippet } from "svelte";
@@ -528,6 +530,34 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
     expect(cardToggle.style.right).toBe(cardToggle.style.top);
     expect(cardBtn.classList.contains("st-iconButton--sm")).toBe(true);
     fallback.unmount();
+  });
+
+  it("restores a visible +/- toggle hover background distinct from surface1 and surface2 in light and dark themes (W1-12)", () => {
+    const headerSource = readFileSync(
+      resolve(import.meta.dirname, "DiagramCardHeader.svelte"),
+      "utf8",
+    );
+    expect(headerSource).toMatch(
+      /\.st-diagramCard-toggle\s+:global\(\.st-iconButton:hover:not\(:disabled\)\)\s*\{[\s\S]*--st-component-button-secondaryHoverBackground[\s\S]*border-color:\s*var\(--st-component-control-border/,
+    );
+    for (const theme of ["sent-tech", "forge", "entropic"] as const) {
+      const css = readFileSync(
+        resolve(import.meta.dirname, `../../../themes/css/${theme}.css`),
+        "utf8",
+      );
+      const tokenMatches = (name: string) =>
+        [...css.matchAll(new RegExp(`${name}:\\s*([^;]+);`, "g"))].map((m) => m[1]!.trim());
+      const s1 = tokenMatches("--st-component-diagramZone-surface1");
+      const s2 = tokenMatches("--st-component-diagramZone-surface2");
+      const hover = tokenMatches("--st-component-button-secondaryHoverBackground");
+      expect(s1.length, theme).toBe(3);
+      expect(s2.length, theme).toBe(3);
+      expect(hover.length, theme).toBe(3);
+      for (let mode = 0; mode < 3; mode += 1) {
+        expect(hover[mode], `${theme} mode ${mode} hover vs surface1`).not.toBe(s1[mode]);
+        expect(hover[mode], `${theme} mode ${mode} hover vs surface2`).not.toBe(s2[mode]);
+      }
+    }
   });
 });
 

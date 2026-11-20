@@ -254,6 +254,31 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
     }
     vueFb.unmount(); svelteFb.unmount();
   });
+  it('should keep a visible +/- toggle hover background on surface1 and surface2 zones in light and dark themes on both hosts (W1-12)', () => {
+    const vueHeader = readFileSync(resolve(import.meta.dirname, 'DiagramCardHeader.vue'), 'utf8');
+    const svelteHeader = readFileSync(resolve(import.meta.dirname, '../../components-svelte/src/lib/DiagramCardHeader.svelte'), 'utf8');
+    expect(vueHeader).toMatch(
+      /\.st-diagramCard-toggle\s+\.st-iconButton:hover:not\(:disabled\)\s*\{[\s\S]*--st-component-button-secondaryHoverBackground[\s\S]*border-color:\s*var\(--st-component-control-border/,
+    );
+    expect(svelteHeader).toMatch(
+      /\.st-diagramCard-toggle\s+:global\(\.st-iconButton:hover:not\(:disabled\)\)\s*\{[\s\S]*--st-component-button-secondaryHoverBackground[\s\S]*border-color:\s*var\(--st-component-control-border/,
+    );
+    for (const theme of ['sent-tech', 'forge', 'entropic'] as const) {
+      const css = readFileSync(resolve(import.meta.dirname, `../../themes/css/${theme}.css`), 'utf8');
+      const tokenMatches = (name: string) =>
+        [...css.matchAll(new RegExp(`${name}:\\s*([^;]+);`, 'g'))].map((m) => m[1]!.trim());
+      const s1 = tokenMatches('--st-component-diagramZone-surface1');
+      const s2 = tokenMatches('--st-component-diagramZone-surface2');
+      const hover = tokenMatches('--st-component-button-secondaryHoverBackground');
+      expect(s1.length, theme).toBe(3);
+      expect(s2.length, theme).toBe(3);
+      expect(hover.length, theme).toBe(3);
+      for (let mode = 0; mode < 3; mode += 1) {
+        expect(hover[mode], `${theme} mode ${mode} hover vs surface1`).not.toBe(s1[mode]);
+        expect(hover[mode], `${theme} mode ${mode} hover vs surface2`).not.toBe(s2[mode]);
+      }
+    }
+  });
   it('should anchor expanded v2 zone header right to headerInset (12px) when containerPadding is 16px on both hosts', async () => {
     const props = {
       entityId: 'v2-zone-padded',
