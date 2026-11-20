@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-svelte",
-  "version": "0.43.0",
+  "version": "0.43.1",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
@@ -66,7 +66,7 @@
     "@sentropic/design-system-review-core": "0.1.0",
     "@sentropic/design-system-rich-text": "0.1.1",
     "@sentropic/design-system-themes": "0.15.0",
-    "@sentropic/diagram-canvas": "0.3.0",
+    "@sentropic/diagram-canvas": "0.3.1",
     "@sentropic/graph": "0.3.1"
   },
   "peerDependencies": {

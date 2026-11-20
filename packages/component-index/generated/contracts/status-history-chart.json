@@ -1,8 +1,8 @@
 {
   "componentId": "status-history-chart",
   "contractSource": "derived",
-  "digest": "sha256:cb8781c526360f9bda1e4063c3c75efc8f5f1c47bedb26bffb1dada170afca3e",
-  "entryDigest": "sha256:f6f2e190c56b237e6e576fd36d296d7e953c52a70561449cc9f149fb76f4301f",
+  "digest": "sha256:2de73a0ed89f7c827a2f9f80c35e59574ac521d4c5d50a5fdd0d5ed28fc496e2",
+  "entryDigest": "sha256:8ce2b695098e00d0878258547fe799f2941d87a8f31b341ccba10a87c32b887b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -335,7 +335,7 @@
         "declarationPath": "packages/components-svelte/dist/StatusHistoryChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StatusHistoryChartProps",
-        "version": "0.43.0"
+        "version": "0.43.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -447,7 +447,7 @@
         "declarationPath": "packages/components-vue/dist/StatusHistoryChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StatusHistoryChartProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "complete",
       "unresolved": [],
