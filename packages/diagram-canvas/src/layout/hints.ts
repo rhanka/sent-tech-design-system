@@ -210,11 +210,12 @@ export interface ResolvedRowGaps {
  * token. The caps come from the metrics only: no hint raises a cap.
  */
 export function resolveRowGaps(hints: LayoutHints | undefined, metrics: LayoutMetrics): ResolvedRowGaps {
+  const zoneDefault = spacing.zoneGutter;
   return {
     cardX: hints?.cardGapX ?? metrics.rowGapInline ?? metrics.gapMin ?? DEFAULT_ROW_GAP,
     cardY: hints?.cardGapY ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? spacing.gapMinBlock,
-    zoneX: hints?.zoneGapX ?? metrics.rowGapInline ?? metrics.gapMin ?? DEFAULT_ROW_GAP,
-    zoneY: hints?.zoneGapY ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? spacing.gapMinBlock,
+    zoneX: hints?.zoneGapX ?? metrics.zoneGutter ?? metrics.rowGapInline ?? metrics.gapMin ?? zoneDefault,
+    zoneY: hints?.zoneGapY ?? metrics.zoneGutter ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? zoneDefault,
     maxX: metrics.gapInlineMax ?? metrics.gapMax ?? DEFAULT_ROW_GAP_MAX,
     maxY: metrics.gapBlockMax ?? metrics.gapMax ?? DEFAULT_ROW_GAP_MAX,
   };

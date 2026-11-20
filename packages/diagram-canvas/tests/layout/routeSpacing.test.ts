@@ -19,9 +19,12 @@ import { describe, expect, it } from "vitest";
 
 import {
   channelCapacity,
+  channelGap,
+  channelMetrics,
   checkRouteSpacing,
   DEFAULT_ROUTE_BORDER_CLEARANCE,
   DEFAULT_ROUTE_SPACING,
+  DEFAULT_ZONE_GUTTER,
   layoutDocument,
   subdivideChannelTracks,
   type CheckedRoute,
@@ -410,6 +413,125 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
       );
       expect(warnings.length).toBe(unfolded.routeSpacing!.conflictCount);
       expect(warnings.every((w) => w.severity === "info")).toBe(true);
+    }
+  });
+
+  it("uses one fixed zoneGutter token (>= 96) between sibling zones on both axes and never widens it under traffic or fold (DE-2 ask 3)", () => {
+    expect(DEFAULT_ZONE_GUTTER).toBeGreaterThanOrEqual(96);
+    const params = channelMetrics({}, true);
+    // channelGap never widens with route traffic or labels.
+    expect(channelGap(0, false, params)).toBe(params.gapMin);
+    expect(channelGap(8, true, params)).toBe(params.gapMin);
+
+    // 4 sibling zones packed in 2x2 have both horizontal and vertical zone gutters.
+    const entities: Record<string, Entity> = {};
+    const relations: Record<string, Relation> = {};
+    const presEntities: Record<string, { form: "container" | "card"; text: { title: string } }> = {};
+    for (let z = 1; z <= 4; z += 1) {
+      const zid = `z${z}`;
+      const nid = `n${z}`;
+      entities[entityRef(zid)] = {
+        id: entityRef(zid),
+        profile: "generic@2",
+        type: "container",
+        attributes: { name: { kind: "text", value: `Zone ${z}` } },
+      };
+      entities[entityRef(nid)] = {
+        id: entityRef(nid),
+        profile: "generic@2",
+        type: "node",
+        attributes: { name: { kind: "text", value: `Node ${z}` } },
+      };
+      presEntities[occurrenceRef(`e.${zid}`)] = { form: "container", text: { title: `Zone ${z}` } };
+      presEntities[occurrenceRef(`e.${nid}`)] = { form: "card", text: { title: `Node ${z}` } };
+      const cid = relationRef(`contains.${zid}.${nid}`);
+      relations[cid] = {
+        id: cid,
+        profile: "generic@2",
+        type: "contains",
+        endpoints: [
+          { role: "parent", target: entityRef(zid) },
+          { role: "child", target: entityRef(nid) },
+        ],
+        attributes: {},
+      };
+    }
+    // Add heavy inter-zone traffic across horizontal and vertical sibling gutters.
+    for (const [idx, [s, t]] of [
+      ["n1", "n2"],
+      ["n1", "n3"],
+      ["n1", "n4"],
+      ["n2", "n3"],
+      ["n2", "n4"],
+      ["n3", "n4"],
+    ].entries()) {
+      const lid = relationRef(`l${idx}`);
+      relations[lid] = {
+        id: lid,
+        profile: "generic@2",
+        type: "link",
+        endpoints: [
+          { role: "source", target: entityRef(s!) },
+          { role: "target", target: entityRef(t!) },
+        ],
+        attributes: { label: { kind: "text", value: `Long link label ${idx}` } },
+      };
+    }
+    const document: SemanticDocument = {
+      documentId: documentRef("fixed-zone-gutter"),
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities,
+      relations,
+      ports: {},
+      resources: {},
+      extensions: [],
+    };
+    const presentation = {
+      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      entities: presEntities,
+      legends: {},
+      categoryTokens: [],
+    };
+
+    for (const collapsed of [[], [occurrenceRef("e.z1")]]) {
+      const defaultRes = layoutDocument(document, {
+        registry: m3ProfileRegistry,
+        bindings: shippedExecutorBindings,
+        measureText: measure,
+        measureLines: pinnedMeasurer,
+        presentation,
+        targetWidth: 1440,
+        collapsed,
+      });
+      expect(defaultRes.status).toBe("laid-out");
+      if (defaultRes.status !== "laid-out") continue;
+      const zoneChannels = (defaultRes.channels ?? []).filter((c) => c.zone);
+      expect(zoneChannels.some((c) => c.axis === "horizontal")).toBe(true);
+      expect(zoneChannels.some((c) => c.axis === "vertical")).toBe(true);
+      for (const ch of zoneChannels) {
+        expect(ch.gap, `${ch.id} (${ch.axis})`).toBe(DEFAULT_ZONE_GUTTER);
+        expect(ch.expected, `${ch.id} expected`).toBe(DEFAULT_ZONE_GUTTER);
+      }
+
+      // Raising the single `zoneGutter` token moves BOTH horizontal and vertical zone gutters together.
+      const customRes = layoutDocument(document, {
+        registry: m3ProfileRegistry,
+        bindings: shippedExecutorBindings,
+        measureText: measure,
+        measureLines: pinnedMeasurer,
+        presentation,
+        targetWidth: 1440,
+        collapsed,
+        metrics: { zoneGutter: 128 },
+      });
+      expect(customRes.status).toBe("laid-out");
+      if (customRes.status !== "laid-out") continue;
+      for (const ch of (customRes.channels ?? []).filter((c) => c.zone)) {
+        expect(ch.gap, `custom ${ch.id} (${ch.axis})`).toBe(128);
+      }
     }
   });
 });

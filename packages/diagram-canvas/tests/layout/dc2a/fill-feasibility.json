@@ -7,8 +7,8 @@
       "leafCount": 11,
       "leafArea": 1012000,
       "minimumWidth": 2812,
-      "minimumHeight": 1972.4375,
-      "optimisticMaximumFill": 0.18245759472300904,
+      "minimumHeight": 2044.4375,
+      "optimisticMaximumFill": 0.17603189238676417,
       "levels": [
         {
           "level": "pkg-ds-core",
@@ -77,7 +77,7 @@
             ]
           ],
           "candidates": 10,
-          "score": 0.3950289197018119
+          "score": 0.4545966178021248
         },
         {
           "level": "sys-ds",
@@ -131,7 +131,7 @@
         }
       ],
       "requiredFill": 0.618,
-      "threshold": 0.16245759472300905
+      "threshold": 0.15603189238676418
     },
     {
       "view": "vue-globale/intermediate",
@@ -139,8 +139,8 @@
       "leafCount": 18,
       "leafArea": 1656000,
       "minimumWidth": 5107,
-      "minimumHeight": 2277.625,
-      "optimisticMaximumFill": 0.142367957185416,
+      "minimumHeight": 2397.625,
+      "optimisticMaximumFill": 0.13524250810048824,
       "levels": [
         {
           "level": "pkg-artifacts",
@@ -215,7 +215,7 @@
             ]
           ],
           "candidates": 12,
-          "score": 0.35516331234113313
+          "score": 0.30666161341729414
         },
         {
           "level": "sys-ds",
@@ -244,7 +244,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.18894302793011641
+          "score": 0.24587481920309706
         },
         {
           "level": "sys-h2a",
@@ -260,7 +260,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.1371314684935808
+          "score": 0.10710747895145406
         },
         {
           "level": "sys-sentropic",
@@ -277,7 +277,7 @@
             ]
           ],
           "candidates": 8,
-          "score": 0.3089743382614778
+          "score": 0.272889642225456
         },
         {
           "level": "sys-track",
@@ -292,11 +292,11 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.204552404691887
+          "score": 0.25975652103547797
         }
       ],
       "requiredFill": 0.662,
-      "threshold": 0.122367957185416
+      "threshold": 0.11524250810048824
     },
     {
       "view": "vue-globale/after",
@@ -304,8 +304,8 @@
       "leafCount": 19,
       "leafArea": 1748000,
       "minimumWidth": 4480,
-      "minimumHeight": 2785.625,
-      "optimisticMaximumFill": 0.14006859194204943,
+      "minimumHeight": 2881.625,
+      "optimisticMaximumFill": 0.13540227178365383,
       "levels": [
         {
           "level": "pkg-artifacts",
@@ -403,7 +403,7 @@
             ]
           ],
           "candidates": 12,
-          "score": 0.2636880539616444
+          "score": 0.3153685703136982
         },
         {
           "level": "sys-ds",
@@ -432,7 +432,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.1371314684935808
+          "score": 0.10710747895145406
         },
         {
           "level": "sys-h2a",
@@ -448,7 +448,7 @@
             ]
           ],
           "candidates": 7,
-          "score": 0.05801511016332188
+          "score": 0.04816620423316697
         },
         {
           "level": "sys-sentropic",
@@ -465,7 +465,7 @@
             ]
           ],
           "candidates": 8,
-          "score": 0.3089743382614778
+          "score": 0.272889642225456
         },
         {
           "level": "sys-track",
@@ -482,16 +482,16 @@
         }
       ],
       "requiredFill": 0.647,
-      "threshold": 0.12006859194204943
+      "threshold": 0.11540227178365382
     },
     {
       "view": "ajout-preprod/intermediate",
       "fixtureSha256": "4863a45f3637d9f3089daf849e56e25e4fe01a91a0540b2f7ee5811c9e06c3dc",
       "leafCount": 17,
       "leafArea": 1564000,
-      "minimumWidth": 3368,
-      "minimumHeight": 2065.625,
-      "optimisticMaximumFill": 0.22480873649296934,
+      "minimumWidth": 3892,
+      "minimumHeight": 2081.625,
+      "optimisticMaximumFill": 0.19304627327810656,
       "levels": [
         {
           "level": "pkg-deploy",
@@ -522,7 +522,7 @@
         },
         {
           "level": "root",
-          "rows": true,
+          "rows": false,
           "shelves": [
             [
               "sys-ci",
@@ -533,7 +533,7 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.2217043546597286
+          "score": 0.14859818329872404
         },
         {
           "level": "sys-ci",
@@ -549,7 +549,7 @@
         },
         {
           "level": "sys-preprod",
-          "rows": false,
+          "rows": true,
           "shelves": [
             [
               "pkg-sync",
@@ -563,7 +563,7 @@
             ]
           ],
           "candidates": 11,
-          "score": 0.3755610903342207
+          "score": 0.3496779891746772
         },
         {
           "level": "sys-prod",
@@ -581,11 +581,11 @@
             ]
           ],
           "candidates": 10,
-          "score": 0.30752753108914943
+          "score": 0.27194516154353665
         }
       ],
       "requiredFill": 0.769,
-      "threshold": 0.20480873649296935
+      "threshold": 0.17304627327810657
     },
     {
       "view": "ajout-preprod/after",
@@ -593,8 +593,8 @@
       "leafCount": 19,
       "leafArea": 1748000,
       "minimumWidth": 3924,
-      "minimumHeight": 2215.625,
-      "optimisticMaximumFill": 0.20105559940707002,
+      "minimumHeight": 2287.625,
+      "optimisticMaximumFill": 0.19472763780614807,
       "levels": [
         {
           "level": "pkg-api",
@@ -647,7 +647,7 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.09874359183109947
+          "score": 0.15055601157291998
         },
         {
           "level": "sys-ci",
@@ -662,7 +662,7 @@
             ]
           ],
           "candidates": 5,
-          "score": 0.056825589474478536
+          "score": 0.05295885182422215
         },
         {
           "level": "sys-preprod",
@@ -683,7 +683,7 @@
             ]
           ],
           "candidates": 13,
-          "score": 0.1638049765232047
+          "score": 0.12248275356032348
         },
         {
           "level": "sys-prod",
@@ -701,11 +701,11 @@
             ]
           ],
           "candidates": 10,
-          "score": 0.05566800148406428
+          "score": 0.028417974106667042
         }
       ],
       "requiredFill": 0.763,
-      "threshold": 0.18105559940707003
+      "threshold": 0.17472763780614808
     },
     {
       "view": "migration-cluster-mesh/intermediate",
@@ -713,8 +713,8 @@
       "leafCount": 17,
       "leafArea": 1564000,
       "minimumWidth": 3924,
-      "minimumHeight": 2068,
-      "optimisticMaximumFill": 0.1927335032937219,
+      "minimumHeight": 2140,
+      "optimisticMaximumFill": 0.18624901159412005,
       "levels": [
         {
           "level": "pkg-app-api",
@@ -763,7 +763,7 @@
             ]
           ],
           "candidates": 7,
-          "score": 0.12726412493629233
+          "score": 0.09288897206614499
         },
         {
           "level": "sys-artifacts",
@@ -779,7 +779,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.18894302793011641
+          "score": 0.24587481920309706
         },
         {
           "level": "sys-immo",
@@ -794,7 +794,7 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.2250301851244222
+          "score": 0.2795867150985206
         },
         {
           "level": "sys-mesh",
@@ -810,7 +810,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.1371314684935808
+          "score": 0.10710747895145406
         },
         {
           "level": "sys-sentropic-app",
@@ -827,11 +827,11 @@
             ]
           ],
           "candidates": 9,
-          "score": 0.09036458642917633
+          "score": 0.0691121803198311
         }
       ],
       "requiredFill": 0.726,
-      "threshold": 0.17273350329372192
+      "threshold": 0.16624901159412006
     },
     {
       "view": "migration-cluster-mesh/after",
@@ -839,8 +839,8 @@
       "leafCount": 17,
       "leafArea": 1564000,
       "minimumWidth": 3368,
-      "minimumHeight": 2066,
-      "optimisticMaximumFill": 0.2247679314222119,
+      "minimumHeight": 2138,
+      "optimisticMaximumFill": 0.21719857171108034,
       "levels": [
         {
           "level": "pkg-app-api",
@@ -909,7 +909,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.1406538217941764
+          "score": 0.19546412884282716
         },
         {
           "level": "sys-artifacts",
@@ -925,7 +925,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.09829494978157596
+          "score": 0.09046014037639086
         },
         {
           "level": "sys-immo",
@@ -955,7 +955,7 @@
             ]
           ],
           "candidates": 9,
-          "score": 0.05566800148406428
+          "score": 0.028417974106667042
         },
         {
           "level": "sys-sentropic-app",
@@ -971,11 +971,11 @@
             ]
           ],
           "candidates": 7,
-          "score": 0.06278786479671673
+          "score": 0.10220544937572407
         }
       ],
       "requiredFill": 0.696,
-      "threshold": 0.20476793142221192
+      "threshold": 0.19719857171108035
     },
     {
       "view": "case-skills-r9/unfolded",
@@ -1097,8 +1097,8 @@
       "leafCount": 11,
       "leafArea": 1012000,
       "minimumWidth": 2748,
-      "minimumHeight": 1433.625,
-      "optimisticMaximumFill": 0.2568787731449488,
+      "minimumHeight": 1457.625,
+      "optimisticMaximumFill": 0.2526492281278979,
       "levels": [
         {
           "level": "coordination-skills",
@@ -1169,11 +1169,11 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.15092082142582092
+          "score": 0.13305299812217813
         }
       ],
       "requiredFill": 0.779,
-      "threshold": 0.2368787731449488
+      "threshold": 0.23264922812789793
     },
     {
       "view": "case-trackfocus-r9/unfolded",
@@ -1181,8 +1181,8 @@
       "leafCount": 11,
       "leafArea": 1012000,
       "minimumWidth": 2780,
-      "minimumHeight": 1370.4375,
-      "optimisticMaximumFill": 0.2656296087770637,
+      "minimumHeight": 1394.4375,
+      "optimisticMaximumFill": 0.26105779353927105,
       "levels": [
         {
           "level": "focus-components",
@@ -1237,7 +1237,7 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.26408865028431666
+          "score": 0.2488536201784485
         },
         {
           "level": "track-skills",
@@ -1257,7 +1257,7 @@
         }
       ],
       "requiredFill": 0.759,
-      "threshold": 0.24562960877706372
+      "threshold": 0.24105779353927106
     }
   ],
   "cappedFrame": {

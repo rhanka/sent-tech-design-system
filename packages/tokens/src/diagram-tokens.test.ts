@@ -109,6 +109,7 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     // DC-2a row-pack spacing (SPEC_EVOL_DC2A §3.5).
     childGapInline: "var(--st-component-diagramScene-gapMin)",
     childGapBlock: "var(--st-component-diagramScene-gapMinBlock)",
+    siblingGutter: "var(--st-component-diagramScene-zoneGutter)",
     gapInlineMax: "var(--st-component-diagramScene-gapMax)",
     gapBlockMax: "var(--st-component-diagramScene-gapMax)",
     rowPackTargetAspect: "1.78",
@@ -116,6 +117,7 @@ const GEOMETRY: Record<string, Record<string, string>> = {
   // DC-2a scene camera, transition and edge-label typography (§5, §4.3).
   diagramScene: {
     containerPadding: `${spacing.containerPadding}px`,
+    zoneGutter: `${spacing.zoneGutter}px`,
     maxDisplayScale: "0.62",
     minReadableScale: "0.45",
     transitionDuration: "240ms",

@@ -1915,6 +1915,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       // packed level. The layout engine receives these as numbers.
       childGapInline: "var(--st-component-diagramScene-gapMin)",
       childGapBlock: "var(--st-component-diagramScene-gapMinBlock)",
+      siblingGutter: "var(--st-component-diagramScene-zoneGutter)",
       gapInlineMax: "var(--st-component-diagramScene-gapMax)",
       gapBlockMax: "var(--st-component-diagramScene-gapMax)",
       rowPackTargetAspect: "1.78",
@@ -1943,6 +1944,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     },
     diagramScene: {
       containerPadding: `${spacing.containerPadding}px`,
+      zoneGutter: `${spacing.zoneGutter}px`,
       gapMin: `${spacing.gapMin}px`,
       gapMinBlock: `${spacing.gapMinBlock}px`,
       gapBase: `${spacing.gapBase}px`,

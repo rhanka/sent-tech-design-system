@@ -575,7 +575,7 @@
   // input, so a post-mount theme change applies without waiting for a resize.
   function readCameraTokens(): void {
     const values: Record<string, number> = {};
-    for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","routeSpacing","routeBorderClearance","labelBand","gapMax","bundleLabelMaxWidth","containerPadding","edgeCornerRadius","linkStrokeWidth","linkEmphasisStrokeWidth","edgeLabelSize"]) {
+    for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","zoneGutter","routeSpacing","routeBorderClearance","labelBand","gapMax","bundleLabelMaxWidth","containerPadding","edgeCornerRadius","linkStrokeWidth","linkEmphasisStrokeWidth","edgeLabelSize"]) {
       const value = parseFloat(tokenValue('--st-component-diagramScene-' + key) ?? '');
       if (Number.isFinite(value)) values[key] = value;
     }

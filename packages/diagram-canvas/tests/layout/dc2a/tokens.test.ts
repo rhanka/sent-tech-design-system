@@ -29,6 +29,7 @@ import {
   DEFAULT_ROW_GAP,
   DEFAULT_ROW_GAP_MAX,
   DEFAULT_ROW_PACK,
+  DEFAULT_ZONE_GUTTER,
   MIN_EDGE_LABEL_CSS_PX,
 } from "../../../src/index.js";
 import { layScene, PINNED_LINE_HEIGHT, pinnedMeasurer, sceneInput } from "./scenes.js";
@@ -41,6 +42,9 @@ describe("DC-2a tokens (AC-6)", () => {
     expect(token("diagramZone", "childGapInline")).toBe("var(--st-component-diagramScene-gapMin)");
     expect(token("diagramScene", "gapMin")).toBe(`${DEFAULT_ROW_GAP}px`);
     expect(token("diagramZone", "childGapBlock")).toBe("var(--st-component-diagramScene-gapMinBlock)");
+    expect(token("diagramZone", "siblingGutter")).toBe("var(--st-component-diagramScene-zoneGutter)");
+    expect(token("diagramScene", "zoneGutter")).toBe(`${DEFAULT_ZONE_GUTTER}px`);
+    expect(DEFAULT_ZONE_GUTTER).toBeGreaterThanOrEqual(96);
     expect(token("diagramZone", "gapInlineMax")).toBe("var(--st-component-diagramScene-gapMax)");
     expect(token("diagramZone", "gapBlockMax")).toBe("var(--st-component-diagramScene-gapMax)");
     expect(Number.parseFloat(token("diagramScene", "gapMax"))).toBe(DEFAULT_ROW_GAP_MAX);

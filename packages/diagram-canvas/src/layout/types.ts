@@ -64,6 +64,8 @@ export type TextMeasurer = ((text: string, role: TextRole | LegacyTextRole) => T
 
 /** World units (CSS px at zoom 1). Every field has a default; see {@link DEFAULT_LAYOUT_METRICS}. */
 export interface LayoutMetrics {
+  /** Single fixed gutter token between sibling zones on both axes (DE-2 ask 3, default 96). */
+  readonly zoneGutter?: number;
   readonly gapMin?: number;
   readonly gapMinBlock?: number;
   readonly gapBase?: number;
@@ -140,6 +142,8 @@ export const DEFAULT_ROW_PACK: ResolvedRowPack = {
 /** Row-pack spacing defaults, mirroring the DS tokens (asserted by tests/layout/dc2a/tokens.test.ts). */
 export const DEFAULT_ROW_GAP = spacing.gapMin;
 export const DEFAULT_ROW_GAP_MAX = spacing.gapMax;
+/** Fixed gutter between sibling zones on both axes (DE-2 ask 3, ≥ 96 world units). */
+export const DEFAULT_ZONE_GUTTER = spacing.zoneGutter;
 
 /** Orientation of one packed level (§4.1): shelves run as rows or as columns. */
 export type LevelOrientation = "rows" | "columns";

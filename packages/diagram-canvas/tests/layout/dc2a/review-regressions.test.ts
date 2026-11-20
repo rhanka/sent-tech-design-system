@@ -30,21 +30,16 @@ it('should suppress unresolved icons when strictIcons is false (Carbon B3)', () 
   expect(renderSceneSvg({ ...pair(), strictIcons: false, iconBindings: { node: { role: 'unbound' } } }).svg).not.toContain('data-diagram-icon=');
 });
 
-it('should reserve the thickness of placed chips and converge without shrinking their channels (Carbon B1)', () => {
+it('should keep sibling gutters fixed at their token width and place all chips without widening (DE-2 ask 3)', () => {
   const input = ownerInput('vue-globale', false), result = layoutScene(input);
   if (result.status !== 'laid-out') throw new Error('refused');
-  const scene = resolveScene(result, input);
-  let widened = 0;
+  const zoneChannels = (result.channels ?? []).filter(channel => channel.zone);
+  expect(zoneChannels.length).toBeGreaterThan(0);
   for (const channel of result.channels ?? []) {
-    const intersecting = scene.labels.filter(label => channel.strips.some(strip => strip.x < label.box.x + label.box.width && label.box.x < strip.x + strip.width && strip.y < label.box.y + label.box.height && label.box.y < strip.y + strip.height));
-    for (const label of intersecting) {
-      const required = (channel.axis === 'horizontal' ? label.box.width : label.box.height) + 8;
-      if (required <= spacing.gapMax) expect(channel.gap + 1e-9).toBeGreaterThanOrEqual(required);
-      if (required > (channel.axis === 'horizontal' ? spacing.gapMin : spacing.gapMinBlock)) widened++;
-    }
-    expect(channel.gap).toBeCloseTo(channel.expected, 0);
+    const fixed = channel.zone ? spacing.zoneGutter : (channel.axis === 'horizontal' ? spacing.gapMin : spacing.gapMinBlock);
+    expect(channel.gap, channel.id).toBeCloseTo(fixed, 0);
+    expect(channel.gap, channel.id).toBeCloseTo(channel.expected, 0);
   }
-  expect(widened).toBeGreaterThan(0);
   expect(result.warnings.filter(w => w.code === 'channel-unresolved' || w.code === 'label-unplaced')).toEqual([]);
 });
 

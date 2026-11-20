@@ -545,9 +545,9 @@ describe("independent axis gaps", () => {
     expect(serialiseView(wide.view)).toBe(serialiseView(narrow.view));
     const c = geometryOf(wide.view, "C");
     const lone = geometryOf(wide.view, "lone");
-    // Two roots on one row, 24 px apart.
+    // Two roots on one row, separated by the fixed sibling zone gutter (96 px; DE-2 ask 3).
     expect(lone.y).toBe(c.y);
-    expect(lone.x - (c.x + c.width)).toBe(108);
+    expect(lone.x - (c.x + c.width)).toBe(96);
   });
 });
 

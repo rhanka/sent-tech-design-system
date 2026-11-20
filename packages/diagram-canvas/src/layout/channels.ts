@@ -17,9 +17,13 @@ export function channelMetrics(metrics: Partial<LayoutMetrics>, horizontal: bool
     gapMax: (horizontal ? metrics.gapInlineMax : metrics.gapBlockMax) ?? metrics.gapMax ?? spacing.gapMax,
   };
 }
-export function channelGap(n: number, labelled: boolean, metrics: ChannelMetrics): number {
-  return n === 0 ? metrics.gapMin : Math.min(metrics.gapMax,
-    Math.max(metrics.gapMin, metrics.gapBase + n * metrics.trackSpacing + (labelled ? metrics.labelBand : 0)));
+/**
+ * Fixed gutter width for a channel (DE-2 ask 3).
+ * Routing subdivides the fixed gutter into tracks spaced by `routeSpacing`
+ * rather than widening the gutter with traffic or labels.
+ */
+export function channelGap(_n: number, _labelled: boolean, metrics: ChannelMetrics): number {
+  return metrics.gapMin;
 }
 /** Maximum number of parallel longitudinal tracks a gutter of width `gap` holds at `routeSpacing` with `borderClearance` on both sides. */
 export function channelCapacity(
@@ -44,4 +48,6 @@ export interface LayoutChannel {
   readonly expected: number;
   /** Parallel longitudinal track capacity of this gutter at current spacing tokens (DE-2). */
   readonly capacity?: number;
+  /** True when this gutter separates sibling zones (governed by `zoneGutter`, DE-2 ask 3). */
+  readonly zone?: boolean;
 }
