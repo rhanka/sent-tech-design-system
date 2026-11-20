@@ -130,5 +130,12 @@ const glyph = computed(() => iconGlyph ?? (iconName === undefined || iconName ==
     width: var(--st-component-diagramCard-toggleBoxSize, 32px);
     height: var(--st-component-diagramCard-toggleBoxSize, 32px);
   }
+  .st-diagramCard-toggle .st-iconButton:hover:not(:disabled) {
+    background: var(
+      --st-component-button-secondaryHoverBackground,
+      var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle))
+    );
+    border-color: var(--st-component-control-border, var(--st-semantic-border-subtle));
+  }
 
 </style>
