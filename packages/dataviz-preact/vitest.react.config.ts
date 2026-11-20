@@ -42,7 +42,10 @@ function emittedReactModules(): Plugin {
 }
 
 /** Existing `dataviz-react` test files (relative to `dataviz-react/src`) that exercise an emitted module. */
-const reactTests: string[] = [];
+const reactTests: string[] = [
+  "index.test.ts", // emitted adapter.ts (useDashboard + core re-exports)
+  "lib/drill.test.tsx", // emitted lib/drill.ts (drillLevel, onDrillSelect, drillDepth)
+];
 
 export default defineConfig({
   root: packagesDir,
