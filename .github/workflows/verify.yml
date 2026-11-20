@@ -242,6 +242,13 @@ jobs:
           git fetch --no-tags --depth=1 origin "$BASE_REF"
           git cat-file -e "$BASE_REF^{commit}"
 
+      - name: Fetch the base commit of the Dataviz Preact port metrics
+        if: matrix.task == 'test' && contains(matrix.workspaces, '@sentropic/dataviz-preact')
+        run: |
+          BASE_REF=$(node --input-type=module -e "import('./packages/dataviz-preact/scripts/port-metrics.mjs').then((m) => console.log(m.BASE_REF))")
+          git fetch --no-tags --depth=1 origin "$BASE_REF"
+          git cat-file -e "$BASE_REF^{commit}"
+
       - name: test
         if: matrix.task == 'test'
         run: node scripts/run-workspaces.mjs test --workspaces="${{ matrix.workspaces }}"
