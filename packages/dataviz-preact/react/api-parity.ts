@@ -127,6 +127,12 @@ export type PropsParity = [
   Expect<Equal<Emitted.PercentileBandChartProps, HandWritten.PercentileBandChartProps>>,
   Expect<Equal<Emitted.PivotDataTableProps, HandWritten.PivotDataTableProps>>,
   Expect<Equal<Emitted.PointAndFigureChartProps, HandWritten.PointAndFigureChartProps>>,
+  Expect<Equal<Emitted.PolygonChartProps, HandWritten.PolygonChartProps>>,
+  Expect<Equal<Emitted.QueryBarProps, HandWritten.QueryBarProps>>,
+  Expect<Equal<Emitted.RadarChartProps, HandWritten.RadarChartProps>>,
+  Expect<Equal<Emitted.RangeSliderFilterProps, HandWritten.RangeSliderFilterProps>>,
+  Expect<Equal<Emitted.NumericDomain, HandWritten.NumericDomain>>,
+  Expect<Equal<Emitted.RecordsTableProps, HandWritten.RecordsTableProps>>,
 ];
 
 export type ComponentParity = [
@@ -211,6 +217,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.PercentileBandChart, typeof HandWritten.PercentileBandChart>>,
   Expect<Equal<typeof Emitted.PivotDataTable, typeof HandWritten.PivotDataTable>>,
   Expect<Equal<typeof Emitted.PointAndFigureChart, typeof HandWritten.PointAndFigureChart>>,
+  Expect<Equal<typeof Emitted.PolygonChart, typeof HandWritten.PolygonChart>>,
+  Expect<Equal<typeof Emitted.QueryBar, typeof HandWritten.QueryBar>>,
+  Expect<Equal<typeof Emitted.RadarChart, typeof HandWritten.RadarChart>>,
+  Expect<Equal<typeof Emitted.RangeSliderFilter, typeof HandWritten.RangeSliderFilter>>,
+  Expect<Equal<typeof Emitted.RecordsTable, typeof HandWritten.RecordsTable>>,
 ];
 
 export type ValueParity = [
@@ -235,6 +246,8 @@ export type ValueParity = [
   Expect<Equal<typeof Emitted.useUrlSync, typeof HandWritten.useUrlSync>>,
   Expect<Equal<typeof Emitted.rowsToCsv, typeof HandWritten.rowsToCsv>>,
   Expect<Equal<typeof Emitted.dateRangeToSpec, typeof HandWritten.dateRangeToSpec>>,
+  Expect<Equal<typeof Emitted.numericDomain, typeof HandWritten.numericDomain>>,
+  Expect<Equal<typeof Emitted.rangeBoundsToSpec, typeof HandWritten.rangeBoundsToSpec>>,
 ];
 
 export type InternalHelpersParity = [
