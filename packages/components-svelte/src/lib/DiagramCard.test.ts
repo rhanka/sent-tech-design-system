@@ -469,4 +469,37 @@ describe("DiagramCard — v1 and fallback-v1 alignment regression (0.41.5 contra
     expect(compactCentredRoot.classList.contains("st-diagramCard--center")).toBe(true);
     compactCentred.unmount();
   });
+
+  it("omits data-card-overflow on non-truncated fallback-v1 cards while keeping the info diagnostic and flagging real truncation (W1-19, W1-40)", () => {
+    const seen: unknown[] = [];
+    const fallback = render(DiagramCard, {
+      props: {
+        entityId: "entity:fb-clean",
+        kicker: "KICKER",
+        title: "Complete card",
+        body: ["Body line", "Detail line"],
+        detailCount: 1,
+        footer: "Footer",
+        anatomy: "v2",
+        measure: defaultCardMeasure,
+        onDiagnostic: (d) => seen.push(d),
+      },
+    });
+    const fbRoot = fallback.container.querySelector(".st-diagramCard") as HTMLElement;
+    expect(fbRoot.getAttribute("data-card-overflow")).toBeNull();
+    expect(seen.some((d) => (d as { code?: string; reason?: string }).code === "card-overflow" && (d as { reason?: string }).reason === "fallback-v1")).toBe(true);
+    fallback.unmount();
+
+    const truncated = render(DiagramCard, {
+      props: {
+        entityId: "entity:fb-trunc",
+        title: "W".repeat(100),
+        body: ["Body"],
+        anatomy: "v2",
+        measure: defaultCardMeasure,
+      },
+    });
+    expect(truncated.container.querySelector(".st-diagramCard")?.getAttribute("data-card-overflow")).toBe("title");
+    truncated.unmount();
+  });
 });

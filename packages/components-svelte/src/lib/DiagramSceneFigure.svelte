@@ -123,7 +123,7 @@
     expand: (title: string) => string;
     collapse: (title: string) => string;
     /** Localized fallback label for containment relations without an explicit edge label (DE-1b). */
-    contains: string;
+    contains?: string;
   }
 
   export interface DiagramSceneCamera {

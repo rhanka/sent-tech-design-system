@@ -75,7 +75,7 @@ const layout = computed(() => layoutCard({
     ...(bodyMode === undefined ? {} : { bodyMode }),
     ...(anatomy === undefined ? {} : { anatomy }),
 }, measure));
-const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) => diagnostic.code === "card-overflow")?.slot);
+const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) => diagnostic.code === "card-overflow" && diagnostic.reason !== "fallback-v1")?.slot);
 const unknownIcon = computed(() => layout.value.diagnostics.some((diagnostic) => diagnostic.code === "card-icon-unknown"));
 const effectiveAnatomy = computed(() => layout.value.anatomyFallback ?? anatomy);
 const effectiveAlign = computed(() => resolveDiagramAlign(effectiveAnatomy.value, align));

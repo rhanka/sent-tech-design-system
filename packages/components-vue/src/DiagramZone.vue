@@ -105,7 +105,7 @@ const cardProps = computed(() => toggleLabel === undefined
             onToggle: () => onToggle?.({ entityId, collapsed: true }),
         },
     });
-const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) => diagnostic.code === "zone-overflow")?.slot);
+const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) => diagnostic.code === "zone-overflow" && diagnostic.reason !== "fallback-v1")?.slot);
 const unknownIcon = computed(() => layout.value.diagnostics.some((diagnostic) => diagnostic.code === "zone-icon-unknown"));
 // Overflow = refusal: the same predicate as the pure renderer
 // (`firstOverflowDiagnostic`), so both renderers refuse together.
