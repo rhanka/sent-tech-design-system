@@ -237,3 +237,19 @@ export { RangeSliderFilter, numericDomain, rangeBoundsToSpec } from './lib/Range
 export type { RangeSliderFilterProps, NumericDomain } from './lib/RangeSliderFilter.js';
 export { RecordsTable } from './lib/RecordsTable.js';
 export type { RecordsTableProps } from './lib/RecordsTable.js';
+
+// Group 4 batch 6 components.
+export { ReferenceLineChart } from './lib/ReferenceLineChart.js';
+export type { ReferenceLineChartProps } from './lib/ReferenceLineChart.js';
+export {
+  RelativeDateFilter,
+  relativeRangeToSpec,
+  DEFAULT_RELATIVE_PRESETS,
+} from './lib/RelativeDateFilter.js';
+export type { RelativeDateFilterProps, RelativeDatePreset } from './lib/RelativeDateFilter.js';
+export { RenkoChart } from './lib/RenkoChart.js';
+export type { RenkoChartProps } from './lib/RenkoChart.js';
+export { RibbonChart } from './lib/RibbonChart.js';
+export type { RibbonChartProps } from './lib/RibbonChart.js';
+export { RoseChart } from './lib/RoseChart.js';
+export type { RoseChartProps } from './lib/RoseChart.js';

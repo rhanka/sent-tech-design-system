@@ -133,6 +133,12 @@ export type PropsParity = [
   Expect<Equal<Emitted.RangeSliderFilterProps, HandWritten.RangeSliderFilterProps>>,
   Expect<Equal<Emitted.NumericDomain, HandWritten.NumericDomain>>,
   Expect<Equal<Emitted.RecordsTableProps, HandWritten.RecordsTableProps>>,
+  Expect<Equal<Emitted.ReferenceLineChartProps, HandWritten.ReferenceLineChartProps>>,
+  Expect<Equal<Emitted.RelativeDateFilterProps, HandWritten.RelativeDateFilterProps>>,
+  Expect<Equal<Emitted.RelativeDatePreset, HandWritten.RelativeDatePreset>>,
+  Expect<Equal<Emitted.RenkoChartProps, HandWritten.RenkoChartProps>>,
+  Expect<Equal<Emitted.RibbonChartProps, HandWritten.RibbonChartProps>>,
+  Expect<Equal<Emitted.RoseChartProps, HandWritten.RoseChartProps>>,
 ];
 
 export type ComponentParity = [
@@ -222,6 +228,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.RadarChart, typeof HandWritten.RadarChart>>,
   Expect<Equal<typeof Emitted.RangeSliderFilter, typeof HandWritten.RangeSliderFilter>>,
   Expect<Equal<typeof Emitted.RecordsTable, typeof HandWritten.RecordsTable>>,
+  Expect<Equal<typeof Emitted.ReferenceLineChart, typeof HandWritten.ReferenceLineChart>>,
+  Expect<Equal<typeof Emitted.RelativeDateFilter, typeof HandWritten.RelativeDateFilter>>,
+  Expect<Equal<typeof Emitted.RenkoChart, typeof HandWritten.RenkoChart>>,
+  Expect<Equal<typeof Emitted.RibbonChart, typeof HandWritten.RibbonChart>>,
+  Expect<Equal<typeof Emitted.RoseChart, typeof HandWritten.RoseChart>>,
 ];
 
 export type ValueParity = [
@@ -248,6 +259,8 @@ export type ValueParity = [
   Expect<Equal<typeof Emitted.dateRangeToSpec, typeof HandWritten.dateRangeToSpec>>,
   Expect<Equal<typeof Emitted.numericDomain, typeof HandWritten.numericDomain>>,
   Expect<Equal<typeof Emitted.rangeBoundsToSpec, typeof HandWritten.rangeBoundsToSpec>>,
+  Expect<Equal<typeof Emitted.relativeRangeToSpec, typeof HandWritten.relativeRangeToSpec>>,
+  Expect<Equal<typeof Emitted.DEFAULT_RELATIVE_PRESETS, typeof HandWritten.DEFAULT_RELATIVE_PRESETS>>,
 ];
 
 export type InternalHelpersParity = [
