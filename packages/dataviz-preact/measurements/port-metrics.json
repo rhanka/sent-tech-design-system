@@ -7,15 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 25,
+    "portedModules": 30,
     "barrelFile": "index.ts",
-    "remainingModules": 102,
+    "remainingModules": 97,
     "remainingFiles": [
-      "lib/ArcDiagramChart.tsx",
-      "lib/AreaRangeChart.tsx",
-      "lib/AreaSplineRangeChart.tsx",
-      "lib/BellCurveChart.tsx",
-      "lib/BookmarkNavigator.tsx",
       "lib/BoxPlotChart.tsx",
       "lib/BulletChart.tsx",
       "lib/BumpChart.tsx",
@@ -391,23 +386,78 @@
         "total": 214,
         "touched": 2,
         "emissionRewrites": 1
+      },
+      {
+        "module": "ArcDiagramChart",
+        "kind": "component",
+        "file": "src/lib/ArcDiagramChart.tsx",
+        "reactSource": "lib/ArcDiagramChart.tsx",
+        "reactLines": 58,
+        "preactLines": 64,
+        "total": 206,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "AreaRangeChart",
+        "kind": "component",
+        "file": "src/lib/AreaRangeChart.tsx",
+        "reactSource": "lib/AreaRangeChart.tsx",
+        "reactLines": 57,
+        "preactLines": 63,
+        "total": 204,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "AreaSplineRangeChart",
+        "kind": "component",
+        "file": "src/lib/AreaSplineRangeChart.tsx",
+        "reactSource": "lib/AreaSplineRangeChart.tsx",
+        "reactLines": 57,
+        "preactLines": 63,
+        "total": 204,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "BellCurveChart",
+        "kind": "component",
+        "file": "src/lib/BellCurveChart.tsx",
+        "reactSource": "lib/BellCurveChart.tsx",
+        "reactLines": 54,
+        "preactLines": 61,
+        "total": 201,
+        "touched": 3,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "BookmarkNavigator",
+        "kind": "component",
+        "file": "src/lib/BookmarkNavigator.tsx",
+        "reactSource": "lib/BookmarkNavigator.tsx",
+        "reactLines": 142,
+        "preactLines": 148,
+        "total": 812,
+        "touched": 11,
+        "emissionRewrites": 2
       }
     ],
     "totals": {
-      "modules": 25,
-      "reactLines": 3016,
-      "preactLines": 3147,
-      "total": 18162,
-      "touched": 205,
-      "emissionRewrites": 20
+      "modules": 30,
+      "reactLines": 3384,
+      "preactLines": 3546,
+      "total": 19789,
+      "touched": 225,
+      "emissionRewrites": 26
     },
     "shared": {
-      "src/index.ts": 71,
+      "src/index.ts": 83,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 75
+      "vitest.react.config.ts": 76
     }
   },
   "reach": {
