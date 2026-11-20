@@ -105,6 +105,11 @@ export type PropsParity = [
   Expect<Equal<Emitted.GeoClusterMapProps, HandWritten.GeoClusterMapProps>>,
   Expect<Equal<Emitted.GeoDensityMapProps, HandWritten.GeoDensityMapProps>>,
   Expect<Equal<Emitted.GeoFlowMapProps, HandWritten.GeoFlowMapProps>>,
+  Expect<Equal<Emitted.GeoHexbinMapProps, HandWritten.GeoHexbinMapProps>>,
+  Expect<Equal<Emitted.GeoJsonMapProps, HandWritten.GeoJsonMapProps>>,
+  Expect<Equal<Emitted.GeoPointMapProps, HandWritten.GeoPointMapProps>>,
+  Expect<Equal<Emitted.HLCChartProps, HandWritten.HLCChartProps>>,
+  Expect<Equal<Emitted.HeatmapChartProps, HandWritten.HeatmapChartProps>>,
 ];
 
 export type ComponentParity = [
@@ -167,6 +172,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.GeoClusterMap, typeof HandWritten.GeoClusterMap>>,
   Expect<Equal<typeof Emitted.GeoDensityMap, typeof HandWritten.GeoDensityMap>>,
   Expect<Equal<typeof Emitted.GeoFlowMap, typeof HandWritten.GeoFlowMap>>,
+  Expect<Equal<typeof Emitted.GeoHexbinMap, typeof HandWritten.GeoHexbinMap>>,
+  Expect<Equal<typeof Emitted.GeoJsonMap, typeof HandWritten.GeoJsonMap>>,
+  Expect<Equal<typeof Emitted.GeoPointMap, typeof HandWritten.GeoPointMap>>,
+  Expect<Equal<typeof Emitted.HLCChart, typeof HandWritten.HLCChart>>,
+  Expect<Equal<typeof Emitted.HeatmapChart, typeof HandWritten.HeatmapChart>>,
 ];
 
 export type ValueParity = [

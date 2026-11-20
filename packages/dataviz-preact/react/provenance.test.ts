@@ -75,6 +75,11 @@ import * as handWrittenGaugeChart from "../../dataviz-react/src/lib/GaugeChart.j
 import * as handWrittenGeoClusterMap from "../../dataviz-react/src/lib/GeoClusterMap.js";
 import * as handWrittenGeoDensityMap from "../../dataviz-react/src/lib/GeoDensityMap.js";
 import * as handWrittenGeoFlowMap from "../../dataviz-react/src/lib/GeoFlowMap.js";
+import * as handWrittenGeoHexbinMap from "../../dataviz-react/src/lib/GeoHexbinMap.js";
+import * as handWrittenGeoJsonMap from "../../dataviz-react/src/lib/GeoJsonMap.js";
+import * as handWrittenGeoPointMap from "../../dataviz-react/src/lib/GeoPointMap.js";
+import * as handWrittenHLCChart from "../../dataviz-react/src/lib/HLCChart.js";
+import * as handWrittenHeatmapChart from "../../dataviz-react/src/lib/HeatmapChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -165,6 +170,11 @@ const switched = [
   "GeoClusterMap",
   "GeoDensityMap",
   "GeoFlowMap",
+  "GeoHexbinMap",
+  "GeoJsonMap",
+  "GeoPointMap",
+  "HLCChart",
+  "HeatmapChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -247,6 +257,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   GeoClusterMap: handWrittenGeoClusterMap.GeoClusterMap,
   GeoDensityMap: handWrittenGeoDensityMap.GeoDensityMap,
   GeoFlowMap: handWrittenGeoFlowMap.GeoFlowMap,
+  GeoHexbinMap: handWrittenGeoHexbinMap.GeoHexbinMap,
+  GeoJsonMap: handWrittenGeoJsonMap.GeoJsonMap,
+  GeoPointMap: handWrittenGeoPointMap.GeoPointMap,
+  HLCChart: handWrittenHLCChart.HLCChart,
+  HeatmapChart: handWrittenHeatmapChart.HeatmapChart,
 };
 
 describe("dataviz React leg provenance", () => {
