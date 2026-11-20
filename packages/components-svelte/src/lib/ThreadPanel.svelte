@@ -45,7 +45,7 @@
 </script>
 
 <script lang="ts">
-  import { untrack } from "svelte";
+  import { tick, untrack } from "svelte";
   import { ArrowLeft, X } from "@lucide/svelte";
   import {
     countThreadsByFilter,
@@ -101,6 +101,7 @@
 
   let asideEl: HTMLElement | undefined = $state();
   let headingEl: HTMLHeadingElement | undefined = $state();
+  let compactContainerEl: HTMLElement | undefined = $state();
   let mediaCompact = $state(false);
   let localFilter = $state<ThreadFilter>(untrack(() => filter ?? "all"));
   let liveAnnouncement = $state("");
@@ -154,11 +155,27 @@
     return () => mql.removeEventListener("change", onChange);
   });
 
-  // Focus panel heading when transitioning to a newly selected thread (SPEC-r6 §3).
+  function resolvePanelHeading(): HTMLElement | null {
+    if (headingEl) return headingEl;
+    return (
+      compactContainerEl
+        ?.closest(".st-drawer")
+        ?.querySelector<HTMLElement>(".st-drawer__title") ?? null
+    );
+  }
+
+  // Focus panel heading when transitioning to a newly selected thread in both >=48rem aside
+  // and <48rem bottom sheet (SPEC-r6 §3).
   $effect(() => {
     const nextId = activeThreadId ?? null;
-    if (open && nextId !== null && nextId !== prevActiveId && headingEl) {
-      headingEl.focus();
+    const isOpen = open;
+    // Track container bindings so heading focus runs once the active surface mounts.
+    void headingEl;
+    void compactContainerEl;
+    if (isOpen && nextId !== null && nextId !== prevActiveId) {
+      void tick().then(() => {
+        resolvePanelHeading()?.focus();
+      });
     }
     prevActiveId = nextId;
   });
@@ -353,7 +370,7 @@
     class={className}
     onclose={() => onClose?.()}
   >
-    <div class="st-review-panel__compact-meta">
+    <div bind:this={compactContainerEl} class="st-review-panel__compact-meta">
       {#if unreadTotal > 0}
         <Badge size="sm" tone="info" class="st-review-panel__unread-count">
           {unreadTotal} unread
