@@ -584,6 +584,45 @@ export type { DashboardProps, DashboardNavItem, DashboardKpi } from "./Dashboard
 export { default as Wizard } from "./Wizard.svelte";
 export type { WizardProps, WizardStep } from "./Wizard.svelte";
 
+export { default as CommentAuthorship } from "./CommentAuthorship.svelte";
+export type { CommentAuthorshipProps } from "./CommentAuthorship.svelte";
+export { default as CommentPin } from "./CommentPin.svelte";
+export type { CommentPinProps, CommentPinVariant } from "./CommentPin.svelte";
+export { default as CommentComposer } from "./CommentComposer.svelte";
+export type { CommentComposerProps } from "./CommentComposer.svelte";
+export { default as CommentThread } from "./CommentThread.svelte";
+export type { CommentThreadProps } from "./CommentThread.svelte";
+export { default as CommentLayer } from "./CommentLayer.svelte";
+export type {
+  CommentLayerComposerContext,
+  CommentLayerCreatePayload,
+  CommentLayerProps,
+  ReviewMode,
+} from "./CommentLayer.svelte";
+export { default as ReviewModeToggle } from "./ReviewModeToggle.svelte";
+export type { ReviewModeToggleProps } from "./ReviewModeToggle.svelte";
+export { default as OrphanList } from "./OrphanList.svelte";
+export type { OrphanListProps } from "./OrphanList.svelte";
+export { default as ThreadPanel } from "./ThreadPanel.svelte";
+export type { ThreadPanelProps } from "./ThreadPanel.svelte";
+export {
+  formatAnchorLabel,
+  formatPinAriaLabel,
+  formatReviewError,
+  isResolutionReply,
+  isSafeMarkdownHref,
+  parseCommentBody,
+  parseCommentRefs,
+  sanitizeActorColor,
+} from "./review-markdown.js";
+export type {
+  CommentRef,
+  MarkdownBlock,
+  MarkdownInline,
+  ParsedCommentBody,
+  ResolutionRecord,
+} from "./review-markdown.js";
+
 export { createLayoutCache } from "@sentropic/diagram-canvas";
 export type { LayoutCacheConfig, LayoutCacheStats } from "@sentropic/diagram-canvas";
 export type { DiagramSceneSize, SceneLayoutCache } from "@sentropic/diagram-canvas/diagramSceneModel";
