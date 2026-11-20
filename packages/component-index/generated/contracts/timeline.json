@@ -1,8 +1,8 @@
 {
   "componentId": "timeline",
   "contractSource": "derived",
-  "digest": "sha256:b74c1a469003199adb034d3f3920b8c77008b10af171ef1a2de84fad0df33e1a",
-  "entryDigest": "sha256:113ea3952b73a08523860a86ef0ed93bdf156e984c0dee565f0decdac7512cbe",
+  "digest": "sha256:510b7e7a873ae476e776c2c026dddd7792c6ecc4f4221e24f0b79ab247c19f41",
+  "entryDigest": "sha256:9e1bfd79c0348c4489effe5c446a493d351029db1b96b84279c5fedb6d7c6005",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -239,7 +239,7 @@
         "declarationPath": "packages/components-svelte/dist/Timeline.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimelineProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "input",
   "contractSource": "derived",
-  "digest": "sha256:75e45caa1cc0064150aa64469c855e2968c9f3cd09eef6bfd9efc4ae392d892c",
-  "entryDigest": "sha256:0ecbdc2fcb20ef6fcf3a9aedb161212c7714a430afb6a14c0b24d6652b7e1f8a",
+  "digest": "sha256:1bd0ed7fbaab8bad9fb07a20e0d6c0a8ab626518aee53b34879cccf0744db277",
+  "entryDigest": "sha256:d8f334e8357982ab54ffb2f4008581e7a2ffe363d3f8a731d51e3ba5d0f45b63",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -243,7 +243,7 @@
         "declarationPath": "packages/components-svelte/dist/Input.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "InputProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],
