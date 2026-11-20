@@ -115,6 +115,11 @@ import * as handWrittenSolidGaugeChart from "../../dataviz-react/src/lib/SolidGa
 import * as handWrittenSparkline from "../../dataviz-react/src/lib/Sparkline.js";
 import * as handWrittenStateTimelineChart from "../../dataviz-react/src/lib/StateTimelineChart.js";
 import * as handWrittenStatusHistoryChart from "../../dataviz-react/src/lib/StatusHistoryChart.js";
+import * as handWrittenStreamgraphChart from "../../dataviz-react/src/lib/StreamgraphChart.js";
+import * as handWrittenSunburstChart from "../../dataviz-react/src/lib/SunburstChart.js";
+import * as handWrittenTileMapChart from "../../dataviz-react/src/lib/TileMapChart.js";
+import * as handWrittenTimelineChart from "../../dataviz-react/src/lib/TimelineChart.js";
+import * as handWrittenTopNFilter from "../../dataviz-react/src/lib/TopNFilter.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -251,6 +256,11 @@ const switched = [
   "Sparkline",
   "StateTimelineChart",
   "StatusHistoryChart",
+  "StreamgraphChart",
+  "SunburstChart",
+  "TileMapChart",
+  "TimelineChart",
+  "TopNFilter",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -379,6 +389,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   Sparkline: handWrittenSparkline.Sparkline,
   StateTimelineChart: handWrittenStateTimelineChart.StateTimelineChart,
   StatusHistoryChart: handWrittenStatusHistoryChart.StatusHistoryChart,
+  StreamgraphChart: handWrittenStreamgraphChart.StreamgraphChart,
+  SunburstChart: handWrittenSunburstChart.SunburstChart,
+  TileMapChart: handWrittenTileMapChart.TileMapChart,
+  TimelineChart: handWrittenTimelineChart.TimelineChart,
+  TopNFilter: handWrittenTopNFilter.TopNFilter,
 };
 
 describe("dataviz React leg provenance", () => {

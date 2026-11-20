@@ -150,6 +150,11 @@ export type PropsParity = [
   Expect<Equal<Emitted.SparklineTone, HandWritten.SparklineTone>>,
   Expect<Equal<Emitted.StateTimelineChartProps, HandWritten.StateTimelineChartProps>>,
   Expect<Equal<Emitted.StatusHistoryChartProps, HandWritten.StatusHistoryChartProps>>,
+  Expect<Equal<Emitted.StreamgraphChartProps, HandWritten.StreamgraphChartProps>>,
+  Expect<Equal<Emitted.SunburstChartProps, HandWritten.SunburstChartProps>>,
+  Expect<Equal<Emitted.TileMapChartProps, HandWritten.TileMapChartProps>>,
+  Expect<Equal<Emitted.TimelineChartProps, HandWritten.TimelineChartProps>>,
+  Expect<Equal<Emitted.TopNFilterProps, HandWritten.TopNFilterProps>>,
 ];
 
 export type ComponentParity = [
@@ -254,6 +259,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.Sparkline, typeof HandWritten.Sparkline>>,
   Expect<Equal<typeof Emitted.StateTimelineChart, typeof HandWritten.StateTimelineChart>>,
   Expect<Equal<typeof Emitted.StatusHistoryChart, typeof HandWritten.StatusHistoryChart>>,
+  Expect<Equal<typeof Emitted.StreamgraphChart, typeof HandWritten.StreamgraphChart>>,
+  Expect<Equal<typeof Emitted.SunburstChart, typeof HandWritten.SunburstChart>>,
+  Expect<Equal<typeof Emitted.TileMapChart, typeof HandWritten.TileMapChart>>,
+  Expect<Equal<typeof Emitted.TimelineChart, typeof HandWritten.TimelineChart>>,
+  Expect<Equal<typeof Emitted.TopNFilter, typeof HandWritten.TopNFilter>>,
 ];
 
 export type ValueParity = [
