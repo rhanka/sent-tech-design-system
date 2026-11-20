@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:88b5a7087dc9da377bc846b5c8dfd8412e25e62530c2d6f9d37c1f47a9a398d9",
-  "entryDigest": "sha256:2de7c4cd6f16e7d2ef1e3a63e6979a47c97da19eaaf33ccfae5300384664ffb7",
+  "digest": "sha256:f74e6099292b4f7a3016ada8798bc6aa59d325a99e0b13ec6e833fa9b7262d9f",
+  "entryDigest": "sha256:7342d01324d4f28572d4379d2df950535f57d62811ac82e7d199d9c89d956fa3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1843,7 +1843,7 @@
             "additionalProperties": false,
             "properties": {
               "anatomy": {
-                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). New views default to `\"v2\"`.",
+                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). Absent means legacy `\"v1\"`; `\"v2\"` is opt-in.",
                 "enum": [
                   "v1",
                   "v2"
@@ -4270,7 +4270,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:2659deb6d21bf0df3a6441090e85f64f87783cb3e292c6f358cc880a3a211961",
+        "declarationDigest": "sha256:1639236ce7839b46bf39fe576dfe7a12a3acf892b6d35f04cfa036716332c860",
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
@@ -6645,7 +6645,7 @@
             "additionalProperties": false,
             "properties": {
               "anatomy": {
-                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). New views default to `\"v2\"`.",
+                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). Absent means legacy `\"v1\"`; `\"v2\"` is opt-in.",
                 "enum": [
                   "v1",
                   "v2"

@@ -362,7 +362,7 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
   it('should compute toggle offset from headerInset/toggleTopOffset without CSS var cascade identically on Svelte and Vue (W1-46, W1-58)', async () => {
     const zhProps = {
       kicker: [],
-      title: [{ text: 'Zone', x: 0, baseline: 30, size: 32, weight: 700, secondary: false }],
+      title: [{ text: 'Zone', x: 0, baseline: 30, size: 32, weight: 700, secondary: false, anchor: 'start' as const }],
       subtitle: [],
       headerInset: 12,
       headerTextWidth: 300,
@@ -384,7 +384,7 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
 
     const chProps = {
       kicker: [],
-      title: [{ text: 'Card', x: 0, baseline: 30, size: 32, weight: 700, secondary: false }],
+      title: [{ text: 'Card', x: 0, baseline: 30, size: 32, weight: 700, secondary: false, anchor: 'start' as const }],
       headerTextWidth: 300,
       headerBlockHeight: 70,
       toggle: { collapsed: false, label: 'Collapse' },
