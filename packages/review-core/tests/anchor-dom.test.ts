@@ -361,4 +361,59 @@ describe("DS-2 resolveAnchor (re-attach after re-render, priority ladder, orphan
       expect(resolved.versionChanged).toBe(true);
     }
   });
+
+  it("should relocate via fuzzy-quote (Step 4) rather than falling back to old aid block when text moves out with whitespace/case edits", () => {
+    const rootV1 = mountRoot(`
+      <div data-review-root>
+        <section data-anchor-id="sec-a"><p>Quarterly   REVENUE   Forecast is 42M.</p></section>
+        <section data-anchor-id="sec-b"><p>Unrelated notes.</p></section>
+      </div>
+    `);
+    const anchor = createAnchorFromSelection(
+      rootV1,
+      createRangeForSubstring(rootV1, "Quarterly   REVENUE   Forecast"),
+      "v1",
+    )!;
+    expect(anchor.aid).toBe("sec-a");
+
+    // Re-render: paragraph moved out of sec-a into sec-b with whitespace/case changes; sec-a remains with new text
+    const rootV2 = mountRoot(`
+      <div data-review-root>
+        <section data-anchor-id="sec-a"><p>Replacement executive intro.</p></section>
+        <section data-anchor-id="sec-b"><p>Updated: quarterly revenue forecast is 42M.</p></section>
+      </div>
+    `);
+    const resolved = resolveAnchor(rootV2, anchor, { artifactVersion: "v2" });
+    expect(resolved.status).toBe("resolved");
+    if (resolved.status === "resolved") {
+      expect(resolved.strategy).toBe("fuzzy-quote");
+      expect(resolved.range?.toString()).toBe("quarterly revenue forecast");
+      expect(resolved.element.closest("[data-anchor-id]")?.getAttribute("data-anchor-id")).toBe("sec-b");
+    }
+  });
+
+  it("should not capture root's own data-anchor-id and should still orphan deleted text when root carries data-anchor-id", () => {
+    const rootV1 = mountRoot(`
+      <article data-review-root data-anchor-id="artifact-root">
+        <p>Ephemeral paragraph that will be removed.</p>
+      </article>
+    `);
+    const anchor = createAnchorFromSelection(
+      rootV1,
+      createRangeForSubstring(rootV1, "Ephemeral paragraph"),
+      "v1",
+    )!;
+    expect(anchor.aid).toBeUndefined();
+
+    const rootV2 = mountRoot(`
+      <article data-review-root data-anchor-id="artifact-root">
+        <p>Totally different document body.</p>
+      </article>
+    `);
+    expect(resolveAnchor(rootV2, anchor, { artifactVersion: "v2" }).status).toBe("orphan");
+
+    // Even if a pre-existing anchor explicitly carried root's data-anchor-id, deleted text must still orphan
+    const legacyRootAidAnchor: TextAnchorPayload = { ...anchor, aid: "artifact-root" };
+    expect(resolveAnchor(rootV2, legacyRootAidAnchor, { artifactVersion: "v2" }).status).toBe("orphan");
+  });
 });

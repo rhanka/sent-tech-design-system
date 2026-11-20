@@ -697,4 +697,167 @@ describe("DS-4: CommentLayer", () => {
     expect(screen.getByRole("textbox")).toBeTruthy();
     expect(screen.getByText("important clause")).toBeTruthy();
   });
+
+  it("renders distinct region anchors as separate pins at their respective rects instead of clustering them onto root", async () => {
+    const root = makeArtifactRoot(`<div class="chart-canvas">Chart surface</div>`);
+    const fixture = createFixture();
+    const skRegionA = encodeAnchor({
+      t: "region",
+      rect: { x: 0.1, y: 0.1, width: 0.2, height: 0.2 },
+      v: "v1",
+    });
+    const skRegionB = encodeAnchor({
+      t: "region",
+      rect: { x: 0.6, y: 0.5, width: 0.25, height: 0.3 },
+      v: "v1",
+    });
+
+    await fixture.adapter.create({
+      tenant: TENANT,
+      target: { ...TARGET, sectionKey: skRegionA },
+      body: "Top-left chart spike",
+    });
+    await fixture.adapter.create({
+      tenant: TENANT,
+      target: { ...TARGET, sectionKey: skRegionB },
+      body: "Bottom-right outlier",
+    });
+    const comments = await fixture.adapter.list(TENANT, TARGET);
+
+    const { container } = render(CommentLayer, {
+      props: {
+        rootEl: root,
+        mode: "review",
+        target: TARGET,
+        artifactVersion: "v1",
+        comments,
+        currentUser: ALICE,
+      },
+    });
+
+    // Must render 2 separate non-cluster pins positioned at their own region boxes (800x600 root)
+    const pinAnchors = container.querySelectorAll<HTMLElement>(".st-review-layer__pin-anchor");
+    expect(pinAnchors).toHaveLength(2);
+    expect(container.querySelector('.st-review-layer__pins button[data-pin-variant="cluster"]')).toBeNull();
+    // Region A: top = 0.1*600 = 60px, left + width = (0.1 + 0.2)*800 = 240px
+    expect(pinAnchors[0]?.style.top).toBe("60px");
+    expect(pinAnchors[0]?.style.left).toBe("240px");
+    // Region B: top = 0.5*600 = 300px, left + width = (0.6 + 0.25)*800 = 680px
+    expect(pinAnchors[1]?.style.top).toBe("300px");
+    expect(pinAnchors[1]?.style.left).toBe("680px");
+  });
+
+  it("wires forwarded panel props (canModerate, onReply, onResolve, onReopen, onEditComment, onDeleteComment, onReanchor) into ThreadPanel and focuses panel heading on create", async () => {
+    const root = makeArtifactRoot(`<p data-anchor-id="wired-p">Panel target paragraph.</p>`);
+    const BOB: CollaborationActor = {
+      actorId: "user-bob",
+      kind: "human",
+      displayLabel: "Bob Tremblay",
+      color: "#059669",
+    };
+    const fixture = createFixtureCommentsAdapter({
+      caller: { userId: BOB.actorId, actorKind: "human" },
+      workspaceMembers: [ALICE.actorId, BOB.actorId],
+      authorshipResolver: {
+        resolveHumanActor: (id) => (id === ALICE.actorId ? ALICE : id === BOB.actorId ? BOB : undefined),
+      },
+    });
+
+    const skOpen = encodeAnchor({ t: "element", sel: "p:nth-of-type(1)", aid: "wired-p", v: "v1" });
+    const openRoot = await fixture.adapter.create({
+      tenant: TENANT,
+      target: { ...TARGET, sectionKey: skOpen },
+      body: "Bob's open comment",
+    });
+    const closedRoot = await fixture.adapter.create({
+      tenant: TENANT,
+      target: { ...TARGET, sectionKey: skOpen },
+      body: "Bob's closed comment",
+    });
+    await fixture.adapter.setState(TENANT, closedRoot.threadId, "closed");
+    const orphanRoot = await fixture.adapter.create({
+      tenant: TENANT,
+      target: TARGET,
+      body: "Orphan comment",
+    });
+
+    const comments = await fixture.adapter.list(TENANT, TARGET);
+    const onReply = vi.fn();
+    const onResolve = vi.fn();
+    const onReopen = vi.fn();
+    const onEditComment = vi.fn();
+    const onDeleteComment = vi.fn();
+    const onReanchor = vi.fn();
+    const onCreate = vi.fn();
+
+    const { container, rerender } = render(CommentLayer, {
+      props: {
+        rootEl: root,
+        mode: "review",
+        target: TARGET,
+        artifactVersion: "v1",
+        comments,
+        currentUser: ALICE,
+        canModerate: true,
+        panelCompact: false,
+        onCreate,
+        onReply,
+        onResolve,
+        onReopen,
+        onEditComment,
+        onDeleteComment,
+        onReanchor,
+      },
+    });
+
+    // ThreadPanel is mounted inside CommentLayer in review mode
+    const panel = container.querySelector("aside.st-review-panel");
+    expect(panel).toBeTruthy();
+
+    // Orphan Re-anchor forwards onReanchor
+    await fireEvent.click(screen.getByRole("button", { name: "Re-anchor" }));
+    expect(onReanchor).toHaveBeenCalledWith(orphanRoot.threadId);
+
+    // Open thread detail via ThreadPanel card -> test onReply, onResolve, and canModerate (edit/delete Bob's comment as Alice!)
+    const openCard = container.querySelector<HTMLElement>(
+      `.st-review-panel__thread-card[data-thread-id="${openRoot.threadId}"]`,
+    )!;
+    await fireEvent.click(openCard);
+
+    // canModerate=true exposes Edit and Delete on Bob's comment even though currentUser is Alice
+    const editBtn = container.querySelector('button[aria-label="Edit comment"]')!;
+    expect(editBtn).toBeTruthy();
+    await fireEvent.click(editBtn);
+    const editBox = container.querySelector(".st-review-thread__edit-form textarea") as HTMLTextAreaElement;
+    await fireEvent.input(editBox, { target: { value: "Moderated body" } });
+    await fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    await waitFor(() => expect(onEditComment).toHaveBeenCalledWith(openRoot.id, "Moderated body"));
+
+    await fireEvent.click(container.querySelector('button[aria-label="Delete comment"]')!);
+    expect(onDeleteComment).toHaveBeenCalledWith(openRoot.id);
+
+    const replyBox = container.querySelector(".st-review-thread__reply textarea") as HTMLTextAreaElement;
+    await fireEvent.input(replyBox, { target: { value: "Alice reply" } });
+    await fireEvent.click(screen.getByRole("button", { name: "Reply" }));
+    await waitFor(() => expect(onReply).toHaveBeenCalledWith(openRoot.threadId, "Alice reply"));
+
+    await fireEvent.click(screen.getByRole("button", { name: "Resolve" }));
+    expect(onResolve).toHaveBeenCalledWith(openRoot.threadId);
+
+    // Switch to closed thread -> test onReopen
+    await rerender({ activeThreadId: closedRoot.threadId });
+    await fireEvent.click(screen.getAllByRole("button", { name: "Reopen" })[0]!);
+    expect(onReopen).toHaveBeenCalledWith(closedRoot.threadId);
+
+    // Creating a new comment via CommentLayer focuses the integrated panel heading after submit
+    await fireEvent.click(root.querySelector('[data-anchor-id="wired-p"]')!);
+    const newComposerBox = container.querySelector(".st-review-layer__composer textarea") as HTMLTextAreaElement;
+    await fireEvent.input(newComposerBox, { target: { value: "Brand new thread" } });
+    await fireEvent.click(container.querySelector('.st-review-layer__composer button[type="submit"]')!);
+    await waitFor(() => expect(onCreate).toHaveBeenCalledTimes(1));
+    await waitFor(() => {
+      const heading = container.querySelector(".st-review-panel__heading");
+      expect(document.activeElement).toBe(heading);
+    });
+  });
 });
