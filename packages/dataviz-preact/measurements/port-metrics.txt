@@ -2,7 +2,7 @@ Port metrics of lot P6 (dataviz-preact) - dataviz-react read at 81083403e58dd181
 
 == Tree ==
 dataviz-react: 128 non-test modules (116 .tsx + 12 .ts), 9562 lines
-ported: 50 modules (+ incremental barrel index.ts), remaining: 77 modules
+ported: 55 modules (+ incremental barrel index.ts), remaining: 72 modules
 
 == Ported modules ==
 module                       kind  React lines  Preact lines  tokens touched     of    %  rewrites
@@ -56,8 +56,13 @@ DashboardGrid           component          269           275              18   1
 DateRangeFilter         component           48            50               3    310    1         2
 DecompositionTreeChart  component           53            59               2    192    1         1
 Density2DChart          component           61            67               2    217  0.9         1
-total                                     4780          5040             316  27541  1.1        48
-shared code (lines): src/index.ts 131, src/classNames.ts 16, preactAdapters 247, reactTwins 81, scripts/emit-react.mjs 183, vitest.react.config.ts 86
+DependencyWheelChart    component           58            64               2    206    1         1
+DonutChart              component           54            60               2    231  0.9         1
+DrillBarChart           component           75            80               2    388  0.5         1
+DrillBreadcrumb         component           53            55               2    304  0.7         1
+TreemapChart            component           48            56               4    207  1.9         1
+total                                     5068          5355             328  28877  1.1        53
+shared code (lines): src/index.ts 143, src/classNames.ts 16, preactAdapters 247, reactTwins 81, scripts/emit-react.mjs 183, vitest.react.config.ts 88
 
 == Reach of runtime gaps in dataviz-react ==
 SVG presentation attributes in camelCase, on elements (affected): 2 files / 12 uses
