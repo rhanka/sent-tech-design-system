@@ -1,8 +1,8 @@
 {
   "componentId": "transcription",
   "contractSource": "derived",
-  "digest": "sha256:a656fb1c3073abc68607f996d9ec085cec8745422e2d758193e3b6e314335371",
-  "entryDigest": "sha256:38459cd66d3f613fe564f5598b977926bd18b27113d5522725c3ec5b600d46b0",
+  "digest": "sha256:145b63565939d19f2e7873916b010a0e4da1763db609a29d38953e37f790bfd5",
+  "entryDigest": "sha256:38abedb4b0f1b5094851885ea984c59316a848be92e82cca4eb29a58cee90e9b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -245,7 +245,7 @@
         "declarationPath": "packages/components-svelte/dist/Transcription.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TranscriptionProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],

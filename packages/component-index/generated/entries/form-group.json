@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/FormGroup.svelte",
-      "version": "0.42.0"
+      "version": "0.43.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Fieldset/legend grouping controls with helper text.",
     "fr": "Fieldset/legend groupant des contrôles avec helper text."
   },
-  "digest": "sha256:3a7691060ca0b98f124a9084fcd30e7c9632ac4098352c857b9e30f67de77841",
+  "digest": "sha256:b8a85e6ed58958d0d20a893ac7239261f4f7af501b14ef2a914c88168589cf5f",
   "displayName": "FormGroup",
   "format": "component-entry/v1",
   "frameworks": [

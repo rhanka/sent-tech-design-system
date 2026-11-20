@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/MessageStatusBadge.svelte",
-      "version": "0.42.0"
+      "version": "0.43.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Message status badge mapped to pending/processing/completed/failed.",
     "fr": "Badge de statut de message basé sur les niveaux pending/processing/completed/failed."
   },
-  "digest": "sha256:fa2b314436d33bf528f0a489e84dca008544adfe3b36e355161331c48b620e96",
+  "digest": "sha256:cf55cb7f928134c7382df66b22468a644e6d4f6be60cdfa2af75db16da00cc16",
   "displayName": "MessageStatusBadge",
   "format": "component-entry/v1",
   "frameworks": [

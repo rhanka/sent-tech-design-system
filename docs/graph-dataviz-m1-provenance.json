@@ -3593,8 +3593,8 @@
       "gitBlob": "f32a53f263658fb563ecc81febd33693dfe3bc43",
       "sha256": "4de2b350a549668ad67d5972bdc237539dcbcc03e133e835eea3d47657bb0da8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "0e975b7d6fd425a482674860a885febbaa8c57fb95f5560ea40ad2d679f29341",
-      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure.; diagram initial fit: host patch dependency pin; card body centring: align the design-system-svelte pin with 0.41.5; DE-1: align @sentropic/design-system-themes (0.15.0) and @sentropic/design-system-svelte (0.42.0) pins"
+      "destinationSha256": "ca901e859bf202aff500df37f3b2880e2997655d8eaecf0f650d4cbeccc9c726",
+      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure.; diagram initial fit: host patch dependency pin; card body centring: align the design-system-svelte pin with 0.41.5; DE-1: align @sentropic/design-system-themes (0.15.0) and @sentropic/design-system-svelte (0.42.0) pins; review-kit release: align @sentropic/design-system-svelte pin with 0.43.0"
     },
     {
       "repository": "dataviz",

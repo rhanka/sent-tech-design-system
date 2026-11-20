@@ -1,8 +1,8 @@
 {
   "componentId": "notification",
   "contractSource": "derived",
-  "digest": "sha256:7df9bfe0342ac975cdd3a2208c780a88314c9337f65a45eae2cf1a8a0e15bdfa",
-  "entryDigest": "sha256:75c3f077fa7dde3bf0d6d79770b2fb5067e4d167c058014514beb6b9e37e1fb2",
+  "digest": "sha256:5693c3d44f807491275c350a3ce6791c1c476bc95d9bde906ea701706a13fa12",
+  "entryDigest": "sha256:efdfffc52bf1ad02619476872bd54b35bed5ea70efa8b139b6c5c0f731f54477",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -211,7 +211,7 @@
         "declarationPath": "packages/components-svelte/dist/Notification.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "NotificationProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],

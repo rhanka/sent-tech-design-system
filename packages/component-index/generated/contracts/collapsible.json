@@ -1,8 +1,8 @@
 {
   "componentId": "collapsible",
   "contractSource": "derived",
-  "digest": "sha256:d2a5947241f46371a101484ea36c57b7f102a5016d1452ed8269c5da7684e8f7",
-  "entryDigest": "sha256:f0e53606e3799cce6decbbea6378e15b0a5d2fdc206d5f096075f14c308575db",
+  "digest": "sha256:1cdfc9a793914f575fdff19473355805911e8b25ed4618c2eac37131ee5e92dc",
+  "entryDigest": "sha256:7d55de5ca01139b3e8e54c5b703d36e3e01ea803529cd2d4986e2122fe7de13a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -199,7 +199,7 @@
         "declarationPath": "packages/components-svelte/dist/Collapsible.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CollapsibleProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],

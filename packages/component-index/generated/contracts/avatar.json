@@ -1,8 +1,8 @@
 {
   "componentId": "avatar",
   "contractSource": "derived",
-  "digest": "sha256:af0d865b70a0cec4cd163a9f44507209d1dd512fc8061dcfc820cb7abce13e90",
-  "entryDigest": "sha256:c88dd214f1c438d4f992062d194339b7b9b34a4c5a59b0ecb11b1b8ef569295e",
+  "digest": "sha256:dbaf311a29666af48b1efa4767849a81d44619ae60db88d6531a20f1949afaae",
+  "entryDigest": "sha256:f5e9c7e579376441795c9d584ac0eb179085f5873dde1786c12a75ebe848ac2c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -217,7 +217,7 @@
         "declarationPath": "packages/components-svelte/dist/Avatar.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AvatarProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],
