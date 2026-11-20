@@ -9,7 +9,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
-  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 (25 files) + group 3 batch 1 (5 files -> 45/128 ported): ColumnPyramidChart, ColumnRangeChart, ContourChart, CorrelationMatrix, DashboardActiveFilters.",
+  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 (25 files) + group 3 batches 1-2 (10 files -> 50/128 ported): ColumnPyramidChart, ColumnRangeChart, ContourChart, CorrelationMatrix, DashboardActiveFilters, DashboardFilterBar, DashboardGrid, DateRangeFilter, DecompositionTreeChart, Density2DChart.",
   "modules": [
     {
       "module": "adapter",
@@ -411,6 +411,51 @@
       "module": "DashboardActiveFilters",
       "file": "src/lib/DashboardActiveFilters.tsx",
       "reactSource": "dataviz-react/src/lib/DashboardActiveFilters.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DashboardFilterBar",
+      "file": "src/lib/DashboardFilterBar.tsx",
+      "reactSource": "dataviz-react/src/lib/DashboardFilterBar.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DashboardGrid",
+      "file": "src/lib/DashboardGrid.tsx",
+      "reactSource": "dataviz-react/src/lib/DashboardGrid.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DateRangeFilter",
+      "file": "src/lib/DateRangeFilter.tsx",
+      "reactSource": "dataviz-react/src/lib/DateRangeFilter.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DecompositionTreeChart",
+      "file": "src/lib/DecompositionTreeChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DecompositionTreeChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "Density2DChart",
+      "file": "src/lib/Density2DChart.tsx",
+      "reactSource": "dataviz-react/src/lib/Density2DChart.tsx",
       "kind": "component",
       "lot": "P6",
       "renderable": true,

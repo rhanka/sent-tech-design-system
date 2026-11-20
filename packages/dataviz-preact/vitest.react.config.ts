@@ -63,6 +63,9 @@ const reactTests: string[] = [
   "lib/PartOfWholeCharts.test.tsx", // emitted ChordChart + partOfWholeData
   "lib/GeoCharts.test.tsx", // emitted ChoroplethMap + geoMapLayers
   "lib/DashboardActiveFilters.test.tsx", // emitted DashboardActiveFilters
+  "lib/DashboardFilterBar.test.tsx", // emitted DashboardFilterBar
+  "lib/DashboardGrid.test.tsx", // emitted DashboardGrid
+  "lib/DateRangeFilter.test.tsx", // emitted DateRangeFilter + dateRangeToSpec
 ];
 
 export default defineConfig({

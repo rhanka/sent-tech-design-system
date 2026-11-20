@@ -117,3 +117,15 @@ export { CorrelationMatrix } from './lib/CorrelationMatrix.js';
 export type { CorrelationMatrixProps } from './lib/CorrelationMatrix.js';
 export { DashboardActiveFilters } from './lib/DashboardActiveFilters.js';
 export type { DashboardActiveFiltersProps } from './lib/DashboardActiveFilters.js';
+
+// Group 3 batch 2 components.
+export { DashboardFilterBar } from './lib/DashboardFilterBar.js';
+export type { DashboardFilterBarProps, ActiveFilter, FilterControl, ExportConfig } from './lib/DashboardFilterBar.js';
+export { DashboardGrid } from './lib/DashboardGrid.js';
+export type { DashboardGridPanel, DashboardGridProps } from './lib/DashboardGrid.js';
+export { DateRangeFilter, dateRangeToSpec } from './lib/DateRangeFilter.js';
+export type { DateRangeFilterProps } from './lib/DateRangeFilter.js';
+export { DecompositionTreeChart } from './lib/DecompositionTreeChart.js';
+export type { DecompositionTreeChartProps } from './lib/DecompositionTreeChart.js';
+export { Density2DChart } from './lib/Density2DChart.js';
+export type { Density2DChartProps } from './lib/Density2DChart.js';

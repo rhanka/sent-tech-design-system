@@ -75,6 +75,15 @@ export type PropsParity = [
   Expect<Equal<Emitted.ContourChartProps, HandWritten.ContourChartProps>>,
   Expect<Equal<Emitted.CorrelationMatrixProps, HandWritten.CorrelationMatrixProps>>,
   Expect<Equal<Emitted.DashboardActiveFiltersProps, HandWritten.DashboardActiveFiltersProps>>,
+  Expect<Equal<Emitted.ActiveFilter, HandWritten.ActiveFilter>>,
+  Expect<Equal<Emitted.FilterControl, HandWritten.FilterControl>>,
+  Expect<Equal<Emitted.ExportConfig, HandWritten.ExportConfig>>,
+  Expect<Equal<Emitted.DashboardFilterBarProps, HandWritten.DashboardFilterBarProps>>,
+  Expect<Equal<Emitted.DashboardGridPanel, HandWritten.DashboardGridPanel>>,
+  Expect<Equal<Emitted.DashboardGridProps, HandWritten.DashboardGridProps>>,
+  Expect<Equal<Emitted.DateRangeFilterProps, HandWritten.DateRangeFilterProps>>,
+  Expect<Equal<Emitted.DecompositionTreeChartProps, HandWritten.DecompositionTreeChartProps>>,
+  Expect<Equal<Emitted.Density2DChartProps, HandWritten.Density2DChartProps>>,
 ];
 
 export type ComponentParity = [
@@ -112,6 +121,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.ContourChart, typeof HandWritten.ContourChart>>,
   Expect<Equal<typeof Emitted.CorrelationMatrix, typeof HandWritten.CorrelationMatrix>>,
   Expect<Equal<typeof Emitted.DashboardActiveFilters, typeof HandWritten.DashboardActiveFilters>>,
+  Expect<Equal<typeof Emitted.DashboardFilterBar, typeof HandWritten.DashboardFilterBar>>,
+  Expect<Equal<typeof Emitted.DashboardGrid, typeof HandWritten.DashboardGrid>>,
+  Expect<Equal<typeof Emitted.DateRangeFilter, typeof HandWritten.DateRangeFilter>>,
+  Expect<Equal<typeof Emitted.DecompositionTreeChart, typeof HandWritten.DecompositionTreeChart>>,
+  Expect<Equal<typeof Emitted.Density2DChart, typeof HandWritten.Density2DChart>>,
 ];
 
 export type ValueParity = [
@@ -135,6 +149,7 @@ export type ValueParity = [
   Expect<Equal<typeof Emitted.DEFAULT_URL_SYNC_PARAM, typeof HandWritten.DEFAULT_URL_SYNC_PARAM>>,
   Expect<Equal<typeof Emitted.useUrlSync, typeof HandWritten.useUrlSync>>,
   Expect<Equal<typeof Emitted.rowsToCsv, typeof HandWritten.rowsToCsv>>,
+  Expect<Equal<typeof Emitted.dateRangeToSpec, typeof HandWritten.dateRangeToSpec>>,
 ];
 
 export type InternalHelpersParity = [
