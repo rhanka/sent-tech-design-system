@@ -22,7 +22,7 @@ import {
 } from "../camera.js";
 import type { LineMeasurer } from "../layout/measure.js";
 import type { Rect } from "../transform.js";
-import { connectorDashArray, connectorMarkerKind } from "./connectorStyle.js";
+import { connectorDashArray, connectorMarkerKind, LINK_EMPHASIS_STROKE } from "./connectorStyle.js";
 
 /** Where the automatic link-style legend strip sits relative to the functional drawing. */
 export type LinkLegendAnchor = "right" | "bottom" | "none";
@@ -111,7 +111,7 @@ export interface LinkLegendSwatchGeometry {
 }
 
 const EDGE_STROKE = "var(--st-component-diagramScene-edgeStroke, #64748b)";
-const EMPHASIS_STROKE = "var(--st-component-diagramScene-linkEmphasisStroke, #2563eb)";
+const EMPHASIS_STROKE = LINK_EMPHASIS_STROKE;
 
 /** Stable canonical key for a connector style triple. */
 export function linkStyleKey(style: LinkLegendStyleKey): string {

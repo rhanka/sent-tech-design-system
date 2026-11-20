@@ -44,7 +44,14 @@ export const ARROWHEAD_MARKER_GEOMETRY = Object.freeze({
   }),
 });
 
-const EMPHASIS_STROKE = "var(--st-component-diagramScene-linkEmphasisStroke, #2563eb)";
+/**
+ * Single emphasis-stroke token expression shared across Svelte, Vue and SVG
+ * targets (`--st-component-diagramScene-linkEmphasisStroke`, falling back to
+ * `--st-semantic-border-interactive` and the light core-theme value `#001f33`).
+ */
+export const LINK_EMPHASIS_STROKE_FALLBACK = "#001f33";
+export const LINK_EMPHASIS_STROKE =
+  `var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive, ${LINK_EMPHASIS_STROKE_FALLBACK}))`;
 
 /** Derive deterministic per-host marker ids keeping the default arrow id first. */
 export function connectorMarkerIds(baseArrowId: string): ConnectorMarkerIds {
@@ -109,7 +116,7 @@ export function extraConnectorMarkers(
       kind: "arrow",
       emphasis: "emphasis",
       ...ARROWHEAD_MARKER_GEOMETRY.arrow,
-      fill: EMPHASIS_STROKE,
+      fill: LINK_EMPHASIS_STROKE,
     });
   }
   return specs;

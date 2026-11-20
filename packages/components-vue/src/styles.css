@@ -18658,7 +18658,7 @@
     vector-effect: non-scaling-stroke;
   }
   .st-diagramSceneFigure-edge[data-edge-emphasis="emphasis"] {
-    stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
+    stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive, #001f33));
     stroke-width: var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px);
   }
   .st-diagramSceneFigure-edge[data-edge-stroke="dashed"] {
@@ -18675,7 +18675,7 @@
     font-family: var(--st-component-diagramCard-fontFamily, inherit);
     font-size: var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px));
     justify-content: center;
-    line-height: var(--st-component-diagramScene-edgeLabelLineHeight, 22px);
+    line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
     pointer-events: none;
     position: absolute;
     white-space: nowrap;
@@ -18690,7 +18690,7 @@
     font-family: var(--st-component-diagramCard-fontFamily, inherit);
     font-size: var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px));
     gap: var(--st-component-diagramCard-padding, 8px);
-    line-height: var(--st-component-diagramScene-edgeLabelLineHeight, 22px);
+    line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
     padding: var(--st-component-diagramScene-containerPadding, 16px);
     position: absolute;
   }

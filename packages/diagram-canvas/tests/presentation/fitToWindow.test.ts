@@ -4,6 +4,7 @@
  * keeping the component default (`0.85 × windowH`, Z-3 / AC-23) untouched.
  */
 import { readFileSync } from "node:fs";
+import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_V2_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings, type SemanticDocument } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -14,7 +15,8 @@ import {
   FIT_WINDOW_MARGIN_PX,
   fitBox,
 } from "../../src/camera.js";
-import { sceneFit, scenePlacement } from "../../src/presentation/diagramSceneModel.js";
+import { sceneFit, scenePlacement, type ScenePresentation } from "../../src/presentation/diagramSceneModel.js";
+import { renderSceneSvg } from "../../src/presentation/renderSceneSvg.js";
 
 describe("fit-to-window host framing (DE-2 ask 9)", () => {
   it("preserves the Z-3 / AC-23 default fit box (0.85 × windowH capped at 16:9) when fitToWindow is omitted or false", () => {
@@ -57,5 +59,34 @@ describe("fit-to-window host framing (DE-2 ask 9)", () => {
     expect(html).toContain("max-width: 100%");
     expect(html).toContain("margin-inline: auto");
     expect(main).toContain("fitToWindow");
+  });
+
+  it("forwards fitToWindow to sceneFit in renderSceneSvg", () => {
+    const ids = Array.from({ length: 12 }, (_, i) => `n${i}`);
+    const document = {
+      documentId: "document:svg-fit-to-window",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: Object.fromEntries(ids.map((id) => [`entity:${id}`, { id: `entity:${id}`, profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: id } } }])),
+      relations: {},
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SemanticDocument;
+    const presentation = {
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+      entities: Object.fromEntries(ids.map((id) => [`occurrence:e.${id}`, { form: "card", anatomy: "v2", text: { title: id, body: "Card" } }])),
+      legends: {},
+      categoryTokens: [],
+    } as unknown as ScenePresentation;
+    const input = { document, presentation, registry: m3ProfileRegistry, bindings: shippedExecutorBindings, targetWidth: 1440 };
+    const normal = renderSceneSvg(input);
+    const windowed = renderSceneSvg(input, { fitToWindow: true });
+    const scaleOf = (svg: string) => Number(svg.match(/data-display-scale="([^"]+)"/)?.[1]);
+    expect(scaleOf(windowed.svg)).toBeGreaterThanOrEqual(scaleOf(normal.svg));
+    const expectedWindowFit = sceneFit({ bounds: windowed.scene.bounds!, viewWidth: 1440, windowHeight: 900, fitToWindow: true });
+    expect(scaleOf(windowed.svg)).toBeCloseTo(expectedWindowFit.zoom, 6);
   });
 });

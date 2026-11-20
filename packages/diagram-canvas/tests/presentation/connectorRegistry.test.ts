@@ -152,7 +152,7 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     expect(emphasisTag).not.toContain("marker-end");
     expect(emphasisTag).toContain('data-edge-emphasis="emphasis"');
     expect(emphasisTag).toContain('data-edge-arrowhead="none"');
-    expect(emphasisTag).toContain('stroke="var(--st-component-diagramScene-linkEmphasisStroke, #2563eb)"');
+    expect(emphasisTag).toContain('stroke="var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive, #001f33))"');
     expect(emphasisTag).toContain('stroke-width="3.5"');
 
     // dashed (proposed) + arrow + emphasis: dash and emphasis compose cleanly
@@ -160,9 +160,15 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     expect(crossTag).toContain('stroke-dasharray="8 6"');
     expect(crossTag).toContain('data-edge-stroke="dashed"');
     expect(crossTag).toContain('data-edge-emphasis="emphasis"');
-    expect(crossTag).toContain('stroke="var(--st-component-diagramScene-linkEmphasisStroke, #2563eb)"');
+    expect(crossTag).toContain('stroke="var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive, #001f33))"');
     expect(crossTag).toContain('stroke-width="3.5"');
     expect(crossTag).toContain('marker-end="url(#scene-arrow-emphasis)"');
+
+    // Standalone SVG scopes token defaults to svg:root (preserving inline host dark-theme inheritance)
+    // and aligns linkEmphasisStroke fallback to the core light token (#001f33).
+    expect(svg).toContain("svg:root{");
+    expect(svg).not.toContain("}svg{");
+    expect(svg).toContain("--st-component-diagramScene-linkEmphasisStroke:#001f33;");
   });
 
   it("re-routes connectors with rounded elbows and preserves dash, arrowhead and emphasis across fold/unfold", () => {
@@ -184,7 +190,7 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     expect(edge.emphasis).toBe("emphasis");
     expect(folded.svg).toContain('data-scene-edge="occurrence:r.proposed-cross"');
     expect(folded.svg).toContain('stroke-dasharray="8 6"');
-    expect(folded.svg).toContain('stroke="var(--st-component-diagramScene-linkEmphasisStroke, #2563eb)"');
+    expect(folded.svg).toContain('stroke="var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive, #001f33))"');
     expect(folded.svg).toContain('stroke-width="3.5"');
     expect(folded.svg).toContain('marker-end="url(#scene-arrow-emphasis)"');
     expect(folded.svg).not.toContain("<polyline");
