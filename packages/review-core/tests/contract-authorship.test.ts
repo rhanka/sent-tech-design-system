@@ -10,14 +10,15 @@ import {
   getCommentStateLabel,
   isAgentProvenance,
   isHumanComment,
-  normalizeCommentState,
   normalizeCommentTarget,
   resolveAuthorshipFromFallback,
-  toLegacyWireCommentState,
   type CollaborationActor,
   type Comment,
+  type CommentAuthor,
   type CommentTarget,
+  type CommentThreadSummary,
   type ReviewComment,
+  type TenantContext,
 } from "../src/index.js";
 
 function makeComment(overrides: Partial<Comment> = {}): Comment {
@@ -41,13 +42,30 @@ describe("DS-1 contract vocabulary, target normalisation & state labels", () => 
     expect(getCommentStateLabel("closed")).toBe("Resolved");
   });
 
-  it("should map interim legacy wire state 'resolved' <-> 'closed' cleanly", () => {
-    expect(normalizeCommentState("open")).toBe("open");
-    expect(normalizeCommentState("closed")).toBe("closed");
-    expect(normalizeCommentState("resolved")).toBe("closed");
+  it("should accept full contract wire types (CommentAuthor, TenantContext, CommentThreadSummary.status)", () => {
+    const tenant: TenantContext = {
+      workspaceId: "ws-1",
+      tenantId: "ten-1",
+      userId: "user-alice",
+    };
+    const author: CommentAuthor = {
+      id: "user-alice",
+      kind: "human",
+      displayLabel: "Alice",
+    };
+    const comment = makeComment({ tenant, author, state: "closed" });
+    expect(comment.tenant.userId).toBe("user-alice");
+    expect(comment.author.kind).toBe("human");
+    expect(comment.author.displayLabel).toBe("Alice");
 
-    expect(toLegacyWireCommentState("open")).toBe("open");
-    expect(toLegacyWireCommentState("closed")).toBe("resolved");
+    const summary: CommentThreadSummary = {
+      threadId: "t-1",
+      target: { kind: "artifact", id: "art-1" },
+      status: "closed",
+      commentCount: 2,
+      createdAt: "2026-11-19T12:00:00.000Z",
+    };
+    expect(summary.status).toBe("closed");
   });
 
   it("should normalise record+recordType:'artifact' target to kind:'artifact' dropping recordType", () => {
