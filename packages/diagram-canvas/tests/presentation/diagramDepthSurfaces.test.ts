@@ -4,6 +4,7 @@ import {
   DIAGRAM_PRESENTATION_CONTRACT_PIN,
   entityRef,
   m3ProfileRegistry,
+  occurrenceRef,
   relationRef,
   shippedExecutorBindings,
 } from "@sentropic/diagram-core";
@@ -232,5 +233,19 @@ describe("diagram depth surfaces (DE-1 addendum 1)", () => {
     const flippedWarnings = flipped.warnings.filter((w) => w.code === "zone-surface-same");
     expect(flippedWarnings).toHaveLength(1);
     expect(flippedWarnings[0]?.refs).toEqual(["occurrence:e.inner", "occurrence:e.whiteInner"]);
+
+    // Folding inner (so inner is a collapsed surface2 zone inside surface1 outer) never falsely flags inner.
+    const innerCollapsed = layoutScene({ ...baseInput, collapsed: [occurrenceRef("e.inner")], reportSurfaceSame: true });
+    expect(innerCollapsed.status).toBe("laid-out");
+    if (innerCollapsed.status !== "laid-out") return;
+    expect(innerCollapsed.warnings.filter((w) => w.code === "zone-surface-same").map((w) => w.refs)).toEqual([
+      ["occurrence:e.outer", "occurrence:e.whiteOuter"],
+    ]);
+
+    // Folding outer hides every descendant so zone-surface-same emits zero warnings.
+    const outerCollapsed = layoutScene({ ...baseInput, collapsed: [occurrenceRef("e.outer")], reportSurfaceSame: true });
+    expect(outerCollapsed.status).toBe("laid-out");
+    if (outerCollapsed.status !== "laid-out") return;
+    expect(outerCollapsed.warnings.filter((w) => w.code === "zone-surface-same")).toEqual([]);
   });
 });
