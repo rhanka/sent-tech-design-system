@@ -241,7 +241,7 @@ const packages = [
   },
   {
     name: "@sentropic/design-system-review-core",
-    // SPEC-r5 DS-7: framework-neutral zero-dependency review core.
+    // SPEC-r6 DS-7: framework-neutral zero-dependency review core.
     requiredFiles: ["dist/index.js", "dist/index.d.ts"],
     absentPatterns: ["\\.map$", "\\.srchash$", "\\.test\\."],
   },

@@ -1,4 +1,4 @@
-// `CommentsAdapter` — the sole kit <-> host/store seam (SPEC-r5 §1.4).
+// `CommentsAdapter` — the sole kit <-> host/store seam (SPEC-r6 §1.4).
 
 import type {
   CommentProvenance,
@@ -46,7 +46,7 @@ export interface ReplyCommentInput {
 }
 
 /**
- * Sole kit <-> store seam (SPEC-r5 §1.4).
+ * Sole kit <-> store seam (SPEC-r6 §1.4).
  * Hosts bind this interface to cluster-mesh HTTP/MCP; every verb carries `tenant`,
  * thread-level verbs (`setState`, `assign`, `reanchor`) are keyed by `threadId`,
  * and row-level verbs (`edit`, `remove`) are keyed by `commentId`.

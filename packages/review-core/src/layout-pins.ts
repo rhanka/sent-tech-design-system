@@ -1,4 +1,4 @@
-// Margin-gutter pin vertical layout (SPEC-r5 §3: sort Y, gap 28px, clamped).
+// Margin-gutter pin vertical layout (SPEC-r6 §3: sort Y, gap 28px, clamped).
 
 export const DEFAULT_PIN_GAP = 28;
 

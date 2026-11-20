@@ -1,4 +1,4 @@
-// Thread grouping and `ReviewThread.anchor` derivation (SPEC-r5 §1, §3).
+// Thread grouping and `ReviewThread.anchor` derivation (SPEC-r6 §1, §3).
 
 import { decodeAnchor } from "./anchor-codec.js";
 import {
@@ -33,7 +33,7 @@ export function compareIsoTimestamps(a: string, b: string): number {
 
 /**
  * Groups flat `ReviewComment[]` rows by `threadId` into chronological `ReviewThread[]`
- * view models (SPEC-r5 §1):
+ * view models (SPEC-r6 §1):
  * - Comments within each thread are sorted chronologically by `createdAt`.
  * - Thread `state` is `'closed'` if any row in the thread is `'closed'`, else `'open'`.
  * - `anchor` is derived from the `target.sectionKey` of the FIRST row in chronological

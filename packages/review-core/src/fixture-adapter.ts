@@ -1,4 +1,4 @@
-// Port-shaped in-memory FIXTURE adapter for tests and demos ONLY (SPEC-r5 §1, §1.4, §5).
+// Port-shaped in-memory FIXTURE adapter for tests and demos ONLY (SPEC-r6 §1, §1.4, §5).
 // Never a production store: implements the C2 cluster-mesh semantics in memory so the
 // UI kit and tests can exercise every contract rule without a live backend.
 
@@ -57,7 +57,7 @@ export interface FixtureCommentsAdapterOptions {
   initialComments?: readonly FixtureInitialComment[];
   /** Optional deterministic clock returning ISO timestamps. */
   now?: () => string;
-  /** Expose optional `reanchor` verb (absent by default per SPEC-r5 §1 / S5). */
+  /** Expose optional `reanchor` verb (absent by default per SPEC-r6 §1 / S5). */
   enableReanchor?: boolean;
 }
 
@@ -170,7 +170,7 @@ function cloneRawComment(row: Comment): Comment {
 
 /**
  * Creates a port-shaped in-memory fixture implementing `CommentsAdapter` with C2
- * semantics (SPEC-r5 §1, §1.3, §1.4, §5). Intended for unit tests and demos only.
+ * semantics (SPEC-r6 §1, §1.3, §1.4, §5). Intended for unit tests and demos only.
  */
 export function createFixtureCommentsAdapter(
   options: FixtureCommentsAdapterOptions,
