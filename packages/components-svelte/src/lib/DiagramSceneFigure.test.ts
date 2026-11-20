@@ -31,10 +31,14 @@ import {
 // package's manifest and bare imports, so the test — acting as the host —
 // reads them from the built sibling workspace.
 import {
+  createView,
   CURRENT_SCHEMA_VERSION,
   DIAGRAM_PRESENTATION_CONTRACT_PIN,
+  entityRef,
   m3ProfileRegistry,
+  occurrenceRef,
   shippedExecutorBindings,
+  viewRef,
 } from "../../../diagram-core/dist/index.js";
 import DiagramSceneFigure from "./DiagramSceneFigure.svelte";
 import type { DiagramSceneCamera, DiagramSceneFigureProps } from "./DiagramSceneFigure.svelte";
@@ -696,6 +700,86 @@ describe("DiagramSceneFigure camera", () => {
     await tick();
     expect(view.zoom()).toBe(0.5);
     expect(view.readout()).toBe("100 %");
+  });
+
+  it("pins v1 and fallback-v1 figure max size and zoom bounds (maxDisplayScale, minReadableScale, fit) to 0.41.5 values", async () => {
+    // 1. Explicit v1 view and unpinned v1 scene produce identical 0.41.5 camera bounds and figure fit height.
+    const completeSingle = sceneOf("complete-single", [{ id: "solo" }]);
+    const completeEntity = {
+      form: "card",
+      text: { kicker: "KICKER", title: "Complete card", body: "Primary line", detail: "Secondary line", footer: "Footer" },
+    };
+    const completePres = {
+      ...completeSingle.presentation,
+      entities: { [occurrence("solo")]: completeEntity },
+    } as unknown as ScenePresentation;
+    const baseView = createView({
+      viewId: viewRef("complete-v1-check"),
+      semanticDocumentId: completeSingle.document.documentId,
+      revision: 1,
+    });
+    const withOcc = (anatomy: "v1" | "v2") => ({
+      ...baseView,
+      presentation: { ...baseView.presentation, anatomy },
+      entityOccurrences: {
+        [occurrence("solo")]: {
+          id: occurrenceRef("e.solo"),
+          entity: entityRef("solo"),
+          geometry: { x: 0, y: 0, width: 460, height: 200 },
+        },
+      },
+    }) as unknown as NonNullable<DiagramSceneFigureProps["view"]>;
+
+    // Unpinned v1, explicit anatomy:"v1", and createView("v2") falling back to v1 all match 0.41.5 zoom/size.
+    for (const hostView of [undefined, withOcc("v1"), withOcc("v2")] as const) {
+      const mounted = mount(
+        { ...completeSingle, presentation: completePres },
+        hostView === undefined ? {} : { view: hostView },
+      );
+      await tick();
+      const cam = mounted.component.getCamera();
+      expect(cam).toEqual({
+        zoom: 0.62,
+        readout: 100,
+        minZoom: 0.62,
+        maxZoom: 0.62,
+        fitZoom: 0.62,
+        pans: false,
+      });
+      expect(mounted.rectOf("solo")).toMatchObject({ width: 460, height: 200 });
+      expect(mounted.viewport.style.height).toBe("126px");
+      expect(mounted.viewport.style.aspectRatio).toBe(String(16 / 9));
+      mounted.unmount();
+    }
+
+    // 2. Wide v1 scene at narrow viewport floors at 0.45 and caps at 0.62, with nested fold hiding descendants cleanly.
+    reducedMotion = true;
+    const nested = sceneOf("nested-v1-zoom", [
+      { id: "outer", container: true },
+      { id: "inner", container: true, parent: "outer" },
+      ...children("inner", 6),
+      { id: "ext" },
+    ]);
+    setWindow(390, 844);
+    const view = mount(nested);
+    await tick();
+    const initialCam = view.component.getCamera();
+    expect(initialCam.maxZoom).toBe(0.62);
+    expect(initialCam.minZoom).toBe(0.45);
+    expect(initialCam.zoom).toBe(0.45);
+    expect(initialCam.pans).toBe(true);
+    expect(view.drawn()).toContain(occurrence("inner1"));
+    // DE-1 nested fold fix stays intact: folding outer hides inner AND all 6 grandchildren,
+    // and Fit returns to the 0.41.5 maxDisplayScale cap when the folded scene fits.
+    await fireEvent.click(view.toggle("outer"));
+    await tick();
+    expect(view.drawn().sort()).toEqual([occurrence("ext"), occurrence("outer")]);
+    await fireEvent.click(view.button("Fit"));
+    await tick();
+    expect(view.component.getCamera().maxZoom).toBe(0.62);
+    expect(view.component.getCamera().minZoom).toBeGreaterThanOrEqual(0.45);
+    expect(view.zoom()).toBeLessThanOrEqual(0.62);
+    view.unmount();
   });
 });
 
