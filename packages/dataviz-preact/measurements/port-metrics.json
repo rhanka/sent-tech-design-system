@@ -7,15 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 70,
+    "portedModules": 75,
     "barrelFile": "index.ts",
-    "remainingModules": 57,
+    "remainingModules": 52,
     "remainingFiles": [
-      "lib/GeoHexbinMap.tsx",
-      "lib/GeoJsonMap.tsx",
-      "lib/GeoPointMap.tsx",
-      "lib/HLCChart.tsx",
-      "lib/HeatmapChart.tsx",
       "lib/HeikinAshiChart.tsx",
       "lib/HistogramChart.tsx",
       "lib/HollowCandlestickChart.tsx",
@@ -841,18 +836,73 @@
         "total": 201,
         "touched": 2,
         "emissionRewrites": 1
+      },
+      {
+        "module": "GeoHexbinMap",
+        "kind": "component",
+        "file": "src/lib/GeoHexbinMap.tsx",
+        "reactSource": "lib/GeoHexbinMap.tsx",
+        "reactLines": 44,
+        "preactLines": 49,
+        "total": 193,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "GeoJsonMap",
+        "kind": "component",
+        "file": "src/lib/GeoJsonMap.tsx",
+        "reactSource": "lib/GeoJsonMap.tsx",
+        "reactLines": 50,
+        "preactLines": 55,
+        "total": 197,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "GeoPointMap",
+        "kind": "component",
+        "file": "src/lib/GeoPointMap.tsx",
+        "reactSource": "lib/GeoPointMap.tsx",
+        "reactLines": 53,
+        "preactLines": 58,
+        "total": 205,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "HLCChart",
+        "kind": "component",
+        "file": "src/lib/HLCChart.tsx",
+        "reactSource": "lib/HLCChart.tsx",
+        "reactLines": 58,
+        "preactLines": 63,
+        "total": 199,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "HeatmapChart",
+        "kind": "component",
+        "file": "src/lib/HeatmapChart.tsx",
+        "reactSource": "lib/HeatmapChart.tsx",
+        "reactLines": 24,
+        "preactLines": 30,
+        "total": 212,
+        "touched": 3,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 70,
-      "reactLines": 6013,
-      "preactLines": 6385,
-      "total": 33318,
-      "touched": 401,
-      "emissionRewrites": 68
+      "modules": 75,
+      "reactLines": 6242,
+      "preactLines": 6640,
+      "total": 34324,
+      "touched": 412,
+      "emissionRewrites": 73
     },
     "shared": {
-      "src/index.ts": 179,
+      "src/index.ts": 191,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,

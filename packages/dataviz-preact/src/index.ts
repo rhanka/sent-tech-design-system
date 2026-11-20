@@ -177,3 +177,15 @@ export { GeoDensityMap } from './lib/GeoDensityMap.js';
 export type { GeoDensityMapProps } from './lib/GeoDensityMap.js';
 export { GeoFlowMap } from './lib/GeoFlowMap.js';
 export type { GeoFlowMapProps } from './lib/GeoFlowMap.js';
+
+// Group 4 batch 1 components.
+export { GeoHexbinMap } from './lib/GeoHexbinMap.js';
+export type { GeoHexbinMapProps } from './lib/GeoHexbinMap.js';
+export { GeoJsonMap } from './lib/GeoJsonMap.js';
+export type { GeoJsonMapProps } from './lib/GeoJsonMap.js';
+export { GeoPointMap } from './lib/GeoPointMap.js';
+export type { GeoPointMapProps } from './lib/GeoPointMap.js';
+export { HLCChart } from './lib/HLCChart.js';
+export type { HLCChartProps } from './lib/HLCChart.js';
+export { HeatmapChart } from './lib/HeatmapChart.js';
+export type { HeatmapChartProps } from './lib/HeatmapChart.js';
