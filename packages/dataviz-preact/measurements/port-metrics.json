@@ -7,15 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 90,
+    "portedModules": 95,
     "barrelFile": "index.ts",
-    "remainingModules": 37,
+    "remainingModules": 32,
     "remainingFiles": [
-      "lib/PolygonChart.tsx",
-      "lib/QueryBar.tsx",
-      "lib/RadarChart.tsx",
-      "lib/RangeSliderFilter.tsx",
-      "lib/RecordsTable.tsx",
       "lib/ReferenceLineChart.tsx",
       "lib/RelativeDateFilter.tsx",
       "lib/RenkoChart.tsx",
@@ -1041,23 +1036,78 @@
         "total": 220,
         "touched": 2,
         "emissionRewrites": 1
+      },
+      {
+        "module": "PolygonChart",
+        "kind": "component",
+        "file": "src/lib/PolygonChart.tsx",
+        "reactSource": "lib/PolygonChart.tsx",
+        "reactLines": 53,
+        "preactLines": 58,
+        "total": 193,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "QueryBar",
+        "kind": "component",
+        "file": "src/lib/QueryBar.tsx",
+        "reactSource": "lib/QueryBar.tsx",
+        "reactLines": 59,
+        "preactLines": 63,
+        "total": 285,
+        "touched": 16,
+        "emissionRewrites": 2
+      },
+      {
+        "module": "RadarChart",
+        "kind": "component",
+        "file": "src/lib/RadarChart.tsx",
+        "reactSource": "lib/RadarChart.tsx",
+        "reactLines": 51,
+        "preactLines": 57,
+        "total": 223,
+        "touched": 3,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "RangeSliderFilter",
+        "kind": "component",
+        "file": "src/lib/RangeSliderFilter.tsx",
+        "reactSource": "lib/RangeSliderFilter.tsx",
+        "reactLines": 79,
+        "preactLines": 81,
+        "total": 500,
+        "touched": 3,
+        "emissionRewrites": 2
+      },
+      {
+        "module": "RecordsTable",
+        "kind": "component",
+        "file": "src/lib/RecordsTable.tsx",
+        "reactSource": "lib/RecordsTable.tsx",
+        "reactLines": 90,
+        "preactLines": 92,
+        "total": 510,
+        "touched": 2,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 90,
-      "reactLines": 7148,
-      "preactLines": 7619,
-      "total": 38366,
-      "touched": 467,
-      "emissionRewrites": 89
+      "modules": 95,
+      "reactLines": 7480,
+      "preactLines": 7970,
+      "total": 40077,
+      "touched": 493,
+      "emissionRewrites": 96
     },
     "shared": {
-      "src/index.ts": 227,
+      "src/index.ts": 239,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 93
+      "vitest.react.config.ts": 96
     }
   },
   "reach": {

@@ -9,7 +9,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
-  "ownershipNote": "Lot P6 scaffold + groups 1-3 (70 files) + group 4 batches 1-4 (20 files -> 90/128 ported): GeoHexbinMap, GeoJsonMap, GeoPointMap, HLCChart, HeatmapChart, HeikinAshiChart, HistogramChart, HollowCandlestickChart, ItemChart, KpiCardGroup, MekkoChart, OHLCChart, ObjectLayers, OrganizationChart, PackedBubbleChart, PalettePicker, ParallelCoordinatesChart, PercentileBandChart, PivotDataTable, PointAndFigureChart.",
+  "ownershipNote": "Lot P6 scaffold + groups 1-3 (70 files) + group 4 batches 1-5 (25 files -> 95/128 ported): GeoHexbinMap, GeoJsonMap, GeoPointMap, HLCChart, HeatmapChart, HeikinAshiChart, HistogramChart, HollowCandlestickChart, ItemChart, KpiCardGroup, MekkoChart, OHLCChart, ObjectLayers, OrganizationChart, PackedBubbleChart, PalettePicker, ParallelCoordinatesChart, PercentileBandChart, PivotDataTable, PointAndFigureChart, PolygonChart, QueryBar, RadarChart, RangeSliderFilter, RecordsTable.",
   "modules": [
     {
       "module": "adapter",
@@ -816,6 +816,51 @@
       "module": "PointAndFigureChart",
       "file": "src/lib/PointAndFigureChart.tsx",
       "reactSource": "dataviz-react/src/lib/PointAndFigureChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "PolygonChart",
+      "file": "src/lib/PolygonChart.tsx",
+      "reactSource": "dataviz-react/src/lib/PolygonChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "QueryBar",
+      "file": "src/lib/QueryBar.tsx",
+      "reactSource": "dataviz-react/src/lib/QueryBar.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "RadarChart",
+      "file": "src/lib/RadarChart.tsx",
+      "reactSource": "dataviz-react/src/lib/RadarChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "RangeSliderFilter",
+      "file": "src/lib/RangeSliderFilter.tsx",
+      "reactSource": "dataviz-react/src/lib/RangeSliderFilter.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "RecordsTable",
+      "file": "src/lib/RecordsTable.tsx",
+      "reactSource": "dataviz-react/src/lib/RecordsTable.tsx",
       "kind": "component",
       "lot": "P6",
       "renderable": true,
