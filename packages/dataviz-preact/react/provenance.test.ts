@@ -60,6 +60,11 @@ import * as handWrittenDonutChart from "../../dataviz-react/src/lib/DonutChart.j
 import * as handWrittenDrillBarChart from "../../dataviz-react/src/lib/DrillBarChart.js";
 import * as handWrittenDrillBreadcrumb from "../../dataviz-react/src/lib/DrillBreadcrumb.js";
 import * as handWrittenTreemapChart from "../../dataviz-react/src/lib/TreemapChart.js";
+import * as handWrittenDrillChart from "../../dataviz-react/src/lib/DrillChart.js";
+import * as handWrittenDumbbellChart from "../../dataviz-react/src/lib/DumbbellChart.js";
+import * as handWrittenErrorBarsChart from "../../dataviz-react/src/lib/ErrorBarsChart.js";
+import * as handWrittenEventFeedPanel from "../../dataviz-react/src/lib/EventFeedPanel.js";
+import * as handWrittenFieldPane from "../../dataviz-react/src/lib/FieldPane.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -135,6 +140,11 @@ const switched = [
   "DrillBarChart",
   "DrillBreadcrumb",
   "TreemapChart",
+  "DrillChart",
+  "DumbbellChart",
+  "ErrorBarsChart",
+  "EventFeedPanel",
+  "FieldPane",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -202,6 +212,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   DrillBarChart: handWrittenDrillBarChart.DrillBarChart,
   DrillBreadcrumb: handWrittenDrillBreadcrumb.DrillBreadcrumb,
   TreemapChart: handWrittenTreemapChart.TreemapChart,
+  DrillChart: handWrittenDrillChart.DrillChart,
+  DumbbellChart: handWrittenDumbbellChart.DumbbellChart,
+  ErrorBarsChart: handWrittenErrorBarsChart.ErrorBarsChart,
+  EventFeedPanel: handWrittenEventFeedPanel.EventFeedPanel,
+  FieldPane: handWrittenFieldPane.FieldPane,
 };
 
 describe("dataviz React leg provenance", () => {

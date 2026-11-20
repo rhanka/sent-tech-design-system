@@ -7,15 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 55,
+    "portedModules": 60,
     "barrelFile": "index.ts",
-    "remainingModules": 72,
+    "remainingModules": 67,
     "remainingFiles": [
-      "lib/DrillChart.tsx",
-      "lib/DumbbellChart.tsx",
-      "lib/ErrorBarsChart.tsx",
-      "lib/EventFeedPanel.tsx",
-      "lib/FieldPane.tsx",
       "lib/FlamegraphChart.tsx",
       "lib/ForceGraph.tsx",
       "lib/ForecastLineChart.tsx",
@@ -691,23 +686,78 @@
         "total": 207,
         "touched": 4,
         "emissionRewrites": 1
+      },
+      {
+        "module": "DrillChart",
+        "kind": "component",
+        "file": "src/lib/DrillChart.tsx",
+        "reactSource": "lib/DrillChart.tsx",
+        "reactLines": 125,
+        "preactLines": 130,
+        "total": 544,
+        "touched": 3,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DumbbellChart",
+        "kind": "component",
+        "file": "src/lib/DumbbellChart.tsx",
+        "reactSource": "lib/DumbbellChart.tsx",
+        "reactLines": 66,
+        "preactLines": 72,
+        "total": 240,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ErrorBarsChart",
+        "kind": "component",
+        "file": "src/lib/ErrorBarsChart.tsx",
+        "reactSource": "lib/ErrorBarsChart.tsx",
+        "reactLines": 53,
+        "preactLines": 59,
+        "total": 275,
+        "touched": 15,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "EventFeedPanel",
+        "kind": "component",
+        "file": "src/lib/EventFeedPanel.tsx",
+        "reactSource": "lib/EventFeedPanel.tsx",
+        "reactLines": 60,
+        "preactLines": 63,
+        "total": 202,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "FieldPane",
+        "kind": "component",
+        "file": "src/lib/FieldPane.tsx",
+        "reactSource": "lib/FieldPane.tsx",
+        "reactLines": 52,
+        "preactLines": 61,
+        "total": 217,
+        "touched": 3,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 55,
-      "reactLines": 5068,
-      "preactLines": 5355,
-      "total": 28877,
-      "touched": 328,
-      "emissionRewrites": 53
+      "modules": 60,
+      "reactLines": 5424,
+      "preactLines": 5740,
+      "total": 30355,
+      "touched": 353,
+      "emissionRewrites": 58
     },
     "shared": {
-      "src/index.ts": 143,
+      "src/index.ts": 155,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 88
+      "vitest.react.config.ts": 89
     }
   },
   "reach": {
