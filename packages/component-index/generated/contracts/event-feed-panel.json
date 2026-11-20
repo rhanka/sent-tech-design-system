@@ -1,8 +1,8 @@
 {
   "componentId": "event-feed-panel",
   "contractSource": "derived",
-  "digest": "sha256:7b52599e65c663220cda907fb33563ba9becfd6ef15f644c38ea9bb1a7d19421",
-  "entryDigest": "sha256:c1d492cd67ff5f66c7ded61f4539e902d5ea1b73f55d1d95aaaf58961ad14793",
+  "digest": "sha256:b8dceef278a0b130a5137d9af8ac5836fe90d70fe4a1ce3688bd929e4a7b4b58",
+  "entryDigest": "sha256:be41ac5a041f9b97936ae091e3da2b476e492f7f7fba415bd540f1f5bc849980",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -277,7 +277,7 @@
         "declarationPath": "packages/components-svelte/dist/EventFeedPanel.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "EventFeedPanelProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

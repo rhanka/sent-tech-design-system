@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Toast.svelte",
-      "version": "0.43.0"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Ephemeral success/error notification.",
     "fr": "Notification éphémère success/error."
   },
-  "digest": "sha256:d1b30c9f47b56afb408460df19e10dc4e849b18cd458dc323a8319edc4d33474",
+  "digest": "sha256:c33353568c52aef27d21763251c31c1a1049c4fb7587214fab43fd68294fdc13",
   "displayName": "Toast",
   "format": "component-entry/v1",
   "frameworks": [

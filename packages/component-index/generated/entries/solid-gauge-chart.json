@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SolidGaugeChart.svelte",
-      "version": "0.43.0"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Solid progress ring: filled arc proportional to value, threshold-tinted, with centered value.",
     "fr": "Anneau de progression plein : arc rempli proportionnel à la valeur, teinté par seuils, valeur centrale."
   },
-  "digest": "sha256:683247a307a180943f0dfb526c191ee71fd5d284d56cb2d93cb99d0a086a4822",
+  "digest": "sha256:b743861da6ad957d23e2d1c78a8a7e251a809a6d7d947937d5103b8e8e0dd5d0",
   "displayName": "SolidGaugeChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "col",
   "contractSource": "derived",
-  "digest": "sha256:fc1a902e0257e3ea8ff8747a8125f48a999f5bd669165e632ddb1c71105f9cda",
-  "entryDigest": "sha256:8e471c78d6ef6d6b06136041afcbedbc595cae81d015aee0449fd86068e60bf1",
+  "digest": "sha256:579187a854b125bfa55bdb6de4395e437bc64a73d8aad300f737758d5d6abb4c",
+  "entryDigest": "sha256:61acab4c9c675e01985e7a923b1e6305d2a18e3bf7b9441a64a73812f5dcbd17",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -250,7 +250,7 @@
         "declarationPath": "packages/components-svelte/dist/Col.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ColProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

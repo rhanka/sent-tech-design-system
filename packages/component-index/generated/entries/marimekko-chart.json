@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/MarimekkoChart.svelte",
-      "version": "0.43.0"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Marimekko chart: weighted column width with stacked segments.",
     "fr": "Matrice Marimekko : largeur de colonne pondérée, segments en hauteur."
   },
-  "digest": "sha256:d7f284193cde5da9995fdb8e074e69778e0e0bd1bc805140577614f17f775652",
+  "digest": "sha256:9cc5510f5646c7d308e4bc86a7507ad4eb8bf29035a2ebadd5128fef94648be4",
   "displayName": "MarimekkoChart",
   "format": "component-entry/v1",
   "frameworks": [

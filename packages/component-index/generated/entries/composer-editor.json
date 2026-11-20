@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/rich-text-editor/ComposerEditor.svelte",
-      "version": "0.43.0"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -24,7 +24,7 @@
     "en": "Controlled text composer with capture that waits for IME composition.",
     "fr": "Surface de rédaction à valeur texte contrôlée et capture compatible avec la composition IME."
   },
-  "digest": "sha256:79276cd1e137d3e2d4c8918e4b382fc082a549828f8cf1ab65e6a32bba221aef",
+  "digest": "sha256:c1b6fcedb414da5a06f175a0b0c81e9399e45867bb3c17d89bb2bc8fd41e50c6",
   "displayName": "ComposerEditor",
   "format": "component-entry/v1",
   "frameworks": [

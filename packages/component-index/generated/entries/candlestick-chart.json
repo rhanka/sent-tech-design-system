@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/CandlestickChart.svelte",
-      "version": "0.43.0"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "OHLC candlestick chart for financial price data.",
     "fr": "Bougies OHLC pour visualiser les cours financiers."
   },
-  "digest": "sha256:f47c749d6ed54d26fe7574de89374cbf34abd27756b475d117fd041105300e71",
+  "digest": "sha256:881e8b7fabee5653ac0a9ba58a7d0cc681b5d3b00d217c77c498e3a990bf178c",
   "displayName": "CandlestickChart",
   "format": "component-entry/v1",
   "frameworks": [

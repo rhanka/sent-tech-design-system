@@ -1,8 +1,8 @@
 {
   "componentId": "divergent-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:6980860b59e2ffcf4e627af2087c4d207d5d5d74a92a095260b5bfca140df87c",
-  "entryDigest": "sha256:f32eab0aea795b012cfd7a1bad68a875a3dd230da2b6067ea914ea7bdf65a972",
+  "digest": "sha256:74efe161204f37a5d7b03ceeab22150887de5e606adc308ca5c1f707a403b594",
+  "entryDigest": "sha256:def19a86e79204f66db6af576a506c90135d99c70e687eebabaf1d6ea7d9751b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -286,7 +286,7 @@
         "declarationPath": "packages/components-svelte/dist/DivergentBarChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DivergentBarChartProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "partial",
       "unresolved": [],

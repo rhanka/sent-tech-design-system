@@ -1,6 +1,6 @@
 # Release
 
-Sent Tech Design System publishes twenty-two public npm packages from this private workspace root:
+Sent Tech Design System publishes twenty-three public npm packages from this private workspace root:
 
 - `@sentropic/design-system-tokens`, `@sentropic/design-system-themes` (tag `core-v<version>`, published tokens first, then themes, via the `core-v` run of `npm-publish.yml`)
 - `@sentropic/design-system-svelte`
@@ -16,6 +16,7 @@ Sent Tech Design System publishes twenty-two public npm packages from this priva
 - `@sentropic/graph` (tag `graph-v<version>`)
 - `@sentropic/dataviz-core`, `@sentropic/dataviz-svelte`, `@sentropic/dataviz-react`, `@sentropic/dataviz-vue`, `@sentropic/dataviz-angular` (tag `dataviz-v<version>`, lockstep except an ahead Vue prerelease; Vue-only prereleases use `dataviz-vue-v<version>`)
 - `@sentropic/design-system-rich-text` (tag `rich-text-v<version>`)
+- `@sentropic/design-system-review-core` (tag `review-core-v<version>`, before `svelte`)
 - `@sentropic/design-system-elements` (tag `elements-v<version>`)
 - `@sentropic/diagram-core` (tag `diagram-core-v<version>`)
 - `@sentropic/diagram-canvas` (tag `diagram-canvas-v<version>`, after `diagram-core`, before `svelte`)
@@ -71,6 +72,13 @@ Plus, for the diagram-canvas package:
 - Workflow: `.github/workflows/diagram-canvas-publish.yml`
 - Registry: `https://registry.npmjs.org`
 
+Plus, for the review-core package:
+
+- Package: `@sentropic/design-system-review-core`
+- Repository: `rhanka/sent-tech-design-system`
+- Workflow: `.github/workflows/review-core-publish.yml`
+- Registry: `https://registry.npmjs.org`
+
 The packages are scoped and public. Keep `publishConfig.access = "public"` in each publishable workspace.
 
 Both Dataviz tag forms use `dataviz-publish.yml`, preserving its npm Trusted Publisher identity. For example, `dataviz-vue-v0.6.0-next.0` validates and publishes only Vue under `next`, with its exact stable `dataviz-core@0.5.0` dependency. A `dataviz-v0.5.x` release validates the core/Svelte/React/Angular lockstep and omits Vue while Vue is on a higher prerelease line; an unrelated stable Vue version or a behind prerelease still fails. Matching Vue versions join the family release. The publish and post-publish checks use the same guarded package selection. Prereleases use their first identifier as dist-tag (`next`, `beta`, `rc`); `latest` is rejected for prereleases. Every selected package retains its npm-existence guard, and Vue additionally requires the registry-only packed closure check before publication.
@@ -101,7 +109,7 @@ git diff --check
 git status --short --branch
 ```
 
-`npm run pack:smoke` verifies seventeen package tarballs (the design-system ports including `rich-text` and `elements`, `graph`, `diagram-core`, `diagram-canvas` and the five `dataviz-*`) and installs them together in a clean temporary project.
+`npm run pack:smoke` verifies eighteen package tarballs (the design-system ports including `rich-text`, `review-core` and `elements`, `graph`, `diagram-core`, `diagram-canvas` and the five `dataviz-*`) and installs them together in a clean temporary project.
 
 `npm run dist:import-closure` additionally packs **every publishable workspace** and installs each candidate in its own temporary consumer outside the repository. Dependencies come from npm, including already-published siblings. Only an exact sibling version missing from the registry may use a local tarball, reported as `UNPUBLISHED SIBLING`; authentication or network failures fail the gate. `--workspaces=<comma-separated package names>` selects release candidates. Every `*-publish.yml` runs this gate in the publish job before publication; CI verify runs it for all publishable packages.
 

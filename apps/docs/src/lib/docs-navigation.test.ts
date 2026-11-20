@@ -54,7 +54,16 @@ describe("docs navigation model", () => {
           name !== "ListReportPage" &&
           name !== "MasterDetail" &&
           name !== "ObjectPage" &&
-          name !== "Wizard"
+          name !== "Wizard" &&
+          // Review kit (DS-3..DS-5) — entrées catalogue / documentation livrées en DS-7
+          name !== "CommentAuthorship" &&
+          name !== "CommentComposer" &&
+          name !== "CommentLayer" &&
+          name !== "CommentPin" &&
+          name !== "CommentThread" &&
+          name !== "OrphanList" &&
+          name !== "ReviewModeToggle" &&
+          name !== "ThreadPanel"
       )
       .sort();
     const catalogComponents = COMPONENTS.map((component) => component.name).sort();

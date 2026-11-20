@@ -1,8 +1,8 @@
 {
   "componentId": "area-spline-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:e67feef36a050f2f48c3e76a713bf0454f3cd5861d3988554bef79c57fa58cb7",
-  "entryDigest": "sha256:ab25e2d9f6178e6ad99588c56172b3c303ac3abb7acf88ccbc5c7e8cd193ea68",
+  "digest": "sha256:2d056fe52925d685f53840b3ccd556d6c3a2c1491d34e8572124998b8c5fee66",
+  "entryDigest": "sha256:b3f87a9e38f613f13c4b3b28a002a2840a5664cfad905b7ef30fe42b5574ba9c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-svelte/dist/AreaSplineRangeChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AreaSplineRangeChartProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

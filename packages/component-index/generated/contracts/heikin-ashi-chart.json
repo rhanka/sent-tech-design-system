@@ -1,8 +1,8 @@
 {
   "componentId": "heikin-ashi-chart",
   "contractSource": "derived",
-  "digest": "sha256:7fe6da4a769d3d75fa406ac535362d6b7accda299ae4b759a09e4369b6bafd09",
-  "entryDigest": "sha256:976aa7c2c8becefb5322d3d92cc9c1bcb53bcf0857604fb95da7093ef2a68a7b",
+  "digest": "sha256:380b4ebb391ea24e8cb6a4f6a37fa42229f35e0955e9ff4c45d2c1c77e58d1bd",
+  "entryDigest": "sha256:d3c6f9975f543c8f2d68be34c6439cee9efb8c130318adf9682b8304d6e6fbd8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/HeikinAshiChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HeikinAshiChartProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

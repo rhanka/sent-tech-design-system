@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Embed.svelte",
-      "version": "0.43.0"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Controlled iframe wrapper with strict sandbox, ratio, and loading control.",
     "fr": "Iframe contrôlée avec sandbox strict, ratio et chargement configurable."
   },
-  "digest": "sha256:365b3fab136a576adea5b27aa3a188bbca4ebdea4be3ce5fdf84714b4c3d5176",
+  "digest": "sha256:90095a9eb0eaa9372a418dc5b9456ec792a82c4b468e3d63132f2705abede9bd",
   "displayName": "Embed",
   "format": "component-entry/v1",
   "frameworks": [

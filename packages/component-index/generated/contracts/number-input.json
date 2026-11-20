@@ -1,8 +1,8 @@
 {
   "componentId": "number-input",
   "contractSource": "derived",
-  "digest": "sha256:cf172950a0a147a399a08ad1aa6506c1173113243e1d51b044a2dde3fedb2f99",
-  "entryDigest": "sha256:bcf82452310c356765bdb25d6530d848ab7c76a93fa2586a044a8b9923b45526",
+  "digest": "sha256:648a6b38962c9f4552166927a13b379e529d02bbeaedbf84d4fe9e168dac9d54",
+  "entryDigest": "sha256:d3ec87c0aee834a0c748d879a62a05c1012fcfc3c2e5bdd6faa9c893fe9e1e05",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -310,7 +310,7 @@
         "declarationPath": "packages/components-svelte/dist/NumberInput.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "NumberInputProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "rich-text-editor",
   "contractSource": "derived",
-  "digest": "sha256:bac8d5557f0c4dcb6f735ebe0c86417463ed4d6b7a01fa875098599a7cc40312",
-  "entryDigest": "sha256:256951427000e8fae8eaf82edf495a2a3a24374463291042b065446b826396ee",
+  "digest": "sha256:8c702c88195c1a21d3278ad5d2721f2511a1affcdce42da6f5f02e58f7cfa700",
+  "entryDigest": "sha256:9a843666816f170fcaa6b13ec546cfcb4d023ff540b36adbb80b1520b7c99b76",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1708,7 +1708,7 @@
         "declarationPath": "packages/components-svelte/dist/rich-text-editor/RichTextEditor.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RichTextEditorProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "partial",
       "unresolved": [],

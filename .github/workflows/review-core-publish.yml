@@ -1,0 +1,131 @@
+name: Review Core Publish
+
+# Publication de @sentropic/design-system-review-core, sur sa propre ligne de
+# version, indépendante des autres paquets DS.
+# Déclenchée par un tag `review-core-v<version>`.
+#
+# Publication via npm Trusted Publishing (OIDC) uniquement — aucun secret de
+# jeton npm n'est utilisé. Le trusted publisher attendu côté npm est :
+# rhanka/sent-tech-design-system + review-core-publish.yml.
+#
+# Ordre de publication (docs/release.md) : review-core → svelte (le manifeste
+# de @sentropic/design-system-svelte épingle @sentropic/design-system-review-core
+# à sa version exacte et svelte-publish.yml échoue fermé tant qu'elle n'est pas
+# visible sur le registre npm).
+
+on:
+  push:
+    tags: ["review-core-v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: Build workspace for package smoke
+        run: npm run build
+      - name: Verify review-core package
+        run: |
+          npm --workspace @sentropic/design-system-review-core run build
+          npm --workspace @sentropic/design-system-review-core run check
+          npm --workspace @sentropic/design-system-review-core test
+      - name: Verify publishable licensing
+        run: npm run licensing:check
+      - name: Smoke packed packages
+        run: npm run pack:smoke
+
+  release-guard:
+    needs: verify
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/review-core-v')
+    env:
+      RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Verify tag is merged into default branch
+        run: |
+          git fetch origin "${RELEASE_BRANCH}:refs/remotes/origin/${RELEASE_BRANCH}"
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/${RELEASE_BRANCH}"; then
+            echo "::error::Refusing to publish ${TAG}: ${GITHUB_SHA} is not merged into origin/${RELEASE_BRANCH}."
+            exit 1
+          fi
+      - name: Verify review-core version matches tag
+        run: |
+          EXPECTED="${TAG#review-core-v}"
+          ACTUAL=$(node -p "require('./packages/review-core/package.json').version")
+          if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "::error::Tag ${TAG} expects ${EXPECTED} but packages/review-core is ${ACTUAL}."
+            exit 1
+          fi
+          echo "review-core version matches ${EXPECTED}"
+
+  publish:
+    needs: release-guard
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/review-core-v')
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+      - name: Upgrade npm
+        run: npm install -g npm@11.6.2
+      - name: Install and build
+        run: |
+          npm ci
+          npm --workspace @sentropic/design-system-review-core run build
+      - name: Dist import closure (packed package with registry dependencies)
+        run: npm run dist:import-closure -- --workspaces=@sentropic/design-system-review-core
+      - name: Publish review-core package
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          # Skipped when the version is already on npm; never republished.
+          VERSION="${TAG#review-core-v}"
+          if npm view "@sentropic/design-system-review-core@${VERSION}" version --silent > /dev/null 2>&1; then
+            echo "@sentropic/design-system-review-core@${VERSION} is already on npm: skipped."
+          else
+            npm publish --workspace @sentropic/design-system-review-core --access public
+          fi
+
+  post-publish-check:
+    needs: publish
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/review-core-v')
+    permissions:
+      contents: read
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+      - name: Wait for npm propagation
+        run: |
+          VERSION="${TAG#review-core-v}"
+          for attempt in {1..20}; do
+            if npm view "@sentropic/design-system-review-core@${VERSION}" version --silent > /dev/null 2>&1; then
+              echo "@sentropic/design-system-review-core@${VERSION} is available from npm."
+              exit 0
+            fi
+            echo "Waiting for npm propagation, attempt ${attempt}/20..."
+            sleep 15
+          done
+          echo "::error::Timed out waiting for npm propagation."
+          exit 1

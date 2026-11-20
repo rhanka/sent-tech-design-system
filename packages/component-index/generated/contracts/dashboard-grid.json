@@ -1,8 +1,8 @@
 {
   "componentId": "dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:fac2fa0e17709838c9b9093341455cb6829567cec29c60e6d9314684bc8515c9",
-  "entryDigest": "sha256:9b09ac215e715785996cac522e86ec3db3fe67f400720bc6935509e48aef9bc6",
+  "digest": "sha256:19e81f552569b8726b1270f09f4ae6cf02f38100ce79ac4d90f15d9a0f19a76b",
+  "entryDigest": "sha256:35b52ef41d3698a1bd6dcb5c45f5daa612d5440c63d75b62e928c77c1cf96fba",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -315,7 +315,7 @@
         "declarationPath": "packages/components-svelte/dist/DashboardGrid.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DashboardGridProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

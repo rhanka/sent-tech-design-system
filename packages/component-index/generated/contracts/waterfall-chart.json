@@ -1,8 +1,8 @@
 {
   "componentId": "waterfall-chart",
   "contractSource": "derived",
-  "digest": "sha256:bf3ba437ee94c96651de8dfdf04cbdd2a2416f48d3274ae0d87da14d4d2e32a7",
-  "entryDigest": "sha256:da68bdcb507950f91abcc45ffe9e8f742167c6b6286518a22e5fab67c45355a1",
+  "digest": "sha256:570f8a29b7921fe0b4abe37aa22a4a4f05263091de23fbea4972148ed4e53daf",
+  "entryDigest": "sha256:34c07dd43c91cc2dc2bfa69fe94ab79cb6672c810b5f3972fbeed861fe7c29ac",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -250,7 +250,7 @@
         "declarationPath": "packages/components-svelte/dist/WaterfallChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "WaterfallChartProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "partial",
       "unresolved": [],

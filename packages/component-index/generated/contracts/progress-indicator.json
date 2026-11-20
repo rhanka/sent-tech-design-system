@@ -1,8 +1,8 @@
 {
   "componentId": "progress-indicator",
   "contractSource": "derived",
-  "digest": "sha256:67ca72f3c1717280aaf987f67cd90e8023a68b829abb5f9e8dc88446baa43e0f",
-  "entryDigest": "sha256:4355122d5c4fb84716333cc909f8ba10730a14ffa8180a4d59b25a28039819af",
+  "digest": "sha256:82a892a693063e2f3214a83e2efd5a245c2dacdf0d0ac4471de673da077f5e28",
+  "entryDigest": "sha256:b075e99f20cae491d081d0fc09d3c8121e11aa68af4d512aa47c604c43e608ab",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-svelte/dist/ProgressIndicator.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ProgressIndicatorProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "partial",
       "unresolved": [],

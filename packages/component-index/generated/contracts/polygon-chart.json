@@ -1,8 +1,8 @@
 {
   "componentId": "polygon-chart",
   "contractSource": "derived",
-  "digest": "sha256:e9551d4a2cfc2b221f949a3359157fc0806a4106e21e72cb8cd494ee7cde7055",
-  "entryDigest": "sha256:b35485a87497ff05966192b84121545deed7f99457c3fc490bb5a579ac1f8de2",
+  "digest": "sha256:1e2e590f5c732139efab1c4b16847aa76c278fb55246e47b58a24ab9a36d6ee9",
+  "entryDigest": "sha256:6808e719ef19842d674a551eba17acd73056de4c54c1f4af6f30dc3437631587",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/PolygonChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PolygonChartProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

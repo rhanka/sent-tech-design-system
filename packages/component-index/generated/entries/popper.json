@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Popper.svelte",
-      "version": "0.43.0"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Positions a floating panel next to an anchor: flip, shift, arrow.",
     "fr": "Positionne un panneau flottant près d'une ancre : flip, shift, arrow."
   },
-  "digest": "sha256:ad37130685aff39b07c0ec5af9ca6deda781b8b9eae31bc55f1ea09d91c3ebf0",
+  "digest": "sha256:f8e2b4e7e4e9f94af68cf69dccbc30eb61618ab16d51cbd5e9f810ff25836ee6",
   "displayName": "Popper",
   "format": "component-entry/v1",
   "frameworks": [

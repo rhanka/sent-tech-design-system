@@ -1,8 +1,8 @@
 {
   "componentId": "solid-gauge-chart",
   "contractSource": "derived",
-  "digest": "sha256:471f3c9f7f413881d9926a96b9691a516f5985a1e44f3291bc659ddb06a98449",
-  "entryDigest": "sha256:683247a307a180943f0dfb526c191ee71fd5d284d56cb2d93cb99d0a086a4822",
+  "digest": "sha256:bedd6d03c384f0f4d1afdb1b6adb25e4e6af9755de430f8c4027b19b8ad9b9aa",
+  "entryDigest": "sha256:b743861da6ad957d23e2d1c78a8a7e251a809a6d7d947937d5103b8e8e0dd5d0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -327,7 +327,7 @@
         "declarationPath": "packages/components-svelte/dist/SolidGaugeChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SolidGaugeChartProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

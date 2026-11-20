@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/OrganizationChart.svelte",
-      "version": "0.43.0"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Hierarchical org chart: one box per node laid out by level, children centred under the parent, with orthogonal connectors.",
     "fr": "Organigramme hiérarchique : une boîte par nœud disposée par niveau, enfants centrés sous le parent, connecteurs orthogonaux."
   },
-  "digest": "sha256:24a1b223176fa872827d81e12cc44aee7c4bef20231d9f0b6851d391eb6d3c1f",
+  "digest": "sha256:eed0d89915718f4769198e791c0190081c02f4dc3c28c413e060e11ff139712f",
   "displayName": "OrganizationChart",
   "format": "component-entry/v1",
   "frameworks": [

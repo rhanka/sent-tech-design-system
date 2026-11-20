@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ChordDiagram.svelte",
-      "version": "0.43.0"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Chord diagram: weighted flows between nodes laid out on a circle.",
     "fr": "Diagramme en cordes : flux pondérés entre nœuds répartis sur un cercle."
   },
-  "digest": "sha256:d8701e864cbe48203ebbe7e32e5773699057ad51ee6848cff280ee5f4da9e2a3",
+  "digest": "sha256:e26da9c0ade8e24b8c7128b85d7674061827ec0fa5123b493d0952eade9f07a7",
   "displayName": "ChordDiagram",
   "format": "component-entry/v1",
   "frameworks": [

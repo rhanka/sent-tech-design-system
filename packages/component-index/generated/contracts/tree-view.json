@@ -1,8 +1,8 @@
 {
   "componentId": "tree-view",
   "contractSource": "derived",
-  "digest": "sha256:4a4c81c4ff429c7efb217d232e0cfb5038be8af9df36f7d1f40f78476c4e7871",
-  "entryDigest": "sha256:eab2fcd82722b5fb493773d708743c14f8c46516defbae8f082e1916b381ef71",
+  "digest": "sha256:30c14a4b7282103b0e475a5abb7436b3e2c4d9e96adb78c2b23ff8333dedb1d2",
+  "entryDigest": "sha256:077de84dd5c5e6d2b769a8f5125977187c2c08f06bde3f5dbfef118c9c620c89",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -308,7 +308,7 @@
         "declarationPath": "packages/components-svelte/dist/TreeView.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TreeViewProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],
