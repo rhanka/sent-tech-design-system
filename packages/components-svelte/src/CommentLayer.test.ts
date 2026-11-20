@@ -571,4 +571,74 @@ describe("DS-4: CommentLayer", () => {
       expect(overlay.style.height).toBe("540px");
     });
   });
+
+  it("keeps the floating 'Add comment' button mounted across mousedown -> selectionchange -> mouseup -> click and keyboard focus", async () => {
+    const root = makeArtifactRoot(`
+      <p data-anchor-id="sel-p">Select this important clause for review.</p>
+    `);
+    render(CommentLayer, {
+      props: {
+        rootEl: root,
+        mode: "review",
+        target: TARGET,
+        artifactVersion: "v1",
+        comments: [],
+        currentUser: ALICE,
+      },
+    });
+
+    const selectClause = async () => {
+      vi.useFakeTimers();
+      const para = root.querySelector('[data-anchor-id="sel-p"]')!;
+      const textNode = para.firstChild as Text;
+      const range = document.createRange();
+      range.setStart(textNode, 12);
+      range.setEnd(textNode, 28); // "important clause"
+      const sel = window.getSelection()!;
+      sel.removeAllRanges();
+      sel.addRange(range);
+      document.dispatchEvent(new Event("selectionchange"));
+      vi.advanceTimersByTime(160);
+      vi.useRealTimers();
+      return screen.findByRole("button", { name: "Add comment" });
+    };
+
+    // Mouse path: pointerdown + mousedown (preventDefault preserves selection) -> collapsed selectionchange -> mouseup -> click
+    const addTrigger = await selectClause();
+    const pointerDownEvent = new MouseEvent("pointerdown", { bubbles: true, cancelable: true });
+    addTrigger.dispatchEvent(pointerDownEvent);
+    expect(pointerDownEvent.defaultPrevented).toBe(true);
+
+    const mouseDownEvent = new MouseEvent("mousedown", { bubbles: true, cancelable: true });
+    addTrigger.dispatchEvent(mouseDownEvent);
+    expect(mouseDownEvent.defaultPrevented).toBe(true);
+
+    // Even if a browser collapses selection and dispatches selectionchange before mouseup/click, the trigger stays mounted.
+    window.getSelection()?.removeAllRanges();
+    document.dispatchEvent(new Event("selectionchange"));
+    expect(screen.getByRole("button", { name: "Add comment" })).toBe(addTrigger);
+
+    await fireEvent.mouseUp(addTrigger);
+    expect(screen.getByRole("button", { name: "Add comment" })).toBe(addTrigger);
+
+    await fireEvent.click(addTrigger);
+    expect(screen.getByRole("textbox")).toBeTruthy();
+    expect(screen.getByText("important clause")).toBeTruthy();
+
+    // Cancel composer to test keyboard focus path
+    await fireEvent.keyDown(screen.getByRole("textbox"), { key: "Escape" });
+    expect(screen.queryByRole("textbox")).toBeNull();
+
+    // Keyboard path: focus floating button, selection collapses on focus shift, button remains mounted and activates on click/Enter
+    const kbTrigger = await selectClause();
+    kbTrigger.focus();
+    expect(document.activeElement).toBe(kbTrigger);
+    window.getSelection()?.removeAllRanges();
+    document.dispatchEvent(new Event("selectionchange"));
+    expect(screen.getByRole("button", { name: "Add comment" })).toBe(kbTrigger);
+
+    await fireEvent.click(kbTrigger);
+    expect(screen.getByRole("textbox")).toBeTruthy();
+    expect(screen.getByText("important clause")).toBeTruthy();
+  });
 });
