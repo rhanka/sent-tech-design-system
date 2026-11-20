@@ -439,6 +439,37 @@ async function verifyRichText() {
   console.log("OK @sentropic/design-system-rich-text/editor: createRichTextEditor import verified");
 }
 
+async function verifyReviewCore() {
+  const mod = await import("@sentropic/design-system-review-core");
+  for (const name of [
+    "groupCommentsIntoThreads",
+    "filterThreads",
+    "isUnread",
+    "layoutPins",
+    "createFixtureCommentsAdapter",
+    "resolveAuthorshipFromFallback",
+    "getCommentStateLabel",
+  ]) {
+    if (typeof mod[name] !== "function") {
+      fail("@sentropic/design-system-review-core", "missing " + name + " export (or not a function)");
+      return;
+    }
+  }
+  if (mod.getCommentStateLabel("closed") !== "Resolved") {
+    fail("@sentropic/design-system-review-core", "getCommentStateLabel('closed') must return 'Resolved'");
+    return;
+  }
+  const pins = mod.layoutPins([
+    { id: "b", targetY: 20 },
+    { id: "a", targetY: 10 },
+  ]);
+  if (pins.length !== 2 || pins[0].id !== "a" || pins[1].y - pins[0].y < 28) {
+    fail("@sentropic/design-system-review-core", "layoutPins failed smoke contract");
+    return;
+  }
+  console.log("OK @sentropic/design-system-review-core: DS-1 exports import verified");
+}
+
 // Actually `import()`s the installed @sentropic/design-system-elements
 // tarball (its `dependencies` resolved from the registry in the throwaway
 // project — no monorepo, no workspace symlinks) and drives the real
@@ -619,6 +650,7 @@ const verifiers = {
   "@sentropic/diagram-core": verifyDiagramCore,
   "@sentropic/diagram-canvas": verifyDiagramCanvas,
   "@sentropic/design-system-rich-text": verifyRichText,
+  "@sentropic/design-system-review-core": verifyReviewCore,
   "@sentropic/design-system-elements": verifyElements,
   "@sentropic/dataviz-core": verifyDatavizCore,
   "@sentropic/dataviz-svelte": verifyDatavizSvelte,
