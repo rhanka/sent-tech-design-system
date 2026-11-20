@@ -42,7 +42,6 @@ describe("DC-2a tokens (AC-6)", () => {
     expect(token("diagramZone", "childGapInline")).toBe("var(--st-component-diagramScene-gapMin)");
     expect(token("diagramScene", "gapMin")).toBe(`${DEFAULT_ROW_GAP}px`);
     expect(token("diagramZone", "childGapBlock")).toBe("var(--st-component-diagramScene-gapMinBlock)");
-    expect(token("diagramZone", "siblingGutter")).toBe("var(--st-component-diagramScene-zoneGutter)");
     expect(token("diagramScene", "zoneGutter")).toBe(`${DEFAULT_ZONE_GUTTER}px`);
     expect(DEFAULT_ZONE_GUTTER).toBeGreaterThanOrEqual(96);
     expect(token("diagramZone", "gapInlineMax")).toBe("var(--st-component-diagramScene-gapMax)");

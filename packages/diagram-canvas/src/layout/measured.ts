@@ -1694,7 +1694,16 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     const outerLanes: number[] = [];
     const outerLanesX: number[] = [];
     let labelLimit: Rect | undefined;
-    const markSizes = [...routeSizes.values()];
+    // Cap flow-badge contributions to EDGE_LABEL_WIDTH so an unplaceably wide
+    // badge (measured with unbounded availableWidth) cannot inflate labelLimit
+    // to absorb itself instead of triggering badge-unplaced / flow repair.
+    const markSizes = [...routeSizes.entries()].map(([id, size]) => {
+      const label = labelSizes.get(id);
+      return {
+        width: Math.max(label?.width ?? 0, Math.min(size.width, EDGE_LABEL_WIDTH)),
+        height: Math.max(label?.height ?? 0, Math.min(size.height, EDGE_LABEL_WIDTH)),
+      };
+    });
     const edgeClearance = Math.max(metrics.clearance, borderClearance);
     if (rects.size > 0 && (markSizes.length > 0 || drawnEdges.length > 0)) {
       const pitch = Math.max(

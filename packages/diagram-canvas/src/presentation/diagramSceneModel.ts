@@ -71,6 +71,7 @@ import { clearSceneLabels } from "./sceneLabelClearance.js";
 import type { EntityPresentation } from "@sentropic/diagram-core";
 import type { AlignPinned, AnatomyPinned, DepthPinned, DiagramAnatomy } from "./diagramCardModel.js";
 
+import { DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
 export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
 export {
   ARROWHEAD_MARKER_GEOMETRY,
@@ -602,12 +603,19 @@ export function resolveScene(
       const inner = Math.max(0, node.rect.width - 2 * zoneInset);
       const lineHeight = lineBoxHeight(zoneGeo.footer.size);
       const bottom = node.rect.y + node.rect.height - zoneGeo.borderWidth - zoneGeo.footerBottomInset;
-      const pad = paintClearance + CONNECTOR_CUTOUT_SLACK;
+      // Reserve both half-strokes (cutout edge exposure + painted stroke half-width)
+      // plus browser ink overhang beyond the measured footer line box.
+      const pad = Math.max(
+        paintClearance + CONNECTOR_CUTOUT_SLACK,
+        margin + linkStrokeWidth / DEFAULT_MIN_READABLE_SCALE + 1.15,
+      );
+      const cutoutTop = bottom - lineHeight - pad;
+      const cutoutBottom = Math.min(node.rect.y + node.rect.height, bottom + pad);
       connectorCutouts.push({
         x: node.rect.x + zoneInset - pad,
-        y: bottom - lineHeight - pad,
+        y: cutoutTop,
         width: Math.min(footerWidths.get(node.occurrence) ?? inner, inner) + 2 * pad,
-        height: lineHeight + 2 * pad,
+        height: cutoutBottom - cutoutTop,
       });
     }
   }
@@ -721,9 +729,10 @@ export function resolveScene(
     bounds = bounds === undefined ? box : rectUnion(bounds,box);
   }
   for (const arrows of Object.values(result.arrowBoxes ?? {})) for (const arrow of arrows) bounds = bounds === undefined ? arrow.box : rectUnion(bounds,arrow.box);
+  const cornerRadius = input.metrics?.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS;
   const clearedLabels = clearSceneLabels(labels, edges.map(edge => edge.points),
     [...blockers, ...badges.map(badge => badge.box), ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box))],
-    paintClearance);
+    paintClearance, cornerRadius);
   for (const { box } of clearedLabels) {
     const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
     bounds = bounds === undefined ? padded : rectUnion(bounds, padded);

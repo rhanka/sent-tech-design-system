@@ -1,15 +1,22 @@
 import { normaliseRect } from '../geometry.js';
 import type { Rect, Vec2 } from '../transform.js';
+import { connectorCornerBounds } from './connectorPath.js';
 
 /** Keep measured label sizes and routes; move only labels whose paint would
  * cover a connector. The same deterministic placement is used by both hosts. */
 export function clearSceneLabels<T extends { readonly box: Rect; readonly leader?: readonly Vec2[] }>(
   labels: readonly T[], routes: readonly (readonly Vec2[])[], shapes: readonly Rect[], clearance: number,
+  cornerRadius = 0,
 ): T[] {
   const bounds = shapes.map(normaliseRect);
-  for (const route of routes) for (let i = 1; i < route.length; i++) {
-    const a = route[i - 1]!, b = route[i]!;
-    bounds.push({ x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), width: Math.abs(a.x - b.x), height: Math.abs(a.y - b.y) });
+  for (const route of routes) {
+    for (let i = 1; i < route.length; i++) {
+      const a = route[i - 1]!, b = route[i]!;
+      bounds.push({ x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), width: Math.abs(a.x - b.x), height: Math.abs(a.y - b.y) });
+    }
+    if (cornerRadius > 0) {
+      for (const bend of connectorCornerBounds(route, cornerRadius)) bounds.push(bend);
+    }
   }
   // Normalise each obstacle once, rather than allocating two rectangles for
   // every candidate/obstacle pair during the search. Use these same bounds

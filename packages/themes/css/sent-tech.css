@@ -860,7 +860,6 @@
   --st-component-diagramZone-proposedDashArray: 4 5;
   --st-component-diagramZone-childGapInline: var(--st-component-diagramScene-gapMin);
   --st-component-diagramZone-childGapBlock: var(--st-component-diagramScene-gapMinBlock);
-  --st-component-diagramZone-siblingGutter: var(--st-component-diagramScene-zoneGutter);
   --st-component-diagramZone-gapInlineMax: var(--st-component-diagramScene-gapMax);
   --st-component-diagramZone-gapBlockMax: var(--st-component-diagramScene-gapMax);
   --st-component-diagramZone-rowPackTargetAspect: 1.78;
@@ -1810,7 +1809,6 @@
   --st-component-diagramZone-proposedDashArray: 4 5;
   --st-component-diagramZone-childGapInline: var(--st-component-diagramScene-gapMin);
   --st-component-diagramZone-childGapBlock: var(--st-component-diagramScene-gapMinBlock);
-  --st-component-diagramZone-siblingGutter: var(--st-component-diagramScene-zoneGutter);
   --st-component-diagramZone-gapInlineMax: var(--st-component-diagramScene-gapMax);
   --st-component-diagramZone-gapBlockMax: var(--st-component-diagramScene-gapMax);
   --st-component-diagramZone-rowPackTargetAspect: 1.78;
@@ -2760,7 +2758,6 @@
   --st-component-diagramZone-proposedDashArray: 4 5;
   --st-component-diagramZone-childGapInline: var(--st-component-diagramScene-gapMin);
   --st-component-diagramZone-childGapBlock: var(--st-component-diagramScene-gapMinBlock);
-  --st-component-diagramZone-siblingGutter: var(--st-component-diagramScene-zoneGutter);
   --st-component-diagramZone-gapInlineMax: var(--st-component-diagramScene-gapMax);
   --st-component-diagramZone-gapBlockMax: var(--st-component-diagramScene-gapMax);
   --st-component-diagramZone-rowPackTargetAspect: 1.78;
