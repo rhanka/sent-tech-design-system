@@ -8,10 +8,12 @@ import { AvatarGroup } from "./AvatarGroup.js";
 import { BackToTop } from "./BackToTop.js";
 import { Badge } from "./Badge.js";
 import { CheckboxGroup } from "./CheckboxGroup.js";
+import { DataImage } from "./DataImage.js";
 import { DisplaySettings } from "./DisplaySettings.js";
 import type { DisplaySettingsState } from "./DisplaySettings.js";
 import { Embed } from "./Embed.js";
 import { MediaContent } from "./MediaContent.js";
+import { RadioGroup } from "./RadioGroup.js";
 import { SelectableRow } from "./SelectableRow.js";
 import { Stepper } from "./Stepper.js";
 import { TableOfContents } from "./TableOfContents.js";
@@ -788,6 +790,143 @@ describe("P5 group 3 forwardRef modules — Batch 3 (BackToTop, Stepper, TableOf
     );
     expect(objRef.current).toBeNull();
     expect(cbRef).toHaveBeenLastCalledWith(badge);
+
+    unmount();
+    expect(cbRef).toHaveBeenLastCalledWith(null);
+  });
+});
+
+describe("P5 group 3 forwardRef modules — Batch 4 (DataImage, RadioGroup)", () => {
+  it("DataImage forwards refs to <img>, mutates className/style signals, keeps consumer style precedence, and preserves consumer handlers", async () => {
+    const cls = signal("di-before");
+    const style = signal<CSSProperties>({ opacity: "0.5", width: "200px" });
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLImageElement>();
+    const cbRef = vi.fn();
+
+    const { rerender, unmount } = render(
+      <DataImage
+        ref={objRef}
+        src="https://example.com/chart.png"
+        alt="Revenue chart"
+        width={120}
+        height={80}
+        radius={6}
+        fit="contain"
+        className={cls}
+        style={style}
+        onClick={onClick}
+      />,
+    );
+    const img = screen.getByRole("img", { name: "Revenue chart" }) as HTMLImageElement;
+    expect(objRef.current).toBe(img);
+    expect(objRef.current?.tagName).toBe("IMG");
+    expect(img.className).toBe("st-dataImage st-dataImage--contain di-before");
+    // Consumer style wins over computed width, matching components-react (`{ width, height, borderRadius, ...style }`).
+    expect(img.style.width).toBe("200px");
+    expect(img.style.height).toBe("80px");
+    expect(img.style.borderRadius).toBe("6px");
+    expect(img.style.opacity).toBe("0.5");
+
+    fireEvent.click(img);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    cls.value = "di-after";
+    style.value = { opacity: "0.9", width: "160px" };
+    await waitFor(() => expect(img.className).toBe("st-dataImage st-dataImage--contain di-after"));
+    await waitFor(() => expect(img.style.opacity).toBe("0.9"));
+    expect(img.style.width).toBe("160px");
+    expect(img.style.height).toBe("80px");
+
+    rerender(
+      <DataImage
+        ref={cbRef}
+        src="https://example.com/chart.png"
+        alt="Revenue chart"
+        width={120}
+        height={80}
+        fit="contain"
+        className={cls}
+        style={"width:240px;opacity:0.75" as unknown as CSSProperties}
+        onClick={onClick}
+      />,
+    );
+    expect(objRef.current).toBeNull();
+    expect(cbRef).toHaveBeenLastCalledWith(img);
+    expect(img.style.width).toBe("240px");
+    expect(img.style.height).toBe("80px");
+    expect(img.style.opacity).toBe("0.75");
+
+    unmount();
+    expect(cbRef).toHaveBeenLastCalledWith(null);
+  });
+
+  it("RadioGroup forwards refs to <fieldset>, mutates className/value/disabled signals, and preserves consumer handlers", async () => {
+    const cls = signal("rg-before");
+    const value = signal("a");
+    const disabled = signal(false);
+    const onChange = vi.fn();
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLFieldSetElement>();
+    const cbRef = vi.fn();
+    const options = [
+      { label: "Option A", value: "a" },
+      { label: "Option B", value: "b" },
+    ];
+
+    const { rerender, unmount } = render(
+      <RadioGroup
+        ref={objRef}
+        legend="Choice"
+        name="choice"
+        options={options}
+        value={value}
+        disabled={disabled}
+        className={cls}
+        onChange={onChange}
+        onClick={onClick}
+      />,
+    );
+    const fieldset = screen.getByRole("group", { name: "Choice" }) as HTMLFieldSetElement;
+    const radioA = screen.getByLabelText("Option A") as HTMLInputElement;
+    const radioB = screen.getByLabelText("Option B") as HTMLInputElement;
+    expect(objRef.current).toBe(fieldset);
+    expect(objRef.current?.tagName).toBe("FIELDSET");
+    expect(fieldset.className).toBe("st-radioGroup st-radioGroup--vertical rg-before");
+    expect(fieldset.disabled).toBe(false);
+    expect(radioA.checked).toBe(true);
+    expect(radioB.checked).toBe(false);
+
+    fireEvent.click(radioB);
+    expect(onChange).toHaveBeenCalledWith("b");
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    cls.value = "rg-after";
+    value.value = "b";
+    disabled.value = true;
+    await waitFor(() => expect(fieldset.className).toBe("st-radioGroup st-radioGroup--vertical rg-after"));
+    await waitFor(() => expect(fieldset.disabled).toBe(true));
+    expect(radioA.checked).toBe(false);
+    expect(radioB.checked).toBe(true);
+
+    disabled.value = false;
+    await waitFor(() => expect(fieldset.disabled).toBe(false));
+
+    rerender(
+      <RadioGroup
+        ref={cbRef}
+        legend="Choice"
+        name="choice"
+        options={options}
+        value={value}
+        disabled={disabled}
+        className={cls}
+        onChange={onChange}
+        onClick={onClick}
+      />,
+    );
+    expect(objRef.current).toBeNull();
+    expect(cbRef).toHaveBeenLastCalledWith(fieldset);
 
     unmount();
     expect(cbRef).toHaveBeenLastCalledWith(null);
