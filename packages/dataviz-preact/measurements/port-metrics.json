@@ -7,15 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 120,
+    "portedModules": 125,
     "barrelFile": "index.ts",
-    "remainingModules": 7,
+    "remainingModules": 2,
     "remainingFiles": [
-      "lib/VectorFieldChart.tsx",
-      "lib/VennChart.tsx",
-      "lib/ViolinChart.tsx",
-      "lib/WaffleChart.tsx",
-      "lib/WaterfallChart.tsx",
       "lib/WindBarbChart.tsx",
       "lib/WordCloudChart.tsx"
     ]
@@ -1341,18 +1336,73 @@
         "total": 190,
         "touched": 2,
         "emissionRewrites": 1
+      },
+      {
+        "module": "VectorFieldChart",
+        "kind": "component",
+        "file": "src/lib/VectorFieldChart.tsx",
+        "reactSource": "lib/VectorFieldChart.tsx",
+        "reactLines": 61,
+        "preactLines": 66,
+        "total": 212,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "VennChart",
+        "kind": "component",
+        "file": "src/lib/VennChart.tsx",
+        "reactSource": "lib/VennChart.tsx",
+        "reactLines": 31,
+        "preactLines": 36,
+        "total": 100,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ViolinChart",
+        "kind": "component",
+        "file": "src/lib/ViolinChart.tsx",
+        "reactSource": "lib/ViolinChart.tsx",
+        "reactLines": 60,
+        "preactLines": 66,
+        "total": 215,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "WaffleChart",
+        "kind": "component",
+        "file": "src/lib/WaffleChart.tsx",
+        "reactSource": "lib/WaffleChart.tsx",
+        "reactLines": 53,
+        "preactLines": 58,
+        "total": 194,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "WaterfallChart",
+        "kind": "component",
+        "file": "src/lib/WaterfallChart.tsx",
+        "reactSource": "lib/WaterfallChart.tsx",
+        "reactLines": 54,
+        "preactLines": 60,
+        "total": 219,
+        "touched": 3,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 120,
-      "reactLines": 8923,
-      "preactLines": 9535,
-      "total": 46727,
-      "touched": 598,
-      "emissionRewrites": 124
+      "modules": 125,
+      "reactLines": 9182,
+      "preactLines": 9821,
+      "total": 47667,
+      "touched": 609,
+      "emissionRewrites": 129
     },
     "shared": {
-      "src/index.ts": 303,
+      "src/index.ts": 315,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,

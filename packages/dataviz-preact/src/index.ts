@@ -301,3 +301,15 @@ export { ValueSlicer } from './lib/ValueSlicer.js';
 export type { ValueSlicerProps } from './lib/ValueSlicer.js';
 export { VariablePieChart } from './lib/VariablePieChart.js';
 export type { VariablePieChartProps } from './lib/VariablePieChart.js';
+
+// Group 4 batch 11 components.
+export { VectorFieldChart } from './lib/VectorFieldChart.js';
+export type { VectorFieldChartProps } from './lib/VectorFieldChart.js';
+export { VennChart } from './lib/VennChart.js';
+export type { VennChartProps } from './lib/VennChart.js';
+export { ViolinChart } from './lib/ViolinChart.js';
+export type { ViolinChartProps } from './lib/ViolinChart.js';
+export { WaffleChart } from './lib/WaffleChart.js';
+export type { WaffleChartProps } from './lib/WaffleChart.js';
+export { WaterfallChart } from './lib/WaterfallChart.js';
+export type { WaterfallChartProps } from './lib/WaterfallChart.js';
