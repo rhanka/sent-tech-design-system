@@ -141,8 +141,9 @@ export function resolveScenePresentation(document: SceneDocument, presentation: 
    * the same way when the scene selects it.
    */
   const startParity = options.depthParityStart ?? 0;
+  const hasViewGroups = view !== undefined && Object.keys(view.groups).length > 0;
   const semanticParentOf = new Map<string, string>();
-  if (view === undefined && document.relations !== undefined) {
+  if (!hasViewGroups && document.relations !== undefined) {
     for (const relation of Object.values(document.relations)) {
       const baseType = document.typeDefinitions?.[relation.type]?.baseType ?? relation.type;
       if (baseType !== "contains") continue;
@@ -154,14 +155,14 @@ export function resolveScenePresentation(document: SceneDocument, presentation: 
   const depthOf = (id: string): number => {
     let depth = 0;
     const seen = new Set<string>();
-    if (view !== undefined) {
+    if (hasViewGroups) {
       for (let parent = parentOccurrenceOf(view, id as SceneOccurrenceRef); parent !== undefined && !seen.has(parent); parent = parentOccurrenceOf(view, parent)) {
         seen.add(parent);
         depth += 1;
       }
       return depth;
     }
-    const entityId = id.replace(/^occurrence:e\./, "entity:");
+    const entityId = view?.entityOccurrences[id]?.entity ?? id.replace(/^occurrence:e\./, "entity:");
     for (let parent = semanticParentOf.get(entityId); parent !== undefined && !seen.has(parent); parent = semanticParentOf.get(parent)) {
       seen.add(parent);
       depth += 1;
@@ -171,14 +172,16 @@ export function resolveScenePresentation(document: SceneDocument, presentation: 
   const stamped = Object.fromEntries(Object.entries(entities).map(([id, entry]) => {
     const zone = entry as { readonly form?: string; readonly depth?: number; readonly depthParityStart?: 0 | 1 };
     if (zone.form !== "container" && zone.form !== "legend") return [id, entry];
-    if (zone.depth !== undefined) return [id, entry];
     // Lean stamps: the top level and the default parity need no key
-    // (absent means `0` / `0` everywhere downstream).
-    const depth = depthOf(id);
+    // (absent means `0` / `0` everywhere downstream). Explicit depth pins are
+    // preserved while still inheriting a non-default scene `depthParityStart`.
+    const depth = zone.depth === undefined ? depthOf(id) : undefined;
+    const needsParity = zone.depthParityStart === undefined && startParity !== 0;
+    if ((depth === undefined || depth === 0) && !needsParity) return [id, entry];
     return [id, {
       ...entry,
-      ...(depth === 0 ? {} : { depth }),
-      ...(zone.depthParityStart !== undefined || startParity === 0 ? {} : { depthParityStart: startParity }),
+      ...(depth === undefined || depth === 0 ? {} : { depth }),
+      ...(needsParity ? { depthParityStart: startParity } : {}),
     }];
   }));
   return { presentation: { ...presentation, entities: stamped }, missing };
@@ -490,16 +493,16 @@ export function resolveScene(
     // A zone footer has one allocated line. Reserve its fixed chrome from
     // the presentation instead of measuring the scene again during replay.
     const reserve = node.presentation?.text.footer?.trim()
-      ? lineBoxHeight(ZONE_GEOMETRY.footer.size) + ZONE_GEOMETRY.ruleHeight + 2 * ZONE_GEOMETRY.ruleMargin + ZONE_GEOMETRY.footerBottomInset : 0;
+      ? lineBoxHeight(zoneGeo.footer.size) + zoneGeo.ruleHeight + 2 * zoneGeo.ruleMargin + zoneGeo.footerBottomInset : 0;
     if (reserve > 0) {
-      blockers.push({ x: node.rect.x, y: node.rect.y + node.rect.height - reserve - ZONE_GEOMETRY.borderWidth - ruleClearance,
-        width: node.rect.width, height: reserve + ZONE_GEOMETRY.borderWidth + ruleClearance });
+      blockers.push({ x: node.rect.x, y: node.rect.y + node.rect.height - reserve - zoneGeo.borderWidth - ruleClearance,
+        width: node.rect.width, height: reserve + zoneGeo.borderWidth + ruleClearance });
       // The footer line as `layoutZone` seats it: one line box pinned above
       // the bottom border, from the content inset, as wide as its measured
       // text (the whole inner width when the result carries no measurement).
       const inner = Math.max(0, node.rect.width - 2 * zoneInset);
-      const lineHeight = lineBoxHeight(ZONE_GEOMETRY.footer.size);
-      const bottom = node.rect.y + node.rect.height - ZONE_GEOMETRY.borderWidth - ZONE_GEOMETRY.footerBottomInset;
+      const lineHeight = lineBoxHeight(zoneGeo.footer.size);
+      const bottom = node.rect.y + node.rect.height - zoneGeo.borderWidth - zoneGeo.footerBottomInset;
       const pad = paintClearance + CONNECTOR_CUTOUT_SLACK;
       connectorCutouts.push({
         x: node.rect.x + zoneInset - pad,
