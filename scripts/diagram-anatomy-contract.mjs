@@ -26,9 +26,12 @@ const output=JSON.stringify(contract,null,2)+'\n';
 if(process.argv.includes('--write'))fs.writeFileSync(path,output);
 else if(fs.readFileSync(path,'utf8')!==output)throw new Error('Diagram anatomy changed. Update the golden, add the anatomy change PR label, and describe it for owner review.');
 // DE-1 compact anatomy (`diagram-anatomy/v2`, 352 × 154): same contract shape,
-// v2 geometries, the same card/zone layouts at the compact box, and the
-// compact token block. Regenerated with the same `--write` labelled path.
+// v2 geometries, the compact card layout that fits 352 × 154, the full-slot
+// fallback-to-v1 card/zone layouts that keep their body, and the compact token
+// block. Regenerated with the same `--write` labelled path.
+const compactPropsV2={entityId:'contract-compact',title:'Title',body:['Body'],icon:'base',iconGlyph:getDiagramGlyph('base'),autoSize:true,anatomy:'v2'};
 const contractV2={contractId:'diagram-anatomy/v2',source:'DE-1 compact card anatomy; padding 6, header inset 12, accent 6, icon 52 / gap 4, type scale unchanged',appliesTo:['svelte','vue','react','angular','preact'],cardGeometry:CARD_GEOMETRY_V2,zoneGeometry:ZONE_GEOMETRY_V2,
+ compactCard:layoutCard(compactPropsV2,defaultCardMeasure),
  card:layoutCard(propsV2,defaultCardMeasure),zones:[true,false].map(collapsed=>layoutZone({entityId:'contract-zone',kicker:'KICKER',title:'Zone',subtitle:'Subtitle',footer:'Footer',icon:'cluster',iconGlyph:getDiagramGlyph('cluster'),collapsed,toggleLabel:'Toggle',width:600,anatomy:'v2'},defaultCardMeasure)),
  tokens:{card:component.diagramCardCompact,zone:component.diagramZone,icon:component.diagramIcon},hostStyles,colors:{edge:'#64748b',labelSurface:'#ffffff',labelBorder:'#cbd5e1',labelText:'#172033'},fontFamily:'Inter, system-ui, sans-serif',buttonCss,diagramCardCss};
 const pathV2=new URL('../packages/diagram-canvas/contracts/diagram-anatomy.v2.json',import.meta.url);

@@ -66,18 +66,6 @@
     onDiagnostic,
   }: DiagramCardProps = $props();
 
-  const cardGeometry = $derived(anatomyCardGeometry(anatomy));
-
-  /**
-   * Owner addendum 1: a folded zone keeps its depth background. Only
-   * zone-collapsed cards carry `surface`, so leaf cards never change.
-   */
-  const surfaceStyle = $derived(
-    surface === undefined
-      ? ""
-      : `;--st-component-diagramCard-surface:var(--st-component-diagramZone-${surface}, var(--st-semantic-surface-${surface === "surface1" ? "raised" : "subtle"}))`,
-  );
-
   const layout = $derived(
     layoutCard(
       {
@@ -102,6 +90,20 @@
     ),
   );
 
+  const effectiveAnatomy = $derived(layout.anatomyFallback ?? anatomy);
+  const effectiveAlign = $derived(align ?? (anatomy === "v2" ? "center" : "left"));
+  const cardGeometry = $derived(anatomyCardGeometry(effectiveAnatomy));
+
+  /**
+   * Owner addendum 1: a folded zone keeps its depth background. Only
+   * zone-collapsed cards carry `surface`, so leaf cards never change.
+   */
+  const surfaceStyle = $derived(
+    surface === undefined
+      ? ""
+      : `;--st-component-diagramCard-surface:var(--st-component-diagramZone-${surface}, var(--st-semantic-surface-${surface === "surface1" ? "raised" : "subtle"}))`,
+  );
+
   const overflowSlot = $derived(
     layout.diagnostics.find((diagnostic) => diagnostic.code === "card-overflow")?.slot,
   );
@@ -123,11 +125,11 @@
 <!-- Click selects (the §4.6 select intent), like BarChart's point select:
      keyboard activation of a card is the host figure's concern (DC-2). -->
 <div
-  class="st-diagramCard{bodyMode === "subtitle" ? " st-diagramCard--subtitle" : ""}{align === "center" ? " st-diagramCard--center" : ""}{proposed === true ? " st-diagramCard--proposed" : ""}{anatomy === "v2" ? " st-diagramCard--v2" : ""}"
+  class="st-diagramCard{bodyMode === "subtitle" ? " st-diagramCard--subtitle" : ""}{effectiveAlign === "center" ? " st-diagramCard--center" : ""}{proposed === true ? " st-diagramCard--proposed" : ""}{effectiveAnatomy === "v2" ? " st-diagramCard--v2" : ""}"
   data-entity={entityId}
   data-tone={tone}
   data-proposed={proposed === true ? "true" : undefined}
-  style={anatomy === "v2"
+  style={effectiveAnatomy === "v2"
     ? `height:${layout.box.height}px;--st-component-diagramCard-width:var(--st-component-diagramCardCompact-width, 352px);--st-component-diagramCard-padding:var(--st-component-diagramCardCompact-padding, 6px);--st-component-diagramCard-accentWidth:var(--st-component-diagramCardCompact-accentWidth, 6px);--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)${surfaceStyle}`
     : `height:${layout.box.height}px${surfaceStyle}`}
   data-card-overflow={overflowSlot}

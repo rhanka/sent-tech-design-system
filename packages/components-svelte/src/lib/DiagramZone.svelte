@@ -106,6 +106,7 @@
   const layout = $derived(layoutZone(zoneProps, measure, []));
   /** Expanded chrome geometry for the pinned anatomy (v1 values by default). */
   const zoneGeometry = $derived(anatomyZoneGeometry(anatomy));
+  const effectiveAlign = $derived(align ?? (anatomy === "v2" ? "center" : "left"));
 
   /**
    * Owner addendum 1: an explicitly threaded depth paints the resolved
@@ -219,7 +220,7 @@
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <div
-      class="st-diagramZone st-diagramZone--expanded{align === "center" ? " st-diagramZone--center" : ""}{proposed === true ? " st-diagramZone--proposed" : ""}{anatomy === "v2" ? " st-diagramZone--v2" : ""}"
+      class="st-diagramZone st-diagramZone--expanded{effectiveAlign === "center" ? " st-diagramZone--center" : ""}{proposed === true ? " st-diagramZone--proposed" : ""}{anatomy === "v2" ? " st-diagramZone--v2" : ""}"
       style={anatomy === "v2"
         ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)${surfaceStyle}`
         : `width:${layout.box.width}px;height:${layout.box.height}px${surfaceStyle}`}

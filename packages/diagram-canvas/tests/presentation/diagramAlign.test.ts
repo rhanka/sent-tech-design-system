@@ -90,7 +90,7 @@ describe("diagram presentation alignment (DE-1 step 2)", () => {
     }
   });
 
-  it("should keep zone alignment left by default with the opts fallback available", () => {
+  it("should keep zone alignment left by default for v1 and center by default for v2", () => {
     const plain = projectZoneProps(
       { form: "container", text: { title: "Z" } },
       { entityId: "occurrence:e.2", collapsed: true },
@@ -98,6 +98,16 @@ describe("diagram presentation alignment (DE-1 step 2)", () => {
     expect(plain.kind).toBe("zone");
     if (plain.kind !== "zone") return;
     expect(plain.props.align).toBeUndefined();
+    expect(layoutZone({ ...plain.props, collapsed: false, width: 600 }, defaultCardMeasure).header?.title[0]?.anchor).toBe("start");
+    const compact = projectZoneProps(
+      { form: "container", text: { title: "Z" }, anatomy: "v2" },
+      { entityId: "occurrence:e.4", collapsed: false },
+    );
+    expect(compact.kind).toBe("zone");
+    if (compact.kind !== "zone") return;
+    expect(layoutZone({ ...compact.props, width: 600 }, defaultCardMeasure).header?.title[0]?.anchor).toBe("middle");
+    const compactLeft = layoutZone({ ...compact.props, width: 600, align: "left" }, defaultCardMeasure);
+    expect(compactLeft.header?.title[0]?.anchor).toBe("start");
     const fallback = projectZoneProps(
       { form: "container", text: { title: "Z" } },
       { entityId: "occurrence:e.3", collapsed: false, align: "center" },
