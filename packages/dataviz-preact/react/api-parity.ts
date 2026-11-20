@@ -144,6 +144,12 @@ export type PropsParity = [
   Expect<Equal<Emitted.ScatterPlotMatrixProps, HandWritten.ScatterPlotMatrixProps>>,
   Expect<Equal<Emitted.ScoreCardProps, HandWritten.ScoreCardProps>>,
   Expect<Equal<Emitted.SelectionLegendProps, HandWritten.SelectionLegendProps>>,
+  Expect<Equal<Emitted.SmallMultiplesProps, HandWritten.SmallMultiplesProps>>,
+  Expect<Equal<Emitted.SolidGaugeChartProps, HandWritten.SolidGaugeChartProps>>,
+  Expect<Equal<Emitted.SparklineProps, HandWritten.SparklineProps>>,
+  Expect<Equal<Emitted.SparklineTone, HandWritten.SparklineTone>>,
+  Expect<Equal<Emitted.StateTimelineChartProps, HandWritten.StateTimelineChartProps>>,
+  Expect<Equal<Emitted.StatusHistoryChartProps, HandWritten.StatusHistoryChartProps>>,
 ];
 
 export type ComponentParity = [
@@ -243,6 +249,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.ScatterPlotMatrix, typeof HandWritten.ScatterPlotMatrix>>,
   Expect<Equal<typeof Emitted.ScoreCard, typeof HandWritten.ScoreCard>>,
   Expect<Equal<typeof Emitted.SelectionLegend, typeof HandWritten.SelectionLegend>>,
+  Expect<Equal<typeof Emitted.SmallMultiples, typeof HandWritten.SmallMultiples>>,
+  Expect<Equal<typeof Emitted.SolidGaugeChart, typeof HandWritten.SolidGaugeChart>>,
+  Expect<Equal<typeof Emitted.Sparkline, typeof HandWritten.Sparkline>>,
+  Expect<Equal<typeof Emitted.StateTimelineChart, typeof HandWritten.StateTimelineChart>>,
+  Expect<Equal<typeof Emitted.StatusHistoryChart, typeof HandWritten.StatusHistoryChart>>,
 ];
 
 export type ValueParity = [

@@ -265,3 +265,15 @@ export { ScoreCard } from './lib/ScoreCard.js';
 export type { ScoreCardProps } from './lib/ScoreCard.js';
 export { SelectionLegend } from './lib/SelectionLegend.js';
 export type { SelectionLegendProps } from './lib/SelectionLegend.js';
+
+// Group 4 batch 8 components.
+export { SmallMultiples } from './lib/SmallMultiples.js';
+export type { SmallMultiplesProps } from './lib/SmallMultiples.js';
+export { SolidGaugeChart } from './lib/SolidGaugeChart.js';
+export type { SolidGaugeChartProps } from './lib/SolidGaugeChart.js';
+export { Sparkline } from './lib/Sparkline.js';
+export type { SparklineProps, SparklineTone } from './lib/Sparkline.js';
+export { StateTimelineChart } from './lib/StateTimelineChart.js';
+export type { StateTimelineChartProps } from './lib/StateTimelineChart.js';
+export { StatusHistoryChart } from './lib/StatusHistoryChart.js';
+export type { StatusHistoryChartProps } from './lib/StatusHistoryChart.js';
