@@ -36,3 +36,25 @@ export type { DateHistogramChartProps, DateHistogramChartTone, DateHistogramLabe
 // Shared drill engine helpers.
 export { drillLevel, onDrillSelect, drillDepth } from './lib/drill.js';
 export type { DrillLevel, DrillDatum } from './lib/drill.js';
+
+// Chart export & URL sync helpers (group 2 batch 1).
+export {
+  serializeSvg,
+  svgStringToBlob,
+  svgStringToPngBlob,
+  downloadBlob,
+  downloadSvg,
+  downloadPng,
+  printElement,
+} from './lib/chart-export.js';
+export type { SerializeSvgOptions, RasterizeOptions, ChartExportFormat } from './lib/chart-export.js';
+export {
+  stateToQuery,
+  queryToState,
+  applyStateToStore,
+  readStateFromUrl,
+  writeStateToUrl,
+  readLocationSearch,
+  DEFAULT_URL_SYNC_PARAM,
+} from './lib/url-sync.js';
+export type { UrlSyncOptions } from './lib/url-sync.js';

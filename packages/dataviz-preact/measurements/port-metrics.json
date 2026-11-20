@@ -7,9 +7,9 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 15,
+    "portedModules": 20,
     "barrelFile": "index.ts",
-    "remainingModules": 112,
+    "remainingModules": 107,
     "remainingFiles": [
       "lib/AdvancedPivotDataTable.tsx",
       "lib/AnalyticsClusterPlot.tsx",
@@ -117,11 +117,6 @@
       "lib/WaterfallChart.tsx",
       "lib/WindBarbChart.tsx",
       "lib/WordCloudChart.tsx",
-      "lib/advancedPivotData.ts",
-      "lib/analyticsDsData.ts",
-      "lib/chart-export.ts",
-      "lib/geoMapLayers.ts",
-      "lib/url-sync.ts",
       "lib/useUrlSync.ts"
     ]
   },
@@ -291,23 +286,78 @@
         "total": 1016,
         "touched": 20,
         "emissionRewrites": 1
+      },
+      {
+        "module": "advancedPivotData",
+        "kind": "helper",
+        "file": "src/lib/advancedPivotData.ts",
+        "reactSource": "lib/advancedPivotData.ts",
+        "reactLines": 94,
+        "preactLines": 94,
+        "total": 601,
+        "touched": 0,
+        "emissionRewrites": 0
+      },
+      {
+        "module": "analyticsDsData",
+        "kind": "helper",
+        "file": "src/lib/analyticsDsData.ts",
+        "reactSource": "lib/analyticsDsData.ts",
+        "reactLines": 109,
+        "preactLines": 109,
+        "total": 801,
+        "touched": 1,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "chart-export",
+        "kind": "helper",
+        "file": "src/lib/chart-export.ts",
+        "reactSource": "lib/chart-export.ts",
+        "reactLines": 372,
+        "preactLines": 372,
+        "total": 2103,
+        "touched": 0,
+        "emissionRewrites": 0
+      },
+      {
+        "module": "geoMapLayers",
+        "kind": "helper",
+        "file": "src/lib/geoMapLayers.ts",
+        "reactSource": "lib/geoMapLayers.ts",
+        "reactLines": 137,
+        "preactLines": 137,
+        "total": 866,
+        "touched": 1,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "url-sync",
+        "kind": "helper",
+        "file": "src/lib/url-sync.ts",
+        "reactSource": "lib/url-sync.ts",
+        "reactLines": 179,
+        "preactLines": 179,
+        "total": 842,
+        "touched": 0,
+        "emissionRewrites": 0
       }
     ],
     "totals": {
-      "modules": 15,
-      "reactLines": 1708,
-      "preactLines": 1812,
-      "total": 11164,
-      "touched": 143,
-      "emissionRewrites": 11
+      "modules": 20,
+      "reactLines": 2599,
+      "preactLines": 2703,
+      "total": 16377,
+      "touched": 145,
+      "emissionRewrites": 13
     },
     "shared": {
-      "src/index.ts": 38,
+      "src/index.ts": 60,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 71
+      "vitest.react.config.ts": 73
     }
   },
   "reach": {
