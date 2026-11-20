@@ -310,7 +310,11 @@ function mount(
 }
 
 /** The scene model the engine emits for a fixture and fold state, with no figure involved. */
-function modelOf(scene: ReturnType<typeof sceneOf>, collapsed: readonly string[] = []) {
+function modelOf(
+  scene: ReturnType<typeof sceneOf>,
+  collapsed: readonly string[] = [],
+  previousOrientation?: Parameters<typeof layoutScene>[0]["previousOrientation"],
+) {
   const input = {
     document: scene.document,
     registry: m3ProfileRegistry as DiagramSceneFigureProps["registry"],
@@ -319,6 +323,7 @@ function modelOf(scene: ReturnType<typeof sceneOf>, collapsed: readonly string[]
     hints: scene.hints,
     measureLines,
     collapsed: collapsed.map(occurrence),
+    ...(previousOrientation === undefined ? {} : { previousOrientation }),
   };
   const result = layoutScene(input);
   if (result.status !== "laid-out") throw new Error(JSON.stringify(result.refusals));
@@ -864,7 +869,8 @@ describe("DiagramSceneFigure folds", () => {
 
     const view = mount(nested);
     await tick();
-    const initialModel = modelOf(nested, []).model;
+    const initial = modelOf(nested, []);
+    const initialModel = initial.model;
     expect(view.drawn().sort()).toEqual([
       occurrence("a1"),
       occurrence("a2"),
@@ -886,7 +892,8 @@ describe("DiagramSceneFigure folds", () => {
     // Fold innerA first: a1/a2 hide, innerA collapses to 352x154 keeping surface2, 2 cross-links bundle.
     await fireEvent.click(view.toggle("innerA"));
     await tick();
-    const innerFoldModel = modelOf(nested, ["innerA"]).model;
+    const innerFold = modelOf(nested, ["innerA"], initial.result.orientations);
+    const innerFoldModel = innerFold.model;
     expect(view.drawn().sort()).toEqual([
       occurrence("aSibling"),
       occurrence("b1"),
@@ -912,7 +919,9 @@ describe("DiagramSceneFigure folds", () => {
     await fireEvent.click(view.toggle("outerA"));
     await tick();
     await tick();
-    const outerFoldModel = modelOf(nested, ["outerA"]).model;
+    const unfoldedAfterInner = modelOf(nested, [], innerFold.result.orientations);
+    const outerFold = modelOf(nested, ["outerA"], unfoldedAfterInner.result.orientations);
+    const outerFoldModel = outerFold.model;
     expect(view.drawn().sort()).toEqual([
       occurrence("b1"),
       occurrence("ext"),
@@ -937,10 +946,11 @@ describe("DiagramSceneFigure folds", () => {
     // Unfold outerA: exact same structure, geometry, edges and depth surfaces restored.
     await fireEvent.click(view.toggle("outerA"));
     await tick();
-    expect(view.drawn().sort()).toEqual(initialModel.nodes.map((n) => n.occurrence).sort());
+    const unfoldedAfterOuter = modelOf(nested, [], outerFold.result.orientations).model;
+    expect(view.drawn().sort()).toEqual(unfoldedAfterOuter.nodes.map((n) => n.occurrence).sort());
     expect(view.root.querySelectorAll("path[data-scene-edge]")).toHaveLength(6);
     expect(view.root.querySelector(`[data-scene-occurrence="${occurrence("innerA")}"] .st-diagramZone`)?.getAttribute("style") ?? "").toContain("--st-component-diagramZone-surface2");
-    for (const node of initialModel.nodes) {
+    for (const node of unfoldedAfterOuter.nodes) {
       expectWithinUnit(view.rectOf(node.occurrence.replace("occurrence:e.", "")), node.rect);
     }
   });

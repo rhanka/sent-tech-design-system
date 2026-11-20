@@ -162,4 +162,37 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     await tick();
     expect(suppressed.container.querySelector("[data-scene-legend]")).toBeNull();
   });
+
+  it("should apply fit-to-window framing only when fitToWindow is enabled and keep fold/unfold working (DE-2 ask 9)", async () => {
+    const fixture = nestedZoneFixture({ outside: true });
+    const defaultView = render(DiagramSceneFigure, propsOf(fixture));
+    await tick();
+    const defaultFigure = defaultView.container.querySelector("figure")!;
+    const defaultViewport = defaultView.container.querySelector<HTMLElement>(".st-diagramSceneFigure-viewport")!;
+    expect(defaultFigure.classList.contains("st-diagramSceneFigure--fitToWindow")).toBe(false);
+    expect(defaultFigure.getAttribute("data-fit-to-window")).toBeNull();
+    expect(defaultViewport.style.maxHeight).toBe("");
+    defaultView.unmount();
+
+    const fittedView = render(DiagramSceneFigure, { ...propsOf(fixture), fitToWindow: true } as DiagramSceneFigureProps);
+    await tick();
+    const figure = fittedView.container.querySelector("figure")!;
+    const viewport = fittedView.container.querySelector<HTMLElement>(".st-diagramSceneFigure-viewport")!;
+    expect(figure.classList.contains("st-diagramSceneFigure--fitToWindow")).toBe(true);
+    expect(figure.getAttribute("data-fit-to-window")).toBe("true");
+    expect(viewport.style.maxHeight).toBe("calc(100vh - 24px)");
+    expect(viewport.style.maxWidth).toBe("100%");
+    expect(viewport.style.marginInline).toBe("auto");
+
+    // Fold and unfold keep fit-to-window active.
+    const [, ontology] = fixture.zones as [string, string];
+    const toggle = () => fittedView.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${ontology}"] button[aria-expanded]`)!;
+    await fireEvent.click(toggle());
+    await tick();
+    expect(figure.getAttribute("data-fit-to-window")).toBe("true");
+    expect(fittedView.container.querySelectorAll("path[data-scene-edge]")).toHaveLength(1);
+    await fireEvent.click(toggle());
+    await tick();
+    expect(fittedView.container.querySelectorAll("path[data-scene-edge]")).toHaveLength(fixture.relations.length);
+  });
 });

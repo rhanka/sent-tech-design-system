@@ -269,8 +269,9 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
 </script>
 
 <template>
-  <figure :class="['st-diagramSceneFigure', { 'st-diagramSceneFigure--compact': compact }]"
+  <figure :class="['st-diagramSceneFigure', { 'st-diagramSceneFigure--compact': compact, 'st-diagramSceneFigure--fitToWindow': fitToWindow }]"
     :aria-label="label ?? title" :data-zoom="zoom" :data-zoom-readout="readout"
+    :data-fit-to-window="fitToWindow ? 'true' : undefined"
     :data-scene-refused="layoutResult.status === 'refused' ? layoutResult.refusals[0]?.code : undefined">
     <figcaption v-if="title !== undefined" class="st-diagramSceneFigure-title">{{ title }}</figcaption>
     <div class="st-diagramSceneFigure-controls" role="group" :aria-label="strings.controls">

@@ -181,6 +181,8 @@
     /** Accessible name of the figure. Defaults to `title`. */
     label?: string;
     compact?: boolean;
+    /** Opt-in fit-to-window host framing (`max-height: calc(100vh - 24px)`, `max-width: 100%`, centred; DE-2 ask 9). Default `false` preserves `Z-3 / AC-23`. */
+    fitToWindow?: boolean;
     labels?: Partial<DiagramSceneFigureLabels>;
     iconBindings?: import("@sentropic/diagram-canvas/diagramSceneModel").SceneIconBindings;
     strictIcons?: boolean;
@@ -229,6 +231,7 @@
     title,
     label,
     compact = false,
+    fitToWindow = false,
     labels,
     resolveGlyph = getDiagramGlyph,
     iconBindings,
@@ -634,6 +637,7 @@
       scrollbarHeight,
       ...(maxDisplayScale === undefined ? {} : { maxDisplayScale }),
       ...(minReadableScale === undefined ? {} : { minReadableScale }),
+      ...(fitToWindow ? { fitToWindow: true } : {}),
     }),
   );
   const zoom = $derived(resolveZoom(requestedZoom, fit));
@@ -937,7 +941,7 @@
 
   const edgeLabelLineHeight = $derived(lineMeasurer({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
   const viewportStyle = $derived(
-    `height:${fit.fitHeight + scrollbarHeight}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
+    `height:${fit.fitHeight + scrollbarHeight}px;${fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );
   const worldStyle = $derived(
     `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,
@@ -945,10 +949,11 @@
 </script>
 
 <figure
-  class="st-diagramSceneFigure{compact ? " st-diagramSceneFigure--compact" : ""}"
+  class="st-diagramSceneFigure{compact ? " st-diagramSceneFigure--compact" : ""}{fitToWindow ? " st-diagramSceneFigure--fitToWindow" : ""}"
   aria-label={label ?? title}
   data-zoom={zoom}
   data-zoom-readout={readout}
+  data-fit-to-window={fitToWindow ? "true" : undefined}
   data-scene-refused={layoutResult.status === "refused" ? layoutResult.refusals[0]?.code : undefined}
 >
   {#if title !== undefined}
@@ -1200,6 +1205,15 @@
   }
   .st-diagramSceneFigure--compact {
     gap: var(--st-spacing-1, 0.25rem);
+  }
+  .st-diagramSceneFigure--fitToWindow {
+    margin-inline: auto;
+    max-width: 100%;
+  }
+  .st-diagramSceneFigure--fitToWindow .st-diagramSceneFigure-viewport {
+    margin-inline: auto;
+    max-height: calc(100vh - 24px);
+    max-width: 100%;
   }
   .st-diagramSceneFigure-title {
     color: var(--st-semantic-text-primary);

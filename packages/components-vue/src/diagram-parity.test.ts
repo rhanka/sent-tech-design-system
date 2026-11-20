@@ -688,4 +688,23 @@ describe('scene host DOM and camera/fold behavior', () => {
     }
     vi.unstubAllGlobals();
   });
+
+  it('should apply opt-in fitToWindow identically on Svelte and Vue across fold/unfold (DE-2 ask 9)', async () => {
+    frame();
+    const props = { ...host, ...WIDE, fitToWindow: true };
+    const vue = mount(SceneFigure, { props });
+    const svelte = render(SvelteScene, { props });
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    for (const root of [vue.element, svelte.container.firstElementChild!]) {
+      expect(root.classList.contains('st-diagramSceneFigure--fitToWindow')).toBe(true);
+      expect(root.getAttribute('data-fit-to-window')).toBe('true');
+      const viewport = root.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!;
+      expect(viewport.style.maxHeight).toBe('calc(100vh - 24px)');
+      expect(viewport.style.maxWidth).toBe('100%');
+      expect(viewport.style.marginInline).toBe('auto');
+    }
+    vue.unmount(); svelte.unmount();
+    vi.unstubAllGlobals();
+  });
 });
