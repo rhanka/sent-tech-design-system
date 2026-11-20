@@ -60,7 +60,7 @@ const reactTests: string[] = [
   "lib/CalculationEditor.test.tsx", // emitted CalculationEditor
   "lib/ExportMenu.test.tsx", // emitted ExportMenu + rowsToCsv
   "lib/ChartExport.test.tsx", // emitted ChartExport + ExportMenu + chart-export
-  "lib/PartOfWholeCharts.test.tsx", // emitted ChordChart, DonutChart, TreemapChart, FunnelChart, MekkoChart, PackedBubbleChart, RadarChart, RoseChart, SankeyChart, SunburstChart + partOfWholeData
+  "lib/PartOfWholeCharts.test.tsx", // emitted ChordChart, DonutChart, TreemapChart, FunnelChart, MekkoChart, PackedBubbleChart, RadarChart, RoseChart, SankeyChart, SunburstChart, WaterfallChart + partOfWholeData
   "lib/GeoCharts.test.tsx", // emitted ChoroplethMap, GeoClusterMap, GeoDensityMap, GeoFlowMap, GeoHexbinMap, GeoJsonMap, GeoPointMap + geoMapLayers
   "lib/DashboardActiveFilters.test.tsx", // emitted DashboardActiveFilters
   "lib/DashboardFilterBar.test.tsx", // emitted DashboardFilterBar

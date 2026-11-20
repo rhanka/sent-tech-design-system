@@ -125,6 +125,11 @@ import * as handWrittenTreegraphChart from "../../dataviz-react/src/lib/Treegrap
 import * as handWrittenTrendLineChart from "../../dataviz-react/src/lib/TrendLineChart.js";
 import * as handWrittenValueSlicer from "../../dataviz-react/src/lib/ValueSlicer.js";
 import * as handWrittenVariablePieChart from "../../dataviz-react/src/lib/VariablePieChart.js";
+import * as handWrittenVectorFieldChart from "../../dataviz-react/src/lib/VectorFieldChart.js";
+import * as handWrittenVennChart from "../../dataviz-react/src/lib/VennChart.js";
+import * as handWrittenViolinChart from "../../dataviz-react/src/lib/ViolinChart.js";
+import * as handWrittenWaffleChart from "../../dataviz-react/src/lib/WaffleChart.js";
+import * as handWrittenWaterfallChart from "../../dataviz-react/src/lib/WaterfallChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -271,6 +276,11 @@ const switched = [
   "TrendLineChart",
   "ValueSlicer",
   "VariablePieChart",
+  "VectorFieldChart",
+  "VennChart",
+  "ViolinChart",
+  "WaffleChart",
+  "WaterfallChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -409,6 +419,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   TrendLineChart: handWrittenTrendLineChart.TrendLineChart,
   ValueSlicer: handWrittenValueSlicer.ValueSlicer,
   VariablePieChart: handWrittenVariablePieChart.VariablePieChart,
+  VectorFieldChart: handWrittenVectorFieldChart.VectorFieldChart,
+  VennChart: handWrittenVennChart.VennChart,
+  ViolinChart: handWrittenViolinChart.ViolinChart,
+  WaffleChart: handWrittenWaffleChart.WaffleChart,
+  WaterfallChart: handWrittenWaterfallChart.WaterfallChart,
 };
 
 describe("dataviz React leg provenance", () => {
