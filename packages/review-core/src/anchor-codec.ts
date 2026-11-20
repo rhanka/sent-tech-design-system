@@ -1,4 +1,4 @@
-// Compact versioned anchor codec stored in `CommentTarget.sectionKey` (SPEC-r5 §2).
+// Compact versioned anchor codec stored in `CommentTarget.sectionKey` (SPEC-r6 §2).
 // Format: `"a1:" + base64url(utf8(JSON.stringify(payload)))`
 // Hard cap: 2048 chars on the final encoded string; trims quote context first,
 // then truncates `exact` while keeping `pos`; refuses minimal encodings > 2048.
@@ -328,7 +328,7 @@ function buildTextPayload(
 
 /**
  * Attempts to encode an `AnchorPayload` into `sectionKey` (`a1:<base64url(utf8(json))>`),
- * applying SPEC-r5 §2 cap & shortening rules:
+ * applying SPEC-r6 §2 cap & shortening rules:
  * 1. Clamp `prefix` (tail) and `suffix` (head) to <= 32 Unicode code points.
  * 2. If final length > `maxLength` (2048): trim `prefix`/`suffix` first.
  * 3. If still > `maxLength`: drop `prefix`/`suffix` and truncate `exact` by code points

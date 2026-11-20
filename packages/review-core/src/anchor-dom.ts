@@ -1,4 +1,4 @@
-// DOM anchor capture and re-render-resilient resolution (SPEC-r5 §2, §3).
+// DOM anchor capture and re-render-resilient resolution (SPEC-r6 §2, §3).
 // Never mutates the artifact DOM and never writes back to the store.
 
 import { AnchorValidationError, MAX_QUOTE_CONTEXT_LENGTH } from "./anchor-codec.js";
@@ -675,7 +675,7 @@ function findFuzzyQuoteIn(
 
 /**
  * Re-attaches an `AnchorPayload` to the rendered artifact DOM under `root`
- * (SPEC-r5 §2):
+ * (SPEC-r6 §2):
  * 1. `aid` (`data-anchor-id`)
  * 2. `exact` + `prefix`/`suffix`, tie-broken by nearest `pos.start`
  * 3. `sel` (CSS `nth-of-type` path)
