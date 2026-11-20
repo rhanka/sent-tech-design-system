@@ -51,6 +51,8 @@ const reactTests: string[] = [
   "lib/DivergingBarChart.test.tsx", // emitted DivergingBarChart
   "lib/ParetoChart.test.tsx", // emitted ParetoChart
   "lib/DateHistogramChart.test.tsx", // emitted DateHistogramChart
+  "lib/chart-export.test.ts", // emitted lib/chart-export.ts
+  "lib/url-sync.test.tsx", // emitted lib/url-sync.ts
 ];
 
 export default defineConfig({

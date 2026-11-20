@@ -12,6 +12,16 @@ import type * as EmittedDistributionData from "../.react-emit/src/lib/distributi
 import type * as HandWrittenDistributionData from "../../dataviz-react/src/lib/distributionData.js";
 import type * as EmittedPartOfWholeData from "../.react-emit/src/lib/partOfWholeData.js";
 import type * as HandWrittenPartOfWholeData from "../../dataviz-react/src/lib/partOfWholeData.js";
+import type * as EmittedAdvancedPivotData from "../.react-emit/src/lib/advancedPivotData.js";
+import type * as HandWrittenAdvancedPivotData from "../../dataviz-react/src/lib/advancedPivotData.js";
+import type * as EmittedAnalyticsDsData from "../.react-emit/src/lib/analyticsDsData.js";
+import type * as HandWrittenAnalyticsDsData from "../../dataviz-react/src/lib/analyticsDsData.js";
+import type * as EmittedChartExport from "../.react-emit/src/lib/chart-export.js";
+import type * as HandWrittenChartExport from "../../dataviz-react/src/lib/chart-export.js";
+import type * as EmittedGeoMapLayers from "../.react-emit/src/lib/geoMapLayers.js";
+import type * as HandWrittenGeoMapLayers from "../../dataviz-react/src/lib/geoMapLayers.js";
+import type * as EmittedUrlSync from "../.react-emit/src/lib/url-sync.js";
+import type * as HandWrittenUrlSync from "../../dataviz-react/src/lib/url-sync.js";
 
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
 type Expect<T extends true> = T;
@@ -34,6 +44,10 @@ export type PropsParity = [
   Expect<Equal<Emitted.DateHistogramChartProps, HandWritten.DateHistogramChartProps>>,
   Expect<Equal<Emitted.DateHistogramChartTone, HandWritten.DateHistogramChartTone>>,
   Expect<Equal<Emitted.DateHistogramLabelFormatter, HandWritten.DateHistogramLabelFormatter>>,
+  Expect<Equal<Emitted.SerializeSvgOptions, HandWritten.SerializeSvgOptions>>,
+  Expect<Equal<Emitted.RasterizeOptions, HandWritten.RasterizeOptions>>,
+  Expect<Equal<Emitted.ChartExportFormat, HandWritten.ChartExportFormat>>,
+  Expect<Equal<Emitted.UrlSyncOptions, HandWritten.UrlSyncOptions>>,
 ];
 
 export type ComponentParity = [
@@ -54,6 +68,20 @@ export type ValueParity = [
   Expect<Equal<typeof Emitted.drillLevel, typeof HandWritten.drillLevel>>,
   Expect<Equal<typeof Emitted.onDrillSelect, typeof HandWritten.onDrillSelect>>,
   Expect<Equal<typeof Emitted.drillDepth, typeof HandWritten.drillDepth>>,
+  Expect<Equal<typeof Emitted.serializeSvg, typeof HandWritten.serializeSvg>>,
+  Expect<Equal<typeof Emitted.svgStringToBlob, typeof HandWritten.svgStringToBlob>>,
+  Expect<Equal<typeof Emitted.svgStringToPngBlob, typeof HandWritten.svgStringToPngBlob>>,
+  Expect<Equal<typeof Emitted.downloadBlob, typeof HandWritten.downloadBlob>>,
+  Expect<Equal<typeof Emitted.downloadSvg, typeof HandWritten.downloadSvg>>,
+  Expect<Equal<typeof Emitted.downloadPng, typeof HandWritten.downloadPng>>,
+  Expect<Equal<typeof Emitted.printElement, typeof HandWritten.printElement>>,
+  Expect<Equal<typeof Emitted.stateToQuery, typeof HandWritten.stateToQuery>>,
+  Expect<Equal<typeof Emitted.queryToState, typeof HandWritten.queryToState>>,
+  Expect<Equal<typeof Emitted.applyStateToStore, typeof HandWritten.applyStateToStore>>,
+  Expect<Equal<typeof Emitted.readStateFromUrl, typeof HandWritten.readStateFromUrl>>,
+  Expect<Equal<typeof Emitted.writeStateToUrl, typeof HandWritten.writeStateToUrl>>,
+  Expect<Equal<typeof Emitted.readLocationSearch, typeof HandWritten.readLocationSearch>>,
+  Expect<Equal<typeof Emitted.DEFAULT_URL_SYNC_PARAM, typeof HandWritten.DEFAULT_URL_SYNC_PARAM>>,
 ];
 
 export type InternalHelpersParity = [
@@ -65,6 +93,14 @@ export type InternalHelpersParity = [
   Expect<Equal<EmittedPartOfWholeData.HierarchyDatum, HandWrittenPartOfWholeData.HierarchyDatum>>,
   Expect<Equal<EmittedPartOfWholeData.TreemapDatum, HandWrittenPartOfWholeData.TreemapDatum>>,
   Expect<Equal<typeof EmittedDistributionData, typeof HandWrittenDistributionData>>,
+  Expect<Equal<typeof EmittedAdvancedPivotData, typeof HandWrittenAdvancedPivotData>>,
+  Expect<Equal<EmittedAdvancedPivotData.AdvancedPivotTableRowView, HandWrittenAdvancedPivotData.AdvancedPivotTableRowView>>,
+  Expect<Equal<EmittedAdvancedPivotData.AdvancedPivotTableView, HandWrittenAdvancedPivotData.AdvancedPivotTableView>>,
+  Expect<Equal<typeof EmittedAnalyticsDsData, typeof HandWrittenAnalyticsDsData>>,
+  Expect<Equal<typeof EmittedChartExport, typeof HandWrittenChartExport>>,
+  Expect<Equal<EmittedChartExport.PdfExportOptions, HandWrittenChartExport.PdfExportOptions>>,
+  Expect<Equal<typeof EmittedGeoMapLayers, typeof HandWrittenGeoMapLayers>>,
+  Expect<Equal<typeof EmittedUrlSync, typeof HandWrittenUrlSync>>,
 ];
 
 // The emitted barrel publishes no value the hand-written package keeps internal.
