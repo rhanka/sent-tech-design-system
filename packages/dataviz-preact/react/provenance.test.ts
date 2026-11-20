@@ -70,6 +70,11 @@ import * as handWrittenForceGraph from "../../dataviz-react/src/lib/ForceGraph.j
 import * as handWrittenForecastLineChart from "../../dataviz-react/src/lib/ForecastLineChart.js";
 import * as handWrittenFormatPanel from "../../dataviz-react/src/lib/FormatPanel.js";
 import * as handWrittenFunnelChart from "../../dataviz-react/src/lib/FunnelChart.js";
+import * as handWrittenGanttChart from "../../dataviz-react/src/lib/GanttChart.js";
+import * as handWrittenGaugeChart from "../../dataviz-react/src/lib/GaugeChart.js";
+import * as handWrittenGeoClusterMap from "../../dataviz-react/src/lib/GeoClusterMap.js";
+import * as handWrittenGeoDensityMap from "../../dataviz-react/src/lib/GeoDensityMap.js";
+import * as handWrittenGeoFlowMap from "../../dataviz-react/src/lib/GeoFlowMap.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -155,6 +160,11 @@ const switched = [
   "ForecastLineChart",
   "FormatPanel",
   "FunnelChart",
+  "GanttChart",
+  "GaugeChart",
+  "GeoClusterMap",
+  "GeoDensityMap",
+  "GeoFlowMap",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -232,6 +242,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   ForecastLineChart: handWrittenForecastLineChart.ForecastLineChart,
   FormatPanel: handWrittenFormatPanel.FormatPanel,
   FunnelChart: handWrittenFunnelChart.FunnelChart,
+  GanttChart: handWrittenGanttChart.GanttChart,
+  GaugeChart: handWrittenGaugeChart.GaugeChart,
+  GeoClusterMap: handWrittenGeoClusterMap.GeoClusterMap,
+  GeoDensityMap: handWrittenGeoDensityMap.GeoDensityMap,
+  GeoFlowMap: handWrittenGeoFlowMap.GeoFlowMap,
 };
 
 describe("dataviz React leg provenance", () => {

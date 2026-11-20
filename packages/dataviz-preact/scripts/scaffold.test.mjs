@@ -77,6 +77,11 @@ test("coverage manifest owns the expected ported modules of lot P6", () => {
       "ForecastLineChart",
       "FormatPanel",
       "FunnelChart",
+      "GanttChart",
+      "GaugeChart",
+      "GeoClusterMap",
+      "GeoDensityMap",
+      "GeoFlowMap",
     ],
   );
   assert.deepEqual(
