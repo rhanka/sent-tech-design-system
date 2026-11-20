@@ -109,7 +109,7 @@ describe("diagram presentation alignment (DE-1 step 2)", () => {
     }
   });
 
-  it("should keep zone alignment left by default for v1 and center by default for v2", () => {
+  it("should keep zone alignment left by default for both v1 and v2 and centre v2 only when explicitly requested", () => {
     const plain = projectZoneProps(
       { form: "container", text: { title: "Z" } },
       { entityId: "occurrence:e.2", collapsed: true },
@@ -124,7 +124,9 @@ describe("diagram presentation alignment (DE-1 step 2)", () => {
     );
     expect(compact.kind).toBe("zone");
     if (compact.kind !== "zone") return;
-    expect(layoutZone({ ...compact.props, width: 600 }, defaultCardMeasure).header?.title[0]?.anchor).toBe("middle");
+    expect(layoutZone({ ...compact.props, width: 600 }, defaultCardMeasure).header?.title[0]?.anchor).toBe("start");
+    const compactCentered = layoutZone({ ...compact.props, width: 600, align: "center" }, defaultCardMeasure);
+    expect(compactCentered.header?.title[0]?.anchor).toBe("middle");
     const compactLeft = layoutZone({ ...compact.props, width: 600, align: "left" }, defaultCardMeasure);
     expect(compactLeft.header?.title[0]?.anchor).toBe("start");
     const fallback = projectZoneProps(
@@ -134,6 +136,95 @@ describe("diagram presentation alignment (DE-1 step 2)", () => {
     expect(fallback.kind).toBe("zone");
     if (fallback.kind !== "zone") return;
     expect(fallback.props.align).toBe("center");
+  });
+
+  it("should pin v1 and fallback-v1 alignment to 0.41.5 values and restrict view-level centring to explicit compact v2", () => {
+    const complete = {
+      entityId: "entity:complete",
+      kicker: "KICKER",
+      title: "Title",
+      body: ["Body", "Detail"],
+      detailCount: 1,
+      footer: "Footer",
+      toggle: { collapsed: true, label: "Expand" },
+    } as const;
+    // Direct v1 (absent or explicit "v1"): kicker/title/footer start-anchored;
+    // body keeps the 0.41.5 centred leaf box (anchor "middle", x = 232).
+    for (const extra of [{}, { anatomy: "v1" as const }, { anatomy: "v1" as const, align: "center" as const }]) {
+      const card = layoutCard({ ...complete, ...extra }, defaultCardMeasure);
+      expect(card.box).toEqual({ width: 460, height: 200 });
+      expect(card.kicker[0]?.anchor).toBe("start");
+      expect(card.kicker[0]?.x).toBe(92);
+      expect(card.title[0]?.anchor).toBe("start");
+      expect(card.title[0]?.x).toBe(92);
+      expect(card.footerLines[0]?.anchor).toBe("start");
+      expect(card.footerLines[0]?.x).toBe(16);
+      expect(card.body.every((line) => line.anchor === "middle" && line.x === 232)).toBe(true);
+    }
+    // Fallback-v1 from v2 (both without align and with explicit align: "center"):
+    // keeps exact 0.41.5 v1 alignment, never centres header or footer.
+    for (const align of [undefined, "center" as const]) {
+      const card = layoutCard({ ...complete, anatomy: "v2", ...(align === undefined ? {} : { align }) }, defaultCardMeasure);
+      expect(card.anatomyFallback).toBe("v1");
+      expect(card.box).toEqual({ width: 460, height: 200 });
+      expect(card.kicker[0]?.anchor).toBe("start");
+      expect(card.kicker[0]?.x).toBe(92);
+      expect(card.title[0]?.anchor).toBe("start");
+      expect(card.title[0]?.x).toBe(92);
+      expect(card.footerLines[0]?.anchor).toBe("start");
+      expect(card.footerLines[0]?.x).toBe(16);
+      expect(card.body.every((line) => line.anchor === "middle" && line.x === 232)).toBe(true);
+
+      const collapsedZone = layoutZone(
+        {
+          entityId: "entity:zone",
+          kicker: "KICKER",
+          title: "Zone",
+          subtitle: "Subtitle",
+          footer: "Footer",
+          collapsed: true,
+          toggleLabel: "Toggle",
+          anatomy: "v2",
+          ...(align === undefined ? {} : { align }),
+        },
+        defaultCardMeasure,
+      );
+      expect(collapsedZone.card?.anatomyFallback).toBe("v1");
+      expect(collapsedZone.card?.kicker[0]?.anchor).toBe("start");
+      expect(collapsedZone.card?.title[0]?.anchor).toBe("start");
+      expect(collapsedZone.card?.footerLines[0]?.anchor).toBe("start");
+      expect(collapsedZone.card?.body.every((line) => line.anchor === "middle" && line.x === 230)).toBe(true);
+    }
+    // Compact v2 without align stays left; explicit align: "center" centres title/header.
+    const compactDefault = layoutCard({ entityId: "entity:c", title: "Title", body: ["Body"], anatomy: "v2" }, defaultCardMeasure);
+    expect(compactDefault.anatomyFallback).toBeUndefined();
+    expect(compactDefault.title[0]?.anchor).toBe("start");
+    expect(compactDefault.title[0]?.x).toBe(68);
+    const compactCentred = layoutCard({ entityId: "entity:c", title: "Title", body: ["Body"], anatomy: "v2", align: "center" }, defaultCardMeasure);
+    expect(compactCentred.anatomyFallback).toBeUndefined();
+    expect(compactCentred.title[0]?.anchor).toBe("middle");
+    expect(compactCentred.title[0]?.x).toBe(compactCentred.headerTextX + compactCentred.headerTextWidth / 2);
+
+    // Explicit v1 expanded zone ignores align: "center" and keeps 0.41.5 left anchors.
+    const v1Zone = layoutZone(
+      {
+        entityId: "entity:z1",
+        kicker: "KICKER",
+        title: "Zone",
+        subtitle: "Subtitle",
+        footer: "Footer",
+        collapsed: false,
+        toggleLabel: "Toggle",
+        width: 600,
+        anatomy: "v1",
+        align: "center",
+      },
+      defaultCardMeasure,
+    );
+    expect(v1Zone.header?.kicker[0]?.anchor).toBe("start");
+    expect(v1Zone.header?.title[0]?.anchor).toBe("start");
+    expect(v1Zone.header?.subtitle[0]?.anchor).toBe("start");
+    expect(v1Zone.header?.footer[0]?.anchor).toBe("start");
   });
 
   it("should emit ViewDocuments from layoutScene/layoutMeasured that pass validateView for @1 and @2 DE-1 scenes", () => {
@@ -223,6 +314,32 @@ describe("diagram presentation alignment (DE-1 step 2)", () => {
       expect(emittedCard?.["depth"]).toBeUndefined();
       expect(emittedCard?.["depthParityStart"]).toBeUndefined();
       if (label === "@2") expect(emittedCard?.["align"]).toBe("center");
+    }
+
+    // A v1 view (absent or explicit anatomy: "v1") strips view-level align: "center".
+    const v1View = { ...view, presentation: { ...view.presentation, anatomy: "v1" as const } } as unknown as SceneView;
+    const v1Result = layoutScene({
+      document,
+      view: v1View,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: {
+        contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+        entities: {
+          "occurrence:e.outer": { form: "container", text: { title: "Outer" }, align: "center" },
+          "occurrence:e.inner": { form: "container", text: { title: "Inner" }, align: "center" },
+          "occurrence:e.card": { form: "card", text: { title: "Card", body: "Text" }, align: "center" },
+        },
+        legends: {},
+        categoryTokens: [],
+      } as unknown as ScenePresentation,
+      measureLines: cardLineMeasurer(defaultCardMeasure),
+      collapsed: [],
+    });
+    expect(v1Result.status).toBe("laid-out");
+    if (v1Result.status === "laid-out") {
+      const emitted = v1Result.view.presentation.diagram?.entities["occurrence:e.card"] as Record<string, unknown> | undefined;
+      expect(emitted?.["align"]).toBeUndefined();
     }
   });
 });

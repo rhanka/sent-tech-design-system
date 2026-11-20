@@ -72,7 +72,7 @@ describe("diagram anatomy v2 (DE-1)", () => {
     expect(anatomyZoneGeometry(undefined)).toBe(ZONE_GEOMETRY);
   });
 
-  it("should lay out the compact 352x154 card with v2 insets and centred default alignment", () => {
+  it("should lay out the compact 352x154 card with v2 insets, left default alignment, and opt-in center alignment", () => {
     const layout = layoutCard({ ...COMPACT, anatomy: "v2" }, defaultCardMeasure);
     expect(layout.box).toEqual({ width: 352, height: 154 });
     expect(layout.anatomyFallback).toBeUndefined();
@@ -93,10 +93,11 @@ describe("diagram anatomy v2 (DE-1)", () => {
     // Folded header keeps the derived compact width (352 − 2 − 6 − 66 − 68).
     expect(layout.headerTextWidth).toBe(210);
     expect(layout.iconBox?.size).toBe(52);
-    // Compact-face default alignment is "center" (PLAN DE-1).
-    expect(layout.title[0]?.anchor).toBe("middle");
+    // Compact-face stays left-aligned unless align: "center" is explicitly requested.
+    expect(layout.title[0]?.anchor).toBe("start");
     expect(layout.body.map((line) => line.text)).toEqual(["Body"]);
-    // Explicit align: "left" overrides the compact default.
+    const centred = layoutCard({ ...COMPACT, anatomy: "v2", align: "center" }, defaultCardMeasure);
+    expect(centred.title[0]?.anchor).toBe("middle");
     const left = layoutCard({ ...COMPACT, anatomy: "v2", align: "left" }, defaultCardMeasure);
     expect(left.title[0]?.anchor).toBe("start");
   });
@@ -111,12 +112,20 @@ describe("diagram anatomy v2 (DE-1)", () => {
     expect(result.layout.box).toEqual({ width: 352, height: 154 });
   });
 
-  it("should fall back per box to frozen v1 keeping the full body when v2 overflows", () => {
+  it("should fall back per box to frozen v1 keeping the full body and 0.41.5 alignment when v2 overflows", () => {
     const layout = layoutCard({ ...CONTRACT, anatomy: "v2" }, defaultCardMeasure);
     expect(layout.anatomyFallback).toBe("v1");
     expect(layout.box).toEqual({ width: 460, height: 200 });
     expect(layout.body.map((line) => line.text)).toEqual(["Body", "Detail"]);
-    expect(layout.title[0]?.anchor).toBe("middle");
+    expect(layout.kicker[0]?.anchor).toBe("start");
+    expect(layout.title[0]?.anchor).toBe("start");
+    expect(layout.footerLines[0]?.anchor).toBe("start");
+    // Even with explicit align: "center", a fallback-v1 card keeps 0.41.5 left header/footer alignment.
+    const fallbackWithAlign = layoutCard({ ...CONTRACT, anatomy: "v2", align: "center" }, defaultCardMeasure);
+    expect(fallbackWithAlign.anatomyFallback).toBe("v1");
+    expect(fallbackWithAlign.kicker[0]?.anchor).toBe("start");
+    expect(fallbackWithAlign.title[0]?.anchor).toBe("start");
+    expect(fallbackWithAlign.footerLines[0]?.anchor).toBe("start");
     const overflow = layout.diagnostics.find((diagnostic) => diagnostic.code === "card-overflow");
     expect(overflow?.slot).toBe("body");
     expect(overflow?.reason).toBe("fallback-v1");
@@ -142,8 +151,10 @@ describe("diagram anatomy v2 (DE-1)", () => {
     expect(collapsed.collapsed).toBe(true);
     expect(collapsed.box).toEqual({ x: 0, y: 0, width: 352, height: 154 });
     expect(collapsed.card?.body.map((line) => line.text)).toEqual(["Subtitle"]);
-    expect(collapsed.card?.title[0]?.anchor).toBe("middle");
+    expect(collapsed.card?.title[0]?.anchor).toBe("start");
     expect(collapsed.diagnostics).toEqual([]);
+    const collapsedCentred = layoutZone({ ...compactZone, collapsed: true, align: "center" }, defaultCardMeasure);
+    expect(collapsedCentred.card?.title[0]?.anchor).toBe("middle");
 
     const fullZone = {
       ...compactZone,
@@ -154,13 +165,16 @@ describe("diagram anatomy v2 (DE-1)", () => {
     const collapsedFallback = layoutZone({ ...fullZone, collapsed: true }, defaultCardMeasure);
     expect(collapsedFallback.box).toEqual({ x: 0, y: 0, width: 460, height: 200 });
     expect(collapsedFallback.card?.anatomyFallback).toBe("v1");
+    expect(collapsedFallback.card?.title[0]?.anchor).toBe("start");
     expect(collapsedFallback.card?.body.map((line) => line.text)).toEqual(["Subtitle"]);
     expect(collapsedFallback.diagnostics.some((d) => d.code === "zone-overflow" && d.reason === "fallback-v1")).toBe(true);
 
     const expanded = layoutZone({ ...fullZone, collapsed: false }, defaultCardMeasure);
     expect(expanded.collapsed).toBe(false);
     expect(expanded.header?.headerTextX).toBe(12 + 52 + 4);
-    expect(expanded.header?.title[0]?.anchor).toBe("middle");
+    expect(expanded.header?.title[0]?.anchor).toBe("start");
+    const expandedCentred = layoutZone({ ...fullZone, collapsed: false, align: "center" }, defaultCardMeasure);
+    expect(expandedCentred.header?.title[0]?.anchor).toBe("middle");
     expect(ZONE_GEOMETRY_V2.collapsedWidth).toBe(352);
     expect(ZONE_GEOMETRY_V2.collapsedHeight).toBe(154);
   });
@@ -283,7 +297,12 @@ describe("diagram anatomy v2 (DE-1)", () => {
     // 68 left (12 + 52 + 4) + 86 right toggle reserve = 154 -> 446 header text width.
     expect(zoneWithIcon.header?.headerTextX).toBe(68);
     expect(zoneWithIcon.header?.headerTextWidth).toBe(600 - 154);
-    expect(zoneWithIcon.header?.title[0]?.x).toBe(68 + (600 - 154) / 2);
+    expect(zoneWithIcon.header?.title[0]?.x).toBe(68);
+    const zoneWithIconCentred = layoutZone(
+      { entityId: "z", title: "Platform Zone", collapsed: false, width: 600, toggleLabel: "Collapse", anatomy: "v2", align: "center" },
+      defaultCardMeasure,
+    );
+    expect(zoneWithIconCentred.header?.title[0]?.x).toBe(68 + (600 - 154) / 2);
 
     const longZoneTitle = "Customer Platform Gateway Cluster";
     const document = {

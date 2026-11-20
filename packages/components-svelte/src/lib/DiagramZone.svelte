@@ -7,6 +7,7 @@
   import {
     anatomyZoneGeometry,
     defaultCardMeasure,
+    resolveDiagramAlign,
     zoneFullText,
     layoutZone,
     zoneCollapsedCardProps,
@@ -106,7 +107,7 @@
   const layout = $derived(layoutZone(zoneProps, measure, []));
   /** Expanded chrome geometry for the pinned anatomy (v1 values by default). */
   const zoneGeometry = $derived(anatomyZoneGeometry(anatomy));
-  const effectiveAlign = $derived(align ?? (anatomy === "v2" ? "center" : "left"));
+  const effectiveAlign = $derived(resolveDiagramAlign(anatomy, align));
 
   /**
    * Owner addendum 1: an explicitly threaded depth paints the resolved

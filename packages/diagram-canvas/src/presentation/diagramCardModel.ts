@@ -134,6 +134,23 @@ export interface AlignPinned {
 }
 
 /**
+ * Effective header/footer alignment for a card or zone:
+ * - Absent `align` is always `"left"` (compact `v2` never centres implicitly).
+ * - Explicit `"v1"` anatomy (including `fallback-v1`) keeps the frozen 0.41.5
+ *   alignment (`"left"`); view-driven centring applies only when a view
+ *   explicitly asks `align: "center"` on compact `v2`.
+ * - Direct unpinned calls (`anatomy === undefined`) preserve 0.41.5's
+ *   `props.align ?? "left"` behaviour.
+ */
+export function resolveDiagramAlign(
+  anatomy: DiagramAnatomy | undefined,
+  align: "left" | "center" | undefined,
+): "left" | "center" {
+  if (anatomy === "v1") return "left";
+  return align ?? "left";
+}
+
+/**
  * Edge label typography (DC-2a, tokens `diagramScene.edgeLabelFontSize` /
  * `diagramScene.edgeLabelLineHeight`): 18 px on a 22 px line box. One line
  * plus the engine's two 4 px label margins is 30 px, inside the 32 px sibling
@@ -1127,16 +1144,18 @@ function layoutCardAt(
  * Lay out fixed card slots with measured ellipses and a pinned footer.
  * Informational diagnostics retain the original text and hidden length.
  * Missing glyphs use the visible unknown icon (owner A2/A11).
- * Compact `v2` cards default to `"center"` alignment and fall back per box
- * to frozen `v1` (`460 × 200`) on overflow instead of dropping slots.
+ * Compact `v2` cards default to `"left"` alignment (centring only when
+ * `align: "center"` is explicitly requested on compact `v2`) and fall back
+ * per box to frozen `v1` (`460 × 200`, `"left"` header/footer alignment as in
+ * 0.41.5) on overflow instead of dropping slots.
  */
 export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): CardLayout {
-  const align = props.align ?? (props.anatomy === "v2" ? "center" : "left");
+  const align = resolveDiagramAlign(props.anatomy, props.align);
   const primary = layoutCardAt(props, measure, props.anatomy, align);
   if (props.anatomy !== "v2") return primary;
   const v2Overflows = primary.diagnostics.filter((diagnostic) => diagnostic.code === "card-overflow");
   if (v2Overflows.length === 0) return primary;
-  const fallback = layoutCardAt(props, measure, "v1", align);
+  const fallback = layoutCardAt(props, measure, "v1", "left");
   const stillOverflows = fallback.diagnostics.some((diagnostic) => diagnostic.code === "card-overflow");
   const diagnostics: CardDiagnostic[] = stillOverflows
     ? [...fallback.diagnostics]
@@ -1536,7 +1555,7 @@ export function layoutZone(
       ? g.headerInset
       : g.headerTextInset - (g.headerInset + g.iconSize + g.iconTextGap);
   const headerTextWidth = Math.max(0, x + width - headerTextX - rightHeaderReserve);
-  const align = props.align ?? (props.anatomy === "v2" ? "center" : "left");
+  const align = resolveDiagramAlign(props.anatomy, props.align);
   const headerAnchor: "start" | "middle" = align === "center" ? "middle" : "start";
   const headerLineX = align === "center" ? headerTextX + headerTextWidth / 2 : headerTextX;
 
