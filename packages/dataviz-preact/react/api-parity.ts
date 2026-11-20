@@ -110,6 +110,11 @@ export type PropsParity = [
   Expect<Equal<Emitted.GeoPointMapProps, HandWritten.GeoPointMapProps>>,
   Expect<Equal<Emitted.HLCChartProps, HandWritten.HLCChartProps>>,
   Expect<Equal<Emitted.HeatmapChartProps, HandWritten.HeatmapChartProps>>,
+  Expect<Equal<Emitted.HeikinAshiChartProps, HandWritten.HeikinAshiChartProps>>,
+  Expect<Equal<Emitted.HistogramChartProps, HandWritten.HistogramChartProps>>,
+  Expect<Equal<Emitted.HollowCandlestickChartProps, HandWritten.HollowCandlestickChartProps>>,
+  Expect<Equal<Emitted.ItemChartProps, HandWritten.ItemChartProps>>,
+  Expect<Equal<Emitted.KpiCardGroupProps, HandWritten.KpiCardGroupProps>>,
 ];
 
 export type ComponentParity = [
@@ -177,6 +182,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.GeoPointMap, typeof HandWritten.GeoPointMap>>,
   Expect<Equal<typeof Emitted.HLCChart, typeof HandWritten.HLCChart>>,
   Expect<Equal<typeof Emitted.HeatmapChart, typeof HandWritten.HeatmapChart>>,
+  Expect<Equal<typeof Emitted.HeikinAshiChart, typeof HandWritten.HeikinAshiChart>>,
+  Expect<Equal<typeof Emitted.HistogramChart, typeof HandWritten.HistogramChart>>,
+  Expect<Equal<typeof Emitted.HollowCandlestickChart, typeof HandWritten.HollowCandlestickChart>>,
+  Expect<Equal<typeof Emitted.ItemChart, typeof HandWritten.ItemChart>>,
+  Expect<Equal<typeof Emitted.KpiCardGroup, typeof HandWritten.KpiCardGroup>>,
 ];
 
 export type ValueParity = [
