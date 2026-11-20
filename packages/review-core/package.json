@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-review-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Framework-neutral core for artifact review comments: 1:1 packages/comments contract view models, CommentsAdapter interface, authorship fallback, thread grouping, filters, unread rules, pin layout, and sectionKey anchors. Zero runtime dependencies.",
   "license": "MIT",
   "publishConfig": {
