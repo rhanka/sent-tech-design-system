@@ -692,4 +692,65 @@ describe('scene host DOM and camera/fold behavior', () => {
     }
     vi.unstubAllGlobals();
   });
+  it('should pin v1 figure max size and zoom bounds (maxDisplayScale 0.62, minReadableScale 0.45, fit) to 0.41.5 / next.7 on Svelte and Vue', async () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: true }));
+    vi.stubGlobal('innerHeight', 720);
+    // Single v1 complete card and fallback-v1 card both cap at 0.62 (readout 100%, viewport height 126px).
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1280);
+    const completeSingle = sceneOf('v1-zoom-single', [{ id: 'solo' }]);
+    const completePres = (anatomy?: 'v1' | 'v2') => ({
+      ...completeSingle.presentation,
+      entities: {
+        [occurrence('solo')]: {
+          form: 'card',
+          text: { kicker: 'KICKER', title: 'Complete card', body: 'Primary', detail: 'Detail', footer: 'Footer' },
+          ...(anatomy === undefined ? {} : { anatomy }),
+        },
+      },
+    }) as unknown as ScenePresentation;
+    for (const anatomy of [undefined, 'v1', 'v2'] as const) {
+      const props = { ...host, ...completeSingle, presentation: completePres(anatomy), title: 'Zoom bounds' };
+      const vue = mount(SceneFigure, { props });
+      const svelte = render(SvelteScene, { props });
+      await nextTick(); await tick(); await nextTick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      expect(vue.vm.getCamera()).toEqual({
+        zoom: 0.62,
+        readout: 100,
+        minZoom: 0.62,
+        maxZoom: 0.62,
+        fitZoom: 0.62,
+        pans: false,
+      });
+      const vpVue = vue.element.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!;
+      const vpSvelte = svelte.container.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!;
+      expect(vpVue.style.height).toBe('126px');
+      expect(vpSvelte.style.height).toBe('126px');
+      // Complete/fallback-v1 card keeps 0.41.5 alignment (no --center) and toggle-free 460x200 box.
+      expect(vue.element.querySelector('.st-diagramCard')?.classList.contains('st-diagramCard--center')).toBe(false);
+      expect(svelte.container.querySelector('.st-diagramCard')?.classList.contains('st-diagramCard--center')).toBe(false);
+      vue.unmount(); svelte.unmount();
+    }
+
+    // Wide v1 scene at phone width floors at 0.45 and caps at 0.62 identically on Svelte and Vue.
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(390);
+    vi.stubGlobal('innerHeight', 844);
+    const wideProps = { ...host, ...WIDE, title: 'Wide zoom bounds' };
+    const vueWide = mount(SceneFigure, { props: wideProps });
+    const svelteWide = render(SvelteScene, { props: wideProps });
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vueWide.element)).toEqual(dom(withControlIconTokens(svelteWide.container.firstElementChild!)));
+    expect(vueWide.vm.getCamera()).toMatchObject({ zoom: 0.45, minZoom: 0.45, maxZoom: 0.62, fitZoom: 0.45, pans: true, readout: 73 });
+    vueWide.vm.setZoom(10);
+    await nextTick();
+    expect(vueWide.vm.getCamera().zoom).toBe(0.62);
+    vueWide.vm.setZoom(0.1);
+    await nextTick();
+    expect(vueWide.vm.getCamera().zoom).toBe(0.45);
+    vueWide.vm.fitToFrame();
+    await nextTick();
+    expect(vueWide.vm.getCamera().zoom).toBe(0.45);
+    vueWide.unmount(); svelteWide.unmount();
+    vi.unstubAllGlobals();
+  });
 });
