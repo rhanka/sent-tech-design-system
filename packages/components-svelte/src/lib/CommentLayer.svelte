@@ -7,6 +7,7 @@
     CommentTarget,
     ReviewComment,
     ReviewThread,
+    ThreadFilter,
     ThreadReadState,
   } from "@sentropic/design-system-review-core";
 
@@ -41,6 +42,12 @@
     activeThreadId?: string | null;
     readState?: ThreadReadState | null;
     canModerate?: boolean;
+    /** Explicit visibility control for the integrated `ThreadPanel` (auto-opens in review mode when panel callbacks are bound). */
+    panelOpen?: boolean;
+    /** Active filter forwarded to the integrated `ThreadPanel`. */
+    panelFilter?: ThreadFilter;
+    /** Explicit `<48rem` bottom-sheet override forwarded to the integrated `ThreadPanel`. */
+    panelCompact?: boolean;
     /** Debounce before showing the floating "Add comment" trigger after text selection (default 150ms). */
     selectionSettleMs?: number;
     class?: string;
@@ -50,7 +57,9 @@
     onModeChange?: (mode: ReviewMode) => void;
     /** Called whenever resolved vs orphaned thread partition changes against the live DOM. */
     onOrphansChange?: (orphaned: ReviewThread[]) => void;
-    /** Forwarded panel/thread mutation callbacks (available to hosts composing panel slots). */
+    onPanelFilterChange?: (filter: ThreadFilter) => void;
+    onPanelClose?: () => void;
+    /** Forwarded panel/thread mutation callbacks wired into the integrated `ThreadPanel`. */
     onReply?: (threadId: string, body: string) => void | Promise<void>;
     onResolve?: (threadId: string) => void | Promise<void>;
     onReopen?: (threadId: string) => void | Promise<void>;
@@ -80,6 +89,7 @@
   import Button from "./Button.svelte";
   import CommentComposer from "./CommentComposer.svelte";
   import CommentPin from "./CommentPin.svelte";
+  import ThreadPanel from "./ThreadPanel.svelte";
   import {
     formatAnchorLabel,
     formatPinAriaLabel,
@@ -146,9 +156,12 @@
     artifactVersion,
     comments,
     currentUser,
-    activeThreadId = null,
+    activeThreadId,
     readState = null,
-    canModerate: _canModerate = false,
+    canModerate = false,
+    panelOpen,
+    panelFilter,
+    panelCompact,
     selectionSettleMs = 150,
     class: className,
     onCreate,
@@ -156,12 +169,14 @@
     onMarkRead,
     onModeChange,
     onOrphansChange,
-    onReply: _onReply,
-    onResolve: _onResolve,
-    onReopen: _onReopen,
-    onEditComment: _onEditComment,
-    onDeleteComment: _onDeleteComment,
-    onReanchor: _onReanchor,
+    onPanelFilterChange,
+    onPanelClose,
+    onReply,
+    onResolve,
+    onReopen,
+    onEditComment,
+    onDeleteComment,
+    onReanchor,
     children,
     composer,
     ...rest
@@ -170,6 +185,7 @@
   let layerEl: HTMLElement | undefined = $state();
   let slotHostEl: HTMLElement | undefined = $state();
   let overlayEl: HTMLElement | undefined = $state();
+  let panelHostEl: HTMLElement | undefined = $state();
   let clusterPopoverEl: HTMLElement | undefined = $state();
   let selectionTriggerEl: HTMLElement | undefined = $state();
   let confirmDialogEl: HTMLElement | undefined = $state();
@@ -183,6 +199,24 @@
   let confirmDiscardOpen = $state(false);
   let openClusterId = $state<string | null>(null);
   let liveAnnouncement = $state("");
+  let internalActiveThreadId = $state<string | null>(null);
+  let panelDismissed = $state(false);
+
+  const effectiveActiveThreadId = $derived(
+    activeThreadId !== undefined ? activeThreadId : internalActiveThreadId,
+  );
+  const hasPanelCallbacks = $derived(
+    onReply !== undefined ||
+      onResolve !== undefined ||
+      onReopen !== undefined ||
+      onEditComment !== undefined ||
+      onDeleteComment !== undefined ||
+      onReanchor !== undefined,
+  );
+  const panelMounted = $derived(panelOpen !== undefined || hasPanelCallbacks);
+  const effectivePanelOpen = $derived(
+    panelOpen !== undefined ? panelOpen : mode === "review" && hasPanelCallbacks && !panelDismissed,
+  );
 
   let prevMode: ReviewMode = untrack(() => mode);
   let prevOrphanIds = new Set<string>();
@@ -323,7 +357,7 @@
     const sectionGroups = new Map<string, ResolvedEntry[]>();
 
     for (const entry of resolution.resolved) {
-      if (entry.anchorKind === "element" || entry.range === null) {
+      if (entry.anchorKind === "element" || (entry.anchorKind === "text" && entry.range === null)) {
         const existing = elementGroups.get(entry.element);
         if (existing) {
           existing.push(entry);
@@ -354,7 +388,7 @@
         0,
       );
       const allResolved = entries.every((e) => e.thread.state === "closed");
-      const anyActive = entries.some((e) => e.thread.threadId === activeThreadId);
+      const anyActive = entries.some((e) => e.thread.threadId === effectiveActiveThreadId);
       const isCluster = entries.length > 1;
       const excerpt = formatAnchorLabel(first.thread.anchor, 60);
       const ariaLabel = isCluster
@@ -443,6 +477,7 @@
     } else if (current === "review") {
       confirmDiscardOpen = false;
       confirmReturnFocus = null;
+      panelDismissed = false;
     }
     prevMode = current;
   });
@@ -451,7 +486,7 @@
   $effect(() => {
     const isReview = mode === "review";
     const entries = resolution.resolved;
-    const currentActiveId = activeThreadId;
+    const currentActiveId = effectiveActiveThreadId;
 
     const applyHighlights = (active: boolean) => {
       if (
@@ -558,7 +593,9 @@
     const doc = root.ownerDocument;
 
     const isInsideOverlay = (node: Node | null): boolean =>
-      node !== null && overlayEl !== undefined && overlayEl.contains(node);
+      node !== null &&
+      ((overlayEl !== undefined && overlayEl.contains(node)) ||
+        (panelHostEl !== undefined && panelHostEl.contains(node)));
 
     const isEditableElement = (el: EventTarget | null): boolean => {
       if (!el || typeof (el as Element).tagName !== "string") return false;
@@ -1032,19 +1069,26 @@
     draftBody = "";
     liveAnnouncement = "Comment thread created.";
 
-    // Preserve focus after submit: keep any host-assigned focus (e.g. ThreadPanel heading),
-    // otherwise focus the newly rendered pin or restore focus to the invoker/layer.
+    // Preserve focus after submit: keep any host-assigned focus, otherwise move focus
+    // to the integrated ThreadPanel heading (SPEC-r6 §3), then the created pin, invoker, or layer.
     await tick();
     const doc = layerEl?.ownerDocument ?? (typeof document !== "undefined" ? document : null);
     const active = doc?.activeElement ?? null;
     if (active === null || active === doc?.body) {
-      const matchingPin = overlayEl?.querySelector<HTMLElement>(
-        `.st-review-layer__pins [data-pin-section-key="${createdSectionKey.replace(/"/g, '\\"')}"] button.st-review-pin`,
-      );
-      if (matchingPin) {
-        matchingPin.focus();
+      const panelHeading = effectivePanelOpen
+        ? panelHostEl?.querySelector<HTMLElement>(".st-review-panel__heading, .st-drawer__title") ?? null
+        : null;
+      if (panelHeading) {
+        panelHeading.focus();
       } else {
-        restoreFocusFallback(invoker);
+        const matchingPin = overlayEl?.querySelector<HTMLElement>(
+          `.st-review-layer__pins [data-pin-section-key="${createdSectionKey.replace(/"/g, '\\"')}"] button.st-review-pin`,
+        );
+        if (matchingPin) {
+          matchingPin.focus();
+        } else {
+          restoreFocusFallback(invoker);
+        }
       }
     }
   }
@@ -1058,9 +1102,26 @@
     });
   }
 
+  function handleSelectThread(threadId: string | null) {
+    if (activeThreadId === undefined) {
+      internalActiveThreadId = threadId;
+    }
+    if (threadId !== null) {
+      panelDismissed = false;
+    }
+    onSelect?.(threadId);
+  }
+
+  function handlePanelClose() {
+    if (panelOpen === undefined) {
+      panelDismissed = true;
+    }
+    onPanelClose?.();
+  }
+
   function activateEntry(entry: ResolvedEntry) {
     openClusterId = null;
-    onSelect?.(entry.thread.threadId);
+    handleSelectThread(entry.thread.threadId);
     onMarkRead?.(entry.thread.threadId);
     if (typeof (entry.element as HTMLElement).scrollIntoView === "function") {
       (entry.element as HTMLElement).scrollIntoView({ behavior: "smooth", block: "center" });
@@ -1309,6 +1370,32 @@
       {liveAnnouncement}
     </div>
   </div>
+
+  {#if panelMounted}
+    <div bind:this={panelHostEl} class="st-review-layer__panel">
+      <ThreadPanel
+        threads={resolution.resolved.map((entry) => entry.thread)}
+        orphaned={resolution.orphaned}
+        {currentUser}
+        activeThreadId={effectiveActiveThreadId}
+        filter={panelFilter}
+        open={effectivePanelOpen}
+        {readState}
+        {canModerate}
+        compact={panelCompact}
+        onSelect={handleSelectThread}
+        onFilterChange={onPanelFilterChange}
+        onClose={handlePanelClose}
+        {onReply}
+        {onResolve}
+        {onReopen}
+        {onEditComment}
+        {onDeleteComment}
+        {onReanchor}
+        {onMarkRead}
+      />
+    </div>
+  {/if}
 </div>
 
 <style>
