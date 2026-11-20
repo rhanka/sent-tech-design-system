@@ -189,3 +189,15 @@ export { HLCChart } from './lib/HLCChart.js';
 export type { HLCChartProps } from './lib/HLCChart.js';
 export { HeatmapChart } from './lib/HeatmapChart.js';
 export type { HeatmapChartProps } from './lib/HeatmapChart.js';
+
+// Group 4 batch 2 components.
+export { HeikinAshiChart } from './lib/HeikinAshiChart.js';
+export type { HeikinAshiChartProps } from './lib/HeikinAshiChart.js';
+export { HistogramChart } from './lib/HistogramChart.js';
+export type { HistogramChartProps } from './lib/HistogramChart.js';
+export { HollowCandlestickChart } from './lib/HollowCandlestickChart.js';
+export type { HollowCandlestickChartProps } from './lib/HollowCandlestickChart.js';
+export { ItemChart } from './lib/ItemChart.js';
+export type { ItemChartProps } from './lib/ItemChart.js';
+export { KpiCardGroup } from './lib/KpiCardGroup.js';
+export type { KpiCardGroupProps } from './lib/KpiCardGroup.js';
