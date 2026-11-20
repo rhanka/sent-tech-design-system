@@ -95,6 +95,11 @@ import * as handWrittenParallelCoordinatesChart from "../../dataviz-react/src/li
 import * as handWrittenPercentileBandChart from "../../dataviz-react/src/lib/PercentileBandChart.js";
 import * as handWrittenPivotDataTable from "../../dataviz-react/src/lib/PivotDataTable.js";
 import * as handWrittenPointAndFigureChart from "../../dataviz-react/src/lib/PointAndFigureChart.js";
+import * as handWrittenPolygonChart from "../../dataviz-react/src/lib/PolygonChart.js";
+import * as handWrittenQueryBar from "../../dataviz-react/src/lib/QueryBar.js";
+import * as handWrittenRadarChart from "../../dataviz-react/src/lib/RadarChart.js";
+import * as handWrittenRangeSliderFilter from "../../dataviz-react/src/lib/RangeSliderFilter.js";
+import * as handWrittenRecordsTable from "../../dataviz-react/src/lib/RecordsTable.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -207,6 +212,13 @@ const switched = [
   "PercentileBandChart",
   "PivotDataTable",
   "PointAndFigureChart",
+  "PolygonChart",
+  "QueryBar",
+  "RadarChart",
+  "RangeSliderFilter",
+  "numericDomain",
+  "rangeBoundsToSpec",
+  "RecordsTable",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -311,6 +323,13 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   PercentileBandChart: handWrittenPercentileBandChart.PercentileBandChart,
   PivotDataTable: handWrittenPivotDataTable.PivotDataTable,
   PointAndFigureChart: handWrittenPointAndFigureChart.PointAndFigureChart,
+  PolygonChart: handWrittenPolygonChart.PolygonChart,
+  QueryBar: handWrittenQueryBar.QueryBar,
+  RadarChart: handWrittenRadarChart.RadarChart,
+  RangeSliderFilter: handWrittenRangeSliderFilter.RangeSliderFilter,
+  numericDomain: handWrittenRangeSliderFilter.numericDomain,
+  rangeBoundsToSpec: handWrittenRangeSliderFilter.rangeBoundsToSpec,
+  RecordsTable: handWrittenRecordsTable.RecordsTable,
 };
 
 describe("dataviz React leg provenance", () => {

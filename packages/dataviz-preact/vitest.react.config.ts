@@ -60,7 +60,7 @@ const reactTests: string[] = [
   "lib/CalculationEditor.test.tsx", // emitted CalculationEditor
   "lib/ExportMenu.test.tsx", // emitted ExportMenu + rowsToCsv
   "lib/ChartExport.test.tsx", // emitted ChartExport + ExportMenu + chart-export
-  "lib/PartOfWholeCharts.test.tsx", // emitted ChordChart, DonutChart, TreemapChart, FunnelChart, MekkoChart, PackedBubbleChart + partOfWholeData
+  "lib/PartOfWholeCharts.test.tsx", // emitted ChordChart, DonutChart, TreemapChart, FunnelChart, MekkoChart, PackedBubbleChart, RadarChart + partOfWholeData
   "lib/GeoCharts.test.tsx", // emitted ChoroplethMap, GeoClusterMap, GeoDensityMap, GeoFlowMap, GeoHexbinMap, GeoJsonMap, GeoPointMap + geoMapLayers
   "lib/DashboardActiveFilters.test.tsx", // emitted DashboardActiveFilters
   "lib/DashboardFilterBar.test.tsx", // emitted DashboardFilterBar
@@ -73,6 +73,9 @@ const reactTests: string[] = [
   "lib/KpiCardGroup.test.tsx", // emitted KpiCardGroup
   "lib/ObjectLayers.test.tsx", // emitted ObjectLayers (WebFrame, DataImage, ObjectLayerPanel)
   "lib/PivotDataTable.test.tsx", // emitted PivotDataTable
+  "lib/QueryBar.test.tsx", // emitted QueryBar
+  "lib/RangeSliderFilter.test.tsx", // emitted RangeSliderFilter + numericDomain + rangeBoundsToSpec
+  "lib/RecordsTable.test.tsx", // emitted RecordsTable
 ];
 
 export default defineConfig({

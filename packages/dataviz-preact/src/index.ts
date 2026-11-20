@@ -225,3 +225,15 @@ export { PivotDataTable } from './lib/PivotDataTable.js';
 export type { PivotDataTableProps } from './lib/PivotDataTable.js';
 export { PointAndFigureChart } from './lib/PointAndFigureChart.js';
 export type { PointAndFigureChartProps } from './lib/PointAndFigureChart.js';
+
+// Group 4 batch 5 components.
+export { PolygonChart } from './lib/PolygonChart.js';
+export type { PolygonChartProps } from './lib/PolygonChart.js';
+export { QueryBar } from './lib/QueryBar.js';
+export type { QueryBarProps } from './lib/QueryBar.js';
+export { RadarChart } from './lib/RadarChart.js';
+export type { RadarChartProps } from './lib/RadarChart.js';
+export { RangeSliderFilter, numericDomain, rangeBoundsToSpec } from './lib/RangeSliderFilter.js';
+export type { RangeSliderFilterProps, NumericDomain } from './lib/RangeSliderFilter.js';
+export { RecordsTable } from './lib/RecordsTable.js';
+export type { RecordsTableProps } from './lib/RecordsTable.js';
