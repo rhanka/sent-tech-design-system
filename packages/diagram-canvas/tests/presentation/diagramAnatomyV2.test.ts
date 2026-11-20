@@ -34,6 +34,7 @@ import {
   type SceneView,
 } from "../../src/presentation/diagramSceneModel.js";
 import { renderCardSvg } from "../../src/presentation/renderCardSvg.js";
+import { nestedZoneFixture } from "../../test-support/nestedZoneFixture.js";
 
 const CONTRACT = {
   entityId: "contract",
@@ -425,5 +426,249 @@ describe("diagram anatomy v2 (DE-1)", () => {
     if (compactFolded.status !== "laid-out") return;
     expect(compactFolded.warnings.filter((w) => w.code === "zone-overflow")).toEqual([]);
     expect(compactFolded.view.entityOccurrences["occurrence:e.zone"]?.geometry).toMatchObject({ width: 352, height: 154 });
+  });
+
+  it("should hide all descendants when folding an outer v2 container, reflow neighbours, re-route and bundle links, and unfold cleanly", () => {
+    const measureLines = cardLineMeasurer(defaultCardMeasure);
+    const entities = {
+      "entity:outerA": { id: entityRef("outerA"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Outer A" } } },
+      "entity:innerA": { id: entityRef("innerA"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Inner A" } } },
+      "entity:a1": { id: entityRef("a1"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Alpha" } } },
+      "entity:a2": { id: entityRef("a2"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Beta" } } },
+      "entity:aSibling": { id: entityRef("aSibling"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Sibling" } } },
+      "entity:outerB": { id: entityRef("outerB"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Outer B" } } },
+      "entity:b1": { id: entityRef("b1"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Store" } } },
+      "entity:b2": { id: entityRef("b2"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Index" } } },
+      "entity:ext": { id: entityRef("ext"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Gateway" } } },
+    };
+    const contains = (id: string, parent: string, child: string) => [
+      `relation:c.${id}`,
+      {
+        id: relationRef(`c.${id}`),
+        profile: "generic@2",
+        type: "contains",
+        endpoints: [
+          { role: "parent", target: entityRef(parent) },
+          { role: "child", target: entityRef(child) },
+        ],
+        attributes: {},
+      },
+    ] as const;
+    const link = (id: string, source: string, target: string, label: string) => [
+      `relation:l.${id}`,
+      {
+        id: relationRef(`l.${id}`),
+        profile: "generic@2",
+        type: "link",
+        endpoints: [
+          { role: "source", target: entityRef(source) },
+          { role: "target", target: entityRef(target) },
+        ],
+        attributes: { label: { kind: "text", value: label } },
+      },
+    ] as const;
+    const document = {
+      documentId: "document:v2-nested-multi",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities,
+      relations: Object.fromEntries([
+        contains("innerA", "outerA", "innerA"),
+        contains("a1", "innerA", "a1"),
+        contains("a2", "innerA", "a2"),
+        contains("aSibling", "outerA", "aSibling"),
+        contains("b1", "outerB", "b1"),
+        contains("b2", "outerB", "b2"),
+        link("inner", "a1", "a2", "inner call"),
+        link("toSibling", "a1", "aSibling", "sibling call"),
+        link("sync1", "a1", "b1", "sync alpha"),
+        link("sync2", "a2", "b1", "sync beta"),
+        link("sync3", "aSibling", "b1", "sync gamma"),
+        link("pub", "a2", "ext", "publishes"),
+      ]),
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SceneDocument;
+
+    const presentation = {
+      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      entities: {
+        "occurrence:e.outerA": { form: "container", text: { title: "Outer A", subtitle: "Primary" }, anatomy: "v2" },
+        "occurrence:e.innerA": { form: "container", text: { title: "Inner A", subtitle: "Nested" }, anatomy: "v2" },
+        "occurrence:e.a1": { form: "card", text: { title: "Alpha", body: "Worker" }, anatomy: "v2" },
+        "occurrence:e.a2": { form: "card", text: { title: "Beta", body: "Queue" }, anatomy: "v2" },
+        "occurrence:e.aSibling": { form: "card", text: { title: "Sibling", body: "Cache" }, anatomy: "v2" },
+        "occurrence:e.outerB": { form: "container", text: { title: "Outer B", subtitle: "Data" }, anatomy: "v2" },
+        "occurrence:e.b1": { form: "card", text: { title: "Store", body: "Primary" }, anatomy: "v2" },
+        "occurrence:e.b2": { form: "card", text: { title: "Index", body: "Replica" }, anatomy: "v2" },
+        "occurrence:e.ext": { form: "card", text: { title: "Gateway", body: "Ingress" }, anatomy: "v2" },
+      },
+      legends: {},
+      categoryTokens: [],
+    } as unknown as ScenePresentation;
+
+    const baseView = createView({ viewId: viewRef("v2-nested-multi"), semanticDocumentId: document.documentId, revision: 1 });
+    const explicitView = {
+      ...baseView,
+      entityOccurrences: {
+        "occurrence:e.outerA": { id: occurrenceRef("e.outerA"), entity: entityRef("outerA"), geometry: { x: 0, y: 0, width: 352, height: 154 } },
+        "occurrence:e.innerA": { id: occurrenceRef("e.innerA"), entity: entityRef("innerA"), group: "grp.outerA", geometry: { x: 0, y: 0, width: 352, height: 154 } },
+        "occurrence:e.a1": { id: occurrenceRef("e.a1"), entity: entityRef("a1"), group: "grp.innerA", geometry: { x: 0, y: 0, width: 352, height: 154 } },
+        "occurrence:e.a2": { id: occurrenceRef("e.a2"), entity: entityRef("a2"), group: "grp.innerA", geometry: { x: 0, y: 0, width: 352, height: 154 } },
+        "occurrence:e.aSibling": { id: occurrenceRef("e.aSibling"), entity: entityRef("aSibling"), group: "grp.outerA", geometry: { x: 0, y: 0, width: 352, height: 154 } },
+        "occurrence:e.outerB": { id: occurrenceRef("e.outerB"), entity: entityRef("outerB"), geometry: { x: 0, y: 0, width: 352, height: 154 } },
+        "occurrence:e.b1": { id: occurrenceRef("e.b1"), entity: entityRef("b1"), group: "grp.outerB", geometry: { x: 0, y: 0, width: 352, height: 154 } },
+        "occurrence:e.b2": { id: occurrenceRef("e.b2"), entity: entityRef("b2"), group: "grp.outerB", geometry: { x: 0, y: 0, width: 352, height: 154 } },
+        "occurrence:e.ext": { id: occurrenceRef("e.ext"), entity: entityRef("ext"), geometry: { x: 0, y: 0, width: 352, height: 154 } },
+      },
+      relationOccurrences: {
+        "occurrence:r.l.inner": { id: occurrenceRef("r.l.inner"), relation: relationRef("l.inner"), endpoints: [{ role: "source", occurrence: occurrenceRef("e.a1") }, { role: "target", occurrence: occurrenceRef("e.a2") }] },
+        "occurrence:r.l.toSibling": { id: occurrenceRef("r.l.toSibling"), relation: relationRef("l.toSibling"), endpoints: [{ role: "source", occurrence: occurrenceRef("e.a1") }, { role: "target", occurrence: occurrenceRef("e.aSibling") }] },
+        "occurrence:r.l.sync1": { id: occurrenceRef("r.l.sync1"), relation: relationRef("l.sync1"), endpoints: [{ role: "source", occurrence: occurrenceRef("e.a1") }, { role: "target", occurrence: occurrenceRef("e.b1") }] },
+        "occurrence:r.l.sync2": { id: occurrenceRef("r.l.sync2"), relation: relationRef("l.sync2"), endpoints: [{ role: "source", occurrence: occurrenceRef("e.a2") }, { role: "target", occurrence: occurrenceRef("e.b1") }] },
+        "occurrence:r.l.sync3": { id: occurrenceRef("r.l.sync3"), relation: relationRef("l.sync3"), endpoints: [{ role: "source", occurrence: occurrenceRef("e.aSibling") }, { role: "target", occurrence: occurrenceRef("e.b1") }] },
+        "occurrence:r.l.pub": { id: occurrenceRef("r.l.pub"), relation: relationRef("l.pub"), endpoints: [{ role: "source", occurrence: occurrenceRef("e.a2") }, { role: "target", occurrence: occurrenceRef("e.ext") }] },
+      },
+      groups: {
+        "grp.outerA": { id: "grp.outerA", occurrence: occurrenceRef("e.outerA"), collapsed: false },
+        "grp.innerA": { id: "grp.innerA", occurrence: occurrenceRef("e.innerA"), collapsed: false },
+        "grp.outerB": { id: "grp.outerB", occurrence: occurrenceRef("e.outerB"), collapsed: false },
+      },
+    } as unknown as SceneView;
+
+    for (const view of [explicitView, undefined] as const) {
+      const run = (collapsed: readonly ReturnType<typeof occurrenceRef>[]) => {
+        const input = {
+          document,
+          ...(view === undefined ? {} : { view }),
+          registry: m3ProfileRegistry,
+          bindings: shippedExecutorBindings,
+          presentation,
+          measureLines,
+          collapsed,
+        };
+        const result = layoutScene(input);
+        expect(result.status).toBe("laid-out");
+        if (result.status !== "laid-out") throw new Error("unexpected refusal");
+        return { result, scene: resolveScene(result, input) };
+      };
+
+      const expanded = run([]);
+      expect(expanded.scene.nodes.map((n) => n.occurrence).sort()).toEqual([
+        "occurrence:e.a1",
+        "occurrence:e.a2",
+        "occurrence:e.aSibling",
+        "occurrence:e.b1",
+        "occurrence:e.b2",
+        "occurrence:e.ext",
+        "occurrence:e.innerA",
+        "occurrence:e.outerA",
+        "occurrence:e.outerB",
+      ]);
+      expect(expanded.scene.nodes.find((n) => n.occurrence === "occurrence:e.innerA")?.presentation?.depth).toBe(1);
+      expect(expanded.scene.nodes.find((n) => n.occurrence === "occurrence:e.a1")?.rect).toMatchObject({ width: 352, height: 154 });
+      expect(expanded.scene.edges).toHaveLength(6);
+      expect(Object.keys(expanded.result.edgeBundles ?? {})).toEqual([]);
+
+      // Fold innerA: a1 and a2 hide, innerA becomes 352x154 keeping depth 1, a1->b1 and a2->b1 bundle into 1 edge.
+      const innerFolded = run([occurrenceRef("e.innerA")]);
+      expect(innerFolded.scene.nodes.map((n) => n.occurrence).sort()).toEqual([
+        "occurrence:e.aSibling",
+        "occurrence:e.b1",
+        "occurrence:e.b2",
+        "occurrence:e.ext",
+        "occurrence:e.innerA",
+        "occurrence:e.outerA",
+        "occurrence:e.outerB",
+      ]);
+      const innerNode = innerFolded.scene.nodes.find((n) => n.occurrence === "occurrence:e.innerA")!;
+      expect(innerNode.collapsed).toBe(true);
+      expect(innerNode.rect).toMatchObject({ width: 352, height: 154 });
+      expect(innerNode.presentation?.depth).toBe(1);
+      const innerBundles = Object.values(innerFolded.result.edgeBundles ?? {});
+      expect(innerBundles).toHaveLength(1);
+      expect(innerBundles[0]?.members).toHaveLength(2);
+      expect(innerBundles[0]?.relations).toEqual(["sync alpha", "sync beta"]);
+      // 6 links minus 1 internal (a1->a2) minus 1 bundled duplicate = 4 drawn edges.
+      expect(innerFolded.scene.edges).toHaveLength(4);
+
+      // Fold outerA WITHOUT collapsing innerA: ALL descendants (innerA, a1, a2, aSibling) MUST hide!
+      const outerFolded = run([occurrenceRef("e.outerA")]);
+      expect(outerFolded.scene.nodes.map((n) => n.occurrence).sort()).toEqual([
+        "occurrence:e.b1",
+        "occurrence:e.b2",
+        "occurrence:e.ext",
+        "occurrence:e.outerA",
+        "occurrence:e.outerB",
+      ]);
+      const outerNode = outerFolded.scene.nodes.find((n) => n.occurrence === "occurrence:e.outerA")!;
+      expect(outerNode.collapsed).toBe(true);
+      expect(outerNode.rect).toMatchObject({ width: 352, height: 154 });
+      // Neighbours reflow after outerA shrinks to a compact card.
+      const outerBRectBefore = expanded.scene.nodes.find((n) => n.occurrence === "occurrence:e.outerB")!.rect;
+      const outerBRectAfter = outerFolded.scene.nodes.find((n) => n.occurrence === "occurrence:e.outerB")!.rect;
+      const extRectBefore = expanded.scene.nodes.find((n) => n.occurrence === "occurrence:e.ext")!.rect;
+      const extRectAfter = outerFolded.scene.nodes.find((n) => n.occurrence === "occurrence:e.ext")!.rect;
+      expect(
+        outerBRectBefore.x !== outerBRectAfter.x || outerBRectBefore.y !== outerBRectAfter.y ||
+        extRectBefore.x !== extRectAfter.x || extRectBefore.y !== extRectAfter.y,
+      ).toBe(true);
+      // Internal links (a1->a2, a1->aSibling) vanish; 3 links to b1 bundle into 1; a2->ext re-routes from outerA->ext.
+      const outerBundles = Object.values(outerFolded.result.edgeBundles ?? {});
+      expect(outerBundles).toHaveLength(1);
+      expect(outerBundles[0]?.members).toHaveLength(3);
+      expect(outerBundles[0]?.relations).toEqual(["sync alpha", "sync beta", "sync gamma"]);
+      expect(outerFolded.scene.edges).toHaveLength(2);
+      for (const edge of outerFolded.scene.edges) {
+        expect(edge.points.length).toBeGreaterThanOrEqual(2);
+        const start = edge.points[0]!;
+        expect(start.x).toBeGreaterThanOrEqual(outerNode.rect.x - 1);
+        expect(start.x).toBeLessThanOrEqual(outerNode.rect.x + outerNode.rect.width + 1);
+        expect(start.y).toBeGreaterThanOrEqual(outerNode.rect.y - 1);
+        expect(start.y).toBeLessThanOrEqual(outerNode.rect.y + outerNode.rect.height + 1);
+      }
+
+      // Fold BOTH outerA and outerB: only root boxes remain, cross-links bundle onto outerA -> outerB.
+      const bothFolded = run([occurrenceRef("e.outerA"), occurrenceRef("e.outerB")]);
+      expect(bothFolded.scene.nodes.map((n) => n.occurrence).sort()).toEqual([
+        "occurrence:e.ext",
+        "occurrence:e.outerA",
+        "occurrence:e.outerB",
+      ]);
+      expect(bothFolded.scene.edges).toHaveLength(2);
+      expect(Object.values(bothFolded.result.edgeBundles ?? {})[0]?.members).toHaveLength(3);
+
+      // Unfold back to []: exact same structure, geometry, edges and depth surfaces restored.
+      const unfolded = run([]);
+      expect(unfolded.scene.nodes.map((n) => [n.occurrence, n.rect, n.presentation?.depth])).toEqual(
+        expanded.scene.nodes.map((n) => [n.occurrence, n.rect, n.presentation?.depth]),
+      );
+      expect(unfolded.scene.edges).toEqual(expanded.scene.edges);
+    }
+
+    // Regression witness on nestedZoneFixture: folding outer sys-memory hides ont-session AND all 10 grandchildren.
+    const fixture = nestedZoneFixture({ outside: true });
+    const foldedFixture = layoutScene({
+      document: fixture.document,
+      view: fixture.view,
+      registry: fixture.registry,
+      bindings: fixture.bindings,
+      presentation: fixture.presentation,
+      measureLines,
+      collapsed: [fixture.zones[0]!],
+    });
+    expect(foldedFixture.status).toBe("laid-out");
+    if (foldedFixture.status !== "laid-out") return;
+    const foldedScene = resolveScene(foldedFixture, {
+      document: fixture.document,
+      view: fixture.view,
+      presentation: fixture.presentation,
+      measureLines,
+    });
+    expect(foldedScene.nodes.map((n) => n.occurrence)).toEqual([fixture.zones[0]]);
+    expect(foldedScene.edges).toEqual([]);
   });
 });

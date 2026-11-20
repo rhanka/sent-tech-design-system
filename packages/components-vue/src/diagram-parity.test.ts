@@ -454,4 +454,101 @@ describe('scene host DOM and camera/fold behavior', () => {
     vue.unmount(); svelte.unmount();
     vi.unstubAllGlobals();
   });
+  it('should fold and unfold a v2 multi-container nested scene identically on Svelte and Vue without ejecting grandchildren', async () => {
+    frame();
+    const base = sceneOf(
+      'v2-nested-parity',
+      [
+        { id: 'outerA', container: true },
+        { id: 'innerA', container: true, parent: 'outerA' },
+        { id: 'a1', parent: 'innerA' },
+        { id: 'a2', parent: 'innerA' },
+        { id: 'aSibling', parent: 'outerA' },
+        { id: 'outerB', container: true },
+        { id: 'b1', parent: 'outerB' },
+        { id: 'ext' },
+      ],
+      [
+        { from: 'a1', to: 'a2', label: 'inner' },
+        { from: 'a1', to: 'aSibling', label: 'sibling' },
+        { from: 'a1', to: 'b1', label: 'sync1' },
+        { from: 'a2', to: 'b1', label: 'sync2' },
+        { from: 'aSibling', to: 'b1', label: 'sync3' },
+        { from: 'a2', to: 'ext', label: 'pub' },
+      ],
+    );
+    const presentation = {
+      ...base.presentation,
+      entities: Object.fromEntries(
+        Object.entries(base.presentation.entities).map(([id, entry]) => [
+          id,
+          entry.form === 'container'
+            ? { form: 'container', text: { title: id.replace('occurrence:e.', ''), subtitle: 'Sub' }, anatomy: 'v2' }
+            : { form: 'card', text: { title: id.replace('occurrence:e.', ''), body: 'Work' }, anatomy: 'v2' },
+        ]),
+      ),
+    } as unknown as ScenePresentation;
+    const props = { ...host, ...base, presentation };
+    const vue = mount(SceneFigure, { props, attachTo: document.body });
+    const svelte = render(SvelteScene, { props });
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+
+    const occurrencesOf = (root: Element) =>
+      [...root.querySelectorAll<HTMLElement>('[data-scene-occurrence]')].map(el => el.dataset['sceneOccurrence']!).sort();
+    const rectOf = (root: Element, id: string) => {
+      const el = root.querySelector<HTMLElement>(`[data-scene-occurrence="${occurrence(id)}"]`)!;
+      return { x: parseFloat(el.style.left), y: parseFloat(el.style.top), width: parseFloat(el.style.width), height: parseFloat(el.style.height) };
+    };
+
+    expect(occurrencesOf(vue.element)).toEqual([
+      occurrence('a1'), occurrence('a2'), occurrence('aSibling'), occurrence('b1'),
+      occurrence('ext'), occurrence('innerA'), occurrence('outerA'), occurrence('outerB'),
+    ]);
+    expect(rectOf(vue.element, 'a1')).toMatchObject({ width: 352, height: 154 });
+    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(6);
+    expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('innerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+    const initialOuterB = rectOf(vue.element, 'outerB');
+    const initialExt = rectOf(vue.element, 'ext');
+
+    // Fold outerA on both hosts while innerA is expanded: all descendants hide, links re-route and bundle.
+    await vue.find(`[data-scene-occurrence="${occurrence('outerA')}"] button[aria-expanded]`).trigger('click');
+    svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${occurrence('outerA')}"] button[aria-expanded]`)!.click();
+    await nextTick(); await tick(); await nextTick();
+
+    expect(occurrencesOf(vue.element)).toEqual([
+      occurrence('b1'), occurrence('ext'), occurrence('outerA'), occurrence('outerB'),
+    ]);
+    expect(occurrencesOf(svelte.container)).toEqual(occurrencesOf(vue.element));
+    expect(rectOf(vue.element, 'outerA')).toMatchObject({ width: 352, height: 154 });
+    const foldedOuterB = rectOf(vue.element, 'outerB');
+    const foldedExt = rectOf(vue.element, 'ext');
+    expect(
+      initialOuterB.x !== foldedOuterB.x || initialOuterB.y !== foldedOuterB.y ||
+      initialExt.x !== foldedExt.x || initialExt.y !== foldedExt.y,
+    ).toBe(true);
+    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(2);
+    expect(vue.element.querySelectorAll('[data-bundle-relation]')).toHaveLength(3);
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+
+    // Unfold outerA on both hosts: exact same structure, geometry, edges and depth surfaces return.
+    await vue.find(`[data-scene-occurrence="${occurrence('outerA')}"] button[aria-expanded]`).trigger('click');
+    svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${occurrence('outerA')}"] button[aria-expanded]`)!.click();
+    await nextTick(); await tick(); await nextTick();
+
+    expect(occurrencesOf(vue.element)).toEqual([
+      occurrence('a1'), occurrence('a2'), occurrence('aSibling'), occurrence('b1'),
+      occurrence('ext'), occurrence('innerA'), occurrence('outerA'), occurrence('outerB'),
+    ]);
+    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(6);
+    expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('innerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+    for (const key of ['x', 'y', 'width', 'height'] as const) {
+      expect(Math.abs(rectOf(vue.element, 'outerB')[key] - initialOuterB[key])).toBeLessThanOrEqual(1 / 64);
+      expect(Math.abs(rectOf(vue.element, 'ext')[key] - initialExt[key])).toBeLessThanOrEqual(1 / 64);
+    }
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+
+    vue.unmount(); svelte.unmount();
+    vi.unstubAllGlobals();
+  });
 });
