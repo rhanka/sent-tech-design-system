@@ -156,11 +156,11 @@ function closestElementInRoot(node: Node, root: Element): Element {
 function findClosestAnchorId(node: Element, root: Element): string | undefined {
   let cur: Element | null = node;
   while (cur !== null && root.contains(cur)) {
+    if (cur === root) break;
     const aid = cur.getAttribute(DATA_ANCHOR_ID_ATTR);
     if (typeof aid === "string" && aid.length > 0) {
       return aid;
     }
-    if (cur === root) break;
     cur = cur.parentElement;
   }
   return undefined;
@@ -782,18 +782,6 @@ export function resolveAnchor(
     };
   }
 
-  // If the explicit `aid` block still exists (and the quote didn't move elsewhere), keep it attached to the `aid` block
-  if (aidElement !== null) {
-    return {
-      status: "resolved",
-      kind: "text",
-      strategy: "aid",
-      element: aidElement,
-      range: null,
-      versionChanged,
-    };
-  }
-
   // Step 3: CSS path `sel` (scoped fuzzy match prevents mis-attaching a deleted paragraph onto a shifted sibling)
   if (anchor.sel !== undefined) {
     const selEl = queryRelativeSelector(root, anchor.sel);
@@ -821,6 +809,19 @@ export function resolveAnchor(
       strategy: "fuzzy-quote",
       element: fuzzyGlobal.element,
       range: fuzzyGlobal.range,
+      versionChanged,
+    };
+  }
+
+  // After Steps 1-4 fail to find the quote anywhere in root: if an explicit descendant
+  // `data-anchor-id` block still exists (never `root` itself), keep it attached to that block.
+  if (aidElement !== null && aidElement !== root) {
+    return {
+      status: "resolved",
+      kind: "text",
+      strategy: "aid",
+      element: aidElement,
+      range: null,
       versionChanged,
     };
   }
