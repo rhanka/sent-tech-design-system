@@ -153,3 +153,15 @@ export { EventFeedPanel } from './lib/EventFeedPanel.js';
 export type { EventFeedPanelProps } from './lib/EventFeedPanel.js';
 export { FieldPane } from './lib/FieldPane.js';
 export type { FieldPaneProps } from './lib/FieldPane.js';
+
+// Group 3 batch 5 components.
+export { FlamegraphChart } from './lib/FlamegraphChart.js';
+export type { FlamegraphChartProps } from './lib/FlamegraphChart.js';
+export { ForceGraph } from './lib/ForceGraph.js';
+export type { ForceGraphProps } from './lib/ForceGraph.js';
+export { ForecastLineChart } from './lib/ForecastLineChart.js';
+export type { ForecastLineChartProps } from './lib/ForecastLineChart.js';
+export { FormatPanel } from './lib/FormatPanel.js';
+export type { FormatPanelProps } from './lib/FormatPanel.js';
+export { FunnelChart } from './lib/FunnelChart.js';
+export type { FunnelChartProps } from './lib/FunnelChart.js';

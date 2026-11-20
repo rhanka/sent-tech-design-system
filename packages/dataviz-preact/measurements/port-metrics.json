@@ -7,15 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 60,
+    "portedModules": 65,
     "barrelFile": "index.ts",
-    "remainingModules": 67,
+    "remainingModules": 62,
     "remainingFiles": [
-      "lib/FlamegraphChart.tsx",
-      "lib/ForceGraph.tsx",
-      "lib/ForecastLineChart.tsx",
-      "lib/FormatPanel.tsx",
-      "lib/FunnelChart.tsx",
       "lib/GanttChart.tsx",
       "lib/GaugeChart.tsx",
       "lib/GeoClusterMap.tsx",
@@ -741,23 +736,78 @@
         "total": 217,
         "touched": 3,
         "emissionRewrites": 1
+      },
+      {
+        "module": "FlamegraphChart",
+        "kind": "component",
+        "file": "src/lib/FlamegraphChart.tsx",
+        "reactSource": "lib/FlamegraphChart.tsx",
+        "reactLines": 61,
+        "preactLines": 67,
+        "total": 210,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ForceGraph",
+        "kind": "component",
+        "file": "src/lib/ForceGraph.tsx",
+        "reactSource": "lib/ForceGraph.tsx",
+        "reactLines": 44,
+        "preactLines": 49,
+        "total": 185,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ForecastLineChart",
+        "kind": "component",
+        "file": "src/lib/ForecastLineChart.tsx",
+        "reactSource": "lib/ForecastLineChart.tsx",
+        "reactLines": 53,
+        "preactLines": 60,
+        "total": 256,
+        "touched": 16,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "FormatPanel",
+        "kind": "component",
+        "file": "src/lib/FormatPanel.tsx",
+        "reactSource": "lib/FormatPanel.tsx",
+        "reactLines": 123,
+        "preactLines": 127,
+        "total": 934,
+        "touched": 14,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "FunnelChart",
+        "kind": "component",
+        "file": "src/lib/FunnelChart.tsx",
+        "reactSource": "lib/FunnelChart.tsx",
+        "reactLines": 59,
+        "preactLines": 67,
+        "total": 260,
+        "touched": 4,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 60,
-      "reactLines": 5424,
-      "preactLines": 5740,
-      "total": 30355,
-      "touched": 353,
-      "emissionRewrites": 58
+      "modules": 65,
+      "reactLines": 5764,
+      "preactLines": 6110,
+      "total": 32200,
+      "touched": 391,
+      "emissionRewrites": 63
     },
     "shared": {
-      "src/index.ts": 155,
+      "src/index.ts": 167,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 89
+      "vitest.react.config.ts": 90
     }
   },
   "reach": {
