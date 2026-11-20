@@ -22,6 +22,8 @@ import type * as EmittedGeoMapLayers from "../.react-emit/src/lib/geoMapLayers.j
 import type * as HandWrittenGeoMapLayers from "../../dataviz-react/src/lib/geoMapLayers.js";
 import type * as EmittedUrlSync from "../.react-emit/src/lib/url-sync.js";
 import type * as HandWrittenUrlSync from "../../dataviz-react/src/lib/url-sync.js";
+import type * as EmittedChartExportComponent from "../.react-emit/src/lib/ChartExport.js";
+import type * as HandWrittenChartExportComponent from "../../dataviz-react/src/lib/ChartExport.js";
 
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
 type Expect<T extends true> = T;
@@ -62,6 +64,12 @@ export type PropsParity = [
   Expect<Equal<Emitted.BumpChartProps, HandWritten.BumpChartProps>>,
   Expect<Equal<Emitted.CalculationEditorProps, HandWritten.CalculationEditorProps>>,
   Expect<Equal<Emitted.CalendarHeatmapChartProps, HandWritten.CalendarHeatmapChartProps>>,
+  Expect<Equal<Emitted.CandlestickChartProps, HandWritten.CandlestickChartProps>>,
+  Expect<Equal<Emitted.ExportMenuProps, HandWritten.ExportMenuProps>>,
+  Expect<Equal<Emitted.ChartExportProps, HandWritten.ChartExportProps>>,
+  Expect<Equal<Emitted.ChartExportTarget, HandWritten.ChartExportTarget>>,
+  Expect<Equal<Emitted.ChordChartProps, HandWritten.ChordChartProps>>,
+  Expect<Equal<Emitted.ChoroplethMapProps, HandWritten.ChoroplethMapProps>>,
 ];
 
 export type ComponentParity = [
@@ -89,6 +97,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.BumpChart, typeof HandWritten.BumpChart>>,
   Expect<Equal<typeof Emitted.CalculationEditor, typeof HandWritten.CalculationEditor>>,
   Expect<Equal<typeof Emitted.CalendarHeatmapChart, typeof HandWritten.CalendarHeatmapChart>>,
+  Expect<Equal<typeof Emitted.CandlestickChart, typeof HandWritten.CandlestickChart>>,
+  Expect<Equal<typeof Emitted.ExportMenu, typeof HandWritten.ExportMenu>>,
+  Expect<Equal<typeof Emitted.ChartExport, typeof HandWritten.ChartExport>>,
+  Expect<Equal<typeof Emitted.ChordChart, typeof HandWritten.ChordChart>>,
+  Expect<Equal<typeof Emitted.ChoroplethMap, typeof HandWritten.ChoroplethMap>>,
 ];
 
 export type ValueParity = [
@@ -111,6 +124,7 @@ export type ValueParity = [
   Expect<Equal<typeof Emitted.readLocationSearch, typeof HandWritten.readLocationSearch>>,
   Expect<Equal<typeof Emitted.DEFAULT_URL_SYNC_PARAM, typeof HandWritten.DEFAULT_URL_SYNC_PARAM>>,
   Expect<Equal<typeof Emitted.useUrlSync, typeof HandWritten.useUrlSync>>,
+  Expect<Equal<typeof Emitted.rowsToCsv, typeof HandWritten.rowsToCsv>>,
 ];
 
 export type InternalHelpersParity = [
@@ -130,6 +144,7 @@ export type InternalHelpersParity = [
   Expect<Equal<EmittedChartExport.PdfExportOptions, HandWrittenChartExport.PdfExportOptions>>,
   Expect<Equal<typeof EmittedGeoMapLayers, typeof HandWrittenGeoMapLayers>>,
   Expect<Equal<typeof EmittedUrlSync, typeof HandWrittenUrlSync>>,
+  Expect<Equal<typeof EmittedChartExportComponent, typeof HandWrittenChartExportComponent>>,
 ];
 
 // The emitted barrel publishes no value the hand-written package keeps internal.

@@ -9,7 +9,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
-  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 batches 1-4 (20 files: all remaining helpers + AdvancedPivotDataTable, AnalyticsClusterPlot, AnimatedBubbleChart, AnomalySwimLaneChart, ArcDiagramChart, AreaRangeChart, AreaSplineRangeChart, BellCurveChart, BookmarkNavigator, BoxPlotChart, BulletChart, BumpChart, CalculationEditor, CalendarHeatmapChart).",
+  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 (batches 1-5, 25 files -> 40/128 ported): all 6 remaining .ts helpers (advancedPivotData, analyticsDsData, chart-export, geoMapLayers, url-sync, useUrlSync) and next 19 .tsx components (AdvancedPivotDataTable, AnalyticsClusterPlot, AnimatedBubbleChart, AnomalySwimLaneChart, ArcDiagramChart, AreaRangeChart, AreaSplineRangeChart, BellCurveChart, BookmarkNavigator, BoxPlotChart, BulletChart, BumpChart, CalculationEditor, CalendarHeatmapChart, CandlestickChart, ExportMenu, ChartExport, ChordChart, ChoroplethMap).",
   "modules": [
     {
       "module": "adapter",
@@ -321,6 +321,51 @@
       "module": "CalendarHeatmapChart",
       "file": "src/lib/CalendarHeatmapChart.tsx",
       "reactSource": "dataviz-react/src/lib/CalendarHeatmapChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "CandlestickChart",
+      "file": "src/lib/CandlestickChart.tsx",
+      "reactSource": "dataviz-react/src/lib/CandlestickChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ExportMenu",
+      "file": "src/lib/ExportMenu.tsx",
+      "reactSource": "dataviz-react/src/lib/ExportMenu.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ChartExport",
+      "file": "src/lib/ChartExport.tsx",
+      "reactSource": "dataviz-react/src/lib/ChartExport.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ChordChart",
+      "file": "src/lib/ChordChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ChordChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ChoroplethMap",
+      "file": "src/lib/ChoroplethMap.tsx",
+      "reactSource": "dataviz-react/src/lib/ChoroplethMap.tsx",
       "kind": "component",
       "lot": "P6",
       "renderable": true,
