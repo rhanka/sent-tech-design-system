@@ -1,8 +1,8 @@
 {
   "componentId": "density-2d-chart",
   "contractSource": "derived",
-  "digest": "sha256:bd31fcf00081ad92d48f75204721c26888a38a5465846081792e0153ab7d7b7c",
-  "entryDigest": "sha256:624d4ebc6d28f8b97c7ed25d61744fb8f9002748976c2a87882f8b500afceba2",
+  "digest": "sha256:9333f7220e0d6291cb8c36ce95c754e54f1ddcf2bf9c69c8baab5cf3d34f6e12",
+  "entryDigest": "sha256:bf72b2f2ae6827c19839a48689942b21963ab887b5eda9a1561abf2faa2a3e96",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -242,7 +242,7 @@
         "declarationPath": "packages/components-svelte/dist/Density2DChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "Density2DChartProps",
-        "version": "0.43.0"
+        "version": "0.43.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -323,7 +323,7 @@
         "declarationPath": "packages/components-vue/dist/Density2DChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "Density2DChartProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "complete",
       "unresolved": [],

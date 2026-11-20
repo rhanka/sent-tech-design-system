@@ -1,8 +1,8 @@
 {
   "componentId": "config-item-card",
   "contractSource": "derived",
-  "digest": "sha256:ef6412c8e4caf97ae20170318b502631b93c3ae5b8195a4d7101f65a5e2bd9f8",
-  "entryDigest": "sha256:80820d1d6f6865963ce57ed7c65f9a8dd2aef312b442171712ec62d922d8f1b9",
+  "digest": "sha256:38368781c15b82833d824ad78edfacfe2fc158593d854c9ad9101ac6a3cf17cc",
+  "entryDigest": "sha256:6aa7c4009dd62349161be8df1845fb0eacd987ed099969d510bcb868a9be8e05",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -358,7 +358,7 @@
         "declarationPath": "packages/components-svelte/dist/ConfigItemCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ConfigItemCardProps",
-        "version": "0.43.0"
+        "version": "0.43.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -499,7 +499,7 @@
         "declarationPath": "packages/components-vue/dist/ConfigItemCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ConfigItemCardProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "partial",
       "unresolved": [],
