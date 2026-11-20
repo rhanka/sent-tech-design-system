@@ -65,7 +65,7 @@
 </script>
 
 <script lang="ts">
-  import { untrack } from "svelte";
+  import { tick, untrack } from "svelte";
   import {
     countUnreadComments,
     createAnchorFromElement,
@@ -80,7 +80,12 @@
   import Button from "./Button.svelte";
   import CommentComposer from "./CommentComposer.svelte";
   import CommentPin from "./CommentPin.svelte";
-  import { formatAnchorLabel, formatPinAriaLabel } from "./review-markdown.js";
+  import {
+    formatAnchorLabel,
+    formatPinAriaLabel,
+    getFocusableElements,
+    handleFocusTrapKeydown,
+  } from "./review-markdown.js";
 
   interface OverlayBox {
     top: number;
@@ -167,6 +172,7 @@
   let overlayEl: HTMLElement | undefined = $state();
   let clusterPopoverEl: HTMLElement | undefined = $state();
   let selectionTriggerEl: HTMLElement | undefined = $state();
+  let confirmDialogEl: HTMLElement | undefined = $state();
 
   let domRevision = $state(0);
   let hoverBox = $state<OverlayBox | null>(null);
@@ -186,6 +192,7 @@
   let selectionTriggerReleaseTimer: ReturnType<typeof setTimeout> | undefined;
   let selectionTriggerPressed = false;
   let clusterInvoker: HTMLElement | null = null;
+  let confirmReturnFocus: HTMLElement | null = null;
 
   const effectiveRoot = $derived.by<HTMLElement | null>(() => {
     // Re-read domRevision only for anchor resolution; root lookup tracks rootEl/slotHostEl.
@@ -424,12 +431,18 @@
     const current = mode;
     if (prevMode === "review" && current === "view") {
       if (composerSession !== null && draftBody.trim().length > 0) {
+        const active = typeof document !== "undefined" ? document.activeElement : null;
+        confirmReturnFocus =
+          active instanceof HTMLElement && !(overlayEl && overlayEl.contains(active))
+            ? active
+            : composerSession.invoker;
         confirmDiscardOpen = true;
       } else {
         clearTransientState();
       }
     } else if (current === "review") {
       confirmDiscardOpen = false;
+      confirmReturnFocus = null;
     }
     prevMode = current;
   });
@@ -725,11 +738,36 @@
     };
 
     const handleGlobalKeydown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && pendingSelection && !composerSession && !openClusterId) {
-        event.preventDefault();
-        event.stopPropagation();
-        pendingSelection = null;
-        return;
+      if (event.key === "Escape") {
+        if (confirmDiscardOpen) {
+          return;
+        }
+        if (openClusterId && !composerSession) {
+          const activeEl = doc.activeElement;
+          const onInvoker =
+            clusterInvoker !== null &&
+            activeEl !== null &&
+            (activeEl === clusterInvoker || clusterInvoker.contains(activeEl));
+          const inPopover =
+            clusterPopoverEl !== undefined &&
+            activeEl !== null &&
+            clusterPopoverEl.contains(activeEl);
+          if (onInvoker || inPopover) {
+            event.preventDefault();
+            event.stopPropagation();
+            const invoker = clusterInvoker;
+            openClusterId = null;
+            clusterInvoker = null;
+            invoker?.focus();
+            return;
+          }
+        }
+        if (pendingSelection && !composerSession && !openClusterId) {
+          event.preventDefault();
+          event.stopPropagation();
+          pendingSelection = null;
+          return;
+        }
       }
 
       // Alt+Shift+C comments the selection or focused commentable element (Review only, never while typing).
@@ -822,21 +860,64 @@
     };
   });
 
-  // Direct DOM Escape handler on cluster popover so Escape closes the popover only.
+  // Focus the first item on cluster popover open and handle Escape directly on the popover
+  // so Escape closes the popover only and restores focus to the invoker pin.
   $effect(() => {
     const node = clusterPopoverEl;
     if (!node) return;
+    const firstItem = node.querySelector<HTMLElement>(".st-review-layer__cluster-item");
+    (firstItem ?? node).focus();
     const onKeydown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
         event.stopPropagation();
+        const invoker = clusterInvoker;
         openClusterId = null;
-        clusterInvoker?.focus();
         clusterInvoker = null;
+        invoker?.focus();
       }
     };
     node.addEventListener("keydown", onKeydown);
     return () => node.removeEventListener("keydown", onKeydown);
+  });
+
+  // Modal exit alertdialog: move focus inside on open, trap Tab/Shift+Tab, and wire Escape
+  // to Keep editing so Escape closes ONLY the topmost alertdialog layer.
+  $effect(() => {
+    const node = confirmDialogEl;
+    if (!confirmDiscardOpen || !node) return;
+    const doc = node.ownerDocument;
+    const focusables = getFocusableElements(node);
+    (focusables[0] ?? node).focus();
+
+    const onDialogKeydown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        handleKeepEditing();
+        return;
+      }
+      if (event.key === "Tab") {
+        event.stopPropagation();
+        handleFocusTrapKeydown(event, node);
+      }
+    };
+    const onDocumentKeydown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        handleKeepEditing();
+      } else if (event.key === "Tab" && !node.contains(doc.activeElement)) {
+        event.stopPropagation();
+        handleFocusTrapKeydown(event, node);
+      }
+    };
+    node.addEventListener("keydown", onDialogKeydown);
+    doc.addEventListener("keydown", onDocumentKeydown);
+    return () => {
+      node.removeEventListener("keydown", onDialogKeydown);
+      doc.removeEventListener("keydown", onDocumentKeydown);
+    };
   });
 
   function clearTransientState() {
@@ -922,31 +1003,59 @@
     openComposerForAnchor(anchor, event.currentTarget as HTMLElement | null, top, left);
   }
 
+  function restoreFocusFallback(preferred: HTMLElement | null) {
+    if (preferred?.isConnected && preferred.tabIndex >= 0) {
+      preferred.focus();
+      return;
+    }
+    layerEl?.focus();
+  }
+
   async function handleComposerSubmit(body: string) {
     const session = composerSession;
     if (!session || session.sectionKey === null) {
       throw new Error(session?.error ?? "Unable to encode anchor for this selection.");
     }
+    const createdSectionKey = session.sectionKey;
+    const invoker = session.invoker;
     const fullTarget: CommentTarget = {
       kind: target.kind,
       id: target.id,
-      sectionKey: session.sectionKey,
+      sectionKey: createdSectionKey,
     };
     await onCreate?.({
       target: fullTarget,
-      sectionKey: session.sectionKey,
+      sectionKey: createdSectionKey,
       body,
     });
     composerSession = null;
     draftBody = "";
     liveAnnouncement = "Comment thread created.";
+
+    // Preserve focus after submit: keep any host-assigned focus (e.g. ThreadPanel heading),
+    // otherwise focus the newly rendered pin or restore focus to the invoker/layer.
+    await tick();
+    const doc = layerEl?.ownerDocument ?? (typeof document !== "undefined" ? document : null);
+    const active = doc?.activeElement ?? null;
+    if (active === null || active === doc?.body) {
+      const matchingPin = overlayEl?.querySelector<HTMLElement>(
+        `.st-review-layer__pins [data-pin-section-key="${createdSectionKey.replace(/"/g, '\\"')}"] button.st-review-pin`,
+      );
+      if (matchingPin) {
+        matchingPin.focus();
+      } else {
+        restoreFocusFallback(invoker);
+      }
+    }
   }
 
   function handleComposerCancel() {
     const invoker = composerSession?.invoker ?? null;
     composerSession = null;
     draftBody = "";
-    invoker?.focus();
+    void tick().then(() => {
+      restoreFocusFallback(invoker);
+    });
   }
 
   function activateEntry(entry: ResolvedEntry) {
@@ -978,12 +1087,24 @@
   }
 
   function handleKeepEditing() {
+    const returnTarget = confirmReturnFocus;
     confirmDiscardOpen = false;
     onModeChange?.("review");
+    void tick().then(() => {
+      if (mode !== "review") {
+        confirmReturnFocus = null;
+        restoreFocusFallback(returnTarget);
+      }
+    });
   }
 
   function handleDiscardDraft() {
+    const returnTarget = confirmReturnFocus ?? composerSession?.invoker ?? null;
+    confirmReturnFocus = null;
     clearTransientState();
+    void tick().then(() => {
+      restoreFocusFallback(returnTarget);
+    });
   }
 
   const classes = $derived(
@@ -991,7 +1112,7 @@
   );
 </script>
 
-<div {...rest} bind:this={layerEl} class={classes} data-review-mode={mode}>
+<div {...rest} bind:this={layerEl} class={classes} data-review-mode={mode} tabindex="-1">
   {#if children}
     <div bind:this={slotHostEl} class="st-review-layer__content">
       {@render children()}
@@ -1034,6 +1155,7 @@
         {#each clusters as cluster (cluster.id)}
           <div
             class="st-review-layer__pin-anchor"
+            data-pin-section-key={cluster.entries[0]?.thread.sectionKey ?? undefined}
             style:top={`${cluster.box.top}px`}
             style:left={`${cluster.box.left + cluster.box.width}px`}
           >
@@ -1080,6 +1202,7 @@
           class="st-review-layer__cluster-popover"
           role="dialog"
           aria-label="Clustered comment threads"
+          tabindex="-1"
           style:top={`${openCluster.box.top + 28}px`}
           style:left={`${Math.max(0, openCluster.box.left)}px`}
         >
@@ -1161,10 +1284,12 @@
 
     {#if confirmDiscardOpen}
       <div
+        bind:this={confirmDialogEl}
         class="st-review-layer__confirm"
         role="alertdialog"
         aria-modal="true"
         aria-label="Discard unsaved comment draft"
+        tabindex="-1"
       >
         <p class="st-review-layer__confirm-text">
           You have an unsaved comment draft. Discard it and exit review mode?

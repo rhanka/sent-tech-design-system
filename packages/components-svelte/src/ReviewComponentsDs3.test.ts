@@ -306,11 +306,51 @@ describe("DS-3: CommentComposer", () => {
       await fireEvent.keyDown(submitBtn, { key: "Tab" });
       expect(document.activeElement).toBe(textarea);
 
-      // Escape cancels and does NOT bubble to outer wrapper
+      // Escape cancels and does NOT bubble to outer wrapper when onCancel is bound
       outerKeydown.mockClear();
       await fireEvent.keyDown(textarea, { key: "Escape" });
       expect(onCancel).toHaveBeenCalledTimes(1);
       expect(outerKeydown).not.toHaveBeenCalled();
+    } finally {
+      wrapper.remove();
+    }
+  });
+
+  it("lets Escape bubble when onCancel is unbound (permanent reply composer) and keeps focus on textarea after submit", async () => {
+    const outerEscape = vi.fn();
+    const wrapper = document.createElement("div");
+    wrapper.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") outerEscape();
+    });
+    document.body.appendChild(wrapper);
+
+    try {
+      const onSubmit = vi.fn(async () => {
+        await Promise.resolve();
+      });
+      render(CommentComposer, {
+        target: wrapper,
+        props: {
+          author: ALICE,
+          autofocus: false,
+          trapFocus: false,
+          onSubmit,
+        },
+      });
+
+      const textarea = screen.getByRole("textbox") as HTMLTextAreaElement;
+      textarea.focus();
+      expect(document.activeElement).toBe(textarea);
+
+      // Escape bubbles out because onCancel is not bound
+      await fireEvent.keyDown(textarea, { key: "Escape" });
+      expect(outerEscape).toHaveBeenCalledTimes(1);
+
+      // Focus stays in the reply textarea after async submission completes
+      await fireEvent.input(textarea, { target: { value: "Persistent reply" } });
+      await fireEvent.keyDown(textarea, { key: "Enter", ctrlKey: true });
+      await waitFor(() => expect(onSubmit).toHaveBeenCalledWith("Persistent reply"));
+      await waitFor(() => expect(document.activeElement).toBe(textarea));
     } finally {
       wrapper.remove();
     }
@@ -488,15 +528,25 @@ describe("DS-3: CommentThread integrated with port-shaped fixture adapter", () =
     await fireEvent.click(reanchorBtn);
     expect(onReanchor).toHaveBeenCalledWith(root.threadId);
 
-    // Reply via thread composer
+    // Reply via thread composer — focus remains in reply textarea after submit
     const replyBox = screen.getByRole("textbox");
+    (replyBox as HTMLElement).focus();
     await fireEvent.input(replyBox, { target: { value: "Follow-up reply" } });
     await fireEvent.click(screen.getByRole("button", { name: "Reply" }));
     await waitFor(() => expect(container.textContent).toContain("Follow-up reply"));
+    await waitFor(() => expect(document.activeElement).toBe(replyBox));
 
-    // Edit own root comment
+    // Edit own root comment -> cancel restores focus to re-mounted Edit button, save also restores focus
     const editButtons = container.querySelectorAll('button[aria-label="Edit comment"]');
     await fireEvent.click(editButtons[0]!);
+    const editTextareaCancel = container.querySelector(".st-review-thread__edit-form textarea") as HTMLTextAreaElement;
+    await fireEvent.keyDown(editTextareaCancel, { key: "Escape" });
+    await waitFor(() => {
+      const remountedEditBtn = container.querySelectorAll('button[aria-label="Edit comment"]')[0];
+      expect(document.activeElement).toBe(remountedEditBtn);
+    });
+
+    await fireEvent.click(container.querySelectorAll('button[aria-label="Edit comment"]')[0]!);
     const editTextarea = container.querySelector(".st-review-thread__edit-form textarea") as HTMLTextAreaElement;
     expect(editTextarea.value).toBe("Initial orphan comment");
     await fireEvent.input(editTextarea, { target: { value: "Updated root comment" } });
@@ -504,6 +554,10 @@ describe("DS-3: CommentThread integrated with port-shaped fixture adapter", () =
     await waitFor(() => {
       expect(container.textContent).toContain("Updated root comment");
       expect(container.textContent).toContain("edited");
+    });
+    await waitFor(() => {
+      const remountedEditBtn = container.querySelectorAll('button[aria-label="Edit comment"]')[0];
+      expect(document.activeElement).toBe(remountedEditBtn);
     });
 
     // Optimistic rollback with role=alert when adapter rejects resolve (caller lacks comment right)
