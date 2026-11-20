@@ -5,12 +5,12 @@ import { getDiagramGlyph } from './diagram-icons/registry.js';
 import { createLayoutCache, DEFAULT_FLOW_TOKENS, type FlowTokens, type Rect } from "@sentropic/diagram-canvas";
 import { useDiagramSceneViewport } from "./useDiagramSceneViewport.js";
 import {
-  INITIAL_FLOW_STATE, DEFAULT_FLOW_STRINGS, visibleOf, effectiveTarget, highlightOf, flowStateOf,
+  INITIAL_FLOW_STATE, visibleOf, effectiveTarget, highlightOf, flowStateOf,
   reduce, describeTarget, announce, flowHitSize, stepChange, stepsOf,
   type FlowState, type FlowAction, type Visible,
 } from "@sentropic/diagram-canvas/flowModel";
 import {
-  collapsedOccurrencesOf, sceneContentSize, layoutScene, resolveScene,
+  collapsedOccurrencesOf, DEFAULT_SCENE_LABELS, sceneContentSize, layoutScene, resolveScene,
   parseScale, sceneConnectorMask, sceneNodesOnPlane,
   type SceneModel, type SceneNodeModel, type SceneOrientations, type SceneOccurrenceRef,
 } from "@sentropic/diagram-canvas/diagramSceneModel";
@@ -21,10 +21,7 @@ import type { DiagramSceneFigureProps as SharedSceneFigureProps, DiagramSceneFig
 export interface DiagramSceneFigureProps extends SharedSceneFigureProps {}
 export type { DiagramSceneFigureLabels, DiagramSceneCamera } from "@sentropic/diagram-canvas/diagramSceneModel";
 
-const DEFAULT_LABELS: DiagramSceneFigureLabels = {
-  ...DEFAULT_FLOW_STRINGS, controls: "Zoom", zoomIn: "Zoom in", zoomOut: "Zoom out", fit: "Fit",
-  zoomLevel: (percent) => `Zoom ${percent} %`, viewport: "Diagram", expand: (title) => `Expand ${title}`, collapse: (title) => `Collapse ${title}`,
-};
+const DEFAULT_LABELS: DiagramSceneFigureLabels = DEFAULT_SCENE_LABELS;
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { compact: false });
 const emit = defineEmits<{ "update:contentSize": [size: { width: number; height: number }] }>();
@@ -305,6 +302,6 @@ const scenarioId = useId();
         </div>
       </div>
     </div>
-    <DiagramSceneFallback :scene="scene" :document="props.document" />
+    <DiagramSceneFallback :scene="scene" :document="props.document" :contains-label="strings.contains" />
   </figure>
 </template>

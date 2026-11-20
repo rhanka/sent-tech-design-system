@@ -802,6 +802,24 @@ describe("DiagramSceneFigure folds", () => {
     expect(document.activeElement).toBe(view.toggle("a"));
   });
 
+  it("localizes containment relations in the accessible fallback text with default and overridden labels (DE-1b)", async () => {
+    const defaultView = mount(WIDE);
+    await tick();
+    const defaultRows = [...defaultView.root.querySelectorAll(".st-diagramSceneFigure-fallback p")].map((p) => p.textContent);
+    expect(defaultRows).toContain("a → a1 · includes");
+    expect(defaultRows).toContain("a1 → c · calls");
+    expect(defaultRows.some((row) => row?.includes("· contains"))).toBe(false);
+    defaultView.unmount();
+
+    const frenchView = mount(WIDE, { labels: { contains: "contient" } });
+    await tick();
+    const frenchRows = [...frenchView.root.querySelectorAll(".st-diagramSceneFigure-fallback p")].map((p) => p.textContent);
+    expect(frenchRows).toContain("a → a1 · contient");
+    expect(frenchRows).toContain("a1 → c · calls");
+    expect(frenchRows.some((row) => row?.includes("· contains"))).toBe(false);
+    frenchView.unmount();
+  });
+
   it("folds and unfolds a v2 multi-container nested scene hiding all descendants, reflowing neighbours and bundling links within 1/64 px", async () => {
     reducedMotion = true;
     const base = sceneOf(
