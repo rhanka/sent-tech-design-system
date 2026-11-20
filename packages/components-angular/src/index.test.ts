@@ -29,14 +29,25 @@ const absentFromAngular = new Set(
 // as a real one — an unanchored pattern matched inside `// export { default as
 // Foo }` and demanded an Angular component for a Svelte export that does not
 // exist.
+const REVIEW_KIT_SVELTE_ONLY = new Set([
+  "CommentAuthorship",
+  "CommentComposer",
+  "CommentLayer",
+  "CommentPin",
+  "CommentThread",
+  "OrphanList",
+  "ReviewModeToggle",
+  "ThreadPanel",
+]);
+
 const componentNames = [
   ...svelteIndex.matchAll(/^export \{ default as (\w+)(?:,| \})/gm),
 ]
   .map((match) => match[1])
   // AppShell + IdentityButton = chrome applicatif svelte-only (ex-paquet app-shell,
-  // replié dans design-system-svelte) ; pas de port Angular (parité différée tant
-  // qu'aucun consommateur non-svelte ne le demande).
-  .filter((name) => name !== "AppShell" && name !== "IdentityButton")
+  // replié dans design-system-svelte) ; review-kit (DS-3..DS-5) est svelte-only à ce lot
+  // (Vue en DS-6, aucun port Angular dans le périmètre).
+  .filter((name) => name !== "AppShell" && name !== "IdentityButton" && !REVIEW_KIT_SVELTE_ONLY.has(name))
   .filter((name) => !absentFromAngular.has(name));
 
 describe("Angular public surface", () => {
