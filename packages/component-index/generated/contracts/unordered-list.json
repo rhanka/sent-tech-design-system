@@ -1,8 +1,8 @@
 {
   "componentId": "unordered-list",
   "contractSource": "derived",
-  "digest": "sha256:1067e1d3f3d35ab4510a0e86e373dc91534f47c65172bc6f5af44f7907e691ac",
-  "entryDigest": "sha256:8fedafc71fb914a506d7ecce51223618703a8542c2b7f0d5749c426ab5c37b24",
+  "digest": "sha256:6685d2bc2aed164eb5a561a5a915545d861b16aa08fbabae2331ebe5d360c83f",
+  "entryDigest": "sha256:c88afc56a35af8d8b5368bcd6de97aae70e569bd8a54f58ad9155149881f7dbc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-svelte/dist/UnorderedList.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "UnorderedListProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -332,7 +332,7 @@
         "declarationPath": "packages/components-vue/dist/UnorderedList.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "UnorderedListProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "complete",
       "unresolved": [],

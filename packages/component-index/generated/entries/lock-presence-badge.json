@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/presence-badge/LockPresenceBadge.svelte",
-      "version": "0.42.0"
+      "version": "0.43.0"
     },
     {
       "channel": "source",
@@ -17,14 +17,14 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/presence-badge/LockPresenceBadge.vue",
-      "version": "0.41.0-next.8"
+      "version": "0.41.0-next.9"
     }
   ],
   "description": {
     "en": "Collaborator presence and lock state with capability-controlled unlock actions.",
     "fr": "Présence des collaborateurs et état du verrou, avec actions de déverrouillage autorisées."
   },
-  "digest": "sha256:eca5cf0c1ca8684e242c153882fc6cf9d2f75fed5055b852365b76635276caed",
+  "digest": "sha256:1b5a238c3455b01b835f77e4bae5192bd535328920c9f610d4b20d7ac87b95c4",
   "displayName": "LockPresenceBadge",
   "format": "component-entry/v1",
   "frameworks": [

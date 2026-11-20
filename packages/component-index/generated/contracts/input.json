@@ -1,8 +1,8 @@
 {
   "componentId": "input",
   "contractSource": "derived",
-  "digest": "sha256:75e45caa1cc0064150aa64469c855e2968c9f3cd09eef6bfd9efc4ae392d892c",
-  "entryDigest": "sha256:0ecbdc2fcb20ef6fcf3a9aedb161212c7714a430afb6a14c0b24d6652b7e1f8a",
+  "digest": "sha256:137e7e5185c06f1bef3ea9fe84ce90fcab49cebc469d765905ac3bebb105f66a",
+  "entryDigest": "sha256:8b3a6c0023120e18f076190909cc2056febdd6c674c70c5db387d3e5f8cbe189",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -243,7 +243,7 @@
         "declarationPath": "packages/components-svelte/dist/Input.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "InputProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -363,7 +363,7 @@
         "declarationPath": "packages/components-vue/dist/Input.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "InputProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "partial",
       "unresolved": [

@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:c625c8d1f8612d4d7717428a20b14668e755f39e383f656f76831e73354b3a33",
-  "entryDigest": "sha256:c139a7ae857ec6544f3f9cd24f11f8f6b485774c327bec4a7866336752f9ec63",
+  "digest": "sha256:27244b288629678e0bd239362dc20f9a1d14ebb3228dcba4a2a12fe2d23ba55c",
+  "entryDigest": "sha256:6719442ffe0048e5b15ecb434327a111abce302c50af13814ecb295a10178264",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -388,6 +388,10 @@
                     "properties": {},
                     "type": "object"
                   },
+                  "routeSpacing": {
+                    "$ref": "#/$defs/RouteSpacingReport",
+                    "description": "Built-in geometric route-spacing audit report (DE-2 ask 2)."
+                  },
                   "status": {
                     "const": "laid-out"
                   },
@@ -555,6 +559,26 @@
             "required": [
               "hops",
               "predicateId"
+            ],
+            "type": "object"
+          },
+          "ChannelCapacitySummary": {
+            "additionalProperties": false,
+            "properties": {
+              "capacity": {
+                "type": "number"
+              },
+              "demand": {
+                "type": "number"
+              },
+              "gap": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "capacity",
+              "demand",
+              "gap"
             ],
             "type": "object"
           },
@@ -1156,9 +1180,9 @@
               },
               "form": {
                 "enum": [
+                  "legend",
                   "card",
                   "container",
-                  "legend",
                   "legend-key"
                 ]
               },
@@ -1381,6 +1405,10 @@
                   "vertical"
                 ]
               },
+              "capacity": {
+                "description": "Parallel longitudinal track capacity of this gutter at current spacing tokens (DE-2).",
+                "type": "number"
+              },
               "edges": {
                 "items": {
                   "type": "string"
@@ -1428,6 +1456,10 @@
                   "type": "object"
                 },
                 "type": "array"
+              },
+              "zone": {
+                "description": "True when this gutter separates sibling zones (governed by `zoneGutter`, DE-2 ask 3).",
+                "type": "boolean"
               }
             },
             "required": [
@@ -1633,6 +1665,7 @@
                   "card-overflow",
                   "card-icon-missing",
                   "card-grown",
+                  "channel-capacity-exceeded",
                   "channel-unresolved",
                   "flow-bundled",
                   "badge-unplaced",
@@ -1640,9 +1673,12 @@
                   "label-unplaced",
                   "label-budget-exhausted",
                   "route-obstructed",
+                  "route-spacing-conflict",
                   "row-fill-partial",
                   "zone-overflow",
                   "zone-surface-same",
+                  "arrow-direction-convention",
+                  "zone-tag-opaque-acronym",
                   "docking-overflow"
                 ]
               },
@@ -2412,6 +2448,22 @@
           "RelationOccurrence": {
             "additionalProperties": false,
             "properties": {
+              "arrowhead": {
+                "description": "Arrowhead registry word (`arrow | filled-triangle | open-triangle | none`, DE-2).\nAbsent means default filled triangle and is preserved byte-for-byte.",
+                "enum": [
+                  "none",
+                  "arrow",
+                  "filled-triangle",
+                  "open-triangle"
+                ]
+              },
+              "emphasis": {
+                "description": "Link emphasis word (`default | emphasis`, DE-2): distinct colour + width,\nnever a dash style. Absent is preserved byte-for-byte.",
+                "enum": [
+                  "default",
+                  "emphasis"
+                ]
+              },
               "endpoints": {
                 "items": {
                   "$ref": "#/$defs/RelationOccurrenceEndpoint"
@@ -2425,10 +2477,11 @@
                 "type": "string"
               },
               "strokeStyle": {
-                "description": "The only stroke carrier (M3 §3.2.2/§3.5), default solid. Absent is distinct\nfrom explicit solid and is preserved byte-for-byte.",
+                "description": "Dash-pattern registry word (`solid | dashed | dotted`; `dashed` means \"proposed\").\nAbsent is distinct from explicit solid and is preserved byte-for-byte.",
                 "enum": [
                   "solid",
-                  "dashed"
+                  "dashed",
+                  "dotted"
                 ]
               },
               "waypoints": {
@@ -2476,6 +2529,33 @@
             ],
             "type": "object"
           },
+          "RelationPresentation": {
+            "additionalProperties": false,
+            "properties": {
+              "arrowhead": {
+                "enum": [
+                  "none",
+                  "arrow",
+                  "filled-triangle",
+                  "open-triangle"
+                ]
+              },
+              "emphasis": {
+                "enum": [
+                  "default",
+                  "emphasis"
+                ]
+              },
+              "strokeStyle": {
+                "enum": [
+                  "solid",
+                  "dashed",
+                  "dotted"
+                ]
+              }
+            },
+            "type": "object"
+          },
           "ResourceDescriptor": {
             "additionalProperties": false,
             "properties": {
@@ -2501,6 +2581,86 @@
               "id",
               "mediaType",
               "uri"
+            ],
+            "type": "object"
+          },
+          "RouteSpacingConflict": {
+            "additionalProperties": false,
+            "properties": {
+              "actual": {
+                "type": "number"
+              },
+              "channelId": {
+                "type": "string"
+              },
+              "entity": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "segment-overlap",
+                  "parallel-segment-spacing",
+                  "elbow-spacing",
+                  "port-spacing",
+                  "arrowhead-spacing",
+                  "link-to-border",
+                  "channel-capacity-exceeded"
+                ]
+              },
+              "message": {
+                "type": "string"
+              },
+              "required": {
+                "type": "number"
+              },
+              "routes": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "actual",
+              "kind",
+              "message",
+              "required",
+              "routes"
+            ],
+            "type": "object"
+          },
+          "RouteSpacingReport": {
+            "additionalProperties": false,
+            "properties": {
+              "borderClearance": {
+                "type": "number"
+              },
+              "channelCapacity": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/ChannelCapacitySummary"
+                },
+                "properties": {},
+                "type": "object"
+              },
+              "conflictCount": {
+                "type": "number"
+              },
+              "conflicts": {
+                "items": {
+                  "$ref": "#/$defs/RouteSpacingConflict"
+                },
+                "type": "array"
+              },
+              "routeSpacing": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "borderClearance",
+              "channelCapacity",
+              "conflictCount",
+              "conflicts",
+              "routeSpacing"
             ],
             "type": "object"
           },
@@ -3269,10 +3429,11 @@
                 "type": "string"
               },
               "strokeStyle": {
-                "description": "Absent selects solid only. Solid and dashed never aggregate together.",
+                "description": "Absent selects solid only. Distinct dash styles never aggregate together.",
                 "enum": [
                   "solid",
-                  "dashed"
+                  "dashed",
+                  "dotted"
                 ]
               },
               "targetOccurrence": {
@@ -3876,6 +4037,10 @@
           "document": {
             "$ref": "#/$defs/SemanticDocument"
           },
+          "fitToWindow": {
+            "description": "Opt-in fit-to-window host framing (`max-height: calc(100vh - 24px)`, `max-width: 100%`, centred; DE-2 ask 9). Default `false` preserves `Z-3 / AC-23`.",
+            "type": "boolean"
+          },
           "flows": {
             "additionalProperties": false,
             "properties": {
@@ -3921,6 +4086,22 @@
           "layoutCache": {
             "$ref": "#/$defs/SceneLayoutCache"
           },
+          "legend": {
+            "description": "Automatic link-style legend anchor (`\"right\"` default; `\"none\"` suppresses).",
+            "enum": [
+              "none",
+              "right",
+              "bottom"
+            ]
+          },
+          "legendLabels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Optional custom labels for automatic link-style legend entries, keyed by `linkStyleKey(...)`.",
+            "properties": {},
+            "type": "object"
+          },
           "measureLines": {
             "additionalProperties": false,
             "description": "Layout line measurer. Defaults to the bridge over `measure`.",
@@ -3950,6 +4131,14 @@
                 "additionalProperties": {
                   "$ref": "#/$defs/LegendPresentation"
                 },
+                "properties": {},
+                "type": "object"
+              },
+              "relations": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/RelationPresentation"
+                },
+                "description": "Word-addressed connector styles keyed by relation occurrence id or\nsemantic relation id (DE-2). Closed registry words only, never raw geometry.",
                 "properties": {},
                 "type": "object"
               }
@@ -4062,6 +4251,12 @@
           "reason": "primitive intersection constraints (including brands) are not represented in JSON",
           "replacement": "{\"type\":\"string\"}",
           "sourceType": "OccurrenceRef"
+        },
+        {
+          "name": "RouteSpacingReport.channelCapacity",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"$ref\":\"#/$defs/ChannelCapacitySummary\"}",
+          "sourceType": "Readonly<Record<string, ChannelCapacitySummary>>"
         },
         {
           "name": "SemanticDocument.documentId",
@@ -4178,6 +4373,12 @@
           "sourceType": "Partial<DiagramSceneFigureLabels>"
         },
         {
+          "name": "legendLabels",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "Readonly<Record<string, string>>"
+        },
+        {
           "name": "members[].occurrence",
           "reason": "primitive intersection constraints (including brands) are not represented in JSON",
           "replacement": "{\"type\":\"string\"}",
@@ -4204,7 +4405,7 @@
         {
           "name": "presentation.entities",
           "reason": "index-signature: open-ended map loses key discipline",
-          "replacement": "{\"type\":\"object\",\"properties\":{\"categoryRef\":{\"type\":\"string\"},\"form\":{\"enum\":[\"card\",\"container\",\"legend\",\"legend-key\"]},\"icon\":{\"type\":\"string\"},\"text\":{\"$ref\":\"#/$defs/PresentationText\"},\"anatomy\":{\"enum\":[\"v1\",\"v2\"]},\"depth\":{\"type\":\"number\"},\"depthParityStart\":{\"enum\":[0,1]}},\"additionalProperties\":false,\"required\":[\"form\",\"text\"]}",
+          "replacement": "{\"type\":\"object\",\"properties\":{\"categoryRef\":{\"type\":\"string\"},\"form\":{\"enum\":[\"legend\",\"card\",\"container\",\"legend-key\"]},\"icon\":{\"type\":\"string\"},\"text\":{\"$ref\":\"#/$defs/PresentationText\"},\"anatomy\":{\"enum\":[\"v1\",\"v2\"]},\"depth\":{\"type\":\"number\"},\"depthParityStart\":{\"enum\":[0,1]}},\"additionalProperties\":false,\"required\":[\"form\",\"text\"]}",
           "sourceType": "Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>"
         },
         {
@@ -4212,6 +4413,12 @@
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"$ref\":\"#/$defs/LegendPresentation\"}",
           "sourceType": "Readonly<Record<string, LegendPresentation>>"
+        },
+        {
+          "name": "presentation.relations",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"$ref\":\"#/$defs/RelationPresentation\"}",
+          "sourceType": "Readonly<Record<string, RelationPresentation>>"
         },
         {
           "name": "result.arrowBoxes",
@@ -4270,11 +4477,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:2659deb6d21bf0df3a6441090e85f64f87783cb3e292c6f358cc880a3a211961",
+        "declarationDigest": "sha256:4d1689a4a0cfd537739c0ca8140a3d52b408bb91c15800eb1e301673acc5820e",
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "partial",
       "unresolved": [
@@ -4282,7 +4489,7 @@
           "kind": "other",
           "name": "entities",
           "reason": "intersection members disagree",
-          "sourceType": "{ readonly entities: Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>; }"
+          "sourceType": "{ readonly entities: Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>; readonly relations?: Readonly<...> | undefined; }"
         }
       ],
       "warnings": []
@@ -4819,6 +5026,10 @@
                     "properties": {},
                     "type": "object"
                   },
+                  "routeSpacing": {
+                    "$ref": "#/$defs/RouteSpacingReport",
+                    "description": "Built-in geometric route-spacing audit report (DE-2 ask 2)."
+                  },
                   "status": {
                     "const": "laid-out"
                   },
@@ -5134,6 +5345,10 @@
                     "properties": {},
                     "type": "object"
                   },
+                  "routeSpacing": {
+                    "$ref": "#/$defs/RouteSpacingReport",
+                    "description": "Built-in geometric route-spacing audit report (DE-2 ask 2)."
+                  },
                   "status": {
                     "const": "laid-out"
                   },
@@ -5357,6 +5572,26 @@
             "required": [
               "hops",
               "predicateId"
+            ],
+            "type": "object"
+          },
+          "ChannelCapacitySummary": {
+            "additionalProperties": false,
+            "properties": {
+              "capacity": {
+                "type": "number"
+              },
+              "demand": {
+                "type": "number"
+              },
+              "gap": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "capacity",
+              "demand",
+              "gap"
             ],
             "type": "object"
           },
@@ -6183,6 +6418,10 @@
                   "vertical"
                 ]
               },
+              "capacity": {
+                "description": "Parallel longitudinal track capacity of this gutter at current spacing tokens (DE-2).",
+                "type": "number"
+              },
               "edges": {
                 "items": {
                   "type": "string"
@@ -6230,6 +6469,10 @@
                   "type": "object"
                 },
                 "type": "array"
+              },
+              "zone": {
+                "description": "True when this gutter separates sibling zones (governed by `zoneGutter`, DE-2 ask 3).",
+                "type": "boolean"
               }
             },
             "required": [
@@ -6435,6 +6678,7 @@
                   "card-overflow",
                   "card-icon-missing",
                   "card-grown",
+                  "channel-capacity-exceeded",
                   "channel-unresolved",
                   "flow-bundled",
                   "badge-unplaced",
@@ -6442,9 +6686,12 @@
                   "label-unplaced",
                   "label-budget-exhausted",
                   "route-obstructed",
+                  "route-spacing-conflict",
                   "row-fill-partial",
                   "zone-overflow",
                   "zone-surface-same",
+                  "arrow-direction-convention",
+                  "zone-tag-opaque-acronym",
                   "docking-overflow"
                 ]
               },
@@ -7214,6 +7461,22 @@
           "RelationOccurrence": {
             "additionalProperties": false,
             "properties": {
+              "arrowhead": {
+                "description": "Arrowhead registry word (`arrow | filled-triangle | open-triangle | none`, DE-2).\nAbsent means default filled triangle and is preserved byte-for-byte.",
+                "enum": [
+                  "none",
+                  "arrow",
+                  "filled-triangle",
+                  "open-triangle"
+                ]
+              },
+              "emphasis": {
+                "description": "Link emphasis word (`default | emphasis`, DE-2): distinct colour + width,\nnever a dash style. Absent is preserved byte-for-byte.",
+                "enum": [
+                  "default",
+                  "emphasis"
+                ]
+              },
               "endpoints": {
                 "items": {
                   "$ref": "#/$defs/RelationOccurrenceEndpoint"
@@ -7227,10 +7490,11 @@
                 "type": "string"
               },
               "strokeStyle": {
-                "description": "The only stroke carrier (M3 §3.2.2/§3.5), default solid. Absent is distinct\nfrom explicit solid and is preserved byte-for-byte.",
+                "description": "Dash-pattern registry word (`solid | dashed | dotted`; `dashed` means \"proposed\").\nAbsent is distinct from explicit solid and is preserved byte-for-byte.",
                 "enum": [
                   "solid",
-                  "dashed"
+                  "dashed",
+                  "dotted"
                 ]
               },
               "waypoints": {
@@ -7278,6 +7542,33 @@
             ],
             "type": "object"
           },
+          "RelationPresentation": {
+            "additionalProperties": false,
+            "properties": {
+              "arrowhead": {
+                "enum": [
+                  "none",
+                  "arrow",
+                  "filled-triangle",
+                  "open-triangle"
+                ]
+              },
+              "emphasis": {
+                "enum": [
+                  "default",
+                  "emphasis"
+                ]
+              },
+              "strokeStyle": {
+                "enum": [
+                  "solid",
+                  "dashed",
+                  "dotted"
+                ]
+              }
+            },
+            "type": "object"
+          },
           "ResourceDescriptor": {
             "additionalProperties": false,
             "properties": {
@@ -7303,6 +7594,86 @@
               "id",
               "mediaType",
               "uri"
+            ],
+            "type": "object"
+          },
+          "RouteSpacingConflict": {
+            "additionalProperties": false,
+            "properties": {
+              "actual": {
+                "type": "number"
+              },
+              "channelId": {
+                "type": "string"
+              },
+              "entity": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "segment-overlap",
+                  "parallel-segment-spacing",
+                  "elbow-spacing",
+                  "port-spacing",
+                  "arrowhead-spacing",
+                  "link-to-border",
+                  "channel-capacity-exceeded"
+                ]
+              },
+              "message": {
+                "type": "string"
+              },
+              "required": {
+                "type": "number"
+              },
+              "routes": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "actual",
+              "kind",
+              "message",
+              "required",
+              "routes"
+            ],
+            "type": "object"
+          },
+          "RouteSpacingReport": {
+            "additionalProperties": false,
+            "properties": {
+              "borderClearance": {
+                "type": "number"
+              },
+              "channelCapacity": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/ChannelCapacitySummary"
+                },
+                "properties": {},
+                "type": "object"
+              },
+              "conflictCount": {
+                "type": "number"
+              },
+              "conflicts": {
+                "items": {
+                  "$ref": "#/$defs/RouteSpacingConflict"
+                },
+                "type": "array"
+              },
+              "routeSpacing": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "borderClearance",
+              "channelCapacity",
+              "conflictCount",
+              "conflicts",
+              "routeSpacing"
             ],
             "type": "object"
           },
@@ -8084,10 +8455,11 @@
                 "type": "string"
               },
               "strokeStyle": {
-                "description": "Absent selects solid only. Solid and dashed never aggregate together.",
+                "description": "Absent selects solid only. Distinct dash styles never aggregate together.",
                 "enum": [
                   "solid",
-                  "dashed"
+                  "dashed",
+                  "dotted"
                 ]
               },
               "targetOccurrence": {
@@ -8691,6 +9063,10 @@
           "document": {
             "$ref": "#/$defs/SemanticDocument"
           },
+          "fitToWindow": {
+            "description": "Opt-in fit-to-window host framing (`max-height: calc(100vh - 24px)`, `max-width: 100%`, centred; DE-2 ask 9). Default `false` preserves `Z-3 / AC-23`.",
+            "type": "boolean"
+          },
           "flows": {
             "additionalProperties": false,
             "properties": {
@@ -8736,6 +9112,22 @@
           "layoutCache": {
             "$ref": "#/$defs/SceneLayoutCache"
           },
+          "legend": {
+            "description": "Automatic link-style legend anchor (`\"right\"` default; `\"none\"` suppresses; single-style scenes never emit one).",
+            "enum": [
+              "none",
+              "right",
+              "bottom"
+            ]
+          },
+          "legendLabels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Optional custom labels for automatic link-style legend entries, keyed by `linkStyleKey(...)`.",
+            "properties": {},
+            "type": "object"
+          },
           "measureLines": {
             "additionalProperties": false,
             "description": "Layout line measurer. Defaults to the bridge over `measure`.",
@@ -8765,6 +9157,14 @@
                 "additionalProperties": {
                   "$ref": "#/$defs/LegendPresentation"
                 },
+                "properties": {},
+                "type": "object"
+              },
+              "relations": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/RelationPresentation"
+                },
+                "description": "Word-addressed connector styles keyed by relation occurrence id or\nsemantic relation id (DE-2). Closed registry words only, never raw geometry.",
                 "properties": {},
                 "type": "object"
               }
@@ -8877,6 +9277,12 @@
           "reason": "primitive intersection constraints (including brands) are not represented in JSON",
           "replacement": "{\"type\":\"string\"}",
           "sourceType": "OccurrenceRef"
+        },
+        {
+          "name": "RouteSpacingReport.channelCapacity",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"$ref\":\"#/$defs/ChannelCapacitySummary\"}",
+          "sourceType": "Readonly<Record<string, ChannelCapacitySummary>>"
         },
         {
           "name": "SemanticDocument.documentId",
@@ -9035,6 +9441,12 @@
           "sourceType": "Partial<DiagramSceneFigureLabels>"
         },
         {
+          "name": "legendLabels",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "Readonly<Record<string, string>>"
+        },
+        {
           "name": "members[].occurrence",
           "reason": "primitive intersection constraints (including brands) are not represented in JSON",
           "replacement": "{\"type\":\"string\"}",
@@ -9069,6 +9481,12 @@
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"$ref\":\"#/$defs/LegendPresentation\"}",
           "sourceType": "Readonly<Record<string, LegendPresentation>>"
+        },
+        {
+          "name": "presentation.relations",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"$ref\":\"#/$defs/RelationPresentation\"}",
+          "sourceType": "Readonly<Record<string, RelationPresentation>>"
         },
         {
           "name": "result.arrowBoxes",
@@ -9131,7 +9549,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "partial",
       "unresolved": [
@@ -9139,7 +9557,7 @@
           "kind": "other",
           "name": "entities",
           "reason": "intersection members disagree",
-          "sourceType": "{ readonly entities: Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>; }"
+          "sourceType": "{ readonly entities: Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>; readonly relations?: Readonly<...> | undefined; }"
         }
       ],
       "warnings": [
