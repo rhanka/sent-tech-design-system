@@ -25,7 +25,7 @@ exports[`Owner addendum A1–A13 > should retain all memory cards, icons and com
       {
         "height": 22,
         "width": 220.5029184,
-        "x": 947.7485408,
+        "x": 869.7193038222222,
         "y": 574.7777777777778,
       },
     ],
@@ -94,7 +94,7 @@ exports[`Owner addendum A1–A13 > should retain all memory cards, icons and com
       {
         "height": 22,
         "width": 169.72935360000005,
-        "x": 707.1353232,
+        "x": 693.2121724444443,
         "y": 574.7777777777778,
       },
     ],
@@ -106,8 +106,8 @@ exports[`Owner addendum A1–A13 > should retain all memory cards, icons and com
       {
         "height": 22,
         "width": 229.32312000000005,
-        "x": 549.8991022222222,
-        "y": 243.22222222222223,
+        "x": 654.83844,
+        "y": 603.5555555555557,
       },
     ],
     [
@@ -130,8 +130,8 @@ exports[`Owner addendum A1–A13 > should retain all memory cards, icons and com
       {
         "height": 22,
         "width": 104.1502848,
-        "x": 675.0719374222222,
-        "y": -52,
+        "x": 1011.9248576,
+        "y": 251.77777777777777,
       },
     ],
     [
@@ -142,7 +142,7 @@ exports[`Owner addendum A1–A13 > should retain all memory cards, icons and com
       {
         "height": 22,
         "width": 216.053808,
-        "x": 452.24035164444433,
+        "x": 563.1684142222222,
         "y": -56.22222222222222,
       },
     ],
@@ -156,8 +156,8 @@ exports[`Owner addendum A1–A13 > should retain all memory cards, icons and com
       {
         "height": 90,
         "width": 320,
-        "x": 626,
-        "y": 603.5555555555557,
+        "x": 659,
+        "y": 740.2222222222222,
       },
     ],
   ],
@@ -284,8 +284,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 137.59915200000003,
-        "x": 3111.700424,
-        "y": 1366.9097222222222,
+        "x": 3358.777777777778,
+        "y": 555.9027777777778,
       },
     ],
     [
@@ -297,7 +297,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
         "height": 22,
         "width": 167.36680320000002,
         "x": 1584.3165984,
-        "y": 396.34027777777777,
+        "y": 653.3402777777778,
       },
     ],
     [
@@ -308,8 +308,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 165.7721472,
-        "x": 3497.4500750222223,
-        "y": 949.40625,
+        "x": 3194.4500750222223,
+        "y": 1390.9097222222222,
       },
     ],
     [
@@ -321,7 +321,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
         "height": 22,
         "width": 97.75190400000002,
         "x": 4245.124048,
-        "y": 639.6215277777778,
+        "y": 648.7847222222222,
       },
     ],
     [
@@ -333,7 +333,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
         "height": 22,
         "width": 166.57915200000008,
         "x": 4924.777777777777,
-        "y": 1003.265625,
+        "y": 1009.265625,
       },
     ],
     [
@@ -344,8 +344,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 95.291376,
-        "x": 4210.354312,
-        "y": 1887.0277777777778,
+        "x": 4828.777777777777,
+        "y": 1718.96875,
       },
     ],
     [
@@ -356,8 +356,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 198.41380800000002,
-        "x": 3724.777777777778,
-        "y": 709.9097222222222,
+        "x": 3717.293096,
+        "y": 866.9097222222222,
       },
     ],
     [
@@ -368,8 +368,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 103.38279359999999,
-        "x": 3724.777777777778,
-        "y": 981.9097222222222,
+        "x": 3676.777777777778,
+        "y": 1006.9097222222222,
       },
     ],
     [
@@ -380,8 +380,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 171.02866560000004,
-        "x": 3928.4856672,
-        "y": 778.4652777777778,
+        "x": 3945.777777777778,
+        "y": 594.9097222222222,
       },
     ],
     [
@@ -392,7 +392,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 181.83744960000004,
-        "x": 4550.777777777777,
+        "x": 4574.777777777777,
         "y": 1626.4652777777778,
       },
     ],
@@ -404,8 +404,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 117.41999999999999,
-        "x": 4550.777777777777,
-        "y": 1680.96875,
+        "x": 3112.777777777778,
+        "y": 1824.0277777777778,
       },
     ],
     [
@@ -416,8 +416,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 44.970000000000006,
-        "x": 5085.015,
-        "y": 1342.9097222222222,
+        "x": 5079.777777777777,
+        "y": 1538.4652777777778,
       },
     ],
     [
@@ -428,8 +428,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 158.90101440000004,
-        "x": 4924.777777777777,
-        "y": 1293.9097222222222,
+        "x": 5138.777777777777,
+        "y": 1140.546875,
       },
     ],
     [
@@ -440,8 +440,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 208.86777600000008,
-        "x": 2817.777777777778,
-        "y": 981.9097222222222,
+        "x": 2802.777777777778,
+        "y": 997.9097222222222,
       },
     ],
     [
@@ -452,8 +452,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 187.92032640000008,
-        "x": 4900.777777777777,
-        "y": 580.0659722222222,
+        "x": 4880.777777777777,
+        "y": 586.9027777777778,
       },
     ],
     [
@@ -464,8 +464,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 97.35817920000001,
-        "x": 3007.5644670222223,
-        "y": 1354.4652777777778,
+        "x": 2924.3209104,
+        "y": 1935.0277777777778,
       },
     ],
     [
@@ -476,8 +476,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 119.4670464,
-        "x": 3473.2664768,
-        "y": 1887.0277777777778,
+        "x": 3812.755175822222,
+        "y": 555.9027777777778,
       },
     ],
     [
@@ -488,8 +488,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 144.84425280000005,
-        "x": 2153.377969422222,
-        "y": 417.78472222222223,
+        "x": 2970.377969422222,
+        "y": 1342.9097222222222,
       },
     ],
     [
@@ -500,8 +500,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 167.34724800000004,
-        "x": 4004.826376,
-        "y": 1293.9097222222222,
+        "x": 3945.777777777778,
+        "y": 787.4652777777778,
       },
     ],
     [
@@ -512,8 +512,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 117.41999999999999,
-        "x": 2309.777777777778,
-        "y": 1078.9097222222222,
+        "x": 2479.29,
+        "y": 1816.0277777777778,
       },
     ],
     [
@@ -524,8 +524,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 172.58421120000008,
-        "x": 3803.2069039999997,
-        "y": 681.1319444444443,
+        "x": 3676.777777777778,
+        "y": 787.4652777777778,
       },
     ],
     [
@@ -536,8 +536,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 133.58307839999998,
-        "x": 4517.777777777777,
-        "y": 709.9097222222222,
+        "x": 3945.777777777778,
+        "y": 555.9027777777778,
       },
     ],
     [
@@ -548,8 +548,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 85.25028479999999,
-        "x": 1423.7777777777778,
-        "y": 2356.590277777778,
+        "x": 1285.9719374222223,
+        "y": 2359.3125,
       },
     ],
     [
@@ -560,8 +560,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 140.78906880000002,
-        "x": 1609.6054656,
-        "y": 2356.590277777778,
+        "x": 1487.4331534222222,
+        "y": 2338.8125,
       },
     ],
     [
@@ -572,8 +572,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 210.87611520000007,
-        "x": 1975.346107022222,
-        "y": 1826.4722222222222,
+        "x": 1989.346107022222,
+        "y": 1842.4722222222222,
       },
     ],
     [
@@ -584,8 +584,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 222.137088,
-        "x": 2309.777777777778,
-        "y": 1366.9097222222222,
+        "x": 1978.0851342222222,
+        "y": 1483.75,
       },
     ],
     [
@@ -596,8 +596,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 107.79279359999998,
-        "x": 1819.429428622222,
-        "y": 2363.3125,
+        "x": 1976.7777777777778,
+        "y": 2348.590277777778,
       },
     ],
     [
@@ -608,8 +608,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 176.58093120000007,
-        "x": 3436.7095344,
-        "y": 1293.9097222222222,
+        "x": 3224.641291022222,
+        "y": 2198.034722222222,
       },
     ],
     [
@@ -620,8 +620,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 143.23024320000002,
-        "x": 1009.9919790222222,
-        "y": 2390.590277777778,
+        "x": 1163.3848784,
+        "y": 2684.590277777778,
       },
     ],
     [
@@ -632,8 +632,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 158.9409312,
-        "x": 1988.0295344,
-        "y": 1030.9097222222222,
+        "x": 1870.0295344,
+        "y": 2625.034722222222,
       },
     ],
     [
@@ -644,8 +644,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 152.9163168,
-        "x": 2010.5418416,
-        "y": 1797.6944444444443,
+        "x": 2024.5418416,
+        "y": 1813.6944444444443,
       },
     ],
     [
@@ -656,8 +656,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 164.96514240000005,
-        "x": 2004.0174288,
-        "y": 778.4652777777778,
+        "x": 2035.257079822222,
+        "y": 1366.9097222222222,
       },
     ],
     [
@@ -668,8 +668,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 150.0614592,
-        "x": 2538.6926435555556,
-        "y": 1366.9097222222222,
+        "x": 3058.4692704,
+        "y": 2684.590277777778,
       },
     ],
     [
@@ -680,8 +680,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 134.37052800000004,
-        "x": 636.8516942222221,
-        "y": 407.0625,
+        "x": 808.7777777777778,
+        "y": 399.5625,
       },
     ],
     [
@@ -692,8 +692,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 152.4830784,
-        "x": 1102.7777777777778,
-        "y": 1366.9097222222222,
+        "x": 903.7391438222221,
+        "y": 1375.6875,
       },
     ],
     [
@@ -704,8 +704,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 232.55194560000007,
-        "x": 1102.7777777777778,
-        "y": 393.78472222222223,
+        "x": 562.6702766222221,
+        "y": 387.5625,
       },
     ],
     [
@@ -716,8 +716,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 232.55194560000007,
-        "x": 1102.7777777777778,
-        "y": 668.3402777777778,
+        "x": 1069.7777777777778,
+        "y": 714.3402777777778,
       },
     ],
     [
@@ -728,8 +728,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 232.55194560000007,
-        "x": 1162.670276622222,
-        "y": 697.1180555555557,
+        "x": 1410.7240272,
+        "y": 714.3402777777778,
       },
     ],
     [
@@ -740,8 +740,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 164.13817920000002,
-        "x": 1641.7777777777778,
-        "y": 718.9097222222222,
+        "x": 1585.9309104,
+        "y": 743.1180555555557,
       },
     ],
     [
@@ -752,8 +752,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 205.18656000000004,
-        "x": 2555.90672,
-        "y": 1826.4722222222222,
+        "x": 3028.4568673777776,
+        "y": 1935.0277777777778,
       },
     ],
     [
@@ -764,8 +764,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 181.85700480000006,
-        "x": 3603.0714976,
-        "y": 1887.0277777777778,
+        "x": 3595.0714976,
+        "y": 1848.0277777777778,
       },
     ],
     [
@@ -776,8 +776,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 132.401904,
-        "x": 3881.299048,
-        "y": 1951.1597222222222,
+        "x": 3140.299048,
+        "y": 1963.8055555555557,
       },
     ],
     [
@@ -790,18 +790,6 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
         "width": 172.22959680000002,
         "x": 66.9926254222222,
         "y": 399.5625,
-      },
-    ],
-    [
-      "occurrence:r.link.e-sec-observe",
-      [
-        "Access audit",
-      ],
-      {
-        "height": 22,
-        "width": 113.83655999999999,
-        "x": 2870.777777777778,
-        "y": 1816.0277777777778,
       },
     ],
     [
@@ -824,8 +812,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 145.25773440000003,
-        "x": 3911.3711328,
-        "y": 1054.9097222222222,
+        "x": 4025.8711328,
+        "y": 1090.4652777777778,
       },
     ],
     [
@@ -836,8 +824,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 154.09749120000004,
-        "x": 3310.9512544,
-        "y": 1033.4652777777778,
+        "x": 3316.9512544,
+        "y": 967.9097222222222,
       },
     ],
     [
@@ -848,8 +836,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 64.71651840000001,
-        "x": 4521.6417408,
-        "y": 1094.9097222222222,
+        "x": 4574.777777777777,
+        "y": 787.4652777777778,
       },
     ],
     [
@@ -860,8 +848,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 175.02518400000002,
-        "x": 4028.551350222223,
-        "y": 1887.0277777777778,
+        "x": 4149.987408,
+        "y": 1366.9097222222222,
       },
     ],
     [
@@ -872,8 +860,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 133.957248,
-        "x": 5424.777777777777,
-        "y": 980.90625,
+        "x": 5420.777777777777,
+        "y": 1022.625,
       },
     ],
   ],
@@ -1244,8 +1232,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 165.7721472,
-        "x": 1209.450075022222,
-        "y": 965.90625,
+        "x": 906.4500750222221,
+        "y": 1390.9097222222222,
       },
     ],
     [
@@ -1256,8 +1244,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 97.75190400000002,
-        "x": 1944.7777777777778,
-        "y": 642.1840277777778,
+        "x": 1956.7777777777778,
+        "y": 709.9097222222222,
       },
     ],
     [
@@ -1268,8 +1256,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 166.57915200000008,
-        "x": 2588.777777777778,
-        "y": 988.90625,
+        "x": 2600.777777777778,
+        "y": 1010.6875,
       },
     ],
     [
@@ -1280,8 +1268,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 95.291376,
-        "x": 1922.354312,
-        "y": 1816.0277777777778,
+        "x": 2431.930846222222,
+        "y": 1718.96875,
       },
     ],
     [
@@ -1293,7 +1281,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
         "height": 22,
         "width": 198.41380800000002,
         "x": 1176.8084142222222,
-        "y": 709.9097222222222,
+        "y": 718.9097222222222,
       },
     ],
     [
@@ -1304,8 +1292,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 103.38279359999999,
-        "x": 1271.8394286222222,
-        "y": 1017.4652777777778,
+        "x": 1388.7777777777778,
+        "y": 1006.9097222222222,
       },
     ],
     [
@@ -1316,8 +1304,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 171.02866560000004,
-        "x": 1604.4856672,
-        "y": 778.4652777777778,
+        "x": 1574.4856672,
+        "y": 594.9097222222222,
       },
     ],
     [
@@ -1328,7 +1316,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 181.83744960000004,
-        "x": 2262.777777777778,
+        "x": 2229.777777777778,
         "y": 1626.4652777777778,
       },
     ],
@@ -1340,8 +1328,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 117.41999999999999,
-        "x": 2262.777777777778,
-        "y": 1680.96875,
+        "x": 1721.79,
+        "y": 1342.9097222222222,
       },
     ],
     [
@@ -1352,7 +1340,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 44.970000000000006,
-        "x": 2797.015,
+        "x": 2792.2522222222224,
         "y": 1538.4652777777778,
       },
     ],
@@ -1364,8 +1352,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 158.90101440000004,
-        "x": 2625.5494928,
-        "y": 1318.9097222222222,
+        "x": 2678.3212078222223,
+        "y": 1141.96875,
       },
     ],
     [
@@ -1377,7 +1365,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
         "height": 22,
         "width": 208.86777600000008,
         "x": 529.7777777777778,
-        "y": 981.9097222222222,
+        "y": 997.9097222222222,
       },
     ],
     [
@@ -1389,7 +1377,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
         "height": 22,
         "width": 187.92032640000008,
         "x": 2343.301895822222,
-        "y": 642.1840277777778,
+        "y": 586.9027777777778,
       },
     ],
     [
@@ -1401,7 +1389,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
         "height": 22,
         "width": 167.34724800000004,
         "x": 1710.826376,
-        "y": 1318.9097222222222,
+        "y": 1314.1319444444443,
       },
     ],
     [
@@ -1412,8 +1400,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 117.41999999999999,
-        "x": 21.77777777777778,
-        "y": 1078.9097222222222,
+        "x": 1101.7777777777778,
+        "y": 1283.96875,
       },
     ],
     [
@@ -1424,20 +1412,20 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 172.58421120000008,
-        "x": 1479.206904,
-        "y": 709.9097222222222,
+        "x": 1730.2078944,
+        "y": 630.6284722222222,
       },
     ],
     [
-      "occurrence:r.link.e-sec-observe",
+      "occurrence:r.link.e-infra-observe",
       [
-        "Access audit",
+        "Deployment receipts",
       ],
       {
         "height": 22,
-        "width": 113.83655999999999,
-        "x": 452.3856622222222,
-        "y": 1816.0277777777778,
+        "width": 181.85700480000006,
+        "x": 1307.0714976,
+        "y": 1847.0277777777778,
       },
     ],
     [
@@ -1448,8 +1436,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 145.25773440000003,
-        "x": 1623.3711328,
-        "y": 1030.9097222222222,
+        "x": 1737.8711328,
+        "y": 1090.4652777777778,
       },
     ],
     [
@@ -1460,7 +1448,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 154.09749120000004,
-        "x": 1022.9512543999999,
+        "x": 1101.7777777777778,
         "y": 1090.4652777777778,
       },
     ],
@@ -1473,7 +1461,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
         "height": 22,
         "width": 64.71651840000001,
         "x": 2227.6417408,
-        "y": 1094.9097222222222,
+        "y": 866.9097222222222,
       },
     ],
     [
@@ -1484,8 +1472,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 175.02518400000002,
-        "x": 2025.487408,
-        "y": 1366.9097222222222,
+        "x": 1882.487408,
+        "y": 1342.9097222222222,
       },
     ],
     [
@@ -1496,8 +1484,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh c
       {
         "height": 22,
         "width": 133.957248,
-        "x": 2965.264974222222,
-        "y": 980.90625,
+        "x": 3120.777777777778,
+        "y": 1028.546875,
       },
     ],
   ],
@@ -1698,7 +1686,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cm-catalog car
         "height": 22,
         "width": 208.86777600000008,
         "x": 421.566112,
-        "y": 867.9027777777778,
+        "y": 891.9027777777778,
       },
     ],
     [
@@ -1710,7 +1698,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cm-catalog car
         "height": 22,
         "width": 154.09749120000004,
         "x": 1024.9512544,
-        "y": 832.3472222222222,
+        "y": 856.3472222222222,
       },
     ],
   ],
@@ -1837,7 +1825,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-cm-security ca
       {
         "height": 22,
         "width": 113.83655999999999,
-        "x": 467.08172,
+        "x": 434.08172,
         "y": 396.34027777777777,
       },
     ],
@@ -1932,7 +1920,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-design-system 
       {
         "height": 22,
         "width": 140.78906880000002,
-        "x": 558.1054656,
+        "x": 570.1054656,
         "y": 396.34027777777777,
       },
     ],
@@ -2206,8 +2194,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 180,
         "width": 320,
-        "x": 348,
-        "y": -276.77777777777777,
+        "x": 70,
+        "y": -225.77777777777777,
       },
     ],
     [
@@ -2233,8 +2221,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 22,
         "width": 143.23024320000002,
-        "x": 324.9919790222222,
-        "y": 517.7777777777778,
+        "x": 390.99197902222215,
+        "y": 550.7777777777778,
       },
     ],
     [
@@ -2248,7 +2236,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 120,
         "width": 320,
-        "x": 381,
+        "x": 626,
         "y": 858.7777777777778,
       },
     ],
@@ -2260,8 +2248,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 22,
         "width": 152.9163168,
-        "x": 455.5418416,
-        "y": 243.22222222222223,
+        "x": 315.3059054222222,
+        "y": 252.22222222222223,
       },
     ],
     [
@@ -2287,8 +2275,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 120,
         "width": 320,
-        "x": 21.22222222222223,
-        "y": -216.77777777777777,
+        "x": 396.77777777777777,
+        "y": -165.77777777777777,
       },
     ],
     [
@@ -2299,7 +2287,7 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 22,
         "width": 164.13817920000002,
-        "x": 11.084043022222204,
+        "x": 23.084043022222204,
         "y": 244.5,
       },
     ],
@@ -2311,8 +2299,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 22,
         "width": 205.18656000000004,
-        "x": 586.0356622222221,
-        "y": 214.44444444444446,
+        "x": 804.7777777777778,
+        "y": 237,
       },
     ],
     [
@@ -2323,8 +2311,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icon
       {
         "height": 22,
         "width": 132.401904,
-        "x": 215.77777777777777,
-        "y": 233.77777777777777,
+        "x": 248.77777777777777,
+        "y": 213,
       },
     ],
   ],
@@ -2410,8 +2398,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 254.71988160000006,
-        "x": 1084.5023406222222,
-        "y": 663.7465277777778,
+        "x": 1095.1400592,
+        "y": 628.1909722222222,
       },
     ],
     [
@@ -2422,8 +2410,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 177.0137664,
-        "x": 22.20845582222222,
-        "y": 623.90625,
+        "x": -32.22222222222222,
+        "y": 979.09375,
       },
     ],
     [
@@ -2434,8 +2422,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 177.0137664,
-        "x": 60.01965582222226,
-        "y": 1473.4097222222222,
+        "x": 590.2084558222222,
+        "y": 616.90625,
       },
     ],
     [
@@ -2446,8 +2434,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 195.14607360000002,
-        "x": 1127.7381632000001,
-        "y": 1508.9652777777778,
+        "x": 1141.4269632,
+        "y": 1497.4097222222222,
       },
     ],
     [
@@ -2458,8 +2446,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 243.02587200000005,
-        "x": 1419.196350222222,
-        "y": 1706.4097222222222,
+        "x": 1388.8187502222222,
+        "y": 1573.9166666666667,
       },
     ],
     [
@@ -2470,8 +2458,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 287.75587199999995,
-        "x": 832.7777777777778,
-        "y": 1520.9652777777778,
+        "x": 828.4001777777779,
+        "y": 1475.9652777777778,
       },
     ],
     [
@@ -2482,8 +2470,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 297.81571199999996,
-        "x": 359.0231520000002,
-        "y": 1756.9652777777778,
+        "x": 384.9033440000001,
+        "y": 1771.9652777777778,
       },
     ],
     [
@@ -2494,7 +2482,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 289.33056960000005,
-        "x": 2128.9571152000003,
+        "x": 2122.9571152000003,
         "y": 1675.9652777777778,
       },
     ],
@@ -2506,8 +2494,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 255.94056960000006,
-        "x": 1706.7777777777778,
-        "y": 644.7847222222222,
+        "x": 1371.0297152,
+        "y": 663.7465277777778,
       },
     ],
     [
@@ -2518,8 +2506,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 265.60728960000006,
-        "x": 3259.1963551999997,
-        "y": 573.9652777777778,
+        "x": 3373.777777777778,
+        "y": 538.4097222222222,
       },
     ],
     [
@@ -2530,8 +2518,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 301.06429440000005,
-        "x": 1682.7777777777778,
-        "y": 692.3402777777778,
+        "x": 1670.7777777777778,
+        "y": 620.1527777777778,
       },
     ],
     [
@@ -2542,7 +2530,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 240.62320320000003,
-        "x": 324.59901902222214,
+        "x": 309.59901902222214,
         "y": 2742.409722222222,
       },
     ],
@@ -2554,8 +2542,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 293.3664,
-        "x": 1368.8558222222223,
-        "y": 1965.3541666666667,
+        "x": 1394.6670222222224,
+        "y": 2097.847222222222,
       },
     ],
     [
@@ -2566,8 +2554,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 263.99247360000004,
-        "x": 1405.2297486222221,
-        "y": 1667.5,
+        "x": -381.7702513777778,
+        "y": 1619.296875,
       },
     ],
     [
@@ -2578,8 +2566,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 277.2224736,
-        "x": 631.8887632,
-        "y": 1029.5902777777778,
+        "x": -395.0002513777778,
+        "y": 1458.1875,
       },
     ],
     [
@@ -2590,8 +2578,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 204.39850560000005,
-        "x": 1413.4461166222222,
-        "y": 1452.1527777777778,
+        "x": 714.6119472,
+        "y": 2097.847222222222,
       },
     ],
     [
@@ -2602,8 +2590,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 245.03340480000003,
-        "x": 2274.4832976,
-        "y": 692.3402777777778,
+        "x": 2256.4832976,
+        "y": 699.4027777777778,
       },
     ],
     [
@@ -2614,8 +2602,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 242.6119872000001,
-        "x": 417.41080639999996,
-        "y": 1785.7430555555557,
+        "x": 6.42143502222217,
+        "y": 1465.1875,
       },
     ],
     [
@@ -2626,7 +2614,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 289.7045375999999,
-        "x": 675.1477312000001,
+        "x": 89.14773120000004,
         "y": 2888.402777777778,
       },
     ],
@@ -2638,8 +2626,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 238.65478080000003,
-        "x": 780.7777777777778,
-        "y": 665.5972222222222,
+        "x": 528.5674414222221,
+        "y": 996.5902777777778,
       },
     ],
     [
@@ -2650,8 +2638,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 216.053808,
-        "x": 1583.973096,
-        "y": -43.77777777777778,
+        "x": 1845.973096,
+        "y": 996.5902777777778,
       },
     ],
     [
@@ -2662,8 +2650,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 203.19777600000003,
-        "x": 918.0244462222222,
-        "y": 599.5972222222222,
+        "x": 804.7777777777778,
+        "y": 499.6875,
       },
     ],
   ],

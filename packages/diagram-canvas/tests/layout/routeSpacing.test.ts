@@ -179,7 +179,7 @@ describe("checkRouteSpacing built-in geometric check", () => {
     expect(report.conflicts.some((c) => c.kind === "elbow-spacing")).toBe(true);
   });
 
-  it("detects ports and arrowheads closer than routeSpacing", () => {
+  it("detects ports and arrowheads closer than routeSpacing without double-counting same-entity arrowheads", () => {
     const routes: CheckedRoute[] = [
       {
         id: "r1",
@@ -193,7 +193,7 @@ describe("checkRouteSpacing built-in geometric check", () => {
           { x: 340, y: 45 },
           { x: 400, y: 45 },
         ],
-        arrowhead: "filled-triangle",
+        arrowhead: "arrow",
       },
       {
         id: "r2",
@@ -207,12 +207,71 @@ describe("checkRouteSpacing built-in geometric check", () => {
           { x: 340, y: 55 },
           { x: 400, y: 55 },
         ],
-        arrowhead: "open-triangle",
+        arrowhead: "arrow",
       },
     ];
     const report = checkRouteSpacing({ rects, routes, routeSpacing: 24, borderClearance: 15 });
-    expect(report.conflicts.some((c) => c.kind === "port-spacing")).toBe(true);
-    expect(report.conflicts.some((c) => c.kind === "arrowhead-spacing")).toBe(true);
+    // Source side (entity a, no arrowheads) reports port-spacing once; target side (entity b, both arrowed)
+    // reports arrowhead-spacing once instead of double-counting as both port-spacing and arrowhead-spacing.
+    expect(report.conflicts.filter((c) => c.kind === "port-spacing")).toHaveLength(1);
+    expect(report.conflicts.filter((c) => c.kind === "arrowhead-spacing")).toHaveLength(1);
+    expect(report.conflicts.find((c) => c.kind === "port-spacing")?.entity).toBe("a");
+    expect(report.conflicts.find((c) => c.kind === "arrowhead-spacing")?.entity).toBe("b");
+  });
+
+  it("checks startArrowhead tips on backward flow edges", () => {
+    const routes: CheckedRoute[] = [
+      {
+        id: "r1",
+        source: "a",
+        target: "b",
+        points: [
+          { x: 200, y: 45 },
+          { x: 400, y: 20 },
+        ],
+        arrowhead: "none",
+        startArrowhead: true,
+      },
+      {
+        id: "r2",
+        source: "a",
+        target: "b",
+        points: [
+          { x: 200, y: 55 },
+          { x: 400, y: 80 },
+        ],
+        arrowhead: "none",
+        startArrowhead: true,
+      },
+    ];
+    const report = checkRouteSpacing({ rects, routes, routeSpacing: 24, borderClearance: 15 });
+    expect(report.conflicts.some((c) => c.kind === "arrowhead-spacing" && c.entity === "a")).toBe(true);
+    expect(report.conflicts.some((c) => c.kind === "port-spacing" && c.entity === "a")).toBe(false);
+  });
+
+  it("audits passable expanded ancestor zone walls for 15 px link-to-border clearance", () => {
+    const zoneRects = new Map<string, Rect>([
+      ["z", { x: 0, y: 0, width: 600, height: 300 }],
+      ["a", { x: 40, y: 60, width: 160, height: 100 }],
+      ["b", { x: 700, y: 60, width: 160, height: 100 }],
+    ]);
+    // Segment runs parallel along y = 8, only 8 px inside passable ancestor zone z's top wall (y = 0).
+    const routes: CheckedRoute[] = [
+      {
+        id: "r1",
+        source: "a",
+        target: "b",
+        points: [
+          { x: 120, y: 60 },
+          { x: 120, y: 8 },
+          { x: 780, y: 8 },
+          { x: 780, y: 60 },
+        ],
+        passable: new Set(["z"]),
+      },
+    ];
+    const report = checkRouteSpacing({ rects: zoneRects, routes, routeSpacing: 24, borderClearance: 15 });
+    expect(report.conflicts.some((c) => c.kind === "link-to-border" && c.entity === "z" && c.actual === 8)).toBe(true);
   });
 
   it("detects link-to-border clearance violations against non-endpoint boxes", () => {
@@ -396,25 +455,63 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
     expect(spacingWarnings.every((w) => w.severity === "info")).toBe(true);
   });
 
-  it("enforces zero route-spacing conflicts on folded h-cond reference scenes and reports non-blocking diagnostics when capacity is exceeded", () => {
+  it("enforces zero route-spacing conflicts on ALL visible fold states of the h-cond reference scenes (unfolded included, REQ-R7-13)", () => {
+    let totalStates = 0;
     for (const name of ["architecture", "ontology"] as const) {
-      const folded = layoutScene(hCondInput(name, true));
-      expect(folded.status).toBe("laid-out");
-      if (folded.status !== "laid-out") continue;
-      expect(folded.routeSpacing).toBeDefined();
-      expect(folded.routeSpacing!.conflictCount, `${name}/folded`).toBe(0);
+      const base = hCondInput(name, false);
+      const parentEntityOf = new Map<string, string>();
+      for (const rel of Object.values(base.document.relations)) {
+        if (rel.type !== "contains") continue;
+        const p = rel.endpoints.find((e) => e.role === "parent")?.target;
+        const c = rel.endpoints.find((e) => e.role === "child")?.target;
+        if (p !== undefined && c !== undefined) parentEntityOf.set(c, p);
+      }
+      const occByEntity = new Map<string, string>();
+      const entityByOcc = new Map<string, string>();
+      for (const [oid, occ] of Object.entries(base.view.entityOccurrences)) {
+        occByEntity.set(occ.entity, oid);
+        entityByOcc.set(oid, occ.entity);
+      }
+      const groups = Object.values(base.view.groups)
+        .flatMap((g) => (g.occurrence === undefined ? [] : [g.occurrence]))
+        .sort();
+      const seen = new Set<string>();
+      const totalMasks = 1 << groups.length;
+      let sceneStates = 0;
+      for (let mask = 0; mask < totalMasks; mask += 1) {
+        const raw = new Set(groups.filter((_, i) => (mask & (1 << i)) !== 0));
+        const isHidden = (oid: string): boolean => {
+          let ent = parentEntityOf.get(entityByOcc.get(oid) ?? "");
+          while (ent !== undefined) {
+            const pOcc = occByEntity.get(ent);
+            if (pOcc !== undefined && raw.has(pOcc as (typeof groups)[number])) return true;
+            ent = parentEntityOf.get(ent);
+          }
+          return false;
+        };
+        const collapsed = [...raw].filter((oid) => !isHidden(oid)).sort();
+        const key = collapsed.join(",");
+        if (seen.has(key)) continue;
+        seen.add(key);
+        sceneStates += 1;
 
-      const unfolded = layoutScene(hCondInput(name, false));
-      expect(unfolded.status).toBe("laid-out");
-      if (unfolded.status !== "laid-out") continue;
-      expect(unfolded.routeSpacing).toBeDefined();
-      const warnings = unfolded.warnings.filter(
-        (w) => w.code === "route-spacing-conflict" || w.code === "channel-capacity-exceeded",
-      );
-      expect(warnings.length).toBe(unfolded.routeSpacing!.conflictCount);
-      expect(warnings.every((w) => w.severity === "info")).toBe(true);
+        const res = layoutScene({ ...base, collapsed });
+        expect(res.status, `${name} [${key || "unfolded"}]`).toBe("laid-out");
+        if (res.status !== "laid-out") continue;
+        expect(res.routeSpacing, `${name} [${key || "unfolded"}]`).toBeDefined();
+        expect(
+          res.routeSpacing!.conflictCount,
+          `${name} [${key || "unfolded"}] conflicts=${JSON.stringify(res.routeSpacing!.conflicts)}`,
+        ).toBe(0);
+        const obstructed = res.warnings.filter((w) => w.code === "route-obstructed");
+        expect(obstructed, `${name} [${key || "unfolded"}] route-obstructed`).toEqual([]);
+      }
+      expect(sceneStates, `${name} distinct fold states`).toBeGreaterThanOrEqual(32);
+      totalStates += sceneStates;
     }
-  });
+    // 52 architecture + 32 ontology = 84 distinct visible fold states (>= 38 required by plan).
+    expect(totalStates).toBe(84);
+  }, 60_000);
 
   it("uses one fixed zoneGutter token (>= 96) between sibling zones on both axes and never widens it under traffic or fold (DE-2 ask 3)", () => {
     expect(DEFAULT_ZONE_GUTTER).toBeGreaterThanOrEqual(96);
