@@ -41,7 +41,6 @@ export interface DiagramCardProps extends DiagramCardData {
     onDiagnostic?: (diagnostic: CardDiagnostic) => void;
 }
 const { autoSize = true, height, entityId, kicker, title, body, detailCount, footer, icon, iconGlyph, tone, proposed, toggle, align, bodyMode, anatomy, surface, measure = defaultCardMeasure, } = defineProps<DiagramCardProps>();
-const cardGeometry = computed(() => anatomyCardGeometry(anatomy));
 /** Owner addendum 1: a folded zone keeps its depth background. Only zone-collapsed cards carry `surface`. */
 const surfaceStyle = computed(() => surface === undefined ? "" : `;--st-component-diagramCard-surface:var(--st-component-diagramZone-${surface}, var(--st-semantic-surface-${surface === "surface1" ? "raised" : "subtle"}))`);
 const emit = defineEmits<{
@@ -78,6 +77,9 @@ const layout = computed(() => layoutCard({
 }, measure));
 const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) => diagnostic.code === "card-overflow")?.slot);
 const unknownIcon = computed(() => layout.value.diagnostics.some((diagnostic) => diagnostic.code === "card-icon-unknown"));
+const effectiveAnatomy = computed(() => layout.value.anatomyFallback ?? anatomy);
+const effectiveAlign = computed(() => align ?? (anatomy === "v2" ? "center" : "left"));
+const cardGeometry = computed(() => anatomyCardGeometry(effectiveAnatomy.value));
 
 
 onMounted(() => {
@@ -90,7 +92,7 @@ const descriptionId = useId();
 </script>
 
 <template>
-<div :class="`st-diagramCard${bodyMode === 'subtitle' ? ' st-diagramCard--subtitle' : ''}${align === 'center' ? ' st-diagramCard--center' : ''}${proposed === true ? ' st-diagramCard--proposed' : ''}${anatomy === 'v2' ? ' st-diagramCard--v2' : ''}`" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :style="anatomy === 'v2' ? `height:${layout.box.height}px;--st-component-diagramCard-width:var(--st-component-diagramCardCompact-width, 352px);--st-component-diagramCard-padding:var(--st-component-diagramCardCompact-padding, 6px);--st-component-diagramCard-accentWidth:var(--st-component-diagramCardCompact-accentWidth, 6px);--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)${surfaceStyle}` : `height:${layout.box.height}px${surfaceStyle}`" :data-card-overflow="overflowSlot" :data-card-icon-unknown="unknownIcon ? '' : undefined" role="group" :title="cardFullText({ entityId, kicker, title, body, footer })" :aria-label="cardFullText({ entityId, kicker, title, body, footer })" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
+<div :class="`st-diagramCard${bodyMode === 'subtitle' ? ' st-diagramCard--subtitle' : ''}${effectiveAlign === 'center' ? ' st-diagramCard--center' : ''}${proposed === true ? ' st-diagramCard--proposed' : ''}${effectiveAnatomy === 'v2' ? ' st-diagramCard--v2' : ''}`" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :style="effectiveAnatomy === 'v2' ? `height:${layout.box.height}px;--st-component-diagramCard-width:var(--st-component-diagramCardCompact-width, 352px);--st-component-diagramCard-padding:var(--st-component-diagramCardCompact-padding, 6px);--st-component-diagramCard-accentWidth:var(--st-component-diagramCardCompact-accentWidth, 6px);--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)${surfaceStyle}` : `height:${layout.box.height}px${surfaceStyle}`" :data-card-overflow="overflowSlot" :data-card-icon-unknown="unknownIcon ? '' : undefined" role="group" :title="cardFullText({ entityId, kicker, title, body, footer })" :aria-label="cardFullText({ entityId, kicker, title, body, footer })" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
   <span :id="descriptionId" hidden>{{ cardFullText({ entityId, kicker, title, body, footer }) }}</span>
   <DiagramCardHeader :kicker="layout.kicker" :title="layout.title" :iconName="layout.icon.name" :iconGlyph="layout.icon.glyph" :iconSize="layout.iconBox?.size" :headerTextWidth="layout.headerTextWidth" :headerBlockHeight="layout.headerBlockHeight" :toggle="toggle"></DiagramCardHeader>
   <div class="st-diagramCard-gap" aria-hidden="true"></div>
