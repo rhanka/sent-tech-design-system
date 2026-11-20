@@ -9,7 +9,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
-  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 (batches 1-5, 25 files -> 40/128 ported): all 6 remaining .ts helpers (advancedPivotData, analyticsDsData, chart-export, geoMapLayers, url-sync, useUrlSync) and next 19 .tsx components (AdvancedPivotDataTable, AnalyticsClusterPlot, AnimatedBubbleChart, AnomalySwimLaneChart, ArcDiagramChart, AreaRangeChart, AreaSplineRangeChart, BellCurveChart, BookmarkNavigator, BoxPlotChart, BulletChart, BumpChart, CalculationEditor, CalendarHeatmapChart, CandlestickChart, ExportMenu, ChartExport, ChordChart, ChoroplethMap).",
+  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 (25 files) + group 3 batch 1 (5 files -> 45/128 ported): ColumnPyramidChart, ColumnRangeChart, ContourChart, CorrelationMatrix, DashboardActiveFilters.",
   "modules": [
     {
       "module": "adapter",
@@ -366,6 +366,51 @@
       "module": "ChoroplethMap",
       "file": "src/lib/ChoroplethMap.tsx",
       "reactSource": "dataviz-react/src/lib/ChoroplethMap.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ColumnPyramidChart",
+      "file": "src/lib/ColumnPyramidChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ColumnPyramidChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ColumnRangeChart",
+      "file": "src/lib/ColumnRangeChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ColumnRangeChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ContourChart",
+      "file": "src/lib/ContourChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ContourChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "CorrelationMatrix",
+      "file": "src/lib/CorrelationMatrix.tsx",
+      "reactSource": "dataviz-react/src/lib/CorrelationMatrix.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DashboardActiveFilters",
+      "file": "src/lib/DashboardActiveFilters.tsx",
+      "reactSource": "dataviz-react/src/lib/DashboardActiveFilters.tsx",
       "kind": "component",
       "lot": "P6",
       "renderable": true,

@@ -70,6 +70,11 @@ export type PropsParity = [
   Expect<Equal<Emitted.ChartExportTarget, HandWritten.ChartExportTarget>>,
   Expect<Equal<Emitted.ChordChartProps, HandWritten.ChordChartProps>>,
   Expect<Equal<Emitted.ChoroplethMapProps, HandWritten.ChoroplethMapProps>>,
+  Expect<Equal<Emitted.ColumnPyramidChartProps, HandWritten.ColumnPyramidChartProps>>,
+  Expect<Equal<Emitted.ColumnRangeChartProps, HandWritten.ColumnRangeChartProps>>,
+  Expect<Equal<Emitted.ContourChartProps, HandWritten.ContourChartProps>>,
+  Expect<Equal<Emitted.CorrelationMatrixProps, HandWritten.CorrelationMatrixProps>>,
+  Expect<Equal<Emitted.DashboardActiveFiltersProps, HandWritten.DashboardActiveFiltersProps>>,
 ];
 
 export type ComponentParity = [
@@ -102,6 +107,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.ChartExport, typeof HandWritten.ChartExport>>,
   Expect<Equal<typeof Emitted.ChordChart, typeof HandWritten.ChordChart>>,
   Expect<Equal<typeof Emitted.ChoroplethMap, typeof HandWritten.ChoroplethMap>>,
+  Expect<Equal<typeof Emitted.ColumnPyramidChart, typeof HandWritten.ColumnPyramidChart>>,
+  Expect<Equal<typeof Emitted.ColumnRangeChart, typeof HandWritten.ColumnRangeChart>>,
+  Expect<Equal<typeof Emitted.ContourChart, typeof HandWritten.ContourChart>>,
+  Expect<Equal<typeof Emitted.CorrelationMatrix, typeof HandWritten.CorrelationMatrix>>,
+  Expect<Equal<typeof Emitted.DashboardActiveFilters, typeof HandWritten.DashboardActiveFilters>>,
 ];
 
 export type ValueParity = [

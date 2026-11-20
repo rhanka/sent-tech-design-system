@@ -105,3 +105,15 @@ export { ChordChart } from './lib/ChordChart.js';
 export type { ChordChartProps } from './lib/ChordChart.js';
 export { ChoroplethMap } from './lib/ChoroplethMap.js';
 export type { ChoroplethMapProps } from './lib/ChoroplethMap.js';
+
+// Group 3 batch 1 components.
+export { ColumnPyramidChart } from './lib/ColumnPyramidChart.js';
+export type { ColumnPyramidChartProps } from './lib/ColumnPyramidChart.js';
+export { ColumnRangeChart } from './lib/ColumnRangeChart.js';
+export type { ColumnRangeChartProps } from './lib/ColumnRangeChart.js';
+export { ContourChart } from './lib/ContourChart.js';
+export type { ContourChartProps } from './lib/ContourChart.js';
+export { CorrelationMatrix } from './lib/CorrelationMatrix.js';
+export type { CorrelationMatrixProps } from './lib/CorrelationMatrix.js';
+export { DashboardActiveFilters } from './lib/DashboardActiveFilters.js';
+export type { DashboardActiveFiltersProps } from './lib/DashboardActiveFilters.js';

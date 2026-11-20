@@ -7,15 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 40,
+    "portedModules": 45,
     "barrelFile": "index.ts",
-    "remainingModules": 87,
+    "remainingModules": 82,
     "remainingFiles": [
-      "lib/ColumnPyramidChart.tsx",
-      "lib/ColumnRangeChart.tsx",
-      "lib/ContourChart.tsx",
-      "lib/CorrelationMatrix.tsx",
-      "lib/DashboardActiveFilters.tsx",
       "lib/DashboardFilterBar.tsx",
       "lib/DashboardGrid.tsx",
       "lib/DateRangeFilter.tsx",
@@ -541,23 +536,78 @@
         "total": 183,
         "touched": 2,
         "emissionRewrites": 1
+      },
+      {
+        "module": "ColumnPyramidChart",
+        "kind": "component",
+        "file": "src/lib/ColumnPyramidChart.tsx",
+        "reactSource": "lib/ColumnPyramidChart.tsx",
+        "reactLines": 50,
+        "preactLines": 56,
+        "total": 179,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ColumnRangeChart",
+        "kind": "component",
+        "file": "src/lib/ColumnRangeChart.tsx",
+        "reactSource": "lib/ColumnRangeChart.tsx",
+        "reactLines": 57,
+        "preactLines": 63,
+        "total": 202,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ContourChart",
+        "kind": "component",
+        "file": "src/lib/ContourChart.tsx",
+        "reactSource": "lib/ContourChart.tsx",
+        "reactLines": 61,
+        "preactLines": 67,
+        "total": 216,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "CorrelationMatrix",
+        "kind": "component",
+        "file": "src/lib/CorrelationMatrix.tsx",
+        "reactSource": "lib/CorrelationMatrix.tsx",
+        "reactLines": 22,
+        "preactLines": 28,
+        "total": 187,
+        "touched": 3,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DashboardActiveFilters",
+        "kind": "component",
+        "file": "src/lib/DashboardActiveFilters.tsx",
+        "reactSource": "lib/DashboardActiveFilters.tsx",
+        "reactLines": 53,
+        "preactLines": 55,
+        "total": 241,
+        "touched": 2,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 40,
-      "reactLines": 3940,
-      "preactLines": 4147,
-      "total": 22977,
-      "touched": 258,
-      "emissionRewrites": 36
+      "modules": 45,
+      "reactLines": 4183,
+      "preactLines": 4416,
+      "total": 24002,
+      "touched": 269,
+      "emissionRewrites": 41
     },
     "shared": {
-      "src/index.ts": 107,
+      "src/index.ts": 119,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 82
+      "vitest.react.config.ts": 83
     }
   },
   "reach": {
