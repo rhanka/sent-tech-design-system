@@ -2493,6 +2493,22 @@ export function validateView(
     );
   }
 
+  if (
+    view.presentation.anatomy !== undefined &&
+    view.presentation.anatomy !== "v1" &&
+    view.presentation.anatomy !== "v2"
+  ) {
+    diagnostics.push(
+      diagnostic({
+        code: "occurrence-endpoint-mismatch",
+        severity: "error",
+        path: "presentation.anatomy",
+        message: `anatomy ${String(view.presentation.anatomy)} must be "v1" or "v2"`,
+        details: { check: "presentation-shape-invalid" },
+      }),
+    );
+  }
+
   if (view.presentation.diagram !== undefined) {
     diagnostics.push(...validateDiagramPresentation(document, view, options));
   }

@@ -114,7 +114,7 @@
       "footer": 1
     }
   },
-  "card": {
+  "compactCard": {
     "icon": {
       "name": "base",
       "glyph": {
@@ -131,75 +131,153 @@
     "contentRight": 344,
     "iconBox": {
       "x": 12,
-      "y": 17.09375,
+      "y": 8,
       "size": 52
     },
     "headerTextX": 68,
-    "headerTextWidth": 210,
+    "headerTextWidth": 276,
+    "kicker": [],
+    "title": [
+      {
+        "text": "Title",
+        "x": 206,
+        "baseline": 45.203125,
+        "size": 32,
+        "weight": 700,
+        "secondary": false,
+        "anchor": "middle"
+      }
+    ],
+    "headerBlockHeight": 52,
+    "bodyX": 14,
+    "bodyWidth": 330,
+    "bodyArea": {
+      "top": 66,
+      "bottom": 146
+    },
+    "body": [
+      {
+        "text": "Body",
+        "x": 179,
+        "baseline": 112.40625,
+        "size": 24,
+        "weight": 400,
+        "secondary": false,
+        "anchor": "middle"
+      }
+    ],
+    "bodyBottom": 121.59375,
+    "ruleX1": 16,
+    "ruleX2": 342,
+    "footerLines": [],
+    "footerBottom": 142.75,
+    "diagnostics": []
+  },
+  "card": {
+    "icon": {
+      "name": "base",
+      "glyph": {
+        "base": "M8 53L32 44L56 53L32 62Z",
+        "face": "M10 12H54V48H10Z",
+        "line": "M18 22H46M18 32H40"
+      }
+    },
+    "box": {
+      "width": 460,
+      "height": 200
+    },
+    "contentTop": 10,
+    "contentRight": 450,
+    "iconBox": {
+      "x": 16,
+      "y": 10.09375,
+      "size": 70
+    },
+    "headerTextX": 92,
+    "headerTextWidth": 290,
     "kicker": [
       {
         "text": "KICKER",
-        "x": 68,
-        "baseline": 30,
+        "x": 237,
+        "baseline": 32,
         "size": 22,
         "weight": 400,
         "secondary": true,
-        "anchor": "start"
+        "anchor": "middle"
       }
     ],
     "title": [
       {
         "text": "Title",
-        "x": 68,
-        "baseline": 68.59375,
+        "x": 237,
+        "baseline": 70.59375,
         "size": 32,
         "weight": 700,
         "secondary": false,
-        "anchor": "start"
+        "anchor": "middle"
       }
     ],
     "headerBlockHeight": 70.1875,
     "bodyX": 14,
-    "bodyWidth": 330,
+    "bodyWidth": 436,
     "bodyArea": {
-      "top": 84.1875,
-      "bottom": 102.5625
+      "top": 86.1875,
+      "bottom": 148.5625
     },
-    "body": [],
-    "bodyBottom": 93.375,
-    "ruleY": 106.5625,
+    "body": [
+      {
+        "text": "Body",
+        "x": 232,
+        "baseline": 108.1875,
+        "size": 24,
+        "weight": 400,
+        "secondary": false,
+        "anchor": "middle"
+      },
+      {
+        "text": "Detail",
+        "x": 232,
+        "baseline": 139.375,
+        "size": 24,
+        "weight": 400,
+        "secondary": true,
+        "anchor": "middle"
+      }
+    ],
+    "bodyBottom": 148.5625,
+    "ruleY": 152.5625,
     "ruleX1": 16,
-    "ruleX2": 342,
+    "ruleX2": 450,
     "footerLines": [
       {
         "text": "Footer",
-        "x": 12,
-        "baseline": 133.5625,
+        "x": 233,
+        "baseline": 179.5625,
         "size": 24,
         "weight": 700,
         "secondary": false,
-        "anchor": "start"
+        "anchor": "middle"
       }
     ],
-    "footerBottom": 142.75,
+    "footerBottom": 188.75,
     "toggleBox": {
-      "x": 312,
+      "x": 420,
       "y": 8,
       "size": 32
     },
     "diagnostics": [
       {
+        "code": "card-overflow",
+        "slot": "body",
+        "entityId": "contract",
         "neededPx": 62.375,
         "allocatedPx": 0,
         "text": "Body\nDetail",
         "severity": "info",
-        "reason": "truncated",
-        "hiddenLength": 11,
-        "code": "card-overflow",
-        "slot": "body",
-        "entityId": "contract"
+        "reason": "fallback-v1"
       }
-    ]
+    ],
+    "anatomyFallback": "v1"
   },
   "zones": [
     {
@@ -214,8 +292,8 @@
       "box": {
         "x": 0,
         "y": 0,
-        "width": 352,
-        "height": 154
+        "width": 460,
+        "height": 200
       },
       "collapsed": true,
       "card": {
@@ -228,82 +306,92 @@
           }
         },
         "box": {
-          "width": 352,
-          "height": 154
+          "width": 460,
+          "height": 200
         },
-        "contentTop": 8,
-        "contentRight": 344,
+        "contentTop": 10,
+        "contentRight": 450,
         "iconBox": {
-          "x": 12,
-          "y": 17.09375,
-          "size": 52
+          "x": 16,
+          "y": 10.09375,
+          "size": 70
         },
-        "headerTextX": 68,
-        "headerTextWidth": 210,
+        "headerTextX": 92,
+        "headerTextWidth": 290,
         "kicker": [
           {
             "text": "KICKER",
-            "x": 68,
-            "baseline": 30,
+            "x": 237,
+            "baseline": 32,
             "size": 22,
             "weight": 400,
             "secondary": true,
-            "anchor": "start"
+            "anchor": "middle"
           }
         ],
         "title": [
           {
             "text": "Zone",
-            "x": 68,
-            "baseline": 68.59375,
+            "x": 237,
+            "baseline": 70.59375,
             "size": 32,
             "weight": 700,
             "secondary": false,
-            "anchor": "start"
+            "anchor": "middle"
           }
         ],
         "headerBlockHeight": 70.1875,
         "bodyX": 32,
-        "bodyWidth": 288,
+        "bodyWidth": 396,
         "bodyArea": {
-          "top": 84.1875,
-          "bottom": 102.5625
+          "top": 86.1875,
+          "bottom": 148.5625
         },
-        "body": [],
-        "bodyBottom": 93.375,
-        "ruleY": 106.5625,
+        "body": [
+          {
+            "text": "Subtitle",
+            "x": 230,
+            "baseline": 123.78125,
+            "size": 24,
+            "weight": 400,
+            "secondary": false,
+            "anchor": "middle"
+          }
+        ],
+        "bodyBottom": 132.96875,
+        "ruleY": 152.5625,
         "ruleX1": 16,
-        "ruleX2": 342,
+        "ruleX2": 450,
         "footerLines": [
           {
             "text": "Footer",
-            "x": 12,
-            "baseline": 133.5625,
+            "x": 233,
+            "baseline": 179.5625,
             "size": 24,
             "weight": 700,
             "secondary": false,
-            "anchor": "start"
+            "anchor": "middle"
           }
         ],
-        "footerBottom": 142.75,
+        "footerBottom": 188.75,
         "toggleBox": {
-          "x": 312,
+          "x": 420,
           "y": 8,
           "size": 32
         },
         "diagnostics": [
           {
+            "code": "card-overflow",
+            "slot": "collapsed-subtitle",
+            "entityId": "contract-zone",
             "neededPx": 31.1875,
             "allocatedPx": 0,
             "text": "Subtitle",
             "severity": "info",
-            "reason": "truncated",
-            "hiddenLength": 8,
-            "code": "card-overflow",
-            "slot": "collapsed-subtitle",
-            "entityId": "contract-zone"
+            "reason": "fallback-v1"
           }
-        ]
+        ],
+        "anatomyFallback": "v1"
       },
       "diagnostics": [
         {
@@ -313,9 +401,8 @@
           "neededPx": 31.1875,
           "allocatedPx": 0,
           "text": "Subtitle",
-          "hiddenLength": 8,
           "severity": "info",
-          "reason": "truncated"
+          "reason": "fallback-v1"
         }
       ]
     },
@@ -346,35 +433,35 @@
         "kicker": [
           {
             "text": "KICKER",
-            "x": 68,
+            "x": 279,
             "baseline": 34,
             "size": 22,
             "weight": 400,
             "secondary": true,
-            "anchor": "start"
+            "anchor": "middle"
           }
         ],
         "title": [
           {
             "text": "Zone",
-            "x": 68,
+            "x": 279,
             "baseline": 72.59375,
             "size": 32,
             "weight": 700,
             "secondary": false,
-            "anchor": "start"
+            "anchor": "middle"
           }
         ],
         "headerBlockHeight": 70.1875,
         "subtitle": [
           {
             "text": "Subtitle",
-            "x": 12,
+            "x": 175,
             "baseline": 110.1875,
             "size": 24,
             "weight": 400,
             "secondary": false,
-            "anchor": "start"
+            "anchor": "middle"
           }
         ],
         "subtitleWidth": 326,
@@ -389,12 +476,12 @@
         "footer": [
           {
             "text": "Footer",
-            "x": 16,
+            "x": 300,
             "baseline": 184.875,
             "size": 24,
             "weight": 700,
             "secondary": false,
-            "anchor": "start"
+            "anchor": "middle"
           }
         ],
         "footerRuleY": 157.875,

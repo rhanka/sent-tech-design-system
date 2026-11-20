@@ -192,7 +192,7 @@ export interface DiagramGlyphPaths {
   readonly darkLine?: true;
   readonly text?: string;
   readonly severity?: "info";
-  readonly reason?: "truncated";
+  readonly reason?: "truncated" | "fallback-v1";
   readonly hiddenLength?: number;
 }
 
@@ -793,7 +793,7 @@ export interface CardDiagnostic {
    */
   readonly text?: string;
   readonly severity?: "info";
-  readonly reason?: "truncated";
+  readonly reason?: "truncated" | "fallback-v1";
   readonly hiddenLength?: number;
 }
 
@@ -910,23 +910,24 @@ export interface CardLayout {
   /** Footer text-box bottom (pinned at `height − border − 9.25`). */
   readonly footerBottom: number;
   readonly toggleBox?: { readonly x: number; readonly y: number; readonly size: number };
+  /** Present when a `v2` compact card overflowed and fell back per box to frozen `v1` (`460 × 200`). */
+  readonly anatomyFallback?: "v1";
   readonly diagnostics: readonly CardDiagnostic[];
 }
 
-/**
- * Lay out fixed card slots with measured ellipses and a pinned footer.
- * Informational diagnostics retain the original text and hidden length.
- * Missing glyphs use the visible unknown icon (owner A2/A11).
- */
-export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): CardLayout {
+function layoutCardAt(
+  props: DiagramCardProps,
+  measure: CardLineMeasure,
+  anatomy: DiagramAnatomy | undefined,
+  align: "left" | "center",
+): CardLayout {
   const icon = props.icon ?? "base";
   const suppressed = icon === "none";
   const missing = !suppressed && props.iconGlyph === undefined && getDiagramGlyph(icon) === undefined;
   props = { ...props, autoSize: props.autoSize ?? true, icon: missing ? "unknown" : icon,
     iconGlyph: suppressed ? { face: "" } : props.iconGlyph ?? getDiagramGlyph(icon) ?? getDiagramGlyph("unknown")! };
-  const g = anatomyCardGeometry(props.anatomy);
+  const g = anatomyCardGeometry(anatomy);
   const diagnostics: CardDiagnostic[] = missing ? [{code:"card-icon-missing",slot:"icon",entityId:props.entityId,neededPx:1,allocatedPx:0}] : [];
-  const align = props.align ?? "left";
   const bodyMode = props.bodyMode ?? "leaf";
   const contentTop = g.borderWidth + g.padding;
   const contentRight = g.width - g.borderWidth - g.padding;
@@ -998,7 +999,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
   // frozen 396 px measure (width − 2 × (collapsedInset + marginInline)).
   const subtitleMode = bodyMode === "subtitle";
   const subtitleMeasure =
-    g.width - 2 * (anatomyZoneGeometry(props.anatomy).collapsedInset + anatomyZoneGeometry(props.anatomy).collapsedSubtitleMarginInline);
+    g.width - 2 * (anatomyZoneGeometry(anatomy).collapsedInset + anatomyZoneGeometry(anatomy).collapsedSubtitleMarginInline);
   const bodyTextX = subtitleMode ? (g.width - subtitleMeasure) / 2 : g.bodyInsetFromBar;
   const bodyWidth = subtitleMode ? subtitleMeasure : contentRight - bodyTextX;
   // The body block is centred horizontally inside its box on every card
@@ -1118,6 +1119,43 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
     footerLines,
     footerBottom,
     ...(toggleBox === undefined ? {} : { toggleBox }),
+    diagnostics,
+  };
+}
+
+/**
+ * Lay out fixed card slots with measured ellipses and a pinned footer.
+ * Informational diagnostics retain the original text and hidden length.
+ * Missing glyphs use the visible unknown icon (owner A2/A11).
+ * Compact `v2` cards default to `"center"` alignment and fall back per box
+ * to frozen `v1` (`460 × 200`) on overflow instead of dropping slots.
+ */
+export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): CardLayout {
+  const align = props.align ?? (props.anatomy === "v2" ? "center" : "left");
+  const primary = layoutCardAt(props, measure, props.anatomy, align);
+  if (props.anatomy !== "v2") return primary;
+  const v2Overflows = primary.diagnostics.filter((diagnostic) => diagnostic.code === "card-overflow");
+  if (v2Overflows.length === 0) return primary;
+  const fallback = layoutCardAt(props, measure, "v1", align);
+  const stillOverflows = fallback.diagnostics.some((diagnostic) => diagnostic.code === "card-overflow");
+  const diagnostics: CardDiagnostic[] = stillOverflows
+    ? [...fallback.diagnostics]
+    : [
+        ...fallback.diagnostics,
+        ...v2Overflows.map((diagnostic): CardDiagnostic => ({
+          code: "card-overflow",
+          slot: diagnostic.slot,
+          entityId: diagnostic.entityId,
+          neededPx: diagnostic.neededPx,
+          allocatedPx: diagnostic.allocatedPx,
+          ...(diagnostic.text === undefined ? {} : { text: diagnostic.text }),
+          severity: "info",
+          reason: "fallback-v1",
+        })),
+      ];
+  return {
+    ...fallback,
+    anatomyFallback: "v1",
     diagnostics,
   };
 }
@@ -1339,7 +1377,7 @@ export interface ZoneDiagnostic {
   /** Original, unwrapped slot text retained with the diagnostic. */
   readonly text?: string;
   readonly severity?: "info";
-  readonly reason?: "truncated";
+  readonly reason?: "truncated" | "fallback-v1";
   readonly hiddenLength?: number;
 }
 
@@ -1462,12 +1500,14 @@ export function layoutZone(
         neededPx: diagnostic.neededPx,
         allocatedPx: diagnostic.allocatedPx,
         ...(diagnostic.text === undefined ? {} : { text: diagnostic.text }),
-        ...(diagnostic.hiddenLength === undefined ? {} : { hiddenLength: diagnostic.hiddenLength, severity: diagnostic.severity, reason: diagnostic.reason }),
+        ...(diagnostic.severity === undefined ? {} : { severity: diagnostic.severity }),
+        ...(diagnostic.reason === undefined ? {} : { reason: diagnostic.reason }),
+        ...(diagnostic.hiddenLength === undefined ? {} : { hiddenLength: diagnostic.hiddenLength }),
       });
     }
     return {
       icon: { name: props.icon!, glyph: props.iconGlyph! },
-      box: { x, y, width: g.collapsedWidth, height: card.box.height },
+      box: { x, y, width: card.box.width, height: card.box.height },
       collapsed: true,
       ...(hasDepthPins ? { surface, depth } : {}),
       card,
@@ -1490,7 +1530,7 @@ export function layoutZone(
       ? g.headerInset
       : g.headerTextInset - (g.headerInset + g.iconSize + g.iconTextGap);
   const headerTextWidth = Math.max(0, x + width - headerTextX - rightHeaderReserve);
-  const align = props.align ?? "left";
+  const align = props.align ?? (props.anatomy === "v2" ? "center" : "left");
   const headerAnchor: "start" | "middle" = align === "center" ? "middle" : "start";
   const headerLineX = align === "center" ? headerTextX + headerTextWidth / 2 : headerTextX;
 

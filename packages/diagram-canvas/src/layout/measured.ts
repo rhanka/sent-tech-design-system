@@ -300,11 +300,13 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
   }
   /**
    * Per-occurrence pinned anatomy (DE-1): the presentation entry selects
-   * `diagram-anatomy/v1 | v2`; absent means `"v1"` so existing views keep
-   * the frozen `460 × 200` footprint by construction.
+   * `diagram-anatomy/v1 | v2`, falling back to `sourceView.presentation.anatomy`;
+   * absent everywhere means `"v1"` so existing views keep the frozen `460 × 200`
+   * footprint by construction.
    */
+  const viewAnatomy = (sourceView?.presentation as { readonly anatomy?: DiagramAnatomy } | undefined)?.anatomy;
   const occurrenceAnatomy = (occurrence: OccurrenceRef): DiagramAnatomy =>
-    (presentation.entities as Record<string, { readonly anatomy?: DiagramAnatomy }>)[occurrence]?.anatomy ?? "v1";
+    (presentation.entities as Record<string, { readonly anatomy?: DiagramAnatomy }>)[occurrence]?.anatomy ?? viewAnatomy ?? "v1";
   const cardWidthOf = (occurrence: OccurrenceRef): number => anatomyCardGeometry(occurrenceAnatomy(occurrence)).width;
   if (options.measureLines === undefined) {
     return {
@@ -325,7 +327,9 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     const key = `${id}|${width}|${collapsed}`;
     let box = sceneBoxCache.get(key);
     if (box === undefined) {
-      const entry = presentation.entities[id];
+      const rawEntry = presentation.entities[id];
+      const entry = rawEntry === undefined ? undefined
+        : rawEntry.anatomy === undefined && viewAnatomy !== undefined ? { ...rawEntry, anatomy: viewAnatomy } : rawEntry;
       const kind = kinds.get(projected.entityOccurrences[id]?.entity!);
       const expanded = kind === "container-expanded" || kind === "legend-expanded";
       box = measureSceneBox(expanded && entry?.form === "card" ? { ...entry, form: "container" } : entry,
@@ -1016,10 +1020,10 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     const sizeBox = (id: EntityRef): { width: number; height: number } => {
       const kind = kinds.get(id)!;
       if (kind === "leaf" || kind === "container-collapsed" || kind === "legend-collapsed") {
-        outerWidths.set(id, cardWidthOf(representativeOf(id)));
         const entry = presentation.entities[representativeOf(id)];
         const measured = entry === undefined ? { width: FIXED_CARD_WIDTH, height: FIXED_CARD_HEIGHT }
           : sceneBoxAt(representativeOf(id), cardWidthOf(representativeOf(id)), kind !== "leaf");
+        outerWidths.set(id, measured.width);
         const size = { width: measured.width, height: measured.height };
         packedSizes.set(id, size);
         return size;
@@ -1095,7 +1099,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       for (const id of headerIds) {
         const kind = kinds.get(id)!;
         const folded = kind === "container-collapsed" || kind === "legend-collapsed";
-        headerAt(id, folded ? innerWidthOf(cardWidthOf(representativeOf(id))) : innerWidthOf(outerWidths.get(id) ?? FIXED_CARD_WIDTH));
+        headerAt(id, folded ? innerWidthOf(packedSizes.get(id)?.width ?? cardWidthOf(representativeOf(id))) : innerWidthOf(outerWidths.get(id) ?? FIXED_CARD_WIDTH));
       }
     };
     sizeAll();
@@ -1110,10 +1114,20 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const occurrence = representativeOf(id);
       if (presentation.entities[occurrence] !== undefined && size !== undefined) {
         for (const diagnostic of sceneBoxAt(occurrence, size.width, isCollapsed(id)).diagnostics) {
-          if (diagnostic.reason !== "truncated") continue;
+          if (diagnostic.reason !== "truncated" && diagnostic.reason !== "fallback-v1") continue;
+          const isFallback = diagnostic.reason === "fallback-v1";
           warnings.push({ code: kinds.get(id) === "leaf" ? "card-overflow" : "zone-overflow", severity: "info",
-            refs: [occurrence, diagnostic.slot], message: "truncated " + diagnostic.slot + ": " + diagnostic.hiddenLength + " hidden characters; full text in title/aria",
-            details: { slot: diagnostic.slot, reason: "truncated", hiddenLength: diagnostic.hiddenLength!, neededHeight: diagnostic.neededPx, allocatedHeight: diagnostic.allocatedPx } });
+            refs: [occurrence, diagnostic.slot],
+            message: isFallback
+              ? "compact anatomy overflow on " + diagnostic.slot + ": fell back to v1 frozen box"
+              : "truncated " + diagnostic.slot + ": " + diagnostic.hiddenLength + " hidden characters; full text in title/aria",
+            details: {
+              slot: diagnostic.slot,
+              reason: diagnostic.reason,
+              ...(diagnostic.hiddenLength === undefined ? {} : { hiddenLength: diagnostic.hiddenLength }),
+              neededHeight: diagnostic.neededPx,
+              allocatedHeight: diagnostic.allocatedPx,
+            } });
         }
       } else for (const overflow of headerOverflows(headerInputs.get(id)!, headers.get(id)!, lineHeightOf)) {
         warnOverflow(overflow, kinds.get(id) !== "leaf");
