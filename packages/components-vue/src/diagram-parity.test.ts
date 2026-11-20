@@ -3,7 +3,7 @@ import SceneFigure from './DiagramSceneFigure.vue';
 import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svelte';
 import type { DiagramSceneFigureProps } from './DiagramSceneFigure.types.js';
 import type { SceneDocument, ScenePresentation, SceneOccurrenceRef } from './diagramSceneModel.js';
-import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '../../diagram-canvas/tests/scene-host-fixtures.js';
+import { CURRENT_SCHEMA_VERSION, DEFAULT_PRESENTATION, DIAGRAM_PRESENTATION_CONTRACT_PIN, createView, entityRef, m3ProfileRegistry, occurrenceRef, shippedExecutorBindings, viewRef } from '../../diagram-canvas/tests/scene-host-fixtures.js';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
@@ -731,6 +731,30 @@ describe('scene host DOM and camera/fold behavior', () => {
       expect(svelte.container.querySelector('.st-diagramCard')?.classList.contains('st-diagramCard--center')).toBe(false);
       vue.unmount(); svelte.unmount();
     }
+
+    // W1-02 + W1-13: createView() without explicit anatomy keeps v1 (460x200, 126px fitHeight, 0.62 zoom) even for a compact-eligible card on both Svelte and Vue.
+    expect(DEFAULT_PRESENTATION).toEqual({ camera: { x: 0, y: 0, zoom: 1 } });
+    const defaultView = {
+      ...createView({ viewId: viewRef('default-v1-parity'), semanticDocumentId: completeSingle.document.documentId, revision: 1 }),
+      entityOccurrences: {
+        [occurrence('solo')]: { id: occurrenceRef('e.solo'), entity: entityRef('solo'), geometry: { x: 0, y: 0, width: 460, height: 200 } },
+      },
+    } as unknown as NonNullable<DiagramSceneFigureProps['view']>;
+    expect(defaultView.presentation.anatomy).toBeUndefined();
+    const compactEligiblePres = {
+      ...completeSingle.presentation,
+      entities: { [occurrence('solo')]: { form: 'card', text: { title: 'Short', body: 'Line' } } },
+    } as unknown as ScenePresentation;
+    const defaultViewProps = { ...host, ...completeSingle, view: defaultView, presentation: compactEligiblePres, title: 'Default createView' };
+    const vueDef = mount(SceneFigure, { props: defaultViewProps });
+    const svelteDef = render(SvelteScene, { props: defaultViewProps });
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vueDef.element)).toEqual(dom(withControlIconTokens(svelteDef.container.firstElementChild!)));
+    expect(vueDef.vm.getCamera()).toEqual({ zoom: 0.62, readout: 100, minZoom: 0.62, maxZoom: 0.62, fitZoom: 0.62, pans: false });
+    expect(vueDef.element.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!.style.height).toBe('126px');
+    expect(vueDef.element.querySelector('.st-diagramCard')?.classList.contains('st-diagramCard--v2')).toBe(false);
+    expect(svelteDef.container.querySelector('.st-diagramCard')?.classList.contains('st-diagramCard--v2')).toBe(false);
+    vueDef.unmount(); svelteDef.unmount();
 
     // Wide v1 scene at phone width floors at 0.45 and caps at 0.62 identically on Svelte and Vue.
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(390);

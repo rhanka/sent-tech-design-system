@@ -267,7 +267,12 @@ describe("diagram presentation alignment (DE-1 step 2)", () => {
     } as unknown as SceneDocument;
 
     const view = {
-      ...createView({ viewId: viewRef("de1"), semanticDocumentId: document.documentId, revision: 1 }),
+      ...createView({
+        viewId: viewRef("de1"),
+        semanticDocumentId: document.documentId,
+        revision: 1,
+        presentation: { camera: { x: 0, y: 0, zoom: 1 }, anatomy: "v2" },
+      }),
       entityOccurrences: {
         "occurrence:e.outer": { id: occurrenceRef("e.outer"), entity: entityRef("outer"), geometry: { x: 0, y: 0, width: 600, height: 400 } },
         "occurrence:e.inner": { id: occurrenceRef("e.inner"), entity: entityRef("inner"), group: "grp.7.e.outer", geometry: { x: 16, y: 80, width: 400, height: 240 } },
@@ -316,30 +321,36 @@ describe("diagram presentation alignment (DE-1 step 2)", () => {
       if (label === "@2") expect(emittedCard?.["align"]).toBe("center");
     }
 
-    // A v1 view (absent or explicit anatomy: "v1") strips view-level align: "center".
+    // Both default createView() (absent anatomy) and explicit anatomy: "v1" strip view-level align: "center".
+    const defaultView = {
+      ...view,
+      presentation: createView({ viewId: viewRef("default-v1"), semanticDocumentId: document.documentId, revision: 1 }).presentation,
+    } as unknown as SceneView;
     const v1View = { ...view, presentation: { ...view.presentation, anatomy: "v1" as const } } as unknown as SceneView;
-    const v1Result = layoutScene({
-      document,
-      view: v1View,
-      registry: m3ProfileRegistry,
-      bindings: shippedExecutorBindings,
-      presentation: {
-        contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
-        entities: {
-          "occurrence:e.outer": { form: "container", text: { title: "Outer" }, align: "center" },
-          "occurrence:e.inner": { form: "container", text: { title: "Inner" }, align: "center" },
-          "occurrence:e.card": { form: "card", text: { title: "Card", body: "Text" }, align: "center" },
-        },
-        legends: {},
-        categoryTokens: [],
-      } as unknown as ScenePresentation,
-      measureLines: cardLineMeasurer(defaultCardMeasure),
-      collapsed: [],
-    });
-    expect(v1Result.status).toBe("laid-out");
-    if (v1Result.status === "laid-out") {
-      const emitted = v1Result.view.presentation.diagram?.entities["occurrence:e.card"] as Record<string, unknown> | undefined;
-      expect(emitted?.["align"]).toBeUndefined();
+    for (const nonV2View of [defaultView, v1View] as const) {
+      const v1Result = layoutScene({
+        document,
+        view: nonV2View,
+        registry: m3ProfileRegistry,
+        bindings: shippedExecutorBindings,
+        presentation: {
+          contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+          entities: {
+            "occurrence:e.outer": { form: "container", text: { title: "Outer" }, align: "center" },
+            "occurrence:e.inner": { form: "container", text: { title: "Inner" }, align: "center" },
+            "occurrence:e.card": { form: "card", text: { title: "Card", body: "Text" }, align: "center" },
+          },
+          legends: {},
+          categoryTokens: [],
+        } as unknown as ScenePresentation,
+        measureLines: cardLineMeasurer(defaultCardMeasure),
+        collapsed: [],
+      });
+      expect(v1Result.status).toBe("laid-out");
+      if (v1Result.status === "laid-out") {
+        const emitted = v1Result.view.presentation.diagram?.entities["occurrence:e.card"] as Record<string, unknown> | undefined;
+        expect(emitted?.["align"]).toBeUndefined();
+      }
     }
   });
 });
