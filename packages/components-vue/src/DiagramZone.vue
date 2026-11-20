@@ -135,9 +135,15 @@ const frameInset = (inset: number): string => `calc(${inset}px - ${borderToken})
 // to `.st-diagramZone-header` so they never leak into nested v1 cards/zones.
 const headerRightInset = computed(() => anatomy === "v2" ? zoneGeometry.value.headerInset : (containerPadding ?? zoneGeometry.value.contentInsetInline));
 const v2HeaderVars = ";--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px);--st-component-diagramCard-iconTextGap:var(--st-component-diagramCardCompact-iconTextGap, 4px);--st-component-diagramZone-headerInset:var(--st-component-diagramCardCompact-headerInset, 12px)";
+// W1-12: on surface2 zones only (where 0.41.5's surface-subtle hover equals the
+// zone background and becomes invisible), switch the toggle's hover token to
+// secondaryHoverBackground — scoped strictly to `.st-diagramZone-header` so
+// nested children and v1/surface1 zones stay byte-identical to 0.41.5.
+const surface2ToggleHoverVars = ";--st-component-control-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)));--st-component-iconButton-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)))";
+const hasSurface2 = computed(() => (zoneProps.value.depth !== undefined || zoneProps.value.depthParityStart !== undefined) && layout.value.surface === "surface2");
 const headerStyle = computed(() => header.value === undefined
     ? undefined
-    : `top:${frameTop(y + zoneGeometry.value.headerInset)};left:${frameInset(zoneGeometry.value.headerInset)};right:${frameInset(headerRightInset.value)};height:${header.value.ruleY - zoneGeometry.value.headerRuleGap - y - zoneGeometry.value.headerInset}px${anatomy === "v2" ? v2HeaderVars : ""}`);
+    : `top:${frameTop(y + zoneGeometry.value.headerInset)};left:${frameInset(zoneGeometry.value.headerInset)};right:${frameInset(headerRightInset.value)};height:${header.value.ruleY - zoneGeometry.value.headerRuleGap - y - zoneGeometry.value.headerInset}px${anatomy === "v2" ? v2HeaderVars : ""}${hasSurface2.value ? surface2ToggleHoverVars : ""}`);
 const ruleStyle = computed(() => header.value === undefined
     ? undefined
     : `top:${frameTop(header.value.ruleY)};left:${frameInset(zoneGeometry.value.ruleInsetStart)};right:${frameInset(zoneGeometry.value.ruleInsetEnd)}`);

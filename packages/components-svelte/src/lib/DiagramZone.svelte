@@ -176,10 +176,20 @@
   );
   const v2HeaderVars =
     ";--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px);--st-component-diagramCard-iconTextGap:var(--st-component-diagramCardCompact-iconTextGap, 4px);--st-component-diagramZone-headerInset:var(--st-component-diagramCardCompact-headerInset, 12px)";
+  // W1-12: on surface2 zones only (where 0.41.5's surface-subtle hover equals
+  // the zone background and becomes invisible), switch the toggle's hover token
+  // to secondaryHoverBackground — scoped strictly to `.st-diagramZone-header`
+  // so nested children and v1/surface1 zones stay byte-identical to 0.41.5.
+  const surface2ToggleHoverVars =
+    ";--st-component-control-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)));--st-component-iconButton-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)))";
+  const hasSurface2 = $derived(
+    (zoneProps.depth !== undefined || zoneProps.depthParityStart !== undefined) &&
+      layout.surface === "surface2",
+  );
   const headerStyle = $derived(
     header === undefined
       ? undefined
-      : `top:${frameTop(y + zoneGeometry.headerInset)};left:${frameInset(zoneGeometry.headerInset)};right:${frameInset(headerRightInset)};height:${header.ruleY - zoneGeometry.headerRuleGap - y - zoneGeometry.headerInset}px${anatomy === "v2" ? v2HeaderVars : ""}`,
+      : `top:${frameTop(y + zoneGeometry.headerInset)};left:${frameInset(zoneGeometry.headerInset)};right:${frameInset(headerRightInset)};height:${header.ruleY - zoneGeometry.headerRuleGap - y - zoneGeometry.headerInset}px${anatomy === "v2" ? v2HeaderVars : ""}${hasSurface2 ? surface2ToggleHoverVars : ""}`,
   );
   const ruleStyle = $derived(
     header === undefined

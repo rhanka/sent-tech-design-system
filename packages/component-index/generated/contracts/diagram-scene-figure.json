@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:d3cc2b593e0e3deb678634d09c11ac91b3a9cc41452fa6801f70c3ee42532dc8",
-  "entryDigest": "sha256:81ecc3fde2744d571a5ff5f13d37c250cf9fa766688eea475be3a06c23c5b04f",
+  "digest": "sha256:4bdbcc9401f2f2960f43ad1014efdefdb221ee57f2409449befacfa92c54dcf8",
+  "entryDigest": "sha256:12e56ebd6f56bf56a21b123384c0b24330a5265fe77298390ea52718e54efb10",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
