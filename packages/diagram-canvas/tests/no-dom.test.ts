@@ -186,7 +186,7 @@ describe("the manifest keeps the promises the repository's guards rely on", () =
   });
 
   it("declares exactly one dependency, and no dependency of any other kind", () => {
-    expect(manifest.dependencies).toEqual({ "@sentropic/diagram-core": "0.3.0" });
+    expect(manifest.dependencies).toEqual({ "@sentropic/diagram-core": "0.4.0" });
     expect(manifest.devDependencies).toBeUndefined();
     expect(manifest.peerDependencies).toBeUndefined();
     expect(manifest.optionalDependencies).toBeUndefined();

@@ -36,6 +36,7 @@ import {
   foldGroupId,
   GENERIC_PROFILE_ID,
   hasErrors,
+  isPresentationContractV2Pin,
   localIdOf,
   occurrenceRef,
   parentOccurrenceOf,
@@ -159,6 +160,29 @@ function semanticName(document: SemanticDocument, entity: EntityRef): string {
 
 function formOf(presentation: DiagramPresentation, occurrence: OccurrenceRef): DiagramForm | undefined {
   return (presentation.entities as Record<string, { form: DiagramForm }>)[occurrence]?.form;
+}
+
+/**
+ * Strip transient canvas-only stamps (`anatomy`, `depth`, `depthParityStart`,
+ * and `align` under `@1`) before persisting `presentation.diagram` on the
+ * emitted `ViewDocument`, so every laid-out view passes `validateView`.
+ */
+function persistableDiagramPresentation(presentation: DiagramPresentation): DiagramPresentation {
+  const allowsAlign =
+    presentation.contractPin !== undefined &&
+    isPresentationContractV2Pin(presentation.contractPin);
+  const entities: Record<string, DiagramPresentation["entities"][string]> = {};
+  for (const [key, entry] of Object.entries(presentation.entities)) {
+    const record = entry as unknown as Record<string, unknown>;
+    const cleanEntry: Record<string, unknown> = {};
+    for (const [field, value] of Object.entries(record)) {
+      if (field === "anatomy" || field === "depth" || field === "depthParityStart") continue;
+      if (field === "align" && !allowsAlign) continue;
+      cleanEntry[field] = value;
+    }
+    entities[key] = cleanEntry as unknown as DiagramPresentation["entities"][string];
+  }
+  return { ...presentation, entities };
 }
 
 /** Slot text for one occurrence: typed presentation slots, else the semantic name as title. */
@@ -476,7 +500,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       portOccurrences,
       groups: synthesizedGroups,
       filters: [],
-      presentation: { camera: { x: 0, y: 0, zoom: 1 }, diagram: presentation },
+      presentation: { camera: { x: 0, y: 0, zoom: 1 }, diagram: persistableDiagramPresentation(presentation) },
     };
   };
   let projected: ViewDocument;
@@ -540,7 +564,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
   } = {
     groups: projected.groups as Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }>,
     filters: [...projected.filters],
-    presentationState: { ...projected.presentation, diagram: presentation },
+    presentationState: { ...projected.presentation, diagram: persistableDiagramPresentation(presentation) },
     summaryLabels: projected.summaryLabels,
     projected,
     representativeOf,
