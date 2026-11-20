@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:5ddcde202093b282f0a68f18f9cf4200e900cd28e825808f14f6c3693f99973c",
-  "entryDigest": "sha256:e3a50be393ac20e401c65b63c167526e953241d36e18beb51075ef7f4c0660fe",
+  "digest": "sha256:bf1dbedcc0e72173ee8b7d43ff3bf16ca7a1adffbd803e6d22021f8dfd060b29",
+  "entryDigest": "sha256:def02c7a5e2a61babdf9c0326bacb7cbcfebbfff21ac5bf9deb285fbbdab2e9e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
