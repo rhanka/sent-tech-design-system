@@ -20,10 +20,19 @@ import * as handWrittenTimeSeriesLineChart from "../../dataviz-react/src/lib/Tim
 import * as handWrittenCategoricalData from "../../dataviz-react/src/lib/categoricalData.js";
 import * as handWrittenDistributionData from "../../dataviz-react/src/lib/distributionData.js";
 import * as handWrittenPartOfWholeData from "../../dataviz-react/src/lib/partOfWholeData.js";
+import * as handWrittenAdvancedPivotData from "../../dataviz-react/src/lib/advancedPivotData.js";
+import * as handWrittenAnalyticsDsData from "../../dataviz-react/src/lib/analyticsDsData.js";
+import * as handWrittenChartExport from "../../dataviz-react/src/lib/chart-export.js";
+import * as handWrittenGeoMapLayers from "../../dataviz-react/src/lib/geoMapLayers.js";
+import * as handWrittenUrlSync from "../../dataviz-react/src/lib/url-sync.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
 import * as emittedPartOfWholeData from "../.react-emit/src/lib/partOfWholeData.js";
+import * as emittedAdvancedPivotData from "../.react-emit/src/lib/advancedPivotData.js";
+import * as emittedAnalyticsDsData from "../.react-emit/src/lib/analyticsDsData.js";
+import * as emittedChartExport from "../.react-emit/src/lib/chart-export.js";
+import * as emittedGeoMapLayers from "../.react-emit/src/lib/geoMapLayers.js";
 
 const switched = [
   "useDashboard",
@@ -40,6 +49,19 @@ const switched = [
   "DivergingBarChart",
   "ParetoChart",
   "DateHistogramChart",
+  "serializeSvg",
+  "svgStringToBlob",
+  "svgStringToPngBlob",
+  "downloadBlob",
+  "downloadSvg",
+  "downloadPng",
+  "printElement",
+  "stateToQuery",
+  "queryToState",
+  "applyStateToStore",
+  "readStateFromUrl",
+  "writeStateToUrl",
+  "readLocationSearch",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -57,6 +79,19 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   DivergingBarChart: handWrittenDivergingBarChart.DivergingBarChart,
   ParetoChart: handWrittenParetoChart.ParetoChart,
   DateHistogramChart: handWrittenDateHistogramChart.DateHistogramChart,
+  serializeSvg: handWrittenChartExport.serializeSvg,
+  svgStringToBlob: handWrittenChartExport.svgStringToBlob,
+  svgStringToPngBlob: handWrittenChartExport.svgStringToPngBlob,
+  downloadBlob: handWrittenChartExport.downloadBlob,
+  downloadSvg: handWrittenChartExport.downloadSvg,
+  downloadPng: handWrittenChartExport.downloadPng,
+  printElement: handWrittenChartExport.printElement,
+  stateToQuery: handWrittenUrlSync.stateToQuery,
+  queryToState: handWrittenUrlSync.queryToState,
+  applyStateToStore: handWrittenUrlSync.applyStateToStore,
+  readStateFromUrl: handWrittenUrlSync.readStateFromUrl,
+  writeStateToUrl: handWrittenUrlSync.writeStateToUrl,
+  readLocationSearch: handWrittenUrlSync.readLocationSearch,
 };
 
 describe("dataviz React leg provenance", () => {
@@ -68,9 +103,21 @@ describe("dataviz React leg provenance", () => {
     });
   }
 
+  it("constant exports match between emitted and barrel", () => {
+    expect(emitted.DEFAULT_URL_SYNC_PARAM).toBe(handWrittenUrlSync.DEFAULT_URL_SYNC_PARAM);
+    expect(barrel.DEFAULT_URL_SYNC_PARAM).toBe(emitted.DEFAULT_URL_SYNC_PARAM);
+  });
+
   it("internal derivation helpers emit distinct module instances ready for React-leg switching", () => {
     expect(emittedCategoricalData.buildSafeCategoricalSeries).not.toBe(handWrittenCategoricalData.buildSafeCategoricalSeries);
     expect(emittedPartOfWholeData.buildSafePartWholeModel).not.toBe(handWrittenPartOfWholeData.buildSafePartWholeModel);
     expect(emittedDistributionData.buildHistogramData).not.toBe(handWrittenDistributionData.buildHistogramData);
+    expect(emittedAdvancedPivotData.buildAdvancedPivotView).not.toBe(handWrittenAdvancedPivotData.buildAdvancedPivotView);
+    expect(emittedAnalyticsDsData.buildClusterScatterData).not.toBe(handWrittenAnalyticsDsData.buildClusterScatterData);
+    expect(emittedAnalyticsDsData.buildForecastLineData).not.toBe(handWrittenAnalyticsDsData.buildForecastLineData);
+    expect(emittedChartExport.downloadPdf).not.toBe(handWrittenChartExport.downloadPdf);
+    expect(emittedChartExport.resolveSvg).not.toBe(handWrittenChartExport.resolveSvg);
+    expect(emittedGeoMapLayers.choroplethLayer).not.toBe(handWrittenGeoMapLayers.choroplethLayer);
+    expect(emittedGeoMapLayers.pointsLayer).not.toBe(handWrittenGeoMapLayers.pointsLayer);
   });
 });
