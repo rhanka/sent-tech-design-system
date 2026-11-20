@@ -44,7 +44,7 @@ function emittedReactModules(): Plugin {
 /** Existing `dataviz-react` test files (relative to `dataviz-react/src`) that exercise an emitted module. */
 const reactTests: string[] = [
   "index.test.ts", // emitted adapter.ts (useDashboard + core re-exports)
-  "lib/drill.test.tsx", // emitted lib/drill.ts (drillLevel, onDrillSelect, drillDepth)
+  "lib/drill.test.tsx", // emitted lib/drill.ts + DrillChart (with DrillBarChart, DonutChart, TreemapChart)
   "lib/CategoricalCharts.test.tsx", // emitted AreaChart, ComboChart, LollipopChart, StackedBarChart, StepLineChart + categoricalData
   "lib/CrossfilteredBarChart.test.tsx", // emitted CrossfilteredBarChart (vertical DS BarChart + horizontal SVG)
   "lib/TimeSeriesLineChart.test.tsx", // emitted TimeSeriesLineChart (native SVG time-series)
@@ -54,7 +54,7 @@ const reactTests: string[] = [
   "lib/chart-export.test.ts", // emitted lib/chart-export.ts
   "lib/url-sync.test.tsx", // emitted lib/url-sync.ts + lib/useUrlSync.ts
   "lib/AdvancedPivotDataTable.test.tsx", // emitted AdvancedPivotDataTable + advancedPivotData
-  "lib/AnalyticsCharts.test.tsx", // emitted AnalyticsClusterPlot + analyticsDsData
+  "lib/AnalyticsCharts.test.tsx", // emitted AnalyticsClusterPlot, ErrorBarsChart + analyticsDsData
   "lib/BookmarkNavigator.test.tsx", // emitted BookmarkNavigator
   "lib/DistributionCharts.test.tsx", // emitted BoxPlotChart, BulletChart, CalendarHeatmapChart + distributionData
   "lib/CalculationEditor.test.tsx", // emitted CalculationEditor
@@ -68,6 +68,7 @@ const reactTests: string[] = [
   "lib/DateRangeFilter.test.tsx", // emitted DateRangeFilter + dateRangeToSpec
   "lib/DrillBarChart.test.tsx", // emitted DrillBarChart
   "lib/DrillBreadcrumb.test.tsx", // emitted DrillBreadcrumb
+  "lib/FieldPane.test.tsx", // emitted FieldPane
 ];
 
 export default defineConfig({

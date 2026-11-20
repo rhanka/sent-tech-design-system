@@ -141,3 +141,15 @@ export { DrillBreadcrumb } from './lib/DrillBreadcrumb.js';
 export type { DrillBreadcrumbProps } from './lib/DrillBreadcrumb.js';
 export { TreemapChart } from './lib/TreemapChart.js';
 export type { TreemapChartProps } from './lib/TreemapChart.js';
+
+// Group 3 batch 4 components.
+export { DrillChart } from './lib/DrillChart.js';
+export type { DrillChartProps, DrillChartKind } from './lib/DrillChart.js';
+export { DumbbellChart } from './lib/DumbbellChart.js';
+export type { DumbbellChartProps } from './lib/DumbbellChart.js';
+export { ErrorBarsChart } from './lib/ErrorBarsChart.js';
+export type { ErrorBarsChartProps } from './lib/ErrorBarsChart.js';
+export { EventFeedPanel } from './lib/EventFeedPanel.js';
+export type { EventFeedPanelProps } from './lib/EventFeedPanel.js';
+export { FieldPane } from './lib/FieldPane.js';
+export type { FieldPaneProps } from './lib/FieldPane.js';
