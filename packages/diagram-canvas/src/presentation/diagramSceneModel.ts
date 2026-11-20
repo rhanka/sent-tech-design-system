@@ -121,14 +121,14 @@ export function resolveScenePresentation(document: SceneDocument, presentation: 
     const entity = document.entities[entityId];
     if (entity?.profile === "erd@1") return [id, withViewAnatomy(entry)];
     const binding = bindings[entity === undefined ? "" : entity.profile + ":" + entity.type] ?? bindings[entity?.type ?? ""];
-    if (binding?.shape !== undefined && binding.shape !== "component") return [id, { ...entry, icon: entry.icon ?? "none" }];
+    if (binding?.shape !== undefined && binding.shape !== "component") return [id, withViewAnatomy({ ...entry, icon: entry.icon ?? "none" })];
     const role = binding?.role ?? (entry.form === "card" ? "card" : "zone");
     const icon = entry.icon ?? binding?.icon ?? ROLE_ICONS[role];
     if (icon === undefined || resolveGlyph(icon) === undefined) {
       missing.push(id);
-      return [id, { ...entry, icon: strict ? "unknown" : "none" }];
+      return [id, withViewAnatomy({ ...entry, icon: strict ? "unknown" : "none" })];
     }
-    return [id, { ...entry, icon }];
+    return [id, withViewAnatomy({ ...entry, icon })];
   }));
   /**
    * Owner addendum 1 — stamp nesting depth from the view groups onto zone

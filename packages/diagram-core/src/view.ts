@@ -176,11 +176,16 @@ export type ViewFilter =
  * adapter maps these three numbers to its own camera contract; that adapter is
  * GD-M2-CANVAS work, not this lot's.
  */
+/** Versioned card/zone anatomy pinned by a view (DE-1). Absent means legacy `"v1"`. */
+export type DiagramAnatomyVersion = "v1" | "v2";
+
 export interface PresentationState {
   readonly camera: { readonly x: number; readonly y: number; readonly zoom: number };
   readonly grid?: { readonly size: number; readonly snap: boolean };
   /** A theme id the host resolves. No colour, no token value is stored here. */
   readonly theme?: string;
+  /** Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). New views default to `"v2"`. */
+  readonly anatomy?: DiagramAnatomyVersion;
   /** Typed presentation fragment (M3 §3.2.2). Absent means no presentation contract. */
   readonly diagram?: DiagramPresentation;
 }
@@ -219,7 +224,7 @@ export const VIEW_DOCUMENT_FIELDS = [
   "viewId",
 ] as const;
 
-export const DEFAULT_PRESENTATION: PresentationState = { camera: { x: 0, y: 0, zoom: 1 } };
+export const DEFAULT_PRESENTATION: PresentationState = { camera: { x: 0, y: 0, zoom: 1 }, anatomy: "v2" };
 
 export interface CreateViewInput {
   readonly viewId: ViewRef;
