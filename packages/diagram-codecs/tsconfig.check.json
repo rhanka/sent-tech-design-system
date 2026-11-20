@@ -1,0 +1,14 @@
+{
+  // `check` compiles the TESTS too. Tests read the package's own sources from
+  // disk, so they need node builtins; `src` still compiles with `types: []`
+  // under tsconfig.json, which is what keeps the shipped modules free of node
+  // and DOM.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": ".",
+    "types": ["node"]
+  },
+  "include": ["src", "tests"],
+  "exclude": ["dist", "node_modules"]
+}

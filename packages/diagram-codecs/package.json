@@ -1,0 +1,37 @@
+{
+  "name": "@sentropic/diagram-codecs",
+  "version": "0.1.0",
+  "description": "Static diagram codecs: draw.io export of a resolved scene and the scene SVG re-export. Pure string, DOM-free.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.map",
+    "!dist/.srchash"
+  ],
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
+    "directory": "packages/diagram-codecs"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "sideEffects": false,
+  "dependencies": {
+    "@sentropic/diagram-canvas": "0.4.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.check.json",
+    "test": "vitest run"
+  }
+}

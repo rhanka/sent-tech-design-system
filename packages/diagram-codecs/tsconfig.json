@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    // Same DOM-free rule as `@sentropic/diagram-canvas`: no "DOM" in lib and no
+    // ambient types, so `document`, `window` and every node builtin are
+    // unresolvable identifiers in `src`. The draw.io export is pure string
+    // building; it never measures or reads a DOM node.
+    "lib": ["ES2022"],
+    "types": [],
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"],
+  "exclude": ["dist", "node_modules"]
+}
