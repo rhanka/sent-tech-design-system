@@ -9,7 +9,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
-  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 (25 files) + group 3 batches 1-5 (25 files -> 65/128 ported): ColumnPyramidChart, ColumnRangeChart, ContourChart, CorrelationMatrix, DashboardActiveFilters, DashboardFilterBar, DashboardGrid, DateRangeFilter, DecompositionTreeChart, Density2DChart, DependencyWheelChart, DonutChart, DrillBarChart, DrillBreadcrumb, TreemapChart, DrillChart, DumbbellChart, ErrorBarsChart, EventFeedPanel, FieldPane, FlamegraphChart, ForceGraph, ForecastLineChart, FormatPanel, FunnelChart.",
+  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 (25 files) + group 3 batches 1-6 (30 files -> 70/128 ported): ColumnPyramidChart, ColumnRangeChart, ContourChart, CorrelationMatrix, DashboardActiveFilters, DashboardFilterBar, DashboardGrid, DateRangeFilter, DecompositionTreeChart, Density2DChart, DependencyWheelChart, DonutChart, DrillBarChart, DrillBreadcrumb, TreemapChart, DrillChart, DumbbellChart, ErrorBarsChart, EventFeedPanel, FieldPane, FlamegraphChart, ForceGraph, ForecastLineChart, FormatPanel, FunnelChart, GanttChart, GaugeChart, GeoClusterMap, GeoDensityMap, GeoFlowMap.",
   "modules": [
     {
       "module": "adapter",
@@ -591,6 +591,51 @@
       "module": "FunnelChart",
       "file": "src/lib/FunnelChart.tsx",
       "reactSource": "dataviz-react/src/lib/FunnelChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "GanttChart",
+      "file": "src/lib/GanttChart.tsx",
+      "reactSource": "dataviz-react/src/lib/GanttChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "GaugeChart",
+      "file": "src/lib/GaugeChart.tsx",
+      "reactSource": "dataviz-react/src/lib/GaugeChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "GeoClusterMap",
+      "file": "src/lib/GeoClusterMap.tsx",
+      "reactSource": "dataviz-react/src/lib/GeoClusterMap.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "GeoDensityMap",
+      "file": "src/lib/GeoDensityMap.tsx",
+      "reactSource": "dataviz-react/src/lib/GeoDensityMap.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "GeoFlowMap",
+      "file": "src/lib/GeoFlowMap.tsx",
+      "reactSource": "dataviz-react/src/lib/GeoFlowMap.tsx",
       "kind": "component",
       "lot": "P6",
       "renderable": true,
