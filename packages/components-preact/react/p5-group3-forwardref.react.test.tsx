@@ -8,11 +8,15 @@ import { afterEach, describe, expect, it } from "vitest";
 import * as Emitted from "../.react-emit/src/index.js";
 import * as HandWrittenAvatar from "../../components-react/src/Avatar.js";
 import * as HandWrittenAvatarGroup from "../../components-react/src/AvatarGroup.js";
+import * as HandWrittenBackToTop from "../../components-react/src/BackToTop.js";
+import * as HandWrittenBadge from "../../components-react/src/Badge.js";
 import * as HandWrittenCheckboxGroup from "../../components-react/src/CheckboxGroup.js";
 import * as HandWrittenDisplaySettings from "../../components-react/src/DisplaySettings.js";
 import * as HandWrittenEmbed from "../../components-react/src/Embed.js";
 import * as HandWrittenMediaContent from "../../components-react/src/MediaContent.js";
 import * as HandWrittenSelectableRow from "../../components-react/src/SelectableRow.js";
+import * as HandWrittenStepper from "../../components-react/src/Stepper.js";
+import * as HandWrittenTableOfContents from "../../components-react/src/TableOfContents.js";
 import * as HandWrittenTranscription from "../../components-react/src/Transcription.js";
 
 afterEach(cleanup);
@@ -278,6 +282,113 @@ describe("P5 group 3 forwardRef React-leg parity — Batch 2 (Embed, MediaConten
     expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
     expect(emittedObj.current?.tagName).toBe("FIELDSET");
     expect(emittedCb.last).toBeInstanceOf(HTMLFieldSetElement);
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedCb.last).toBeNull();
+  });
+});
+
+describe("P5 group 3 forwardRef React-leg parity — Batch 3 (BackToTop, Stepper, TableOfContents, Badge)", () => {
+  it("emitted BackToTop ref matches hand-written BackToTop DOM node", () => {
+    const emittedObj = createRef<HTMLButtonElement>();
+    const emittedCb = makeCallbackRef<HTMLButtonElement>();
+    const handObj = createRef<HTMLButtonElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.BackToTop ref={emittedObj} autoHide={false} label="Haut" />
+        <Emitted.BackToTop ref={emittedCb.ref} autoHide label="Masqué" />
+      </>,
+    );
+    const r2 = render(<HandWrittenBackToTop.BackToTop ref={handObj} autoHide={false} label="Haut" />);
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(emittedObj.current?.tagName).toBe("BUTTON");
+    expect(emittedCb.last).toBeInstanceOf(HTMLButtonElement);
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedCb.last).toBeNull();
+  });
+
+  it("emitted Stepper ref matches hand-written Stepper DOM node", () => {
+    const emittedObj = createRef<HTMLOListElement>();
+    const emittedCb = makeCallbackRef<HTMLOListElement>();
+    const handObj = createRef<HTMLOListElement>();
+    const steps = [{ label: "Step 1" }, { label: "Step 2" }];
+
+    const r1 = render(
+      <>
+        <Emitted.Stepper ref={emittedObj} steps={steps} current={1} clickable />
+        <Emitted.Stepper ref={emittedCb.ref} steps={steps} orientation="vertical" />
+      </>,
+    );
+    const r2 = render(<HandWrittenStepper.Stepper ref={handObj} steps={steps} current={1} clickable />);
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(emittedObj.current?.tagName).toBe("OL");
+    expect(emittedCb.last).toBeInstanceOf(HTMLOListElement);
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedCb.last).toBeNull();
+  });
+
+  it("emitted TableOfContents ref matches hand-written TableOfContents DOM node", () => {
+    const emittedObj = createRef<HTMLElement>();
+    const emittedCb = makeCallbackRef<HTMLElement>();
+    const handObj = createRef<HTMLElement>();
+    const items = [
+      { id: "one", label: "One" },
+      { id: "two", label: "Two", level: 2 },
+    ];
+
+    const r1 = render(
+      <>
+        <Emitted.TableOfContents ref={emittedObj} title="Plan" items={items} activeId="one" />
+        <Emitted.TableOfContents ref={emittedCb.ref} items={items} />
+      </>,
+    );
+    const r2 = render(
+      <HandWrittenTableOfContents.TableOfContents ref={handObj} title="Plan" items={items} activeId="one" />,
+    );
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(emittedObj.current?.tagName).toBe("NAV");
+    expect(emittedCb.last).toBeInstanceOf(HTMLElement);
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedCb.last).toBeNull();
+  });
+
+  it("emitted Badge ref matches hand-written Badge DOM node", () => {
+    const emittedObj = createRef<HTMLSpanElement>();
+    const emittedCb = makeCallbackRef<HTMLSpanElement>();
+    const handObj = createRef<HTMLSpanElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.Badge ref={emittedObj} tone="success" shape="circle" size="sm">
+          3
+        </Emitted.Badge>
+        <Emitted.Badge ref={emittedCb.ref}>New</Emitted.Badge>
+      </>,
+    );
+    const r2 = render(
+      <HandWrittenBadge.Badge ref={handObj} tone="success" shape="circle" size="sm">
+        3
+      </HandWrittenBadge.Badge>,
+    );
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(emittedObj.current?.tagName).toBe("SPAN");
+    expect(emittedCb.last).toBeInstanceOf(HTMLSpanElement);
 
     r1.unmount();
     r2.unmount();
