@@ -1,4 +1,4 @@
-import type { Vec2 } from "../transform.js";
+import type { Rect, Vec2 } from "../transform.js";
 
 /**
  * Default corner radius for rounded-elbow connectors, world units (DE-2).
@@ -118,6 +118,57 @@ export function connectorPath(
   const end = simplified[simplified.length - 1]!;
   parts.push(`L${formatCoord(end.x)} ${formatCoord(end.y)}`);
   return parts.join(" ");
+}
+
+/**
+ * Tight axis-aligned bounding boxes covering the two quadratic Bézier halves
+ * (`[enter, mid]` and `[mid, exit]`) of every rounded bend emitted by
+ * `connectorPath`. Because the Bézier curve and its midpoint chords stay
+ * inside these two rectangles, clearing them guarantees label clearance
+ * around rounded elbows as well as straight legs.
+ */
+export function connectorCornerBounds(
+  points: readonly Vec2[],
+  cornerRadius: number = DEFAULT_EDGE_CORNER_RADIUS,
+): Rect[] {
+  if (points.length < 3 || !Number.isFinite(cornerRadius) || cornerRadius <= 0) return [];
+  const simplified = simplifyElbowPoints(points);
+  const boxes: Rect[] = [];
+  for (let i = 1; i < simplified.length - 1; i += 1) {
+    const prev = simplified[i - 1]!;
+    const corner = simplified[i]!;
+    const next = simplified[i + 1]!;
+    const inX = corner.x - prev.x;
+    const inY = corner.y - prev.y;
+    const outX = next.x - corner.x;
+    const outY = next.y - corner.y;
+    const inLen = Math.hypot(inX, inY);
+    const outLen = Math.hypot(outX, outY);
+    const r = Math.min(cornerRadius, inLen / 2, outLen / 2);
+    const cross = inLen > EPSILON && outLen > EPSILON ? (inX * outY - inY * outX) / (inLen * outLen) : 0;
+    if (r <= EPSILON || Math.abs(cross) <= EPSILON) continue;
+    const enterX = corner.x - (inX / inLen) * r;
+    const enterY = corner.y - (inY / inLen) * r;
+    const exitX = corner.x + (outX / outLen) * r;
+    const exitY = corner.y + (outY / outLen) * r;
+    const midX = 0.25 * enterX + 0.5 * corner.x + 0.25 * exitX;
+    const midY = 0.25 * enterY + 0.5 * corner.y + 0.25 * exitY;
+    boxes.push(
+      {
+        x: Math.min(enterX, midX),
+        y: Math.min(enterY, midY),
+        width: Math.abs(enterX - midX),
+        height: Math.abs(enterY - midY),
+      },
+      {
+        x: Math.min(midX, exitX),
+        y: Math.min(midY, exitY),
+        width: Math.abs(midX - exitX),
+        height: Math.abs(midY - exitY),
+      },
+    );
+  }
+  return boxes;
 }
 
 /**

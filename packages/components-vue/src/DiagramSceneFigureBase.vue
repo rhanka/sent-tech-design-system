@@ -359,6 +359,15 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
   .st-diagramSceneFigure--compact {
     gap: var(--st-spacing-1, 0.25rem);
   }
+  .st-diagramSceneFigure--fitToWindow {
+    margin-inline: auto;
+    max-width: 100%;
+  }
+  .st-diagramSceneFigure--fitToWindow .st-diagramSceneFigure-viewport {
+    margin-inline: auto;
+    max-height: calc(100vh - var(--st-spacing-6, 1.5rem));
+    max-width: 100%;
+  }
   .st-diagramSceneFigure-title {
     color: var(--st-semantic-text-primary);
     grid-column: 1;

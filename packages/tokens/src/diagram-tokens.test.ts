@@ -109,7 +109,6 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     // DC-2a row-pack spacing (SPEC_EVOL_DC2A §3.5).
     childGapInline: "var(--st-component-diagramScene-gapMin)",
     childGapBlock: "var(--st-component-diagramScene-gapMinBlock)",
-    siblingGutter: "var(--st-component-diagramScene-zoneGutter)",
     gapInlineMax: "var(--st-component-diagramScene-gapMax)",
     gapBlockMax: "var(--st-component-diagramScene-gapMax)",
     rowPackTargetAspect: "1.78",

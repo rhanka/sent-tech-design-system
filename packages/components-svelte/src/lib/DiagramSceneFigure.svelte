@@ -1212,7 +1212,7 @@
   }
   .st-diagramSceneFigure--fitToWindow .st-diagramSceneFigure-viewport {
     margin-inline: auto;
-    max-height: calc(100vh - 24px);
+    max-height: calc(100vh - var(--st-spacing-6, 1.5rem));
     max-width: 100%;
   }
   .st-diagramSceneFigure-title {

@@ -47,4 +47,33 @@ describe("scene label clearance", () => {
     }
     expect(labels.every(label => label.box.x === 0 && label.box.y === 0)).toBe(true);
   });
+
+  it("should keep a label clear of rounded-elbow arcs inside a 90-degree bend (DE-2)", () => {
+    const route = [{ x: 300, y: 100 }, { x: 100, y: 100 }, { x: 100, y: 0 }];
+    const clearance = 6.777777777777778;
+    // A label positioned at sharp-corner clearance inside the elbow would clear
+    // both straight legs but fall inside the rounded corner (radius 12) chord.
+    const insideElbow = { box: { x: 100 + clearance, y: 100 - clearance - 22, width: 70, height: 22 } };
+    const cleared = clearSceneLabels([insideElbow], [route], [], clearance, 12);
+    const box = cleared[0]!.box;
+    // The quadratic Bézier midpoint is (103, 97); the cleared label must clear
+    // both chord segments (112,100)-(103,97) and (103,97)-(100,88) by >= clearance.
+    const chordPts = [{ x: 112, y: 100 }, { x: 103, y: 97 }, { x: 100, y: 88 }];
+    const segDist = (a: { x: number; y: number }, b: { x: number; y: number }) => {
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const p2b = (p: { x: number; y: number }) =>
+        Math.hypot(Math.max(box.x - p.x, 0, p.x - (box.x + box.width)), Math.max(box.y - p.y, 0, p.y - (box.y + box.height)));
+      const p2s = (x: number, y: number) => {
+        const t = dx === 0 && dy === 0 ? 0 : Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / (dx * dx + dy * dy)));
+        return Math.hypot(x - a.x - t * dx, y - a.y - t * dy);
+      };
+      return Math.min(
+        p2b(a),
+        p2b(b),
+        ...[box.x, box.x + box.width].flatMap(x => [box.y, box.y + box.height].map(y => p2s(x, y))),
+      );
+    };
+    expect(segDist(chordPts[0]!, chordPts[1]!)).toBeGreaterThanOrEqual(clearance - 1e-6);
+    expect(segDist(chordPts[1]!, chordPts[2]!)).toBeGreaterThanOrEqual(clearance - 1e-6);
+  });
 });
