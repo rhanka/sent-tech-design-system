@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:45515368af1283452bd4c61e4b6e824b63797cfdc40a120d2affb649ae7177ca",
+  "digest": "sha256:1066771e88d35b87b7574274b38203d3947cd76c837e00c4ec428c1819a63b25",
   "entryDigest": "sha256:4ad818223d2acefa01b17234bb833e9a44b68019c5b982c13d1c910e3059495b",
   "format": "component-contract/v1",
   "frameworks": {
@@ -124,7 +124,10 @@
                 "type": "string"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
@@ -145,13 +148,14 @@
                 "type": "number"
               },
               "code": {
-                "description": "`zone-overflow` / `zone-icon-unknown` are the zone's own; a descendant\ncard or nested zone keeps its own `card-overflow` / `card-icon-unknown`\ncode with its own `entityId` when `renderZoneSvg` aggregates them.",
+                "description": "`zone-overflow` / `zone-icon-unknown` are the zone's own; a descendant\ncard or nested zone keeps its own `card-overflow` / `card-icon-unknown`\ncode with its own `entityId` when `renderZoneSvg` aggregates them.\n`zone-surface-same` is informational and opt-in (owner addendum 1):\na leaf card on a same-colour zone, reported only for explicitly\ncomposed children when the zone sets `reportSurfaceSame`.",
                 "enum": [
                   "card-overflow",
                   "card-icon-unknown",
                   "card-icon-missing",
                   "card-grown",
                   "zone-overflow",
+                  "zone-surface-same",
                   "zone-icon-unknown",
                   "zone-grown"
                 ]
@@ -166,7 +170,10 @@
                 "type": "number"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
@@ -198,6 +205,13 @@
               "left"
             ]
           },
+          "anatomy": {
+            "description": "Pinned zone anatomy (`diagram-anatomy/v1 | v2`). Absent means `\"v1\"`;\n`\"v2\"` selects the compact collapsed `352 × 154` box.",
+            "enum": [
+              "v1",
+              "v2"
+            ]
+          },
           "autoSize": {
             "type": "boolean"
           },
@@ -206,6 +220,17 @@
           },
           "containerPadding": {
             "type": "number"
+          },
+          "depth": {
+            "description": "Nesting depth of the zone (owner addendum 1): `0` is the top level.\nThe frame — and the folded card — paint the depth surface from the\nengine rule. Absent means `0`.",
+            "type": "number"
+          },
+          "depthParityStart": {
+            "description": "Selectable start parity for the depth rule: `1` flips which parity the\ntop level takes. Scene-global; absent means `0`.",
+            "enum": [
+              0,
+              1
+            ]
           },
           "entityId": {
             "type": "string"
@@ -228,6 +253,10 @@
           },
           "proposed": {
             "description": "Neutral status prop: dashed border in both states, independent of tint.",
+            "type": "boolean"
+          },
+          "reportSurfaceSame": {
+            "description": "Opt-in informational diagnostic (owner addendum 1): when true, a leaf\ncard on a same-colour zone surface reports `zone-surface-same`. Off by\ndefault — a fitting child renders with no diagnostics.",
             "type": "boolean"
           },
           "subtitle": {
@@ -408,7 +437,10 @@
                 "type": "string"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
@@ -429,13 +461,14 @@
                 "type": "number"
               },
               "code": {
-                "description": "`zone-overflow` / `zone-icon-unknown` are the zone's own; a descendant\ncard or nested zone keeps its own `card-overflow` / `card-icon-unknown`\ncode with its own `entityId` when `renderZoneSvg` aggregates them.",
+                "description": "`zone-overflow` / `zone-icon-unknown` are the zone's own; a descendant\ncard or nested zone keeps its own `card-overflow` / `card-icon-unknown`\ncode with its own `entityId` when `renderZoneSvg` aggregates them.\n`zone-surface-same` is informational and opt-in (owner addendum 1):\na leaf card on a same-colour zone, reported only for explicitly\ncomposed children when the zone sets `reportSurfaceSame`.",
                 "enum": [
                   "card-overflow",
                   "card-icon-unknown",
                   "card-icon-missing",
                   "card-grown",
                   "zone-overflow",
+                  "zone-surface-same",
                   "zone-icon-unknown",
                   "zone-grown"
                 ]
@@ -450,7 +483,10 @@
                 "type": "number"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
@@ -482,6 +518,13 @@
               "left"
             ]
           },
+          "anatomy": {
+            "description": "Pinned zone anatomy (`diagram-anatomy/v1 | v2`). Absent means `\"v1\"`;\n`\"v2\"` selects the compact collapsed `352 × 154` box.",
+            "enum": [
+              "v1",
+              "v2"
+            ]
+          },
           "autoSize": {
             "type": "boolean"
           },
@@ -490,6 +533,17 @@
           },
           "containerPadding": {
             "type": "number"
+          },
+          "depth": {
+            "description": "Nesting depth of the zone (owner addendum 1): `0` is the top level.\nThe frame — and the folded card — paint the depth surface from the\nengine rule. Absent means `0`.",
+            "type": "number"
+          },
+          "depthParityStart": {
+            "description": "Selectable start parity for the depth rule: `1` flips which parity the\ntop level takes. Scene-global; absent means `0`.",
+            "enum": [
+              0,
+              1
+            ]
           },
           "entityId": {
             "type": "string"
@@ -512,6 +566,10 @@
           },
           "proposed": {
             "description": "Neutral status prop: dashed border in both states, independent of tint.",
+            "type": "boolean"
+          },
+          "reportSurfaceSame": {
+            "description": "Opt-in informational diagnostic (owner addendum 1): when true, a leaf\ncard on a same-colour zone surface reports `zone-surface-same`. Off by\ndefault — a fitting child renders with no diagnostics.",
             "type": "boolean"
           },
           "subtitle": {

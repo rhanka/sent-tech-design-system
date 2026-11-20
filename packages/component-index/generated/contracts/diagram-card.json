@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:89aae18049c3d487eecabda63d82cece406257f2989d3f7bdd03d8987accb3c9",
+  "digest": "sha256:064194629fadceabcb5eff770fb427125c76d5e539cad4f4f9526919402c09fa",
   "entryDigest": "sha256:5a02c69ba62ab6ac82c4789ae770e099bd6a31ff8cf6a9379e5a56af3cee20d0",
   "format": "component-contract/v1",
   "frameworks": {
@@ -119,7 +119,10 @@
                 "type": "number"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
@@ -173,7 +176,10 @@
                 "type": "string"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
@@ -195,6 +201,13 @@
             "enum": [
               "center",
               "left"
+            ]
+          },
+          "anatomy": {
+            "description": "Pinned card anatomy (`diagram-anatomy/v1 | v2`). Absent means `\"v1\"`;\n`\"v2\"` selects the compact `352 × 154` box.",
+            "enum": [
+              "v1",
+              "v2"
             ]
           },
           "autoSize": {
@@ -239,6 +252,13 @@
           "proposed": {
             "description": "Neutral status prop: `true` draws the border dashed (owner criterion:\na proposed state is always dashed), independently of `tone` — the tint\nstays host-supplied legend meaning.",
             "type": "boolean"
+          },
+          "surface": {
+            "description": "Zone depth surface, set only for zone-collapsed cards (a folded zone\nkeeps its depth background). Leaf cards never set it: their semantic\ntints are unchanged. Hosts paint the matching zone surface token.",
+            "enum": [
+              "surface1",
+              "surface2"
+            ]
           },
           "title": {
             "type": "string"
@@ -372,7 +392,10 @@
                 "type": "number"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
@@ -426,7 +449,10 @@
                 "type": "string"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
@@ -448,6 +474,13 @@
             "enum": [
               "center",
               "left"
+            ]
+          },
+          "anatomy": {
+            "description": "Pinned card anatomy (`diagram-anatomy/v1 | v2`). Absent means `\"v1\"`;\n`\"v2\"` selects the compact `352 × 154` box.",
+            "enum": [
+              "v1",
+              "v2"
             ]
           },
           "autoSize": {
@@ -492,6 +525,13 @@
           "proposed": {
             "description": "Neutral status prop: `true` draws the border dashed (owner criterion:\na proposed state is always dashed), independently of `tone` — the tint\nstays host-supplied legend meaning.",
             "type": "boolean"
+          },
+          "surface": {
+            "description": "Zone depth surface, set only for zone-collapsed cards (a folded zone\nkeeps its depth background). Leaf cards never set it: their semantic\ntints are unchanged. Hosts paint the matching zone surface token.",
+            "enum": [
+              "surface1",
+              "surface2"
+            ]
           },
           "title": {
             "type": "string"
