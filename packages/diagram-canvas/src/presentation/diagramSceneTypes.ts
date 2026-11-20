@@ -83,6 +83,8 @@ import type { SceneDocument, SceneView, ScenePresentation, SceneOccurrenceRef, S
     /** Accessible name of the figure. Defaults to `title`. */
     label?: string;
     compact?: boolean;
+    /** Opt-in fit-to-window host framing (`max-height: calc(100vh - 24px)`, `max-width: 100%`, centred; DE-2 ask 9). Default `false` preserves `Z-3 / AC-23`. */
+    fitToWindow?: boolean;
     labels?: Partial<DiagramSceneFigureLabels>;
     resolveGlyph?: (name: string) => DiagramGlyphPaths | undefined;
     onFoldChange?: (

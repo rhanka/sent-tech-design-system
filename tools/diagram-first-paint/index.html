@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="data:,">
     <title>Diagram first paint</title>
-    <style>body { margin: 0; } #app { width: 100%; }</style>
+    <style>
+      body { margin: 0; }
+      #app { width: 100%; max-width: 100%; margin-inline: auto; }
+      .st-diagramSceneFigure { max-width: 100%; margin-inline: auto; }
+      .st-diagramSceneFigure-viewport { max-height: calc(100vh - 24px); max-width: 100%; margin-inline: auto; }
+    </style>
   </head>
   <body data-st-theme="sent-tech">
     <main id="app"></main>

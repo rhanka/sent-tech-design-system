@@ -805,6 +805,8 @@ export interface SceneCameraInput {
   readonly scrollbarHeight?: number;
   readonly maxDisplayScale?: number;
   readonly minReadableScale?: number;
+  /** Opt-in fit-to-window framing (`calc(100vh - 24px)`, DE-2 ask 9). Default `false`. */
+  readonly fitToWindow?: boolean;
 }
 
 /**
@@ -825,6 +827,7 @@ export function sceneFit(input: SceneCameraInput): CameraFit {
     ...(input.scrollbarHeight === undefined ? {} : { scrollbarHeight: input.scrollbarHeight }),
     ...(input.maxDisplayScale === undefined ? {} : { maxDisplayScale: input.maxDisplayScale }),
     ...(input.minReadableScale === undefined ? {} : { minReadableScale: input.minReadableScale }),
+    ...(input.fitToWindow === undefined ? {} : { fitToWindow: input.fitToWindow }),
     zoomQuantum: FIT_QUANTUM,
   });
 }

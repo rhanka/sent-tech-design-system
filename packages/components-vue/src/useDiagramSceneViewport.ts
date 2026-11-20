@@ -84,6 +84,7 @@ export function useDiagramSceneViewport(
         scrollbarHeight: scrollbarHeight.value,
         ...(maxDisplayScale.value === undefined ? {} : { maxDisplayScale: maxDisplayScale.value }),
         ...(minReadableScale.value === undefined ? {} : { minReadableScale: minReadableScale.value }),
+        ...(props.fitToWindow ? { fitToWindow: true } : {}),
     }));
     const zoom = computed(() => resolveZoom(requestedZoom.value, fit.value));
     const readout = computed(() => zoomReadout(zoom.value, fit.value.maxZoom));
@@ -184,7 +185,7 @@ export function useDiagramSceneViewport(
     });
 
     const edgeLabelLineHeight = computed(() => measureLines.value({ text: 'Mg', role: 'edge-label', availableWidth: 400, allocatedLines: 1, folded: false }).height);
-    const viewportStyle = computed(() => `height:${fit.value.fitHeight + scrollbarHeight.value}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px`);
+    const viewportStyle = computed(() => `height:${fit.value.fitHeight + scrollbarHeight.value}px;${props.fitToWindow ? 'max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;' : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px`);
     return { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
         fit, zoom, readout, placement, viewportStyle, holdZoom,
         setZoom, zoomIn, zoomOut, fitToFrame, getCamera };

@@ -238,7 +238,7 @@ const scenarioId = useId();
 </script>
 
 <template>
-  <figure :class="['st-diagramSceneFigure', props.compact ? 'st-diagramSceneFigure--compact' : undefined]" :aria-label="props.label ?? props.title" :data-zoom="zoom" :data-zoom-readout="readout" :data-scene-refused="layout.status === 'refused' ? layout.refusals[0]?.code : undefined">
+  <figure :class="['st-diagramSceneFigure', props.compact ? 'st-diagramSceneFigure--compact' : undefined, props.fitToWindow ? 'st-diagramSceneFigure--fitToWindow' : undefined]" :aria-label="props.label ?? props.title" :data-zoom="zoom" :data-zoom-readout="readout" :data-fit-to-window="props.fitToWindow ? 'true' : undefined" :data-scene-refused="layout.status === 'refused' ? layout.refusals[0]?.code : undefined">
     <figcaption v-if="props.title !== undefined" class="st-diagramSceneFigure-title">{{ props.title }}</figcaption>
     <div class="st-diagramSceneFigure-controls" role="group" :aria-label="strings.controls">
       <button type="button" class="st-iconButton st-iconButton--sm st-iconButton--secondary" :aria-label="strings.zoomOut" :disabled="zoom <= fit.minZoom" @click="zoomOut"><DiagramControlGlyph size="var(--st-component-button-anatomy-density-sm-fontSize)" /></button>

@@ -10,7 +10,9 @@ const style = document.createElement('style');
 style.textContent = compileTheme(sentTechTheme);
 document.head.append(style);
 const params = new URLSearchParams(location.search);
+const fitToWindow = params.get('fitToWindow') !== 'false';
 const props = { ...fixture(params.get('scene')),
+  fitToWindow,
   onCameraChange: camera => { window.__camera = camera; } };
 window.__relations = expectedRelations(params.get('scene'));
 const target = document.querySelector('#app');
