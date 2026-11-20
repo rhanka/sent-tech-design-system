@@ -1,8 +1,8 @@
 {
   "componentId": "ohlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:d0f33b16269f85ae06045853aca79bf65432c1c94419b4dc9da8c15ea14e5be1",
-  "entryDigest": "sha256:001c58d62fb6e363c97e47e72b4d1074090dbb772f026863b48e80384f850150",
+  "digest": "sha256:b5b834393d51403b39dfe2d9ab9804c2e496955e8b8304a282fd121cda16bf62",
+  "entryDigest": "sha256:bf7f4cea5055a6d960721536e42b19e9efbd433b4782caa6139cb2ecfc63008e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -955,7 +955,7 @@
         "declarationPath": "packages/components-svelte/dist/OHLCChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OHLCChartProps",
-        "version": "0.41.5"
+        "version": "0.42.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -1287,7 +1287,7 @@
         "declarationPath": "packages/components-vue/dist/OHLCChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OHLCChartProps",
-        "version": "0.41.0-next.7"
+        "version": "0.41.0-next.8"
       },
       "status": "partial",
       "unresolved": [],
