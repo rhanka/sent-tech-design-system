@@ -575,7 +575,7 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
     const zh = render(DiagramZoneHeader, {
       props: {
         kicker: [],
-        title: [{ text: "Zone", x: 0, baseline: 30, size: 32, weight: 700, secondary: false }],
+        title: [{ text: "Zone", x: 0, baseline: 30, size: 32, weight: 700, secondary: false, anchor: "start" }],
         subtitle: [],
         headerInset: 12,
         headerTextWidth: 300,
@@ -593,7 +593,7 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
     const ch = render(DiagramCardHeader, {
       props: {
         kicker: [],
-        title: [{ text: "Card", x: 0, baseline: 30, size: 32, weight: 700, secondary: false }],
+        title: [{ text: "Card", x: 0, baseline: 30, size: 32, weight: 700, secondary: false, anchor: "start" }],
         headerTextWidth: 300,
         headerBlockHeight: 70,
         toggle: { collapsed: false, label: "Collapse" },
