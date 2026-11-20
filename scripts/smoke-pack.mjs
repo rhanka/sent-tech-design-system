@@ -41,11 +41,11 @@
 //   export shapes are real and resolvable, but does not exercise the actual
 //   linker step a consumer's build performs.
 // - No bundler build (Vite/webpack/Rollup) is run against any package.
-// - Only the 17 packages listed below are covered by the tarball-shape and
+// - Only the 18 packages listed below are covered by the tarball-shape and
 //   deep-import checks. The other 5 publishable packages - theme-dsfr,
 //   theme-canada, theme-quebec, theme-latex, codemirror - and apps/* are
 //   untested by those.
-//   THE ONE EXCEPTION is the licensing gate below: it runs over all 22
+//   THE ONE EXCEPTION is the licensing gate below: it runs over all 23
 //   publishable packages on every invocation, whatever --workspaces selects,
 //   precisely because the package nobody selected is the one that ships
 //   unlicensed.

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Rating.svelte",
-      "version": "0.42.0"
+      "version": "0.43.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Star rating, read-only or interactive, with half-stars.",
     "fr": "Note par étoiles, lecture seule ou interactive, demi-étoiles."
   },
-  "digest": "sha256:caa45217db61aa1f545163a3055d311284cff6cfd29216a975beb8e775bc2497",
+  "digest": "sha256:921bfa6bc42eb710931466209307bd0781e0066116531d90acf79bebace19296",
   "displayName": "Rating",
   "format": "component-entry/v1",
   "frameworks": [

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Timeline.svelte",
-      "version": "0.42.0"
+      "version": "0.43.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Vertical/horizontal list of dated events: a connecting line, status dots, title, meta (date) and description per item.",
     "fr": "Liste verticale/horizontale d'événements datés : ligne de connexion, pastilles de statut, titre, méta (date) et description par item."
   },
-  "digest": "sha256:113ea3952b73a08523860a86ef0ed93bdf156e984c0dee565f0decdac7512cbe",
+  "digest": "sha256:9e1bfd79c0348c4489effe5c446a493d351029db1b96b84279c5fedb6d7c6005",
   "displayName": "Timeline",
   "format": "component-entry/v1",
   "frameworks": [

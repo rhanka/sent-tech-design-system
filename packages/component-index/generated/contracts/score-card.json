@@ -1,8 +1,8 @@
 {
   "componentId": "score-card",
   "contractSource": "derived",
-  "digest": "sha256:5fac6d401c063c6702410a9286d4cd17d6ea796ad2c0a45d6c7a274733136adf",
-  "entryDigest": "sha256:ea88857693f5627864a179630eb996dae1f262df779f1e48f4df1ed7e9badf02",
+  "digest": "sha256:2381250520070d928a4be5e85737dd96f87ebebb2b5650e809b08ed2700654d4",
+  "entryDigest": "sha256:4e226bf4ce1ffe7c29f4327e151f1397636a61c7686b30b373fba7f8929813d1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-svelte/dist/ScoreCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ScoreCardProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],

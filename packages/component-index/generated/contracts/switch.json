@@ -1,8 +1,8 @@
 {
   "componentId": "switch",
   "contractSource": "derived",
-  "digest": "sha256:1c64e013179bc7f860bfc77d6d2d7bd18a1b5615371cfced66262c7eef7c285e",
-  "entryDigest": "sha256:726d0a84d06b1ef9b9a0e743d7ef6e65fac1e1627afa5af540b747310d15024c",
+  "digest": "sha256:848730c8efb8436db63a6e9d6633f628831a4b7425ba155c43fd9d6d2e02f682",
+  "entryDigest": "sha256:0e256b7260e846531c3f0962a7c4ec031da67933104224a7c967ef73cdb98721",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -148,7 +148,7 @@
         "declarationPath": "packages/components-svelte/dist/Switch.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SwitchProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],

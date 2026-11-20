@@ -1,8 +1,8 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:1addbe522acd759197dbd1d7b59791a12a9f1879bfc5425ce2c23e6cb535e57e",
-  "entryDigest": "sha256:fbac16d9c09399583902c28c99bc529d5dc8c76bbc30fd6257404e86fd364696",
+  "digest": "sha256:a36907a2651760f83c91790d763c9ac566e2468ee929bb9927b3b95b8d2a4e07",
+  "entryDigest": "sha256:bd5476aec0edde68a3cf9e7b3274828b09360520c7d9036042778cfa016f194b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -245,7 +245,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatMessage.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatMessageProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],

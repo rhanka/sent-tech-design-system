@@ -8,7 +8,7 @@
 // an escaped string literal inside smoke-pack.mjs.
 //
 // SMOKE_TARGETS placeholder -> JSON array of package names to deep-verify in
-//                                 this run (a subset of the 17 packages
+//                                 this run (a subset of the 18 packages
 //                                 below, depending on which the CI shard, or
 //                                 a local --workspaces= selection, packed).
 // SMOKE_MIN_EXPORT_COUNTS placeholder -> JSON object mapping the react/vue/
