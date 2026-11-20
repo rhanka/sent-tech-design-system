@@ -467,4 +467,108 @@ describe("DS-4: CommentLayer", () => {
     await fireEvent.click(root.querySelector('[data-anchor-id="draft-p"]')!);
     expect(screen.getByTestId("custom-composer").textContent).toBe("element");
   });
+
+  it("positions and sizes the overlay to an external rootEl offset and follows container scroll and resize", async () => {
+    const scrollContainer = document.createElement("div");
+    scrollContainer.style.overflow = "auto";
+    document.body.appendChild(scrollContainer);
+
+    const root = document.createElement("article");
+    root.setAttribute("data-review-root", "");
+    root.innerHTML = `<p data-anchor-id="offset-p">Offset paragraph target.</p>`;
+    scrollContainer.appendChild(root);
+
+    let rootRect = { top: 120, left: 80, width: 720, height: 480 };
+    const toDomRect = (r: { top: number; left: number; width: number; height: number }): DOMRect =>
+      ({
+        x: r.left,
+        y: r.top,
+        top: r.top,
+        left: r.left,
+        right: r.left + r.width,
+        bottom: r.top + r.height,
+        width: r.width,
+        height: r.height,
+        toJSON: () => ({}),
+      }) as DOMRect;
+
+    root.getBoundingClientRect = () => toDomRect(rootRect);
+    const para = root.querySelector('[data-anchor-id="offset-p"]') as HTMLElement;
+    para.getBoundingClientRect = () =>
+      toDomRect({ top: rootRect.top + 40, left: rootRect.left + 20, width: 680, height: 32 });
+    para.scrollIntoView = vi.fn();
+
+    const fixture = createFixture();
+    const sk = encodeAnchor({
+      t: "element",
+      sel: "p:nth-of-type(1)",
+      aid: "offset-p",
+      v: "v1",
+    });
+    await fixture.adapter.create({
+      tenant: TENANT,
+      target: { ...TARGET, sectionKey: sk },
+      body: "Positioned pin",
+    });
+    const comments = await fixture.adapter.list(TENANT, TARGET);
+
+    const { container } = render(CommentLayer, {
+      props: {
+        rootEl: root,
+        mode: "review",
+        target: TARGET,
+        artifactVersion: "v1",
+        comments,
+        currentUser: ALICE,
+      },
+    });
+
+    // Simulate .st-review-layer sitting below the artifact with 0px height (external rootEl without children).
+    const layer = container.querySelector(".st-review-layer") as HTMLElement;
+    layer.getBoundingClientRect = () => toDomRect({ top: 640, left: 20, width: 0, height: 0 });
+
+    // Trigger resize so layerRect is picked up with our stubbed non-zero geometry.
+    window.dispatchEvent(new Event("resize"));
+
+    const overlay = container.querySelector(".st-review-layer__overlay") as HTMLElement;
+    await waitFor(() => {
+      expect(overlay.style.top).toBe("-520px");
+      expect(overlay.style.left).toBe("60px");
+      expect(overlay.style.width).toBe("720px");
+      expect(overlay.style.height).toBe("480px");
+    });
+
+    // Pin anchor coordinates remain relative to rootEl inside the aligned overlay, and gutter is mounted.
+    const pinAnchor = container.querySelector(".st-review-layer__pin-anchor") as HTMLElement;
+    expect(pinAnchor.style.top).toBe("40px");
+    expect(pinAnchor.style.left).toBe("700px");
+    expect(container.querySelector(".st-review-layer__gutter")).toBeTruthy();
+
+    // Hover outline and composer also render inside the aligned overlay relative to rootEl.
+    await fireEvent.pointerOver(para);
+    const hoverOutline = container.querySelector(".st-review-layer__hover-outline") as HTMLElement;
+    expect(hoverOutline.style.top).toBe("40px");
+    expect(hoverOutline.style.left).toBe("20px");
+
+    await fireEvent.click(para);
+    const composerEl = container.querySelector(".st-review-layer__composer") as HTMLElement;
+    expect(composerEl.style.top).toBe("72px");
+    expect(composerEl.style.left).toBe("20px");
+
+    // Non-bubbling scroll inside an overflow container must be captured and update overlay bounds.
+    rootRect = { top: 45, left: 80, width: 720, height: 480 };
+    scrollContainer.dispatchEvent(new Event("scroll", { bubbles: false }));
+    await waitFor(() => {
+      expect(overlay.style.top).toBe("-595px");
+      expect(overlay.style.left).toBe("60px");
+    });
+
+    // Window resize updates overlay dimensions to match resized rootEl.
+    rootRect = { top: 45, left: 80, width: 640, height: 540 };
+    window.dispatchEvent(new Event("resize"));
+    await waitFor(() => {
+      expect(overlay.style.width).toBe("640px");
+      expect(overlay.style.height).toBe("540px");
+    });
+  });
 });
