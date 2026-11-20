@@ -120,6 +120,11 @@ import * as handWrittenSunburstChart from "../../dataviz-react/src/lib/SunburstC
 import * as handWrittenTileMapChart from "../../dataviz-react/src/lib/TileMapChart.js";
 import * as handWrittenTimelineChart from "../../dataviz-react/src/lib/TimelineChart.js";
 import * as handWrittenTopNFilter from "../../dataviz-react/src/lib/TopNFilter.js";
+import * as handWrittenTraceWaterfallChart from "../../dataviz-react/src/lib/TraceWaterfallChart.js";
+import * as handWrittenTreegraphChart from "../../dataviz-react/src/lib/TreegraphChart.js";
+import * as handWrittenTrendLineChart from "../../dataviz-react/src/lib/TrendLineChart.js";
+import * as handWrittenValueSlicer from "../../dataviz-react/src/lib/ValueSlicer.js";
+import * as handWrittenVariablePieChart from "../../dataviz-react/src/lib/VariablePieChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -261,6 +266,11 @@ const switched = [
   "TileMapChart",
   "TimelineChart",
   "TopNFilter",
+  "TraceWaterfallChart",
+  "TreegraphChart",
+  "TrendLineChart",
+  "ValueSlicer",
+  "VariablePieChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -394,6 +404,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   TileMapChart: handWrittenTileMapChart.TileMapChart,
   TimelineChart: handWrittenTimelineChart.TimelineChart,
   TopNFilter: handWrittenTopNFilter.TopNFilter,
+  TraceWaterfallChart: handWrittenTraceWaterfallChart.TraceWaterfallChart,
+  TreegraphChart: handWrittenTreegraphChart.TreegraphChart,
+  TrendLineChart: handWrittenTrendLineChart.TrendLineChart,
+  ValueSlicer: handWrittenValueSlicer.ValueSlicer,
+  VariablePieChart: handWrittenVariablePieChart.VariablePieChart,
 };
 
 describe("dataviz React leg provenance", () => {

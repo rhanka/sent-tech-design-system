@@ -289,3 +289,15 @@ export { TimelineChart } from './lib/TimelineChart.js';
 export type { TimelineChartProps } from './lib/TimelineChart.js';
 export { TopNFilter } from './lib/TopNFilter.js';
 export type { TopNFilterProps } from './lib/TopNFilter.js';
+
+// Group 4 batch 10 components.
+export { TraceWaterfallChart } from './lib/TraceWaterfallChart.js';
+export type { TraceWaterfallChartProps } from './lib/TraceWaterfallChart.js';
+export { TreegraphChart } from './lib/TreegraphChart.js';
+export type { TreegraphChartProps } from './lib/TreegraphChart.js';
+export { TrendLineChart } from './lib/TrendLineChart.js';
+export type { TrendLineChartProps } from './lib/TrendLineChart.js';
+export { ValueSlicer } from './lib/ValueSlicer.js';
+export type { ValueSlicerProps } from './lib/ValueSlicer.js';
+export { VariablePieChart } from './lib/VariablePieChart.js';
+export type { VariablePieChartProps } from './lib/VariablePieChart.js';
