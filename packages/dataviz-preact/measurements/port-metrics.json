@@ -7,14 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 35,
+    "portedModules": 40,
     "barrelFile": "index.ts",
-    "remainingModules": 92,
+    "remainingModules": 87,
     "remainingFiles": [
-      "lib/CandlestickChart.tsx",
-      "lib/ChartExport.tsx",
-      "lib/ChordChart.tsx",
-      "lib/ChoroplethMap.tsx",
       "lib/ColumnPyramidChart.tsx",
       "lib/ColumnRangeChart.tsx",
       "lib/ContourChart.tsx",
@@ -33,7 +29,6 @@
       "lib/DumbbellChart.tsx",
       "lib/ErrorBarsChart.tsx",
       "lib/EventFeedPanel.tsx",
-      "lib/ExportMenu.tsx",
       "lib/FieldPane.tsx",
       "lib/FlamegraphChart.tsx",
       "lib/ForceGraph.tsx",
@@ -491,23 +486,78 @@
         "total": 174,
         "touched": 2,
         "emissionRewrites": 1
+      },
+      {
+        "module": "CandlestickChart",
+        "kind": "component",
+        "file": "src/lib/CandlestickChart.tsx",
+        "reactSource": "lib/CandlestickChart.tsx",
+        "reactLines": 62,
+        "preactLines": 68,
+        "total": 208,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ExportMenu",
+        "kind": "component",
+        "file": "src/lib/ExportMenu.tsx",
+        "reactSource": "lib/ExportMenu.tsx",
+        "reactLines": 69,
+        "preactLines": 71,
+        "total": 495,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ChartExport",
+        "kind": "component",
+        "file": "src/lib/ChartExport.tsx",
+        "reactSource": "lib/ChartExport.tsx",
+        "reactLines": 113,
+        "preactLines": 115,
+        "total": 672,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ChordChart",
+        "kind": "component",
+        "file": "src/lib/ChordChart.tsx",
+        "reactSource": "lib/ChordChart.tsx",
+        "reactLines": 39,
+        "preactLines": 45,
+        "total": 194,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ChoroplethMap",
+        "kind": "component",
+        "file": "src/lib/ChoroplethMap.tsx",
+        "reactSource": "lib/ChoroplethMap.tsx",
+        "reactLines": 32,
+        "preactLines": 37,
+        "total": 183,
+        "touched": 2,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 35,
-      "reactLines": 3625,
-      "preactLines": 3811,
-      "total": 21225,
-      "touched": 248,
-      "emissionRewrites": 31
+      "modules": 40,
+      "reactLines": 3940,
+      "preactLines": 4147,
+      "total": 22977,
+      "touched": 258,
+      "emissionRewrites": 36
     },
     "shared": {
-      "src/index.ts": 95,
+      "src/index.ts": 107,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 78
+      "vitest.react.config.ts": 82
     }
   },
   "reach": {

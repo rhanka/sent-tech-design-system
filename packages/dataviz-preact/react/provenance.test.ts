@@ -40,6 +40,11 @@ import * as handWrittenBulletChart from "../../dataviz-react/src/lib/BulletChart
 import * as handWrittenBumpChart from "../../dataviz-react/src/lib/BumpChart.js";
 import * as handWrittenCalculationEditor from "../../dataviz-react/src/lib/CalculationEditor.js";
 import * as handWrittenCalendarHeatmapChart from "../../dataviz-react/src/lib/CalendarHeatmapChart.js";
+import * as handWrittenCandlestickChart from "../../dataviz-react/src/lib/CandlestickChart.js";
+import * as handWrittenExportMenu from "../../dataviz-react/src/lib/ExportMenu.js";
+import * as handWrittenChartExportComponent from "../../dataviz-react/src/lib/ChartExport.js";
+import * as handWrittenChordChart from "../../dataviz-react/src/lib/ChordChart.js";
+import * as handWrittenChoroplethMap from "../../dataviz-react/src/lib/ChoroplethMap.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -47,6 +52,7 @@ import * as emittedPartOfWholeData from "../.react-emit/src/lib/partOfWholeData.
 import * as emittedAdvancedPivotData from "../.react-emit/src/lib/advancedPivotData.js";
 import * as emittedAnalyticsDsData from "../.react-emit/src/lib/analyticsDsData.js";
 import * as emittedChartExport from "../.react-emit/src/lib/chart-export.js";
+import * as emittedChartExportComponent from "../.react-emit/src/lib/ChartExport.js";
 import * as emittedGeoMapLayers from "../.react-emit/src/lib/geoMapLayers.js";
 
 const switched = [
@@ -92,6 +98,12 @@ const switched = [
   "BumpChart",
   "CalculationEditor",
   "CalendarHeatmapChart",
+  "CandlestickChart",
+  "ExportMenu",
+  "rowsToCsv",
+  "ChartExport",
+  "ChordChart",
+  "ChoroplethMap",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -137,6 +149,12 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   BumpChart: handWrittenBumpChart.BumpChart,
   CalculationEditor: handWrittenCalculationEditor.CalculationEditor,
   CalendarHeatmapChart: handWrittenCalendarHeatmapChart.CalendarHeatmapChart,
+  CandlestickChart: handWrittenCandlestickChart.CandlestickChart,
+  ExportMenu: handWrittenExportMenu.ExportMenu,
+  rowsToCsv: handWrittenExportMenu.rowsToCsv,
+  ChartExport: handWrittenChartExportComponent.ChartExport,
+  ChordChart: handWrittenChordChart.ChordChart,
+  ChoroplethMap: handWrittenChoroplethMap.ChoroplethMap,
 };
 
 describe("dataviz React leg provenance", () => {
@@ -164,5 +182,7 @@ describe("dataviz React leg provenance", () => {
     expect(emittedChartExport.resolveSvg).not.toBe(handWrittenChartExport.resolveSvg);
     expect(emittedGeoMapLayers.choroplethLayer).not.toBe(handWrittenGeoMapLayers.choroplethLayer);
     expect(emittedGeoMapLayers.pointsLayer).not.toBe(handWrittenGeoMapLayers.pointsLayer);
+    expect(emittedChartExportComponent.DEFAULT_EXPORT_LABELS).not.toBe(handWrittenChartExportComponent.DEFAULT_EXPORT_LABELS);
+    expect(emittedChartExportComponent.DEFAULT_EXPORT_LABELS).toEqual(handWrittenChartExportComponent.DEFAULT_EXPORT_LABELS);
   });
 });
