@@ -615,6 +615,14 @@
       if (explicit && root.contains(explicit)) {
         return explicit as HTMLElement;
       }
+      // Block/header anchors carry the closest [data-anchor-id] container aid.
+      // Prefer that container over the innermost fallback element so the
+      // created anchor keeps the block aid even against a review-core build
+      // that only reads aid on the element itself.
+      const block = el.closest("[data-anchor-id]");
+      if (block && root.contains(block) && block !== root) {
+        return block as HTMLElement;
+      }
       const fallback = el.closest(COMMENTABLE_FALLBACK_SELECTOR);
       if (fallback && root.contains(fallback)) {
         return fallback as HTMLElement;
