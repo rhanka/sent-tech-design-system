@@ -162,12 +162,14 @@
   const borderToken = "var(--st-component-diagramZone-borderWidth, 1.5px)";
   const frameTop = (frameY: number): string => `calc(${frameY - y}px - ${borderToken})`;
   const frameInset = (inset: number): string => `calc(${inset}px - ${borderToken})`;
-  // Header band: frame top + headerInset, spanning the header/content
-  // inline insets, as tall as the layout's header block + subtitle.
+  // Header band: frame top + headerInset, spanning the header inline insets
+  // (left and right both anchored to headerInset, matching layoutZone and the
+  // toggle inset even when containerPadding differs on v2), as tall as the
+  // layout's header block + subtitle.
   const headerStyle = $derived(
     header === undefined
       ? undefined
-      : `top:${frameTop(y + zoneGeometry.headerInset)};left:${frameInset(zoneGeometry.headerInset)};right:${frameInset(containerPadding ?? zoneGeometry.headerInset)};height:${header.ruleY - zoneGeometry.headerRuleGap - y - zoneGeometry.headerInset}px`,
+      : `top:${frameTop(y + zoneGeometry.headerInset)};left:${frameInset(zoneGeometry.headerInset)};right:${frameInset(zoneGeometry.headerInset)};height:${header.ruleY - zoneGeometry.headerRuleGap - y - zoneGeometry.headerInset}px`,
   );
   const ruleStyle = $derived(
     header === undefined
