@@ -21,9 +21,20 @@ export type PropsParity = [
   Expect<Equal<Emitted.TenantTheme, HandWritten.TenantTheme>>,
   Expect<Equal<Emitted.DrillLevel, HandWritten.DrillLevel>>,
   Expect<Equal<Emitted.DrillDatum, HandWritten.DrillDatum>>,
+  Expect<Equal<Emitted.AreaChartProps, HandWritten.AreaChartProps>>,
+  Expect<Equal<Emitted.ComboChartProps, HandWritten.ComboChartProps>>,
+  Expect<Equal<Emitted.LollipopChartProps, HandWritten.LollipopChartProps>>,
+  Expect<Equal<Emitted.StackedBarChartProps, HandWritten.StackedBarChartProps>>,
+  Expect<Equal<Emitted.StepLineChartProps, HandWritten.StepLineChartProps>>,
 ];
 
-export type ComponentParity = [];
+export type ComponentParity = [
+  Expect<Equal<typeof Emitted.AreaChart, typeof HandWritten.AreaChart>>,
+  Expect<Equal<typeof Emitted.ComboChart, typeof HandWritten.ComboChart>>,
+  Expect<Equal<typeof Emitted.LollipopChart, typeof HandWritten.LollipopChart>>,
+  Expect<Equal<typeof Emitted.StackedBarChart, typeof HandWritten.StackedBarChart>>,
+  Expect<Equal<typeof Emitted.StepLineChart, typeof HandWritten.StepLineChart>>,
+];
 
 export type ValueParity = [
   Expect<Equal<typeof Emitted.useDashboard, typeof HandWritten.useDashboard>>,
