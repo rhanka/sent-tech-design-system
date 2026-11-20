@@ -1,8 +1,8 @@
 {
   "componentId": "modal",
   "contractSource": "derived",
-  "digest": "sha256:34fbf39fa5947e13f6d0374ad879b170d751bc6d293a76d9481242cddadfc23a",
-  "entryDigest": "sha256:f82b297a42d55244fe8e04bd008964f2e22fc45f42a1290a593b7d2b4db167f0",
+  "digest": "sha256:c585d7c774bd86af8bbb8289ee8fedcb226831c250072f5ad29a452df3bdf37b",
+  "entryDigest": "sha256:ef3bff7f26fa1c1a548b395b2e0baea067f932135e8436dd7130bde448b33a50",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -193,7 +193,7 @@
         "declarationPath": "packages/components-svelte/dist/Modal.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ModalProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],
