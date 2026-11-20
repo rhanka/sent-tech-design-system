@@ -52,6 +52,15 @@ export type {
 } from "./Typography.js";
 export { Portal, resolvePortalTarget } from "./Portal.js";
 export type { PortalProps } from "./Portal.js";
+export { Popper, computePosition, splitPlacement, joinPlacement } from "./Popper.js";
+export type {
+  PopperProps,
+  PopperPlacement,
+  PopperStrategy,
+  PopperSide,
+  PopperAlign,
+  Rect,
+} from "./Popper.js";
 export { ThemeProvider } from "./ThemeProvider.js";
 export type { ThemeProviderProps } from "./ThemeProvider.js";
 export { Accordion } from "./Accordion.js";
@@ -209,6 +218,8 @@ export { NavItem } from "./NavItem.js";
 export type { NavItemProps, NavItemDepth, NavItemStatus, NavItemSwatch } from "./NavItem.js";
 export { NavRail } from "./NavRail.js";
 export type { NavRailProps, NavRailItem } from "./NavRail.js";
+export { NavSection } from "./NavSection.js";
+export type { NavSectionProps, NavSectionHeadingLevel } from "./NavSection.js";
 export { NavShell } from "./NavShell.js";
 export type { NavShellProps, NavShellVariant, NavShellSide } from "./NavShell.js";
 export { NumberInput } from "./NumberInput.js";
@@ -281,6 +292,7 @@ export type {
   SubMenuSide,
 } from "./menu-cascade.js";
 export {
+  DEFAULT_TIME_RANGE_PRESETS,
   composeAbsolute,
   formatPresetLabel,
   formatTriggerLabel,

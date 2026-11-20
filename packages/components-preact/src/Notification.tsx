@@ -2,13 +2,14 @@ import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import { forwardRef } from "./runtime.js";
 import type { ComponentChildren } from "./runtime.js";
+import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
 export type NotificationProps = Omit<HTMLAttributes<HTMLElement>, "className" | "title"> & {
   tone?: "info" | "success" | "warning" | "error";
   title: string;
   message?: string;
-  dismissible?: boolean;
+  dismissible?: MaybeSignal<boolean>;
   dismissLabel?: string;
   locale?: string;
   onDismiss?: () => void;
@@ -36,7 +37,8 @@ export const Notification = forwardRef<HTMLElement, NotificationProps>(
   ) => {
     const isFr = (locale ?? "fr-FR").toLowerCase().startsWith("fr");
     const resolvedDismissLabel = dismissLabel ?? (isFr ? "Fermer" : "Dismiss");
-    const canDismiss = dismissible && typeof onDismiss === "function";
+    const isDismissible = useValue(dismissible);
+    const canDismiss = isDismissible && typeof onDismiss === "function";
     const role = tone === "error" ? "alert" : "status";
 
     return (

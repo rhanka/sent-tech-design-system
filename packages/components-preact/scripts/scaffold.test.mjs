@@ -8,7 +8,7 @@ import { BASE_REF } from "./port-metrics.mjs";
 import { checkManifest, readManifest, sourceModules } from "./coverage-manifest.mjs";
 import { checkPackaging } from "./package-guard.mjs";
 
-test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups 1, 2 and 3 and P4a groups 1, 2 and 3 and P4b groups 1, 2 and 3 and P4c groups 1 and 2, no more", () => {
+test("coverage manifest owns the spike modules plus lots P1, P2, P3, P4a, P4b, P4c and P5, no more", () => {
   const { manifest } = readManifest();
   assert.deepEqual(manifest.modules.map((row) => row.module).sort(), [
     "Accordion",
@@ -129,6 +129,7 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "NavDrawer",
     "NavItem",
     "NavRail",
+    "NavSection",
     "NavShell",
     "Notification",
     "NumberInput",
@@ -148,6 +149,7 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "PointAndFigureChart",
     "PolygonChart",
     "Popover",
+    "Popper",
     "Portal",
     "PriorityMatrix",
     "ProgressBar",
@@ -427,6 +429,10 @@ test("coverage manifest lots are W3 conversion lots; hard set overlaps P5", () =
   assert.deepEqual(lots.get("Portal"), "P4c");
   assert.deepEqual(lots.get("ThemeProvider"), "P4c");
   assert.deepEqual(lots.get("PanelStack"), "P4c");
+  // Popper (overlay Portal consumer) and NavSection (navigation useId consumer)
+  // are converted in P5 group 1, keeping their index categories.
+  assert.deepEqual(lots.get("Popper"), "P5");
+  assert.deepEqual(lots.get("NavSection"), "P5");
   for (const name of [
     "Accordion",
     "Alert",

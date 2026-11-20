@@ -2,6 +2,7 @@ import type { CSSProperties, HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import { mergeStyle } from "./internal.js";
 import { forwardRef } from "./runtime.js";
+import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
 export type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
@@ -14,8 +15,8 @@ export type FlexProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   gap?: number;
   align?: FlexAlign;
   justify?: FlexJustify;
-  wrap?: boolean;
-  inline?: boolean;
+  wrap?: MaybeSignal<boolean>;
+  inline?: MaybeSignal<boolean>;
   as?: string;
   className?: MaybeSignal<string>;
 };
@@ -89,11 +90,13 @@ export const Flex = forwardRef<HTMLElement, FlexProps>(
     ref,
   ) => {
     const Tag: any = as;
+    const isWrap = useValue(wrap);
+    const isInline = useValue(inline);
     const mergedStyle = mergeStyle(
       {
-        display: inline ? "inline-flex" : "flex",
+        display: isInline ? "inline-flex" : "flex",
         flexDirection: direction,
-        flexWrap: wrap ? "wrap" : "nowrap",
+        flexWrap: isWrap ? "wrap" : "nowrap",
         alignItems: alignValue(align),
         justifyContent: justifyValue(justify),
         gap: spacingToken(gap),
