@@ -3,7 +3,12 @@ import type { HTMLAttributes } from "preact";
 import { useCallback, useContext, useEffect, useRef } from "preact/hooks";
 import { classNames } from "./classNames.js";
 import { focusWithin, forwardRef } from "./runtime.js";
-import type { ComponentChildren, TargetedKeyboardEvent, TargetedMouseEvent } from "./runtime.js";
+import type {
+  ComponentChildren,
+  TargetedFocusEvent,
+  TargetedKeyboardEvent,
+  TargetedMouseEvent,
+} from "./runtime.js";
 import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
@@ -118,6 +123,9 @@ export const SelectableRow = forwardRef<HTMLElement, SelectableRowProps>(
       children,
       caption,
       className,
+      onClick,
+      onKeyDown,
+      onFocus,
       ...rest
     },
     ref,
@@ -125,6 +133,12 @@ export const SelectableRow = forwardRef<HTMLElement, SelectableRowProps>(
     const selected = useValue(selectedInput) ?? false;
     const disabled = useValue(disabledInput) ?? false;
     const accentBar = useValue(accentBarInput) ?? false;
+    // `onFocusIn` arrives in the rest props (Preact-only, via `HTMLAttributes`;
+    // React has no such prop): pull it out so the `focusWithin` spread below
+    // does not drop it.
+    const { onFocusIn: onFocusInProp, ...hostRest } = rest as typeof rest & {
+      onFocusIn?: (event: TargetedFocusEvent<HTMLElement>) => void;
+    };
     const list = useContext(SelectableListContext);
     // Subscribe to the list's version so this row re-renders (and recomputes
     // role / tabindex / aria-selected) on every selection / focus / registry
@@ -179,12 +193,26 @@ export const SelectableRow = forwardRef<HTMLElement, SelectableRowProps>(
       onSelect?.(!selected);
     }
 
+    function handleClick(e: TargetedMouseEvent<HTMLElement>) {
+      if (disabled) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      activate(e);
+      onClick?.(e);
+    }
+
     function handleKeyDown(e: TargetedKeyboardEvent<HTMLElement>) {
       if (disabled) return;
-      if (href && !list) return;
+      if (href && !list) {
+        onKeyDown?.(e);
+        return;
+      }
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         activate();
+        onKeyDown?.(e);
         return;
       }
       // Roving navigation is owned by the list; forward the relevant keys.
@@ -202,20 +230,24 @@ export const SelectableRow = forwardRef<HTMLElement, SelectableRowProps>(
         e.preventDefault();
         list.navigate(node, e.key);
       }
+      onKeyDown?.(e);
     }
 
     // Runs for the row and for a focusable descendant placed in `leading` /
     // `trailing`: either way this row becomes the roving tab stop of the list.
-    function handleFocus() {
-      if (disabled) return;
-      const node = innerRef.current;
-      if (list && node) list.focusRow(node);
+    function handleFocus(e: TargetedFocusEvent<HTMLElement>) {
+      if (!disabled) {
+        const node = innerRef.current;
+        if (list && node) list.focusRow(node);
+      }
+      onFocus?.(e);
+      onFocusInProp?.(e);
     }
 
     return createElement(
       href ? "a" : "div",
       {
-        ...rest,
+        ...hostRest,
         ref: setRef,
         href: href && !disabled ? href : undefined,
         className: classNames(
@@ -232,7 +264,7 @@ export const SelectableRow = forwardRef<HTMLElement, SelectableRowProps>(
         "aria-disabled": disabled ? "true" : undefined,
         "data-value": value,
         tabIndex,
-        onClick: activate,
+        onClick: handleClick,
         onKeyDown: handleKeyDown,
         ...focusWithin<HTMLElement>(handleFocus),
       },

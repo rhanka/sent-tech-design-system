@@ -52,6 +52,31 @@ describe("SelectableRow (React emission), plain-prop parity", () => {
     fireEvent.click(row);
     expect(onSelect).toHaveBeenCalledTimes(1);
   });
+
+  it("composes consumer onClick, onKeyDown and onFocus with internal handlers", () => {
+    const onSelect = vi.fn();
+    const onClick = vi.fn();
+    const onKeyDown = vi.fn();
+    const onFocus = vi.fn();
+
+    render(
+      <SelectableRow value="a" onSelect={onSelect} onClick={onClick} onKeyDown={onKeyDown} onFocus={onFocus}>
+        Alpha
+      </SelectableRow>,
+    );
+    const row = screen.getByRole("button", { name: "Alpha" });
+
+    fireEvent.click(row);
+    expect(onSelect).toHaveBeenCalledTimes(1);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    fireEvent.keyDown(row, { key: "Enter" });
+    expect(onSelect).toHaveBeenCalledTimes(2);
+    expect(onKeyDown).toHaveBeenCalledTimes(1);
+
+    act(() => row.focus());
+    expect(onFocus).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("SelectableRow (React emission), focus inside a row", () => {
