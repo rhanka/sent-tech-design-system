@@ -54,7 +54,7 @@ const reactTests: string[] = [
   "lib/chart-export.test.ts", // emitted lib/chart-export.ts
   "lib/url-sync.test.tsx", // emitted lib/url-sync.ts + lib/useUrlSync.ts
   "lib/AdvancedPivotDataTable.test.tsx", // emitted AdvancedPivotDataTable + advancedPivotData
-  "lib/AnalyticsCharts.test.tsx", // emitted AnalyticsClusterPlot, ErrorBarsChart, ForecastLineChart, PercentileBandChart, ReferenceLineChart + analyticsDsData
+  "lib/AnalyticsCharts.test.tsx", // emitted AnalyticsClusterPlot, ErrorBarsChart, ForecastLineChart, PercentileBandChart, ReferenceLineChart, TrendLineChart + analyticsDsData
   "lib/BookmarkNavigator.test.tsx", // emitted BookmarkNavigator
   "lib/DistributionCharts.test.tsx", // emitted BoxPlotChart, BulletChart, CalendarHeatmapChart, GaugeChart, HeatmapChart, HistogramChart + distributionData
   "lib/CalculationEditor.test.tsx", // emitted CalculationEditor
@@ -80,6 +80,7 @@ const reactTests: string[] = [
   "lib/SelectionLegend.test.tsx", // emitted SelectionLegend
   "lib/SmallMultiples.test.tsx", // emitted SmallMultiples
   "lib/TopNFilter.test.tsx", // emitted TopNFilter
+  "lib/ValueSlicer.test.tsx", // emitted ValueSlicer
 ];
 
 export default defineConfig({
