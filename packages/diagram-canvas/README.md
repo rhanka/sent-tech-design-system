@@ -458,3 +458,36 @@ acceptance cases are imported directly from unpublished `test-support` source. S
   `DESIGN SYSTEM`, `SENTROPIC & 3RD PARTIES`, `SENTROPIC & TIERS`). Both lints
   are also callable directly via `lintArrowDirection`, `lintZoneTagAcronyms`,
   and `lintDiagramConventions`.
+
+## Projected model chain (E1)
+
+One documented chain from a projected model to the three render targets,
+with no dependency on the upstream model owner (REQ-R7-19). The input is a
+static generic fixture in the projected-model shape (`test-support/
+projectedChainFixture.ts`): a `generic@2` semantic document, a typed
+presentation (compact `v2` anatomy, `icon: "none"`), DE-2 link-style words,
+and a declaration ordering. Under the current placement the chain is:
+
+```
+projected model  →  layoutMeasured (row-pack @1)  →  resolveScene  →  SceneModel
+                                                       ├─ Svelte DiagramSceneFigure (latest)
+                                                       ├─ Vue DiagramSceneFigure (next)
+                                                       └─ renderSceneSvg (@sentropic/diagram-canvas/diagram-render)
+```
+
+- `layoutMeasured` / `layoutFolded` (`layout/measured.ts`) lays the
+  projected document out; `layoutScene` (`presentation/diagramSceneModel.ts`)
+  is the shared seam both hosts call before `resolveScene`.
+- `resolveScene` (`presentation/diagramSceneModel.ts:509`) turns a laid-out
+  result into the one `SceneModel` every target renders: same nodes, same
+  edges, same geometry, same bounds, same link legend.
+- `renderSceneSvg` (`presentation/renderSceneSvg.ts`) runs the same
+  `layoutScene` + `resolveScene` pair and serialises the model; the
+  Svelte and Vue hosts wrap the same pair and paint it live, including
+  fold/unfold with relayout and link recompute.
+- Parity and fold behaviour over the fixture are pinned by
+  `tests/presentation/projectedChain.test.ts` (three-target parity:
+  direct `layoutMeasured`, the shared `layoutScene` seam, and the SVG
+  serialisation) and
+  `tests/presentation/projectedChainFold.test.ts` (fold/unfold relayout,
+  link recompute, legend and depth restamping, unfold symmetry).
