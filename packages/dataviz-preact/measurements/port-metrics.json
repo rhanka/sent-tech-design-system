@@ -7,16 +7,15 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 5,
+    "portedModules": 10,
     "barrelFile": "index.ts",
-    "remainingModules": 122,
+    "remainingModules": 117,
     "remainingFiles": [
       "lib/AdvancedPivotDataTable.tsx",
       "lib/AnalyticsClusterPlot.tsx",
       "lib/AnimatedBubbleChart.tsx",
       "lib/AnomalySwimLaneChart.tsx",
       "lib/ArcDiagramChart.tsx",
-      "lib/AreaChart.tsx",
       "lib/AreaRangeChart.tsx",
       "lib/AreaSplineRangeChart.tsx",
       "lib/BellCurveChart.tsx",
@@ -32,7 +31,6 @@
       "lib/ChoroplethMap.tsx",
       "lib/ColumnPyramidChart.tsx",
       "lib/ColumnRangeChart.tsx",
-      "lib/ComboChart.tsx",
       "lib/ContourChart.tsx",
       "lib/CorrelationMatrix.tsx",
       "lib/CrossfilteredBarChart.tsx",
@@ -74,7 +72,6 @@
       "lib/HollowCandlestickChart.tsx",
       "lib/ItemChart.tsx",
       "lib/KpiCardGroup.tsx",
-      "lib/LollipopChart.tsx",
       "lib/MekkoChart.tsx",
       "lib/OHLCChart.tsx",
       "lib/ObjectLayers.tsx",
@@ -104,10 +101,8 @@
       "lib/SmallMultiples.tsx",
       "lib/SolidGaugeChart.tsx",
       "lib/Sparkline.tsx",
-      "lib/StackedBarChart.tsx",
       "lib/StateTimelineChart.tsx",
       "lib/StatusHistoryChart.tsx",
-      "lib/StepLineChart.tsx",
       "lib/StreamgraphChart.tsx",
       "lib/SunburstChart.tsx",
       "lib/TileMapChart.tsx",
@@ -191,23 +186,78 @@
         "total": 345,
         "touched": 0,
         "emissionRewrites": 0
+      },
+      {
+        "module": "AreaChart",
+        "kind": "component",
+        "file": "src/lib/AreaChart.tsx",
+        "reactSource": "lib/AreaChart.tsx",
+        "reactLines": 55,
+        "preactLines": 78,
+        "total": 291,
+        "touched": 4,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ComboChart",
+        "kind": "component",
+        "file": "src/lib/ComboChart.tsx",
+        "reactSource": "lib/ComboChart.tsx",
+        "reactLines": 98,
+        "preactLines": 107,
+        "total": 463,
+        "touched": 5,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "LollipopChart",
+        "kind": "component",
+        "file": "src/lib/LollipopChart.tsx",
+        "reactSource": "lib/LollipopChart.tsx",
+        "reactLines": 59,
+        "preactLines": 65,
+        "total": 245,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "StackedBarChart",
+        "kind": "component",
+        "file": "src/lib/StackedBarChart.tsx",
+        "reactSource": "lib/StackedBarChart.tsx",
+        "reactLines": 67,
+        "preactLines": 78,
+        "total": 268,
+        "touched": 4,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "StepLineChart",
+        "kind": "component",
+        "file": "src/lib/StepLineChart.tsx",
+        "reactSource": "lib/StepLineChart.tsx",
+        "reactLines": 42,
+        "preactLines": 57,
+        "total": 190,
+        "touched": 2,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 5,
-      "reactLines": 517,
-      "preactLines": 520,
-      "total": 3066,
-      "touched": 4,
-      "emissionRewrites": 1
+      "modules": 10,
+      "reactLines": 838,
+      "preactLines": 905,
+      "total": 4523,
+      "touched": 21,
+      "emissionRewrites": 6
     },
     "shared": {
-      "src/index.ts": 14,
+      "src/index.ts": 26,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 65
+      "vitest.react.config.ts": 66
     }
   },
   "reach": {
