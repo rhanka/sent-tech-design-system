@@ -1,6 +1,7 @@
 import { flowIndex, parentOccurrenceOf, representativeOf, type FlowIndex, type FlowStep } from "@sentropic/diagram-core";
 import type { FlowArrow, FlowBundle, FlowVisibleTarget } from "../layout/flows.js";
-import type { Visible } from "./flowModel.js";
+import { DEFAULT_FLOW_STRINGS, type Visible } from "./flowModel.js";
+import type { DiagramSceneFigureLabels } from "./diagramSceneTypes.js";
 import { measureErdCard, renderErdMarkerSvg, erdText, wrapErdText, placeErdRoleLabels, ERD_GEOMETRY, type ErdCard } from "./erd.js";
 import type { EntityRef, ErdCardinality } from "@sentropic/diagram-core";
 /**
@@ -47,9 +48,10 @@ import {
 
 import { measureBundleLabel, type BundleLabelGroup } from "../layout/bundleLabel.js";
 import { getDiagramGlyph } from "./registry.js";
-import { lineBoxHeight, ZONE_GEOMETRY } from "./diagramCardModel.js";
+import { anatomyZoneGeometry, lineBoxHeight, ZONE_GEOMETRY } from "./diagramCardModel.js";
 import { clearSceneLabels } from "./sceneLabelClearance.js";
 import type { EntityPresentation } from "@sentropic/diagram-core";
+import type { AlignPinned, AnatomyPinned, DepthPinned, DiagramAnatomy } from "./diagramCardModel.js";
 
 /** The semantic document the layout engine reads. */
 export type SceneDocument = Parameters<typeof layoutMeasured>[0];
@@ -103,29 +105,98 @@ export type SceneIconBindings = Readonly<Record<string, { readonly icon?: string
 export const ROLE_ICONS: Readonly<Record<string, string>> = { card: "base", zone: "cluster", store: "db", actor: "user", api: "api", runtime: "server" };
 
 export function resolveScenePresentation(document: SceneDocument, presentation: ScenePresentation,
-  bindings: SceneIconBindings = {}, strict = true, view?: SceneView, resolveGlyph: (name: string) => import("./diagramCardModel.js").DiagramGlyphPaths | undefined = getDiagramGlyph) {
+  bindings: SceneIconBindings = {}, strict = true, view?: SceneView, resolveGlyph: (name: string) => import("./diagramCardModel.js").DiagramGlyphPaths | undefined = getDiagramGlyph,
+  options: { readonly depthParityStart?: 0 | 1 } = {}) {
   const missing: string[] = [];
+  /**
+   * View-level anatomy default (DE-1): a view pins `diagram-anatomy/v1 | v2`
+   * and its boxes inherit the pin unless they carry their own. Absent
+   * everywhere means `"v1"` — existing views do not move.
+   */
+  const viewAnatomy = (view?.presentation as { readonly anatomy?: DiagramAnatomy } | undefined)?.anatomy;
+  const withViewAnatomy = <T extends { readonly anatomy?: DiagramAnatomy }>(entry: T): T =>
+    entry.anatomy === undefined && viewAnatomy !== undefined ? { ...entry, anatomy: viewAnatomy } : entry;
   const entities = Object.fromEntries(Object.entries(presentation.entities).map(([id, entry]) => {
-    if (entry.form !== "card" && entry.form !== "container" && entry.form !== "legend") return [id, entry];
+    if (entry.form !== "card" && entry.form !== "container" && entry.form !== "legend") return [id, withViewAnatomy(entry)];
     const entityId = view?.entityOccurrences[id]?.entity ?? id.replace(/^occurrence:e\./, "entity:");
     const entity = document.entities[entityId];
-    if (entity?.profile === "erd@1") return [id, entry];
+    if (entity?.profile === "erd@1") return [id, withViewAnatomy(entry)];
     const binding = bindings[entity === undefined ? "" : entity.profile + ":" + entity.type] ?? bindings[entity?.type ?? ""];
-    if (binding?.shape !== undefined && binding.shape !== "component") return [id, { ...entry, icon: entry.icon ?? "none" }];
+    if (binding?.shape !== undefined && binding.shape !== "component") return [id, withViewAnatomy({ ...entry, icon: entry.icon ?? "none" })];
     const role = binding?.role ?? (entry.form === "card" ? "card" : "zone");
     const icon = entry.icon ?? binding?.icon ?? ROLE_ICONS[role];
+    if (icon === "none") return [id, withViewAnatomy({ ...entry, icon: "none" })];
     if (icon === undefined || resolveGlyph(icon) === undefined) {
       missing.push(id);
-      return [id, { ...entry, icon: strict ? "unknown" : "none" }];
+      return [id, withViewAnatomy({ ...entry, icon: strict ? "unknown" : "none" })];
     }
-    return [id, { ...entry, icon }];
+    return [id, withViewAnatomy({ ...entry, icon })];
   }));
-  return { presentation: { ...presentation, entities }, missing };
+  /**
+   * Owner addendum 1 — stamp nesting depth from the view groups (or from
+   * semantic `contains` relations when no view is supplied) onto zone
+   * entries (top level `0`), so frames alternate without page code. Entries
+   * pinning their own depth keep it; card entries are untouched (their
+   * semantic tints never change). The selectable `startParity` rides along
+   * the same way when the scene selects it.
+   */
+  const startParity = options.depthParityStart ?? 0;
+  const hasViewGroups = view !== undefined && Object.keys(view.groups).length > 0;
+  const semanticParentOf = new Map<string, string>();
+  if (!hasViewGroups && document.relations !== undefined) {
+    for (const relation of Object.values(document.relations)) {
+      const baseType = document.typeDefinitions?.[relation.type]?.baseType ?? relation.type;
+      if (baseType !== "contains") continue;
+      const parent = relation.endpoints.find((endpoint) => endpoint.role === "parent")?.target;
+      const child = relation.endpoints.find((endpoint) => endpoint.role === "child")?.target;
+      if (parent !== undefined && child !== undefined) semanticParentOf.set(child, parent);
+    }
+  }
+  const depthOf = (id: string): number => {
+    let depth = 0;
+    const seen = new Set<string>();
+    if (hasViewGroups) {
+      for (let parent = parentOccurrenceOf(view, id as SceneOccurrenceRef); parent !== undefined && !seen.has(parent); parent = parentOccurrenceOf(view, parent)) {
+        seen.add(parent);
+        depth += 1;
+      }
+      return depth;
+    }
+    const entityId = view?.entityOccurrences[id]?.entity ?? id.replace(/^occurrence:e\./, "entity:");
+    for (let parent = semanticParentOf.get(entityId); parent !== undefined && !seen.has(parent); parent = semanticParentOf.get(parent)) {
+      seen.add(parent);
+      depth += 1;
+    }
+    return depth;
+  };
+  const stamped = Object.fromEntries(Object.entries(entities).map(([id, entry]) => {
+    const zone = entry as { readonly form?: string; readonly depth?: number; readonly depthParityStart?: 0 | 1 };
+    if (zone.form !== "container" && zone.form !== "legend") return [id, entry];
+    // Lean stamps: the top level and the default parity need no key
+    // (absent means `0` / `0` everywhere downstream). Explicit depth pins are
+    // preserved while still inheriting a non-default scene `depthParityStart`.
+    const depth = zone.depth === undefined ? depthOf(id) : undefined;
+    const needsParity = zone.depthParityStart === undefined && startParity !== 0;
+    if ((depth === undefined || depth === 0) && !needsParity) return [id, entry];
+    return [id, {
+      ...entry,
+      ...(depth === undefined || depth === 0 ? {} : { depth }),
+      ...(needsParity ? { depthParityStart: startParity } : {}),
+    }];
+  }));
+  return { presentation: { ...presentation, entities: stamped }, missing };
 }
 
 export interface SceneLayoutInput {
   readonly iconBindings?: SceneIconBindings;
   readonly strictIcons?: boolean;
+  /**
+   * Owner addendum 1 — selectable start parity for the depth rule: `1`
+   * flips which parity the top level takes. Absent means `0`.
+   */
+  readonly depthParityStart?: 0 | 1;
+  /** Opt-in informational `zone-surface-same` diagnostic on untinted leaf cards inside `surface1` zones. */
+  readonly reportSurfaceSame?: boolean;
   readonly resolveGlyph?: (name: string) => import("./diagramCardModel.js").DiagramGlyphPaths | undefined;
   readonly cache?: SceneLayoutCache;
   readonly document: SceneDocument;
@@ -153,7 +224,8 @@ export interface SceneLayoutInput {
  * required field carries no second metric source.
  */
 export function layoutScene(input: SceneLayoutInput): LayoutResult {
-  const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, input.view, input.resolveGlyph);
+  const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, input.view, input.resolveGlyph,
+    input.depthParityStart === undefined ? {} : { depthParityStart: input.depthParityStart });
   const options: LayoutOptions = {
     registry: input.registry,
     ...(input.flows === undefined ? {} : { flows: input.flows }),
@@ -177,6 +249,7 @@ export function layoutScene(input: SceneLayoutInput): LayoutResult {
     rowPack: input.rowPack ?? {},
     targetWidth: input.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
     ...(input.previousOrientation === undefined ? {} : { previousOrientation: input.previousOrientation }),
+    ...(input.reportSurfaceSame === undefined ? {} : { reportSurfaceSame: input.reportSurfaceSame }),
   };
   const result = input.cache !== undefined
     ? (input.view === undefined
@@ -208,7 +281,7 @@ export interface SceneNodeModel {
   /** Zones only: drawn as the atomic card (collapsed) or as the frame. */
   readonly collapsed: boolean;
   readonly rect: Rect;
-  readonly presentation?: EntityPresentation;
+  readonly presentation?: EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned;
   /** Text of a node with no card form (L-R12 label) or of a legend key. */
   readonly text: string;
   readonly erd?: ErdCard;
@@ -349,17 +422,18 @@ function edgeLabelOf(document: SceneDocument, relation: string): string | undefi
  */
 export function resolveScene(
   result: SceneLaidOut,
-  input: Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics" | "iconBindings" | "strictIcons" | "view" | "resolveGlyph" | "flows">,
+  input: Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics" | "iconBindings" | "strictIcons" | "view" | "resolveGlyph" | "flows" | "depthParityStart">,
 ): SceneModel {
   const view = result.view;
-  const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, input.view, input.resolveGlyph);
+  const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, view, input.resolveGlyph,
+    input.depthParityStart === undefined ? {} : { depthParityStart: input.depthParityStart });
   const frame = buildScene({ document: input.document, views: { [view.viewId]: view } }, view.viewId);
   const bundledMembers = new Set(Object.values(result.edgeBundles ?? {}).flatMap(bundle => bundle.members.slice(1)));
   const items = frame.items.filter(item => item.kind !== "edge" || !bundledMembers.has(item.occurrence));
   const visibleEdges = new Set(items.filter(item => item.kind === "edge").map(item => item.occurrence as string));
   const collapsed = new Set<string>(collapsedOccurrencesOf(view));
   const nodes: SceneNodeModel[] = sceneNodes(frame).map((node) => {
-    const presentation = resolved.presentation.entities[node.occurrence] as EntityPresentation | undefined;
+    const presentation = resolved.presentation.entities[node.occurrence] as (EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned) | undefined;
     const form = presentation?.form;
     const titled = presentation?.text.title !== undefined && presentation.text.title !== "";
     const erd = input.document.entities[node.entity]?.profile === "erd@1";
@@ -408,26 +482,27 @@ export function resolveScene(
     }
     const height = headerHeights.get(node.occurrence);
     if (height === undefined) continue;
-    const ruleClearance = (ZONE_GEOMETRY.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
+    const zoneGeo = anatomyZoneGeometry(node.presentation?.anatomy);
+    const ruleClearance = (zoneGeo.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
     blockers.push({
       x: node.rect.x,
       y: node.rect.y,
       width: node.rect.width,
-      height: CONTENT_INSET + height + ZONE_GEOMETRY.ruleHeight / 2 + ruleClearance,
+      height: zoneGeo.headerInset + height + zoneGeo.ruleHeight / 2 + ruleClearance,
     });
     // A zone footer has one allocated line. Reserve its fixed chrome from
     // the presentation instead of measuring the scene again during replay.
     const reserve = node.presentation?.text.footer?.trim()
-      ? lineBoxHeight(ZONE_GEOMETRY.footer.size) + ZONE_GEOMETRY.ruleHeight + 2 * ZONE_GEOMETRY.ruleMargin + ZONE_GEOMETRY.footerBottomInset : 0;
+      ? lineBoxHeight(zoneGeo.footer.size) + zoneGeo.ruleHeight + 2 * zoneGeo.ruleMargin + zoneGeo.footerBottomInset : 0;
     if (reserve > 0) {
-      blockers.push({ x: node.rect.x, y: node.rect.y + node.rect.height - reserve - ZONE_GEOMETRY.borderWidth - ruleClearance,
-        width: node.rect.width, height: reserve + ZONE_GEOMETRY.borderWidth + ruleClearance });
+      blockers.push({ x: node.rect.x, y: node.rect.y + node.rect.height - reserve - zoneGeo.borderWidth - ruleClearance,
+        width: node.rect.width, height: reserve + zoneGeo.borderWidth + ruleClearance });
       // The footer line as `layoutZone` seats it: one line box pinned above
       // the bottom border, from the content inset, as wide as its measured
       // text (the whole inner width when the result carries no measurement).
       const inner = Math.max(0, node.rect.width - 2 * zoneInset);
-      const lineHeight = lineBoxHeight(ZONE_GEOMETRY.footer.size);
-      const bottom = node.rect.y + node.rect.height - ZONE_GEOMETRY.borderWidth - ZONE_GEOMETRY.footerBottomInset;
+      const lineHeight = lineBoxHeight(zoneGeo.footer.size);
+      const bottom = node.rect.y + node.rect.height - zoneGeo.borderWidth - zoneGeo.footerBottomInset;
       const pad = paintClearance + CONNECTOR_CUTOUT_SLACK;
       connectorCutouts.push({
         x: node.rect.x + zoneInset - pad,
@@ -554,12 +629,38 @@ export function resolveScene(
   };
 }
 
-/** Full presentation text retained alongside the textual relations (A14). */
-export function sceneTextRows(scene: SceneModel, document: SceneDocument): readonly string[] {
+/** Default labels for `DiagramSceneFigure`, including the DE-1b containment fallback label. */
+export const DEFAULT_SCENE_LABELS: DiagramSceneFigureLabels = Object.freeze({
+  ...DEFAULT_FLOW_STRINGS,
+  controls: "Zoom",
+  zoomIn: "Zoom in",
+  zoomOut: "Zoom out",
+  fit: "Fit",
+  zoomLevel: (percent: number) => `Zoom ${percent} %`,
+  viewport: "Diagram",
+  expand: (title: string) => `Expand ${title}`,
+  collapse: (title: string) => `Collapse ${title}`,
+  contains: "includes",
+});
+
+function isContainmentRelation(document: SceneDocument, relation: SceneDocument["relations"][string]): boolean {
+  const baseType = document.typeDefinitions?.[relation.type]?.baseType ?? relation.type;
+  return baseType === "contains";
+}
+
+/** Full presentation text retained alongside the textual relations (A14, DE-1b). */
+export function sceneTextRows(
+  scene: SceneModel,
+  document: SceneDocument,
+  labels?: Partial<Pick<DiagramSceneFigureLabels, "contains">>,
+): readonly string[] {
+  const containsLabel = labels?.contains ?? DEFAULT_SCENE_LABELS.contains;
   const rows = scene.nodes.map(node => Object.values(node.presentation?.text ?? {}).filter(Boolean).join(" · "));
   for (const relation of Object.values(document.relations)) {
     const names = relation.endpoints.map(end => { const value = document.entities[end.target]?.attributes["name"]; return value?.kind === "text" ? String(value.value) : end.target; });
-    rows.push(names.join(" → ") + " · " + (edgeLabelOf(document, relation.id) ?? relation.type));
+    const explicit = edgeLabelOf(document, relation.id);
+    const fallback = isContainmentRelation(document, relation) ? containsLabel : relation.type;
+    rows.push(names.join(" → ") + " · " + (explicit ?? fallback));
   }
   return rows;
 }

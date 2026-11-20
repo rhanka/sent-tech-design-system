@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:54e4af724e6e3ffa1eee954979c2561aa2d3a869bb5ceded2a7151a028c7bf3a",
-  "entryDigest": "sha256:f7d0b7b3b192c13aee55b577e36cf792e189dd1a5acea3aae1586d64b684be93",
+  "digest": "sha256:c625c8d1f8612d4d7717428a20b14668e755f39e383f656f76831e73354b3a33",
+  "entryDigest": "sha256:c139a7ae857ec6544f3f9cd24f11f8f6b485774c327bec4a7866336752f9ec63",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1144,6 +1144,13 @@
           "EntityPresentation": {
             "additionalProperties": false,
             "properties": {
+              "align": {
+                "description": "Optional alignment (`diagram-presentation@2`, DE-1).",
+                "enum": [
+                  "center",
+                  "left"
+                ]
+              },
               "categoryRef": {
                 "type": "string"
               },
@@ -1635,6 +1642,7 @@
                   "route-obstructed",
                   "row-fill-partial",
                   "zone-overflow",
+                  "zone-surface-same",
                   "docking-overflow"
                 ]
               },
@@ -1834,6 +1842,13 @@
           "PresentationState": {
             "additionalProperties": false,
             "properties": {
+              "anatomy": {
+                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). New views default to `\"v2\"`.",
+                "enum": [
+                  "v1",
+                  "v2"
+                ]
+              },
               "camera": {
                 "additionalProperties": false,
                 "properties": {
@@ -3851,6 +3866,13 @@
           "defaultScenario": {
             "type": "string"
           },
+          "depthParityStart": {
+            "description": "Selectable start parity for alternating zone depth surfaces (`0` default, `1` flipped).",
+            "enum": [
+              0,
+              1
+            ]
+          },
           "document": {
             "$ref": "#/$defs/SemanticDocument"
           },
@@ -3913,7 +3935,32 @@
             "description": "Runtime token numbers for the engine (gaps, caps)."
           },
           "presentation": {
-            "$ref": "#/$defs/DiagramPresentation"
+            "additionalProperties": false,
+            "properties": {
+              "categoryTokens": {
+                "items": {
+                  "$ref": "#/$defs/CategoryTokenBinding"
+                },
+                "type": "array"
+              },
+              "contractPin": {
+                "$ref": "#/$defs/PresentationPin"
+              },
+              "legends": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/LegendPresentation"
+                },
+                "properties": {},
+                "type": "object"
+              }
+            },
+            "required": [
+              "categoryTokens",
+              "contractPin",
+              "entities",
+              "legends"
+            ],
+            "type": "object"
           },
           "registry": {
             "$ref": "#/$defs/ProfileRegistry"
@@ -4149,6 +4196,24 @@
           "sourceType": "OccurrenceRef"
         },
         {
+          "name": "presentation.entities",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"$ref\":\"#/$defs/EntityPresentation\"}",
+          "sourceType": "Readonly<Record<string, EntityPresentation>>"
+        },
+        {
+          "name": "presentation.entities",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"object\",\"properties\":{\"categoryRef\":{\"type\":\"string\"},\"form\":{\"enum\":[\"card\",\"container\",\"legend\",\"legend-key\"]},\"icon\":{\"type\":\"string\"},\"text\":{\"$ref\":\"#/$defs/PresentationText\"},\"anatomy\":{\"enum\":[\"v1\",\"v2\"]},\"depth\":{\"type\":\"number\"},\"depthParityStart\":{\"enum\":[0,1]}},\"additionalProperties\":false,\"required\":[\"form\",\"text\"]}",
+          "sourceType": "Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>"
+        },
+        {
+          "name": "presentation.legends",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"$ref\":\"#/$defs/LegendPresentation\"}",
+          "sourceType": "Readonly<Record<string, LegendPresentation>>"
+        },
+        {
           "name": "result.arrowBoxes",
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"type\":\"array\",\"items\":{\"$ref\":\"#/$defs/FlowArrow\"}}",
@@ -4205,14 +4270,21 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:ebfc6246b87514647f6791154de5c1cdb589489f1803c2018fc82d87cc2685d0",
+        "declarationDigest": "sha256:2659deb6d21bf0df3a6441090e85f64f87783cb3e292c6f358cc880a3a211961",
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.41.5"
+        "version": "0.42.0"
       },
       "status": "partial",
-      "unresolved": [],
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "entities",
+          "reason": "intersection members disagree",
+          "sourceType": "{ readonly entities: Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>; }"
+        }
+      ],
       "warnings": []
     },
     "vue": {
@@ -5874,6 +5946,13 @@
           "EntityPresentation": {
             "additionalProperties": false,
             "properties": {
+              "align": {
+                "description": "Optional alignment (`diagram-presentation@2`, DE-1).",
+                "enum": [
+                  "center",
+                  "left"
+                ]
+              },
               "categoryRef": {
                 "type": "string"
               },
@@ -6365,6 +6444,7 @@
                   "route-obstructed",
                   "row-fill-partial",
                   "zone-overflow",
+                  "zone-surface-same",
                   "docking-overflow"
                 ]
               },
@@ -6564,6 +6644,13 @@
           "PresentationState": {
             "additionalProperties": false,
             "properties": {
+              "anatomy": {
+                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). New views default to `\"v2\"`.",
+                "enum": [
+                  "v1",
+                  "v2"
+                ]
+              },
               "camera": {
                 "additionalProperties": false,
                 "properties": {
@@ -8594,6 +8681,13 @@
           "defaultScenario": {
             "type": "string"
           },
+          "depthParityStart": {
+            "description": "Selectable start parity for alternating zone depth surfaces (`0` default, `1` flipped).",
+            "enum": [
+              0,
+              1
+            ]
+          },
           "document": {
             "$ref": "#/$defs/SemanticDocument"
           },
@@ -8656,7 +8750,32 @@
             "description": "Runtime token numbers for the engine (gaps, caps)."
           },
           "presentation": {
-            "$ref": "#/$defs/DiagramPresentation"
+            "additionalProperties": false,
+            "properties": {
+              "categoryTokens": {
+                "items": {
+                  "$ref": "#/$defs/CategoryTokenBinding"
+                },
+                "type": "array"
+              },
+              "contractPin": {
+                "$ref": "#/$defs/PresentationPin"
+              },
+              "legends": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/LegendPresentation"
+                },
+                "properties": {},
+                "type": "object"
+              }
+            },
+            "required": [
+              "categoryTokens",
+              "contractPin",
+              "entities",
+              "legends"
+            ],
+            "type": "object"
           },
           "registry": {
             "$ref": "#/$defs/ProfileRegistry"
@@ -8934,6 +9053,24 @@
           "sourceType": "OccurrenceRef"
         },
         {
+          "name": "presentation.entities",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"$ref\":\"#/$defs/EntityPresentation\"}",
+          "sourceType": "Readonly<Record<string, EntityPresentation>>"
+        },
+        {
+          "name": "presentation.entities",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"object\",\"properties\":{\"categoryRef\":{\"type\":\"string\"},\"form\":{\"enum\":[\"legend\",\"card\",\"container\",\"legend-key\"]},\"icon\":{\"type\":\"string\"},\"text\":{\"$ref\":\"#/$defs/PresentationText\"},\"anatomy\":{\"enum\":[\"v1\",\"v2\"]},\"depth\":{\"type\":\"number\"},\"depthParityStart\":{\"enum\":[0,1]}},\"additionalProperties\":false,\"required\":[\"form\",\"text\"]}",
+          "sourceType": "Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>"
+        },
+        {
+          "name": "presentation.legends",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"$ref\":\"#/$defs/LegendPresentation\"}",
+          "sourceType": "Readonly<Record<string, LegendPresentation>>"
+        },
+        {
           "name": "result.arrowBoxes",
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"type\":\"array\",\"items\":{\"$ref\":\"#/$defs/FlowArrow\"}}",
@@ -8994,10 +9131,17 @@
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.41.0-next.7"
+        "version": "0.41.0-next.8"
       },
       "status": "partial",
-      "unresolved": [],
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "entities",
+          "reason": "intersection members disagree",
+          "sourceType": "{ readonly entities: Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>; }"
+        }
+      ],
       "warnings": [
         "event pair: emits \"cameraChange\" and prop \"onCameraChange\" both listed verbatim",
         "event pair: emits \"foldChange\" and prop \"onFoldChange\" both listed verbatim",

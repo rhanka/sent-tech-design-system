@@ -61,6 +61,18 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     rootGapInline: "var(--st-component-diagramZone-childGapInline)",
     rootGapBlock: "var(--st-component-diagramZone-childGapBlock)",
   },
+  // DE-1 compact anatomy (352 × 154): the PLAN DE-1 insets as literals,
+  // every other leaf aliasing the v1 `diagramCard` tokens by construction.
+  diagramCardCompact: {
+    width: "352px",
+    height: "154px",
+    accentWidth: "6px",
+    padding: "6px",
+    headerInset: "12px",
+    iconSize: "52px",
+    iconTextGap: "4px",
+    foldedHeaderTextWidth: "210px",
+  },
   diagramZone: {
     radius: "0",
     borderWidth: "1.5px",
@@ -156,6 +168,24 @@ describe("diagram tokens — frozen Appendix A values", () => {
     expect(component.diagramZone.text).toBe(semantic.text.primary);
     expect(component.diagramZone.secondaryText).toBe(semantic.text.secondary);
     expect(component.diagramZone.rule).toBe(semantic.border.subtle);
+  });
+
+  it("diagram depth surfaces alternate per nesting depth in both themes (DE-1 addendum 1)", () => {
+    // Even depths (top level first) paint surface1, odd depths surface2;
+    // both alias the semantic layer, card tints untouched.
+    expect(component.diagramZone.surface1).toBe(semantic.surface.raised);
+    expect(component.diagramZone.surface2).toBe(semantic.surface.subtle);
+    expect(componentDark.diagramZone.surface1).toBe(semanticDark.surface.raised);
+    expect(componentDark.diagramZone.surface2).toBe(semanticDark.surface.subtle);
+    // The two depths resolve to distinct fills in both themes.
+    expect(component.diagramZone.surface1).not.toBe(component.diagramZone.surface2);
+    expect(componentDark.diagramZone.surface1).not.toBe(componentDark.diagramZone.surface2);
+    const css = toCssVariables({ component });
+    expect(css).toContain(`--st-component-diagramZone-surface1: ${semantic.surface.raised};`);
+    expect(css).toContain(`--st-component-diagramZone-surface2: ${semantic.surface.subtle};`);
+    const darkCss = toCssVariables({ component: componentDark });
+    expect(darkCss).toContain(`--st-component-diagramZone-surface1: ${semanticDark.surface.raised};`);
+    expect(darkCss).toContain(`--st-component-diagramZone-surface2: ${semanticDark.surface.subtle};`);
   });
 
   it("dark layer carries the same geometry over the dark semantic inputs", () => {
