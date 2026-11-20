@@ -9,7 +9,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
-  "ownershipNote": "Lot P6 scaffold + group 1 batches 1-2: batch 1 ports the core store adapter (adapter.ts) and four primary shared derivation/drill helpers (lib/categoricalData.ts, lib/partOfWholeData.ts, lib/distributionData.ts, lib/drill.ts); batch 2 ports the five categorical charts (AreaChart, ComboChart, LollipopChart, StackedBarChart, StepLineChart) exercised by the real CategoricalCharts.test.tsx suite on the React leg.",
+  "ownershipNote": "Lot P6 scaffold + group 1 (batches 1-3, 15 files of dataviz-react): batch 1 ports the core store adapter (adapter.ts) and four primary shared derivation/drill helpers (lib/categoricalData.ts, lib/partOfWholeData.ts, lib/distributionData.ts, lib/drill.ts); batch 2 ports the five categorical charts (AreaChart, ComboChart, LollipopChart, StackedBarChart, StepLineChart); batch 3 ports the five flagship interactive/SVG/BI charts (CrossfilteredBarChart, TimeSeriesLineChart, DivergingBarChart, ParetoChart, DateHistogramChart), covering both direct-SVG dataviz charts with runtime.js side-effect normalisation and wiring all 8 real dataviz-react test suites on the emitted React leg.",
   "modules": [
     {
       "module": "adapter",
@@ -96,6 +96,51 @@
       "module": "StepLineChart",
       "file": "src/lib/StepLineChart.tsx",
       "reactSource": "dataviz-react/src/lib/StepLineChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "CrossfilteredBarChart",
+      "file": "src/lib/CrossfilteredBarChart.tsx",
+      "reactSource": "dataviz-react/src/lib/CrossfilteredBarChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "TimeSeriesLineChart",
+      "file": "src/lib/TimeSeriesLineChart.tsx",
+      "reactSource": "dataviz-react/src/lib/TimeSeriesLineChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DivergingBarChart",
+      "file": "src/lib/DivergingBarChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DivergingBarChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ParetoChart",
+      "file": "src/lib/ParetoChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ParetoChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DateHistogramChart",
+      "file": "src/lib/DateHistogramChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DateHistogramChart.tsx",
       "kind": "component",
       "lot": "P6",
       "renderable": true,
