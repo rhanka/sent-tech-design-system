@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/FilterBar.svelte",
-      "version": "0.42.0"
+      "version": "0.43.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Bar grouping FilterPill chips with an optional clear-all action.",
     "fr": "Barre regroupant des FilterPill avec action optionnelle « Tout effacer »."
   },
-  "digest": "sha256:852cc0447398a864d3189df98b944920425856115f7c024f761c9aef3a1d1064",
+  "digest": "sha256:63b6979e0d48f4bd657137b6e0ea8d5b3235af099831b9163e33247fd04f8ac3",
   "displayName": "FilterBar",
   "format": "component-entry/v1",
   "frameworks": [

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Breadcrumb.svelte",
-      "version": "0.42.0"
+      "version": "0.43.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Semantic breadcrumb trail.",
     "fr": "Fil d’Ariane sémantique."
   },
-  "digest": "sha256:9ae45a80f260fe7b58d17f7c2efce4b6b15847cf6881596994c67cb1d592c13e",
+  "digest": "sha256:b315c15d6800d4d6bf7ea930603760d51dad519f7ba1e0b95013c018be05635f",
   "displayName": "Breadcrumb",
   "format": "component-entry/v1",
   "frameworks": [

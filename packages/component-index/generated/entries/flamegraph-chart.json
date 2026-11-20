@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/FlamegraphChart.svelte",
-      "version": "0.42.0"
+      "version": "0.43.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Stacked icicle call stack: width ∝ value, recursive hierarchy laid out level by level.",
     "fr": "Pile d'appels « icicle » empilée : largeur ∝ valeur, hiérarchie récursive posée niveau par niveau."
   },
-  "digest": "sha256:6823dca1dc3d8b1a4d20533dc370ee216ee1e4e0d37a4eee695c2a720f3069ce",
+  "digest": "sha256:69ebb16aaead21d1fb8a6b234f198d76c329a39594f4db45039e05aba56231fd",
   "displayName": "FlamegraphChart",
   "format": "component-entry/v1",
   "frameworks": [

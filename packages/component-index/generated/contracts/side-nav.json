@@ -1,8 +1,8 @@
 {
   "componentId": "side-nav",
   "contractSource": "derived",
-  "digest": "sha256:8d3e76564e5fa11e976a42dce330021dd4843d3aa7062145193c134f42604632",
-  "entryDigest": "sha256:92f2601292c100ac13a343f688cc7446107702d296cbb01322fb78fb8ee67c81",
+  "digest": "sha256:cb09af601e15e483199abd52956ea136786dd47349a04f5c4a09f5ea056e163d",
+  "entryDigest": "sha256:8b2764c16492618292eb2b011e8314fbd6f78b315f6c6e0f0448e86d886d694a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -209,7 +209,7 @@
         "declarationPath": "packages/components-svelte/dist/SideNav.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SideNavProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],

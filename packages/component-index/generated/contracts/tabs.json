@@ -1,8 +1,8 @@
 {
   "componentId": "tabs",
   "contractSource": "derived",
-  "digest": "sha256:8d255275b499ef7dd0c13ea8c967b799606b253db31ba2c561fa7f6d950c59ab",
-  "entryDigest": "sha256:c0c3126c54c7872e8e6241741f75cb1cce6ce7caa95d6297d084b9613df1ba35",
+  "digest": "sha256:8f29c2f15964f5c002756cbdab56ee4720161480ca26cc95fca6a731e8ce7c31",
+  "entryDigest": "sha256:edfbe41ba920423707a353f9bd7299f0888a4b9ec7bed5a9c225ae2548314bbb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -272,7 +272,7 @@
         "declarationPath": "packages/components-svelte/dist/Tabs.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TabsProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "partial",
       "unresolved": [],

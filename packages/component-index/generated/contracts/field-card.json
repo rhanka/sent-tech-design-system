@@ -1,8 +1,8 @@
 {
   "componentId": "field-card",
   "contractSource": "derived",
-  "digest": "sha256:b549fdf30831123eb15a6265212d8a1dda28b286b0d58fd1a946bbb6371adbfe",
-  "entryDigest": "sha256:919e5ea70498760ffb6dee5019f6c171c11b7fb33d6d2ee5a95db0902fe8e6cc",
+  "digest": "sha256:1c1e60e507137b8a9e7bc6e26599f018ba14143f1491a9b05aa30f56d465037c",
+  "entryDigest": "sha256:728c55b4d6a9b4e8ec08aa14114d86cb51db92d5400413039fa0ba7df1441e54",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -214,7 +214,7 @@
         "declarationPath": "packages/components-svelte/dist/FieldCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FieldCardProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],

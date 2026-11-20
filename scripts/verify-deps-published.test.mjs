@@ -30,6 +30,9 @@ const canvasWorkflow = readFileSync(
 const canvasManifest = JSON.parse(
   readFileSync(new URL("../packages/diagram-canvas/package.json", import.meta.url), "utf8"),
 );
+const reviewCoreManifest = JSON.parse(
+  readFileSync(new URL("../packages/review-core/package.json", import.meta.url), "utf8"),
+);
 
 // The `publish:` job body of a workflow, as lines.
 function publishJobLines(workflowText, label) {
@@ -56,6 +59,9 @@ test("collectSentropicDeps reads every exact @sentropic/* pin of the svelte mani
   // DC-2a L4: the scene host makes diagram-canvas a runtime dependency. It
   // must stay an exact pin — a range would drop out of the gate in silence.
   assert.equal(byName.get("@sentropic/diagram-canvas"), canvasManifest.version);
+  // Review kit: svelte pins review-core at its exact version so svelte-publish
+  // fails closed while review-core is not yet on npm.
+  assert.equal(byName.get("@sentropic/design-system-review-core"), reviewCoreManifest.version);
   // sorted, and ranges/tags are ignored (only exact versions are gated)
   const names = deps.map((d) => d.name);
   assert.deepEqual(names, [...names].sort((a, b) => a.localeCompare(b)));
@@ -96,6 +102,12 @@ test("main fails closed while @sentropic/diagram-canvas is not yet on npm", () =
   const view = (name, version) => (name === "@sentropic/diagram-canvas" ? null : version);
   const code = main(["--workspace", "packages/components-svelte"], view);
   assert.equal(code, 1, "the gate must refuse to publish svelte while diagram-canvas is missing");
+});
+
+test("main fails closed while @sentropic/design-system-review-core is not yet on npm", () => {
+  const view = (name, version) => (name === "@sentropic/design-system-review-core" ? null : version);
+  const code = main(["--workspace", "packages/components-svelte"], view);
+  assert.equal(code, 1, "the gate must refuse to publish svelte while review-core is missing");
 });
 
 // Same gate one step up the chain: diagram-canvas pins diagram-core exactly.
