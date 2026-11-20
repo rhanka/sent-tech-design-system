@@ -54,7 +54,7 @@ export function useDiagramSceneViewport(
     }
     function readCameraTokens() {
         const values: Record<string, number> = {};
-        for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding","edgeCornerRadius","linkStrokeWidth","linkEmphasisStrokeWidth","edgeLabelSize"]) {
+        for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","routeSpacing","routeBorderClearance","labelBand","gapMax","bundleLabelMaxWidth","containerPadding","edgeCornerRadius","linkStrokeWidth","linkEmphasisStrokeWidth","edgeLabelSize"]) {
             const value = parseFloat(token('--st-component-diagramScene-' + key) ?? '');
             if (Number.isFinite(value)) values[key] = value;
         }

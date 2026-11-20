@@ -21,7 +21,7 @@ import { channelMetrics } from "./channels.js";
 import { DEFAULT_LAYOUT_METRICS, resolveRowPack, type LayoutMetrics, type LayoutOptions } from "./types.js";
 
 /** Bumped whenever measured placement changes for unchanged inputs. */
-export const LAYOUT_ENGINE_VERSION = "dc2c.owner.5";
+export const LAYOUT_ENGINE_VERSION = "de2.spacing.1";
 
 export interface LayoutFingerprintInput {
   readonly options: Pick<LayoutOptions, "collapsed" | "hints" | "metrics" | "rowPack" | "previousOrientation" | "viewId" | "flows" | "flowTokens">;
@@ -82,7 +82,14 @@ export function layoutFingerprintInputs(input: LayoutFingerprintInput): Readonly
     rowPack: resolveRowPack(options.rowPack),
     gaps,
     channels: { inline: channelMetrics(metrics, true), block: channelMetrics(metrics, false), bundleLabelMaxWidth: metrics.bundleLabelMaxWidth ?? 320 },
-    metrics: { clearance: metrics.clearance, labelMargin: metrics.labelMargin, slotSpacing: options.metrics?.slotSpacing ?? options.metrics?.trackSpacing ?? 14, nodeGap: metrics.nodeGap },
+    metrics: {
+      clearance: metrics.clearance,
+      labelMargin: metrics.labelMargin,
+      routeSpacing: metrics.routeSpacing ?? 24,
+      routeBorderClearance: metrics.routeBorderClearance ?? 15,
+      slotSpacing: options.metrics?.slotSpacing ?? Math.max(metrics.routeSpacing ?? 24, options.metrics?.trackSpacing ?? 14),
+      nodeGap: metrics.nodeGap,
+    },
     previousOrientation: Object.entries(options.previousOrientation ?? {}).sort(([left], [right]) => byString(left, right)),
     hints: {
       ordering: hints.ordering,

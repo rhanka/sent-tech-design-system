@@ -166,6 +166,8 @@ export function dockEdges(input: {
   readonly metrics: LayoutMetrics;
   readonly labelSizes: ReadonlyMap<RelationRef, TextSize>;
   readonly fixed?: boolean;
+  /** Minimum inset from box corners on fixed-box sides so adjacent-side ports keep route spacing (DE-2). */
+  readonly cornerInset?: number;
   /**
    * Sides imposed on the two ends of an ordinary pair (neither a self-loop nor
    * an ancestor pair). The row-pack path docks a labelled bridge between two
@@ -306,7 +308,11 @@ export function dockEdges(input: {
     const count = orderedKeys.length;
     const wanted = Math.max(slotSpacingFor(metrics, count >= 2 ? thickness : 0), flowRun ? (input.flowBadgeSize ?? 0) + metrics.labelMargin : 0);
     if (fixed === true) {
-      const capacity = Math.max(1, Math.floor(length / wanted) + 1);
+      const inset = input.cornerInset !== undefined && input.cornerInset > 0
+        ? Math.min(input.cornerInset, length / 2)
+        : 0;
+      const usableLength = Math.max(0, length - 2 * inset);
+      const capacity = Math.max(1, Math.floor(usableLength / wanted) + 1);
       const centre = centreOf(rect);
       const pointFor = (offset: number): Vec2 =>
         side === "east"
