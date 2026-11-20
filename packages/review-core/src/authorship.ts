@@ -105,7 +105,7 @@ export function resolveAuthorshipFromFallback(
   const ownerActor: CollaborationActor = resolvedOwner ?? {
     actorId: comment.author.id,
     kind: "human",
-    displayLabel: comment.author.id,
+    displayLabel: comment.author.displayLabel ?? comment.author.id,
     color: defaultColor,
   };
 

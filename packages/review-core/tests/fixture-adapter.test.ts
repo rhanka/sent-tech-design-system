@@ -231,18 +231,75 @@ describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
     expect(reloadedReply.authorship.runId).toBeUndefined();
   });
 
-  it("should enforce 2048-char sectionKey cap, tenant isolation, subscribe notifications, and legacy seed normalisation", async () => {
+  it("should never copy assignedTo onto reply rows while thread summaries expose status and thread assignee", async () => {
+    const fixture = makeFixture();
+    const root = await fixture.adapter.create({
+      tenant: TENANT,
+      target: { ...TARGET, sectionKey: "a1:assign-test" },
+      body: "Root comment",
+    });
+
+    // Create does not auto-assign
+    expect(root.assignedTo).toBeUndefined();
+
+    // Assign thread to Bob
+    await fixture.adapter.assign(TENANT, root.threadId, BOB.actorId);
+
+    // Reply must NOT copy assignedTo onto the new row (SPEC-r6 §1)
+    fixture.setCaller({ userId: BOB.actorId });
+    const reply = await fixture.adapter.reply({
+      tenant: TENANT,
+      target: TARGET,
+      threadId: root.threadId,
+      body: "Reply without copied assignee",
+    });
+    expect(reply.assignedTo).toBeUndefined();
+    const rawReply = fixture.snapshotRaw().find((r) => r.id === reply.id);
+    expect(rawReply?.assignedTo).toBeUndefined();
+
+    // threadSummaries uses contract field `status` (open|closed) and preserves thread assignee
+    const openSummaries = await fixture.adapter.threadSummaries?.(TENANT, TARGET);
+    expect(openSummaries).toHaveLength(1);
+    expect(openSummaries?.[0]?.status).toBe("open");
+    expect("state" in (openSummaries?.[0] ?? {})).toBe(false);
+    expect(openSummaries?.[0]?.assignedTo).toBe(BOB.actorId);
+
+    await fixture.adapter.setState(TENANT, root.threadId, "closed");
+    const closedSummaries = await fixture.adapter.threadSummaries?.(TENANT, TARGET);
+    expect(closedSummaries?.[0]?.status).toBe("closed");
+  });
+
+  it("should enforce 2048-char sectionKey cap, tenant isolation, subscribe notifications, target normalisation, and strict open|closed states", async () => {
+    // Legacy 'resolved' wire state must be rejected on seed ingest (SPEC-r6 §1.1: no legacy mapping)
+    expect(() =>
+      createFixtureCommentsAdapter({
+        caller: { userId: ALICE.actorId },
+        initialComments: [
+          {
+            id: "c-bad-state",
+            tenant: { workspaceId: TENANT },
+            target: { kind: "artifact", id: "art-1" },
+            threadId: "t-bad",
+            author: { id: ALICE.actorId },
+            state: "resolved" as unknown as "closed",
+            body: "Invalid legacy wire state",
+            createdAt: "2026-11-18T10:00:00.000Z",
+          },
+        ],
+      }),
+    ).toThrow(ReviewAdapterError);
+
     const fixture = createFixtureCommentsAdapter({
       caller: { userId: ALICE.actorId },
       initialComments: [
         {
-          id: "c-legacy",
-          tenant: { workspaceId: TENANT },
-          target: { kind: "record", id: "art-1", recordType: "artifact", sectionKey: "a1:legacy" },
-          threadId: "t-legacy",
-          author: { id: ALICE.actorId },
-          state: "resolved",
-          body: "Legacy closed row",
+          id: "c-seed",
+          tenant: { workspaceId: TENANT, tenantId: "ten-1", userId: ALICE.actorId },
+          target: { kind: "record", id: "art-1", recordType: "artifact", sectionKey: "a1:seed" },
+          threadId: "t-seed",
+          author: { id: ALICE.actorId, kind: "human", displayLabel: "Alice" },
+          state: "closed",
+          body: "Closed seed row",
           createdAt: "2026-11-18T10:00:00.000Z",
         },
       ],
@@ -253,7 +310,25 @@ describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
     const initial = await fixture.adapter.list(TENANT, TARGET);
     expect(initial).toHaveLength(1);
     expect(initial[0]?.state).toBe("closed");
-    expect(initial[0]?.target).toEqual({ kind: "artifact", id: "art-1", sectionKey: "a1:legacy" });
+    expect(initial[0]?.tenant).toEqual({
+      workspaceId: TENANT,
+      tenantId: "ten-1",
+      userId: ALICE.actorId,
+    });
+    expect(initial[0]?.author).toEqual({
+      id: ALICE.actorId,
+      kind: "human",
+      displayLabel: "Alice",
+    });
+    expect(initial[0]?.target).toEqual({ kind: "artifact", id: "art-1", sectionKey: "a1:seed" });
+
+    // Legacy 'resolved' wire state must also be rejected on setState
+    await expect(
+      fixture.adapter.setState(TENANT, "t-seed", "resolved" as unknown as "closed"),
+    ).rejects.toMatchObject({
+      code: "INVALID_STATE",
+      status: 400,
+    });
 
     // Other tenant sees nothing
     expect(await fixture.adapter.list("ws-other", TARGET)).toEqual([]);
