@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:142c45b83b4099d82da8113f181c12943996ceb2412e42b15c58f29667677010",
+  "contractsRevision": "sha256:54ad7fdd7e16494773a71caf6e9fc81011be282ecc41f24f100090408acf522e",
   "counts": {
     "byFramework": {
       "angular": {
@@ -775,8 +775,8 @@
         "vue": "partial"
       },
       "componentId": "diagram-card",
-      "contractDigest": "sha256:c5975545cb8c48d2a0506aad4dd02ddf71dc1a011a54d162ed74efc39f07feb7",
-      "entryDigest": "sha256:25d06023908bcaf8cb483ffecc4579c0a484ec33553232290dbd650c61235a10",
+      "contractDigest": "sha256:05b85457aad513fdc63464bc86c5323180e2598452078764684499f7c611667d",
+      "entryDigest": "sha256:5acf826e3dd56133b07649982588c41ec728b26ef8a594df6ad47b35e9543ae3",
       "path": "contracts/diagram-card.json",
       "producerId": "sentropic-ds"
     },
@@ -788,7 +788,7 @@
         "vue": "partial"
       },
       "componentId": "diagram-scene-figure",
-      "contractDigest": "sha256:8eb12b8c4249abe7db301f0247e8ebdba47c571f1a6ac70d87c4f8c44ef81f7f",
+      "contractDigest": "sha256:00050ecbe191d1ccb3202b6e56be3437743a6fcfe0e78899bac585bbe1f53d5e",
       "entryDigest": "sha256:a30372ebfcdf3abe932909599f6f029a1be42c03e3edb9aad99041112146871b",
       "path": "contracts/diagram-scene-figure.json",
       "producerId": "sentropic-ds"
@@ -801,8 +801,8 @@
         "vue": "partial"
       },
       "componentId": "diagram-zone",
-      "contractDigest": "sha256:5ee44da8f2724774998a2ffdde8b8c0b16901deea40e80a5b251879734e55d01",
-      "entryDigest": "sha256:9158f416a2eab11d38b52dd44592148b18e021778dfe64f9e0bbe22926451b07",
+      "contractDigest": "sha256:d17135551dfe4861d690b6a54d9053fd3f88e6eec7add38aa9b54c5c8b132073",
+      "entryDigest": "sha256:00ed40677ae734cc3004b279dad2a774cce8010ff9f5067dd3a204992abbc98b",
       "path": "contracts/diagram-zone.json",
       "producerId": "sentropic-ds"
     },
@@ -2863,5 +2863,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "154b1dc707ec51495cde62e2c8442782352cd22f"
+  "sourceCommit": "37a0ca341864c8c60c630b3a53e17624493e4750"
 }

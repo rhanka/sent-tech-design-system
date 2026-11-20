@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:c5975545cb8c48d2a0506aad4dd02ddf71dc1a011a54d162ed74efc39f07feb7",
-  "entryDigest": "sha256:25d06023908bcaf8cb483ffecc4579c0a484ec33553232290dbd650c61235a10",
+  "digest": "sha256:05b85457aad513fdc63464bc86c5323180e2598452078764684499f7c611667d",
+  "entryDigest": "sha256:5acf826e3dd56133b07649982588c41ec728b26ef8a594df6ad47b35e9543ae3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -119,7 +119,10 @@
                 "type": "number"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
@@ -173,7 +176,10 @@
                 "type": "string"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
@@ -386,7 +392,10 @@
                 "type": "number"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
@@ -440,7 +449,10 @@
                 "type": "string"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"

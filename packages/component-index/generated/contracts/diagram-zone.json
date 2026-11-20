@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:5ee44da8f2724774998a2ffdde8b8c0b16901deea40e80a5b251879734e55d01",
-  "entryDigest": "sha256:9158f416a2eab11d38b52dd44592148b18e021778dfe64f9e0bbe22926451b07",
+  "digest": "sha256:d17135551dfe4861d690b6a54d9053fd3f88e6eec7add38aa9b54c5c8b132073",
+  "entryDigest": "sha256:00ed40677ae734cc3004b279dad2a774cce8010ff9f5067dd3a204992abbc98b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -124,7 +124,10 @@
                 "type": "string"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
@@ -167,7 +170,10 @@
                 "type": "number"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
@@ -431,7 +437,10 @@
                 "type": "string"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
@@ -474,7 +483,10 @@
                 "type": "number"
               },
               "reason": {
-                "const": "truncated"
+                "enum": [
+                  "truncated",
+                  "fallback-v1"
+                ]
               },
               "severity": {
                 "const": "info"
