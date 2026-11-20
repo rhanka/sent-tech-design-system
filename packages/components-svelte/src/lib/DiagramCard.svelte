@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { anatomyCardGeometry, lineBoxHeight } from "./diagramCardModel.js";
+  import { anatomyCardGeometry, lineBoxHeight, resolveDiagramAlign } from "./diagramCardModel.js";
   const descriptionId = $props.id();
   import DiagramCardHeader from "./DiagramCardHeader.svelte";
   import { cardFullText, defaultCardMeasure, layoutCard } from "./diagramCardModel.js";
@@ -91,7 +91,7 @@
   );
 
   const effectiveAnatomy = $derived(layout.anatomyFallback ?? anatomy);
-  const effectiveAlign = $derived(align ?? (anatomy === "v2" ? "center" : "left"));
+  const effectiveAlign = $derived(resolveDiagramAlign(effectiveAnatomy, align));
   const cardGeometry = $derived(anatomyCardGeometry(effectiveAnatomy));
 
   /**

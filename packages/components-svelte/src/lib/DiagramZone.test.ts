@@ -401,6 +401,33 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
     ).toBe(true);
   });
 
+  it("keeps v1, fallback-v1, and unaligned v2 zones left-aligned as in 0.41.5; centres v2 only with explicit align:center", () => {
+    for (const variant of [
+      baseProps({ collapsed: false, width: 492 }),
+      baseProps({ collapsed: false, width: 492, anatomy: "v1" }),
+      baseProps({ collapsed: false, width: 492, anatomy: "v1", align: "center" }),
+      baseProps({ collapsed: false, width: 492, anatomy: "v2" }),
+    ]) {
+      const { container, unmount } = render(DiagramZone, { props: { ...variant, measure: defaultCardMeasure } });
+      expect(container.querySelector(".st-diagramZone")?.classList.contains("st-diagramZone--center")).toBe(false);
+      unmount();
+    }
+    const v2Centred = render(DiagramZone, {
+      props: { ...baseProps({ collapsed: false, width: 492, anatomy: "v2", align: "center" }), measure: defaultCardMeasure },
+    });
+    expect(v2Centred.container.querySelector(".st-diagramZone")?.classList.contains("st-diagramZone--center")).toBe(true);
+    v2Centred.unmount();
+
+    // Collapsed complete zone under v2 falls back to v1 and never centres even with align:center.
+    const collapsedFallback = render(DiagramZone, {
+      props: { ...baseProps({ collapsed: true, anatomy: "v2", align: "center" }), measure: defaultCardMeasure },
+    });
+    const collapsedCard = collapsedFallback.container.querySelector(".st-diagramCard") as HTMLElement;
+    expect(collapsedCard.classList.contains("st-diagramCard--center")).toBe(false);
+    expect(collapsedCard.classList.contains("st-diagramCard--v2")).toBe(false);
+    collapsedFallback.unmount();
+  });
+
   it("depth alternates the frame and folded-card surface (addendum 1)", () => {
     const expanded = layoutZone(
       baseProps({ collapsed: false, width: 492, depth: 1 }),

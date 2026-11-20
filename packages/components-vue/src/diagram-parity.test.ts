@@ -142,19 +142,25 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
     { entityId: 'overflow', title: 'X'.repeat(200), body: ['body'] },
     { entityId: 'unknown', title: 'Unknown', body: ['body'], icon: 'unmapped' },
     { entityId: 'proposed', title: 'Proposal', body: ['body'], proposed: true, align: 'center', toggle: { collapsed: true, label: 'Expand' } },
+    { entityId: 'v1-pinned-center', kicker: 'KICKER', title: 'Pinned v1', body: ['Body', 'Detail'], detailCount: 1, footer: 'Footer', anatomy: 'v1', align: 'center' },
     { entityId: 'v2-default', title: 'Compact', body: ['Line'], anatomy: 'v2' },
+    { entityId: 'v2-center', title: 'Compact center', body: ['Line'], anatomy: 'v2', align: 'center' },
     { entityId: 'v2-left', title: 'Compact left', body: ['Line'], anatomy: 'v2', align: 'left' },
     { entityId: 'v2-fallback', kicker: 'KICKER', title: 'Title', body: ['Body', 'Detail'], detailCount: 1, footer: 'Footer', anatomy: 'v2' },
+    { entityId: 'v2-fallback-center', kicker: 'KICKER', title: 'Title', body: ['Body', 'Detail'], detailCount: 1, footer: 'Footer', anatomy: 'v2', align: 'center' },
   ] satisfies DiagramCardProps[]) {
     it(`should preserve ${props.entityId} state and diagnostics`, async () => {
       const vue = mount(DiagramCard, { props }); const svelte = render(SvelteCard, { props });
       await nextTick(); await tick(); expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
       expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderCardSvg(props).diagnostics);
-      if (props.anatomy === 'v2' && props.entityId !== 'v2-fallback') {
+      if (props.anatomy === 'v2' && !props.entityId.startsWith('v2-fallback')) {
         expect(vue.element.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap: var(--st-component-diagramCardCompact-iconTextGap, 4px)');
-      } else if (props.entityId === 'v2-fallback') {
+        expect(vue.element.classList.contains('st-diagramCard--center')).toBe(props.align === 'center');
+      } else if (props.entityId.startsWith('v2-fallback') || props.entityId === 'v1-pinned-center') {
         expect(vue.element.getAttribute('style') ?? '').not.toContain('--st-component-diagramCard-iconTextGap');
         expect(vue.element.getAttribute('style') ?? '').toContain('height: 200px');
+        expect(vue.element.classList.contains('st-diagramCard--center')).toBe(false);
+        expect(vue.element.classList.contains('st-diagramCard--v2')).toBe(false);
       }
       await vue.trigger('click'); expect(vue.emitted('select')).toEqual([[{ entityId: props.entityId }]]);
       vue.unmount(); svelte.unmount();
