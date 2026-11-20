@@ -1,7 +1,7 @@
 <script lang="ts">
   import { lineBoxHeight } from "./diagramCardModel.js";
   import DiagramCardHeader from "./DiagramCardHeader.svelte";
-  import { ZONE_GEOMETRY, type DiagramGlyphPaths, type LaidOutLine } from "./diagramCardModel.js";
+  import { type DiagramGlyphPaths, type LaidOutLine } from "./diagramCardModel.js";
 
   /**
    * Internal zone header (DC-D1, spec §6.2): the shared `DiagramCardHeader`
@@ -16,6 +16,10 @@
     subtitle: readonly LaidOutLine[];
     iconName?: string;
     iconGlyph?: DiagramGlyphPaths;
+    /** Pictogram box edge; defaults to the v1 `70` (v2: `52`). */
+    iconSize?: number;
+    /** Frame header inset; defaults to the v1 `16` (v2: `12`). */
+    headerInset?: number;
     headerTextWidth: number;
     /**
      * Header row height from the shared model (`headerSlotGeometry`, review
@@ -41,6 +45,8 @@
     subtitle,
     iconName,
     iconGlyph,
+    iconSize,
+    headerInset = 16,
     headerTextWidth,
     headerBlockHeight,
     subtitleWidth,
@@ -55,12 +61,13 @@
     {title}
     {iconName}
     {iconGlyph}
+    {iconSize}
     {headerTextWidth}
     {headerBlockHeight}
     {toggle}
     toggleTopOffset={toggleTopInset === undefined
       ? undefined
-      : toggleTopInset - ZONE_GEOMETRY.headerInset}
+      : toggleTopInset - headerInset}
   />
   {#if subtitle.length > 0}
     <div class="st-diagramZoneHeader-subtitle" style={`width:${subtitleWidth}px`}>

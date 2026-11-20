@@ -45,7 +45,7 @@ test('registry gate imports installed Classic and Vapor tarballs and fails close
     packages.set(themes.manifest.name, { ...themes, manifest: { ...themes.manifest, version: '0.0.0-unavailable' } });
     await assert.rejects(() => verifyRegistryPacked({ registry: registry.address }), error => {
       assert.match(error.stderr, /ETARGET/);
-      assert.match(error.stderr, /@sentropic\/design-system-themes@0\.14\.0/);
+      assert.match(error.stderr, new RegExp(`@sentropic/design-system-themes@${themes.manifest.version.replaceAll('.', '\\.')}`));
       return true;
     });
   } finally {

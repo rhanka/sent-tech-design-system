@@ -16,6 +16,6 @@ jobs:
           PR_LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
-          if ! git diff --quiet "$BASE_SHA" HEAD -- packages/diagram-canvas/contracts/diagram-anatomy.v1.json; then
+          if ! git diff --quiet "$BASE_SHA" HEAD -- packages/diagram-canvas/contracts/diagram-anatomy.*.json; then
             node --input-type=module -e 'if (!JSON.parse(process.env.PR_LABELS).includes("anatomy change")) throw new Error("Anatomy golden changed: add the anatomy change label and describe the update in the PR body")'
           fi
