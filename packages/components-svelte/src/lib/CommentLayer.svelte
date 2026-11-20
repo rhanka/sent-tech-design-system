@@ -162,6 +162,7 @@
     ...rest
   }: CommentLayerProps = $props();
 
+  let layerEl: HTMLElement | undefined = $state();
   let slotHostEl: HTMLElement | undefined = $state();
   let overlayEl: HTMLElement | undefined = $state();
   let clusterPopoverEl: HTMLElement | undefined = $state();
@@ -236,17 +237,31 @@
   }
 
   const resolution = $derived.by(() => {
-    // Depend on domRevision so MutationObserver / ResizeObserver updates trigger re-resolution.
+    // Depend on domRevision and mode so observer/scroll/resize updates and mode toggles
+    // re-measure rootEl vs layerEl and re-resolve anchors.
     void domRevision;
+    void mode;
     const root = effectiveRoot;
+    const layer = layerEl;
     const resolved: ResolvedEntry[] = [];
     const orphaned: ReviewThread[] = [];
 
     if (!root) {
-      return { resolved, orphaned, rootHeight: 0 };
+      return { resolved, orphaned, rootHeight: 0, overlayBox: null as OverlayBox | null };
     }
 
     const rootRect = root.getBoundingClientRect();
+    const overlayBox: OverlayBox | null = layer
+      ? (() => {
+          const layerRect = layer.getBoundingClientRect();
+          return {
+            top: rootRect.top - layerRect.top,
+            left: rootRect.left - layerRect.left,
+            width: rootRect.width,
+            height: rootRect.height,
+          };
+        })()
+      : null;
 
     for (const thread of threads) {
       if (thread.anchor === null) {
@@ -289,7 +304,7 @@
       entry.index = idx + 1;
     });
 
-    return { resolved, orphaned, rootHeight: rootRect.height };
+    return { resolved, orphaned, rootHeight: rootRect.height, overlayBox };
   });
 
   const clusters = $derived.by<PinCluster[]>(() => {
@@ -501,15 +516,18 @@
     const resizeObserver =
       typeof ResizeObserver !== "undefined" ? new ResizeObserver(scheduleRefresh) : null;
     resizeObserver?.observe(root);
+    if (layerEl && layerEl !== root) {
+      resizeObserver?.observe(layerEl);
+    }
 
     window.addEventListener("resize", scheduleRefresh, { passive: true });
-    window.addEventListener("scroll", scheduleRefresh, { passive: true });
+    window.addEventListener("scroll", scheduleRefresh, { capture: true, passive: true });
 
     return () => {
       observer?.disconnect();
       resizeObserver?.disconnect();
       window.removeEventListener("resize", scheduleRefresh);
-      window.removeEventListener("scroll", scheduleRefresh);
+      window.removeEventListener("scroll", scheduleRefresh, { capture: true });
     };
   });
 
@@ -881,7 +899,7 @@
   );
 </script>
 
-<div {...rest} class={classes} data-review-mode={mode}>
+<div {...rest} bind:this={layerEl} class={classes} data-review-mode={mode}>
   {#if children}
     <div bind:this={slotHostEl} class="st-review-layer__content">
       {@render children()}
@@ -892,6 +910,10 @@
     bind:this={overlayEl}
     class="st-review-layer__overlay"
     data-review-overlay="true"
+    style:top={resolution.overlayBox ? `${resolution.overlayBox.top}px` : undefined}
+    style:left={resolution.overlayBox ? `${resolution.overlayBox.left}px` : undefined}
+    style:width={resolution.overlayBox ? `${resolution.overlayBox.width}px` : undefined}
+    style:height={resolution.overlayBox ? `${resolution.overlayBox.height}px` : undefined}
   >
     {#if mode === "review"}
       {#if hoverBox}
@@ -1073,9 +1095,10 @@
   }
 
   .st-review-layer__overlay {
-    inset: 0;
+    left: 0;
     pointer-events: none;
     position: absolute;
+    top: 0;
     z-index: var(--st-component-review-layer-zIndex, 40);
   }
 
