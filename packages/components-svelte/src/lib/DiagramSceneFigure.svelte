@@ -36,6 +36,8 @@
   } from "./diagramCardModel.js";
   import {
     collapsedOccurrencesOf,
+    connectorPath,
+    DEFAULT_EDGE_CORNER_RADIUS,
     DEFAULT_SCENE_LABELS,
     sceneContentSize,
     type DiagramSceneSize,
@@ -911,8 +913,9 @@
 
   const erdTable = $derived(semanticDocument.profileRefs.includes("erd@1") ? renderErdTable(semanticDocument) : "");
 
-  const pointsOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
-    points.map((point) => `${point.x},${point.y}`).join(" ");
+  const edgeCornerRadius = $derived(effectiveMetrics.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS);
+  const pathOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
+    connectorPath(points, edgeCornerRadius);
 
   const edgeLabelLineHeight = $derived(lineMeasurer({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
   const viewportStyle = $derived(
@@ -1042,9 +1045,9 @@
               <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker>{#if connectorMask !== undefined}<mask id={maskId} maskUnits="userSpaceOnUse" x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height}><rect x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height} fill="#fff" />{#each connectorMask.cutouts as cutout, index (index)}<rect data-scene-cutout={index} x={cutout.x} y={cutout.y} width={cutout.width} height={cutout.height} fill="#000" />{/each}</mask>{/if}</defs>
               <g data-scene-connectors="" mask={connectorMask === undefined ? undefined : `url(#${maskId})`}>
               {#each scene.edges as edge (edge.occurrence)}
-                <polyline marker-end={edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} points={pointsOf(edge.points)} />
+                <path marker-end={edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} d={pathOf(edge.points)} />
                 {#if edge.directed}
-                  <polyline class="st-diagramSceneFigure-flowHit" data-flow-hit={edge.occurrence} points={pointsOf(edge.points)} />
+                  <path class="st-diagramSceneFigure-flowHit" data-flow-hit={edge.occurrence} d={pathOf(edge.points)} />
                   {#each edge.arrows as arrow, index (index)}
                     <path class="st-diagramSceneFigure-flowArrow" data-flow-arrow={edge.occurrence} data-flow-state={stateOf(edge.occurrence)} d={flowTokens.flowArrowPath} transform={`translate(${arrow.tip.x} ${arrow.tip.y}) rotate(${arrow.angle}) translate(${-flowTokens.flowArrowLength} ${-flowTokens.flowArrowWidth / 2})`} />
                   {/each}
@@ -1054,7 +1057,7 @@
                 {#if edge.markers}<g>{@html edge.markers}</g>{/if}
               {/each}
               {#each scene.labels as edgeLabel (edgeLabel.occurrence)}
-                {#if edgeLabel.leader}<polyline class="st-diagramSceneFigure-edge" points={pointsOf(edgeLabel.leader)} />{/if}
+                {#if edgeLabel.leader}<path class="st-diagramSceneFigure-edge" d={pathOf(edgeLabel.leader)} />{/if}
               {/each}
               </g>
             </svg>

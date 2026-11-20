@@ -7,6 +7,7 @@ import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svel
 import VueScene from './DiagramSceneFigure.vue';
 import { hCondInput } from '../../diagram-canvas/tests/layout/dc2a/h-cond.js';
 import { flowFixture } from '../../diagram-canvas/test-support/flowFixture.js';
+import { parseConnectorPath } from '@sentropic/diagram-canvas/diagramSceneModel';
 
 const hosts = [
   { name: 'Svelte', async mount(props: Record<string, unknown>) {
@@ -57,9 +58,7 @@ function geometry(element: Element) {
   const zoom = Number(figure.dataset.zoom);
   const [tx, ty] = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)/.exec(world.style.transform)!.slice(1).map(Number);
   const boxes = [...element.querySelectorAll<HTMLElement>('[data-scene-occurrence],[data-scene-label]')].map(rect);
-  const paths = [...element.querySelectorAll('[data-scene-edge]')].map(edge => edge.getAttribute('points')!.trim().split(/\s+/).map(point => {
-    const [x, y] = point.split(',').map(Number); return { x, y };
-  }));
+  const paths = [...element.querySelectorAll('[data-scene-edge]')].map(edge => parseConnectorPath(edge.getAttribute('d') ?? ''));
   const all = [...boxes, ...paths.flat().map(point => ({ ...point, width: 0, height: 0 }))];
   const left = Math.min(...all.map(box => box.x)), top = Math.min(...all.map(box => box.y));
   const right = Math.max(...all.map(box => box.x + box.width)), bottom = Math.max(...all.map(box => box.y + box.height));
@@ -425,14 +424,28 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
     const labels = [...view.element.querySelectorAll<HTMLElement>('[data-scene-label]')];
     if (scene.name.startsWith('numbered flows')) expect(view.element.querySelectorAll('[data-flow-badge]').length).toBeGreaterThan(0);
     else expect(labels.length).toBeGreaterThan(0);
+    const segmentDistance = (box: { x: number; y: number; width: number; height: number }, a: { x: number; y: number }, b: { x: number; y: number }) => {
+      // Check if segment intersects box first.
+      const dx = b.x - a.x, dy = b.y - a.y;
+      let enter = 0, leave = 1;
+      for (const [start, delta, low, high] of [[a.x, dx, box.x, box.x + box.width], [a.y, dy, box.y, box.y + box.height]] as const) {
+        if (delta === 0) { if (start < low || start > high) { leave = -1; break; } }
+        else { const t1 = (low - start) / delta, t2 = (high - start) / delta; enter = Math.max(enter, Math.min(t1, t2)); leave = Math.min(leave, Math.max(t1, t2)); }
+      }
+      if (enter <= leave) return 0;
+      const pointToBox = (p: { x: number; y: number }) => Math.hypot(Math.max(box.x - p.x, 0, p.x - box.x - box.width), Math.max(box.y - p.y, 0, p.y - box.y - box.height));
+      const pointToSegment = (x: number, y: number) => {
+        const t = dx === 0 && dy === 0 ? 0 : Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / (dx * dx + dy * dy)));
+        return Math.hypot(x - a.x - t * dx, y - a.y - t * dy);
+      };
+      return Math.min(pointToBox(a), pointToBox(b),
+        ...[box.x, box.x + box.width].flatMap(x => [box.y, box.y + box.height].map(y => pointToSegment(x, y))));
+    };
     for (const label of labels) {
       const box = rect(label);
       for (const path of paths) for (let i = 1; i < path.length; i++) {
         const a = path[i - 1]!, b = path[i]!;
-        // All layout routes are orthogonal; include token clearance and stroke.
-        const dx = Math.max(box.x - Math.max(a.x, b.x), Math.min(a.x, b.x) - box.x - box.width, 0);
-        const dy = Math.max(box.y - Math.max(a.y, b.y), Math.min(a.y, b.y) - box.y - box.height, 0);
-        expect(Math.hypot(dx, dy), `${label.dataset.sceneLabel} / segment ${i}`).toBeGreaterThanOrEqual(4);
+        expect(segmentDistance(box, a, b), `${label.dataset.sceneLabel} / segment ${i}`).toBeGreaterThanOrEqual(4);
       }
     }
     view.dispose();

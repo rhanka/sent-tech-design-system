@@ -62,12 +62,36 @@ function measure() {
       left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height,
       ...(carrier === undefined ? {} : { carrier }) });
   }
+  const parsePathPoints = d => {
+    const tokens = (d ?? '').match(/[MLQ]|[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?/gi) ?? [];
+    const pts = [];
+    let i = 0, cmd = '', curr;
+    while (i < tokens.length) {
+      const tok = tokens[i];
+      if (/^[MLQ]$/i.test(tok)) { cmd = tok.toUpperCase(); i += 1; continue; }
+      if (cmd === 'M' || cmd === 'L') {
+        curr = { x: Number(tokens[i]), y: Number(tokens[i + 1]) }; i += 2;
+        pts.push(curr);
+        if (cmd === 'M') cmd = 'L';
+      } else if (cmd === 'Q') {
+        const cx = Number(tokens[i]), cy = Number(tokens[i + 1]);
+        const ex = Number(tokens[i + 2]), ey = Number(tokens[i + 3]); i += 4;
+        if (curr) pts.push({ x: 0.25 * curr.x + 0.5 * cx + 0.25 * ex, y: 0.25 * curr.y + 0.5 * cy + 0.25 * ey });
+        curr = { x: ex, y: ey };
+        pts.push(curr);
+      } else break;
+    }
+    return pts;
+  };
   const paths = [...figure.querySelectorAll('[data-scene-edge]')].map(element => {
     const style = getComputedStyle(element);
     const ctm = element.getScreenCTM();
     const strokeScale = style.vectorEffect === 'non-scaling-stroke' ? 1 : Math.hypot(ctm.a, ctm.b);
     const stroke = parseFloat(style.strokeWidth) * strokeScale / 2;
-    const points = Array.from(element.points, point => {
+    const raw = element.tagName.toLowerCase() === 'path'
+      ? parsePathPoints(element.getAttribute('d'))
+      : Array.from(element.points ?? [], point => ({ x: point.x, y: point.y }));
+    const points = raw.map(point => {
       const p = new DOMPoint(point.x, point.y).matrixTransform(ctm);
       return { x: p.x, y: p.y };
     });

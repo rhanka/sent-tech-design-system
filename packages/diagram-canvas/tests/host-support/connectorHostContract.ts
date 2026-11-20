@@ -5,6 +5,7 @@
  * measured by the first-paint gate (`tools/diagram-first-paint`).
  */
 import { expect } from "vitest";
+import { parseConnectorPath } from "../../src/presentation/connectorPath.js";
 
 export interface ConnectorExpectation {
   /** Expanded zones, drawn as frames under the connectors. */
@@ -68,6 +69,7 @@ export function expectConnectorPaint(container: HTMLElement, expected: Connector
   for (const cutout of cutouts) for (const name of ["x", "y", "width", "height"]) expect(Number.isFinite(Number(cutout.getAttribute(name))), `cutout ${name}`).toBe(true);
   if (cutouts.length === 0) expect(group!.getAttribute("mask")).toBeNull();
   else expect(group!.getAttribute("mask")).toBe(`url(#${svg.querySelector("mask")!.id})`);
+  expect(svg.querySelectorAll("polyline").length, "connectors use path, never polyline").toBe(0);
   expect(svg.querySelectorAll("[data-scene-edge]").length, "every connector is in the masked group").toBe(group!.querySelectorAll("[data-scene-edge]").length);
   const connectors = [...order.children[layer]!.querySelectorAll("[data-scene-edge]")];
   expect(connectors.map((connector) => connector.getAttribute("data-scene-edge")).sort(), "drawn connectors")
@@ -76,10 +78,10 @@ export function expectConnectorPaint(container: HTMLElement, expected: Connector
     .toEqual(expected.relations.map((relation) => relation.occurrence).sort());
   for (const relation of expected.relations) {
     const connector = connectors.find((candidate) => candidate.getAttribute("data-scene-edge") === relation.occurrence)!;
-    const points = (connector.getAttribute("points") ?? "").trim().split(/\s+/).map((pair) => {
-      const [x, y] = pair.split(",").map(Number);
-      return { x: x!, y: y! };
-    });
+    expect(connector.tagName.toLowerCase(), `${relation.occurrence} is a path`).toBe("path");
+    expect(connector.getAttribute("points"), `${relation.occurrence} carries no polyline points`).toBeNull();
+    const d = connector.getAttribute("d") ?? "";
+    const points = parseConnectorPath(d);
     expect(points.length, `${relation.occurrence} route`).toBeGreaterThanOrEqual(2);
     expect(points.every((point) => Number.isFinite(point.x) && Number.isFinite(point.y)), `${relation.occurrence} finite route`).toBe(true);
     expect(borderDistance(points[0]!, boxOf(relation.ends[0])), `${relation.occurrence} leaves ${relation.ends[0]}`).toBeLessThanOrEqual(TOLERANCE);

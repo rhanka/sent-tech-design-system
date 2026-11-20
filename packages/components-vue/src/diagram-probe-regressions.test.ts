@@ -8,6 +8,7 @@ import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svel
 import VueScene from './DiagramSceneFigure.vue';
 import { hCondInput } from '../../diagram-canvas/tests/layout/dc2a/h-cond.js';
 import { layoutZone, projectZoneProps, defaultCardMeasure, sceneCardMeasure } from '@sentropic/diagram-canvas/diagramCardModel';
+import { parseConnectorPath } from '@sentropic/diagram-canvas/diagramSceneModel';
 
 const fontMetrics = JSON.parse(readFileSync(new URL('../../diagram-canvas/tests/layout/dc2a/fixtures/h-cond/probe-font-metrics.json', import.meta.url).pathname.replace(/^\/@fs(?=\/)/, ''), 'utf8'));
 function probeInput(name: 'architecture' | 'ontology', folded: boolean) {
@@ -161,8 +162,8 @@ for (const host of hosts) describe(`${host.name} h-cond probe regressions`, () =
         const boxes = [...view.element.querySelectorAll<HTMLElement>('[data-scene-occurrence],[data-scene-label]')].map(rect);
         // Routes are part of the probe's union too, including segments that
         // lie outside the node bbox. Markers dock inside endpoint cards.
-        for (const edge of view.element.querySelectorAll('[data-scene-edge]')) for (const point of edge.getAttribute('points')!.split(' ')) {
-          const [x, y] = point.split(',').map(Number); boxes.push({ x, y, width: 0, height: 0 });
+        for (const edge of view.element.querySelectorAll('[data-scene-edge]')) for (const point of parseConnectorPath(edge.getAttribute('d') ?? '')) {
+          boxes.push({ x: point.x, y: point.y, width: 0, height: 0 });
         }
         const left = Math.min(...boxes.map(r => r.x));
         const top = Math.min(...boxes.map(r => r.y));
