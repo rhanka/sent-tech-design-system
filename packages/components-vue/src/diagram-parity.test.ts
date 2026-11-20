@@ -170,12 +170,40 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
         expect(style).toContain('height: 154px');
       } else {
         expect(style).toContain('--st-component-diagramZone-headerInset');
+        const header = vue.element.querySelector<HTMLElement>('.st-diagramZone-header');
+        expect(header?.style.right).toBe(header?.style.left);
         const toggle = vue.element.querySelector<HTMLElement>('.st-diagramCard-toggle');
         expect(toggle?.style.top).toBe(toggle?.style.right);
       }
       vue.unmount(); svelte.unmount();
     });
   }
+  it('should anchor expanded v2 zone header right to headerInset (12px) when containerPadding is 16px on both hosts', async () => {
+    const props = {
+      entityId: 'v2-zone-padded',
+      title: 'Zone',
+      subtitle: 'Sub',
+      collapsed: false,
+      toggleLabel: 'Collapse',
+      anatomy: 'v2' as const,
+      containerPadding: 16,
+      width: 492,
+      height: 400,
+    };
+    const vue = mount(DiagramZone, { props });
+    const svelte = render(SvelteZone, { props });
+    await nextTick(); await tick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    for (const root of [vue.element, svelte.container]) {
+      const header = root.querySelector<HTMLElement>('.st-diagramZone-header')!;
+      const toggle = root.querySelector<HTMLElement>('.st-diagramCard-toggle')!;
+      expect(header.style.left).toBe('calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+      expect(header.style.right).toBe('calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+      expect(header.style.top).toBe(header.style.right);
+      expect(toggle.style.top).toBe(toggle.style.right);
+    }
+    vue.unmount(); svelte.unmount();
+  });
   for (const name of DIAGRAM_GLYPH_NAMES) it(`should match icon ${name}`, () => {
     const vue = mount(DiagramIcon, { props: { name } }); const svelte = render(SvelteIcon, { props: { name } });
     expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!))); vue.unmount(); svelte.unmount();
@@ -508,6 +536,9 @@ describe('scene host DOM and camera/fold behavior', () => {
     expect(rectOf(vue.element, 'a1')).toMatchObject({ width: 352, height: 154 });
     expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(6);
     expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('innerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+    const outerHeader = vue.element.querySelector<HTMLElement>(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone-header`)!;
+    expect(outerHeader.style.left).toBe('calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+    expect(outerHeader.style.right).toBe(outerHeader.style.left);
     const initialOuterB = rectOf(vue.element, 'outerB');
     const initialExt = rectOf(vue.element, 'ext');
 
