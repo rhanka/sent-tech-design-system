@@ -374,3 +374,16 @@ if a compiler reads them. Remove the brand from `Ref<K>` and `check` reports 42
 and scenarios. Relation refinements resolve through `relationBaseType` and
 `relationSchema`, preserving inherited roles and constraints. See
 [the authoring contract and mapping examples](../../docs/DC2C_NUMBERED_FLOWS.md).
+
+## Diagram conventions (DE-2)
+
+- **Arrow direction (`source` = initiator of the action):** directed relations
+  declare the initiator of the action as the `source` endpoint and the receiver
+  as the `target` endpoint. Scenes that declare initiator metadata (via
+  `relation.attributes.initiator` or caller-supplied initiator maps) can run the
+  opt-in `arrow-direction-convention` lint in `@sentropic/diagram-canvas`.
+- **Zone tags (`kicker`):** bare opaque acronyms without a descriptive label
+  should be avoided; acronyms belong with their label (e.g. `"IAM — Identity &
+  Access Management"`). `@sentropic/diagram-canvas` provides the opt-in
+  non-blocking `zone-tag-opaque-acronym` lint with an allowlist for `DLR-315`
+  product kickers.

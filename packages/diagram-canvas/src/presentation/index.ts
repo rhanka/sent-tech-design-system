@@ -1,4 +1,18 @@
 export { renderSceneSvg } from "./renderSceneSvg.js";
+export {
+  ARROW_DIRECTION_CONVENTION,
+  DEFAULT_ZONE_TAG_ACRONYM_ALLOWLIST,
+  isOpaqueAcronymZoneTag,
+  lintArrowDirection,
+  lintDiagramConventions,
+  lintZoneTagAcronyms,
+  type ArrowDirectionEdgeInput,
+  type DiagramConventionLintOptions,
+  type LintArrowDirectionInput,
+  type LintDiagramConventionsInput,
+  type LintZoneTagAcronymsInput,
+  type ZoneTagLintEntry,
+} from "../layout/conventions.js";
 export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
 export {
   ARROWHEAD_MARKER_GEOMETRY,

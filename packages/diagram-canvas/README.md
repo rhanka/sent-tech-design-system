@@ -437,3 +437,24 @@ flow tokens, bundles, arrows, badges and internal targets. The pure
 static `flowMarksSvg`; selection/filter changes require no layout. Shared host
 acceptance cases are imported directly from unpublished `test-support` source. See
 [the contract, Vue handoff and limitations](../../docs/DC2C_NUMBERED_FLOWS.md).
+
+## Diagram conventions and opt-in lints (DE-2)
+
+- **Arrow direction (`source` = initiator of the action):** on every directed
+  relation (`arrowhead !== "none"`), the `source` endpoint denotes the
+  initiator of the action and the `target` endpoint denotes the receiver.
+  Because initiation cannot be inferred from graph topology alone, the
+  `arrow-direction-convention` diagnostic is **opt-in**
+  (`conventions: { arrowDirection: true }`) and evaluates only edges that
+  declare initiator metadata via the semantic relation's `attributes.initiator`
+  text attribute or via `conventions.initiators`.
+- **No opaque acronyms as zone tags:** a zone tag (`kicker`) should carry a
+  descriptive label alongside any acronym (for example
+  `"IAM — Identity & Access Management"` or `"VPC · Réseau privé"`), never a
+  bare unexplained acronym. The `zone-tag-opaque-acronym` diagnostic is
+  **opt-in and non-blocking** (`conventions: { zoneTagAcronyms: true }`) and
+  defaults to an allowlist (`DEFAULT_ZONE_TAG_ACRONYM_ALLOWLIST`) covering the
+  existing product kickers of `DLR-315` (`H2A`, `SENTROPIC`, `ENGRAM`,
+  `DESIGN SYSTEM`, `SENTROPIC & 3RD PARTIES`, `SENTROPIC & TIERS`). Both lints
+  are also callable directly via `lintArrowDirection`, `lintZoneTagAcronyms`,
+  and `lintDiagramConventions`.

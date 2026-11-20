@@ -144,6 +144,7 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
       documentDigest, presentationDigest, sourceViewDigest, registry,
       bindings: options.bindings === undefined ? "" : inputDigest(options.bindings),
       ...(options.reportSurfaceSame === true ? { reportSurfaceSame: true } : {}),
+      ...(options.conventions === undefined ? {} : { conventions: options.conventions }),
     });
     // Invalid serialisable inputs still reach the engine's normal refusal path.
     if (!input.ok) return undefined;

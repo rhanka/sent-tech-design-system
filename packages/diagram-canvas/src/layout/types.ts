@@ -260,6 +260,12 @@ export interface LayoutOptions {
    * `surface1` expanded zone.
    */
   readonly reportSurfaceSame?: boolean;
+  /**
+   * Opt-in non-blocking convention lints (DE-2 asks 5 & 6): arrow direction
+   * (`source` = initiator, when initiator metadata is declared) and opaque
+   * acronym zone tags (with `DLR-315` product kicker allowlist). Off by default.
+   */
+  readonly conventions?: import("./conventions.js").DiagramConventionLintOptions;
 }
 
 /** The outcome of the L-R5 / L-R7 decision for one call. Derived, never persisted. */
@@ -293,6 +299,8 @@ export type LayoutWarningCode =
   | "card-grown"
   | "zone-overflow"
   | "zone-surface-same"
+  | "arrow-direction-convention"
+  | "zone-tag-opaque-acronym"
   | "docking-overflow";
 
 export interface LayoutWarning {

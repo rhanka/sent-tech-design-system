@@ -261,6 +261,8 @@ export interface SceneLayoutInput {
   readonly depthParityStart?: 0 | 1;
   /** Opt-in informational `zone-surface-same` diagnostic on untinted leaf cards inside `surface1` zones. */
   readonly reportSurfaceSame?: boolean;
+  /** Opt-in non-blocking convention lints (DE-2 asks 5 & 6). Off by default. */
+  readonly conventions?: LayoutOptions["conventions"];
   /** Automatic link-style legend anchor (`"right"` default; `"none"` suppresses). */
   readonly legend?: LinkLegendAnchor;
   /** Heading for the automatic link-style legend strip (defaults to `"Legend"`). */
@@ -320,6 +322,7 @@ export function layoutScene(input: SceneLayoutInput): LayoutResult {
     targetWidth: input.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
     ...(input.previousOrientation === undefined ? {} : { previousOrientation: input.previousOrientation }),
     ...(input.reportSurfaceSame === undefined ? {} : { reportSurfaceSame: input.reportSurfaceSame }),
+    ...(input.conventions === undefined ? {} : { conventions: input.conventions }),
   };
   const result = input.cache !== undefined
     ? (input.view === undefined
