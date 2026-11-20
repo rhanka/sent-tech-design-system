@@ -1,4 +1,4 @@
-// Unread rules over host-held read state (SPEC-r5 §2, §3).
+// Unread rules over host-held read state (SPEC-r6 §2, §3).
 
 import { compareIsoTimestamps } from "./threads.js";
 import type { CollaborationActor, ReviewComment, ReviewThread } from "./types.js";
@@ -27,7 +27,7 @@ function resolveLastReadAt(
 }
 
 /**
- * Unread rule (SPEC-r5 §3):
+ * Unread rule (SPEC-r6 §3):
  * `createdAt > lastReadAt && authorship.author.actorId !== currentUser.actorId`.
  * Self-authored comments are never unread; sponsored agent comments have a distinct
  * `authorship.author.actorId` and therefore DO appear unread to the owner.

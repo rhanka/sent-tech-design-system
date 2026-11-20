@@ -67,7 +67,8 @@
   let internalSubmitting = $state(false);
   let didAutofocus = false;
 
-  const errorId = `st-review-composer-err-${Math.random().toString(36).slice(2, 9)}`;
+  const uid = $props.id();
+  const errorId = `st-review-composer-err-${uid}`;
   const isBusy = $derived(submitting || internalSubmitting);
   const displayedError = $derived(anchorError ?? localError ?? error);
   const shouldClearOnSubmit = $derived(clearOnSubmit ?? initialBody.length === 0);

@@ -1,4 +1,4 @@
-// Thread filtering and tab counts (SPEC-r5 §3).
+// Thread filtering and tab counts (SPEC-r6 §3).
 
 import type { CollaborationActor, ReviewThread } from "./types.js";
 

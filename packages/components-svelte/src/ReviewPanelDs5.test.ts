@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/svelte";
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/svelte";
 import { createRawSnippet } from "svelte";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
@@ -237,14 +237,16 @@ describe("DS-5: ThreadPanel", () => {
     expect(container.querySelector(".st-review-panel__orphan-count")?.textContent).toContain("1");
 
     // Counts across 4 threads (3 attached + 1 orphan): All=4, Open=3, Resolved=1, Mine=1 (agent comment sponsored by Alice is NOT Mine!)
-    const allTab = screen.getByRole("tab", { name: /All.*4/i });
-    const openTab = screen.getByRole("tab", { name: /Open.*3/i });
-    const resolvedTab = screen.getByRole("tab", { name: /Resolved.*1/i });
-    const mineTab = screen.getByRole("tab", { name: /Mine.*1/i });
-    expect(allTab).toBeTruthy();
-    expect(openTab).toBeTruthy();
-    expect(resolvedTab).toBeTruthy();
-    expect(mineTab).toBeTruthy();
+    expect(container.querySelector('[role="tablist"]')).toBeNull();
+    const filtersGroup = screen.getByRole("group", { name: "Filter comment threads" });
+    const allFilter = within(filtersGroup).getByRole("button", { name: /All.*4/i });
+    const openFilter = within(filtersGroup).getByRole("button", { name: /Open.*3/i });
+    const resolvedFilter = within(filtersGroup).getByRole("button", { name: /Resolved.*1/i });
+    const mineFilter = within(filtersGroup).getByRole("button", { name: /Mine.*1/i });
+    expect(allFilter.getAttribute("aria-pressed")).toBe("true");
+    expect(openFilter.getAttribute("aria-pressed")).toBe("false");
+    expect(resolvedFilter.getAttribute("aria-pressed")).toBe("false");
+    expect(mineFilter.getAttribute("aria-pressed")).toBe("false");
 
     // Agent thread sponsored by Alice is rendered with two icons AND marked unread for Alice
     const agentItem = container.querySelector(`[data-thread-id="${ids.tAgent.threadId}"]`);
@@ -254,16 +256,20 @@ describe("DS-5: ThreadPanel", () => {
     );
 
     // Filter to Mine -> only Alice's human thread (NOT Claude's sponsored agent thread)
-    await fireEvent.click(mineTab);
+    await fireEvent.click(mineFilter);
     expect(onFilterChange).toHaveBeenCalledWith("mine");
     await rerender({ filter: "mine" });
+    expect(mineFilter.getAttribute("aria-pressed")).toBe("true");
+    expect(allFilter.getAttribute("aria-pressed")).toBe("false");
     expect(container.querySelectorAll(".st-review-panel__thread-card")).toHaveLength(1);
     expect(container.querySelector(`[data-thread-id="${ids.tAlice.threadId}"]`)).toBeTruthy();
     expect(container.querySelector(`[data-thread-id="${ids.tAgent.threadId}"]`)).toBeNull();
 
     // Filter to Resolved -> only Bob's closed thread, labelled "Resolved"
-    await fireEvent.click(resolvedTab);
+    await fireEvent.click(resolvedFilter);
     await rerender({ filter: "resolved" });
+    expect(resolvedFilter.getAttribute("aria-pressed")).toBe("true");
+    expect(mineFilter.getAttribute("aria-pressed")).toBe("false");
     expect(container.querySelectorAll(".st-review-panel__thread-card")).toHaveLength(1);
     expect(container.querySelector(`[data-thread-id="${ids.tResolved.threadId}"]`)?.textContent).toContain(
       "Resolved",

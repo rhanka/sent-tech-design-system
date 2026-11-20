@@ -1,8 +1,8 @@
 // 1:1 contract types mapped from sentropic `packages/comments/src/types.ts`
-// and `api/src/services/canvas-live/contracts.ts` (SPEC-r5 §1, §1.1-§1.3, §2).
+// and `api/src/services/canvas-live/contracts.ts` (SPEC-r6 §1, §1.1-§1.3, §2).
 // The review kit invents zero wire fields.
 
-/** Maximum encoded length of `CommentTarget.sectionKey` (SPEC-r5 §2, D3). */
+/** Maximum encoded length of `CommentTarget.sectionKey` (SPEC-r6 §2, D3). */
 export const MAX_SECTION_KEY_LENGTH = 2048;
 
 export type CommentTargetKind = "message" | "canvas" | "artifact" | "field" | "record";
@@ -82,12 +82,12 @@ export interface CommentAuthorship {
   runId?: string;
 }
 
-/** View-level comment consumed by review-kit components (SPEC-r5 §1.3). */
+/** View-level comment consumed by review-kit components (SPEC-r6 §1.3). */
 export interface ReviewComment extends Comment {
   authorship: CommentAuthorship;
 }
 
-// ── Anchor payload shapes carried inside `sectionKey` (SPEC-r5 §2) ──
+// ── Anchor payload shapes carried inside `sectionKey` (SPEC-r6 §2) ──
 
 export interface TextQuoteSelector {
   exact: string;
@@ -131,7 +131,7 @@ export interface RegionAnchorPayload {
 
 export type AnchorPayload = TextAnchorPayload | ElementAnchorPayload | RegionAnchorPayload;
 
-/** View-only thread model assembled by `groupCommentsIntoThreads` (SPEC-r5 §1). */
+/** View-only thread model assembled by `groupCommentsIntoThreads` (SPEC-r6 §1). */
 export interface ReviewThread {
   threadId: string;
   target: CommentTarget;
