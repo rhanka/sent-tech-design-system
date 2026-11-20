@@ -11,7 +11,18 @@ test("coverage manifest owns the expected ported modules of lot P6", () => {
   const { manifest } = readManifest();
   assert.deepEqual(
     manifest.modules.map((row) => row.module),
-    ["adapter", "categoricalData", "partOfWholeData", "distributionData", "drill"],
+    [
+      "adapter",
+      "categoricalData",
+      "partOfWholeData",
+      "distributionData",
+      "drill",
+      "AreaChart",
+      "ComboChart",
+      "LollipopChart",
+      "StackedBarChart",
+      "StepLineChart",
+    ],
   );
   assert.deepEqual(
     sourceModules(),
