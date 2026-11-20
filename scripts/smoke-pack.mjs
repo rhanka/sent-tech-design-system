@@ -240,6 +240,12 @@ const packages = [
     ],
   },
   {
+    name: "@sentropic/design-system-review-core",
+    // SPEC-r6 DS-7: framework-neutral zero-dependency review core.
+    requiredFiles: ["dist/index.js", "dist/index.d.ts"],
+    absentPatterns: ["\\.map$", "\\.srchash$", "\\.test\\."],
+  },
+  {
     name: "@sentropic/design-system-elements",
     // L7a: the published tarball carries the catalogue trio and the schemas
     // at the package root next to dist/ (register AMB-1). The hashed lazy
@@ -402,6 +408,7 @@ const deepVerify = {
     closure: [
       "@sentropic/graph",
       "@sentropic/design-system-rich-text",
+      "@sentropic/design-system-review-core",
       "@sentropic/design-system-themes",
       "@sentropic/diagram-canvas",
     ],
@@ -433,6 +440,7 @@ const deepVerify = {
   // reclassification proof: with ajv still in devDependencies, importing the
   // installed "." entry would die on `ajv/dist/2020.js` with no workspace
   // to fall back on.
+  "@sentropic/design-system-review-core": { closure: [], peers: [] },
   "@sentropic/design-system-elements": { closure: [], peers: [] },
   "@sentropic/design-system-react": {
     closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens"],
@@ -442,7 +450,7 @@ const deepVerify = {
     ],
   },
   "@sentropic/design-system-vue": {
-    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens", "@sentropic/diagram-canvas", "@sentropic/graph", "@sentropic/design-system-rich-text"],
+    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens", "@sentropic/diagram-canvas", "@sentropic/graph", "@sentropic/design-system-rich-text", "@sentropic/design-system-review-core"],
     peers: [["vue", vueManifest.devDependencies.vue]],
   },
   "@sentropic/design-system-angular": {
