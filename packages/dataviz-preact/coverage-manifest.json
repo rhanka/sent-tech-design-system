@@ -9,7 +9,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
-  "ownershipNote": "Lot P6 scaffold + groups 1-3 (70 files) + group 4 batches 1-3 (15 files -> 85/128 ported): GeoHexbinMap, GeoJsonMap, GeoPointMap, HLCChart, HeatmapChart, HeikinAshiChart, HistogramChart, HollowCandlestickChart, ItemChart, KpiCardGroup, MekkoChart, OHLCChart, ObjectLayers, OrganizationChart, PackedBubbleChart.",
+  "ownershipNote": "Lot P6 scaffold + groups 1-3 (70 files) + group 4 batches 1-4 (20 files -> 90/128 ported): GeoHexbinMap, GeoJsonMap, GeoPointMap, HLCChart, HeatmapChart, HeikinAshiChart, HistogramChart, HollowCandlestickChart, ItemChart, KpiCardGroup, MekkoChart, OHLCChart, ObjectLayers, OrganizationChart, PackedBubbleChart, PalettePicker, ParallelCoordinatesChart, PercentileBandChart, PivotDataTable, PointAndFigureChart.",
   "modules": [
     {
       "module": "adapter",
@@ -771,6 +771,51 @@
       "module": "PackedBubbleChart",
       "file": "src/lib/PackedBubbleChart.tsx",
       "reactSource": "dataviz-react/src/lib/PackedBubbleChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "PalettePicker",
+      "file": "src/lib/PalettePicker.tsx",
+      "reactSource": "dataviz-react/src/lib/PalettePicker.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ParallelCoordinatesChart",
+      "file": "src/lib/ParallelCoordinatesChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ParallelCoordinatesChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "PercentileBandChart",
+      "file": "src/lib/PercentileBandChart.tsx",
+      "reactSource": "dataviz-react/src/lib/PercentileBandChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "PivotDataTable",
+      "file": "src/lib/PivotDataTable.tsx",
+      "reactSource": "dataviz-react/src/lib/PivotDataTable.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "PointAndFigureChart",
+      "file": "src/lib/PointAndFigureChart.tsx",
+      "reactSource": "dataviz-react/src/lib/PointAndFigureChart.tsx",
       "kind": "component",
       "lot": "P6",
       "renderable": true,

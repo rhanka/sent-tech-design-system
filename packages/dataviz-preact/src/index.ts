@@ -213,3 +213,15 @@ export { OrganizationChart } from './lib/OrganizationChart.js';
 export type { OrganizationChartProps } from './lib/OrganizationChart.js';
 export { PackedBubbleChart } from './lib/PackedBubbleChart.js';
 export type { PackedBubbleChartProps } from './lib/PackedBubbleChart.js';
+
+// Group 4 batch 4 components.
+export { PalettePicker } from './lib/PalettePicker.js';
+export type { PalettePickerProps } from './lib/PalettePicker.js';
+export { ParallelCoordinatesChart } from './lib/ParallelCoordinatesChart.js';
+export type { ParallelCoordinatesChartProps } from './lib/ParallelCoordinatesChart.js';
+export { PercentileBandChart } from './lib/PercentileBandChart.js';
+export type { PercentileBandChartProps } from './lib/PercentileBandChart.js';
+export { PivotDataTable } from './lib/PivotDataTable.js';
+export type { PivotDataTableProps } from './lib/PivotDataTable.js';
+export { PointAndFigureChart } from './lib/PointAndFigureChart.js';
+export type { PointAndFigureChartProps } from './lib/PointAndFigureChart.js';
