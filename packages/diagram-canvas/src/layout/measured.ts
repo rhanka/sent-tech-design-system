@@ -36,6 +36,7 @@ import {
   foldGroupId,
   GENERIC_PROFILE_ID,
   hasErrors,
+  isPresentationContractV2Pin,
   localIdOf,
   occurrenceRef,
   parentOccurrenceOf,
@@ -72,9 +73,10 @@ import {
   type LayoutHints,
 } from "./hints.js";
 import { measureSceneBox } from "./sceneMeasure.js";
-import { ZONE_GEOMETRY } from "../presentation/diagramCardModel.js";
+import { anatomyCardGeometry, anatomyZoneGeometry, ZONE_GEOMETRY, zoneDepthSurface, type DiagramAnatomy } from "../presentation/diagramCardModel.js";
 import { placePackedLabel } from "./labels.js";
 import {
+  CONTENT_INSET,
   DEFAULT_ALLOCATED_LINES,
   FIXED_CARD_HEIGHT,
   FIXED_CARD_WIDTH,
@@ -159,6 +161,29 @@ function semanticName(document: SemanticDocument, entity: EntityRef): string {
 
 function formOf(presentation: DiagramPresentation, occurrence: OccurrenceRef): DiagramForm | undefined {
   return (presentation.entities as Record<string, { form: DiagramForm }>)[occurrence]?.form;
+}
+
+/**
+ * Strip transient canvas-only stamps (`anatomy`, `depth`, `depthParityStart`,
+ * and `align` under `@1`) before persisting `presentation.diagram` on the
+ * emitted `ViewDocument`, so every laid-out view passes `validateView`.
+ */
+function persistableDiagramPresentation(presentation: DiagramPresentation): DiagramPresentation {
+  const allowsAlign =
+    presentation.contractPin !== undefined &&
+    isPresentationContractV2Pin(presentation.contractPin);
+  const entities: Record<string, DiagramPresentation["entities"][string]> = {};
+  for (const [key, entry] of Object.entries(presentation.entities)) {
+    const record = entry as unknown as Record<string, unknown>;
+    const cleanEntry: Record<string, unknown> = {};
+    for (const [field, value] of Object.entries(record)) {
+      if (field === "anatomy" || field === "depth" || field === "depthParityStart") continue;
+      if (field === "align" && !allowsAlign) continue;
+      cleanEntry[field] = value;
+    }
+    entities[key] = cleanEntry as unknown as DiagramPresentation["entities"][string];
+  }
+  return { ...presentation, entities };
 }
 
 /** Slot text for one occurrence: typed presentation slots, else the semantic name as title. */
@@ -298,6 +323,16 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       diagnostics: [],
     };
   }
+  /**
+   * Per-occurrence pinned anatomy (DE-1): the presentation entry selects
+   * `diagram-anatomy/v1 | v2`, falling back to `sourceView.presentation.anatomy`;
+   * absent everywhere means `"v1"` so existing views keep the frozen `460 × 200`
+   * footprint by construction.
+   */
+  const viewAnatomy = (sourceView?.presentation as { readonly anatomy?: DiagramAnatomy } | undefined)?.anatomy;
+  const occurrenceAnatomy = (occurrence: OccurrenceRef): DiagramAnatomy =>
+    (presentation.entities as Record<string, { readonly anatomy?: DiagramAnatomy }>)[occurrence]?.anatomy ?? viewAnatomy ?? "v1";
+  const cardWidthOf = (occurrence: OccurrenceRef): number => anatomyCardGeometry(occurrenceAnatomy(occurrence)).width;
   if (options.measureLines === undefined) {
     return {
       status: "refused",
@@ -317,7 +352,9 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     const key = `${id}|${width}|${collapsed}`;
     let box = sceneBoxCache.get(key);
     if (box === undefined) {
-      const entry = presentation.entities[id];
+      const rawEntry = presentation.entities[id];
+      const entry = rawEntry === undefined ? undefined
+        : rawEntry.anatomy === undefined && viewAnatomy !== undefined ? { ...rawEntry, anatomy: viewAnatomy } : rawEntry;
       const kind = kinds.get(projected.entityOccurrences[id]?.entity!);
       const expanded = kind === "container-expanded" || kind === "legend-expanded";
       box = measureSceneBox(expanded && entry?.form === "card" ? { ...entry, form: "container" } : entry,
@@ -464,7 +501,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       portOccurrences,
       groups: synthesizedGroups,
       filters: [],
-      presentation: { camera: { x: 0, y: 0, zoom: 1 }, diagram: presentation },
+      presentation: { camera: { x: 0, y: 0, zoom: 1 }, diagram: persistableDiagramPresentation(presentation) },
     };
   };
   let projected: ViewDocument;
@@ -528,7 +565,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
   } = {
     groups: projected.groups as Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }>,
     filters: [...projected.filters],
-    presentationState: { ...projected.presentation, diagram: presentation },
+    presentationState: { ...projected.presentation, diagram: persistableDiagramPresentation(presentation) },
     summaryLabels: projected.summaryLabels,
     projected,
     representativeOf,
@@ -917,7 +954,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       };
       const entry = presentation.entities[representativeOf(id)];
       const header = entry === undefined ? measureHeader(input, measure)
-        : sceneBoxAt(representativeOf(id), inner + 2 * ZONE_GEOMETRY.headerInset, input.folded).header;
+        : sceneBoxAt(representativeOf(id), inner + 2 * CONTENT_INSET, input.folded).header;
       headers.set(id, header);
       headerInputs.set(id, input);
       headerWidths.set(id, inner);
@@ -1008,26 +1045,27 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     const sizeBox = (id: EntityRef): { width: number; height: number } => {
       const kind = kinds.get(id)!;
       if (kind === "leaf" || kind === "container-collapsed" || kind === "legend-collapsed") {
-        outerWidths.set(id, FIXED_CARD_WIDTH);
         const entry = presentation.entities[representativeOf(id)];
         const measured = entry === undefined ? { width: FIXED_CARD_WIDTH, height: FIXED_CARD_HEIGHT }
-          : sceneBoxAt(representativeOf(id), FIXED_CARD_WIDTH, kind !== "leaf");
+          : sceneBoxAt(representativeOf(id), cardWidthOf(representativeOf(id)), kind !== "leaf");
+        outerWidths.set(id, measured.width);
         const size = { width: measured.width, height: measured.height };
         packedSizes.set(id, size);
         return size;
       }
       if (kind === "legend-key") return { width: innerWidthOf(FIXED_CARD_WIDTH), height: LEGEND_KEY_HEIGHT };
+      const zoneGeo = anatomyZoneGeometry(occurrenceAnatomy(representativeOf(id)));
       const hasIcon = presentation.entities[representativeOf(id)]?.icon !== "none";
-      const headerReserve = ZONE_GEOMETRY.headerTextInset - (hasIcon ? 0 : ZONE_GEOMETRY.iconSize + ZONE_GEOMETRY.iconTextGap);
+      const headerReserve = zoneGeo.headerTextInset - (hasIcon ? 0 : zoneGeo.iconSize + zoneGeo.iconTextGap);
       const headerDriven = unwrappedHeaderWidth(id) + headerReserve;
-      const floor = Math.max(FIXED_CARD_WIDTH, headerDriven);
+      const floor = Math.max(zoneGeo.collapsedWidth, headerDriven);
       const ordered = orderedChildrenOf(id);
       const headerHeight = headerHeightOf(id, floor);
       if (kind === "legend-expanded") {
         // A legend stays a single-column list of keys (DLR-341): exempt from packing.
         outerWidths.set(id, floor);
         const keys = ordered.length * LEGEND_KEY_HEIGHT + Math.max(0, ordered.length - 1) * gaps.cardGapY;
-        const size = { width: floor, height: ZONE_GEOMETRY.headerInset + headerHeight + contentInset + keys + contentInset };
+        const size = { width: floor, height: zoneGeo.headerInset + headerHeight + contentInset + keys + contentInset };
         packedSizes.set(id, size);
         return size;
       }
@@ -1036,7 +1074,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const level = sizeRun(
         run,
         2 * contentInset,
-        ZONE_GEOMETRY.headerInset + headerHeight + contentInset + contentInset,
+        zoneGeo.headerInset + headerHeight + contentInset + contentInset,
       );
       // BF-6: reserve measured U-channel headroom for labelled edges on one
       // shelf, including wrapped labels and parallel channels. This is
@@ -1065,7 +1103,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       outerWidths.set(id, outer);
       const size = {
         width: outer,
-        height: ZONE_GEOMETRY.headerInset + headerHeight + contentInset + levelHeight + contentInset
+        height: zoneGeo.headerInset + headerHeight + contentInset + levelHeight + contentInset
           + sceneBoxAt(representativeOf(id), outer, false).footerReserve,
       };
       packedSizes.set(id, size);
@@ -1087,7 +1125,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       for (const id of headerIds) {
         const kind = kinds.get(id)!;
         const folded = kind === "container-collapsed" || kind === "legend-collapsed";
-        headerAt(id, folded ? innerWidthOf(FIXED_CARD_WIDTH) : innerWidthOf(outerWidths.get(id) ?? FIXED_CARD_WIDTH));
+        headerAt(id, folded ? innerWidthOf(packedSizes.get(id)?.width ?? cardWidthOf(representativeOf(id))) : innerWidthOf(outerWidths.get(id) ?? cardWidthOf(representativeOf(id))));
       }
     };
     sizeAll();
@@ -1102,13 +1140,47 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const occurrence = representativeOf(id);
       if (presentation.entities[occurrence] !== undefined && size !== undefined) {
         for (const diagnostic of sceneBoxAt(occurrence, size.width, isCollapsed(id)).diagnostics) {
-          if (diagnostic.reason !== "truncated") continue;
+          if (diagnostic.reason !== "truncated" && diagnostic.reason !== "fallback-v1") continue;
+          const isFallback = diagnostic.reason === "fallback-v1";
           warnings.push({ code: kinds.get(id) === "leaf" ? "card-overflow" : "zone-overflow", severity: "info",
-            refs: [occurrence, diagnostic.slot], message: "truncated " + diagnostic.slot + ": " + diagnostic.hiddenLength + " hidden characters; full text in title/aria",
-            details: { slot: diagnostic.slot, reason: "truncated", hiddenLength: diagnostic.hiddenLength!, neededHeight: diagnostic.neededPx, allocatedHeight: diagnostic.allocatedPx } });
+            refs: [occurrence, diagnostic.slot],
+            message: isFallback
+              ? "compact anatomy overflow on " + diagnostic.slot + ": fell back to v1 frozen box"
+              : "truncated " + diagnostic.slot + ": " + diagnostic.hiddenLength + " hidden characters; full text in title/aria",
+            details: {
+              slot: diagnostic.slot,
+              reason: diagnostic.reason,
+              ...(diagnostic.hiddenLength === undefined ? {} : { hiddenLength: diagnostic.hiddenLength }),
+              neededHeight: diagnostic.neededPx,
+              allocatedHeight: diagnostic.allocatedPx,
+            } });
         }
       } else for (const overflow of headerOverflows(headerInputs.get(id)!, headers.get(id)!, lineHeightOf)) {
         warnOverflow(overflow, kinds.get(id) !== "leaf");
+      }
+    }
+    if (options.reportSurfaceSame === true) {
+      for (const id of headerIds) {
+        const kind = kinds.get(id);
+        if (kind !== "container-expanded" && kind !== "legend-expanded") continue;
+        const zoneOcc = representativeOf(id);
+        const zoneEntry = presentation.entities[zoneOcc] as { readonly depth?: number; readonly depthParityStart?: 0 | 1 } | undefined;
+        const zoneDepth = zoneEntry?.depth ?? graph.nodes.get(id)?.depth ?? 0;
+        const surface = zoneDepthSurface(zoneDepth, zoneEntry?.depthParityStart);
+        if (surface !== "surface1") continue;
+        for (const childId of orderedChildrenOf(id)) {
+          if (kinds.get(childId) !== "leaf") continue;
+          const childOcc = representativeOf(childId);
+          const childEntry = presentation.entities[childOcc] as { readonly categoryRef?: string } | undefined;
+          if (childEntry?.categoryRef !== undefined) continue;
+          warnings.push({
+            code: "zone-surface-same",
+            severity: "info",
+            refs: [zoneOcc, childOcc],
+            message: `white leaf card ${childOcc} sits on same-colour surface1 zone ${zoneOcc}`,
+            details: { zone: zoneOcc, card: childOcc, surface },
+          });
+        }
       }
     }
 
@@ -1145,17 +1217,18 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       }
       const size = packedSizes.get(id)!;
       const header = headers.get(id)!;
+      const zoneGeo = anatomyZoneGeometry(occurrenceAnatomy(representativeOf(id)));
       const inner = innerWidthOf(size.width);
       rects.set(id, { x, y, width: size.width, height: size.height });
-      const ruleClearance = (ZONE_GEOMETRY.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
-      titleBands.set(id, { x, y, width: size.width, height: ZONE_GEOMETRY.headerInset + header.height });
+      const ruleClearance = (zoneGeo.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
+      titleBands.set(id, { x, y, width: size.width, height: zoneGeo.headerInset + header.height });
       const footerReserve = sceneBoxAt(representativeOf(id), size.width, false).footerReserve;
       if (footerReserve > 0) footerBands.set(id, {
-        x, y: y + size.height - footerReserve - ZONE_GEOMETRY.borderWidth - ruleClearance,
-        width: size.width, height: footerReserve + ZONE_GEOMETRY.borderWidth + ruleClearance,
+        x, y: y + size.height - footerReserve - zoneGeo.borderWidth - ruleClearance,
+        width: size.width, height: footerReserve + zoneGeo.borderWidth + ruleClearance,
       });
       const contentX = x + contentInset;
-      const contentY = y + ZONE_GEOMETRY.headerInset + header.height + contentInset;
+      const contentY = y + zoneGeo.headerInset + header.height + contentInset;
       if (kind === "legend-expanded") {
         legendInner.set(id, inner);
         orderedChildrenOf(id).forEach((key, index) => {

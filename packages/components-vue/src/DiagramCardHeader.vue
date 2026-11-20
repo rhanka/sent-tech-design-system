@@ -16,6 +16,8 @@ interface DiagramCardHeaderProps {
     title: readonly LaidOutLine[];
     iconName?: string;
     iconGlyph?: DiagramGlyphPaths;
+    /** Pictogram box edge; defaults to the v1 `70` (v2: `52`). */
+    iconSize?: number;
     /** Width the title/kicker block may take (toggle-aware). */
     headerTextWidth: number;
     /**
@@ -37,14 +39,14 @@ interface DiagramCardHeaderProps {
      */
     toggleTopOffset?: number;
 }
-const { kicker, title, iconName, iconGlyph, headerTextWidth, headerBlockHeight, toggle, toggleTopOffset, } = defineProps<DiagramCardHeaderProps>();
+const { kicker, title, iconName, iconGlyph, iconSize = 70, headerTextWidth, headerBlockHeight, toggle, toggleTopOffset, } = defineProps<DiagramCardHeaderProps>();
 const glyph = computed(() => iconGlyph ?? (iconName === undefined || iconName === "none" ? undefined : getDiagramGlyph(iconName) ?? getDiagramGlyph("unknown")));
 </script>
 
 <template>
 <div class="st-diagramCardHeader" :style="`height:${headerBlockHeight}px`">
   <template v-if="iconName !== undefined && iconName !== 'none' && glyph !== undefined">
-    <svg class="st-diagramCardHeader-icon" :data-diagram-icon="iconName" viewBox="0 0 64 64" width="70" height="70" aria-hidden="true" focusable="false">
+    <svg class="st-diagramCardHeader-icon" :data-diagram-icon="iconName" viewBox="0 0 64 64" :width="iconSize" :height="iconSize" aria-hidden="true" focusable="false">
       <path d="M8 53L32 44L56 53L32 62Z" fill="var(--st-component-diagramIcon-baseFill, color-mix(in srgb, var(--st-semantic-feedback-info) 18%, var(--st-semantic-surface-raised)))"></path>
       <path :d="glyph.face" fill="var(--st-component-diagramIcon-faceFill, color-mix(in srgb, var(--st-semantic-feedback-info) 75%, var(--st-semantic-surface-raised)))" stroke="var(--st-component-diagramIcon-faceStroke, var(--st-semantic-feedback-info))" stroke-width="1.5" stroke-linejoin="round"></path>
       <template v-if="glyph.line !== undefined">

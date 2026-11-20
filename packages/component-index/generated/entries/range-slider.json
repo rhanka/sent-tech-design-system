@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/RangeSlider.svelte",
-      "version": "0.41.5"
+      "version": "0.42.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/RangeSlider.vue",
-      "version": "0.41.0-next.7"
+      "version": "0.41.0-next.8"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Two-handle slider for selecting a value range.",
     "fr": "Curseur à deux poignées pour sélectionner une plage de valeurs."
   },
-  "digest": "sha256:c5647d5a88ab49c6c7989ed26548817b8c2ad51ffa2efec6a63f0b8b08c69fac",
+  "digest": "sha256:bfd5cc8e08798f8e28dfa5894020c951250784b94c308b1664fbfb9be7b75a24",
   "displayName": "RangeSlider",
   "format": "component-entry/v1",
   "frameworks": [

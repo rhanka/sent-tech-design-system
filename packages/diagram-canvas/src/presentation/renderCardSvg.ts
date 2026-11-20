@@ -13,8 +13,8 @@
  * and informational diagnostics report the hidden length.
  */
 import {
+  anatomyCardGeometry,
   cardFullText,
-  CARD_GEOMETRY,
   defaultCardMeasure,
   layoutCard,
   projectCardProps,
@@ -100,13 +100,19 @@ export function renderCardContent(
   measure: CardLineMeasure = defaultCardMeasure,
 ): { readonly content: string; readonly layout: ReturnType<typeof layoutCard> } {
   const layout = layoutCard(props, measure);
-  const g = { ...CARD_GEOMETRY, height: layout.box.height };
+  const g = { ...anatomyCardGeometry(layout.anatomyFallback ?? props.anatomy), width: layout.box.width, height: layout.box.height };
   const parts: string[] = [`<title>${escapeXml(cardFullText(props))}</title><desc>${escapeXml(cardFullText(props))}</desc>`];
   // Border, then the accent bar over the left stroke (border-left look).
   // A proposed card is always drawn dashed, independently of the tint
   // (owner criterion 5); the dash pattern is the kit's `4 5`.
+  // Owner addendum 1: a folded zone keeps its depth background; leaf cards
+  // keep the resting card surface.
+  const surfaceFill =
+    props.surface === undefined
+      ? "var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised))"
+      : `var(--st-component-diagramZone-${props.surface}, var(--st-semantic-surface-${props.surface === "surface1" ? "raised" : "subtle"}))`;
   parts.push(
-    `<rect x="1" y="1" width="${g.width - 2}" height="${g.height - 2}" fill="var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised))" stroke="var(--st-component-diagramCard-border, var(--st-semantic-border-strong))" stroke-width="${g.borderWidth}"${props.proposed === true ? ` stroke-dasharray="var(--st-component-diagramCard-proposedDashArray, 4 5)"` : ""}/>`,
+    `<rect x="1" y="1" width="${g.width - 2}" height="${g.height - 2}" fill="${surfaceFill}" stroke="var(--st-component-diagramCard-border, var(--st-semantic-border-strong))" stroke-width="${g.borderWidth}"${props.proposed === true ? ` stroke-dasharray="var(--st-component-diagramCard-proposedDashArray, 4 5)"` : ""}/>`,
   );
   parts.push(
     `<rect x="0" y="0" width="${g.accentWidth}" height="${g.height}" fill="var(--st-component-diagramCard-border, var(--st-semantic-border-strong))"/>`,
@@ -218,7 +224,7 @@ export function renderCardSvg(
   measure: CardLineMeasure = defaultCardMeasure,
 ): CardSvgResult {
   const { content, layout } = renderCardContent(props, measure);
-  const g = { ...CARD_GEOMETRY, height: layout.box.height };
+  const g = { ...anatomyCardGeometry(layout.anatomyFallback ?? props.anatomy), width: layout.box.width, height: layout.box.height };
   const overflowSlots = layout.diagnostics
     .filter((diagnostic) => diagnostic.code === "card-overflow")
     .map((diagnostic) => diagnostic.slot);
