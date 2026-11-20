@@ -160,6 +160,11 @@ export type PropsParity = [
   Expect<Equal<Emitted.TrendLineChartProps, HandWritten.TrendLineChartProps>>,
   Expect<Equal<Emitted.ValueSlicerProps, HandWritten.ValueSlicerProps>>,
   Expect<Equal<Emitted.VariablePieChartProps, HandWritten.VariablePieChartProps>>,
+  Expect<Equal<Emitted.VectorFieldChartProps, HandWritten.VectorFieldChartProps>>,
+  Expect<Equal<Emitted.VennChartProps, HandWritten.VennChartProps>>,
+  Expect<Equal<Emitted.ViolinChartProps, HandWritten.ViolinChartProps>>,
+  Expect<Equal<Emitted.WaffleChartProps, HandWritten.WaffleChartProps>>,
+  Expect<Equal<Emitted.WaterfallChartProps, HandWritten.WaterfallChartProps>>,
 ];
 
 export type ComponentParity = [
@@ -274,6 +279,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.TrendLineChart, typeof HandWritten.TrendLineChart>>,
   Expect<Equal<typeof Emitted.ValueSlicer, typeof HandWritten.ValueSlicer>>,
   Expect<Equal<typeof Emitted.VariablePieChart, typeof HandWritten.VariablePieChart>>,
+  Expect<Equal<typeof Emitted.VectorFieldChart, typeof HandWritten.VectorFieldChart>>,
+  Expect<Equal<typeof Emitted.VennChart, typeof HandWritten.VennChart>>,
+  Expect<Equal<typeof Emitted.ViolinChart, typeof HandWritten.ViolinChart>>,
+  Expect<Equal<typeof Emitted.WaffleChart, typeof HandWritten.WaffleChart>>,
+  Expect<Equal<typeof Emitted.WaterfallChart, typeof HandWritten.WaterfallChart>>,
 ];
 
 export type ValueParity = [
