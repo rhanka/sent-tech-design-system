@@ -8,8 +8,12 @@ import { afterEach, describe, expect, it } from "vitest";
 import * as Emitted from "../.react-emit/src/index.js";
 import * as HandWrittenAvatar from "../../components-react/src/Avatar.js";
 import * as HandWrittenAvatarGroup from "../../components-react/src/AvatarGroup.js";
+import * as HandWrittenCheckboxGroup from "../../components-react/src/CheckboxGroup.js";
 import * as HandWrittenDisplaySettings from "../../components-react/src/DisplaySettings.js";
+import * as HandWrittenEmbed from "../../components-react/src/Embed.js";
+import * as HandWrittenMediaContent from "../../components-react/src/MediaContent.js";
 import * as HandWrittenSelectableRow from "../../components-react/src/SelectableRow.js";
+import * as HandWrittenTranscription from "../../components-react/src/Transcription.js";
 
 afterEach(cleanup);
 
@@ -152,6 +156,128 @@ describe("P5 group 3 forwardRef React-leg parity — Batch 1 (SelectableRow, Ava
     expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
     expect(emittedObj.current?.tagName).toBe("DIV");
     expect(emittedCb.last).toBeInstanceOf(HTMLDivElement);
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedCb.last).toBeNull();
+  });
+});
+
+describe("P5 group 3 forwardRef React-leg parity — Batch 2 (Embed, MediaContent, Transcription, CheckboxGroup)", () => {
+  it("emitted Embed ref matches hand-written Embed DOM node", () => {
+    const emittedObj = createRef<HTMLDivElement>();
+    const emittedCb = makeCallbackRef<HTMLDivElement>();
+    const handObj = createRef<HTMLDivElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.Embed ref={emittedObj} src="https://example.com/a" title="Frame A" />
+        <Emitted.Embed ref={emittedCb.ref} src="https://example.com/b" title="Frame B" />
+      </>,
+    );
+    const r2 = render(<HandWrittenEmbed.Embed ref={handObj} src="https://example.com/a" title="Frame A" />);
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(emittedObj.current?.tagName).toBe("DIV");
+    expect(emittedCb.last).toBeInstanceOf(HTMLDivElement);
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedCb.last).toBeNull();
+  });
+
+  it("emitted MediaContent ref matches hand-written MediaContent DOM node (image and video)", () => {
+    const emittedImg = createRef<HTMLElement>();
+    const emittedVid = makeCallbackRef<HTMLElement>();
+    const handImg = createRef<HTMLElement>();
+    const handVid = createRef<HTMLElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.MediaContent ref={emittedImg} media="https://example.com/a.png" mediaAlt="A" title="Photo" />
+        <Emitted.MediaContent
+          ref={emittedVid.ref}
+          media="https://example.com/b.mp4"
+          mediaKind="video"
+          mediaControls={false}
+        />
+      </>,
+    );
+    const r2 = render(
+      <>
+        <HandWrittenMediaContent.MediaContent
+          ref={handImg}
+          media="https://example.com/a.png"
+          mediaAlt="A"
+          title="Photo"
+        />
+        <HandWrittenMediaContent.MediaContent
+          ref={handVid}
+          media="https://example.com/b.mp4"
+          mediaKind="video"
+          mediaControls={false}
+        />
+      </>,
+    );
+
+    expect(snapshotNode(emittedImg.current)).toEqual(snapshotNode(handImg.current));
+    expect(snapshotNode(emittedVid.last)).toEqual(snapshotNode(handVid.current));
+    expect(emittedImg.current?.tagName).toBe("FIGURE");
+    expect(emittedVid.last?.tagName).toBe("FIGURE");
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedImg.current).toBeNull();
+    expect(emittedVid.last).toBeNull();
+  });
+
+  it("emitted Transcription ref matches hand-written Transcription DOM node", () => {
+    const emittedObj = createRef<HTMLDetailsElement>();
+    const emittedCb = makeCallbackRef<HTMLDetailsElement>();
+    const handObj = createRef<HTMLDetailsElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.Transcription ref={emittedObj} open text="Bonjour" />
+        <Emitted.Transcription ref={emittedCb.ref} segments={[{ speaker: "A", text: "Hi" }]} />
+      </>,
+    );
+    const r2 = render(<HandWrittenTranscription.Transcription ref={handObj} open text="Bonjour" />);
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(emittedObj.current?.tagName).toBe("DETAILS");
+    expect(emittedCb.last).toBeInstanceOf(HTMLDetailsElement);
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedCb.last).toBeNull();
+  });
+
+  it("emitted CheckboxGroup ref matches hand-written CheckboxGroup DOM node", () => {
+    const emittedObj = createRef<HTMLFieldSetElement>();
+    const emittedCb = makeCallbackRef<HTMLFieldSetElement>();
+    const handObj = createRef<HTMLFieldSetElement>();
+    const options = [
+      { label: "One", value: "1" },
+      { label: "Two", value: "2" },
+    ];
+
+    const r1 = render(
+      <>
+        <Emitted.CheckboxGroup ref={emittedObj} legend="Group" options={options} value={["1"]} />
+        <Emitted.CheckboxGroup ref={emittedCb.ref} legend="Other" orientation="horizontal" disabled />
+      </>,
+    );
+    const r2 = render(
+      <HandWrittenCheckboxGroup.CheckboxGroup ref={handObj} legend="Group" options={options} value={["1"]} />,
+    );
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(emittedObj.current?.tagName).toBe("FIELDSET");
+    expect(emittedCb.last).toBeInstanceOf(HTMLFieldSetElement);
 
     r1.unmount();
     r2.unmount();
