@@ -97,6 +97,11 @@ test("coverage manifest owns the expected ported modules of lot P6", () => {
       "ObjectLayers",
       "OrganizationChart",
       "PackedBubbleChart",
+      "PalettePicker",
+      "ParallelCoordinatesChart",
+      "PercentileBandChart",
+      "PivotDataTable",
+      "PointAndFigureChart",
     ],
   );
   assert.deepEqual(

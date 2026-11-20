@@ -54,7 +54,7 @@ const reactTests: string[] = [
   "lib/chart-export.test.ts", // emitted lib/chart-export.ts
   "lib/url-sync.test.tsx", // emitted lib/url-sync.ts + lib/useUrlSync.ts
   "lib/AdvancedPivotDataTable.test.tsx", // emitted AdvancedPivotDataTable + advancedPivotData
-  "lib/AnalyticsCharts.test.tsx", // emitted AnalyticsClusterPlot, ErrorBarsChart, ForecastLineChart + analyticsDsData
+  "lib/AnalyticsCharts.test.tsx", // emitted AnalyticsClusterPlot, ErrorBarsChart, ForecastLineChart, PercentileBandChart + analyticsDsData
   "lib/BookmarkNavigator.test.tsx", // emitted BookmarkNavigator
   "lib/DistributionCharts.test.tsx", // emitted BoxPlotChart, BulletChart, CalendarHeatmapChart, GaugeChart, HeatmapChart, HistogramChart + distributionData
   "lib/CalculationEditor.test.tsx", // emitted CalculationEditor
@@ -72,6 +72,7 @@ const reactTests: string[] = [
   "lib/FormatPanel.test.tsx", // emitted FormatPanel
   "lib/KpiCardGroup.test.tsx", // emitted KpiCardGroup
   "lib/ObjectLayers.test.tsx", // emitted ObjectLayers (WebFrame, DataImage, ObjectLayerPanel)
+  "lib/PivotDataTable.test.tsx", // emitted PivotDataTable
 ];
 
 export default defineConfig({

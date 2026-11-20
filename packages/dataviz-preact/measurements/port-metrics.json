@@ -7,15 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 85,
+    "portedModules": 90,
     "barrelFile": "index.ts",
-    "remainingModules": 42,
+    "remainingModules": 37,
     "remainingFiles": [
-      "lib/PalettePicker.tsx",
-      "lib/ParallelCoordinatesChart.tsx",
-      "lib/PercentileBandChart.tsx",
-      "lib/PivotDataTable.tsx",
-      "lib/PointAndFigureChart.tsx",
       "lib/PolygonChart.tsx",
       "lib/QueryBar.tsx",
       "lib/RadarChart.tsx",
@@ -991,23 +986,78 @@
         "total": 188,
         "touched": 2,
         "emissionRewrites": 1
+      },
+      {
+        "module": "PalettePicker",
+        "kind": "component",
+        "file": "src/lib/PalettePicker.tsx",
+        "reactSource": "lib/PalettePicker.tsx",
+        "reactLines": 72,
+        "preactLines": 74,
+        "total": 359,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ParallelCoordinatesChart",
+        "kind": "component",
+        "file": "src/lib/ParallelCoordinatesChart.tsx",
+        "reactSource": "lib/ParallelCoordinatesChart.tsx",
+        "reactLines": 53,
+        "preactLines": 58,
+        "total": 207,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "PercentileBandChart",
+        "kind": "component",
+        "file": "src/lib/PercentileBandChart.tsx",
+        "reactSource": "lib/PercentileBandChart.tsx",
+        "reactLines": 48,
+        "preactLines": 54,
+        "total": 303,
+        "touched": 15,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "PivotDataTable",
+        "kind": "component",
+        "file": "src/lib/PivotDataTable.tsx",
+        "reactSource": "lib/PivotDataTable.tsx",
+        "reactLines": 98,
+        "preactLines": 100,
+        "total": 518,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "PointAndFigureChart",
+        "kind": "component",
+        "file": "src/lib/PointAndFigureChart.tsx",
+        "reactSource": "lib/PointAndFigureChart.tsx",
+        "reactLines": 61,
+        "preactLines": 66,
+        "total": 220,
+        "touched": 2,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 85,
-      "reactLines": 6816,
-      "preactLines": 7267,
-      "total": 36759,
-      "touched": 444,
-      "emissionRewrites": 84
+      "modules": 90,
+      "reactLines": 7148,
+      "preactLines": 7619,
+      "total": 38366,
+      "touched": 467,
+      "emissionRewrites": 89
     },
     "shared": {
-      "src/index.ts": 215,
+      "src/index.ts": 227,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 92
+      "vitest.react.config.ts": 93
     }
   },
   "reach": {
