@@ -35,6 +35,11 @@ import * as handWrittenAreaRangeChart from "../../dataviz-react/src/lib/AreaRang
 import * as handWrittenAreaSplineRangeChart from "../../dataviz-react/src/lib/AreaSplineRangeChart.js";
 import * as handWrittenBellCurveChart from "../../dataviz-react/src/lib/BellCurveChart.js";
 import * as handWrittenBookmarkNavigator from "../../dataviz-react/src/lib/BookmarkNavigator.js";
+import * as handWrittenBoxPlotChart from "../../dataviz-react/src/lib/BoxPlotChart.js";
+import * as handWrittenBulletChart from "../../dataviz-react/src/lib/BulletChart.js";
+import * as handWrittenBumpChart from "../../dataviz-react/src/lib/BumpChart.js";
+import * as handWrittenCalculationEditor from "../../dataviz-react/src/lib/CalculationEditor.js";
+import * as handWrittenCalendarHeatmapChart from "../../dataviz-react/src/lib/CalendarHeatmapChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -82,6 +87,11 @@ const switched = [
   "AreaSplineRangeChart",
   "BellCurveChart",
   "BookmarkNavigator",
+  "BoxPlotChart",
+  "BulletChart",
+  "BumpChart",
+  "CalculationEditor",
+  "CalendarHeatmapChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -122,6 +132,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   AreaSplineRangeChart: handWrittenAreaSplineRangeChart.AreaSplineRangeChart,
   BellCurveChart: handWrittenBellCurveChart.BellCurveChart,
   BookmarkNavigator: handWrittenBookmarkNavigator.BookmarkNavigator,
+  BoxPlotChart: handWrittenBoxPlotChart.BoxPlotChart,
+  BulletChart: handWrittenBulletChart.BulletChart,
+  BumpChart: handWrittenBumpChart.BumpChart,
+  CalculationEditor: handWrittenCalculationEditor.CalculationEditor,
+  CalendarHeatmapChart: handWrittenCalendarHeatmapChart.CalendarHeatmapChart,
 };
 
 describe("dataviz React leg provenance", () => {

@@ -81,3 +81,15 @@ export { BellCurveChart } from './lib/BellCurveChart.js';
 export type { BellCurveChartProps } from './lib/BellCurveChart.js';
 export { BookmarkNavigator } from './lib/BookmarkNavigator.js';
 export type { BookmarkNavigatorProps } from './lib/BookmarkNavigator.js';
+
+// Group 2 batch 4 components.
+export { BoxPlotChart } from './lib/BoxPlotChart.js';
+export type { BoxPlotChartProps } from './lib/BoxPlotChart.js';
+export { BulletChart } from './lib/BulletChart.js';
+export type { BulletChartProps } from './lib/BulletChart.js';
+export { BumpChart } from './lib/BumpChart.js';
+export type { BumpChartProps } from './lib/BumpChart.js';
+export { CalculationEditor } from './lib/CalculationEditor.js';
+export type { CalculationEditorProps } from './lib/CalculationEditor.js';
+export { CalendarHeatmapChart } from './lib/CalendarHeatmapChart.js';
+export type { CalendarHeatmapChartProps } from './lib/CalendarHeatmapChart.js';
