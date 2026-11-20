@@ -11,9 +11,11 @@ import * as HandWrittenAvatarGroup from "../../components-react/src/AvatarGroup.
 import * as HandWrittenBackToTop from "../../components-react/src/BackToTop.js";
 import * as HandWrittenBadge from "../../components-react/src/Badge.js";
 import * as HandWrittenCheckboxGroup from "../../components-react/src/CheckboxGroup.js";
+import * as HandWrittenDataImage from "../../components-react/src/DataImage.js";
 import * as HandWrittenDisplaySettings from "../../components-react/src/DisplaySettings.js";
 import * as HandWrittenEmbed from "../../components-react/src/Embed.js";
 import * as HandWrittenMediaContent from "../../components-react/src/MediaContent.js";
+import * as HandWrittenRadioGroup from "../../components-react/src/RadioGroup.js";
 import * as HandWrittenSelectableRow from "../../components-react/src/SelectableRow.js";
 import * as HandWrittenStepper from "../../components-react/src/Stepper.js";
 import * as HandWrittenTableOfContents from "../../components-react/src/TableOfContents.js";
@@ -389,6 +391,68 @@ describe("P5 group 3 forwardRef React-leg parity — Batch 3 (BackToTop, Stepper
     expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
     expect(emittedObj.current?.tagName).toBe("SPAN");
     expect(emittedCb.last).toBeInstanceOf(HTMLSpanElement);
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedCb.last).toBeNull();
+  });
+});
+
+describe("P5 group 3 forwardRef React-leg parity — Batch 4 (DataImage, RadioGroup)", () => {
+  it("emitted DataImage ref matches hand-written DataImage DOM node", () => {
+    const emittedObj = createRef<HTMLImageElement>();
+    const emittedCb = makeCallbackRef<HTMLImageElement>();
+    const handObj = createRef<HTMLImageElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.DataImage ref={emittedObj} src="https://example.com/a.png" alt="Chart A" width={120} fit="contain" />
+        <Emitted.DataImage ref={emittedCb.ref} src="https://example.com/b.png" alt="Chart B" />
+      </>,
+    );
+    const r2 = render(
+      <HandWrittenDataImage.DataImage
+        ref={handObj}
+        src="https://example.com/a.png"
+        alt="Chart A"
+        width={120}
+        fit="contain"
+      />,
+    );
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(emittedObj.current?.tagName).toBe("IMG");
+    expect(emittedCb.last).toBeInstanceOf(HTMLImageElement);
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedCb.last).toBeNull();
+  });
+
+  it("emitted RadioGroup ref matches hand-written RadioGroup DOM node", () => {
+    const emittedObj = createRef<HTMLFieldSetElement>();
+    const emittedCb = makeCallbackRef<HTMLFieldSetElement>();
+    const handObj = createRef<HTMLFieldSetElement>();
+    const options = [
+      { label: "A", value: "a" },
+      { label: "B", value: "b" },
+    ];
+
+    const r1 = render(
+      <>
+        <Emitted.RadioGroup ref={emittedObj} legend="Pick" name="pick-e1" options={options} value="a" />
+        <Emitted.RadioGroup ref={emittedCb.ref} legend="Other" name="pick-e2" orientation="horizontal" disabled />
+      </>,
+    );
+    const r2 = render(
+      <HandWrittenRadioGroup.RadioGroup ref={handObj} legend="Pick" name="pick-h1" options={options} value="a" />,
+    );
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(emittedObj.current?.tagName).toBe("FIELDSET");
+    expect(emittedCb.last).toBeInstanceOf(HTMLFieldSetElement);
 
     r1.unmount();
     r2.unmount();

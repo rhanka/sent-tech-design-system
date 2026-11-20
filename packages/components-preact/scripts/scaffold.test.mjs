@@ -8,7 +8,7 @@ import { BASE_REF } from "./port-metrics.mjs";
 import { checkManifest, readManifest, sourceModules } from "./coverage-manifest.mjs";
 import { checkPackaging } from "./package-guard.mjs";
 
-test("coverage manifest owns the spike modules plus lots P1, P2, P3, P4a, P4b, P4c and P5 group 1, no more", () => {
+test("coverage manifest owns the spike modules plus lots P1, P2, P3, P4a, P4b, P4c and P5, no more", () => {
   const { manifest } = readManifest();
   assert.deepEqual(manifest.modules.map((row) => row.module).sort(), [
     "Accordion",

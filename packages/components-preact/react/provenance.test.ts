@@ -35,6 +35,7 @@ import * as handWrittenPanelStack from "../../components-react/src/PanelStack.js
 import * as handWrittenPortal from "../../components-react/src/Portal.js";
 import * as handWrittenPopper from "../../components-react/src/Popper.js";
 import * as handWrittenNavSection from "../../components-react/src/NavSection.js";
+import * as handWrittenMenuCascade from "../../components-react/src/menu-cascade.js";
 import * as handWrittenTimeRange from "../../components-react/src/timeRange.js";
 import * as handWrittenRow from "../../components-react/src/Row.js";
 import * as handWrittenSelectableRow from "../../components-react/src/SelectableRow.js";
@@ -178,6 +179,15 @@ const switched = [
   "joinPlacement",
   "NavSection",
   "DEFAULT_TIME_RANGE_PRESETS",
+  "composeAbsolute",
+  "formatPresetLabel",
+  "formatTriggerLabel",
+  "parsePresetMs",
+  "resolveRelative",
+  "splitAbsolute",
+  "computeSubMenuPosition",
+  "pointInSafeTriangle",
+  "toContainingBlockPosition",
   "ThemeProvider",
   "Accordion",
   "Alert",
@@ -411,6 +421,15 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   joinPlacement: handWrittenPopper.joinPlacement,
   NavSection: handWrittenNavSection.NavSection,
   DEFAULT_TIME_RANGE_PRESETS: handWrittenTimeRange.DEFAULT_TIME_RANGE_PRESETS,
+  composeAbsolute: handWrittenTimeRange.composeAbsolute,
+  formatPresetLabel: handWrittenTimeRange.formatPresetLabel,
+  formatTriggerLabel: handWrittenTimeRange.formatTriggerLabel,
+  parsePresetMs: handWrittenTimeRange.parsePresetMs,
+  resolveRelative: handWrittenTimeRange.resolveRelative,
+  splitAbsolute: handWrittenTimeRange.splitAbsolute,
+  computeSubMenuPosition: handWrittenMenuCascade.computeSubMenuPosition,
+  pointInSafeTriangle: handWrittenMenuCascade.pointInSafeTriangle,
+  toContainingBlockPosition: handWrittenMenuCascade.toContainingBlockPosition,
   ThemeProvider: handWrittenTheme.ThemeProvider,
   Accordion: handWrittenCatalog.Accordion,
   Alert: handWrittenCatalog.Alert,
