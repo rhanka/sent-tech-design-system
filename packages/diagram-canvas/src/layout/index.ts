@@ -1,3 +1,17 @@
+export {
+  ARROW_DIRECTION_CONVENTION,
+  DEFAULT_ZONE_TAG_ACRONYM_ALLOWLIST,
+  isOpaqueAcronymZoneTag,
+  lintArrowDirection,
+  lintDiagramConventions,
+  lintZoneTagAcronyms,
+  type ArrowDirectionEdgeInput,
+  type DiagramConventionLintOptions,
+  type LintArrowDirectionInput,
+  type LintDiagramConventionsInput,
+  type LintZoneTagAcronymsInput,
+  type ZoneTagLintEntry,
+} from "./conventions.js";
 export { measureBundleLabel, type BundleLabelGroup } from "./bundleLabel.js";
 export { channelMetrics, channelGap, channelCapacity, type LayoutChannel, type ChannelMetrics } from "./channels.js";
 export {

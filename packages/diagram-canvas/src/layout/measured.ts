@@ -113,6 +113,7 @@ import {
   segmentToRectDistance,
   type CheckedRoute,
 } from "./routeSpacing.js";
+import { lintDiagramConventions, type ArrowDirectionEdgeInput, type ZoneTagLintEntry } from "./conventions.js";
 import { rectsIntersect } from "../geometry.js";
 import type { Rect, Vec2 } from "../transform.js";
 import { evaluateVisibility } from "../visibility.js";
@@ -2184,6 +2185,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
 
     // Built-in geometric check for minimum route spacing (DE-2 ask 2).
     const checkedRoutes: CheckedRoute[] = [];
+    const conventionEdges: ArrowDirectionEdgeInput[] = [];
     for (const edge of drawnEdges) {
       const id = edge.occurrence as unknown as RelationRef;
       const points = retryRoutes.get(id);
@@ -2207,6 +2209,42 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         arrowhead,
         passable,
       });
+      if (options.conventions?.arrowDirection === true) {
+        const semanticRelation = document.relations[occurrence.relation];
+        const semSource = semanticRelation?.endpoints.find((ep) => ep.role === "source")?.target;
+        const semTarget = semanticRelation?.endpoints.find((ep) => ep.role === "target")?.target;
+        conventionEdges.push({
+          id: String(edge.occurrence),
+          relationId: String(occurrence.relation),
+          sourceEntity: String(edge.source.entity),
+          targetEntity: String(edge.target.entity),
+          sourceOccurrence: String(sourceRole.occurrence),
+          targetOccurrence: String(targetRole.occurrence),
+          ...(semSource === undefined ? {} : { semanticSourceEntity: String(semSource) }),
+          ...(semTarget === undefined ? {} : { semanticTargetEntity: String(semTarget) }),
+          arrowhead,
+        });
+      }
+    }
+    if (options.conventions !== undefined) {
+      const conventionZones: ZoneTagLintEntry[] = [];
+      if (options.conventions.zoneTagAcronyms === true) {
+        for (const id of [...rects.keys()].sort(byString)) {
+          const kind = kinds.get(id);
+          if (kind !== "container-expanded" && kind !== "container-collapsed") continue;
+          const occ = representativeOf(id);
+          const entry = presentation.entities[occ];
+          conventionZones.push({ id: String(occ), tag: entry?.text?.kicker });
+        }
+      }
+      warnings.push(
+        ...lintDiagramConventions({
+          options: options.conventions,
+          document,
+          edges: conventionEdges,
+          zones: conventionZones,
+        }),
+      );
     }
     const routeSpacingReport = checkRouteSpacing({
       rects,
