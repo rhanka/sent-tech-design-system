@@ -115,6 +115,13 @@ export type PropsParity = [
   Expect<Equal<Emitted.HollowCandlestickChartProps, HandWritten.HollowCandlestickChartProps>>,
   Expect<Equal<Emitted.ItemChartProps, HandWritten.ItemChartProps>>,
   Expect<Equal<Emitted.KpiCardGroupProps, HandWritten.KpiCardGroupProps>>,
+  Expect<Equal<Emitted.MekkoChartProps, HandWritten.MekkoChartProps>>,
+  Expect<Equal<Emitted.OHLCChartProps, HandWritten.OHLCChartProps>>,
+  Expect<Equal<Emitted.WebFrameProps, HandWritten.WebFrameProps>>,
+  Expect<Equal<Emitted.DataImageProps, HandWritten.DataImageProps>>,
+  Expect<Equal<Emitted.ObjectLayerPanelProps, HandWritten.ObjectLayerPanelProps>>,
+  Expect<Equal<Emitted.OrganizationChartProps, HandWritten.OrganizationChartProps>>,
+  Expect<Equal<Emitted.PackedBubbleChartProps, HandWritten.PackedBubbleChartProps>>,
 ];
 
 export type ComponentParity = [
@@ -187,6 +194,13 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.HollowCandlestickChart, typeof HandWritten.HollowCandlestickChart>>,
   Expect<Equal<typeof Emitted.ItemChart, typeof HandWritten.ItemChart>>,
   Expect<Equal<typeof Emitted.KpiCardGroup, typeof HandWritten.KpiCardGroup>>,
+  Expect<Equal<typeof Emitted.MekkoChart, typeof HandWritten.MekkoChart>>,
+  Expect<Equal<typeof Emitted.OHLCChart, typeof HandWritten.OHLCChart>>,
+  Expect<Equal<typeof Emitted.WebFrame, typeof HandWritten.WebFrame>>,
+  Expect<Equal<typeof Emitted.DataImage, typeof HandWritten.DataImage>>,
+  Expect<Equal<typeof Emitted.ObjectLayerPanel, typeof HandWritten.ObjectLayerPanel>>,
+  Expect<Equal<typeof Emitted.OrganizationChart, typeof HandWritten.OrganizationChart>>,
+  Expect<Equal<typeof Emitted.PackedBubbleChart, typeof HandWritten.PackedBubbleChart>>,
 ];
 
 export type ValueParity = [

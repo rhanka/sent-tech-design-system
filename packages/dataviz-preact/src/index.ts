@@ -201,3 +201,15 @@ export { ItemChart } from './lib/ItemChart.js';
 export type { ItemChartProps } from './lib/ItemChart.js';
 export { KpiCardGroup } from './lib/KpiCardGroup.js';
 export type { KpiCardGroupProps } from './lib/KpiCardGroup.js';
+
+// Group 4 batch 3 components.
+export { MekkoChart } from './lib/MekkoChart.js';
+export type { MekkoChartProps } from './lib/MekkoChart.js';
+export { OHLCChart } from './lib/OHLCChart.js';
+export type { OHLCChartProps } from './lib/OHLCChart.js';
+export { WebFrame, DataImage, ObjectLayerPanel } from './lib/ObjectLayers.js';
+export type { WebFrameProps, DataImageProps, ObjectLayerPanelProps } from './lib/ObjectLayers.js';
+export { OrganizationChart } from './lib/OrganizationChart.js';
+export type { OrganizationChartProps } from './lib/OrganizationChart.js';
+export { PackedBubbleChart } from './lib/PackedBubbleChart.js';
+export type { PackedBubbleChartProps } from './lib/PackedBubbleChart.js';

@@ -9,7 +9,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
-  "ownershipNote": "Lot P6 scaffold + groups 1-3 (70 files) + group 4 batches 1-2 (10 files -> 80/128 ported): GeoHexbinMap, GeoJsonMap, GeoPointMap, HLCChart, HeatmapChart, HeikinAshiChart, HistogramChart, HollowCandlestickChart, ItemChart, KpiCardGroup.",
+  "ownershipNote": "Lot P6 scaffold + groups 1-3 (70 files) + group 4 batches 1-3 (15 files -> 85/128 ported): GeoHexbinMap, GeoJsonMap, GeoPointMap, HLCChart, HeatmapChart, HeikinAshiChart, HistogramChart, HollowCandlestickChart, ItemChart, KpiCardGroup, MekkoChart, OHLCChart, ObjectLayers, OrganizationChart, PackedBubbleChart.",
   "modules": [
     {
       "module": "adapter",
@@ -726,6 +726,51 @@
       "module": "KpiCardGroup",
       "file": "src/lib/KpiCardGroup.tsx",
       "reactSource": "dataviz-react/src/lib/KpiCardGroup.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "MekkoChart",
+      "file": "src/lib/MekkoChart.tsx",
+      "reactSource": "dataviz-react/src/lib/MekkoChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "OHLCChart",
+      "file": "src/lib/OHLCChart.tsx",
+      "reactSource": "dataviz-react/src/lib/OHLCChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ObjectLayers",
+      "file": "src/lib/ObjectLayers.tsx",
+      "reactSource": "dataviz-react/src/lib/ObjectLayers.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "OrganizationChart",
+      "file": "src/lib/OrganizationChart.tsx",
+      "reactSource": "dataviz-react/src/lib/OrganizationChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "PackedBubbleChart",
+      "file": "src/lib/PackedBubbleChart.tsx",
+      "reactSource": "dataviz-react/src/lib/PackedBubbleChart.tsx",
       "kind": "component",
       "lot": "P6",
       "renderable": true,
