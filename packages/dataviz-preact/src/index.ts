@@ -313,3 +313,9 @@ export { WaffleChart } from './lib/WaffleChart.js';
 export type { WaffleChartProps } from './lib/WaffleChart.js';
 export { WaterfallChart } from './lib/WaterfallChart.js';
 export type { WaterfallChartProps } from './lib/WaterfallChart.js';
+
+// Group 4 batch 12 components (100% P6 closure).
+export { WindBarbChart } from './lib/WindBarbChart.js';
+export type { WindBarbChartProps } from './lib/WindBarbChart.js';
+export { WordCloudChart } from './lib/WordCloudChart.js';
+export type { WordCloudChartProps } from './lib/WordCloudChart.js';
