@@ -9,7 +9,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
-  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 (25 files) + group 3 batches 1-3 (15 files -> 55/128 ported): ColumnPyramidChart, ColumnRangeChart, ContourChart, CorrelationMatrix, DashboardActiveFilters, DashboardFilterBar, DashboardGrid, DateRangeFilter, DecompositionTreeChart, Density2DChart, DependencyWheelChart, DonutChart, DrillBarChart, DrillBreadcrumb, TreemapChart.",
+  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 (25 files) + group 3 batches 1-4 (20 files -> 60/128 ported): ColumnPyramidChart, ColumnRangeChart, ContourChart, CorrelationMatrix, DashboardActiveFilters, DashboardFilterBar, DashboardGrid, DateRangeFilter, DecompositionTreeChart, Density2DChart, DependencyWheelChart, DonutChart, DrillBarChart, DrillBreadcrumb, TreemapChart, DrillChart, DumbbellChart, ErrorBarsChart, EventFeedPanel, FieldPane.",
   "modules": [
     {
       "module": "adapter",
@@ -501,6 +501,51 @@
       "module": "TreemapChart",
       "file": "src/lib/TreemapChart.tsx",
       "reactSource": "dataviz-react/src/lib/TreemapChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DrillChart",
+      "file": "src/lib/DrillChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DrillChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DumbbellChart",
+      "file": "src/lib/DumbbellChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DumbbellChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ErrorBarsChart",
+      "file": "src/lib/ErrorBarsChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ErrorBarsChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "EventFeedPanel",
+      "file": "src/lib/EventFeedPanel.tsx",
+      "reactSource": "dataviz-react/src/lib/EventFeedPanel.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "FieldPane",
+      "file": "src/lib/FieldPane.tsx",
+      "reactSource": "dataviz-react/src/lib/FieldPane.tsx",
       "kind": "component",
       "lot": "P6",
       "renderable": true,
