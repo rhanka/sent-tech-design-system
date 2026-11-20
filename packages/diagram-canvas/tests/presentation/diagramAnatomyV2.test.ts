@@ -26,9 +26,11 @@ import {
   ZONE_GEOMETRY_V2,
 } from "../../src/presentation/diagramCardModel.js";
 import {
+  DEFAULT_SCENE_LABELS,
   layoutScene,
   resolveScene,
   resolveScenePresentation,
+  sceneTextRows,
   type SceneDocument,
   type ScenePresentation,
   type SceneView,
@@ -670,5 +672,84 @@ describe("diagram anatomy v2 (DE-1)", () => {
     });
     expect(foldedScene.nodes.map((n) => n.occurrence)).toEqual([fixture.zones[0]]);
     expect(foldedScene.edges).toEqual([]);
+  });
+
+  it("should emit the localized inclusion label in sceneTextRows for containment relations without an explicit edge label (DE-1b)", () => {
+    expect(DEFAULT_SCENE_LABELS.contains).toBe("includes");
+    const document = {
+      documentId: "document:de1b-inclusion",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {
+        owns: { baseType: "contains", profile: "generic@2" },
+      },
+      entities: {
+        "entity:zone": { id: entityRef("zone"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "System" } } },
+        "entity:a": { id: entityRef("a"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Service" } } },
+        "entity:b": { id: entityRef("b"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Store" } } },
+        "entity:c": { id: entityRef("c"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Worker" } } },
+      },
+      relations: {
+        "relation:c1": {
+          id: relationRef("c1"),
+          profile: "generic@2",
+          type: "contains",
+          endpoints: [
+            { role: "parent", target: entityRef("zone") },
+            { role: "child", target: entityRef("a") },
+          ],
+          attributes: {},
+        },
+        "relation:c2": {
+          id: relationRef("c2"),
+          profile: "generic@2",
+          type: "owns",
+          endpoints: [
+            { role: "parent", target: entityRef("zone") },
+            { role: "child", target: entityRef("c") },
+          ],
+          attributes: {},
+        },
+        "relation:cExplicit": {
+          id: relationRef("cExplicit"),
+          profile: "generic@2",
+          type: "contains",
+          endpoints: [
+            { role: "parent", target: entityRef("zone") },
+            { role: "child", target: entityRef("b") },
+          ],
+          attributes: { label: { kind: "text", value: "hosts" } },
+        },
+        "relation:l1": {
+          id: relationRef("l1"),
+          profile: "generic@2",
+          type: "link",
+          endpoints: [
+            { role: "source", target: entityRef("a") },
+            { role: "target", target: entityRef("b") },
+          ],
+          attributes: { label: { kind: "text", value: "queries" } },
+        },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SceneDocument;
+
+    const scene = { nodes: [] } as unknown as ReturnType<typeof resolveScene>;
+    const defaultRows = sceneTextRows(scene, document);
+    expect(defaultRows).toContain("System → Service · includes");
+    expect(defaultRows).toContain("System → Worker · includes");
+    expect(defaultRows).toContain("System → Store · hosts");
+    expect(defaultRows).toContain("Service → Store · queries");
+    expect(defaultRows.join("\n")).not.toContain("· contains");
+
+    const localizedRows = sceneTextRows(scene, document, { contains: "contient" });
+    expect(localizedRows).toContain("System → Service · contient");
+    expect(localizedRows).toContain("System → Worker · contient");
+    expect(localizedRows).toContain("System → Store · hosts");
+    expect(localizedRows).toContain("Service → Store · queries");
+    expect(localizedRows.join("\n")).not.toContain("· contains");
   });
 });

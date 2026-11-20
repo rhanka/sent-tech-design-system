@@ -24,7 +24,7 @@
   import { measureRenderedSceneFont } from "./diagramFontMeasure.js";
   import Select from "./Select.svelte";
   import { DEFAULT_FLOW_TOKENS, type FlowTokens } from "@sentropic/diagram-canvas";
-  import { INITIAL_FLOW_STATE, DEFAULT_FLOW_STRINGS, visibleOf, effectiveTarget, highlightOf, flowStateOf, reduce, describeTarget, announce, flowHitSize, stepChange, stepsOf, type FlowState, type FlowAction, type Visible, type StepChange, type EffectiveTarget, type FlowStrings } from "@sentropic/diagram-canvas/flowModel";
+  import { INITIAL_FLOW_STATE, visibleOf, effectiveTarget, highlightOf, flowStateOf, reduce, describeTarget, announce, flowHitSize, stepChange, stepsOf, type FlowState, type FlowAction, type Visible, type StepChange, type EffectiveTarget, type FlowStrings } from "@sentropic/diagram-canvas/flowModel";
   import {
     cardLineMeasurer,
     sceneCardMeasure,
@@ -36,6 +36,7 @@
   } from "./diagramCardModel.js";
   import {
     collapsedOccurrencesOf,
+    DEFAULT_SCENE_LABELS,
     sceneContentSize,
     type DiagramSceneSize,
     type SceneLayoutCache,
@@ -121,6 +122,8 @@
     viewport: string;
     expand: (title: string) => string;
     collapse: (title: string) => string;
+    /** Localized fallback label for containment relations without an explicit edge label (DE-1b). */
+    contains: string;
   }
 
   export interface DiagramSceneCamera {
@@ -187,17 +190,7 @@
     onSizeChange?: (size: DiagramSceneSize) => void;
   }
 
-  const DEFAULT_LABELS: DiagramSceneFigureLabels = {
-    ...DEFAULT_FLOW_STRINGS,
-    controls: "Zoom",
-    zoomIn: "Zoom in",
-    zoomOut: "Zoom out",
-    fit: "Fit",
-    zoomLevel: (percent) => `Zoom ${percent} %`,
-    viewport: "Diagram",
-    expand: (title) => `Expand ${title}`,
-    collapse: (title) => `Collapse ${title}`,
-  };
+  const DEFAULT_LABELS: DiagramSceneFigureLabels = DEFAULT_SCENE_LABELS;
 
   const TOKEN_MAX_DISPLAY_SCALE = "--st-component-diagramScene-maxDisplayScale";
   const TOKEN_MIN_READABLE_SCALE = "--st-component-diagramScene-minReadableScale";
@@ -1099,7 +1092,7 @@
       </div>
     </div>
   </div>
-  {#if scene}<div class="st-diagramSceneFigure-fallback">{#each sceneTextRows(scene, semanticDocument) as row}<p>{row}</p>{/each}</div>{/if}
+  {#if scene}<div class="st-diagramSceneFigure-fallback">{#each sceneTextRows(scene, semanticDocument, strings) as row}<p>{row}</p>{/each}</div>{/if}
   {#if erdTable}<div class="st-diagramErd-fallback">{@html erdTable}</div>{/if}
 </figure>
 
