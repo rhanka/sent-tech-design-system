@@ -242,4 +242,83 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
     expect(single.scene.linkLegend).toBeUndefined();
     expect(single.svg).not.toContain("data-scene-legend");
   });
+
+  it("keeps lifted cross-zone edges with distinct strokeStyle, arrowhead, or emphasis separate on fold while bundling identical styles (REQ-R7-05 / REQ-R7-12)", () => {
+    const document = {
+      documentId: "document:lifted-bundle-styles",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: {
+        "entity:zone": { id: "entity:zone", profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Core" } } },
+        "entity:a": { id: "entity:a", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Alpha" } } },
+        "entity:b": { id: "entity:b", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Beta" } } },
+        "entity:c": { id: "entity:c", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Gamma" } } },
+        "entity:d": { id: "entity:d", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Delta" } } },
+        "entity:ext": { id: "entity:ext", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "External" } } },
+      },
+      relations: {
+        "relation:contains.a": { id: "relation:contains.a", profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: "entity:zone" }, { role: "child", target: "entity:a" }], attributes: {} },
+        "relation:contains.b": { id: "relation:contains.b", profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: "entity:zone" }, { role: "child", target: "entity:b" }], attributes: {} },
+        "relation:contains.c": { id: "relation:contains.c", profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: "entity:zone" }, { role: "child", target: "entity:c" }], attributes: {} },
+        "relation:contains.d": { id: "relation:contains.d", profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: "entity:zone" }, { role: "child", target: "entity:d" }], attributes: {} },
+        // Two identical dashed links should bundle together on fold.
+        "relation:r-dash-1": { id: "relation:r-dash-1", profile: "generic@2", type: "link", endpoints: [{ role: "source", target: "entity:a" }, { role: "target", target: "entity:ext" }], attributes: { label: { kind: "text", value: "d1" } } },
+        "relation:r-dash-2": { id: "relation:r-dash-2", profile: "generic@2", type: "link", endpoints: [{ role: "source", target: "entity:b" }, { role: "target", target: "entity:ext" }], attributes: { label: { kind: "text", value: "d2" } } },
+        // Different strokeStyle (dotted) must NOT merge with dashed.
+        "relation:r-dot": { id: "relation:r-dot", profile: "generic@2", type: "link", endpoints: [{ role: "source", target: "entity:c" }, { role: "target", target: "entity:ext" }], attributes: { label: { kind: "text", value: "dot" } } },
+        // Different arrowhead + emphasis (solid, none, emphasis) must NOT merge with either.
+        "relation:r-emph": { id: "relation:r-emph", profile: "generic@2", type: "link", endpoints: [{ role: "source", target: "entity:d" }, { role: "target", target: "entity:ext" }], attributes: { label: { kind: "text", value: "emph" } } },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SemanticDocument;
+
+    const presentation = {
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+      entities: {
+        "occurrence:e.zone": { form: "container", text: { title: "Core", subtitle: "Zone" }, anatomy: "v2" },
+        "occurrence:e.a": { form: "card", text: { title: "Alpha", body: "A" }, anatomy: "v2" },
+        "occurrence:e.b": { form: "card", text: { title: "Beta", body: "B" }, anatomy: "v2" },
+        "occurrence:e.c": { form: "card", text: { title: "Gamma", body: "C" }, anatomy: "v2" },
+        "occurrence:e.d": { form: "card", text: { title: "Delta", body: "D" }, anatomy: "v2" },
+        "occurrence:e.ext": { form: "card", text: { title: "External", body: "Peer" }, anatomy: "v2" },
+      },
+      relations: {
+        "relation:r-dash-1": { strokeStyle: "dashed" },
+        "relation:r-dash-2": { strokeStyle: "dashed" },
+        "relation:r-dot": { strokeStyle: "dotted" },
+        "relation:r-emph": { strokeStyle: "solid", arrowhead: "none", emphasis: "emphasis" },
+      },
+      legends: {},
+      categoryTokens: [],
+    } as unknown as ScenePresentation;
+
+    const foldedInput = {
+      document,
+      presentation,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [occurrenceRef("e.zone")],
+    };
+    const foldedResult = layoutScene(foldedInput);
+    expect(foldedResult.status).toBe("laid-out");
+    if (foldedResult.status !== "laid-out") return;
+
+    // 2 identical dashed links bundle into 1; dotted and solid/none/emphasis stay separate => 3 edges total.
+    const foldedScene = resolveScene(foldedResult, foldedInput);
+    expect(foldedScene.edges).toHaveLength(3);
+    expect(Object.keys(foldedResult.edgeBundles ?? {})).toHaveLength(1);
+    const [bundle] = Object.values(foldedResult.edgeBundles ?? {});
+    expect(bundle?.members).toHaveLength(2);
+    expect(foldedScene.linkLegend).toBeDefined();
+    expect(foldedScene.linkLegend!.entries.map((e) => [e.strokeStyle, e.arrowhead, e.emphasis])).toEqual([
+      ["solid", "none", "emphasis"],
+      ["dashed", expect.any(String), "default"],
+      ["dotted", expect.any(String), "default"],
+    ]);
+  });
 });

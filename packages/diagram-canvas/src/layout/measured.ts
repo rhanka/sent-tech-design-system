@@ -45,6 +45,8 @@ import {
   parentOccurrenceOf,
   projectView,
   resolveArrowhead,
+  resolveDashPattern,
+  resolveLinkEmphasis,
   validateDocument,
   validateView,
   viewRef,
@@ -852,7 +854,14 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     if (flowOccurrences.has(edge.relation)) continue;
     const projectedEdge = projected.relationOccurrences[edge.occurrence]!;
     if (!projectedEdge.endpoints.some(end => end.sourceOccurrence !== undefined)) continue;
-    const key = JSON.stringify([edge.source.entity, edge.target.entity]);
+    // Keep lifted cross-zone edges with distinct connector styles apart so
+    // bundling never silently drops a strokeStyle, arrowhead, or emphasis from
+    // the scene or its automatic link legend (REQ-R7-05 / REQ-R7-11 / REQ-R7-12).
+    const relStyle = relationPresentationFor(presentation.relations, projectedEdge.id, projectedEdge.relation);
+    const strokeStyle = resolveDashPattern(projectedEdge.strokeStyle ?? relStyle?.strokeStyle).style;
+    const arrowhead = resolveArrowhead(projectedEdge.arrowhead ?? relStyle?.arrowhead).canonicalKind;
+    const emphasis = resolveLinkEmphasis(projectedEdge.emphasis ?? relStyle?.emphasis).emphasis;
+    const key = JSON.stringify([edge.source.entity, edge.target.entity, strokeStyle, arrowhead, emphasis]);
     const pair = liftedPairs.get(key) ?? [];
     pair.push(edge);
     liftedPairs.set(key, pair);

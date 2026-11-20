@@ -919,8 +919,7 @@ describe("DiagramSceneFigure folds", () => {
     await fireEvent.click(view.toggle("outerA"));
     await tick();
     await tick();
-    const unfoldedAfterInner = modelOf(nested, [], innerFold.result.orientations);
-    const outerFold = modelOf(nested, ["outerA"], unfoldedAfterInner.result.orientations);
+    const outerFold = modelOf(nested, ["outerA"], initial.result.orientations);
     const outerFoldModel = outerFold.model;
     expect(view.drawn().sort()).toEqual([
       occurrence("b1"),
@@ -946,11 +945,10 @@ describe("DiagramSceneFigure folds", () => {
     // Unfold outerA: exact same structure, geometry, edges and depth surfaces restored.
     await fireEvent.click(view.toggle("outerA"));
     await tick();
-    const unfoldedAfterOuter = modelOf(nested, [], outerFold.result.orientations).model;
-    expect(view.drawn().sort()).toEqual(unfoldedAfterOuter.nodes.map((n) => n.occurrence).sort());
+    expect(view.drawn().sort()).toEqual(initialModel.nodes.map((n) => n.occurrence).sort());
     expect(view.root.querySelectorAll("path[data-scene-edge]")).toHaveLength(6);
     expect(view.root.querySelector(`[data-scene-occurrence="${occurrence("innerA")}"] .st-diagramZone`)?.getAttribute("style") ?? "").toContain("--st-component-diagramZone-surface2");
-    for (const node of unfoldedAfterOuter.nodes) {
+    for (const node of initialModel.nodes) {
       expectWithinUnit(view.rectOf(node.occurrence.replace("occurrence:e.", "")), node.rect);
     }
   });

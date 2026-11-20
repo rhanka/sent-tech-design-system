@@ -649,8 +649,14 @@ describe('scene host DOM and camera/fold behavior', () => {
     svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`)!.click();
     await nextTick(); await tick(); await nextTick();
     expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
-    expect(vue.element.querySelector('[data-scene-legend]')).toBeNull();
-    expect(svelte.container.querySelector('[data-scene-legend]')).toBeNull();
+    // Lifted cross-zone edges with distinct styles stay separate instead of bundling into one style (REQ-R7-05 / REQ-R7-11 / REQ-R7-12).
+    for (const root of [vue.element, svelte.container]) {
+      expect(root.querySelectorAll('path[data-scene-edge]')).toHaveLength(2);
+      expect([...root.querySelectorAll('[data-legend-style]')].map((el) => el.getAttribute('data-legend-style'))).toEqual([
+        'solid:none:emphasis',
+        'dashed:filled-triangle:emphasis',
+      ]);
+    }
 
     await vue.find(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`).trigger('click');
     svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`)!.click();

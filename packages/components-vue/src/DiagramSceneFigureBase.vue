@@ -53,12 +53,20 @@ const folds = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? co
 const collapsedNow = computed(() => props.collapsed ?? folds.value);
 let previousOrientation: SceneOrientations | undefined;
 let orientationDocument: string | undefined;
+const orientationSeedByFold = new Map<string, SceneOrientations | undefined>();
 const ownedCache = createLayoutCache();
 const layoutResult = computed(() => {
     if (orientationDocument !== props.document.documentId) {
         orientationDocument = props.document.documentId;
         previousOrientation = undefined;
+        orientationSeedByFold.clear();
     }
+    const foldKey = [...collapsedNow.value].sort().join('\0');
+    const orientationSeed = orientationSeedByFold.has(foldKey)
+        ? orientationSeedByFold.get(foldKey)
+        : previousOrientation;
+    if (!orientationSeedByFold.has(foldKey))
+        orientationSeedByFold.set(foldKey, orientationSeed);
     const result = layoutScene({
         cache: props.layoutCache ?? ownedCache,
         document: props.document, registry: props.registry, presentation: props.presentation,
@@ -73,7 +81,7 @@ const layoutResult = computed(() => {
         metrics: effectiveMetrics.value,
         ...(props.rowPack === undefined ? {} : { rowPack: props.rowPack }),
         ...(props.targetWidth === undefined ? {} : { targetWidth: props.targetWidth }),
-        ...(previousOrientation === undefined ? {} : { previousOrientation }),
+        ...(orientationSeed === undefined ? {} : { previousOrientation: orientationSeed }),
     });
     if (result.status === 'laid-out' && result.orientations !== undefined)
         previousOrientation = result.orientations;

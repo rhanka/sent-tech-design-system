@@ -282,13 +282,24 @@
   // O-4: the orientation record last emitted, fed back to the next layout
   // call. Deliberately not reactive state: it is an input of the next pass,
   // never a reason to run one. A different document starts with no record.
+  // Returning to a previously visited fold state reuses the orientation seed
+  // recorded on its first visit so unfolding restores initial geometry intact.
   let previousOrientation: SceneOrientations | undefined;
   let orientationDocument: string | undefined;
+  const orientationSeedByFold = new Map<string, SceneOrientations | undefined>();
 
   const layoutResult = $derived.by<LayoutResult>(() => {
     if (orientationDocument !== semanticDocument.documentId) {
       orientationDocument = semanticDocument.documentId;
       previousOrientation = undefined;
+      orientationSeedByFold.clear();
+    }
+    const foldKey = [...collapsedNow].sort().join("\0");
+    const orientationSeed = orientationSeedByFold.has(foldKey)
+      ? orientationSeedByFold.get(foldKey)
+      : previousOrientation;
+    if (!orientationSeedByFold.has(foldKey)) {
+      orientationSeedByFold.set(foldKey, orientationSeed);
     }
     const result = layoutScene({
       cache: layoutCache ?? ownedCache,
@@ -309,7 +320,7 @@
       metrics: effectiveMetrics,
       ...(rowPack === undefined ? {} : { rowPack }),
       ...(targetWidth === undefined ? {} : { targetWidth }),
-      ...(previousOrientation === undefined ? {} : { previousOrientation }),
+      ...(orientationSeed === undefined ? {} : { previousOrientation: orientationSeed }),
     });
     if (result.status === "laid-out" && result.orientations !== undefined) {
       previousOrientation = result.orientations;
