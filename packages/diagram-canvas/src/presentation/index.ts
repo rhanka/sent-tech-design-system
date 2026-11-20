@@ -1,4 +1,5 @@
 export { renderSceneSvg } from "./renderSceneSvg.js";
+export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
 import {
   renderCardSvg,
   renderCardSvgFromPresentation,

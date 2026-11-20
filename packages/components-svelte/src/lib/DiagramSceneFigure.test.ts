@@ -520,7 +520,7 @@ describe("DiagramSceneFigure camera", () => {
     expect(drawnLabel.textContent?.trim()).toBe("ok");
     expect(parseFloat(drawnLabel.style.left)).toBe(model.labels[0]!.box.x);
     expect(parseFloat(drawnLabel.style.top)).toBe(model.labels[0]!.box.y);
-    expect(view.root.querySelectorAll("polyline[data-scene-edge]").length).toBe(1);
+    expect(view.root.querySelectorAll("path[data-scene-edge]").length).toBe(1);
     expect(view.zoom()).toBe(sceneFit({ bounds, viewWidth: 1280, windowHeight: 720 }).zoom);
   });
 
@@ -876,7 +876,7 @@ describe("DiagramSceneFigure folds", () => {
       occurrence("outerB"),
     ]);
     expect(view.rectOf("a1")).toMatchObject({ width: 352, height: 154 });
-    expect(view.root.querySelectorAll("polyline[data-scene-edge]")).toHaveLength(6);
+    expect(view.root.querySelectorAll("path[data-scene-edge]")).toHaveLength(6);
     const innerExpandedStyle = view.root.querySelector(`[data-scene-occurrence="${occurrence("innerA")}"] .st-diagramZone`)?.getAttribute("style") ?? "";
     expect(innerExpandedStyle).toContain("--st-component-diagramZone-surface2");
     for (const node of initialModel.nodes) {
@@ -898,7 +898,7 @@ describe("DiagramSceneFigure folds", () => {
     expect(view.rectOf("innerA")).toMatchObject({ width: 352, height: 154 });
     const innerFoldedStyle = view.root.querySelector(`[data-scene-occurrence="${occurrence("innerA")}"] .st-diagramCard`)?.getAttribute("style") ?? "";
     expect(innerFoldedStyle).toContain("--st-component-diagramZone-surface2");
-    expect(view.root.querySelectorAll("polyline[data-scene-edge]")).toHaveLength(4);
+    expect(view.root.querySelectorAll("path[data-scene-edge]")).toHaveLength(4);
     expect(view.root.querySelectorAll("[data-bundle-relation]")).toHaveLength(2);
     for (const node of innerFoldModel.nodes) {
       expectWithinUnit(view.rectOf(node.occurrence.replace("occurrence:e.", "")), node.rect);
@@ -928,7 +928,7 @@ describe("DiagramSceneFigure folds", () => {
       outerBBefore.x !== outerBAfter.x || outerBBefore.y !== outerBAfter.y ||
       extBefore.x !== extAfter.x || extBefore.y !== extAfter.y,
     ).toBe(true);
-    expect(view.root.querySelectorAll("polyline[data-scene-edge]")).toHaveLength(2);
+    expect(view.root.querySelectorAll("path[data-scene-edge]")).toHaveLength(2);
     expect(view.root.querySelectorAll("[data-bundle-relation]")).toHaveLength(3);
     for (const node of outerFoldModel.nodes) {
       expectWithinUnit(view.rectOf(node.occurrence.replace("occurrence:e.", "")), node.rect);
@@ -938,7 +938,7 @@ describe("DiagramSceneFigure folds", () => {
     await fireEvent.click(view.toggle("outerA"));
     await tick();
     expect(view.drawn().sort()).toEqual(initialModel.nodes.map((n) => n.occurrence).sort());
-    expect(view.root.querySelectorAll("polyline[data-scene-edge]")).toHaveLength(6);
+    expect(view.root.querySelectorAll("path[data-scene-edge]")).toHaveLength(6);
     expect(view.root.querySelector(`[data-scene-occurrence="${occurrence("innerA")}"] .st-diagramZone`)?.getAttribute("style") ?? "").toContain("--st-component-diagramZone-surface2");
     for (const node of initialModel.nodes) {
       expectWithinUnit(view.rectOf(node.occurrence.replace("occurrence:e.", "")), node.rect);

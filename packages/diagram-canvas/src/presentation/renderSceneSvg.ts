@@ -1,6 +1,6 @@
 import { renderErdCardSvg } from './erd.js';
 /** Standalone server-side SVG, consuming exactly the scene model used by the framework hosts. */
-import { layoutScene, resolveScene, sceneConnectorMask, sceneFit, sceneNodesOnPlane, type SceneLayoutInput, type SceneNodeModel } from './diagramSceneModel.js';
+import { connectorPath, DEFAULT_EDGE_CORNER_RADIUS, layoutScene, resolveScene, sceneConnectorMask, sceneFit, sceneNodesOnPlane, type SceneLayoutInput, type SceneNodeModel } from './diagramSceneModel.js';
 import { cardLineMeasurer, defaultCardMeasure, sceneCardMeasure, projectCardProps, projectZoneProps, type CardLineMeasure } from './diagramCardModel.js';
 import { renderCardSvg } from './renderCardSvg.js';
 import { renderZoneSvg } from './renderZoneSvg.js';
@@ -19,7 +19,8 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
   const scene=resolveScene(result,measuredInput),box=scene.bounds??{x:0,y:0,width:1,height:1};
   const viewportWidth=input.targetWidth??1440;
   const fit=sceneFit({bounds:box,viewWidth:viewportWidth,windowHeight:900});
-  const edges=scene.edges.map(edge=>`<polyline data-scene-edge="${escape(edge.occurrence)}" points="${edge.points.map(p=>p.x+','+p.y).join(' ')}" fill="none" stroke="var(--st-component-diagramScene-edgeStroke, #64748b)" stroke-width="1.5" stroke-linejoin="round" ${edge.markers===undefined?'marker-end="url(#scene-arrow)"':''}/>${edge.markers??''}`).join('');
+  const cornerRadius=input.metrics?.edgeCornerRadius??DEFAULT_EDGE_CORNER_RADIUS;
+  const edges=scene.edges.map(edge=>`<path data-scene-edge="${escape(edge.occurrence)}" d="${connectorPath(edge.points,cornerRadius)}" fill="none" stroke="var(--st-component-diagramScene-edgeStroke, #64748b)" stroke-width="1.5" stroke-linejoin="round" ${edge.markers===undefined?'marker-end="url(#scene-arrow)"':''}/>${edge.markers??''}`).join('');
   const drawNode=(node:SceneNodeModel)=>{
     const measure=measureFor(node.collapsed);
     if(node.kind==='erd'&&node.erd!==undefined)return `<g data-scene-occurrence="${escape(node.occurrence)}" transform="translate(${node.rect.x} ${node.rect.y})">${renderErdCardSvg(node.erd)}</g>`;
@@ -48,7 +49,7 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
         group.lines.forEach((line,i)=>{text+=`<text x="22" y="${group.top+22+i*22}">${escape(line)}</text>`;});text+='</g>';
       });
     }else label.lines.forEach((line,i)=>{text+=`<text x="${b.width/2}" y="${18+i*22}" text-anchor="middle">${escape(line)}</text>`;});
-    const leader=label.leader===undefined?'':`<polyline points="${label.leader.map(p=>p.x+','+p.y).join(' ')}" fill="none" stroke="var(--st-component-diagramScene-edgeStroke, #64748b)"/>`;
+    const leader=label.leader===undefined?'':`<path d="${connectorPath(label.leader,cornerRadius)}" fill="none" stroke="var(--st-component-diagramScene-edgeStroke, #64748b)"/>`;
     return leader+`<g data-scene-label="${escape(label.occurrence)}" transform="translate(${b.x} ${b.y})" font-size="18" fill="var(--st-component-diagramScene-labelText, #172033)"><rect width="${b.width}" height="${b.height}" fill="var(--st-component-diagramScene-labelSurface, #ffffff)" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)"/>${text}</g>`;
   }).join('');
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box.x-2} ${box.y-2} ${box.width+4} ${box.height+4}" width="${(box.width+4)*fit.zoom}" height="${(box.height+4)*fit.zoom}" data-viewport-width="${viewportWidth}" data-display-scale="${fit.zoom}" role="img" aria-label="${escape(options.title??input.document.documentId)}" font-family="Inter, system-ui, sans-serif"><title>${escape(options.title??input.document.documentId)}</title><style>@font-face{font-family:Inter;src:local('Inter');font-weight:100 900}svg{--st-font-sans:Inter,system-ui,sans-serif;--st-semantic-surface-raised:#fff;--st-semantic-surface-subtle:#f8fafc;--st-component-diagramZone-surface1:#fff;--st-component-diagramZone-surface2:#f8fafc;--st-semantic-text-primary:#172033;--st-semantic-text-secondary:#475569;--st-semantic-border-strong:#64748b;--st-semantic-border-subtle:#cbd5e1;--st-semantic-feedback-info:#2563eb}</style><defs><marker id="scene-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)"/></marker>${maskDef}</defs>${frames}${connectors}${boxes}${labels}</svg>`;

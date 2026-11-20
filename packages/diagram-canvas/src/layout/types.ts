@@ -72,6 +72,8 @@ export interface LayoutMetrics {
   readonly labelBand?: number;
   readonly gapMax?: number;
   readonly bundleLabelMaxWidth?: number;
+  /** World-unit corner radius for rounded-elbow connectors (DE-2, default 12). */
+  readonly edgeCornerRadius?: number;
   readonly nodePaddingX: number;
   readonly nodePaddingY: number;
   readonly nodeMinWidth: number;
