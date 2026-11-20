@@ -71,7 +71,7 @@ jobs:
       - run: npm ci
       - name: Build diagram dependencies
         run: node scripts/ensure-theme-dists.mjs --workspaces="@sentropic/design-system-svelte,@sentropic/design-system-vue"
-      - name: Diagram first paint (36 real DOM cases, no skips)
+      - name: Diagram first paint (40 real DOM cases, no skips)
         env:
           CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
           DIAGRAM_ARTIFACTS: ${{ runner.temp }}/diagram-first-paint
@@ -239,6 +239,13 @@ jobs:
         if: matrix.task == 'test' && contains(matrix.workspaces, '@sentropic/design-system-preact')
         run: |
           BASE_REF=$(node --input-type=module -e "import('./packages/components-preact/scripts/port-metrics.mjs').then((m) => console.log(m.BASE_REF))")
+          git fetch --no-tags --depth=1 origin "$BASE_REF"
+          git cat-file -e "$BASE_REF^{commit}"
+
+      - name: Fetch the base commit of the Dataviz Preact port metrics
+        if: matrix.task == 'test' && contains(matrix.workspaces, '@sentropic/dataviz-preact')
+        run: |
+          BASE_REF=$(node --input-type=module -e "import('./packages/dataviz-preact/scripts/port-metrics.mjs').then((m) => console.log(m.BASE_REF))")
           git fetch --no-tags --depth=1 origin "$BASE_REF"
           git cat-file -e "$BASE_REF^{commit}"
 
