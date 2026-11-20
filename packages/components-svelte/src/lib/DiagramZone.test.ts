@@ -478,7 +478,56 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
       expect(toggle.style.top).toBe(toggle.style.right);
       expect(content.style.left).toBe(`calc(${containerPadding}px - var(--st-component-diagramZone-borderWidth, 1.5px))`);
       expect(content.style.right).toBe(`calc(${containerPadding}px - var(--st-component-diagramZone-borderWidth, 1.5px))`);
+      // v2 header CSS vars stay strictly on .st-diagramZone-header and never on .st-diagramZone (no leak into children).
+      const frame = container.querySelector<HTMLElement>(".st-diagramZone")!;
+      expect(frame.getAttribute("style") ?? "").not.toContain("--st-component-diagramZone-headerInset");
+      expect(frame.getAttribute("style") ?? "").not.toContain("--st-component-diagramCard-iconSize");
+      expect(frame.getAttribute("style") ?? "").not.toContain("--st-component-diagramCard-iconTextGap");
+      expect(header.getAttribute("style") ?? "").toContain("--st-component-diagramZone-headerInset");
     }
+  });
+
+  it("pins v1 card and zone fold toggle placement and size to 0.41.5 and isolates v1 from v2 headerInset overrides", () => {
+    // v1 expanded zone preserves 0.41.5 header right inset (containerPadding ?? 16) and toggle offsets.
+    for (const anatomy of [undefined, "v1"] as const) {
+      const { container, unmount } = render(DiagramZone, {
+        props: {
+          ...baseProps({ collapsed: false, width: 492, height: 400, x: 0, y: 0, containerPadding: 24, ...(anatomy === undefined ? {} : { anatomy }) }),
+          measure: defaultCardMeasure,
+        },
+      });
+      const frame = container.querySelector<HTMLElement>(".st-diagramZone")!;
+      const header = container.querySelector<HTMLElement>(".st-diagramZone-header")!;
+      const toggle = container.querySelector<HTMLElement>(".st-diagramCard-toggle")!;
+      const button = toggle.querySelector<HTMLButtonElement>("button")!;
+      expect(frame.getAttribute("style") ?? "").not.toContain("--st-component-diagramZone-headerInset");
+      expect(header.getAttribute("style") ?? "").not.toContain("--st-component-diagramZone-headerInset");
+      expect(header.style.top).toBe("calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+      expect(header.style.left).toBe("calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+      expect(header.style.right).toBe("calc(24px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+      expect(toggle.style.top).toBe(
+        "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))",
+      );
+      expect(toggle.style.right).toBe(toggle.style.top);
+      expect(button.classList.contains("st-iconButton--sm")).toBe(true);
+      unmount();
+    }
+
+    // Collapsed fallback-v1 zone keeps exact 0.41.5 card toggle placement and no compact CSS vars.
+    const fallback = render(DiagramZone, {
+      props: { ...baseProps({ collapsed: true, anatomy: "v2" }), measure: defaultCardMeasure },
+    });
+    const card = fallback.container.querySelector<HTMLElement>(".st-diagramCard")!;
+    const cardToggle = card.querySelector<HTMLElement>(".st-diagramCard-toggle")!;
+    const cardBtn = cardToggle.querySelector<HTMLButtonElement>("button")!;
+    expect(card.getAttribute("style") ?? "").not.toContain("--st-component-diagramCard-padding");
+    expect(card.getAttribute("style") ?? "").not.toContain("--st-component-diagramCard-iconSize");
+    expect(cardToggle.style.top).toBe(
+      "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))",
+    );
+    expect(cardToggle.style.right).toBe(cardToggle.style.top);
+    expect(cardBtn.classList.contains("st-iconButton--sm")).toBe(true);
+    fallback.unmount();
   });
 });
 

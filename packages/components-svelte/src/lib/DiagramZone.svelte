@@ -163,14 +163,19 @@
   const borderToken = "var(--st-component-diagramZone-borderWidth, 1.5px)";
   const frameTop = (frameY: number): string => `calc(${frameY - y}px - ${borderToken})`;
   const frameInset = (inset: number): string => `calc(${inset}px - ${borderToken})`;
-  // Header band: frame top + headerInset, spanning the header inline insets
-  // (left and right both anchored to headerInset, matching layoutZone and the
-  // toggle inset even when containerPadding differs on v2), as tall as the
-  // layout's header block + subtitle.
+  // Header band: frame top + headerInset. For v1 keep the frozen 0.41.5 right
+  // inset (`containerPadding ?? contentInsetInline`); for v2 anchor right to
+  // `headerInset` (12px) and scope the v2 header CSS custom properties strictly
+  // to `.st-diagramZone-header` so they never leak into nested v1 cards/zones.
+  const headerRightInset = $derived(
+    anatomy === "v2" ? zoneGeometry.headerInset : (containerPadding ?? zoneGeometry.contentInsetInline),
+  );
+  const v2HeaderVars =
+    ";--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px);--st-component-diagramCard-iconTextGap:var(--st-component-diagramCardCompact-iconTextGap, 4px);--st-component-diagramZone-headerInset:var(--st-component-diagramCardCompact-headerInset, 12px)";
   const headerStyle = $derived(
     header === undefined
       ? undefined
-      : `top:${frameTop(y + zoneGeometry.headerInset)};left:${frameInset(zoneGeometry.headerInset)};right:${frameInset(zoneGeometry.headerInset)};height:${header.ruleY - zoneGeometry.headerRuleGap - y - zoneGeometry.headerInset}px`,
+      : `top:${frameTop(y + zoneGeometry.headerInset)};left:${frameInset(zoneGeometry.headerInset)};right:${frameInset(headerRightInset)};height:${header.ruleY - zoneGeometry.headerRuleGap - y - zoneGeometry.headerInset}px${anatomy === "v2" ? v2HeaderVars : ""}`,
   );
   const ruleStyle = $derived(
     header === undefined
@@ -224,9 +229,7 @@
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <div
       class="st-diagramZone st-diagramZone--expanded{effectiveAlign === "center" ? " st-diagramZone--center" : ""}{proposed === true ? " st-diagramZone--proposed" : ""}{anatomy === "v2" ? " st-diagramZone--v2" : ""}"
-      style={anatomy === "v2"
-        ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px);--st-component-diagramCard-iconTextGap:var(--st-component-diagramCardCompact-iconTextGap, 4px);--st-component-diagramZone-headerInset:var(--st-component-diagramCardCompact-headerInset, 12px)${surfaceStyle}`
-        : `width:${layout.box.width}px;height:${layout.box.height}px${surfaceStyle}`}
+      style={`width:${layout.box.width}px;height:${layout.box.height}px${surfaceStyle}`}
       data-tone={tone}
       data-proposed={proposed === true ? "true" : undefined}
       role="group"
