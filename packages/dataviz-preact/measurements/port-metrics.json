@@ -7,15 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 75,
+    "portedModules": 80,
     "barrelFile": "index.ts",
-    "remainingModules": 52,
+    "remainingModules": 47,
     "remainingFiles": [
-      "lib/HeikinAshiChart.tsx",
-      "lib/HistogramChart.tsx",
-      "lib/HollowCandlestickChart.tsx",
-      "lib/ItemChart.tsx",
-      "lib/KpiCardGroup.tsx",
       "lib/MekkoChart.tsx",
       "lib/OHLCChart.tsx",
       "lib/ObjectLayers.tsx",
@@ -891,23 +886,78 @@
         "total": 212,
         "touched": 3,
         "emissionRewrites": 1
+      },
+      {
+        "module": "HeikinAshiChart",
+        "kind": "component",
+        "file": "src/lib/HeikinAshiChart.tsx",
+        "reactSource": "lib/HeikinAshiChart.tsx",
+        "reactLines": 62,
+        "preactLines": 67,
+        "total": 208,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "HistogramChart",
+        "kind": "component",
+        "file": "src/lib/HistogramChart.tsx",
+        "reactSource": "lib/HistogramChart.tsx",
+        "reactLines": 23,
+        "preactLines": 28,
+        "total": 197,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "HollowCandlestickChart",
+        "kind": "component",
+        "file": "src/lib/HollowCandlestickChart.tsx",
+        "reactSource": "lib/HollowCandlestickChart.tsx",
+        "reactLines": 62,
+        "preactLines": 67,
+        "total": 208,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ItemChart",
+        "kind": "component",
+        "file": "src/lib/ItemChart.tsx",
+        "reactSource": "lib/ItemChart.tsx",
+        "reactLines": 50,
+        "preactLines": 55,
+        "total": 181,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "KpiCardGroup",
+        "kind": "component",
+        "file": "src/lib/KpiCardGroup.tsx",
+        "reactSource": "lib/KpiCardGroup.tsx",
+        "reactLines": 65,
+        "preactLines": 70,
+        "total": 301,
+        "touched": 2,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 75,
-      "reactLines": 6242,
-      "preactLines": 6640,
-      "total": 34324,
-      "touched": 412,
-      "emissionRewrites": 73
+      "modules": 80,
+      "reactLines": 6504,
+      "preactLines": 6927,
+      "total": 35419,
+      "touched": 422,
+      "emissionRewrites": 78
     },
     "shared": {
-      "src/index.ts": 191,
+      "src/index.ts": 203,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 90
+      "vitest.react.config.ts": 91
     }
   },
   "reach": {
