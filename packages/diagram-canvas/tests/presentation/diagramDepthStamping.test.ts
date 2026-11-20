@@ -1,11 +1,25 @@
 import { describe, expect, it } from "vitest";
-import { createView, viewRef } from "@sentropic/diagram-core";
 import {
+  createView,
+  CURRENT_SCHEMA_VERSION,
+  DIAGRAM_PRESENTATION_CONTRACT_PIN,
+  entityRef,
+  m3ProfileRegistry,
+  occurrenceRef,
+  relationRef,
+  shippedExecutorBindings,
+  viewRef,
+} from "@sentropic/diagram-core";
+import { cardLineMeasurer, defaultCardMeasure } from "../../src/presentation/diagramCardModel.js";
+import {
+  layoutScene,
+  resolveScene,
   resolveScenePresentation,
   type SceneDocument,
   type ScenePresentation,
   type SceneView,
 } from "../../src/presentation/diagramSceneModel.js";
+import { renderSceneSvg } from "../../src/presentation/renderSceneSvg.js";
 import { ownerInput } from "../layout/dc2a/owner-fixtures.js";
 
 /**
@@ -63,11 +77,100 @@ describe("diagram depth stamping (DE-1 addendum 1)", () => {
     }
   });
 
-  it("should stamp nothing without a view", () => {
+  it("should stamp nesting depth and start parity on viewless/synthesized scenes across fold and SVG render", () => {
+    const nestedDoc = {
+      documentId: "document:viewless-nested",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: {
+        "entity:outer": { id: entityRef("outer"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Outer" } } },
+        "entity:inner": { id: entityRef("inner"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Inner" } } },
+        "entity:leaf": { id: entityRef("leaf"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Leaf" } } },
+      },
+      relations: {
+        "relation:c1": {
+          id: relationRef("c1"),
+          profile: "generic@2",
+          type: "contains",
+          endpoints: [
+            { role: "parent", target: entityRef("outer") },
+            { role: "child", target: entityRef("inner") },
+          ],
+          attributes: {},
+        },
+        "relation:c2": {
+          id: relationRef("c2"),
+          profile: "generic@2",
+          type: "contains",
+          endpoints: [
+            { role: "parent", target: entityRef("inner") },
+            { role: "child", target: entityRef("leaf") },
+          ],
+          attributes: {},
+        },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SceneDocument;
+    const nestedPres = {
+      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      entities: {
+        "occurrence:e.outer": { form: "container", text: { title: "Outer" } },
+        "occurrence:e.inner": { form: "container", text: { title: "Inner" } },
+        "occurrence:e.leaf": { form: "card", text: { title: "Leaf", body: "Work" } },
+      },
+      legends: {},
+      categoryTokens: [],
+    } as unknown as ScenePresentation;
+
+    const viewless = resolveScenePresentation(nestedDoc, nestedPres);
+    const entities = viewless.presentation.entities as Record<string, { depth?: number; depthParityStart?: 0 | 1 }>;
+    expect("depth" in (entities["occurrence:e.outer"] as object)).toBe(false);
+    expect(entities["occurrence:e.inner"]?.depth).toBe(1);
+    expect("depth" in (entities["occurrence:e.leaf"] as object)).toBe(false);
+
+    // Synthesized view scene: depth stamps survive initial render AND fold/unfold.
+    const measureLines = cardLineMeasurer(defaultCardMeasure);
+    for (const collapsed of [[], [occurrenceRef("e.inner")]]) {
+      const laidOut = layoutScene({
+        document: nestedDoc,
+        registry: m3ProfileRegistry,
+        bindings: shippedExecutorBindings,
+        presentation: nestedPres,
+        measureLines,
+        collapsed,
+      });
+      expect(laidOut.status).toBe("laid-out");
+      if (laidOut.status !== "laid-out") return;
+      const scene = resolveScene(laidOut, {
+        document: nestedDoc,
+        presentation: nestedPres,
+        measureLines,
+      });
+      const innerNode = scene.nodes.find((node) => node.occurrence === "occurrence:e.inner");
+      expect(innerNode?.presentation?.depth).toBe(1);
+    }
+
+    // Standalone SVG fallback: defines surface-2 / surface-subtle so odd zones never paint black.
+    const rendered = renderSceneSvg({
+      document: nestedDoc,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: nestedPres,
+      measureLines,
+      collapsed: [],
+    });
+    expect(rendered.svg).toContain("--st-semantic-surface-subtle:#f8fafc");
+    expect(rendered.svg).toContain("--st-component-diagramZone-surface2:#f8fafc");
+    expect(rendered.svg).toContain("--st-component-diagramZone-surface2");
+
+    // Existing flat viewless fixture stays lean at depth 0 when default parity applies.
     const input = ownerInput("vue-globale");
-    const viewless = resolveScenePresentation(input.document, input.presentation);
-    for (const entry of Object.values(viewless.presentation.entities)) {
-      expect("depth" in (entry as object)).toBe(false);
+    const resolvedOwner = resolveScenePresentation(input.document, input.presentation);
+    for (const entry of Object.values(resolvedOwner.presentation.entities)) {
       expect("depthParityStart" in (entry as object)).toBe(false);
     }
   });

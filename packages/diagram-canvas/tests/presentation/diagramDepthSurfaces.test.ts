@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
+  CURRENT_SCHEMA_VERSION,
+  DIAGRAM_PRESENTATION_CONTRACT_PIN,
+  entityRef,
+  m3ProfileRegistry,
+  relationRef,
+  shippedExecutorBindings,
+} from "@sentropic/diagram-core";
+import {
+  cardLineMeasurer,
   defaultCardMeasure,
   layoutZone,
   normalizeZoneDepth,
@@ -8,6 +17,7 @@ import {
   zoneDepthSurface,
   type DiagramCardProps,
 } from "../../src/presentation/diagramCardModel.js";
+import { layoutScene, type SceneDocument, type ScenePresentation } from "../../src/presentation/diagramSceneModel.js";
 
 /**
  * DE-1 owner addendum 1 — alternating zone backgrounds by nesting depth.
@@ -147,5 +157,80 @@ describe("diagram depth surfaces (DE-1 addendum 1)", () => {
       [],
     );
     expect(flat.diagnostics.some((diagnostic) => diagnostic.code === "zone-surface-same")).toBe(false);
+    // Semantically tinted cards never trigger zone-surface-same even on surface1.
+    const tinted: DiagramCardProps = { entityId: "tinted", title: "Tinted", body: [], tone: "category1" };
+    const tintedOnWhite = layoutZone(
+      { entityId: "zone", title: "Zone", collapsed: false, width: 600, reportSurfaceSame: true },
+      defaultCardMeasure,
+      [{ kind: "card", x: 0, y: 0, card: tinted }],
+    );
+    expect(tintedOnWhite.diagnostics.some((diagnostic) => diagnostic.code === "zone-surface-same")).toBe(false);
+  });
+
+  it("should emit zone-surface-same from scene layout only for untinted leaf cards on surface1 zones", () => {
+    const doc = {
+      documentId: "document:surface-same-scene",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: {
+        "entity:outer": { id: entityRef("outer"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Outer" } } },
+        "entity:inner": { id: entityRef("inner"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Inner" } } },
+        "entity:whiteOuter": { id: entityRef("whiteOuter"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "White Outer" } } },
+        "entity:tintedOuter": { id: entityRef("tintedOuter"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Tinted Outer" } } },
+        "entity:whiteInner": { id: entityRef("whiteInner"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "White Inner" } } },
+      },
+      relations: {
+        "relation:c1": { id: relationRef("c1"), profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: entityRef("outer") }, { role: "child", target: entityRef("inner") }], attributes: {} },
+        "relation:c2": { id: relationRef("c2"), profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: entityRef("outer") }, { role: "child", target: entityRef("whiteOuter") }], attributes: {} },
+        "relation:c3": { id: relationRef("c3"), profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: entityRef("outer") }, { role: "child", target: entityRef("tintedOuter") }], attributes: {} },
+        "relation:c4": { id: relationRef("c4"), profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: entityRef("inner") }, { role: "child", target: entityRef("whiteInner") }], attributes: {} },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SceneDocument;
+    const pres = {
+      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      entities: {
+        "occurrence:e.outer": { form: "container", text: { title: "Outer" } },
+        "occurrence:e.inner": { form: "container", text: { title: "Inner" } },
+        "occurrence:e.whiteOuter": { form: "card", text: { title: "White Outer", body: "Untinted" } },
+        "occurrence:e.tintedOuter": { form: "card", categoryRef: "category1", text: { title: "Tinted Outer", body: "Tinted" } },
+        "occurrence:e.whiteInner": { form: "card", text: { title: "White Inner", body: "Untinted" } },
+      },
+      legends: {},
+      categoryTokens: [],
+    } as unknown as ScenePresentation;
+    const baseInput = {
+      document: doc,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: pres,
+      measureLines: cardLineMeasurer(defaultCardMeasure),
+      collapsed: [],
+    };
+    // Off by default: zero zone-surface-same warnings.
+    const quiet = layoutScene(baseInput);
+    expect(quiet.status).toBe("laid-out");
+    if (quiet.status !== "laid-out") return;
+    expect(quiet.warnings.filter((w) => w.code === "zone-surface-same")).toEqual([]);
+
+    // Opt-in at default parity: only whiteOuter on outer (surface1) is flagged; tintedOuter and whiteInner (on surface2) are not.
+    const reported = layoutScene({ ...baseInput, reportSurfaceSame: true });
+    expect(reported.status).toBe("laid-out");
+    if (reported.status !== "laid-out") return;
+    const sameWarnings = reported.warnings.filter((w) => w.code === "zone-surface-same");
+    expect(sameWarnings).toHaveLength(1);
+    expect(sameWarnings[0]?.refs).toEqual(["occurrence:e.outer", "occurrence:e.whiteOuter"]);
+
+    // Flipped parity (depthParityStart = 1): outer is surface2, inner is surface1 -> only whiteInner is flagged.
+    const flipped = layoutScene({ ...baseInput, depthParityStart: 1, reportSurfaceSame: true });
+    expect(flipped.status).toBe("laid-out");
+    if (flipped.status !== "laid-out") return;
+    const flippedWarnings = flipped.warnings.filter((w) => w.code === "zone-surface-same");
+    expect(flippedWarnings).toHaveLength(1);
+    expect(flippedWarnings[0]?.refs).toEqual(["occurrence:e.inner", "occurrence:e.whiteInner"]);
   });
 });

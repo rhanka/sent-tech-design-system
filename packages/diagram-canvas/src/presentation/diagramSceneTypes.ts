@@ -62,6 +62,8 @@ import type { SceneDocument, SceneView, ScenePresentation, SceneOccurrenceRef, S
     measure?: CardLineMeasure;
     iconBindings?: import("./diagramSceneModel.js").SceneIconBindings;
     strictIcons?: boolean;
+    /** Selectable start parity for alternating zone depth surfaces (`0` default, `1` flipped). */
+    depthParityStart?: 0 | 1;
     /** Layout line measurer. Defaults to the bridge over `measure`. */
     measureLines?: LineMeasurer;
     /** Controlled fold state: collapsed occurrence ids. */
