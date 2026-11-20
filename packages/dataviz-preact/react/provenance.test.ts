@@ -30,6 +30,11 @@ import * as handWrittenAdvancedPivotDataTable from "../../dataviz-react/src/lib/
 import * as handWrittenAnalyticsClusterPlot from "../../dataviz-react/src/lib/AnalyticsClusterPlot.js";
 import * as handWrittenAnimatedBubbleChart from "../../dataviz-react/src/lib/AnimatedBubbleChart.js";
 import * as handWrittenAnomalySwimLaneChart from "../../dataviz-react/src/lib/AnomalySwimLaneChart.js";
+import * as handWrittenArcDiagramChart from "../../dataviz-react/src/lib/ArcDiagramChart.js";
+import * as handWrittenAreaRangeChart from "../../dataviz-react/src/lib/AreaRangeChart.js";
+import * as handWrittenAreaSplineRangeChart from "../../dataviz-react/src/lib/AreaSplineRangeChart.js";
+import * as handWrittenBellCurveChart from "../../dataviz-react/src/lib/BellCurveChart.js";
+import * as handWrittenBookmarkNavigator from "../../dataviz-react/src/lib/BookmarkNavigator.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -72,6 +77,11 @@ const switched = [
   "AnalyticsClusterPlot",
   "AnimatedBubbleChart",
   "AnomalySwimLaneChart",
+  "ArcDiagramChart",
+  "AreaRangeChart",
+  "AreaSplineRangeChart",
+  "BellCurveChart",
+  "BookmarkNavigator",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -107,6 +117,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   AnalyticsClusterPlot: handWrittenAnalyticsClusterPlot.AnalyticsClusterPlot,
   AnimatedBubbleChart: handWrittenAnimatedBubbleChart.AnimatedBubbleChart,
   AnomalySwimLaneChart: handWrittenAnomalySwimLaneChart.AnomalySwimLaneChart,
+  ArcDiagramChart: handWrittenArcDiagramChart.ArcDiagramChart,
+  AreaRangeChart: handWrittenAreaRangeChart.AreaRangeChart,
+  AreaSplineRangeChart: handWrittenAreaSplineRangeChart.AreaSplineRangeChart,
+  BellCurveChart: handWrittenBellCurveChart.BellCurveChart,
+  BookmarkNavigator: handWrittenBookmarkNavigator.BookmarkNavigator,
 };
 
 describe("dataviz React leg provenance", () => {
