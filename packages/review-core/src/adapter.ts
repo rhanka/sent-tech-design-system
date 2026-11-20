@@ -15,6 +15,7 @@ export type ReviewAdapterErrorCode =
   | "PROVENANCE_TOOL_CALL_ID_REQUIRED"
   | "INVALID_ASSIGNEE"
   | "INVALID_BODY"
+  | "INVALID_STATE"
   | "INVALID_TARGET";
 
 export class ReviewAdapterError extends Error {

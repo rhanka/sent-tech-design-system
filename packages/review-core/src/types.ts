@@ -14,21 +14,22 @@ export interface CommentTarget {
   recordType?: string;
 }
 
-/** Single state vocabulary matching DB literals (`comments.status`, SPEC-r5 §1.1). */
+/** Single state vocabulary matching DB literals (`comments.status`, SPEC-r6 §1.1). */
 export type CommentState = "open" | "closed";
 
-/** Interim upstream wire vocabulary before sentropic C1/S2 rename lands (§1.1). */
-export type LegacyWireCommentState = "open" | "closed" | "resolved";
-
-/** Display-only UI labels for `CommentState` (SPEC-r5 §1.1, §3). */
+/** Display-only UI labels for `CommentState` (SPEC-r6 §1.1, §3). */
 export const COMMENT_STATE_UI_LABELS: Readonly<Record<CommentState, string>> = Object.freeze({
   open: "Open",
   closed: "Resolved",
 });
 
+/** Verbatim from `api/src/services/canvas-live/contracts.ts` (SPEC-r6 §1.3). */
+export type CollaborationActorKind = "human" | "agent" | "nhi";
+
 export interface TenantContext {
   workspaceId: string;
   tenantId?: string;
+  userId?: string;
 }
 
 export interface CommentProvenance {
@@ -36,8 +37,10 @@ export interface CommentProvenance {
   runId?: string;
 }
 
-export interface CommentAuthorRef {
+export interface CommentAuthor {
   id: string;
+  kind?: CollaborationActorKind;
+  displayLabel?: string;
 }
 
 /** Wire comment contract — 1:1 with `packages/comments/src/types.ts` `Comment`. */
@@ -46,7 +49,7 @@ export interface Comment {
   tenant: TenantContext;
   target: CommentTarget;
   threadId: string;
-  author: CommentAuthorRef;
+  author: CommentAuthor;
   assignedTo?: string;
   state: CommentState;
   body: string;
@@ -58,15 +61,12 @@ export interface Comment {
 export interface CommentThreadSummary {
   threadId: string;
   target: CommentTarget;
-  state: CommentState;
+  status: CommentState;
   commentCount: number;
   createdAt: string;
   updatedAt?: string;
   assignedTo?: string;
 }
-
-/** Verbatim from `api/src/services/canvas-live/contracts.ts` (SPEC-r5 §1.3). */
-export type CollaborationActorKind = "human" | "agent" | "nhi";
 
 export interface CollaborationActor {
   actorId: string;
@@ -144,16 +144,6 @@ export interface ReviewThread {
 
 export function getCommentStateLabel(state: CommentState): string {
   return COMMENT_STATE_UI_LABELS[state];
-}
-
-/** Map interim legacy `'resolved'` to `'closed'` on read (§1.1). */
-export function normalizeCommentState(state: LegacyWireCommentState): CommentState {
-  return state === "resolved" ? "closed" : state;
-}
-
-/** Map `'closed'` to interim legacy `'resolved'` on write before C1/S2 ships (§1.1). */
-export function toLegacyWireCommentState(state: CommentState): "open" | "resolved" {
-  return state === "closed" ? "resolved" : "open";
 }
 
 /** Normalise `record` + `recordType: 'artifact'` into `kind: 'artifact'` dropping `recordType` (§1.2). */

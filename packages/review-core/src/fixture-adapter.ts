@@ -17,17 +17,17 @@ import {
 import { compareIsoTimestamps } from "./threads.js";
 import {
   MAX_SECTION_KEY_LENGTH,
-  normalizeCommentState,
   normalizeCommentTarget,
   type CollaborationActor,
   type CollaborationActorKind,
   type Comment,
+  type CommentAuthor,
   type CommentProvenance,
   type CommentState,
   type CommentTarget,
   type CommentThreadSummary,
-  type LegacyWireCommentState,
   type ReviewComment,
+  type TenantContext,
 } from "./types.js";
 
 export interface FixtureCallerContext {
@@ -45,9 +45,7 @@ export interface FixtureCallerContext {
   canComment?: boolean;
 }
 
-export type FixtureInitialComment = Omit<Comment, "state"> & {
-  state: LegacyWireCommentState;
-};
+export type FixtureInitialComment = Comment;
 
 export interface FixtureCommentsAdapterOptions {
   caller: FixtureCallerContext;
@@ -55,7 +53,7 @@ export interface FixtureCommentsAdapterOptions {
   workspaceMembers?: readonly string[];
   /** Optional resolver for human actors and external live sessions. */
   authorshipResolver?: AuthorshipResolver;
-  /** Optional seed comments (supports legacy `'resolved'` state and `record/artifact` target). */
+  /** Optional seed comments (`open|closed` state only; supports `record/artifact` target normalisation). */
   initialComments?: readonly FixtureInitialComment[];
   /** Optional deterministic clock returning ISO timestamps. */
   now?: () => string;
@@ -110,17 +108,46 @@ function validateBody(body: string): void {
   }
 }
 
+function assertValidCommentState(state: unknown): asserts state is CommentState {
+  if (state !== "open" && state !== "closed") {
+    throw new ReviewAdapterError(
+      "INVALID_STATE",
+      400,
+      `Invalid comment state '${String(state)}'; expected 'open' or 'closed'.`,
+    );
+  }
+}
+
+function cloneTenant(tenant: TenantContext): TenantContext {
+  const copy: TenantContext = { workspaceId: tenant.workspaceId };
+  if (tenant.tenantId !== undefined) {
+    copy.tenantId = tenant.tenantId;
+  }
+  if (tenant.userId !== undefined) {
+    copy.userId = tenant.userId;
+  }
+  return copy;
+}
+
+function cloneAuthor(author: CommentAuthor): CommentAuthor {
+  const copy: CommentAuthor = { id: author.id };
+  if (author.kind !== undefined) {
+    copy.kind = author.kind;
+  }
+  if (author.displayLabel !== undefined) {
+    copy.displayLabel = author.displayLabel;
+  }
+  return copy;
+}
+
 function cloneRawComment(row: Comment): Comment {
   const target = normalizeCommentTarget(row.target);
   const copy: Comment = {
     id: row.id,
-    tenant:
-      row.tenant.tenantId !== undefined
-        ? { workspaceId: row.tenant.workspaceId, tenantId: row.tenant.tenantId }
-        : { workspaceId: row.tenant.workspaceId },
+    tenant: cloneTenant(row.tenant),
     target,
     threadId: row.threadId,
-    author: { id: row.author.id },
+    author: cloneAuthor(row.author),
     state: row.state,
     body: row.body,
     createdAt: row.createdAt,
@@ -166,20 +193,18 @@ export function createFixtureCommentsAdapter(
       return new Date(Date.UTC(2026, 10, 19, 12, 0, syntheticTick)).toISOString();
     });
 
-  // Seed initial comments (normalising legacy wire states and targets)
+  // Seed initial comments (strict `open|closed` state vocabulary; normalises `record/artifact` targets)
   for (const seed of options.initialComments ?? []) {
+    assertValidCommentState(seed.state);
     const normalizedTarget = normalizeCommentTarget(seed.target);
     validateSectionKey(normalizedTarget.sectionKey);
     const stored: Comment = {
       id: seed.id,
-      tenant:
-        seed.tenant.tenantId !== undefined
-          ? { workspaceId: seed.tenant.workspaceId, tenantId: seed.tenant.tenantId }
-          : { workspaceId: seed.tenant.workspaceId },
+      tenant: cloneTenant(seed.tenant),
       target: normalizedTarget,
       threadId: seed.threadId,
-      author: { id: seed.author.id },
-      state: normalizeCommentState(seed.state),
+      author: cloneAuthor(seed.author),
+      state: seed.state,
       body: seed.body,
       createdAt: seed.createdAt,
     };
@@ -324,13 +349,13 @@ export function createFixtureCommentsAdapter(
         threadRows.sort((a, b) => compareIsoTimestamps(a.createdAt, b.createdAt));
         const first = threadRows[0]!;
         const last = threadRows[threadRows.length - 1]!;
-        const state: CommentState = threadRows.some((r) => r.state === "closed")
+        const status: CommentState = threadRows.some((r) => r.state === "closed")
           ? "closed"
           : "open";
         const summary: CommentThreadSummary = {
           threadId,
           target: normalizeCommentTarget(first.target),
-          state,
+          status,
           commentCount: threadRows.length,
           createdAt: first.createdAt,
         };
@@ -338,8 +363,16 @@ export function createFixtureCommentsAdapter(
         if (latestUpdated !== first.createdAt) {
           summary.updatedAt = latestUpdated;
         }
-        if (last.assignedTo !== undefined) {
-          summary.assignedTo = last.assignedTo;
+        let assignedTo: string | undefined;
+        for (let i = threadRows.length - 1; i >= 0; i--) {
+          const candidate = threadRows[i]!.assignedTo;
+          if (typeof candidate === "string" && candidate.length > 0) {
+            assignedTo = candidate;
+            break;
+          }
+        }
+        if (assignedTo !== undefined) {
+          summary.assignedTo = assignedTo;
         }
         summaries.push(summary);
       }
@@ -421,7 +454,6 @@ export function createFixtureCommentsAdapter(
         target.sectionKey = effectiveSectionKey;
       }
 
-      const inheritedAssignee = threadRows[threadRows.length - 1]?.assignedTo;
       const row: Comment = {
         id: `c-${nextCommentSeq++}`,
         tenant: { workspaceId: input.tenant },
@@ -432,9 +464,6 @@ export function createFixtureCommentsAdapter(
         body: input.body,
         createdAt: now(),
       };
-      if (inheritedAssignee !== undefined) {
-        row.assignedTo = inheritedAssignee;
-      }
       if (storedProvenance !== undefined) {
         row.provenance = storedProvenance;
       }
@@ -468,6 +497,7 @@ export function createFixtureCommentsAdapter(
 
     async setState(tenant: string, threadId: string, state: CommentState): Promise<void> {
       assertCanComment();
+      assertValidCommentState(state);
       const threadRows = rows.filter(
         (row) => row.tenant.workspaceId === tenant && row.threadId === threadId,
       );
