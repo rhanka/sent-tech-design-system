@@ -203,7 +203,7 @@ describe("diagram anatomy v2 (DE-1)", () => {
     expect(layoutCard(plain.props, defaultCardMeasure).box).toEqual({ width: 460, height: 200 });
   });
 
-  it("should propagate view-level anatomy v2 from createView to every card, zone, and legend", () => {
+  it("should keep createView on v1 (460x200) by default and propagate explicit opt-in anatomy v2 to every card, zone, and legend", () => {
     const document = {
       documentId: "document:v2-view",
       schemaVersion: CURRENT_SCHEMA_VERSION,
@@ -221,7 +221,52 @@ describe("diagram anatomy v2 (DE-1)", () => {
       resources: {},
       extensions: [],
     } as unknown as SceneDocument;
-    const baseView = createView({ viewId: viewRef("new-v2"), semanticDocumentId: document.documentId, revision: 1 });
+    // W1-02: createView() without explicit anatomy keeps v1 (0.3.0 / 0.41.5 contract).
+    const defaultView = createView({ viewId: viewRef("default-v1"), semanticDocumentId: document.documentId, revision: 1 });
+    expect(defaultView.presentation.anatomy).toBeUndefined();
+    const defaultSceneView = {
+      ...defaultView,
+      entityOccurrences: {
+        "occurrence:e.card": { id: occurrenceRef("e.card"), entity: entityRef("card"), geometry: { x: 0, y: 0, width: 460, height: 200 } },
+      },
+    } as unknown as SceneView;
+    const defaultPres = {
+      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      entities: {
+        "occurrence:e.card": { form: "card", text: { title: "Card", body: "Compact" } },
+      },
+      legends: {},
+      categoryTokens: [],
+    } as unknown as ScenePresentation;
+    const defaultLaidOut = layoutScene({
+      document,
+      view: defaultSceneView,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: defaultPres,
+      measureLines: cardLineMeasurer(defaultCardMeasure),
+      collapsed: [],
+    });
+    expect(defaultLaidOut.status).toBe("laid-out");
+    if (defaultLaidOut.status === "laid-out") {
+      const defaultScene = resolveScene(defaultLaidOut, {
+        document,
+        view: defaultSceneView,
+        presentation: defaultPres,
+        measureLines: cardLineMeasurer(defaultCardMeasure),
+      });
+      const defaultCard = defaultScene.nodes.find((node) => node.occurrence === "occurrence:e.card");
+      expect(defaultCard?.rect).toMatchObject({ width: 460, height: 200 });
+      expect(defaultCard?.presentation?.anatomy).toBeUndefined();
+    }
+
+    // Explicit opt-in anatomy: "v2" on createView propagates to unpinned cards, zones, and legends.
+    const baseView = createView({
+      viewId: viewRef("new-v2"),
+      semanticDocumentId: document.documentId,
+      revision: 1,
+      presentation: { camera: { x: 0, y: 0, zoom: 1 }, anatomy: "v2" },
+    });
     expect(baseView.presentation.anatomy).toBe("v2");
     const view = {
       ...baseView,

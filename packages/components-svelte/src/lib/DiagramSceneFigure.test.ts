@@ -718,9 +718,11 @@ describe("DiagramSceneFigure camera", () => {
       semanticDocumentId: completeSingle.document.documentId,
       revision: 1,
     });
-    const withOcc = (anatomy: "v1" | "v2") => ({
+    // W1-02: createView() without explicit presentation.anatomy keeps v1 (0.41.5 default).
+    expect(baseView.presentation.anatomy).toBeUndefined();
+    const withOcc = (anatomy?: "v1" | "v2") => ({
       ...baseView,
-      presentation: { ...baseView.presentation, anatomy },
+      presentation: anatomy === undefined ? baseView.presentation : { ...baseView.presentation, anatomy },
       entityOccurrences: {
         [occurrence("solo")]: {
           id: occurrenceRef("e.solo"),
@@ -730,8 +732,8 @@ describe("DiagramSceneFigure camera", () => {
       },
     }) as unknown as NonNullable<DiagramSceneFigureProps["view"]>;
 
-    // Unpinned v1, explicit anatomy:"v1", and createView("v2") falling back to v1 all match 0.41.5 zoom/size.
-    for (const hostView of [undefined, withOcc("v1"), withOcc("v2")] as const) {
+    // Unpinned v1, default createView(), explicit anatomy:"v1", and opt-in anatomy:"v2" falling back to v1 all match 0.41.5 zoom/size.
+    for (const hostView of [undefined, withOcc(), withOcc("v1"), withOcc("v2")] as const) {
       const mounted = mount(
         { ...completeSingle, presentation: completePres },
         hostView === undefined ? {} : { view: hostView },
@@ -751,6 +753,21 @@ describe("DiagramSceneFigure camera", () => {
       expect(mounted.viewport.style.aspectRatio).toBe(String(16 / 9));
       mounted.unmount();
     }
+
+    // W1-02 + W1-13: a compact-eligible card (title + body only) inside a default createView() stays v1 (460x200, 126px fitHeight, 0.62 zoom), NOT shrunk to v2 (352x154).
+    const compactEligiblePres = {
+      ...completeSingle.presentation,
+      entities: { [occurrence("solo")]: { form: "card", text: { title: "Compact eligible", body: "Line" } } },
+    } as unknown as ScenePresentation;
+    const defaultCreateViewMounted = mount(
+      { ...completeSingle, presentation: compactEligiblePres },
+      { view: withOcc() },
+    );
+    await tick();
+    expect(defaultCreateViewMounted.rectOf("solo")).toMatchObject({ width: 460, height: 200 });
+    expect(defaultCreateViewMounted.viewport.style.height).toBe("126px");
+    expect(defaultCreateViewMounted.component.getCamera()).toMatchObject({ zoom: 0.62, maxZoom: 0.62, readout: 100 });
+    defaultCreateViewMounted.unmount();
 
     // 2. Wide v1 scene at narrow viewport floors at 0.45 and caps at 0.62, with nested fold hiding descendants cleanly.
     reducedMotion = true;
