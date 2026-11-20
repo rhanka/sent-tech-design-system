@@ -45,6 +45,7 @@ function emittedReactModules(): Plugin {
 const reactTests: string[] = [
   "index.test.ts", // emitted adapter.ts (useDashboard + core re-exports)
   "lib/drill.test.tsx", // emitted lib/drill.ts (drillLevel, onDrillSelect, drillDepth)
+  "lib/CategoricalCharts.test.tsx", // emitted AreaChart, ComboChart, LollipopChart, StackedBarChart, StepLineChart + categoricalData
 ];
 
 export default defineConfig({
