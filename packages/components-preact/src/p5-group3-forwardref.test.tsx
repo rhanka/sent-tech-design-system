@@ -5,9 +5,13 @@ import type { CSSProperties } from "preact";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Avatar } from "./Avatar.js";
 import { AvatarGroup } from "./AvatarGroup.js";
+import { CheckboxGroup } from "./CheckboxGroup.js";
 import { DisplaySettings } from "./DisplaySettings.js";
 import type { DisplaySettingsState } from "./DisplaySettings.js";
+import { Embed } from "./Embed.js";
+import { MediaContent } from "./MediaContent.js";
 import { SelectableRow } from "./SelectableRow.js";
+import { Transcription } from "./Transcription.js";
 
 afterEach(cleanup);
 
@@ -293,6 +297,241 @@ describe("P5 group 3 forwardRef modules — Batch 1 (SelectableRow, Avatar, Avat
     );
     expect(objRef.current).toBeNull();
     expect(cbRef).toHaveBeenLastCalledWith(root);
+
+    unmount();
+    expect(cbRef).toHaveBeenLastCalledWith(null);
+  });
+});
+
+describe("P5 group 3 forwardRef modules — Batch 2 (Embed, MediaContent, Transcription, CheckboxGroup)", () => {
+  it("Embed forwards refs to outer <div>, mutates className signal, and preserves consumer handlers", async () => {
+    const cls = signal("emb-before");
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLDivElement>();
+    const cbRef = vi.fn();
+
+    const { container, rerender, unmount } = render(
+      <Embed
+        ref={objRef}
+        data-testid="emb"
+        src="https://example.com/report"
+        title="Embedded report"
+        className={cls}
+        onClick={onClick}
+      />,
+    );
+    const root = screen.getByTestId("emb") as HTMLDivElement;
+    expect(objRef.current).toBe(root);
+    expect(objRef.current?.tagName).toBe("DIV");
+    expect(root.className).toBe("st-embed emb-before");
+    expect(container.querySelector("iframe.st-embed__frame")?.getAttribute("title")).toBe("Embedded report");
+
+    fireEvent.click(root);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    cls.value = "emb-after";
+    await waitFor(() => expect(root.className).toBe("st-embed emb-after"));
+
+    rerender(
+      <Embed
+        ref={cbRef}
+        data-testid="emb"
+        src="https://example.com/report"
+        title="Embedded report"
+        className={cls}
+        onClick={onClick}
+      />,
+    );
+    expect(objRef.current).toBeNull();
+    expect(cbRef).toHaveBeenLastCalledWith(root);
+
+    unmount();
+    expect(cbRef).toHaveBeenLastCalledWith(null);
+  });
+
+  it("MediaContent forwards refs to <figure>, mutates className/mediaControls signals, and preserves consumer handlers", async () => {
+    const cls = signal("mc-before");
+    const mediaControls = signal(true);
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLElement>();
+    const cbRef = vi.fn();
+
+    const { container, rerender, unmount } = render(
+      <MediaContent
+        ref={objRef}
+        data-testid="mc"
+        title="Demo clip"
+        media="https://example.com/clip.mp4"
+        mediaKind="video"
+        mediaControls={mediaControls}
+        className={cls}
+        onClick={onClick}
+      />,
+    );
+    const figure = screen.getByTestId("mc");
+    const video = container.querySelector("video") as HTMLVideoElement;
+    expect(objRef.current).toBe(figure);
+    expect(objRef.current?.tagName).toBe("FIGURE");
+    expect(figure.className).toBe("st-mediaContent mc-before");
+    expect(video.controls).toBe(true);
+
+    fireEvent.click(figure);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    cls.value = "mc-after";
+    mediaControls.value = false;
+    await waitFor(() => expect(figure.className).toBe("st-mediaContent mc-after"));
+    await waitFor(() => expect(video.controls).toBe(false));
+
+    mediaControls.value = true;
+    await waitFor(() => expect(video.controls).toBe(true));
+
+    rerender(
+      <MediaContent
+        ref={cbRef}
+        data-testid="mc"
+        title="Poster"
+        media="https://example.com/poster.png"
+        mediaAlt="Poster image"
+        className={cls}
+        onClick={onClick}
+      />,
+    );
+    expect(objRef.current).toBeNull();
+    expect(cbRef).toHaveBeenLastCalledWith(figure);
+    expect(container.querySelector("img")?.getAttribute("alt")).toBe("Poster image");
+
+    unmount();
+    expect(cbRef).toHaveBeenLastCalledWith(null);
+  });
+
+  it("Transcription forwards refs to <details>, mutates className/open/showTimestamps signals, and preserves consumer handlers", async () => {
+    const cls = signal("tr-before");
+    const open = signal(false);
+    const showTimestamps = signal(true);
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLDetailsElement>();
+    const cbRef = vi.fn();
+
+    const { container, rerender, unmount } = render(
+      <Transcription
+        ref={objRef}
+        data-testid="tr"
+        title="Audio transcript"
+        segments={[{ speaker: "Alice", startTime: "00:00", endTime: "00:10", text: "Bonjour" }]}
+        open={open}
+        showTimestamps={showTimestamps}
+        className={cls}
+        onClick={onClick}
+      />,
+    );
+    const details = screen.getByTestId("tr") as HTMLDetailsElement;
+    expect(objRef.current).toBe(details);
+    expect(objRef.current?.tagName).toBe("DETAILS");
+    expect(details.className).toBe("st-transcription tr-before");
+    expect(details.open).toBe(false);
+    expect(container.querySelector("time")).not.toBeNull();
+
+    fireEvent.click(details);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    cls.value = "tr-after";
+    open.value = true;
+    showTimestamps.value = false;
+    await waitFor(() => expect(details.className).toBe("st-transcription tr-after"));
+    await waitFor(() => expect(details.open).toBe(true));
+    expect(container.querySelector("time")).toBeNull();
+
+    open.value = false;
+    showTimestamps.value = true;
+    await waitFor(() => expect(details.open).toBe(false));
+    await waitFor(() => expect(container.querySelector("time")).not.toBeNull());
+
+    rerender(
+      <Transcription
+        ref={cbRef}
+        data-testid="tr"
+        text="Plain transcript"
+        open={open}
+        showTimestamps={showTimestamps}
+        className={cls}
+        onClick={onClick}
+      />,
+    );
+    expect(objRef.current).toBeNull();
+    expect(cbRef).toHaveBeenLastCalledWith(details);
+    expect(container.querySelector(".st-transcription__text")?.textContent).toBe("Plain transcript");
+
+    unmount();
+    expect(cbRef).toHaveBeenLastCalledWith(null);
+  });
+
+  it("CheckboxGroup forwards refs to <fieldset>, mutates className/value/disabled signals, and preserves consumer handlers", async () => {
+    const cls = signal("cg-before");
+    const value = signal<string[]>(["a"]);
+    const disabled = signal(false);
+    const onChange = vi.fn();
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLFieldSetElement>();
+    const cbRef = vi.fn();
+    const options = [
+      { label: "Alpha", value: "a" },
+      { label: "Beta", value: "b" },
+    ];
+
+    const { rerender, unmount } = render(
+      <CheckboxGroup
+        ref={objRef}
+        legend="Choices"
+        name="choices"
+        options={options}
+        value={value}
+        disabled={disabled}
+        className={cls}
+        onChange={onChange}
+        onClick={onClick}
+      />,
+    );
+    const fieldset = screen.getByRole("group", { name: "Choices" }) as HTMLFieldSetElement;
+    const alpha = screen.getByLabelText("Alpha") as HTMLInputElement;
+    const beta = screen.getByLabelText("Beta") as HTMLInputElement;
+    expect(objRef.current).toBe(fieldset);
+    expect(objRef.current?.tagName).toBe("FIELDSET");
+    expect(fieldset.className).toBe("st-checkboxGroup st-checkboxGroup--vertical cg-before");
+    expect(fieldset.disabled).toBe(false);
+    expect(alpha.checked).toBe(true);
+    expect(beta.checked).toBe(false);
+
+    fireEvent.click(beta);
+    expect(onChange).toHaveBeenCalledWith(["a", "b"]);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    cls.value = "cg-after";
+    value.value = ["b"];
+    disabled.value = true;
+    await waitFor(() => expect(fieldset.className).toBe("st-checkboxGroup st-checkboxGroup--vertical cg-after"));
+    await waitFor(() => expect(fieldset.disabled).toBe(true));
+    expect(alpha.checked).toBe(false);
+    expect(beta.checked).toBe(true);
+
+    disabled.value = false;
+    await waitFor(() => expect(fieldset.disabled).toBe(false));
+
+    rerender(
+      <CheckboxGroup
+        ref={cbRef}
+        legend="Choices"
+        name="choices"
+        options={options}
+        value={value}
+        disabled={disabled}
+        className={cls}
+        onChange={onChange}
+        onClick={onClick}
+      />,
+    );
+    expect(objRef.current).toBeNull();
+    expect(cbRef).toHaveBeenLastCalledWith(fieldset);
 
     unmount();
     expect(cbRef).toHaveBeenLastCalledWith(null);
