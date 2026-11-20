@@ -62,6 +62,7 @@ const reactTests: string[] = [
   "lib/ChartExport.test.tsx", // emitted ChartExport + ExportMenu + chart-export
   "lib/PartOfWholeCharts.test.tsx", // emitted ChordChart + partOfWholeData
   "lib/GeoCharts.test.tsx", // emitted ChoroplethMap + geoMapLayers
+  "lib/DashboardActiveFilters.test.tsx", // emitted DashboardActiveFilters
 ];
 
 export default defineConfig({

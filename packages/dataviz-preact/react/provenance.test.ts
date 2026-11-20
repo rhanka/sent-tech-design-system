@@ -45,6 +45,11 @@ import * as handWrittenExportMenu from "../../dataviz-react/src/lib/ExportMenu.j
 import * as handWrittenChartExportComponent from "../../dataviz-react/src/lib/ChartExport.js";
 import * as handWrittenChordChart from "../../dataviz-react/src/lib/ChordChart.js";
 import * as handWrittenChoroplethMap from "../../dataviz-react/src/lib/ChoroplethMap.js";
+import * as handWrittenColumnPyramidChart from "../../dataviz-react/src/lib/ColumnPyramidChart.js";
+import * as handWrittenColumnRangeChart from "../../dataviz-react/src/lib/ColumnRangeChart.js";
+import * as handWrittenContourChart from "../../dataviz-react/src/lib/ContourChart.js";
+import * as handWrittenCorrelationMatrix from "../../dataviz-react/src/lib/CorrelationMatrix.js";
+import * as handWrittenDashboardActiveFilters from "../../dataviz-react/src/lib/DashboardActiveFilters.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -104,6 +109,11 @@ const switched = [
   "ChartExport",
   "ChordChart",
   "ChoroplethMap",
+  "ColumnPyramidChart",
+  "ColumnRangeChart",
+  "ContourChart",
+  "CorrelationMatrix",
+  "DashboardActiveFilters",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -155,6 +165,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   ChartExport: handWrittenChartExportComponent.ChartExport,
   ChordChart: handWrittenChordChart.ChordChart,
   ChoroplethMap: handWrittenChoroplethMap.ChoroplethMap,
+  ColumnPyramidChart: handWrittenColumnPyramidChart.ColumnPyramidChart,
+  ColumnRangeChart: handWrittenColumnRangeChart.ColumnRangeChart,
+  ContourChart: handWrittenContourChart.ContourChart,
+  CorrelationMatrix: handWrittenCorrelationMatrix.CorrelationMatrix,
+  DashboardActiveFilters: handWrittenDashboardActiveFilters.DashboardActiveFilters,
 };
 
 describe("dataviz React leg provenance", () => {
