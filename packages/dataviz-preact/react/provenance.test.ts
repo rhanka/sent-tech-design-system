@@ -55,6 +55,11 @@ import * as handWrittenDashboardGrid from "../../dataviz-react/src/lib/Dashboard
 import * as handWrittenDateRangeFilter from "../../dataviz-react/src/lib/DateRangeFilter.js";
 import * as handWrittenDecompositionTreeChart from "../../dataviz-react/src/lib/DecompositionTreeChart.js";
 import * as handWrittenDensity2DChart from "../../dataviz-react/src/lib/Density2DChart.js";
+import * as handWrittenDependencyWheelChart from "../../dataviz-react/src/lib/DependencyWheelChart.js";
+import * as handWrittenDonutChart from "../../dataviz-react/src/lib/DonutChart.js";
+import * as handWrittenDrillBarChart from "../../dataviz-react/src/lib/DrillBarChart.js";
+import * as handWrittenDrillBreadcrumb from "../../dataviz-react/src/lib/DrillBreadcrumb.js";
+import * as handWrittenTreemapChart from "../../dataviz-react/src/lib/TreemapChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -125,6 +130,11 @@ const switched = [
   "dateRangeToSpec",
   "DecompositionTreeChart",
   "Density2DChart",
+  "DependencyWheelChart",
+  "DonutChart",
+  "DrillBarChart",
+  "DrillBreadcrumb",
+  "TreemapChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -187,6 +197,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   dateRangeToSpec: handWrittenDateRangeFilter.dateRangeToSpec,
   DecompositionTreeChart: handWrittenDecompositionTreeChart.DecompositionTreeChart,
   Density2DChart: handWrittenDensity2DChart.Density2DChart,
+  DependencyWheelChart: handWrittenDependencyWheelChart.DependencyWheelChart,
+  DonutChart: handWrittenDonutChart.DonutChart,
+  DrillBarChart: handWrittenDrillBarChart.DrillBarChart,
+  DrillBreadcrumb: handWrittenDrillBreadcrumb.DrillBreadcrumb,
+  TreemapChart: handWrittenTreemapChart.TreemapChart,
 };
 
 describe("dataviz React leg provenance", () => {

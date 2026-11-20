@@ -84,6 +84,11 @@ export type PropsParity = [
   Expect<Equal<Emitted.DateRangeFilterProps, HandWritten.DateRangeFilterProps>>,
   Expect<Equal<Emitted.DecompositionTreeChartProps, HandWritten.DecompositionTreeChartProps>>,
   Expect<Equal<Emitted.Density2DChartProps, HandWritten.Density2DChartProps>>,
+  Expect<Equal<Emitted.DependencyWheelChartProps, HandWritten.DependencyWheelChartProps>>,
+  Expect<Equal<Emitted.DonutChartProps, HandWritten.DonutChartProps>>,
+  Expect<Equal<Emitted.DrillBarChartProps, HandWritten.DrillBarChartProps>>,
+  Expect<Equal<Emitted.DrillBreadcrumbProps, HandWritten.DrillBreadcrumbProps>>,
+  Expect<Equal<Emitted.TreemapChartProps, HandWritten.TreemapChartProps>>,
 ];
 
 export type ComponentParity = [
@@ -126,6 +131,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.DateRangeFilter, typeof HandWritten.DateRangeFilter>>,
   Expect<Equal<typeof Emitted.DecompositionTreeChart, typeof HandWritten.DecompositionTreeChart>>,
   Expect<Equal<typeof Emitted.Density2DChart, typeof HandWritten.Density2DChart>>,
+  Expect<Equal<typeof Emitted.DependencyWheelChart, typeof HandWritten.DependencyWheelChart>>,
+  Expect<Equal<typeof Emitted.DonutChart, typeof HandWritten.DonutChart>>,
+  Expect<Equal<typeof Emitted.DrillBarChart, typeof HandWritten.DrillBarChart>>,
+  Expect<Equal<typeof Emitted.DrillBreadcrumb, typeof HandWritten.DrillBreadcrumb>>,
+  Expect<Equal<typeof Emitted.TreemapChart, typeof HandWritten.TreemapChart>>,
 ];
 
 export type ValueParity = [

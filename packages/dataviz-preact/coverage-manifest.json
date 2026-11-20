@@ -9,7 +9,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
-  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 (25 files) + group 3 batches 1-2 (10 files -> 50/128 ported): ColumnPyramidChart, ColumnRangeChart, ContourChart, CorrelationMatrix, DashboardActiveFilters, DashboardFilterBar, DashboardGrid, DateRangeFilter, DecompositionTreeChart, Density2DChart.",
+  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 (25 files) + group 3 batches 1-3 (15 files -> 55/128 ported): ColumnPyramidChart, ColumnRangeChart, ContourChart, CorrelationMatrix, DashboardActiveFilters, DashboardFilterBar, DashboardGrid, DateRangeFilter, DecompositionTreeChart, Density2DChart, DependencyWheelChart, DonutChart, DrillBarChart, DrillBreadcrumb, TreemapChart.",
   "modules": [
     {
       "module": "adapter",
@@ -456,6 +456,51 @@
       "module": "Density2DChart",
       "file": "src/lib/Density2DChart.tsx",
       "reactSource": "dataviz-react/src/lib/Density2DChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DependencyWheelChart",
+      "file": "src/lib/DependencyWheelChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DependencyWheelChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DonutChart",
+      "file": "src/lib/DonutChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DonutChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DrillBarChart",
+      "file": "src/lib/DrillBarChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DrillBarChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DrillBreadcrumb",
+      "file": "src/lib/DrillBreadcrumb.tsx",
+      "reactSource": "dataviz-react/src/lib/DrillBreadcrumb.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "TreemapChart",
+      "file": "src/lib/TreemapChart.tsx",
+      "reactSource": "dataviz-react/src/lib/TreemapChart.tsx",
       "kind": "component",
       "lot": "P6",
       "renderable": true,

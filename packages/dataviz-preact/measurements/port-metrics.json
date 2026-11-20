@@ -7,14 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 50,
+    "portedModules": 55,
     "barrelFile": "index.ts",
-    "remainingModules": 77,
+    "remainingModules": 72,
     "remainingFiles": [
-      "lib/DependencyWheelChart.tsx",
-      "lib/DonutChart.tsx",
-      "lib/DrillBarChart.tsx",
-      "lib/DrillBreadcrumb.tsx",
       "lib/DrillChart.tsx",
       "lib/DumbbellChart.tsx",
       "lib/ErrorBarsChart.tsx",
@@ -77,7 +73,6 @@
       "lib/TopNFilter.tsx",
       "lib/TraceWaterfallChart.tsx",
       "lib/TreegraphChart.tsx",
-      "lib/TreemapChart.tsx",
       "lib/TrendLineChart.tsx",
       "lib/ValueSlicer.tsx",
       "lib/VariablePieChart.tsx",
@@ -641,23 +636,78 @@
         "total": 217,
         "touched": 2,
         "emissionRewrites": 1
+      },
+      {
+        "module": "DependencyWheelChart",
+        "kind": "component",
+        "file": "src/lib/DependencyWheelChart.tsx",
+        "reactSource": "lib/DependencyWheelChart.tsx",
+        "reactLines": 58,
+        "preactLines": 64,
+        "total": 206,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DonutChart",
+        "kind": "component",
+        "file": "src/lib/DonutChart.tsx",
+        "reactSource": "lib/DonutChart.tsx",
+        "reactLines": 54,
+        "preactLines": 60,
+        "total": 231,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DrillBarChart",
+        "kind": "component",
+        "file": "src/lib/DrillBarChart.tsx",
+        "reactSource": "lib/DrillBarChart.tsx",
+        "reactLines": 75,
+        "preactLines": 80,
+        "total": 388,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DrillBreadcrumb",
+        "kind": "component",
+        "file": "src/lib/DrillBreadcrumb.tsx",
+        "reactSource": "lib/DrillBreadcrumb.tsx",
+        "reactLines": 53,
+        "preactLines": 55,
+        "total": 304,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "TreemapChart",
+        "kind": "component",
+        "file": "src/lib/TreemapChart.tsx",
+        "reactSource": "lib/TreemapChart.tsx",
+        "reactLines": 48,
+        "preactLines": 56,
+        "total": 207,
+        "touched": 4,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 50,
-      "reactLines": 4780,
-      "preactLines": 5040,
-      "total": 27541,
-      "touched": 316,
-      "emissionRewrites": 48
+      "modules": 55,
+      "reactLines": 5068,
+      "preactLines": 5355,
+      "total": 28877,
+      "touched": 328,
+      "emissionRewrites": 53
     },
     "shared": {
-      "src/index.ts": 131,
+      "src/index.ts": 143,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 86
+      "vitest.react.config.ts": 88
     }
   },
   "reach": {
