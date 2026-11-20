@@ -253,3 +253,15 @@ export { RibbonChart } from './lib/RibbonChart.js';
 export type { RibbonChartProps } from './lib/RibbonChart.js';
 export { RoseChart } from './lib/RoseChart.js';
 export type { RoseChartProps } from './lib/RoseChart.js';
+
+// Group 4 batch 7 components.
+export { SankeyChart } from './lib/SankeyChart.js';
+export type { SankeyChartProps } from './lib/SankeyChart.js';
+export { ScatterPlot } from './lib/ScatterPlot.js';
+export type { ScatterPlotProps } from './lib/ScatterPlot.js';
+export { ScatterPlotMatrix } from './lib/ScatterPlotMatrix.js';
+export type { ScatterPlotMatrixProps } from './lib/ScatterPlotMatrix.js';
+export { ScoreCard } from './lib/ScoreCard.js';
+export type { ScoreCardProps } from './lib/ScoreCard.js';
+export { SelectionLegend } from './lib/SelectionLegend.js';
+export type { SelectionLegendProps } from './lib/SelectionLegend.js';
