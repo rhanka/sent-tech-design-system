@@ -1,0 +1,242 @@
+{
+  "baseRef": "81083403e58dd1810bd1bd4f639882d226375d97",
+  "tree": {
+    "files": 128,
+    "tsx": 116,
+    "ts": 12,
+    "lines": 9562
+  },
+  "progress": {
+    "portedModules": 0,
+    "barrelFile": "index.ts",
+    "remainingModules": 127,
+    "remainingFiles": [
+      "adapter.ts",
+      "lib/AdvancedPivotDataTable.tsx",
+      "lib/AnalyticsClusterPlot.tsx",
+      "lib/AnimatedBubbleChart.tsx",
+      "lib/AnomalySwimLaneChart.tsx",
+      "lib/ArcDiagramChart.tsx",
+      "lib/AreaChart.tsx",
+      "lib/AreaRangeChart.tsx",
+      "lib/AreaSplineRangeChart.tsx",
+      "lib/BellCurveChart.tsx",
+      "lib/BookmarkNavigator.tsx",
+      "lib/BoxPlotChart.tsx",
+      "lib/BulletChart.tsx",
+      "lib/BumpChart.tsx",
+      "lib/CalculationEditor.tsx",
+      "lib/CalendarHeatmapChart.tsx",
+      "lib/CandlestickChart.tsx",
+      "lib/ChartExport.tsx",
+      "lib/ChordChart.tsx",
+      "lib/ChoroplethMap.tsx",
+      "lib/ColumnPyramidChart.tsx",
+      "lib/ColumnRangeChart.tsx",
+      "lib/ComboChart.tsx",
+      "lib/ContourChart.tsx",
+      "lib/CorrelationMatrix.tsx",
+      "lib/CrossfilteredBarChart.tsx",
+      "lib/DashboardActiveFilters.tsx",
+      "lib/DashboardFilterBar.tsx",
+      "lib/DashboardGrid.tsx",
+      "lib/DateHistogramChart.tsx",
+      "lib/DateRangeFilter.tsx",
+      "lib/DecompositionTreeChart.tsx",
+      "lib/Density2DChart.tsx",
+      "lib/DependencyWheelChart.tsx",
+      "lib/DivergingBarChart.tsx",
+      "lib/DonutChart.tsx",
+      "lib/DrillBarChart.tsx",
+      "lib/DrillBreadcrumb.tsx",
+      "lib/DrillChart.tsx",
+      "lib/DumbbellChart.tsx",
+      "lib/ErrorBarsChart.tsx",
+      "lib/EventFeedPanel.tsx",
+      "lib/ExportMenu.tsx",
+      "lib/FieldPane.tsx",
+      "lib/FlamegraphChart.tsx",
+      "lib/ForceGraph.tsx",
+      "lib/ForecastLineChart.tsx",
+      "lib/FormatPanel.tsx",
+      "lib/FunnelChart.tsx",
+      "lib/GanttChart.tsx",
+      "lib/GaugeChart.tsx",
+      "lib/GeoClusterMap.tsx",
+      "lib/GeoDensityMap.tsx",
+      "lib/GeoFlowMap.tsx",
+      "lib/GeoHexbinMap.tsx",
+      "lib/GeoJsonMap.tsx",
+      "lib/GeoPointMap.tsx",
+      "lib/HLCChart.tsx",
+      "lib/HeatmapChart.tsx",
+      "lib/HeikinAshiChart.tsx",
+      "lib/HistogramChart.tsx",
+      "lib/HollowCandlestickChart.tsx",
+      "lib/ItemChart.tsx",
+      "lib/KpiCardGroup.tsx",
+      "lib/LollipopChart.tsx",
+      "lib/MekkoChart.tsx",
+      "lib/OHLCChart.tsx",
+      "lib/ObjectLayers.tsx",
+      "lib/OrganizationChart.tsx",
+      "lib/PackedBubbleChart.tsx",
+      "lib/PalettePicker.tsx",
+      "lib/ParallelCoordinatesChart.tsx",
+      "lib/ParetoChart.tsx",
+      "lib/PercentileBandChart.tsx",
+      "lib/PivotDataTable.tsx",
+      "lib/PointAndFigureChart.tsx",
+      "lib/PolygonChart.tsx",
+      "lib/QueryBar.tsx",
+      "lib/RadarChart.tsx",
+      "lib/RangeSliderFilter.tsx",
+      "lib/RecordsTable.tsx",
+      "lib/ReferenceLineChart.tsx",
+      "lib/RelativeDateFilter.tsx",
+      "lib/RenkoChart.tsx",
+      "lib/RibbonChart.tsx",
+      "lib/RoseChart.tsx",
+      "lib/SankeyChart.tsx",
+      "lib/ScatterPlot.tsx",
+      "lib/ScatterPlotMatrix.tsx",
+      "lib/ScoreCard.tsx",
+      "lib/SelectionLegend.tsx",
+      "lib/SmallMultiples.tsx",
+      "lib/SolidGaugeChart.tsx",
+      "lib/Sparkline.tsx",
+      "lib/StackedBarChart.tsx",
+      "lib/StateTimelineChart.tsx",
+      "lib/StatusHistoryChart.tsx",
+      "lib/StepLineChart.tsx",
+      "lib/StreamgraphChart.tsx",
+      "lib/SunburstChart.tsx",
+      "lib/TileMapChart.tsx",
+      "lib/TimeSeriesLineChart.tsx",
+      "lib/TimelineChart.tsx",
+      "lib/TopNFilter.tsx",
+      "lib/TraceWaterfallChart.tsx",
+      "lib/TreegraphChart.tsx",
+      "lib/TreemapChart.tsx",
+      "lib/TrendLineChart.tsx",
+      "lib/ValueSlicer.tsx",
+      "lib/VariablePieChart.tsx",
+      "lib/VectorFieldChart.tsx",
+      "lib/VennChart.tsx",
+      "lib/ViolinChart.tsx",
+      "lib/WaffleChart.tsx",
+      "lib/WaterfallChart.tsx",
+      "lib/WindBarbChart.tsx",
+      "lib/WordCloudChart.tsx",
+      "lib/advancedPivotData.ts",
+      "lib/analyticsDsData.ts",
+      "lib/categoricalData.ts",
+      "lib/chart-export.ts",
+      "lib/distributionData.ts",
+      "lib/drill.ts",
+      "lib/geoMapLayers.ts",
+      "lib/partOfWholeData.ts",
+      "lib/url-sync.ts",
+      "lib/useUrlSync.ts"
+    ]
+  },
+  "port": {
+    "modules": [],
+    "totals": {
+      "modules": 0,
+      "reactLines": 0,
+      "preactLines": 0,
+      "total": 0,
+      "touched": 0,
+      "emissionRewrites": 0
+    },
+    "shared": {
+      "src/index.ts": 9,
+      "src/classNames.ts": 16,
+      "preactAdapters": 247,
+      "reactTwins": 81,
+      "scripts/emit-react.mjs": 183,
+      "vitest.react.config.ts": 62
+    }
+  },
+  "reach": {
+    "svgCasing": {
+      "onElements": {
+        "files": 2,
+        "uses": 12
+      },
+      "onComponentProps": {
+        "files": 5,
+        "uses": 5
+      },
+      "all": {
+        "files": 7,
+        "uses": 17
+      }
+    },
+    "focusEvents": {
+      "onElements": {
+        "files": 0,
+        "uses": 0
+      },
+      "onComponentProps": {
+        "files": 0,
+        "uses": 0
+      },
+      "all": {
+        "files": 0,
+        "uses": 0
+      }
+    },
+    "onChange": {
+      "onTextControls": {
+        "files": 1,
+        "uses": 1
+      },
+      "onOtherElements": {
+        "files": 0,
+        "uses": 0
+      },
+      "onComponentProps": {
+        "files": 11,
+        "uses": 27
+      },
+      "all": {
+        "files": 12,
+        "uses": 28
+      }
+    },
+    "reactNamespace": {
+      "files": 3,
+      "uses": 12
+    },
+    "inlineStyle": {
+      "objectLiteralOnElements": {
+        "files": 4,
+        "uses": 12
+      },
+      "all": {
+        "files": 5,
+        "uses": 27
+      }
+    },
+    "apis": {
+      "forwardRef": {
+        "files": 0,
+        "uses": 0
+      },
+      "useSyncExternalStore": {
+        "files": 1,
+        "uses": 1
+      },
+      "useInsertionEffect": {
+        "files": 0,
+        "uses": 0
+      },
+      "createPortal": {
+        "files": 0,
+        "uses": 0
+      }
+    }
+  }
+}
