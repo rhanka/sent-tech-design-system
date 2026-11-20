@@ -1,8 +1,8 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:f7c7692a9b082a8b2e0964dd61dfadc0ac0699871b39545e76c8dd5b6ea37d9a",
-  "entryDigest": "sha256:e03c1bf47fa366e3d3265c057ae6627643913d96bb0e10adfab19e470a0fe8b6",
+  "digest": "sha256:a36db03501349fd6b2c505dca555c19421e1e3ca8aac04f48f8ccd45a200ca31",
+  "entryDigest": "sha256:982a2b052b949ac0a980ffffd79e1cb7a89b93047b6baeb492e141bbc35c14cc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -4044,7 +4044,7 @@
         "declarationPath": "packages/components-svelte/dist/Icon.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "IconProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "chat-thread",
   "contractSource": "derived",
-  "digest": "sha256:ee5610318eb8664875b417746abfb8e4b51e383493c37fec8d461a7546afb186",
-  "entryDigest": "sha256:65646c4b169d283b4e46186456dc400db7397d6b65c281731d7721e4676dda1e",
+  "digest": "sha256:130eaf3f8658e5e6c21c94ee5f240e8f48d53e1cd9a72882d7d74da7774858d3",
+  "entryDigest": "sha256:d6b1d383c1ea8f7e546591d31f4ad988c1ca94e14bcfbf973bae10888b9dbc5f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatThread.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatThreadProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],

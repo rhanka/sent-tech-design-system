@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/PriorityMatrix.svelte",
-      "version": "0.42.0"
+      "version": "0.43.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "2×2 priority matrix (complexity/value) with tinted quadrants and overlap-free label placement.",
     "fr": "Matrice de priorisation 2×2 (complexité/valeur), quadrants teintés et étiquettes placées sans chevauchement."
   },
-  "digest": "sha256:121ffe59b6ba034737e211e717e8c4b80c0fbe66ba311a9725f6e13cf4a8e524",
+  "digest": "sha256:1ec6fde2b4e2e9c4f3d0f89f882431b69494e802d4e36c0f3649b11cbcd91bf2",
   "displayName": "PriorityMatrix",
   "format": "component-entry/v1",
   "frameworks": [
