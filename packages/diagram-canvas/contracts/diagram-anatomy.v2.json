@@ -102,7 +102,7 @@
     "toggleBoxSize": 32,
     "toggleTopInset": 8,
     "toggleInset": 8,
-    "headerTextInset": 178,
+    "headerTextInset": 154,
     "collapsedWidth": 352,
     "collapsedHeight": 154,
     "collapsedInset": 16,
@@ -429,11 +429,11 @@
           "size": 52
         },
         "headerTextX": 68,
-        "headerTextWidth": 422,
+        "headerTextWidth": 446,
         "kicker": [
           {
             "text": "KICKER",
-            "x": 279,
+            "x": 291,
             "baseline": 34,
             "size": 22,
             "weight": 400,
@@ -444,7 +444,7 @@
         "title": [
           {
             "text": "Zone",
-            "x": 279,
+            "x": 291,
             "baseline": 72.59375,
             "size": 32,
             "weight": 700,

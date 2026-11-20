@@ -6,9 +6,11 @@ import {
   entityRef,
   m3ProfileRegistry,
   occurrenceRef,
+  relationRef,
   shippedExecutorBindings,
   viewRef,
 } from "@sentropic/diagram-core";
+import { layoutMeasured } from "../../src/layout/measured.js";
 import {
   anatomyCardGeometry,
   anatomyZoneGeometry,
@@ -267,5 +269,161 @@ describe("diagram anatomy v2 (DE-1)", () => {
     expect(overflow?.reason).toBe("truncated");
     expect(overflow?.neededPx).toBeGreaterThan(overflow?.allocatedPx ?? 0);
     expect(overflow?.text).toBe(title);
+  });
+
+  it("should align ZONE_GEOMETRY_V2 headerTextInset, child seating, fold recomposition, and icon-none titles with zero drift", () => {
+    expect(ZONE_GEOMETRY_V2.headerTextInset).toBe(154);
+    const zoneWithIcon = layoutZone(
+      { entityId: "z", title: "Platform Zone", collapsed: false, width: 600, toggleLabel: "Collapse", anatomy: "v2" },
+      defaultCardMeasure,
+    );
+    // 68 left (12 + 52 + 4) + 86 right toggle reserve = 154 -> 446 header text width.
+    expect(zoneWithIcon.header?.headerTextX).toBe(68);
+    expect(zoneWithIcon.header?.headerTextWidth).toBe(600 - 154);
+    expect(zoneWithIcon.header?.title[0]?.x).toBe(68 + (600 - 154) / 2);
+
+    const longZoneTitle = "Customer Platform Gateway Cluster";
+    const document = {
+      documentId: "document:v2-zone-geometry",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: {
+        "entity:zone": { id: entityRef("zone"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: longZoneTitle } } },
+        "entity:child": { id: entityRef("child"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Service" } } },
+      },
+      relations: {
+        "relation:contains.child": {
+          id: relationRef("contains.child"),
+          profile: "generic@2",
+          type: "contains",
+          endpoints: [
+            { role: "parent", target: entityRef("zone") },
+            { role: "child", target: entityRef("child") },
+          ],
+          attributes: {},
+        },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SceneDocument;
+
+    const baseView = createView({ viewId: viewRef("v2-geom"), semanticDocumentId: document.documentId, revision: 1 });
+    const view = {
+      ...baseView,
+      entityOccurrences: {
+        "occurrence:e.zone": { id: occurrenceRef("e.zone"), entity: entityRef("zone"), geometry: { x: 0, y: 0, width: 352, height: 154 } },
+        "occurrence:e.child": { id: occurrenceRef("e.child"), entity: entityRef("child"), group: "group:fold.zone", geometry: { x: 0, y: 0, width: 352, height: 154 } },
+      },
+      groups: {
+        "group:fold.zone": { id: "group:fold.zone", occurrence: occurrenceRef("e.zone") },
+      },
+    } as unknown as SceneView;
+    const presentation = {
+      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      entities: {
+        "occurrence:e.zone": { form: "container", icon: "none", text: { title: longZoneTitle, subtitle: "Sub" }, anatomy: "v2" },
+        "occurrence:e.child": { form: "card", text: { title: "Service", body: "Compact" }, anatomy: "v2" },
+      },
+      legends: {},
+      categoryTokens: [],
+    } as unknown as ScenePresentation;
+
+    const measureLines = cardLineMeasurer(defaultCardMeasure);
+    const expandedResult = layoutMeasured(document, {
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation,
+      measureText: (text) => ({ width: text.length * 10, height: 24 }),
+      measureLines,
+      collapsed: [],
+      targetWidth: 1440,
+      rowPack: {},
+    }, view);
+    expect(expandedResult.status).toBe("laid-out");
+    if (expandedResult.status !== "laid-out") return;
+    // No 1-line title truncation on icon:"none" expanded v2 zone.
+    expect(expandedResult.warnings.filter((w) => w.code === "zone-overflow")).toEqual([]);
+    const zoneGeom = expandedResult.view.entityOccurrences["occurrence:e.zone"]?.geometry;
+    const childGeom = expandedResult.view.entityOccurrences["occurrence:e.child"]?.geometry;
+    expect(zoneGeom).toBeDefined();
+    expect(childGeom).toBeDefined();
+
+    // Child y and frame height must match layoutZone's contentTop and height with ZERO 4px vertical drift.
+    const renderedZone = layoutZone(
+      {
+        entityId: "entity:zone",
+        title: longZoneTitle,
+        subtitle: "Sub",
+        icon: "none",
+        collapsed: false,
+        toggleLabel: "Collapse",
+        x: zoneGeom!.x,
+        y: zoneGeom!.y,
+        width: zoneGeom!.width,
+        height: zoneGeom!.height,
+        anatomy: "v2",
+      },
+      defaultCardMeasure,
+    );
+    expect(renderedZone.diagnostics).toEqual([]);
+    expect(renderedZone.header?.title.map((line) => line.text).join("")).toBe(longZoneTitle);
+    expect(childGeom!.y).toBe(renderedZone.header?.contentTop);
+    expect(zoneGeom!.height).toBe(renderedZone.header!.contentTop - zoneGeom!.y + childGeom!.height + ZONE_GEOMETRY_V2.contentInsetBottom);
+
+    // Long title overflows the fixed 352x154 folded card and falls back to 460x200 v1; unfold restores exact expanded geometry.
+    const foldedResult = layoutMeasured(document, {
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation,
+      measureText: (text) => ({ width: text.length * 10, height: 24 }),
+      measureLines,
+      collapsed: [occurrenceRef("e.zone")],
+      targetWidth: 1440,
+      rowPack: {},
+    }, view);
+    expect(foldedResult.status).toBe("laid-out");
+    if (foldedResult.status !== "laid-out") return;
+    expect(foldedResult.view.entityOccurrences["occurrence:e.zone"]?.geometry).toMatchObject({ width: 460, height: 200 });
+
+    const unfoldedResult = layoutMeasured(document, {
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation,
+      measureText: (text) => ({ width: text.length * 10, height: 24 }),
+      measureLines,
+      collapsed: [],
+      targetWidth: 1440,
+      rowPack: {},
+    }, view);
+    expect(unfoldedResult.status).toBe("laid-out");
+    if (unfoldedResult.status !== "laid-out") return;
+    expect(unfoldedResult.view.entityOccurrences["occurrence:e.zone"]?.geometry).toEqual(zoneGeom);
+    expect(unfoldedResult.view.entityOccurrences["occurrence:e.child"]?.geometry).toEqual(childGeom);
+
+    // Compact-fitting title folds to 352x154 with zero overflow and unfolds with zero vertical drift.
+    const compactPresentation = {
+      ...presentation,
+      entities: {
+        ...presentation.entities,
+        "occurrence:e.zone": { form: "container", text: { title: "Zone", subtitle: "Sub" }, anatomy: "v2" },
+      },
+    } as unknown as ScenePresentation;
+    const compactFolded = layoutMeasured(document, {
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: compactPresentation,
+      measureText: (text) => ({ width: text.length * 10, height: 24 }),
+      measureLines,
+      collapsed: [occurrenceRef("e.zone")],
+      targetWidth: 1440,
+      rowPack: {},
+    }, view);
+    expect(compactFolded.status).toBe("laid-out");
+    if (compactFolded.status !== "laid-out") return;
+    expect(compactFolded.warnings.filter((w) => w.code === "zone-overflow")).toEqual([]);
+    expect(compactFolded.view.entityOccurrences["occurrence:e.zone"]?.geometry).toMatchObject({ width: 352, height: 154 });
   });
 });
