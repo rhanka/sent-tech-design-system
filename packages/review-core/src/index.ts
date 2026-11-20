@@ -81,3 +81,35 @@ export type { ThreadReadState } from "./unread.js";
 
 export { DEFAULT_PIN_GAP, layoutPins } from "./layout-pins.js";
 export type { PinInput, PinLayoutOptions, PositionedPin } from "./layout-pins.js";
+
+export {
+  ANCHOR_KEY_PREFIX,
+  AnchorTooLongError,
+  AnchorValidationError,
+  MAX_QUOTE_CONTEXT_LENGTH,
+  decodeAnchor,
+  encodeAnchor,
+  tryEncodeAnchor,
+} from "./anchor-codec.js";
+export type {
+  DecodeAnchorOptions,
+  EncodeAnchorOptions,
+  TryEncodeAnchorResult,
+} from "./anchor-codec.js";
+
+export {
+  createAnchor,
+  createAnchorFromElement,
+  createAnchorFromRegion,
+  createAnchorFromSelection,
+  resolveAnchor,
+} from "./anchor-dom.js";
+export type {
+  AnchorResolutionStrategy,
+  OrphanedAnchor,
+  ResolveAnchorOptions,
+  ResolveAnchorResult,
+  ResolvedElementAnchor,
+  ResolvedRegionAnchor,
+  ResolvedTextAnchor,
+} from "./anchor-dom.js";
