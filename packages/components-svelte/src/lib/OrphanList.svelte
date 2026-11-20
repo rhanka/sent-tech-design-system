@@ -48,7 +48,8 @@
   let actionError = $state<string | null>(null);
   let pendingId = $state<string | null>(null);
 
-  const headingId = `st-review-orphans-heading-${Math.random().toString(36).slice(2, 9)}`;
+  const uid = $props.id();
+  const headingId = `st-review-orphans-heading-${uid}`;
   const classes = $derived(["st-review-orphans", className].filter(Boolean).join(" "));
 
   async function runThreadAction(

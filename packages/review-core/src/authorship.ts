@@ -1,4 +1,4 @@
-// Authorship fallback ("owner id + provenance") and permission helpers (SPEC-r5 §1.3, §3, §4).
+// Authorship fallback ("owner id + provenance") and permission helpers (SPEC-r6 §1.3, §3, §4).
 
 import type {
   CollaborationActor,
@@ -67,7 +67,7 @@ export function formatSyntheticToolCallId(sessionId: string, seq: number): strin
 }
 
 /**
- * Enforces SPEC-r5 §1.3: every non-human write MUST carry a non-empty
+ * Enforces SPEC-r6 §1.3: every non-human write MUST carry a non-empty
  * `provenance.toolCallId` (`runId` alone is dropped at write by `PgCommentStore`).
  */
 export function assertValidAgentWriteProvenance(
@@ -89,7 +89,7 @@ function isResolvedAgentSession(
 
 /**
  * Builds the `ReviewComment.authorship` view model under the zero-migration
- * fallback (SPEC-r5 §1.3):
+ * fallback (SPEC-r6 §1.3):
  * - No `provenance.toolCallId` -> human comment (`author` = owner, no `sponsor`).
  *   Actor `kind` is NEVER inferred from an id string.
  * - Non-empty `provenance.toolCallId` -> agent/NHI comment sponsored by the owner
@@ -146,7 +146,7 @@ export function resolveAuthorshipFromFallback(
 }
 
 /**
- * UI eligibility for edit/delete actions (SPEC-r5 §1, §3):
+ * UI eligibility for edit/delete actions (SPEC-r6 §1, §3):
  * offered on human comments of the current user (or when `canModerate` is true).
  * Agent comments written under the user's owner id are NOT offered as own human edits.
  */

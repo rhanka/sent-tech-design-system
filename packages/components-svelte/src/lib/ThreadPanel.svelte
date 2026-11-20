@@ -230,16 +230,15 @@
 </script>
 
 {#snippet panelBody()}
-  <div class="st-review-panel__filters" role="tablist" aria-label="Filter comment threads">
+  <div class="st-review-panel__filters" role="group" aria-label="Filter comment threads">
     {#each FILTER_OPTIONS as option (option.id)}
       {@const count = filterCounts[option.id]}
       {@const selected = effectiveFilter === option.id}
       <button
         type="button"
-        role="tab"
         class="st-review-panel__filter-tab"
         class:st-review-panel__filter-tab--active={selected}
-        aria-selected={selected ? "true" : "false"}
+        aria-pressed={selected ? "true" : "false"}
         onclick={() => selectFilter(option.id)}
       >
         <span>{option.label}</span>
