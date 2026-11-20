@@ -78,6 +78,7 @@ const reactTests: string[] = [
   "lib/RecordsTable.test.tsx", // emitted RecordsTable
   "lib/RelativeDateFilter.test.tsx", // emitted RelativeDateFilter + relativeRangeToSpec + DEFAULT_RELATIVE_PRESETS
   "lib/SelectionLegend.test.tsx", // emitted SelectionLegend
+  "lib/SmallMultiples.test.tsx", // emitted SmallMultiples
 ];
 
 export default defineConfig({
