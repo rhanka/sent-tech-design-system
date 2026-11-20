@@ -2,7 +2,7 @@
 
 > **Purpose.** Source unique et tracée des exigences de l'owner pour l'évolution diagrammes r7 du design system (DS). Chaque exigence est un élément `REQ-R7-NN` avec son verbatim daté, un critère d'acceptation observable, son lot et sa vague, son statut factuel et ses écarts connus. Une demande owner sans id ici n'est pas encore une exigence : elle entre ici avant tout plan, brief ou PR.
 >
-> **Snapshot.** 2026-11-20, 14:16 EST (révision r2, voir « Revisions » ; r1 : 11:50 EST). Dépôt DS lu en lecture seule (`origin/main` `d2312d6f5`, branches et tags distants, `.track/events.jsonl` de la copie de travail locale, lu par `track item show`) ; PR et CI lues via `gh`. Le `.track/events.jsonl` d'`origin/main` s'arrête au 07/11 (UTC) : les items track cités ici (12/11 à 20/11, dates UTC) n'existent que dans la copie locale, non committée.
+> **Snapshot.** 2026-11-20, 14:16 EST (révision r2, voir « Revisions » ; r1 : 11:50 EST ; r3, 14:38 EST : ajout de REQ-R7-30 seul, sur des lectures faites à cette heure). Dépôt DS lu en lecture seule (`origin/main` `d2312d6f5`, branches et tags distants, `.track/events.jsonl` de la copie de travail locale, lu par `track item show`) ; PR et CI lues via `gh`. Le `.track/events.jsonl` d'`origin/main` s'arrête au 07/11 (UTC) : les items track cités ici (12/11 à 20/11, dates UTC) n'existent que dans la copie locale, non committée.
 
 ## Conventions
 
@@ -12,7 +12,7 @@
   - `en construction` : code sur une branche ou une PR ouverte, non publié.
   - `planifié` : lot décrit dans `PLAN-r3.md`, aucun code.
   - `non prévu` : aucun lot.
-  - `régression à corriger (PR #314)` : cassé par la vague 1 d'après `REGRESSION-AUDIT-wave1.md` ; correctif porté par la PR #314.
+  - `régression à corriger (PR #314)` : cassé par la vague 1 d'après `REGRESSION-AUDIT-wave1.md`, ou signalé comme régression par l'owner hors de cet audit (REQ-R7-30) ; correctif porté par la PR #314.
   - Un statut composé (publié + effets de bord, par exemple) est écrit en entier.
 - **Waves.** V1 = DE-1 (publiée) ; V1-patch = correctif des régressions V1 (PR #314, hors `PLAN-r3.md`) ; V2 = DE-2 + E1 + E2 ; étape 0 = gel du vocabulaire `ds-layout-hints@2` (en parallèle de V2) ; V3 = H2 ; V4 = N2 (temps 2). GO owner séparé par vague, jamais groupé (`PLAN-r3.md` §3).
 - **Tuple V1 publié** (19-20/11, intégrités dans `WAVE1-TUPLE.md`) : `@sentropic/diagram-core 0.4.0`, `@sentropic/diagram-canvas 0.3.0`, `@sentropic/design-system-tokens 0.15.0`, `@sentropic/design-system-themes 0.15.0`, `@sentropic/design-system-svelte 0.42.0`, `@sentropic/design-system-vue 0.41.0-next.8`.
@@ -25,6 +25,7 @@
 |---|---|---|
 | r1 | 20/11, 11:50 EST | création : REQ-R7-01 à REQ-R7-28, scénarios S1 à S3, décisions D-1 à D-9 |
 | r2 | 20/11, 14:16 EST | intégration de la revue `REQ-SPEC-carbon.md` (`ACCEPT WITH CHANGES`, 6 constats). (1) PR #314 : la revue mesurait le head `90aa6dd81` (8 commits, CI 33/36, bumps manquants, corps obsolète) ; au snapshot r2, head `570093c3a` (9 commits, CI 36/36, corps réécrit, bumps toujours manquants) : état du dépôt, REQ-R7-01, REQ-R7-04, REQ-R7-06 à REQ-R7-10, REQ-R7-28, « Cross-cutting known gaps » §1. (2) REQ-R7-29 créée (DE-1b) ; REQ-R7-01, REQ-R7-02, REQ-R7-06, REQ-R7-11, REQ-R7-20 et REQ-R7-21 complétées depuis `PLAN-r3.md`. (3) items track diagrammes recensés (état du dépôt, REQ-R7-06, REQ-R7-21, REQ-R7-26, §4) ; date de REQ-R7-26 ramenée à `missing source`. (4) critères observables de REQ-R7-15, REQ-R7-24 et REQ-R7-25 ; portée réelle des tests CI dans REQ-R7-05, REQ-R7-13 et REQ-R7-26. (5) colonnes « À regarder » et « Item track » dans les 4 tableaux de scénarios. (6) dépendance de N2 à H2 dans S2 (nouvelle décision D-10), budget de V2 et coûts jusqu'à fin V3 et fin V4 par scénario. Aucune exigence supprimée. |
+| r3 | 20/11, 14:38 EST | ajout de REQ-R7-30 (verbatim owner du 20/11, 14:10, `OWNER-ADDENDA.md:36-38` ; item track `01M7X6P2X37V4HK1ZPQ7HJZZA9`) dans « Index » et « Wave 1 » ; définition du statut `régression à corriger (PR #314)` étendue à une régression signalée par l'owner hors audit ; « Sources » : `refit-unfold.md` et dossier h-cond antérieur à v7 (svelte 0.41.5 publié). Faits de REQ-R7-30 lus à 14:38 EST (PR #314 toujours au head `570093c3a`). « Repository state at snapshot », « Cross-cutting known gaps », « Open owner decisions » et « Scénarios » restent au snapshot r2 : ils ne citent ni REQ-R7-30 ni son item track. Aucune exigence supprimée. |
 
 ## Sources
 
@@ -37,9 +38,10 @@
 | `~/src/h2a/tmp/h-cond/simple-diagrams/ds-position-engine.md` | demandes du kit r7 (note DS du 15/11) |
 | `scratchpad/dossier-iso-r7/DOSSIER.md` | analyse ISO r7 v10 : options A/B/C, coûts, retour arrière, question ouverte |
 | `scratchpad/diagram-evo/REGRESSION-AUDIT-wave1.md` | audit V1 : 60 lignes `W1-01` à `W1-60` |
-| `scratchpad/diagram-evo/WAVE1-TUPLE.md`, `regress-fix.md`, `regress-fix2.md`, `regress-fix3.md` (et `.out`) | tuple publié V1 ; consignes des correctifs PR #314 (correctifs, extension, reprise de la CI) |
+| `scratchpad/diagram-evo/WAVE1-TUPLE.md`, `regress-fix.md`, `regress-fix2.md`, `regress-fix3.md` (et `.out`), `refit-unfold.md` | tuple publié V1 ; consignes des correctifs PR #314 (correctifs, extension, reprise de la CI, réajustement au dépli de REQ-R7-30) |
 | `scratchpad/diagram-evo/REQ-SPEC-carbon.md` | revue de la révision r1 (`ACCEPT WITH CHANGES`, 6 constats), intégrée en r2 |
 | `~/src/h2a/tmp/h-cond/simple-diagrams/V7-REPORT.md` | re-rendu h-cond sur le tuple V1 (taux de repli, 38 états de pli) |
+| `~/src/h2a/tmp/h-cond/simple-diagrams/dossier/scenekit/` | dossier h-cond antérieur à v7 : `@sentropic/design-system-svelte 0.41.5` et `@sentropic/diagram-canvas 0.2.5` publiés (`node_modules`, `dist/DiagramSceneFigure.svelte`) ; `src/themes.js` (échelle forcée `0,474`) ; REQ-R7-30 |
 | `scratchpad/framework-decision/framework.decision-dossier.v4.json` | verbatims owner du 12/11 sur les frameworks (contexte de REQ-R7-26) |
 | Dépôt DS (lecture seule) | `origin/main`, `origin/fix/r7-v1-regressions` (PR #314), `origin/feat/diagram-de2` (PR #315), CI des deux PR (`gh pr checks`), tags distants, `.track/events.jsonl` (copie de travail locale) |
 
@@ -87,6 +89,7 @@
 | REQ-R7-27 | Règle de présentation et de validation | transverse, à ajouter | en construction |
 | REQ-R7-28 | Tout changement non demandé est une régression | transverse, à ajouter | V1 : régression à corriger (PR #314) ; V2 : non prévu |
 | REQ-R7-29 | Libellé d'inclusion localisable dans le texte de repli (DE-1b) | DE-1 · V1 ; effet de bord : V1-patch | fait-publié ; effet de bord `W1-28` : régression à corriger (PR #314) |
+| REQ-R7-30 | Aucun débordement au dépliage : la figure se réajuste | correctif 0.42.1 (PR #314) · V1-patch | régression à corriger (PR #314) |
 
 ## Requirements
 
@@ -254,6 +257,29 @@
 - **Status** : fait-publié (diagram-canvas 0.3.0, svelte 0.42.0, vue 0.41.0-next.8 : `DEFAULT_SCENE_LABELS.contains = "includes"`) ; effet de bord `W1-28` : régression à corriger (PR #314) — codé au commit `90aa6dd81` (substitution limitée à `relation.type === "contains"`, champ `contains` optionnel), ni fusionné ni publié.
 - **Known gaps** : `W1-28` publié en V1 : rupture TypeScript pour un `DiagramSceneFigureLabels` typé sans `contains`, et une relation raffinée (`owns`) affichée sous le libellé générique ; le critère 3 n'est atteint que sur PR #314.
 - **Trace** : `PLAN.md:47-49` ; `PLAN-r3.md:17-18,20,97` ; audit `W1-47`, `W1-59` (progrès), `W1-28` (effet de bord) ; tests `DiagramSceneFigure.test.ts:809` (Svelte), `diagram-parity.test.ts:610` (Vue), `diagramAnatomyV2.test.ts:678,742` (canvas) ; test `W1-28` ajouté par `90aa6dd81` dans `diagramAnatomyV2.test.ts` (« refined subtype "owns" keeps its own type name »).
+
+#### REQ-R7-30 — Aucun débordement au dépliage : la figure se réajuste
+
+- **Owner verbatim (20/11, 14:10, `OWNER-ADDENDA.md:37`)** : « j'espère que tu auras pas oublié les contraintes de type : je veux pas d'overflow (faut resizer le diag quand on déplie ... régression supplémentaire) »
+- **Relayed (note DS, 20/11, `OWNER-ADDENDA.md:38`)** : *"Requirement: unfolding a zone never leaves part of the figure outside the frame; the figure refits (resizes) to show the whole unfolded diagram, folding refits back."*
+- **Acceptance criterion** : sur toute figure r7 (`DiagramSceneFigure`, Svelte et Vue) dont la caméra est au fit avant la bascule (aucun zoom explicite depuis le montage ou le dernier `0`), après chaque pli ou dépli, une fois la transition terminée (240 ms ; immédiatement sous reduced-motion) :
+  1. aucune partie hors du cadre : la boîte englobante peinte (cartes, zones, ports, liens et libellés ; légende à partir de V2, REQ-R7-12), mesurée dans le DOM, tient dans la zone visible du cadre à 0,5 px CSS près (tolérance de `scenePlacement`) ; aucune barre de défilement ; `data-pans="false"` ;
+  2. réajustement dans les deux sens : le zoom appliqué (`data-zoom`) est le fit de cette boîte, soit le plus grand zoom, au plus `0,62` et au quantum `0,001`, qui la fait tenir dans le cadre maximal ; la hauteur du cadre est celle de la boîte à ce zoom, encart de 1 px de chaque côté compris, plafonnée au cadre maximal, à 1/64 px près (`cameraFit`) ; au repli : ni bande vide, ni zoom resté à celui de l'état déplié ;
+  3. bornes de 0.41.5 inchangées (REQ-R7-09) : zoom de `0,45` à `0,62`, cadre maximal `min(largeur × 9/16, 0,85 × hauteur de fenêtre)` ; seule exception au critère 1 : un état dont le fit tomberait sous `0,45` reste à `0,45` et défile depuis son début (`cameraFit`), l'étendue de défilement couvrant toute la boîte peinte, sans partie inaccessible ;
+  4. Svelte et Vue identiques, épinglés par un test de régression par hôte : dépli de la plus grande zone d'une scène de référence (boîte peinte dans le cadre), puis repli (réajustement) ;
+  5. au re-rendu h-cond du correctif, à `1440 × 900` : 0 partie hors du cadre dans les 38 états de pli des six figures de référence, hors états dont le fit tombe sous `0,45` (listés dans le rapport).
+  - *Owner looks at* : à `1440 × 900`, en Svelte puis en Vue, une figure imbriquée de référence au fit : déplier sa plus grande zone : toute la figure reste visible dans le cadre, sans carte ni lien coupé au bord et sans barre de défilement ; la replier : la figure se resserre sur le contenu replié, sans bande vide ; à `390 × 844`, la figure défile (plancher `0,45`) sans partie inaccessible.
+- **Covering lot / wave** : correctif 0.42.1 (PR #314), vague V1-patch, hors `PLAN-r3.md`.
+- **Status** : régression à corriger (PR #314) — régression signalée par l'owner le 20/11 à 14:10, absente des 60 lignes de `REGRESSION-AUDIT-wave1.md` ; aucun commit de correctif ni test sur PR #314 au head `570093c3a` (branche locale et `origin/fix/r7-v1-regressions`, lues à 14:38 EST ; modifications non committées dans le worktree de la PR à cette heure) ; consigne de correctif : `refit-unfold.md` (20/11).
+- **Known gaps** :
+  - Règle Z-7, antérieure à V1 : à chaque bascule de pli, l'hôte fige le zoom courant (Svelte `toggleFold` : `requestedZoom = zoom`, `atFit = false` ; Vue : `holdZoom`, `useDiagramSceneViewport.ts`, lu sur la branche de PR #315) ; ce zoom reste tant qu'il est dans la nouvelle plage, et la figure dépliée défile jusqu'au bouton `0`. Sur la branche de PR #315, le test Svelte « Z-7 a fold relayout reclamps the zoom into the new range; a zoom inside the range is preserved » l'épingle (« The cap is inside the unfolded range: preserved, the drawing now pans. »). svelte 0.41.5 publié a la même règle (`dist/DiagramSceneFigure.svelte:873-875`, aucun autre retour au fit que le changement de document et le bouton `0`) et `camera.ts` est inchangé de diagram-canvas 0.2.5 à 0.3.0 (`W1-13`) : le correctif change la règle Z-7, il ne rétablit pas un comportement de 0.41.5, contrairement à la prémisse de `refit-unfold.md` ; il est à classer « progrès demandé (REQ-R7-30) » dans l'audit de V1-patch (REQ-R7-28), test Z-7 modifié compris ; vue 0.41.0-next.7 non lu (`unverified`).
+  - Écart perçu par l'owner (« régression supplémentaire ») : cause `unverified`. Faits : le dossier h-cond antérieur à v7 (svelte 0.41.5) fixait `maxDisplayScale` et `minReadableScale` à `0,474` (`dossier/scenekit/src/themes.js:9,14`), plage de zoom réduite à un point ; v7 retire ce forçage (`V7-REPORT.md` §1) ; à `1440` px, 4 des 6 figures y sont au plafond `0,62` dans leur état par défaut (§2), zoom que la règle Z-7 garde au dépli.
+  - Zoom explicite avant la bascule : règle à valider par l'owner : réajuster à chaque bascule (`refit-unfold.md` : *"may be kept only until the next fold toggle"*) ou garder la règle Z-7.
+  - Plancher `0,45` : à `390 × 844`, les six figures de référence sont déjà à `0,45` dans leur état par défaut (`V7-REPORT.md` §2) : le critère 1 n'y est pas atteignable dans les bornes de REQ-R7-09 ; défilement sans partie inaccessible, à valider par l'owner face à « je veux pas d'overflow ».
+  - La CI DS ne couvrira que la plus grande zone d'une scène de référence (consigne `refit-unfold.md`) ; les 38 états ne sont vérifiés qu'au re-rendu h-cond (critère 5, comme REQ-R7-05).
+  - PR #315 ne contient pas les commits de PR #314 (« Cross-cutting known gaps » §1) : critère à re-vérifier en V2 après sa remise à jour sur `main`, légende (REQ-R7-12) et `fitToWindow` (REQ-R7-18) compris.
+  - Lot : « correctif 0.42.1 » est le nom du patch V1 dans l'audit (`REGRESSION-AUDIT-wave1.md:25-26`) ; PR #314 vise svelte 0.43.1 (« Cross-cutting known gaps » §2).
+- **Trace** : `OWNER-ADDENDA.md:36-38` ; track `01M7X6P2X37V4HK1ZPQ7HJZZA9` (créé le 20/11 à 19:24 UTC, `bug`, *"r7 regression: unfolding must never overflow — the figure refits (resizes) to show the whole unfolded diagram"*, `to-do` : aucune transition dans `.track/events.jsonl`) ; `refit-unfold.md` ; `packages/diagram-canvas/src/camera.ts` (`fitBox`, `cameraFit`) ; `scenePlacement` (`packages/diagram-canvas/src/presentation/diagramSceneModel.ts`) ; attributs `data-zoom`, `data-zoom-readout` et `data-pans` des deux hôtes ; test Z-7 de `DiagramSceneFigure.test.ts` (Svelte) ; exigences liées : REQ-R7-05, REQ-R7-09, REQ-R7-12, REQ-R7-18.
 
 ### Wave 2 — links, chain, export (DE-2, E1, E2)
 
@@ -583,3 +609,38 @@ Trois scénarios de feuille de route à valider. V1-patch et V2 sont communs aux
 - Adapté si (renversement prévu par le dossier) : échéance avant la fin de V3, ou écarts inexprimables révélés à l'étape 0.
 
 **Ce que l'owner valide :** (1) S1, S2 ou S3 ; (2) l'échéance avant la fin de V3 : oui (avec date) ou non ; (3) les décisions D-1 à D-10, au fil des vagues. Rien n'est publié sans GO de vague (REQ-R7-27).
+
+## Track trace
+
+| Requirement | Track item (workspace `wp-canvas-collab`) |
+|---|---|
+| REQ-R7-01 | `01M7X7G8VK2BJD3F27HRAQJTRT` |
+| REQ-R7-02 | `01M7X7G95CY202R7FF22MWZXVP` |
+| REQ-R7-03 | `01M7X7G9EYCWJ6H7EV11W6GWHC` |
+| REQ-R7-04 | `01M7X7G9QRY2RZVNZA10J4HYWP` |
+| REQ-R7-05 | `01M7X7GA1YK0A804B4FCAQQWP3` |
+| REQ-R7-06 | `01M7X7GACPXT34EH3QSC448Z8X` |
+| REQ-R7-07 | `01M7WJN7NM6DXX9GSMPCXGZTAR` |
+| REQ-R7-08 | `01M7WJN7TP4WTKTSK3M0H064EQ` |
+| REQ-R7-09 | `01M7WJN7ZTQRQZ441VF9J35599` |
+| REQ-R7-10 | `01M7X7GB2ADH6M0HXBD7R375J8` |
+| REQ-R7-11 | `01M7X7GBB74W0YN80MWXZDGDP0` |
+| REQ-R7-12 | `01M7X7GBMH0S2P6W08Y6DRVJK4` |
+| REQ-R7-13 | `01M7X7GC3KB25NJKJPFQ7SS72G` |
+| REQ-R7-14 | `01M7X7GCEGV9QGZZTPZEBF99T9` |
+| REQ-R7-15 | `01M7X7GCQ6A2MQ99YV8CNSGMWV` |
+| REQ-R7-16 | `01M7X7GCZQMSBW8Y4K51ZVNTPD` |
+| REQ-R7-17 | `01M7X7GD8YMNMNFM3H1EF4S4RD` |
+| REQ-R7-18 | `01M7X7GDHH7ARWKZRGQ5JRA6HE` |
+| REQ-R7-19 | `01M7X7GDTPFJZ27CM3JEENDNP2` |
+| REQ-R7-20 | `01M7X7GE3QYD95CADMQW353MC0` |
+| REQ-R7-21 | `01M7X7GEC8RNXYY8V0YZK9B1GP` |
+| REQ-R7-22 | `01M7X7GEMTW01K6GES6P3WFFKD` |
+| REQ-R7-23 | `01M7WJN8595HFTM982VRNHJVYB` |
+| REQ-R7-24 | `01M7X7GEXDJ43MHA1J8YBDW176` |
+| REQ-R7-25 | `01M7X7GF6BCF40YEK9Y27JYF87` |
+| REQ-R7-26 | `01M7X7GFEXK2DSVWVM8NAPYX2A` |
+| REQ-R7-27 | `01M7X7GFQGVSY23EW11Q0ZFJQ0` |
+| REQ-R7-28 | `01M7X7GG01NTG3MNN8W583AKS1` |
+| REQ-R7-29 | `01M7X7GG8FM05MF62D75ATNXW7` |
+| REQ-R7-30 | `01M7X6P2X37V4HK1ZPQ7HJZZA9` |
