@@ -25,6 +25,11 @@ import * as handWrittenAnalyticsDsData from "../../dataviz-react/src/lib/analyti
 import * as handWrittenChartExport from "../../dataviz-react/src/lib/chart-export.js";
 import * as handWrittenGeoMapLayers from "../../dataviz-react/src/lib/geoMapLayers.js";
 import * as handWrittenUrlSync from "../../dataviz-react/src/lib/url-sync.js";
+import * as handWrittenUseUrlSync from "../../dataviz-react/src/lib/useUrlSync.js";
+import * as handWrittenAdvancedPivotDataTable from "../../dataviz-react/src/lib/AdvancedPivotDataTable.js";
+import * as handWrittenAnalyticsClusterPlot from "../../dataviz-react/src/lib/AnalyticsClusterPlot.js";
+import * as handWrittenAnimatedBubbleChart from "../../dataviz-react/src/lib/AnimatedBubbleChart.js";
+import * as handWrittenAnomalySwimLaneChart from "../../dataviz-react/src/lib/AnomalySwimLaneChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -62,6 +67,11 @@ const switched = [
   "readStateFromUrl",
   "writeStateToUrl",
   "readLocationSearch",
+  "useUrlSync",
+  "AdvancedPivotDataTable",
+  "AnalyticsClusterPlot",
+  "AnimatedBubbleChart",
+  "AnomalySwimLaneChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -92,6 +102,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   readStateFromUrl: handWrittenUrlSync.readStateFromUrl,
   writeStateToUrl: handWrittenUrlSync.writeStateToUrl,
   readLocationSearch: handWrittenUrlSync.readLocationSearch,
+  useUrlSync: handWrittenUseUrlSync.useUrlSync,
+  AdvancedPivotDataTable: handWrittenAdvancedPivotDataTable.AdvancedPivotDataTable,
+  AnalyticsClusterPlot: handWrittenAnalyticsClusterPlot.AnalyticsClusterPlot,
+  AnimatedBubbleChart: handWrittenAnimatedBubbleChart.AnimatedBubbleChart,
+  AnomalySwimLaneChart: handWrittenAnomalySwimLaneChart.AnomalySwimLaneChart,
 };
 
 describe("dataviz React leg provenance", () => {

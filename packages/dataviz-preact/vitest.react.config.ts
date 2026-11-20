@@ -52,7 +52,9 @@ const reactTests: string[] = [
   "lib/ParetoChart.test.tsx", // emitted ParetoChart
   "lib/DateHistogramChart.test.tsx", // emitted DateHistogramChart
   "lib/chart-export.test.ts", // emitted lib/chart-export.ts
-  "lib/url-sync.test.tsx", // emitted lib/url-sync.ts
+  "lib/url-sync.test.tsx", // emitted lib/url-sync.ts + lib/useUrlSync.ts
+  "lib/AdvancedPivotDataTable.test.tsx", // emitted AdvancedPivotDataTable + advancedPivotData
+  "lib/AnalyticsCharts.test.tsx", // emitted AnalyticsClusterPlot + analyticsDsData
 ];
 
 export default defineConfig({
