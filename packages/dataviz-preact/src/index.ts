@@ -129,3 +129,15 @@ export { DecompositionTreeChart } from './lib/DecompositionTreeChart.js';
 export type { DecompositionTreeChartProps } from './lib/DecompositionTreeChart.js';
 export { Density2DChart } from './lib/Density2DChart.js';
 export type { Density2DChartProps } from './lib/Density2DChart.js';
+
+// Group 3 batch 3 components (includes TreemapChart required by DrillChart).
+export { DependencyWheelChart } from './lib/DependencyWheelChart.js';
+export type { DependencyWheelChartProps } from './lib/DependencyWheelChart.js';
+export { DonutChart } from './lib/DonutChart.js';
+export type { DonutChartProps } from './lib/DonutChart.js';
+export { DrillBarChart } from './lib/DrillBarChart.js';
+export type { DrillBarChartProps } from './lib/DrillBarChart.js';
+export { DrillBreadcrumb } from './lib/DrillBreadcrumb.js';
+export type { DrillBreadcrumbProps } from './lib/DrillBreadcrumb.js';
+export { TreemapChart } from './lib/TreemapChart.js';
+export type { TreemapChartProps } from './lib/TreemapChart.js';
