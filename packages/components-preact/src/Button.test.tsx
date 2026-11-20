@@ -64,6 +64,38 @@ describe("Button (Preact)", () => {
     disabled.value = true;
     // @preact/signals flushes DOM bindings asynchronously.
     await waitFor(() => expect(button.disabled).toBe(true));
+    disabled.value = false;
+    await waitFor(() => expect(button.disabled).toBe(false));
     expect(renders).toBe(1);
+  });
+
+  it("follows a className signal mutated post-mount and detaches refs on swap and unmount", async () => {
+    const extra = signal("btn-before");
+    const refA = vi.fn();
+    const refB = createRef<HTMLButtonElement>();
+    const { rerender, unmount } = render(
+      <Button ref={refA} className={extra}>
+        Action
+      </Button>,
+    );
+    const button = screen.getByRole("button", { name: "Action" }) as HTMLButtonElement;
+    expect(button.className).toBe("st-button st-button--primary st-button--md btn-before");
+    expect(refA).toHaveBeenLastCalledWith(button);
+
+    extra.value = "btn-after";
+    await waitFor(() =>
+      expect(button.className).toBe("st-button st-button--primary st-button--md btn-after"),
+    );
+
+    rerender(
+      <Button ref={refB} className={extra}>
+        Action
+      </Button>,
+    );
+    expect(refA).toHaveBeenLastCalledWith(null);
+    expect(refB.current).toBe(button);
+
+    unmount();
+    expect(refB.current).toBeNull();
   });
 });

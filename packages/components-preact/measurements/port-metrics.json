@@ -29,8 +29,8 @@
         "total": 163,
         "touched": 6,
         "emissionRewrites": 1,
-        "tests": 5,
-        "testLines": 69
+        "tests": 6,
+        "testLines": 101
       },
       {
         "module": "Input",
@@ -42,8 +42,8 @@
         "total": 289,
         "touched": 20,
         "emissionRewrites": 2,
-        "tests": 6,
-        "testLines": 92
+        "tests": 7,
+        "testLines": 136
       },
       {
         "module": "Modal",
@@ -77,12 +77,12 @@
         "lot": "P2",
         "reactSource": "SelectableRow.tsx",
         "reactLines": 252,
-        "preactLines": 258,
+        "preactLines": 290,
         "total": 1035,
-        "touched": 59,
+        "touched": 63,
         "emissionRewrites": 3,
-        "tests": 9,
-        "testLines": 251
+        "tests": 11,
+        "testLines": 341
       },
       {
         "module": "ChatComposer",
@@ -103,12 +103,12 @@
         "lot": "P4c",
         "reactSource": "Portal.tsx",
         "reactLines": 88,
-        "preactLines": 77,
+        "preactLines": 80,
         "total": 304,
-        "touched": 22,
+        "touched": 24,
         "emissionRewrites": 1,
-        "tests": 6,
-        "testLines": 109
+        "tests": 9,
+        "testLines": 189
       },
       {
         "module": "ThemeProvider",
@@ -116,27 +116,27 @@
         "lot": "P4c",
         "reactSource": "ThemeProvider.tsx",
         "reactLines": 35,
-        "preactLines": 37,
+        "preactLines": 41,
         "total": 229,
-        "touched": 12,
+        "touched": 20,
         "emissionRewrites": 1,
-        "tests": 3,
-        "testLines": 53
+        "tests": 6,
+        "testLines": 104
       }
     ],
     "totals": {
       "reactLines": 631,
-      "preactLines": 703,
+      "preactLines": 742,
       "total": 3521,
-      "touched": 173,
+      "touched": 187,
       "emissionRewrites": 16,
-      "tests": 45,
-      "testLines": 863
+      "tests": 55,
+      "testLines": 1160
     },
     "shared": {
       "src/internal.ts": 171,
       "src/classNames.ts": 22,
-      "src/index.ts": 581,
+      "src/index.ts": 593,
       "preactAdapters": 308,
       "reactTwins": 109,
       "scripts/emit-react.mjs": 174,
