@@ -599,6 +599,12 @@ export type {
   CommentLayerProps,
   ReviewMode,
 } from "./CommentLayer.svelte";
+export { default as ReviewModeToggle } from "./ReviewModeToggle.svelte";
+export type { ReviewModeToggleProps } from "./ReviewModeToggle.svelte";
+export { default as OrphanList } from "./OrphanList.svelte";
+export type { OrphanListProps } from "./OrphanList.svelte";
+export { default as ThreadPanel } from "./ThreadPanel.svelte";
+export type { ThreadPanelProps } from "./ThreadPanel.svelte";
 export {
   formatAnchorLabel,
   formatPinAriaLabel,
