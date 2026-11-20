@@ -40,8 +40,7 @@ export const LINK_LEGEND_EMPHASIS_ORDER: readonly LinkEmphasis[] = Object.freeze
 ]);
 
 export const LINK_LEGEND_ARROWHEAD_ORDER: readonly CanonicalArrowheadKind[] = Object.freeze([
-  "filled-triangle",
-  "open-triangle",
+  "arrow",
   "none",
 ]);
 
@@ -113,7 +112,6 @@ export interface LinkLegendSwatchGeometry {
 
 const EDGE_STROKE = "var(--st-component-diagramScene-edgeStroke, #64748b)";
 const EMPHASIS_STROKE = "var(--st-component-diagramScene-linkEmphasisStroke, #2563eb)";
-const OPEN_SURFACE_FILL = "var(--st-semantic-surface-raised, #ffffff)";
 
 /** Stable canonical key for a connector style triple. */
 export function linkStyleKey(style: LinkLegendStyleKey): string {
@@ -131,9 +129,7 @@ export function defaultLinkStyleLabel(style: LinkLegendStyleKey): string {
   } else if (parts.length === 0) {
     parts.push("Link");
   }
-  if (style.arrowhead === "open-triangle") {
-    parts.push("Open arrow");
-  } else if (style.arrowhead === "none") {
+  if (style.arrowhead === "none") {
     parts.push("Undirected");
   }
   return parts.join(" · ");
@@ -143,7 +139,7 @@ function styleRank(style: LinkLegendStyleKey): number {
   const stroke = LINK_LEGEND_STROKE_ORDER.indexOf(style.strokeStyle);
   const emphasis = LINK_LEGEND_EMPHASIS_ORDER.indexOf(style.emphasis);
   const arrowhead = LINK_LEGEND_ARROWHEAD_ORDER.indexOf(style.arrowhead);
-  return stroke * 6 + emphasis * 3 + arrowhead;
+  return stroke * 4 + emphasis * 2 + arrowhead;
 }
 
 /**
@@ -208,6 +204,10 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
 
   const title = input.title ?? "Legend";
   const fontSize = input.fontSize ?? LINK_LEGEND_FONT_SIZE;
+  const scale = fontSize > 0 && Number.isFinite(fontSize) ? fontSize / LINK_LEGEND_FONT_SIZE : 1;
+  const headerHeight = scale === 1 ? LINK_LEGEND_HEADER_HEIGHT : Math.ceil(LINK_LEGEND_HEADER_HEIGHT * scale);
+  const rowHeight = scale === 1 ? LINK_LEGEND_ROW_HEIGHT : Math.ceil(LINK_LEGEND_ROW_HEIGHT * scale);
+  const rowGap = scale === 1 ? LINK_LEGEND_ROW_GAP : Math.ceil(LINK_LEGEND_ROW_GAP * scale);
   const titleLayout = input.measureLines({
     text: title,
     role: "edge-label",
@@ -215,6 +215,7 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
     allocatedLines: 1,
     folded: false,
   });
+  const scaledTitleWidth = titleLayout.width * scale;
 
   let maxLabelWidth = 0;
   const entries: LinkLegendEntry[] = collected.map((item, index) => {
@@ -226,29 +227,30 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
       allocatedLines: 1,
       folded: false,
     });
-    if (measured.width > maxLabelWidth) maxLabelWidth = measured.width;
+    const scaledWidth = measured.width * scale;
+    if (scaledWidth > maxLabelWidth) maxLabelWidth = scaledWidth;
     const rowY =
       LINK_LEGEND_PADDING +
-      LINK_LEGEND_HEADER_HEIGHT +
-      index * (LINK_LEGEND_ROW_HEIGHT + LINK_LEGEND_ROW_GAP);
+      headerHeight +
+      index * (rowHeight + rowGap);
     return {
       ...item,
       label,
       rowY,
-      rowHeight: LINK_LEGEND_ROW_HEIGHT,
+      rowHeight,
     };
   });
 
   const contentWidth = Math.max(
-    titleLayout.width,
+    scaledTitleWidth,
     LINK_LEGEND_SWATCH_WIDTH + LINK_LEGEND_SWATCH_GAP + maxLabelWidth,
   );
   const width = Math.ceil(Math.max(LINK_LEGEND_MIN_WIDTH, 2 * LINK_LEGEND_PADDING + contentWidth));
   const height =
     2 * LINK_LEGEND_PADDING +
-    LINK_LEGEND_HEADER_HEIGHT +
-    entries.length * LINK_LEGEND_ROW_HEIGHT +
-    Math.max(0, entries.length - 1) * LINK_LEGEND_ROW_GAP;
+    headerHeight +
+    entries.length * rowHeight +
+    Math.max(0, entries.length - 1) * rowGap;
 
   const rect: Rect =
     anchor === "bottom"
@@ -271,7 +273,7 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
     rect,
     entries,
     padding: LINK_LEGEND_PADDING,
-    headerHeight: LINK_LEGEND_HEADER_HEIGHT,
+    headerHeight,
     swatchWidth: LINK_LEGEND_SWATCH_WIDTH,
     swatchGap: LINK_LEGEND_SWATCH_GAP,
     fontSize,
@@ -307,7 +309,6 @@ export function linkLegendSwatchGeometry(
       ...(dashArray === undefined ? {} : { dashArray }),
     };
   }
-  const open = style.arrowhead === "open-triangle";
   return {
     viewBox: `0 0 ${LINK_LEGEND_SWATCH_WIDTH} 16`,
     width: LINK_LEGEND_SWATCH_WIDTH,
@@ -317,7 +318,6 @@ export function linkLegendSwatchGeometry(
     stroke,
     strokeWidth,
     ...(dashArray === undefined ? {} : { dashArray }),
-    arrowFill: open ? OPEN_SURFACE_FILL : stroke,
-    ...(open ? { arrowStroke: stroke, arrowStrokeWidth: 1.5 } : {}),
+    arrowFill: stroke,
   };
 }

@@ -1,7 +1,7 @@
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
 import { clampZoom, FIT_ASPECT, zoomReadout, type Rect } from '@sentropic/diagram-canvas';
 import { sceneCardMeasure, cardLineMeasurer, defaultCardMeasure, type CardLineMeasure } from './diagramCardModel.js';
-import { DEFAULT_SCENE_TARGET_WIDTH, parseScale, resolveZoom, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneModel } from './diagramSceneModel.js';
+import { DEFAULT_SCENE_TARGET_WIDTH, parseScale, resolveZoom, scaleEdgeLabelMeasurer, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneModel } from './diagramSceneModel.js';
 import { measureRenderedBounds, shouldRefitRenderedBounds } from './diagramRenderedBounds.js';
 import { measureRenderedSceneFont } from './diagramFontMeasure.js';
 import type { DiagramSceneFigureProps, DiagramSceneCamera } from './DiagramSceneFigure.types.js';
@@ -184,7 +184,7 @@ export function useDiagramSceneViewport(
         mountedViewport = undefined;
     });
 
-    const edgeLabelLineHeight = computed(() => measureLines.value({ text: 'Mg', role: 'edge-label', availableWidth: 400, allocatedLines: 1, folded: false }).height);
+    const edgeLabelLineHeight = computed(() => scaleEdgeLabelMeasurer(measureLines.value, effectiveMetrics.value.edgeLabelSize)({ text: 'Mg', role: 'edge-label', availableWidth: 400, allocatedLines: 1, folded: false }).height);
     const viewportStyle = computed(() => `height:${fit.value.fitHeight + scrollbarHeight.value}px;${props.fitToWindow ? 'max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;' : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px`);
     return { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
         fit, zoom, readout, placement, viewportStyle, holdZoom,

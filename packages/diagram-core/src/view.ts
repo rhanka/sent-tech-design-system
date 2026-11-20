@@ -89,8 +89,8 @@ export interface RelationOccurrence {
    */
   readonly strokeStyle?: StrokeStyle;
   /**
-   * Arrowhead registry word (`arrow | filled-triangle | open-triangle | none`, DE-2).
-   * Absent means default filled triangle and is preserved byte-for-byte.
+   * Arrowhead registry word (`arrow | none`, DE-2; further heads reserved for N2).
+   * Absent means default arrow and is preserved byte-for-byte.
    */
   readonly arrowhead?: ArrowheadKind;
   /**

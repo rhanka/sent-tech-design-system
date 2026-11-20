@@ -612,9 +612,9 @@ describe('scene host DOM and camera/fold behavior', () => {
     const presentation = {
       ...base.presentation,
       relations: {
-        'relation:link.a.b': { strokeStyle: 'dotted', arrowhead: 'open-triangle' },
+        'relation:link.a.b': { strokeStyle: 'dotted', arrowhead: 'arrow' },
         'relation:link.b.ext': { arrowhead: 'none', emphasis: 'emphasis' },
-        'relation:link.a.ext': { strokeStyle: 'dashed', arrowhead: 'filled-triangle', emphasis: 'emphasis' },
+        'relation:link.a.ext': { strokeStyle: 'dashed', arrowhead: 'arrow', emphasis: 'emphasis' },
       },
     } as unknown as ScenePresentation;
     const props = { ...host, ...base, presentation };
@@ -628,7 +628,7 @@ describe('scene host DOM and camera/fold behavior', () => {
       const be = root.querySelector('path[data-scene-edge="occurrence:r.link.b.ext"]')!;
       const ae = root.querySelector('path[data-scene-edge="occurrence:r.link.a.ext"]')!;
       expect(ab.getAttribute('stroke-dasharray')).toBe('2 5');
-      expect(ab.getAttribute('marker-end')).toMatch(/-open\)$/);
+      expect(ab.getAttribute('marker-end')).toMatch(/^url\(#diagram-arrow-[^)]+\)$/);
       expect(be.getAttribute('stroke-dasharray')).toBeNull();
       expect(be.getAttribute('marker-end')).toBeNull();
       expect(be.getAttribute('data-edge-emphasis')).toBe('emphasis');
@@ -640,8 +640,8 @@ describe('scene host DOM and camera/fold behavior', () => {
       expect(legend!.getAttribute('data-legend-anchor')).toBe('right');
       expect([...root.querySelectorAll('[data-legend-style]')].map((el) => el.getAttribute('data-legend-style'))).toEqual([
         'solid:none:emphasis',
-        'dashed:filled-triangle:emphasis',
-        'dotted:open-triangle:default',
+        'dashed:arrow:emphasis',
+        'dotted:arrow:default',
       ]);
     }
 
@@ -654,7 +654,7 @@ describe('scene host DOM and camera/fold behavior', () => {
       expect(root.querySelectorAll('path[data-scene-edge]')).toHaveLength(2);
       expect([...root.querySelectorAll('[data-legend-style]')].map((el) => el.getAttribute('data-legend-style'))).toEqual([
         'solid:none:emphasis',
-        'dashed:filled-triangle:emphasis',
+        'dashed:arrow:emphasis',
       ]);
     }
 

@@ -23,17 +23,17 @@ export interface DashPatternDescriptor {
   readonly tokenName?: "linkDashDashed" | "linkDashDotted";
 }
 
-export const ARROWHEAD_KINDS = ["arrow", "filled-triangle", "open-triangle", "none"] as const;
+export const ARROWHEAD_KINDS = ["arrow", "none"] as const;
 export type ArrowheadKind = (typeof ARROWHEAD_KINDS)[number];
-export type CanonicalArrowheadKind = "filled-triangle" | "open-triangle" | "none";
+export type CanonicalArrowheadKind = "arrow" | "none";
 
 export interface ArrowheadDescriptor {
   readonly kind: ArrowheadKind;
-  /** Normalized visual head kind (`"arrow"` aliases `"filled-triangle"`). */
+  /** Normalized visual head kind (`"arrow"` or `"none"` in `@4`; further heads reserved for N2). */
   readonly canonicalKind: CanonicalArrowheadKind;
   readonly shape: "triangle" | "none";
-  readonly fill: "stroke" | "surface" | "none";
-  readonly outlined: boolean;
+  readonly fill: "stroke" | "none";
+  readonly outlined: false;
 }
 
 export const LINK_EMPHASIS_KINDS = ["default", "emphasis"] as const;
@@ -86,24 +86,10 @@ export const DASH_PATTERN_REGISTRY: Readonly<Record<StrokeStyle, DashPatternDesc
 export const ARROWHEAD_REGISTRY: Readonly<Record<ArrowheadKind, ArrowheadDescriptor>> = deepFreeze({
   arrow: {
     kind: "arrow",
-    canonicalKind: "filled-triangle",
+    canonicalKind: "arrow",
     shape: "triangle",
     fill: "stroke",
     outlined: false,
-  },
-  "filled-triangle": {
-    kind: "filled-triangle",
-    canonicalKind: "filled-triangle",
-    shape: "triangle",
-    fill: "stroke",
-    outlined: false,
-  },
-  "open-triangle": {
-    kind: "open-triangle",
-    canonicalKind: "open-triangle",
-    shape: "triangle",
-    fill: "surface",
-    outlined: true,
   },
   none: {
     kind: "none",
@@ -155,7 +141,7 @@ export function resolveDashPattern(style: string | undefined): DashPatternDescri
 export function resolveArrowhead(kind: ArrowheadKind | undefined): ArrowheadDescriptor;
 export function resolveArrowhead(kind: string | undefined): ArrowheadDescriptor | undefined;
 export function resolveArrowhead(kind: string | undefined): ArrowheadDescriptor | undefined {
-  if (kind === undefined) return ARROWHEAD_REGISTRY["filled-triangle"];
+  if (kind === undefined) return ARROWHEAD_REGISTRY.arrow;
   return isArrowheadKind(kind) ? ARROWHEAD_REGISTRY[kind] : undefined;
 }
 

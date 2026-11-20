@@ -77,7 +77,7 @@ describe("checkRouteSpacing built-in geometric check", () => {
           { x: 200, y: 30 },
           { x: 400, y: 30 },
         ],
-        arrowhead: "filled-triangle",
+        arrowhead: "arrow",
       },
       {
         id: "r2",
@@ -87,7 +87,7 @@ describe("checkRouteSpacing built-in geometric check", () => {
           { x: 200, y: 70 },
           { x: 400, y: 70 },
         ],
-        arrowhead: "filled-triangle",
+        arrowhead: "arrow",
       },
     ];
     const report = checkRouteSpacing({ rects, routes, routeSpacing: 24, borderClearance: 15 });

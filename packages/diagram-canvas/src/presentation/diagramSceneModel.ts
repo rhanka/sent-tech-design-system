@@ -48,6 +48,7 @@ import {
   placeEdgeLabels,
   rectUnion,
   relationRoute,
+  scaleEdgeLabelMeasurer,
   sceneNodes,
   sceneEdges,
   type CameraFit,
@@ -432,7 +433,7 @@ export interface SceneEdgeModel {
   readonly markers?: string;
   /** Closed dash-pattern word from the view/presentation (`solid | dashed | dotted`). */
   readonly strokeStyle?: StrokeStyle;
-  /** Closed arrowhead word from the view/presentation (`arrow | filled-triangle | open-triangle | none`). */
+  /** Closed arrowhead word from the view/presentation (`arrow | none`). */
   readonly arrowhead?: ArrowheadKind;
   /** Closed link-emphasis word from the view/presentation (`default | emphasis`). */
   readonly emphasis?: LinkEmphasis;
@@ -678,7 +679,7 @@ export function resolveScene(
       ...(flow === undefined ? {} : { flow }),
       ...(bundle === undefined ? {} : { bundle }),
       ...(resolvedStrokeStyle === undefined || resolvedStrokeStyle === "solid" ? {} : { strokeStyle: resolvedStrokeStyle }),
-      ...(resolvedArrowhead === undefined || resolvedArrowhead === "filled-triangle" ? {} : { arrowhead: resolvedArrowhead }),
+      ...(resolvedArrowhead === undefined || resolvedArrowhead === "arrow" ? {} : { arrowhead: resolvedArrowhead }),
       ...(resolvedEmphasis !== "emphasis" ? {} : { emphasis: resolvedEmphasis }),
     });
     if (result.labelBoxes !== undefined && result.labelBoxes[id] === undefined) continue;
@@ -686,7 +687,8 @@ export function resolveScene(
       ? ['fromRole','toRole'].map(role => erdText(semantic.attributes,role)).filter(Boolean).join(' / ') || edgeLabelOf(input.document, occurrence.relation)
       : edgeLabelOf(input.document, occurrence.relation));
     if (label === undefined) continue;
-    const layout = measuredLabels.get(id) ?? input.measureLines({
+    const edgeMeasureLines = scaleEdgeLabelMeasurer(input.measureLines, input.metrics?.edgeLabelSize, DEFAULT_EDGE_LABEL_SIZE);
+    const layout = measuredLabels.get(id) ?? edgeMeasureLines({
       text: label,
       role: "edge-label",
       availableWidth: EDGE_LABEL_ALLOCATION,
@@ -710,11 +712,12 @@ export function resolveScene(
   // A label is the label of a drawn connector: a placement whose relation has
   // no route in this scene is dropped, so a label never paints without a line.
   const labelled = new Set(entries.map((entry) => entry.id));
+  const bundleMeasureLines = scaleEdgeLabelMeasurer(input.measureLines, input.metrics?.edgeLabelSize, DEFAULT_EDGE_LABEL_SIZE);
   for (const [id, placement] of placements) {
     if (placement === undefined || !labelled.has(id)) continue;
     labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box, ...(erd ? { erd: true } : {}), ...("leader" in placement ? { leader: placement.leader as readonly Vec2[] } : {}),
       ...(result.edgeBundles?.[id] === undefined ? {} : { title: result.edgeBundles[id]!.title }),
-      ...(result.edgeBundles?.[id]?.relations === undefined ? {} : { bundle: result.edgeBundles[id]!.chip ?? measureBundleLabel(result.edgeBundles[id]!.relations!, input.measureLines, input.metrics?.bundleLabelMaxWidth) }) });
+      ...(result.edgeBundles?.[id]?.relations === undefined ? {} : { bundle: result.edgeBundles[id]!.chip ?? measureBundleLabel(result.edgeBundles[id]!.relations!, bundleMeasureLines, input.metrics?.bundleLabelMaxWidth) }) });
   }
 
   const badges: SceneBadgeModel[] = [];
@@ -979,4 +982,5 @@ export function sameRects(left: ReadonlyMap<string, Rect>, right: ReadonlyMap<st
   return true;
 }
 
+export { scaleEdgeLabelMeasurer };
 export type { DiagramSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera } from "./diagramSceneTypes.js";

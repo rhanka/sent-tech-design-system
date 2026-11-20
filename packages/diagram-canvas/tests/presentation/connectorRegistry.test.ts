@@ -61,10 +61,10 @@ function connectorFixture() {
       "occurrence:e.ext": { form: "card", text: { title: "External", body: "Peer" }, anatomy: "v2" },
     },
     relations: {
-      "relation:solid-default": { strokeStyle: "solid", arrowhead: "filled-triangle", emphasis: "default" },
-      "relation:dotted-open": { strokeStyle: "dotted", arrowhead: "open-triangle" },
+      "relation:solid-default": { strokeStyle: "solid", arrowhead: "arrow", emphasis: "default" },
+      "relation:dotted-open": { strokeStyle: "dotted", arrowhead: "arrow" },
       "relation:emphasis-none": { arrowhead: "none", emphasis: "emphasis" },
-      "relation:proposed-cross": { strokeStyle: "dashed", arrowhead: "open-triangle", emphasis: "emphasis" },
+      "relation:proposed-cross": { strokeStyle: "dashed", arrowhead: "arrow", emphasis: "emphasis" },
     },
     legends: {},
     categoryTokens: [],
@@ -80,24 +80,18 @@ describe("connectorStyle helpers (DE-2 step 3)", () => {
     expect(connectorDashArray("dashed")).toBe("8 6");
     expect(connectorDashArray("dotted")).toBe("2 5");
 
-    expect(connectorMarkerKind(undefined)).toBe("filled-triangle");
-    expect(connectorMarkerKind("arrow")).toBe("filled-triangle");
-    expect(connectorMarkerKind("filled-triangle")).toBe("filled-triangle");
-    expect(connectorMarkerKind("open-triangle")).toBe("open-triangle");
+    expect(connectorMarkerKind(undefined)).toBe("arrow");
+    expect(connectorMarkerKind("arrow")).toBe("arrow");
     expect(connectorMarkerKind("none")).toBe("none");
 
     const ids = connectorMarkerIds("scene-arrow");
     expect(ids).toEqual({
       filled: "scene-arrow",
-      open: "scene-arrow-open",
       filledEmphasis: "scene-arrow-emphasis",
-      openEmphasis: "scene-arrow-open-emphasis",
     });
     expect(connectorMarkerRef({}, ids)).toBe("url(#scene-arrow)");
     expect(connectorMarkerRef({ arrowhead: "arrow" }, ids)).toBe("url(#scene-arrow)");
-    expect(connectorMarkerRef({ arrowhead: "open-triangle" }, ids)).toBe("url(#scene-arrow-open)");
     expect(connectorMarkerRef({ emphasis: "emphasis" }, ids)).toBe("url(#scene-arrow-emphasis)");
-    expect(connectorMarkerRef({ arrowhead: "open-triangle", emphasis: "emphasis" }, ids)).toBe("url(#scene-arrow-open-emphasis)");
     expect(connectorMarkerRef({ arrowhead: "none", emphasis: "emphasis" }, ids)).toBeUndefined();
     expect(connectorMarkerRef({ directed: true }, ids)).toBeUndefined();
     expect(connectorMarkerRef({ markers: "<path/>" }, ids)).toBeUndefined();
@@ -105,10 +99,10 @@ describe("connectorStyle helpers (DE-2 step 3)", () => {
     // Default scenes emit zero extra markers.
     expect(extraConnectorMarkers([{}, { arrowhead: "arrow" }, { arrowhead: "none" }], ids)).toEqual([]);
     const extras = extraConnectorMarkers(
-      [{ arrowhead: "open-triangle" }, { emphasis: "emphasis" }, { arrowhead: "open-triangle", emphasis: "emphasis" }],
+      [{ arrowhead: "arrow", emphasis: "emphasis" }, { arrowhead: "none", emphasis: "emphasis" }],
       ids,
     );
-    expect(extras.map((m) => m.id)).toEqual(["scene-arrow-open", "scene-arrow-emphasis", "scene-arrow-open-emphasis"]);
+    expect(extras.map((m) => m.id)).toEqual(["scene-arrow-emphasis"]);
   });
 });
 
@@ -128,10 +122,10 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     expect(validateView(result.view, document, { registry: m3ProfileRegistry, bindings: shippedExecutorBindings })).toEqual([]);
     expect(scene.edges).toHaveLength(4);
 
-    // Default filled-triangle marker stays FIRST in <defs>; extra markers follow.
+    // Default arrow marker stays FIRST in <defs>; emphasis marker follows.
     const markerIdsInOrder = [...svg.matchAll(/<marker id="([^"]+)"/g)].map((m) => m[1]);
     expect(markerIdsInOrder[0]).toBe("scene-arrow");
-    expect(markerIdsInOrder).toEqual(["scene-arrow", "scene-arrow-open", "scene-arrow-open-emphasis"]);
+    expect(markerIdsInOrder).toEqual(["scene-arrow", "scene-arrow-emphasis"]);
 
     const edgeTag = (id: string) => {
       const match = svg.match(new RegExp(`<path data-scene-edge="${id}"[^>]*/>`));
@@ -139,19 +133,18 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
       return match![0];
     };
 
-    // solid + filled-triangle + default
+    // solid + arrow + default
     const solidTag = edgeTag("occurrence:r.solid-default");
     expect(solidTag).not.toContain("stroke-dasharray");
     expect(solidTag).toContain('stroke="var(--st-component-diagramScene-edgeStroke, #64748b)"');
     expect(solidTag).toContain('stroke-width="2.5"');
     expect(solidTag).toContain('marker-end="url(#scene-arrow)"');
 
-    // dotted + open-triangle
+    // dotted + arrow
     const dottedTag = edgeTag("occurrence:r.dotted-open");
     expect(dottedTag).toContain('stroke-dasharray="2 5"');
     expect(dottedTag).toContain('data-edge-stroke="dotted"');
-    expect(dottedTag).toContain('data-edge-arrowhead="open-triangle"');
-    expect(dottedTag).toContain('marker-end="url(#scene-arrow-open)"');
+    expect(dottedTag).toContain('marker-end="url(#scene-arrow)"');
 
     // emphasis + none: emphasis changes colour + width ONLY (NOT dash!), arrowhead none omits marker-end
     const emphasisTag = edgeTag("occurrence:r.emphasis-none");
@@ -162,15 +155,14 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     expect(emphasisTag).toContain('stroke="var(--st-component-diagramScene-linkEmphasisStroke, #2563eb)"');
     expect(emphasisTag).toContain('stroke-width="3.5"');
 
-    // dashed (proposed) + open-triangle + emphasis: dash and emphasis compose cleanly
+    // dashed (proposed) + arrow + emphasis: dash and emphasis compose cleanly
     const crossTag = edgeTag("occurrence:r.proposed-cross");
     expect(crossTag).toContain('stroke-dasharray="8 6"');
     expect(crossTag).toContain('data-edge-stroke="dashed"');
-    expect(crossTag).toContain('data-edge-arrowhead="open-triangle"');
     expect(crossTag).toContain('data-edge-emphasis="emphasis"');
     expect(crossTag).toContain('stroke="var(--st-component-diagramScene-linkEmphasisStroke, #2563eb)"');
     expect(crossTag).toContain('stroke-width="3.5"');
-    expect(crossTag).toContain('marker-end="url(#scene-arrow-open-emphasis)"');
+    expect(crossTag).toContain('marker-end="url(#scene-arrow-emphasis)"');
   });
 
   it("re-routes connectors with rounded elbows and preserves dash, arrowhead and emphasis across fold/unfold", () => {
@@ -188,13 +180,13 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     const edge = folded.scene.edges[0]!;
     expect(edge.occurrence).toBe("occurrence:r.proposed-cross");
     expect(edge.strokeStyle).toBe("dashed");
-    expect(edge.arrowhead).toBe("open-triangle");
+    expect(edge.arrowhead).toBeUndefined();
     expect(edge.emphasis).toBe("emphasis");
     expect(folded.svg).toContain('data-scene-edge="occurrence:r.proposed-cross"');
     expect(folded.svg).toContain('stroke-dasharray="8 6"');
     expect(folded.svg).toContain('stroke="var(--st-component-diagramScene-linkEmphasisStroke, #2563eb)"');
     expect(folded.svg).toContain('stroke-width="3.5"');
-    expect(folded.svg).toContain('marker-end="url(#scene-arrow-open-emphasis)"');
+    expect(folded.svg).toContain('marker-end="url(#scene-arrow-emphasis)"');
     expect(folded.svg).not.toContain("<polyline");
 
     // Unfolding from the same retained source restores all 4 styled connectors.
@@ -213,7 +205,6 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     expect(scene.edges).toHaveLength(4);
     expect(scene.edges.find((e) => e.occurrence === "occurrence:r.dotted-open")).toMatchObject({
       strokeStyle: "dotted",
-      arrowhead: "open-triangle",
     });
     expect(scene.edges.find((e) => e.occurrence === "occurrence:r.emphasis-none")).toMatchObject({
       arrowhead: "none",

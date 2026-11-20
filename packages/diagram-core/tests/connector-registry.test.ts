@@ -131,7 +131,7 @@ function sampleView(
 describe("DE-2 closed connector registries", () => {
   it("exposes closed, deeply frozen dash, arrowhead and emphasis registries", () => {
     expect(STROKE_STYLES).toEqual(["solid", "dashed", "dotted"]);
-    expect(ARROWHEAD_KINDS).toEqual(["arrow", "filled-triangle", "open-triangle", "none"]);
+    expect(ARROWHEAD_KINDS).toEqual(["arrow", "none"]);
     expect(LINK_EMPHASIS_KINDS).toEqual(["default", "emphasis"]);
 
     expect(Object.isFrozen(DASH_PATTERN_REGISTRY)).toBe(true);
@@ -144,16 +144,14 @@ describe("DE-2 closed connector registries", () => {
     expect(DASH_PATTERN_REGISTRY.dashed).toEqual({ style: "dashed", meaning: "proposed", dashArray: [8, 6], tokenName: "linkDashDashed" });
     expect(DASH_PATTERN_REGISTRY.dotted).toEqual({ style: "dotted", meaning: "dotted", dashArray: [2, 5], tokenName: "linkDashDotted" });
 
-    expect(ARROWHEAD_REGISTRY.arrow.canonicalKind).toBe("filled-triangle");
-    expect(ARROWHEAD_REGISTRY["filled-triangle"]).toMatchObject({ canonicalKind: "filled-triangle", shape: "triangle", fill: "stroke", outlined: false });
-    expect(ARROWHEAD_REGISTRY["open-triangle"]).toMatchObject({ canonicalKind: "open-triangle", shape: "triangle", fill: "surface", outlined: true });
+    expect(ARROWHEAD_REGISTRY.arrow).toMatchObject({ canonicalKind: "arrow", shape: "triangle", fill: "stroke", outlined: false });
     expect(ARROWHEAD_REGISTRY.none).toMatchObject({ canonicalKind: "none", shape: "none", fill: "none", outlined: false });
 
     expect(LINK_EMPHASIS_REGISTRY.default).toEqual({ emphasis: "default", strokeToken: "edgeStroke", widthToken: "linkStrokeWidth", changesDash: false });
     expect(LINK_EMPHASIS_REGISTRY.emphasis).toEqual({ emphasis: "emphasis", strokeToken: "linkEmphasisStroke", widthToken: "linkEmphasisStrokeWidth", changesDash: false });
   });
 
-  it("resolves valid registry words and rejects unknown words or raw geometry", () => {
+  it("resolves valid registry words and rejects unknown words, N2-reserved heads, or raw geometry", () => {
     expect(resolveDashPattern(undefined)).toEqual(DASH_PATTERN_REGISTRY.solid);
     expect(resolveDashPattern("dashed")).toEqual(DASH_PATTERN_REGISTRY.dashed);
     expect(resolveDashPattern("dotted")).toEqual(DASH_PATTERN_REGISTRY.dotted);
@@ -161,12 +159,15 @@ describe("DE-2 closed connector registries", () => {
     expect(resolveDashPattern("wavy")).toBeUndefined();
     expect(isStrokeStyle("2 5")).toBe(false);
 
-    expect(resolveArrowhead(undefined)).toEqual(ARROWHEAD_REGISTRY["filled-triangle"]);
+    expect(resolveArrowhead(undefined)).toEqual(ARROWHEAD_REGISTRY.arrow);
     expect(resolveArrowhead("arrow")).toEqual(ARROWHEAD_REGISTRY.arrow);
-    expect(resolveArrowhead("open-triangle")).toEqual(ARROWHEAD_REGISTRY["open-triangle"]);
     expect(resolveArrowhead("none")).toEqual(ARROWHEAD_REGISTRY.none);
+    // D-5 open: additional heads are reserved for N2 and refused in @4.
+    expect(resolveArrowhead("filled-triangle")).toBeUndefined();
+    expect(resolveArrowhead("open-triangle")).toBeUndefined();
     expect(resolveArrowhead("M0 0L10 5L0 10Z")).toBeUndefined();
     expect(resolveArrowhead("diamond")).toBeUndefined();
+    expect(isArrowheadKind("open-triangle")).toBe(false);
     expect(isArrowheadKind("M0 0L10 5L0 10Z")).toBe(false);
 
     expect(resolveLinkEmphasis(undefined)).toEqual(LINK_EMPHASIS_REGISTRY.default);
@@ -192,13 +193,13 @@ describe("DE-2 view validation and fold projection", () => {
       const doc = sampleDocument();
       const view = sampleView(doc, {
         withDiagramPresentation,
-        internal: { strokeStyle: "dotted", arrowhead: "open-triangle", emphasis: "default" },
+        internal: { strokeStyle: "dotted", arrowhead: "arrow", emphasis: "default" },
         cross: { strokeStyle: "dashed", arrowhead: "none", emphasis: "emphasis" },
       });
       expect(validateView(view, doc, options())).toEqual([]);
     });
 
-    it(`refuses raw geometry and unknown connector words (withDiagramPresentation=${withDiagramPresentation})`, () => {
+    it(`refuses raw geometry, N2-reserved arrowheads, and unknown connector words (withDiagramPresentation=${withDiagramPresentation})`, () => {
       const doc = sampleDocument();
       const view = sampleView(doc, {
         withDiagramPresentation,
@@ -213,20 +214,30 @@ describe("DE-2 view validation and fold projection", () => {
       for (const entry of diagnostics) {
         expect((entry.details as { check?: string } | undefined)?.check).toBe("presentation-shape-invalid");
       }
+
+      for (const reserved of ["filled-triangle", "open-triangle"]) {
+        const reservedView = sampleView(doc, {
+          withDiagramPresentation,
+          cross: { arrowhead: reserved },
+        });
+        expect(validateView(reservedView, doc, options()).map((d) => d.path)).toEqual([
+          "relationOccurrences.occurrence:r.cross.arrowhead",
+        ]);
+      }
     });
   }
 
   it("preserves strokeStyle, arrowhead and emphasis byte-for-byte across fold and unfold", () => {
     const doc = sampleDocument();
     const source = sampleView(doc, {
-      internal: { strokeStyle: "dotted", arrowhead: "open-triangle", emphasis: "emphasis" },
+      internal: { strokeStyle: "dotted", arrowhead: "arrow", emphasis: "emphasis" },
       cross: { strokeStyle: "dashed", arrowhead: "none", emphasis: "emphasis" },
     });
     const folded = projectView(doc, source, [occurrenceRef("zone")]);
     expect(validateView(folded, doc, options())).toEqual([]);
     expect(folded.relationOccurrences["occurrence:r.internal"]).toMatchObject({
       strokeStyle: "dotted",
-      arrowhead: "open-triangle",
+      arrowhead: "arrow",
       emphasis: "emphasis",
     });
     expect(folded.relationOccurrences["occurrence:r.cross"]).toMatchObject({
@@ -254,19 +265,38 @@ describe("DE-2 view validation and fold projection", () => {
     expect(text).not.toContain("emphasis");
   });
 
-  it("keeps frozen diagram-presentation@1 refusing dotted while @2 admits it", () => {
+  it("keeps frozen diagram-presentation@1 refusing dotted, arrowhead, emphasis, and summary dotted while @2 admits them", () => {
     const doc = sampleDocument();
-    const v2 = sampleView(doc, { withDiagramPresentation: true, internal: { strokeStyle: "dotted" } });
-    expect(validateView(v2, doc, options())).toEqual([]);
-    const v1 = {
+    const v2 = sampleView(doc, {
+      withDiagramPresentation: true,
+      internal: { strokeStyle: "dotted", arrowhead: "none", emphasis: "emphasis" },
+    });
+    const v2WithSummary = {
       ...v2,
-      presentation: {
-        ...v2.presentation,
-        diagram: { ...v2.presentation.diagram!, contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN } },
+      summaryLabels: {
+        "sum:zone": {
+          id: "sum:zone",
+          sourceOccurrence: occurrenceRef("a"),
+          targetOccurrence: occurrenceRef("b"),
+          label: "Summary",
+          relationIds: [doc.relations["relation:internal" as never]!.id],
+          strokeStyle: "dotted" as const,
+        },
       },
     };
-    expect(validateView(v1, doc, options()).map((d) => d.path)).toEqual([
+    expect(validateView(v2WithSummary, doc, options())).toEqual([]);
+    const v1 = {
+      ...v2WithSummary,
+      presentation: {
+        ...v2WithSummary.presentation,
+        diagram: { ...v2WithSummary.presentation.diagram!, contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN } },
+      },
+    };
+    expect(validateView(v1, doc, options()).map((d) => d.path).sort()).toEqual([
+      "relationOccurrences.occurrence:r.internal.arrowhead",
+      "relationOccurrences.occurrence:r.internal.emphasis",
       "relationOccurrences.occurrence:r.internal.strokeStyle",
+      "summaryLabels.sum:zone.strokeStyle",
     ]);
   });
 });

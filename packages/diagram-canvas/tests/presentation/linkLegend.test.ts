@@ -60,10 +60,10 @@ function multiStyleFixture() {
       "occurrence:e.ext": { form: "card", text: { title: "External", body: "Peer" }, anatomy: "v2" },
     },
     relations: {
-      "relation:r-dotted": { strokeStyle: "dotted", arrowhead: "open-triangle" },
+      "relation:r-dotted": { strokeStyle: "dotted", arrowhead: "arrow" },
       "relation:r-emphasis": { arrowhead: "none", emphasis: "emphasis" },
       "relation:r-default": { strokeStyle: "solid", arrowhead: "arrow" },
-      "relation:r-proposed": { strokeStyle: "dashed", arrowhead: "filled-triangle" },
+      "relation:r-proposed": { strokeStyle: "dashed", arrowhead: "arrow" },
     },
     legends: {},
     categoryTokens: [],
@@ -75,7 +75,7 @@ function multiStyleFixture() {
 describe("automatic link-style legend (DE-2 step 4)", () => {
   it("omits the legend for zero edges or a single distinct link style", () => {
     expect(collectLinkLegendStyles([])).toEqual([]);
-    expect(collectLinkLegendStyles([{}, { strokeStyle: "solid", arrowhead: "arrow" }, { arrowhead: "filled-triangle", emphasis: "default" }])).toEqual([]);
+    expect(collectLinkLegendStyles([{}, { strokeStyle: "solid", arrowhead: "arrow" }, { arrowhead: "arrow", emphasis: "default" }])).toEqual([]);
     expect(collectLinkLegendStyles([{ strokeStyle: "dashed" }, { strokeStyle: "dashed", arrowhead: "arrow" }])).toEqual([]);
 
     // ERD and flow edges are not counted as link-style legend entries.
@@ -95,7 +95,7 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
 
   it("orders distinct styles in fixed canonical order regardless of edge order", () => {
     const forward = collectLinkLegendStyles([
-      { strokeStyle: "dotted", arrowhead: "open-triangle" },
+      { strokeStyle: "dotted", arrowhead: "arrow" },
       { strokeStyle: "dashed", emphasis: "emphasis" },
       { strokeStyle: "solid", arrowhead: "none", emphasis: "emphasis" },
       { strokeStyle: "solid", arrowhead: "arrow" },
@@ -106,24 +106,24 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
       { strokeStyle: "solid", arrowhead: "arrow" },
       { strokeStyle: "solid", arrowhead: "none", emphasis: "emphasis" },
       { strokeStyle: "dashed", emphasis: "emphasis" },
-      { strokeStyle: "dotted", arrowhead: "open-triangle" },
+      { strokeStyle: "dotted", arrowhead: "arrow" },
     ]);
     expect(forward.map((e) => e.key)).toEqual([
-      "solid:filled-triangle:default",
+      "solid:arrow:default",
       "solid:none:emphasis",
-      "dashed:filled-triangle:default",
-      "dashed:filled-triangle:emphasis",
-      "dotted:open-triangle:default",
+      "dashed:arrow:default",
+      "dashed:arrow:emphasis",
+      "dotted:arrow:default",
     ]);
     expect(reversed.map((e) => e.key)).toEqual(forward.map((e) => e.key));
     expect(defaultLinkStyleLabel(forward[0]!)).toBe("Link");
     expect(defaultLinkStyleLabel(forward[2]!)).toBe("Proposed (dashed)");
-    expect(defaultLinkStyleLabel(forward[4]!)).toBe("Dotted · Open arrow");
+    expect(defaultLinkStyleLabel(forward[4]!)).toBe("Dotted");
 
     const swatch = linkLegendSwatchGeometry(forward[4]!);
     expect(swatch.dashArray).toBe("2 5");
     expect(swatch.arrowPath).toBeTruthy();
-    expect(swatch.arrowStroke).toBeTruthy();
+    expect(swatch.arrowStroke).toBeUndefined();
     const undirected = linkLegendSwatchGeometry(forward[1]!);
     expect(undirected.arrowPath).toBeUndefined();
     expect(undirected.strokeWidth).toBe(3.5);
@@ -152,10 +152,10 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
     const legend = withLegend.linkLegend!;
     expect(legend.anchor).toBe("right");
     expect(legend.entries.map((e) => e.key)).toEqual([
-      "solid:filled-triangle:default",
+      "solid:arrow:default",
       "solid:none:emphasis",
-      "dashed:filled-triangle:default",
-      "dotted:open-triangle:default",
+      "dashed:arrow:default",
+      "dotted:arrow:default",
     ]);
 
     // Anchored on the right edge strip strictly outside every functional zone, card, edge and label.
@@ -197,7 +197,7 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
 
   it("renders the legend group in renderSceneSvg and supports custom labels and bottom anchor", () => {
     const { document, presentation } = multiStyleFixture();
-    const customKey = linkStyleKey({ strokeStyle: "dashed", arrowhead: "filled-triangle", emphasis: "default" });
+    const customKey = linkStyleKey({ strokeStyle: "dashed", arrowhead: "arrow", emphasis: "default" });
     const { svg, scene } = renderSceneSvg({
       document,
       presentation,
@@ -214,7 +214,7 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
     expect(svg).toContain('data-legend-anchor="right"');
     expect(svg).toContain(">Connectors</text>");
     expect(svg).toContain(">Planned link</text>");
-    expect(svg).toContain('data-legend-style="dotted:open-triangle:default"');
+    expect(svg).toContain('data-legend-style="dotted:arrow:default"');
     expect(svg).toContain('stroke-dasharray="2 5"');
 
     // Bottom anchor places legend below functional bounds.
@@ -320,5 +320,35 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
       ["dashed", expect.any(String), "default"],
       ["dotted", expect.any(String), "default"],
     ]);
+  });
+
+  it("scales measured legend box width, headerHeight, and rowHeight when edgeLabelSize overrides the 18px default", () => {
+    const { document, presentation } = multiStyleFixture();
+    const baseInput = {
+      document,
+      presentation,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [] as never[],
+    };
+    const defaultLayout = layoutScene(baseInput);
+    expect(defaultLayout.status).toBe("laid-out");
+    if (defaultLayout.status !== "laid-out") return;
+    const defaultScene = resolveScene(defaultLayout, baseInput);
+
+    const largeInput = { ...baseInput, metrics: { edgeLabelSize: 27 } };
+    const largeLayout = layoutScene(largeInput);
+    expect(largeLayout.status).toBe("laid-out");
+    if (largeLayout.status !== "laid-out") return;
+    const largeScene = resolveScene(largeLayout, largeInput);
+
+    expect(defaultScene.linkLegend).toBeDefined();
+    expect(largeScene.linkLegend).toBeDefined();
+    expect(largeScene.linkLegend!.fontSize).toBe(27);
+    expect(largeScene.linkLegend!.rect.width).toBeGreaterThan(defaultScene.linkLegend!.rect.width);
+    expect(largeScene.linkLegend!.rect.height).toBeGreaterThan(defaultScene.linkLegend!.rect.height);
+    expect(largeScene.linkLegend!.headerHeight).toBeGreaterThan(defaultScene.linkLegend!.headerHeight);
+    expect(largeScene.linkLegend!.entries[0]!.rowHeight).toBeGreaterThan(defaultScene.linkLegend!.entries[0]!.rowHeight);
   });
 });

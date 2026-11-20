@@ -28,10 +28,12 @@ function normalizeViewForPinnedAdapter(
   view: Parameters<typeof validatePinnedPresentation>[1],
 ): { readonly view: Parameters<typeof validatePinnedPresentation>[1]; readonly connectorDiagnostics: readonly Diagnostic[] } {
   const diagram = view.presentation.diagram as unknown;
+  const hasDiagram = isRecord(diagram);
   const isV2 =
-    isRecord(diagram) &&
+    hasDiagram &&
     isRecord(diagram["contractPin"]) &&
     isPresentationContractV2Pin(diagram["contractPin"] as unknown as PresentationPin);
+  const isFrozenV1 = hasDiagram && !isV2;
 
   const connectorDiagnostics: Diagnostic[] = [];
   let relationOccurrencesChanged = false;
@@ -39,11 +41,11 @@ function normalizeViewForPinnedAdapter(
   for (const key of Object.keys(view.relationOccurrences).sort()) {
     const occurrence = view.relationOccurrences[key] as unknown as Record<string, unknown>;
     const arrowhead = occurrence["arrowhead"];
-    if (arrowhead !== undefined && !isArrowheadKind(arrowhead)) {
+    if (arrowhead !== undefined && (isFrozenV1 || !isArrowheadKind(arrowhead))) {
       connectorDiagnostics.push(shapeInvalid(`relationOccurrences.${key}.arrowhead`));
     }
     const emphasis = occurrence["emphasis"];
-    if (emphasis !== undefined && !isLinkEmphasis(emphasis)) {
+    if (emphasis !== undefined && (isFrozenV1 || !isLinkEmphasis(emphasis))) {
       connectorDiagnostics.push(shapeInvalid(`relationOccurrences.${key}.emphasis`));
     }
     // Frozen diagram-presentation@1 keeps its exact @1 strokeStyle check
@@ -53,6 +55,14 @@ function normalizeViewForPinnedAdapter(
       relationOccurrencesChanged = true;
     } else {
       normalizedRelations[key] = occurrence;
+    }
+  }
+  if (isFrozenV1 && isRecord(view.summaryLabels)) {
+    for (const id of Object.keys(view.summaryLabels).sort()) {
+      const summary = (view.summaryLabels as Record<string, unknown>)[id];
+      if (isRecord(summary) && summary["strokeStyle"] === "dotted") {
+        connectorDiagnostics.push(shapeInvalid(`summaryLabels.${id}.strokeStyle`));
+      }
     }
   }
   let nextView = relationOccurrencesChanged

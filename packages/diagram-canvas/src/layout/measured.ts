@@ -3,7 +3,7 @@ import { validateFlows } from "@sentropic/diagram-core";
 import { relationVerdict } from "../visibility.js";
 import { DEFAULT_FLOW_TOKENS, planFlows, placeFlowMarks } from "./flows.js";
 import { layoutErd } from "./erd.js";
-import { DEFAULT_MIN_READABLE_SCALE } from "../camera.js";
+import { DEFAULT_EDGE_LABEL_SIZE, DEFAULT_MIN_READABLE_SCALE } from "../camera.js";
 /**
  * Measured diagram layout (M3 §4.6–§4.8, layout half of §5.6; placement by
  * SPEC_EVOL_DC2A §3–§4).
@@ -92,6 +92,7 @@ import {
   innerWidthOf,
   LEGEND_KEY_HEIGHT,
   measureHeader,
+  scaleEdgeLabelMeasurer,
   SWATCH_ALLOCATION,
   TOGGLE_ALLOCATION,
   UNWRAPPED_PROBE_WIDTH,
@@ -908,6 +909,8 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     })),
   };
   // Edge labels, measured once: keyed by the projected relation occurrence id.
+  // Scale measured boxes when `metrics.edgeLabelSize` overrides the default 18 px token.
+  const edgeLabelMeasure = scaleEdgeLabelMeasurer(measure, metrics.edgeLabelSize, DEFAULT_EDGE_LABEL_SIZE);
   const labelSizes = new Map<RelationRef, { width: number; height: number }>();
   const edgeLayouts = new Map<RelationRef, LineLayout>();
   for (const edge of drawnEdges) {
@@ -915,8 +918,8 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     const label = edgeBundles[edge.occurrence]?.label ?? edgeLabelOf(document, edge.relation);
     if (label === undefined) continue;
     const bundle = edgeBundles[edge.occurrence];
-    const chip = bundle?.relations === undefined ? undefined : measureBundleLabel(bundle.relations, measure, metrics.bundleLabelMaxWidth, bundle.members.length);
-    const layout = chip === undefined ? measure({
+    const chip = bundle?.relations === undefined ? undefined : measureBundleLabel(bundle.relations, edgeLabelMeasure, metrics.bundleLabelMaxWidth, bundle.members.length);
+    const layout = chip === undefined ? edgeLabelMeasure({
       text: label,
       role: "edge-label",
       availableWidth: EDGE_LABEL_WIDTH,

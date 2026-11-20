@@ -211,3 +211,149 @@ export function connectorFindings({ paths, labels, nodes, occluders, relations, 
   }
   return findings;
 }
+
+const CANONICAL_STROKE_ORDER = ['solid', 'dashed', 'dotted'];
+const CANONICAL_EMPHASIS_ORDER = ['default', 'emphasis'];
+const CANONICAL_ARROWHEAD_ORDER = ['arrow', 'none'];
+
+function canonicalStyleRank(key) {
+  const [stroke, arrowhead, emphasis] = String(key).split(':');
+  const s = CANONICAL_STROKE_ORDER.indexOf(stroke);
+  const a = CANONICAL_ARROWHEAD_ORDER.indexOf(arrowhead);
+  const e = CANONICAL_EMPHASIS_ORDER.indexOf(emphasis);
+  if (s < 0 || a < 0 || e < 0) return -1;
+  return s * 4 + e * 2 + a;
+}
+
+/**
+ * DE-2 rounded-elbow gate: inspects each connector's raw SVG `d` string
+ * (`M`, `L`, `Q` in world coordinates) and verifies that every `Q` corner
+ * radius is symmetric, `<= maxRadius` (12), and `<= half shorter adjacent leg`.
+ */
+export function roundedElbowFindings({ paths, maxRadius = 12, tolerance = 0.5 }) {
+  const findings = [];
+  for (const path of paths) {
+    if (typeof path.d !== 'string' || path.d.trim().length === 0) {
+      findings.push(`connector ${path.id} missing SVG path d attribute`);
+      continue;
+    }
+    const tokens = path.d.match(/[MLQ]|[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?/gi) ?? [];
+    const commands = [];
+    let i = 0;
+    let cmd = '';
+    while (i < tokens.length) {
+      const tok = tokens[i];
+      if (/^[MLQ]$/i.test(tok)) { cmd = tok.toUpperCase(); i += 1; continue; }
+      if (cmd === 'M' || cmd === 'L') {
+        commands.push({ type: cmd, x: Number(tokens[i]), y: Number(tokens[i + 1]) });
+        i += 2;
+        if (cmd === 'M') cmd = 'L';
+      } else if (cmd === 'Q') {
+        commands.push({ type: 'Q', cx: Number(tokens[i]), cy: Number(tokens[i + 1]), ex: Number(tokens[i + 2]), ey: Number(tokens[i + 3]) });
+        i += 4;
+      } else break;
+    }
+    const verts = [];
+    const bends = [];
+    let curr = null;
+    for (let idx = 0; idx < commands.length; idx++) {
+      const step = commands[idx];
+      const next = commands[idx + 1];
+      if (step.type === 'M') {
+        curr = { x: step.x, y: step.y };
+        verts.push(curr);
+      } else if (step.type === 'L') {
+        curr = { x: step.x, y: step.y };
+        if (next?.type !== 'Q') verts.push(curr);
+      } else if (step.type === 'Q') {
+        const ctrl = { x: step.cx, y: step.cy };
+        const end = { x: step.ex, y: step.ey };
+        if (curr) bends.push({ start: curr, ctrl, end, cornerIndex: verts.length });
+        verts.push(ctrl);
+        curr = end;
+      }
+    }
+    for (const bend of bends) {
+      const prev = verts[bend.cornerIndex - 1];
+      const corner = verts[bend.cornerIndex];
+      const next = verts[bend.cornerIndex + 1];
+      if (!prev || !corner || !next) continue;
+      const rIn = lengthOf(bend.start, bend.ctrl);
+      const rOut = lengthOf(bend.ctrl, bend.end);
+      const inLen = lengthOf(prev, corner);
+      const outLen = lengthOf(corner, next);
+      const cap = Math.min(maxRadius, inLen / 2, outLen / 2);
+      if (Math.abs(rIn - rOut) > tolerance) {
+        findings.push(`connector ${path.id} asymmetric elbow radius: ${rIn} vs ${rOut}`);
+      }
+      if (rIn > maxRadius + tolerance || rOut > maxRadius + tolerance) {
+        findings.push(`connector ${path.id} elbow radius ${Math.max(rIn, rOut)} > ${maxRadius}`);
+      }
+      if (rIn > cap + tolerance || rOut > cap + tolerance) {
+        findings.push(`connector ${path.id} elbow radius ${Math.max(rIn, rOut)} > half-leg cap ${cap}`);
+      }
+    }
+  }
+  return findings;
+}
+
+/**
+ * DE-2 link-width gate: verifies that ordinary resting links paint at
+ * `defaultWidth` (2.5 px) and emphasized links paint at `emphasisWidth` (3.5 px).
+ */
+export function linkStrokeWidthFindings({ paths, defaultWidth = 2.5, emphasisWidth = 3.5, tolerance = 0.05 }) {
+  const findings = [];
+  for (const path of paths) {
+    if (path.flow || path.erd) continue;
+    const expected = path.emphasis === 'emphasis' ? emphasisWidth : defaultWidth;
+    if (!Number.isFinite(path.strokeWidthCss) || Math.abs(path.strokeWidthCss - expected) > tolerance) {
+      findings.push(`connector ${path.id} stroke width ${path.strokeWidthCss} != ${expected}`);
+    }
+  }
+  return findings;
+}
+
+/**
+ * DE-2 legend gate: verifies canonical style order, expected styles, right
+ * anchor outside functional boxes, and omission when fewer than two styles
+ * are visible (e.g. after fold).
+ */
+export function legendFindings({ legend, nodes, expectedAnchor = 'right', expectedStyles, tolerance = 0.5 }) {
+  const findings = [];
+  if (expectedStyles !== undefined && expectedStyles.length < 2) {
+    if (legend !== null) findings.push(`legend must be omitted for ${expectedStyles.length} visible style(s)`);
+    return findings;
+  }
+  if (legend === null) {
+    findings.push('legend missing for multi-style scene');
+    return findings;
+  }
+  if (legend.anchor !== expectedAnchor) {
+    findings.push(`legend anchor ${legend.anchor} != ${expectedAnchor}`);
+  }
+  if (!Array.isArray(legend.styles) || legend.styles.length < 2) {
+    findings.push(`legend must list at least two styles, got ${legend.styles?.length ?? 0}`);
+  } else {
+    let prevRank = -1;
+    for (const style of legend.styles) {
+      const rank = canonicalStyleRank(style);
+      if (rank < 0) findings.push(`legend style ${style} is outside closed @4 registry`);
+      else if (rank <= prevRank) findings.push(`legend style ${style} out of canonical order`);
+      prevRank = rank;
+    }
+    if (expectedStyles !== undefined && JSON.stringify(legend.styles) !== JSON.stringify(expectedStyles)) {
+      findings.push(`legend styles [${legend.styles}] != expected [${expectedStyles}]`);
+    }
+  }
+  let maxRight = -Infinity;
+  for (const node of nodes) {
+    if (node.right > maxRight) maxRight = node.right;
+    const overlaps = legend.left < node.right - tolerance && legend.right > node.left + tolerance
+      && legend.top < node.bottom - tolerance && legend.bottom > node.top + tolerance;
+    if (overlaps) findings.push(`legend overlaps box ${node.id}`);
+  }
+  if (expectedAnchor === 'right' && nodes.length > 0 && legend.left < maxRight - tolerance) {
+    findings.push(`right-anchored legend left ${legend.left} < functional right ${maxRight}`);
+  }
+  return findings;
+}

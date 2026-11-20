@@ -80,24 +80,24 @@ for (const host of ["base", "numbered-flow"] as const) {
       const presentation = {
         ...fixture.presentation,
         relations: {
-          [r0!]: { strokeStyle: "dotted" as const, arrowhead: "open-triangle" as const },
+          [r0!]: { strokeStyle: "dotted" as const, arrowhead: "arrow" as const },
           [r1!]: { arrowhead: "none" as const, emphasis: "emphasis" as const },
           [r2!]: { strokeStyle: "solid" as const, arrowhead: "arrow" as const },
-          [crossEdge]: { strokeStyle: "dashed" as const, arrowhead: "open-triangle" as const, emphasis: "emphasis" as const },
+          [crossEdge]: { strokeStyle: "dashed" as const, arrowhead: "arrow" as const, emphasis: "emphasis" as const },
         },
       };
       const view = render(hostProps({ ...propsOf(fixture), presentation } as DiagramSceneFigureProps));
       await tick();
 
       const markers = [...view.container.querySelectorAll("defs marker")];
-      expect(markers.length).toBeGreaterThanOrEqual(3);
+      expect(markers).toHaveLength(2);
       expect(markers[0]!.id).toMatch(/^diagram-arrow-/);
       expect(markers[0]!.hasAttribute("data-arrowhead-kind")).toBe(false);
 
       const edgeEl = (occ: string) => view.container.querySelector(`path[data-scene-edge="${occ}"]`)!;
       expect(edgeEl(r0!).getAttribute("stroke-dasharray")).toBe("2 5");
       expect(edgeEl(r0!).getAttribute("data-edge-stroke")).toBe("dotted");
-      expect(edgeEl(r0!).getAttribute("marker-end")).toMatch(/-open\)$/);
+      expect(edgeEl(r0!).getAttribute("marker-end")).toMatch(/^url\(#diagram-arrow-[^)]+\)$/);
 
       expect(edgeEl(r1!).getAttribute("stroke-dasharray")).toBeNull();
       expect(edgeEl(r1!).getAttribute("marker-end")).toBeNull();
@@ -105,16 +105,16 @@ for (const host of ["base", "numbered-flow"] as const) {
 
       expect(edgeEl(crossEdge).getAttribute("stroke-dasharray")).toBe("8 6");
       expect(edgeEl(crossEdge).getAttribute("data-edge-emphasis")).toBe("emphasis");
-      expect(edgeEl(crossEdge).getAttribute("marker-end")).toMatch(/-open-emphasis\)$/);
+      expect(edgeEl(crossEdge).getAttribute("marker-end")).toMatch(/-emphasis\)$/);
 
       const legendEl = () => view.container.querySelector<HTMLElement>("[data-scene-legend]");
       expect(legendEl()).not.toBeNull();
       expect(legendEl()!.getAttribute("data-legend-anchor")).toBe("right");
       expect([...view.container.querySelectorAll("[data-legend-style]")].map((el) => el.getAttribute("data-legend-style"))).toEqual([
-        "solid:filled-triangle:default",
+        "solid:arrow:default",
         "solid:none:emphasis",
-        "dashed:open-triangle:emphasis",
-        "dotted:open-triangle:default",
+        "dashed:arrow:emphasis",
+        "dotted:arrow:default",
       ]);
 
       const [, ontology] = fixture.zones as [string, string];
@@ -126,19 +126,18 @@ for (const host of ["base", "numbered-flow"] as const) {
       const foldedEdge = edgeEl(crossEdge);
       expect(foldedEdge.getAttribute("stroke-dasharray")).toBe("8 6");
       expect(foldedEdge.getAttribute("data-edge-stroke")).toBe("dashed");
-      expect(foldedEdge.getAttribute("data-edge-arrowhead")).toBe("open-triangle");
       expect(foldedEdge.getAttribute("data-edge-emphasis")).toBe("emphasis");
-      expect(foldedEdge.getAttribute("marker-end")).toMatch(/-open-emphasis\)$/);
+      expect(foldedEdge.getAttribute("marker-end")).toMatch(/-emphasis\)$/);
 
       await fireEvent.click(toggle());
       await tick();
       expect(view.container.querySelectorAll("path[data-scene-edge]")).toHaveLength(fixture.relations.length);
       expect(legendEl()).not.toBeNull();
       expect([...view.container.querySelectorAll("[data-legend-style]")].map((el) => el.getAttribute("data-legend-style"))).toEqual([
-        "solid:filled-triangle:default",
+        "solid:arrow:default",
         "solid:none:emphasis",
-        "dashed:open-triangle:emphasis",
-        "dotted:open-triangle:default",
+        "dashed:arrow:emphasis",
+        "dotted:arrow:default",
       ]);
       expect(edgeEl(r0!).getAttribute("stroke-dasharray")).toBe("2 5");
       expect(edgeEl(r1!).getAttribute("marker-end")).toBeNull();
