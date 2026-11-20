@@ -76,6 +76,7 @@ import { measureSceneBox } from "./sceneMeasure.js";
 import { anatomyCardGeometry, anatomyZoneGeometry, ZONE_GEOMETRY, type DiagramAnatomy } from "../presentation/diagramCardModel.js";
 import { placePackedLabel } from "./labels.js";
 import {
+  CONTENT_INSET,
   DEFAULT_ALLOCATED_LINES,
   FIXED_CARD_HEIGHT,
   FIXED_CARD_WIDTH,
@@ -953,7 +954,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       };
       const entry = presentation.entities[representativeOf(id)];
       const header = entry === undefined ? measureHeader(input, measure)
-        : sceneBoxAt(representativeOf(id), inner + 2 * ZONE_GEOMETRY.headerInset, input.folded).header;
+        : sceneBoxAt(representativeOf(id), inner + 2 * CONTENT_INSET, input.folded).header;
       headers.set(id, header);
       headerInputs.set(id, input);
       headerWidths.set(id, inner);
@@ -1053,17 +1054,18 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         return size;
       }
       if (kind === "legend-key") return { width: innerWidthOf(FIXED_CARD_WIDTH), height: LEGEND_KEY_HEIGHT };
+      const zoneGeo = anatomyZoneGeometry(occurrenceAnatomy(representativeOf(id)));
       const hasIcon = presentation.entities[representativeOf(id)]?.icon !== "none";
-      const headerReserve = ZONE_GEOMETRY.headerTextInset - (hasIcon ? 0 : ZONE_GEOMETRY.iconSize + ZONE_GEOMETRY.iconTextGap);
+      const headerReserve = zoneGeo.headerTextInset - (hasIcon ? 0 : zoneGeo.iconSize + zoneGeo.iconTextGap);
       const headerDriven = unwrappedHeaderWidth(id) + headerReserve;
-      const floor = Math.max(anatomyZoneGeometry(occurrenceAnatomy(representativeOf(id))).collapsedWidth, headerDriven);
+      const floor = Math.max(zoneGeo.collapsedWidth, headerDriven);
       const ordered = orderedChildrenOf(id);
       const headerHeight = headerHeightOf(id, floor);
       if (kind === "legend-expanded") {
         // A legend stays a single-column list of keys (DLR-341): exempt from packing.
         outerWidths.set(id, floor);
         const keys = ordered.length * LEGEND_KEY_HEIGHT + Math.max(0, ordered.length - 1) * gaps.cardGapY;
-        const size = { width: floor, height: ZONE_GEOMETRY.headerInset + headerHeight + contentInset + keys + contentInset };
+        const size = { width: floor, height: zoneGeo.headerInset + headerHeight + contentInset + keys + contentInset };
         packedSizes.set(id, size);
         return size;
       }
@@ -1072,7 +1074,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const level = sizeRun(
         run,
         2 * contentInset,
-        ZONE_GEOMETRY.headerInset + headerHeight + contentInset + contentInset,
+        zoneGeo.headerInset + headerHeight + contentInset + contentInset,
       );
       // BF-6: reserve measured U-channel headroom for labelled edges on one
       // shelf, including wrapped labels and parallel channels. This is
@@ -1101,7 +1103,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       outerWidths.set(id, outer);
       const size = {
         width: outer,
-        height: ZONE_GEOMETRY.headerInset + headerHeight + contentInset + levelHeight + contentInset
+        height: zoneGeo.headerInset + headerHeight + contentInset + levelHeight + contentInset
           + sceneBoxAt(representativeOf(id), outer, false).footerReserve,
       };
       packedSizes.set(id, size);
@@ -1191,17 +1193,18 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       }
       const size = packedSizes.get(id)!;
       const header = headers.get(id)!;
+      const zoneGeo = anatomyZoneGeometry(occurrenceAnatomy(representativeOf(id)));
       const inner = innerWidthOf(size.width);
       rects.set(id, { x, y, width: size.width, height: size.height });
-      const ruleClearance = (ZONE_GEOMETRY.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
-      titleBands.set(id, { x, y, width: size.width, height: ZONE_GEOMETRY.headerInset + header.height });
+      const ruleClearance = (zoneGeo.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
+      titleBands.set(id, { x, y, width: size.width, height: zoneGeo.headerInset + header.height });
       const footerReserve = sceneBoxAt(representativeOf(id), size.width, false).footerReserve;
       if (footerReserve > 0) footerBands.set(id, {
-        x, y: y + size.height - footerReserve - ZONE_GEOMETRY.borderWidth - ruleClearance,
-        width: size.width, height: footerReserve + ZONE_GEOMETRY.borderWidth + ruleClearance,
+        x, y: y + size.height - footerReserve - zoneGeo.borderWidth - ruleClearance,
+        width: size.width, height: footerReserve + zoneGeo.borderWidth + ruleClearance,
       });
       const contentX = x + contentInset;
-      const contentY = y + ZONE_GEOMETRY.headerInset + header.height + contentInset;
+      const contentY = y + zoneGeo.headerInset + header.height + contentInset;
       if (kind === "legend-expanded") {
         legendInner.set(id, inner);
         orderedChildrenOf(id).forEach((key, index) => {

@@ -1231,6 +1231,12 @@ export const ZONE_GEOMETRY_V2 = {
   headerInset: CARD_GEOMETRY_V2.headerInset,
   iconSize: CARD_GEOMETRY_V2.iconSize,
   iconTextGap: CARD_GEOMETRY_V2.iconTextGap,
+  /**
+   * Expanded header text inset for v2: `12 + 52 + 4 + 86 = 154` so the
+   * inline-end toggle reserve stays `86 px` (matching v1) instead of
+   * growing to `110 px`.
+   */
+  headerTextInset: 154,
   collapsedWidth: CARD_GEOMETRY_V2.width,
   collapsedHeight: CARD_GEOMETRY_V2.height,
   allocatedLines: { kicker: 1, title: 1, subtitle: 2, footer: 1 },

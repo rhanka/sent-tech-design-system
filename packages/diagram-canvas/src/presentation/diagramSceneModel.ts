@@ -47,7 +47,7 @@ import {
 
 import { measureBundleLabel, type BundleLabelGroup } from "../layout/bundleLabel.js";
 import { getDiagramGlyph } from "./registry.js";
-import { lineBoxHeight, ZONE_GEOMETRY } from "./diagramCardModel.js";
+import { anatomyZoneGeometry, lineBoxHeight, ZONE_GEOMETRY } from "./diagramCardModel.js";
 import { clearSceneLabels } from "./sceneLabelClearance.js";
 import type { EntityPresentation } from "@sentropic/diagram-core";
 import type { AlignPinned, AnatomyPinned, DepthPinned, DiagramAnatomy } from "./diagramCardModel.js";
@@ -459,12 +459,13 @@ export function resolveScene(
     }
     const height = headerHeights.get(node.occurrence);
     if (height === undefined) continue;
-    const ruleClearance = (ZONE_GEOMETRY.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
+    const zoneGeo = anatomyZoneGeometry(node.presentation?.anatomy);
+    const ruleClearance = (zoneGeo.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
     blockers.push({
       x: node.rect.x,
       y: node.rect.y,
       width: node.rect.width,
-      height: CONTENT_INSET + height + ZONE_GEOMETRY.ruleHeight / 2 + ruleClearance,
+      height: zoneGeo.headerInset + height + zoneGeo.ruleHeight / 2 + ruleClearance,
     });
     // A zone footer has one allocated line. Reserve its fixed chrome from
     // the presentation instead of measuring the scene again during replay.
