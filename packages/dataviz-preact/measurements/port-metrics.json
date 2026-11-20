@@ -7,15 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 45,
+    "portedModules": 50,
     "barrelFile": "index.ts",
-    "remainingModules": 82,
+    "remainingModules": 77,
     "remainingFiles": [
-      "lib/DashboardFilterBar.tsx",
-      "lib/DashboardGrid.tsx",
-      "lib/DateRangeFilter.tsx",
-      "lib/DecompositionTreeChart.tsx",
-      "lib/Density2DChart.tsx",
       "lib/DependencyWheelChart.tsx",
       "lib/DonutChart.tsx",
       "lib/DrillBarChart.tsx",
@@ -591,23 +586,78 @@
         "total": 241,
         "touched": 2,
         "emissionRewrites": 1
+      },
+      {
+        "module": "DashboardFilterBar",
+        "kind": "component",
+        "file": "src/lib/DashboardFilterBar.tsx",
+        "reactSource": "lib/DashboardFilterBar.tsx",
+        "reactLines": 166,
+        "preactLines": 173,
+        "total": 1021,
+        "touched": 22,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DashboardGrid",
+        "kind": "component",
+        "file": "src/lib/DashboardGrid.tsx",
+        "reactSource": "lib/DashboardGrid.tsx",
+        "reactLines": 269,
+        "preactLines": 275,
+        "total": 1799,
+        "touched": 18,
+        "emissionRewrites": 2
+      },
+      {
+        "module": "DateRangeFilter",
+        "kind": "component",
+        "file": "src/lib/DateRangeFilter.tsx",
+        "reactSource": "lib/DateRangeFilter.tsx",
+        "reactLines": 48,
+        "preactLines": 50,
+        "total": 310,
+        "touched": 3,
+        "emissionRewrites": 2
+      },
+      {
+        "module": "DecompositionTreeChart",
+        "kind": "component",
+        "file": "src/lib/DecompositionTreeChart.tsx",
+        "reactSource": "lib/DecompositionTreeChart.tsx",
+        "reactLines": 53,
+        "preactLines": 59,
+        "total": 192,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "Density2DChart",
+        "kind": "component",
+        "file": "src/lib/Density2DChart.tsx",
+        "reactSource": "lib/Density2DChart.tsx",
+        "reactLines": 61,
+        "preactLines": 67,
+        "total": 217,
+        "touched": 2,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 45,
-      "reactLines": 4183,
-      "preactLines": 4416,
-      "total": 24002,
-      "touched": 269,
-      "emissionRewrites": 41
+      "modules": 50,
+      "reactLines": 4780,
+      "preactLines": 5040,
+      "total": 27541,
+      "touched": 316,
+      "emissionRewrites": 48
     },
     "shared": {
-      "src/index.ts": 119,
+      "src/index.ts": 131,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 83
+      "vitest.react.config.ts": 86
     }
   },
   "reach": {

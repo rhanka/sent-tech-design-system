@@ -50,6 +50,11 @@ import * as handWrittenColumnRangeChart from "../../dataviz-react/src/lib/Column
 import * as handWrittenContourChart from "../../dataviz-react/src/lib/ContourChart.js";
 import * as handWrittenCorrelationMatrix from "../../dataviz-react/src/lib/CorrelationMatrix.js";
 import * as handWrittenDashboardActiveFilters from "../../dataviz-react/src/lib/DashboardActiveFilters.js";
+import * as handWrittenDashboardFilterBar from "../../dataviz-react/src/lib/DashboardFilterBar.js";
+import * as handWrittenDashboardGrid from "../../dataviz-react/src/lib/DashboardGrid.js";
+import * as handWrittenDateRangeFilter from "../../dataviz-react/src/lib/DateRangeFilter.js";
+import * as handWrittenDecompositionTreeChart from "../../dataviz-react/src/lib/DecompositionTreeChart.js";
+import * as handWrittenDensity2DChart from "../../dataviz-react/src/lib/Density2DChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -114,6 +119,12 @@ const switched = [
   "ContourChart",
   "CorrelationMatrix",
   "DashboardActiveFilters",
+  "DashboardFilterBar",
+  "DashboardGrid",
+  "DateRangeFilter",
+  "dateRangeToSpec",
+  "DecompositionTreeChart",
+  "Density2DChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -170,6 +181,12 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   ContourChart: handWrittenContourChart.ContourChart,
   CorrelationMatrix: handWrittenCorrelationMatrix.CorrelationMatrix,
   DashboardActiveFilters: handWrittenDashboardActiveFilters.DashboardActiveFilters,
+  DashboardFilterBar: handWrittenDashboardFilterBar.DashboardFilterBar,
+  DashboardGrid: handWrittenDashboardGrid.DashboardGrid,
+  DateRangeFilter: handWrittenDateRangeFilter.DateRangeFilter,
+  dateRangeToSpec: handWrittenDateRangeFilter.dateRangeToSpec,
+  DecompositionTreeChart: handWrittenDecompositionTreeChart.DecompositionTreeChart,
+  Density2DChart: handWrittenDensity2DChart.Density2DChart,
 };
 
 describe("dataviz React leg provenance", () => {
