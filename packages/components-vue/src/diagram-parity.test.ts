@@ -305,6 +305,53 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
     }
     vue.unmount(); svelte.unmount();
   });
+  it('should isolate expanded zone depth surface and v2 header vars from nested v1 children on both hosts (W1-45, W1-56)', async () => {
+    const outerProps = {
+      entityId: 'outer-v2-depth1',
+      title: 'Outer',
+      subtitle: 'Sub',
+      collapsed: false,
+      toggleLabel: 'Collapse',
+      anatomy: 'v2' as const,
+      depth: 1,
+      width: 600,
+      height: 500,
+    };
+    const vueOuter = mount(DiagramZone, { props: outerProps });
+    const svelteOuter = render(SvelteZone, { props: outerProps });
+    await nextTick(); await tick();
+    expect(dom(vueOuter.element)).toEqual(dom(withControlIconTokens(svelteOuter.container.firstElementChild!)));
+    for (const root of [vueOuter.element, svelteOuter.container]) {
+      const frame = root.querySelector<HTMLElement>('.st-diagramZone')!;
+      const frameStyle = frame.getAttribute('style') ?? '';
+      expect(frameStyle).toContain('background:');
+      expect(frameStyle).toContain('--st-component-diagramZone-surface2');
+      // Never set inherited custom properties on .st-diagramZone (ancestor of slot/children).
+      expect(frameStyle).not.toContain('--st-component-diagramZone-surface:');
+      expect(frameStyle).not.toContain('--st-component-diagramZone-headerInset');
+      expect(frameStyle).not.toContain('--st-component-diagramCard-iconSize');
+      expect(frameStyle).not.toContain('--st-component-diagramCard-iconTextGap');
+    }
+    // Vue slot composition: a nested v1 child DiagramZone inside a depth-1 v2 parent receives zero inherited surface/v2 vars.
+    const Wrapper = defineComponent({
+      components: { DiagramZone, DiagramCard },
+      template: `<DiagramZone entityId="p" title="Parent" :collapsed="false" anatomy="v2" :depth="1" toggleLabel="Collapse" :width="600" :height="500">
+        <DiagramZone entityId="c" title="Child" :collapsed="false" toggleLabel="Collapse" :containerPadding="24" :width="492" :height="240" />
+        <DiagramCard entityId="leaf" title="Leaf" :body="['Line']" />
+      </DiagramZone>`,
+    });
+    const nested = mount(Wrapper);
+    await nextTick();
+    const zones = nested.element.querySelectorAll<HTMLElement>('.st-diagramZone');
+    expect(zones).toHaveLength(2);
+    expect(zones[0]!.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+    expect(zones[0]!.getAttribute('style') ?? '').not.toContain('--st-component-diagramZone-surface:');
+    expect(zones[1]!.getAttribute('style') ?? '').not.toContain('surface2');
+    expect(zones[1]!.querySelector<HTMLElement>('.st-diagramZone-header')!.style.right).toBe('calc(24px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+    expect(nested.element.querySelector<SVGSVGElement>('.st-diagramCard .st-diagramCardHeader-icon')?.getAttribute('width')).toBe('70');
+    nested.unmount();
+    vueOuter.unmount(); svelteOuter.unmount();
+  });
   for (const name of DIAGRAM_GLYPH_NAMES) it(`should match icon ${name}`, () => {
     const vue = mount(DiagramIcon, { props: { name } }); const svelte = render(SvelteIcon, { props: { name } });
     expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!))); vue.unmount(); svelte.unmount();

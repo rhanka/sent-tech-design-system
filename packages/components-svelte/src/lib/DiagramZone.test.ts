@@ -442,9 +442,11 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
     const { container: expandedDom } = render(DiagramZone, {
       props: { ...baseProps({ collapsed: false, width: 492, depth: 1 }), measure: defaultCardMeasure },
     });
-    expect(
-      expandedDom.querySelector(".st-diagramZone")?.getAttribute("style") ?? "",
-    ).toContain("--st-component-diagramZone-surface2");
+    const expandedStyle = expandedDom.querySelector(".st-diagramZone")?.getAttribute("style") ?? "";
+    expect(expandedStyle).toContain("--st-component-diagramZone-surface2");
+    expect(expandedStyle).toContain("background:");
+    // W1-45: depth surface is painted via non-inherited `background`, never mutating `--st-component-diagramZone-surface` for nested children.
+    expect(expandedStyle).not.toContain("--st-component-diagramZone-surface:");
     const { container: foldedDom } = render(DiagramZone, {
       props: { ...baseProps({ depth: 1 }), measure: defaultCardMeasure },
     });

@@ -43,8 +43,8 @@ export interface DiagramZoneProps extends DiagramZoneData {
 const { autoSize = true, entityId, containerPadding, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, anatomy, depth, depthParityStart, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
 const zoneGeometry = computed(() => anatomyZoneGeometry(anatomy));
 const effectiveAlign = computed(() => resolveDiagramAlign(anatomy, align));
-/** Owner addendum 1: an explicitly threaded depth paints the resolved depth surface. */
-const surfaceStyle = computed(() => zoneProps.value.depth === undefined && zoneProps.value.depthParityStart === undefined ? "" : `;--st-component-diagramZone-surface:var(--st-component-diagramZone-${layout.value.surface ?? "surface1"}, var(--st-semantic-surface-${(layout.value.surface ?? "surface1") === "surface1" ? "raised" : "subtle"}))`);
+/** Owner addendum 1: an explicitly threaded depth paints the resolved depth surface via non-inherited `background` so nested child zones never inherit it. */
+const surfaceStyle = computed(() => zoneProps.value.depth === undefined && zoneProps.value.depthParityStart === undefined ? "" : `;background:var(--st-component-diagramZone-${layout.value.surface ?? "surface1"}, var(--st-semantic-surface-${(layout.value.surface ?? "surface1") === "surface1" ? "raised" : "subtle"}))`);
 const emit = defineEmits<{
     toggle: [
         event: {
