@@ -16,6 +16,7 @@ const smokePackWorkspaces = new Set([
   "@sentropic/design-system-angular",
   "@sentropic/graph",
   "@sentropic/design-system-rich-text",
+  "@sentropic/design-system-review-core",
   "@sentropic/design-system-elements",
   "@sentropic/diagram-core",
   "@sentropic/diagram-canvas",
