@@ -557,7 +557,7 @@
   // input, so a post-mount theme change applies without waiting for a resize.
   function readCameraTokens(): void {
     const values: Record<string, number> = {};
-    for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding"]) {
+    for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding","edgeCornerRadius","linkStrokeWidth","linkEmphasisStrokeWidth","edgeLabelSize"]) {
       const value = parseFloat(tokenValue('--st-component-diagramScene-' + key) ?? '');
       if (Number.isFinite(value)) values[key] = value;
     }
@@ -1214,8 +1214,12 @@
     fill: none;
     stroke: var(--st-component-diagramScene-edgeStroke, var(--st-semantic-border-strong));
     stroke-linejoin: round;
-    stroke-width: var(--st-component-diagramZone-borderWidth, 1.5px);
+    stroke-width: var(--st-component-diagramScene-linkStrokeWidth, 2.5px);
     vector-effect: non-scaling-stroke;
+  }
+  .st-diagramSceneFigure-edge[data-edge-emphasis="emphasis"] {
+    stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
+    stroke-width: var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px);
   }
   .st-diagramSceneFigure-edgeLabel {
     box-sizing: border-box;
@@ -1226,7 +1230,7 @@
     display: flex;
     flex-direction: column;
     font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
-    font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
+    font-size: var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px));
     justify-content: center;
     line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
     pointer-events: none;

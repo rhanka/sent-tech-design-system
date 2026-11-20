@@ -54,8 +54,8 @@ export function shouldRefitRenderedBounds(previous: Rect | undefined, next: Rect
   return delta > RENDERED_BOUNDS_REFIT_TOLERANCE;
 }
 
-/** Token default of a resting connector stroke, CSS px. */
-const RESTING_EDGE_STROKE_WIDTH = 1.5;
+/** Token default of a resting connector stroke, CSS px (DE-2 `linkStrokeWidth`). */
+const RESTING_EDGE_STROKE_WIDTH = 2.5;
 
 /** Whether a computed colour paints nothing: `transparent` or a zero alpha. */
 function isTransparent(color: string): boolean {
@@ -102,7 +102,11 @@ function restingStrokeWidth(element: Element, style: CSSStyleDeclaration): numbe
   const width = parseFloat(style.strokeWidth) || 0;
   const state = element.getAttribute('data-flow-state');
   if (state !== 'primary' && state !== 'related') return width;
-  const token = element.hasAttribute('data-flow-step') ? '--st-component-diagramScene-flowStrokeWidth' : '--st-component-diagramZone-borderWidth';
+  const token = element.hasAttribute('data-flow-step')
+    ? '--st-component-diagramScene-flowStrokeWidth'
+    : element.getAttribute('data-edge-emphasis') === 'emphasis'
+      ? '--st-component-diagramScene-linkEmphasisStrokeWidth'
+      : '--st-component-diagramScene-linkStrokeWidth';
   const resting = parseFloat(style.getPropertyValue(token));
   return Number.isFinite(resting) ? resting : Math.min(width, RESTING_EDGE_STROKE_WIDTH);
 }

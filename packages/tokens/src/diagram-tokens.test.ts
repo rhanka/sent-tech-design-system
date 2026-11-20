@@ -128,8 +128,19 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     labelBand: `${spacing.labelBand}px`,
     gapMax: `${spacing.gapMax}px`,
     bundleLabelMaxWidth: "320px",
+    linkStrokeWidth: "2.5px",
+    linkRelatedStrokeWidth: "3px",
+    linkPrimaryStrokeWidth: "3.5px",
+    linkEmphasisStrokeWidth: "3.5px",
+    linkDashDashed: "8 6",
+    linkDashDotted: "2 5",
+    edgeCornerRadius: "12px",
+    edgeLabelSize: "18px",
     edgeLabelFontSize: "18px",
     edgeLabelLineHeight: "22px",
+    flowStrokeWidth: "2.5px",
+    flowRelatedStrokeWidth: "3px",
+    flowPrimaryStrokeWidth: "3.5px",
   },
   diagramIcon: {
     viewBox: "0 0 64 64",
@@ -168,6 +179,23 @@ describe("diagram tokens — frozen Appendix A values", () => {
     expect(component.diagramZone.text).toBe(semantic.text.primary);
     expect(component.diagramZone.secondaryText).toBe(semantic.text.secondary);
     expect(component.diagramZone.rule).toBe(semantic.border.subtle);
+  });
+
+  it("exposes dedicated DE-2 link emphasis colour + width distinct from resting links in both themes", () => {
+    expect(component.diagramScene.linkEmphasisStroke).not.toBe(component.diagramScene.edgeStroke);
+    expect(componentDark.diagramScene.linkEmphasisStroke).not.toBe(componentDark.diagramScene.edgeStroke);
+    expect(parseFloat(component.diagramScene.linkEmphasisStrokeWidth)).toBeGreaterThan(
+      parseFloat(component.diagramScene.linkStrokeWidth),
+    );
+    expect(component.diagramScene.linkStrokeWidth).not.toBe(component.diagramZone.borderWidth);
+    const css = toCssVariables({ component });
+    expect(css).toContain("--st-component-diagramScene-linkStrokeWidth: 2.5px;");
+    expect(css).toContain("--st-component-diagramScene-linkRelatedStrokeWidth: 3px;");
+    expect(css).toContain("--st-component-diagramScene-linkPrimaryStrokeWidth: 3.5px;");
+    expect(css).toContain(`--st-component-diagramScene-linkEmphasisStroke: ${component.diagramScene.linkEmphasisStroke};`);
+    expect(css).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth: 3.5px;");
+    expect(css).toContain("--st-component-diagramScene-edgeCornerRadius: 12px;");
+    expect(css).toContain("--st-component-diagramScene-edgeLabelSize: 18px;");
   });
 
   it("diagram depth surfaces alternate per nesting depth in both themes (DE-1 addendum 1)", () => {

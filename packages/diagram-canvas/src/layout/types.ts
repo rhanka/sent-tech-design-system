@@ -74,6 +74,12 @@ export interface LayoutMetrics {
   readonly bundleLabelMaxWidth?: number;
   /** World-unit corner radius for rounded-elbow connectors (DE-2, default 12). */
   readonly edgeCornerRadius?: number;
+  /** Dedicated resting connector stroke width, CSS px (token `diagramScene.linkStrokeWidth`, DE-2, default 2.5). */
+  readonly linkStrokeWidth?: number;
+  /** Emphasized connector stroke width, CSS px (token `diagramScene.linkEmphasisStrokeWidth`, DE-2, default 3.5). */
+  readonly linkEmphasisStrokeWidth?: number;
+  /** Edge label font size, world px (token `diagramScene.edgeLabelSize`, DE-2, default 18). */
+  readonly edgeLabelSize?: number;
   readonly nodePaddingX: number;
   readonly nodePaddingY: number;
   readonly nodeMinWidth: number;
