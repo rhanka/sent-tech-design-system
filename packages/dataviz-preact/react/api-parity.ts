@@ -122,6 +122,11 @@ export type PropsParity = [
   Expect<Equal<Emitted.ObjectLayerPanelProps, HandWritten.ObjectLayerPanelProps>>,
   Expect<Equal<Emitted.OrganizationChartProps, HandWritten.OrganizationChartProps>>,
   Expect<Equal<Emitted.PackedBubbleChartProps, HandWritten.PackedBubbleChartProps>>,
+  Expect<Equal<Emitted.PalettePickerProps, HandWritten.PalettePickerProps>>,
+  Expect<Equal<Emitted.ParallelCoordinatesChartProps, HandWritten.ParallelCoordinatesChartProps>>,
+  Expect<Equal<Emitted.PercentileBandChartProps, HandWritten.PercentileBandChartProps>>,
+  Expect<Equal<Emitted.PivotDataTableProps, HandWritten.PivotDataTableProps>>,
+  Expect<Equal<Emitted.PointAndFigureChartProps, HandWritten.PointAndFigureChartProps>>,
 ];
 
 export type ComponentParity = [
@@ -201,6 +206,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.ObjectLayerPanel, typeof HandWritten.ObjectLayerPanel>>,
   Expect<Equal<typeof Emitted.OrganizationChart, typeof HandWritten.OrganizationChart>>,
   Expect<Equal<typeof Emitted.PackedBubbleChart, typeof HandWritten.PackedBubbleChart>>,
+  Expect<Equal<typeof Emitted.PalettePicker, typeof HandWritten.PalettePicker>>,
+  Expect<Equal<typeof Emitted.ParallelCoordinatesChart, typeof HandWritten.ParallelCoordinatesChart>>,
+  Expect<Equal<typeof Emitted.PercentileBandChart, typeof HandWritten.PercentileBandChart>>,
+  Expect<Equal<typeof Emitted.PivotDataTable, typeof HandWritten.PivotDataTable>>,
+  Expect<Equal<typeof Emitted.PointAndFigureChart, typeof HandWritten.PointAndFigureChart>>,
 ];
 
 export type ValueParity = [
