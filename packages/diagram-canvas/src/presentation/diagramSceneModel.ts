@@ -1,6 +1,7 @@
 import { flowIndex, parentOccurrenceOf, representativeOf, type FlowIndex, type FlowStep } from "@sentropic/diagram-core";
 import type { FlowArrow, FlowBundle, FlowVisibleTarget } from "../layout/flows.js";
-import type { Visible } from "./flowModel.js";
+import { DEFAULT_FLOW_STRINGS, type Visible } from "./flowModel.js";
+import type { DiagramSceneFigureLabels } from "./diagramSceneTypes.js";
 import { measureErdCard, renderErdMarkerSvg, erdText, wrapErdText, placeErdRoleLabels, ERD_GEOMETRY, type ErdCard } from "./erd.js";
 import type { EntityRef, ErdCardinality } from "@sentropic/diagram-core";
 /**
@@ -625,12 +626,38 @@ export function resolveScene(
   };
 }
 
-/** Full presentation text retained alongside the textual relations (A14). */
-export function sceneTextRows(scene: SceneModel, document: SceneDocument): readonly string[] {
+/** Default labels for `DiagramSceneFigure`, including the DE-1b containment fallback label. */
+export const DEFAULT_SCENE_LABELS: DiagramSceneFigureLabels = Object.freeze({
+  ...DEFAULT_FLOW_STRINGS,
+  controls: "Zoom",
+  zoomIn: "Zoom in",
+  zoomOut: "Zoom out",
+  fit: "Fit",
+  zoomLevel: (percent: number) => `Zoom ${percent} %`,
+  viewport: "Diagram",
+  expand: (title: string) => `Expand ${title}`,
+  collapse: (title: string) => `Collapse ${title}`,
+  contains: "includes",
+});
+
+function isContainmentRelation(document: SceneDocument, relation: SceneDocument["relations"][string]): boolean {
+  const baseType = document.typeDefinitions?.[relation.type]?.baseType ?? relation.type;
+  return baseType === "contains";
+}
+
+/** Full presentation text retained alongside the textual relations (A14, DE-1b). */
+export function sceneTextRows(
+  scene: SceneModel,
+  document: SceneDocument,
+  labels?: Partial<Pick<DiagramSceneFigureLabels, "contains">>,
+): readonly string[] {
+  const containsLabel = labels?.contains ?? DEFAULT_SCENE_LABELS.contains;
   const rows = scene.nodes.map(node => Object.values(node.presentation?.text ?? {}).filter(Boolean).join(" · "));
   for (const relation of Object.values(document.relations)) {
     const names = relation.endpoints.map(end => { const value = document.entities[end.target]?.attributes["name"]; return value?.kind === "text" ? String(value.value) : end.target; });
-    rows.push(names.join(" → ") + " · " + (edgeLabelOf(document, relation.id) ?? relation.type));
+    const explicit = edgeLabelOf(document, relation.id);
+    const fallback = isContainmentRelation(document, relation) ? containsLabel : relation.type;
+    rows.push(names.join(" → ") + " · " + (explicit ?? fallback));
   }
   return rows;
 }

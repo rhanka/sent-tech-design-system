@@ -551,4 +551,30 @@ describe('scene host DOM and camera/fold behavior', () => {
     vue.unmount(); svelte.unmount();
     vi.unstubAllGlobals();
   });
+  it('should render default and overridden localized inclusion labels in the fallback text identically on Svelte and Vue (DE-1b)', async () => {
+    frame();
+    const rowsOf = (root: Element) => [...root.querySelectorAll('.st-diagramSceneFigure-fallback p')].map(p => p.textContent);
+    for (const extra of [{}, { flows: {} }] as const) {
+      for (const override of [undefined, 'contient'] as const) {
+        const props = {
+          ...host,
+          ...WIDE,
+          ...extra,
+          ...(override === undefined ? {} : { labels: { contains: override } }),
+        };
+        const vue = mount(SceneFigure, { props });
+        const svelte = render(SvelteScene, { props });
+        await nextTick(); await tick(); await nextTick();
+        const expectedLabel = override ?? 'includes';
+        const vueRows = rowsOf(vue.element);
+        const svelteRows = rowsOf(svelte.container);
+        expect(vueRows).toEqual(svelteRows);
+        expect(vueRows).toContain(`a → a1 · ${expectedLabel}`);
+        expect(vueRows).toContain('a1 → c · calls');
+        expect(vueRows.some(row => row?.includes('· contains'))).toBe(false);
+        vue.unmount(); svelte.unmount();
+      }
+    }
+    vi.unstubAllGlobals();
+  });
 });

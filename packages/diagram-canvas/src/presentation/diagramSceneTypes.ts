@@ -23,6 +23,8 @@ import type { SceneDocument, SceneView, ScenePresentation, SceneOccurrenceRef, S
     viewport: string;
     expand: (title: string) => string;
     collapse: (title: string) => string;
+    /** Localized fallback label for containment relations without an explicit edge label (DE-1b). */
+    contains: string;
   }
 
   export interface DiagramSceneCamera {
