@@ -1414,6 +1414,7 @@
       "AppShell",
       "CommentAuthorship",
       "CommentComposer",
+      "CommentLayer",
       "CommentPin",
       "CommentThread",
       "ContextPanel",
