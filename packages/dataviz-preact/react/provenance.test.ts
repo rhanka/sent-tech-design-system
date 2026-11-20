@@ -8,10 +8,15 @@ import * as barrel from "../../dataviz-react/src/index.js";
 import * as handWrittenAdapter from "../../dataviz-react/src/adapter.js";
 import * as handWrittenAreaChart from "../../dataviz-react/src/lib/AreaChart.js";
 import * as handWrittenComboChart from "../../dataviz-react/src/lib/ComboChart.js";
+import * as handWrittenCrossfilteredBarChart from "../../dataviz-react/src/lib/CrossfilteredBarChart.js";
+import * as handWrittenDateHistogramChart from "../../dataviz-react/src/lib/DateHistogramChart.js";
+import * as handWrittenDivergingBarChart from "../../dataviz-react/src/lib/DivergingBarChart.js";
 import * as handWrittenDrill from "../../dataviz-react/src/lib/drill.js";
 import * as handWrittenLollipopChart from "../../dataviz-react/src/lib/LollipopChart.js";
+import * as handWrittenParetoChart from "../../dataviz-react/src/lib/ParetoChart.js";
 import * as handWrittenStackedBarChart from "../../dataviz-react/src/lib/StackedBarChart.js";
 import * as handWrittenStepLineChart from "../../dataviz-react/src/lib/StepLineChart.js";
+import * as handWrittenTimeSeriesLineChart from "../../dataviz-react/src/lib/TimeSeriesLineChart.js";
 import * as handWrittenCategoricalData from "../../dataviz-react/src/lib/categoricalData.js";
 import * as handWrittenDistributionData from "../../dataviz-react/src/lib/distributionData.js";
 import * as handWrittenPartOfWholeData from "../../dataviz-react/src/lib/partOfWholeData.js";
@@ -30,6 +35,11 @@ const switched = [
   "LollipopChart",
   "StackedBarChart",
   "StepLineChart",
+  "CrossfilteredBarChart",
+  "TimeSeriesLineChart",
+  "DivergingBarChart",
+  "ParetoChart",
+  "DateHistogramChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -42,6 +52,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   LollipopChart: handWrittenLollipopChart.LollipopChart,
   StackedBarChart: handWrittenStackedBarChart.StackedBarChart,
   StepLineChart: handWrittenStepLineChart.StepLineChart,
+  CrossfilteredBarChart: handWrittenCrossfilteredBarChart.CrossfilteredBarChart,
+  TimeSeriesLineChart: handWrittenTimeSeriesLineChart.TimeSeriesLineChart,
+  DivergingBarChart: handWrittenDivergingBarChart.DivergingBarChart,
+  ParetoChart: handWrittenParetoChart.ParetoChart,
+  DateHistogramChart: handWrittenDateHistogramChart.DateHistogramChart,
 };
 
 describe("dataviz React leg provenance", () => {
