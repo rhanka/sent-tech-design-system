@@ -89,6 +89,12 @@ export type PropsParity = [
   Expect<Equal<Emitted.DrillBarChartProps, HandWritten.DrillBarChartProps>>,
   Expect<Equal<Emitted.DrillBreadcrumbProps, HandWritten.DrillBreadcrumbProps>>,
   Expect<Equal<Emitted.TreemapChartProps, HandWritten.TreemapChartProps>>,
+  Expect<Equal<Emitted.DrillChartKind, HandWritten.DrillChartKind>>,
+  Expect<Equal<Emitted.DrillChartProps, HandWritten.DrillChartProps>>,
+  Expect<Equal<Emitted.DumbbellChartProps, HandWritten.DumbbellChartProps>>,
+  Expect<Equal<Emitted.ErrorBarsChartProps, HandWritten.ErrorBarsChartProps>>,
+  Expect<Equal<Emitted.EventFeedPanelProps, HandWritten.EventFeedPanelProps>>,
+  Expect<Equal<Emitted.FieldPaneProps, HandWritten.FieldPaneProps>>,
 ];
 
 export type ComponentParity = [
@@ -136,6 +142,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.DrillBarChart, typeof HandWritten.DrillBarChart>>,
   Expect<Equal<typeof Emitted.DrillBreadcrumb, typeof HandWritten.DrillBreadcrumb>>,
   Expect<Equal<typeof Emitted.TreemapChart, typeof HandWritten.TreemapChart>>,
+  Expect<Equal<typeof Emitted.DrillChart, typeof HandWritten.DrillChart>>,
+  Expect<Equal<typeof Emitted.DumbbellChart, typeof HandWritten.DumbbellChart>>,
+  Expect<Equal<typeof Emitted.ErrorBarsChart, typeof HandWritten.ErrorBarsChart>>,
+  Expect<Equal<typeof Emitted.EventFeedPanel, typeof HandWritten.EventFeedPanel>>,
+  Expect<Equal<typeof Emitted.FieldPane, typeof HandWritten.FieldPane>>,
 ];
 
 export type ValueParity = [
