@@ -58,3 +58,14 @@ export {
   DEFAULT_URL_SYNC_PARAM,
 } from './lib/url-sync.js';
 export type { UrlSyncOptions } from './lib/url-sync.js';
+export { useUrlSync } from './lib/useUrlSync.js';
+
+// Group 2 batch 2 components.
+export { AdvancedPivotDataTable } from './lib/AdvancedPivotDataTable.js';
+export type { AdvancedPivotDataTableProps } from './lib/AdvancedPivotDataTable.js';
+export { AnalyticsClusterPlot } from './lib/AnalyticsClusterPlot.js';
+export type { AnalyticsClusterPlotProps } from './lib/AnalyticsClusterPlot.js';
+export { AnimatedBubbleChart } from './lib/AnimatedBubbleChart.js';
+export type { AnimatedBubbleChartProps } from './lib/AnimatedBubbleChart.js';
+export { AnomalySwimLaneChart } from './lib/AnomalySwimLaneChart.js';
+export type { AnomalySwimLaneChartProps } from './lib/AnomalySwimLaneChart.js';
