@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:8eb12b8c4249abe7db301f0247e8ebdba47c571f1a6ac70d87c4f8c44ef81f7f",
+  "digest": "sha256:00050ecbe191d1ccb3202b6e56be3437743a6fcfe0e78899bac585bbe1f53d5e",
   "entryDigest": "sha256:a30372ebfcdf3abe932909599f6f029a1be42c03e3edb9aad99041112146871b",
   "format": "component-contract/v1",
   "frameworks": {
@@ -1144,6 +1144,13 @@
           "EntityPresentation": {
             "additionalProperties": false,
             "properties": {
+              "align": {
+                "description": "Optional alignment (`diagram-presentation@2`, DE-1).",
+                "enum": [
+                  "center",
+                  "left"
+                ]
+              },
               "categoryRef": {
                 "type": "string"
               },
@@ -1834,6 +1841,13 @@
           "PresentationState": {
             "additionalProperties": false,
             "properties": {
+              "anatomy": {
+                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). New views default to `\"v2\"`.",
+                "enum": [
+                  "v1",
+                  "v2"
+                ]
+              },
               "camera": {
                 "additionalProperties": false,
                 "properties": {
@@ -4182,7 +4196,7 @@
         {
           "name": "presentation.entities",
           "reason": "index-signature: open-ended map loses key discipline",
-          "replacement": "{\"type\":\"object\",\"properties\":{\"categoryRef\":{\"type\":\"string\"},\"form\":{\"enum\":[\"card\",\"container\",\"legend\",\"legend-key\"]},\"icon\":{\"type\":\"string\"},\"text\":{\"$ref\":\"#/$defs/PresentationText\"},\"anatomy\":{\"enum\":[\"v1\",\"v2\"]},\"align\":{\"enum\":[\"center\",\"left\"]},\"depth\":{\"type\":\"number\"},\"depthParityStart\":{\"enum\":[0,1]}},\"additionalProperties\":false,\"required\":[\"form\",\"text\"]}",
+          "replacement": "{\"type\":\"object\",\"properties\":{\"categoryRef\":{\"type\":\"string\"},\"form\":{\"enum\":[\"card\",\"container\",\"legend\",\"legend-key\"]},\"icon\":{\"type\":\"string\"},\"text\":{\"$ref\":\"#/$defs/PresentationText\"},\"anatomy\":{\"enum\":[\"v1\",\"v2\"]},\"depth\":{\"type\":\"number\"},\"depthParityStart\":{\"enum\":[0,1]}},\"additionalProperties\":false,\"required\":[\"form\",\"text\"]}",
           "sourceType": "Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>"
         },
         {
@@ -5924,6 +5938,13 @@
           "EntityPresentation": {
             "additionalProperties": false,
             "properties": {
+              "align": {
+                "description": "Optional alignment (`diagram-presentation@2`, DE-1).",
+                "enum": [
+                  "center",
+                  "left"
+                ]
+              },
               "categoryRef": {
                 "type": "string"
               },
@@ -6614,6 +6635,13 @@
           "PresentationState": {
             "additionalProperties": false,
             "properties": {
+              "anatomy": {
+                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). New views default to `\"v2\"`.",
+                "enum": [
+                  "v1",
+                  "v2"
+                ]
+              },
               "camera": {
                 "additionalProperties": false,
                 "properties": {
@@ -9017,7 +9045,7 @@
         {
           "name": "presentation.entities",
           "reason": "index-signature: open-ended map loses key discipline",
-          "replacement": "{\"type\":\"object\",\"properties\":{\"categoryRef\":{\"type\":\"string\"},\"form\":{\"enum\":[\"legend\",\"card\",\"container\",\"legend-key\"]},\"icon\":{\"type\":\"string\"},\"text\":{\"$ref\":\"#/$defs/PresentationText\"},\"anatomy\":{\"enum\":[\"v1\",\"v2\"]},\"align\":{\"enum\":[\"center\",\"left\"]},\"depth\":{\"type\":\"number\"},\"depthParityStart\":{\"enum\":[0,1]}},\"additionalProperties\":false,\"required\":[\"form\",\"text\"]}",
+          "replacement": "{\"type\":\"object\",\"properties\":{\"categoryRef\":{\"type\":\"string\"},\"form\":{\"enum\":[\"legend\",\"card\",\"container\",\"legend-key\"]},\"icon\":{\"type\":\"string\"},\"text\":{\"$ref\":\"#/$defs/PresentationText\"},\"anatomy\":{\"enum\":[\"v1\",\"v2\"]},\"depth\":{\"type\":\"number\"},\"depthParityStart\":{\"enum\":[0,1]}},\"additionalProperties\":false,\"required\":[\"form\",\"text\"]}",
           "sourceType": "Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>"
         },
         {
