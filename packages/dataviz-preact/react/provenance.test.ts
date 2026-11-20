@@ -105,6 +105,11 @@ import * as handWrittenRelativeDateFilter from "../../dataviz-react/src/lib/Rela
 import * as handWrittenRenkoChart from "../../dataviz-react/src/lib/RenkoChart.js";
 import * as handWrittenRibbonChart from "../../dataviz-react/src/lib/RibbonChart.js";
 import * as handWrittenRoseChart from "../../dataviz-react/src/lib/RoseChart.js";
+import * as handWrittenSankeyChart from "../../dataviz-react/src/lib/SankeyChart.js";
+import * as handWrittenScatterPlot from "../../dataviz-react/src/lib/ScatterPlot.js";
+import * as handWrittenScatterPlotMatrix from "../../dataviz-react/src/lib/ScatterPlotMatrix.js";
+import * as handWrittenScoreCard from "../../dataviz-react/src/lib/ScoreCard.js";
+import * as handWrittenSelectionLegend from "../../dataviz-react/src/lib/SelectionLegend.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -231,6 +236,11 @@ const switched = [
   "RenkoChart",
   "RibbonChart",
   "RoseChart",
+  "SankeyChart",
+  "ScatterPlot",
+  "ScatterPlotMatrix",
+  "ScoreCard",
+  "SelectionLegend",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -349,6 +359,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   RenkoChart: handWrittenRenkoChart.RenkoChart,
   RibbonChart: handWrittenRibbonChart.RibbonChart,
   RoseChart: handWrittenRoseChart.RoseChart,
+  SankeyChart: handWrittenSankeyChart.SankeyChart,
+  ScatterPlot: handWrittenScatterPlot.ScatterPlot,
+  ScatterPlotMatrix: handWrittenScatterPlotMatrix.ScatterPlotMatrix,
+  ScoreCard: handWrittenScoreCard.ScoreCard,
+  SelectionLegend: handWrittenSelectionLegend.SelectionLegend,
 };
 
 describe("dataviz React leg provenance", () => {

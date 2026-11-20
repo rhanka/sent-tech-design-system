@@ -9,7 +9,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
-  "ownershipNote": "Lot P6 scaffold + groups 1-3 (70 files) + group 4 batches 1-6 (30 files -> 100/128 ported): GeoHexbinMap, GeoJsonMap, GeoPointMap, HLCChart, HeatmapChart, HeikinAshiChart, HistogramChart, HollowCandlestickChart, ItemChart, KpiCardGroup, MekkoChart, OHLCChart, ObjectLayers, OrganizationChart, PackedBubbleChart, PalettePicker, ParallelCoordinatesChart, PercentileBandChart, PivotDataTable, PointAndFigureChart, PolygonChart, QueryBar, RadarChart, RangeSliderFilter, RecordsTable, ReferenceLineChart, RelativeDateFilter, RenkoChart, RibbonChart, RoseChart.",
+  "ownershipNote": "Lot P6 scaffold + groups 1-3 (70 files) + group 4 batches 1-7 (35 files -> 105/128 ported): GeoHexbinMap, GeoJsonMap, GeoPointMap, HLCChart, HeatmapChart, HeikinAshiChart, HistogramChart, HollowCandlestickChart, ItemChart, KpiCardGroup, MekkoChart, OHLCChart, ObjectLayers, OrganizationChart, PackedBubbleChart, PalettePicker, ParallelCoordinatesChart, PercentileBandChart, PivotDataTable, PointAndFigureChart, PolygonChart, QueryBar, RadarChart, RangeSliderFilter, RecordsTable, ReferenceLineChart, RelativeDateFilter, RenkoChart, RibbonChart, RoseChart, SankeyChart, ScatterPlot, ScatterPlotMatrix, ScoreCard, SelectionLegend.",
   "modules": [
     {
       "module": "adapter",
@@ -906,6 +906,51 @@
       "module": "RoseChart",
       "file": "src/lib/RoseChart.tsx",
       "reactSource": "dataviz-react/src/lib/RoseChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "SankeyChart",
+      "file": "src/lib/SankeyChart.tsx",
+      "reactSource": "dataviz-react/src/lib/SankeyChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ScatterPlot",
+      "file": "src/lib/ScatterPlot.tsx",
+      "reactSource": "dataviz-react/src/lib/ScatterPlot.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ScatterPlotMatrix",
+      "file": "src/lib/ScatterPlotMatrix.tsx",
+      "reactSource": "dataviz-react/src/lib/ScatterPlotMatrix.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ScoreCard",
+      "file": "src/lib/ScoreCard.tsx",
+      "reactSource": "dataviz-react/src/lib/ScoreCard.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "SelectionLegend",
+      "file": "src/lib/SelectionLegend.tsx",
+      "reactSource": "dataviz-react/src/lib/SelectionLegend.tsx",
       "kind": "component",
       "lot": "P6",
       "renderable": true,
