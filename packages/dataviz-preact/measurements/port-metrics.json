@@ -7,11 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 0,
+    "portedModules": 5,
     "barrelFile": "index.ts",
-    "remainingModules": 127,
+    "remainingModules": 122,
     "remainingFiles": [
-      "adapter.ts",
       "lib/AdvancedPivotDataTable.tsx",
       "lib/AnalyticsClusterPlot.tsx",
       "lib/AnimatedBubbleChart.tsx",
@@ -130,33 +129,85 @@
       "lib/WordCloudChart.tsx",
       "lib/advancedPivotData.ts",
       "lib/analyticsDsData.ts",
-      "lib/categoricalData.ts",
       "lib/chart-export.ts",
-      "lib/distributionData.ts",
-      "lib/drill.ts",
       "lib/geoMapLayers.ts",
-      "lib/partOfWholeData.ts",
       "lib/url-sync.ts",
       "lib/useUrlSync.ts"
     ]
   },
   "port": {
-    "modules": [],
+    "modules": [
+      {
+        "module": "adapter",
+        "kind": "adapter",
+        "file": "src/adapter.ts",
+        "reactSource": "adapter.ts",
+        "reactLines": 41,
+        "preactLines": 44,
+        "total": 147,
+        "touched": 4,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "categoricalData",
+        "kind": "helper",
+        "file": "src/lib/categoricalData.ts",
+        "reactSource": "lib/categoricalData.ts",
+        "reactLines": 75,
+        "preactLines": 75,
+        "total": 450,
+        "touched": 0,
+        "emissionRewrites": 0
+      },
+      {
+        "module": "partOfWholeData",
+        "kind": "helper",
+        "file": "src/lib/partOfWholeData.ts",
+        "reactSource": "lib/partOfWholeData.ts",
+        "reactLines": 206,
+        "preactLines": 206,
+        "total": 1494,
+        "touched": 0,
+        "emissionRewrites": 0
+      },
+      {
+        "module": "distributionData",
+        "kind": "helper",
+        "file": "src/lib/distributionData.ts",
+        "reactSource": "lib/distributionData.ts",
+        "reactLines": 108,
+        "preactLines": 108,
+        "total": 630,
+        "touched": 0,
+        "emissionRewrites": 0
+      },
+      {
+        "module": "drill",
+        "kind": "helper",
+        "file": "src/lib/drill.ts",
+        "reactSource": "lib/drill.ts",
+        "reactLines": 87,
+        "preactLines": 87,
+        "total": 345,
+        "touched": 0,
+        "emissionRewrites": 0
+      }
+    ],
     "totals": {
-      "modules": 0,
-      "reactLines": 0,
-      "preactLines": 0,
-      "total": 0,
-      "touched": 0,
-      "emissionRewrites": 0
+      "modules": 5,
+      "reactLines": 517,
+      "preactLines": 520,
+      "total": 3066,
+      "touched": 4,
+      "emissionRewrites": 1
     },
     "shared": {
-      "src/index.ts": 9,
+      "src/index.ts": 14,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 62
+      "vitest.react.config.ts": 65
     }
   },
   "reach": {
