@@ -716,6 +716,16 @@ export function resolveAnchor(
           versionChanged,
         };
       }
+      // Explicit aid missing from root means the anchored block was removed.
+      // Return orphan immediately with no positional fallback onto the neighbour
+      // that shifted into the stale `sel` slot.
+      return {
+        status: "orphan",
+        kind: "element",
+        reason: "not-found",
+        element: null,
+        range: null,
+      };
     }
 
     const selEl = queryRelativeSelector(root, anchor.sel);
