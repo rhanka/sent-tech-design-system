@@ -40,8 +40,12 @@ defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 const foldState = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? foldState.value);
 let previousOrientation: SceneOrientations | undefined, orientationDocument: string | undefined;
+const orientationSeedByFold = new Map<string, SceneOrientations | undefined>();
 const layout = computed(() => {
-  if (orientationDocument !== props.document.documentId) { orientationDocument = props.document.documentId; previousOrientation = undefined; }
+  if (orientationDocument !== props.document.documentId) { orientationDocument = props.document.documentId; previousOrientation = undefined; orientationSeedByFold.clear(); }
+  const foldKey = [...collapsedNow.value].sort().join("\0");
+  const orientationSeed = orientationSeedByFold.has(foldKey) ? orientationSeedByFold.get(foldKey) : previousOrientation;
+  if (!orientationSeedByFold.has(foldKey)) orientationSeedByFold.set(foldKey, orientationSeed);
   const result = layoutScene({
     cache: props.layoutCache ?? ownedCache, document: props.document, registry: props.registry, presentation: props.presentation,
     ...(props.iconBindings === undefined ? {} : { iconBindings: props.iconBindings }),
@@ -52,7 +56,7 @@ const layout = computed(() => {
     ...(props.view === undefined ? {} : { view: props.view }), ...(props.bindings === undefined ? {} : { bindings: props.bindings }),
     ...(props.hints === undefined ? {} : { hints: props.hints }), metrics: effectiveMetrics.value,
     ...(props.rowPack === undefined ? {} : { rowPack: props.rowPack }), ...(props.targetWidth === undefined ? {} : { targetWidth: props.targetWidth }),
-    ...(previousOrientation === undefined ? {} : { previousOrientation }),
+    ...(orientationSeed === undefined ? {} : { previousOrientation: orientationSeed }),
   });
   if (result.status === "laid-out") previousOrientation = result.orientations;
   return result;
