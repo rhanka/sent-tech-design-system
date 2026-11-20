@@ -7,15 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 115,
+    "portedModules": 120,
     "barrelFile": "index.ts",
-    "remainingModules": 12,
+    "remainingModules": 7,
     "remainingFiles": [
-      "lib/TraceWaterfallChart.tsx",
-      "lib/TreegraphChart.tsx",
-      "lib/TrendLineChart.tsx",
-      "lib/ValueSlicer.tsx",
-      "lib/VariablePieChart.tsx",
       "lib/VectorFieldChart.tsx",
       "lib/VennChart.tsx",
       "lib/ViolinChart.tsx",
@@ -1291,23 +1286,78 @@
         "total": 313,
         "touched": 8,
         "emissionRewrites": 2
+      },
+      {
+        "module": "TraceWaterfallChart",
+        "kind": "component",
+        "file": "src/lib/TraceWaterfallChart.tsx",
+        "reactSource": "lib/TraceWaterfallChart.tsx",
+        "reactLines": 65,
+        "preactLines": 70,
+        "total": 223,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "TreegraphChart",
+        "kind": "component",
+        "file": "src/lib/TreegraphChart.tsx",
+        "reactSource": "lib/TreegraphChart.tsx",
+        "reactLines": 54,
+        "preactLines": 59,
+        "total": 197,
+        "touched": 5,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "TrendLineChart",
+        "kind": "component",
+        "file": "src/lib/TrendLineChart.tsx",
+        "reactSource": "lib/TrendLineChart.tsx",
+        "reactLines": 42,
+        "preactLines": 49,
+        "total": 305,
+        "touched": 16,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ValueSlicer",
+        "kind": "component",
+        "file": "src/lib/ValueSlicer.tsx",
+        "reactSource": "lib/ValueSlicer.tsx",
+        "reactLines": 56,
+        "preactLines": 58,
+        "total": 323,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "VariablePieChart",
+        "kind": "component",
+        "file": "src/lib/VariablePieChart.tsx",
+        "reactSource": "lib/VariablePieChart.tsx",
+        "reactLines": 54,
+        "preactLines": 59,
+        "total": 190,
+        "touched": 2,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 115,
-      "reactLines": 8652,
-      "preactLines": 9240,
-      "total": 45489,
-      "touched": 571,
-      "emissionRewrites": 119
+      "modules": 120,
+      "reactLines": 8923,
+      "preactLines": 9535,
+      "total": 46727,
+      "touched": 598,
+      "emissionRewrites": 124
     },
     "shared": {
-      "src/index.ts": 291,
+      "src/index.ts": 303,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 100
+      "vitest.react.config.ts": 101
     }
   },
   "reach": {
