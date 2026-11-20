@@ -33,6 +33,10 @@ import * as handWrittenNotification from "../../components-react/src/Notificatio
 import * as handWrittenPanelSection from "../../components-react/src/PanelSection.js";
 import * as handWrittenPanelStack from "../../components-react/src/PanelStack.js";
 import * as handWrittenPortal from "../../components-react/src/Portal.js";
+import * as handWrittenPopper from "../../components-react/src/Popper.js";
+import * as handWrittenNavSection from "../../components-react/src/NavSection.js";
+import * as handWrittenMenuCascade from "../../components-react/src/menu-cascade.js";
+import * as handWrittenTimeRange from "../../components-react/src/timeRange.js";
 import * as handWrittenRow from "../../components-react/src/Row.js";
 import * as handWrittenSelectableRow from "../../components-react/src/SelectableRow.js";
 import * as handWrittenStack from "../../components-react/src/Stack.js";
@@ -168,6 +172,22 @@ const switched = [
   "Typography",
   "identityInitial",
   "Portal",
+  "resolvePortalTarget",
+  "Popper",
+  "computePosition",
+  "splitPlacement",
+  "joinPlacement",
+  "NavSection",
+  "DEFAULT_TIME_RANGE_PRESETS",
+  "composeAbsolute",
+  "formatPresetLabel",
+  "formatTriggerLabel",
+  "parsePresetMs",
+  "resolveRelative",
+  "splitAbsolute",
+  "computeSubMenuPosition",
+  "pointInSafeTriangle",
+  "toContainingBlockPosition",
   "ThemeProvider",
   "Accordion",
   "Alert",
@@ -176,6 +196,8 @@ const switched = [
   "ButtonGroup",
   "Card",
   "Col",
+  "spanBasis",
+  "offsetMargin",
   "Collapsible",
   "Container",
   "CopyButton",
@@ -184,7 +206,11 @@ const switched = [
   "ErrorSummary",
   "FieldCard",
   "Flex",
+  "spacingToken",
+  "alignValue",
+  "justifyValue",
   "Grid",
+  "gridTemplateColumns",
   "Hidden",
   "Highlight",
   "IconButton",
@@ -388,6 +414,22 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   Typography: handWrittenTypography.Typography,
   identityInitial: handWrittenIdentityMenu.identityInitial,
   Portal: handWrittenPortal.Portal,
+  resolvePortalTarget: handWrittenPortal.resolvePortalTarget,
+  Popper: handWrittenPopper.Popper,
+  computePosition: handWrittenPopper.computePosition,
+  splitPlacement: handWrittenPopper.splitPlacement,
+  joinPlacement: handWrittenPopper.joinPlacement,
+  NavSection: handWrittenNavSection.NavSection,
+  DEFAULT_TIME_RANGE_PRESETS: handWrittenTimeRange.DEFAULT_TIME_RANGE_PRESETS,
+  composeAbsolute: handWrittenTimeRange.composeAbsolute,
+  formatPresetLabel: handWrittenTimeRange.formatPresetLabel,
+  formatTriggerLabel: handWrittenTimeRange.formatTriggerLabel,
+  parsePresetMs: handWrittenTimeRange.parsePresetMs,
+  resolveRelative: handWrittenTimeRange.resolveRelative,
+  splitAbsolute: handWrittenTimeRange.splitAbsolute,
+  computeSubMenuPosition: handWrittenMenuCascade.computeSubMenuPosition,
+  pointInSafeTriangle: handWrittenMenuCascade.pointInSafeTriangle,
+  toContainingBlockPosition: handWrittenMenuCascade.toContainingBlockPosition,
   ThemeProvider: handWrittenTheme.ThemeProvider,
   Accordion: handWrittenCatalog.Accordion,
   Alert: handWrittenCatalog.Alert,
@@ -396,6 +438,8 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   ButtonGroup: handWrittenButtonGroup.ButtonGroup,
   Card: handWrittenCard.Card,
   Col: handWrittenCol.Col,
+  spanBasis: handWrittenCol.spanBasis,
+  offsetMargin: handWrittenCol.offsetMargin,
   Collapsible: handWrittenCollapsible.Collapsible,
   AppChrome: handWrittenAppChrome.AppChrome,
   AppHeader: handWrittenAppHeader.AppHeader,
@@ -409,7 +453,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   ErrorSummary: handWrittenCatalog.ErrorSummary,
   FieldCard: handWrittenFieldCard.FieldCard,
   Flex: handWrittenFlex.Flex,
+  spacingToken: handWrittenFlex.spacingToken,
+  alignValue: handWrittenFlex.alignValue,
+  justifyValue: handWrittenFlex.justifyValue,
   Grid: handWrittenGrid.Grid,
+  gridTemplateColumns: handWrittenGrid.gridTemplateColumns,
   Hidden: handWrittenHidden.Hidden,
   Highlight: handWrittenCatalog.Highlight,
   IconButton: handWrittenCatalog.IconButton,
@@ -607,5 +655,15 @@ describe("React leg provenance", () => {
       expect(typeof handWrittenPriorityLabels[name]).toBe("function");
       expect(emittedPriorityLabels[name]).not.toBe(handWrittenPriorityLabels[name]);
     }
+  });
+
+  it("the emitted barrel serves the emitted deriveInitials helper (not the hand-written catalog twin)", () => {
+    // components-react/src/index.ts re-exports deriveInitials from catalog.tsx
+    // rather than Header.tsx, so the module switch does not intercept the barrel
+    // line, while emitted Header/Avatar and the emitted barrel serve the emitted
+    // helper.
+    expect(typeof emitted.deriveInitials).toBe("function");
+    expect(emitted.deriveInitials).not.toBe(handWrittenCatalog.deriveInitials);
+    expect(emitted.deriveInitials("Ada Lovelace")).toBe("AL");
   });
 });

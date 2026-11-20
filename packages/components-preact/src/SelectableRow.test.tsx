@@ -118,6 +118,96 @@ describe("SelectableRow (Preact), standalone", () => {
     expect(objectRef.current).toBe(screen.getByRole("button", { name: "One" }));
     expect(callbackRef).toHaveBeenCalledWith(screen.getByRole("button", { name: "Two" }));
   });
+
+  it("follows post-mount signal mutations for className, selected, disabled and accentBar", async () => {
+    const cls = signal("sr-before");
+    const selected = signal(false);
+    const disabled = signal(false);
+    const accentBar = signal(false);
+
+    render(
+      <SelectableRow className={cls} selected={selected} disabled={disabled} accentBar={accentBar}>
+        Signals
+      </SelectableRow>,
+    );
+    const row = screen.getByRole("button", { name: "Signals" });
+    expect(row.className).toBe("st-selectableRow sr-before");
+    expect(row.getAttribute("aria-pressed")).toBe("false");
+    expect(row.getAttribute("aria-disabled")).toBeNull();
+    expect(row.getAttribute("tabindex")).toBe("0");
+
+    cls.value = "sr-after";
+    selected.value = true;
+    accentBar.value = true;
+    await waitFor(() =>
+      expect(row.className).toBe("st-selectableRow st-selectableRow--selected st-selectableRow--accentBar sr-after"),
+    );
+    expect(row.getAttribute("aria-pressed")).toBe("true");
+
+    disabled.value = true;
+    await waitFor(() => expect(row.getAttribute("aria-disabled")).toBe("true"));
+    expect(row.getAttribute("tabindex")).toBe("-1");
+    expect(row.className).toContain("st-selectableRow--disabled");
+
+    disabled.value = false;
+    selected.value = false;
+    accentBar.value = false;
+    await waitFor(() => expect(row.className).toBe("st-selectableRow sr-after"));
+    expect(row.getAttribute("aria-pressed")).toBe("false");
+    expect(row.getAttribute("aria-disabled")).toBeNull();
+    expect(row.getAttribute("tabindex")).toBe("0");
+  });
+
+  it("composes consumer onClick, onKeyDown, onFocus and onFocusIn with internal handlers", () => {
+    const calls: string[] = [];
+    const onSelect = vi.fn(() => calls.push("onSelect"));
+    const onClick = vi.fn(() => calls.push("onClick"));
+    const onKeyDown = vi.fn(() => calls.push("onKeyDown"));
+    const onFocus = vi.fn(() => calls.push("onFocus"));
+    const onFocusIn = vi.fn(() => calls.push("onFocusIn"));
+
+    const { rerender } = render(
+      <SelectableRow
+        onSelect={onSelect}
+        onClick={onClick}
+        onKeyDown={onKeyDown}
+        onFocus={onFocus}
+        onFocusIn={onFocusIn}
+      >
+        Composed
+      </SelectableRow>,
+    );
+    const row = screen.getByRole("button", { name: "Composed" });
+
+    fireEvent.click(row);
+    expect(onSelect).toHaveBeenCalledTimes(1);
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(calls).toEqual(["onSelect", "onClick"]);
+
+    fireEvent.keyDown(row, { key: "Enter" });
+    expect(onSelect).toHaveBeenCalledTimes(2);
+    expect(onKeyDown).toHaveBeenCalledTimes(1);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    fireEvent.keyDown(row, { key: "Escape" });
+    expect(onKeyDown).toHaveBeenCalledTimes(2);
+
+    row.focus();
+    expect(onFocus).toHaveBeenCalledTimes(1);
+    expect(onFocusIn).toHaveBeenCalledTimes(1);
+
+    // Disabled row stays inert for click and keyDown.
+    rerender(
+      <SelectableRow disabled onSelect={onSelect} onClick={onClick} onKeyDown={onKeyDown}>
+        Composed
+      </SelectableRow>,
+    );
+    fireEvent.click(row);
+    fireEvent.keyDown(row, { key: "Enter" });
+    expect(onSelect).toHaveBeenCalledTimes(2);
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(onKeyDown).toHaveBeenCalledTimes(2);
+  });
 });
 
 describe("SelectableRow (Preact), managed through context", () => {

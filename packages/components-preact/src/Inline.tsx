@@ -10,7 +10,7 @@ export type InlineProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   gap?: number;
   align?: FlexAlign;
   justify?: FlexJustify;
-  wrap?: boolean;
+  wrap?: MaybeSignal<boolean>;
   as?: string;
   className?: MaybeSignal<string>;
 };

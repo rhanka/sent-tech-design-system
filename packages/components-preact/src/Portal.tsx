@@ -2,6 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { classNames } from "./classNames.js";
 import { createPortal } from "./compat.js";
 import type { ComponentChildren, ComponentElement } from "./runtime.js";
+import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
 export type PortalProps = {
@@ -9,9 +10,9 @@ export type PortalProps = {
    * Where to teleport the children. A CSS selector string or an actual
    * `HTMLElement`. Defaults to the document `<body>`.
    */
-  target?: string | HTMLElement;
+  target?: MaybeSignal<string | HTMLElement>;
   /** When `true`, render inline in place (no teleportation). */
-  disabled?: boolean;
+  disabled?: MaybeSignal<boolean>;
   /** Optional class applied to the portal container element (a signal is accepted in the Preact build). */
   className?: MaybeSignal<string>;
   children?: ComponentChildren;
@@ -40,12 +41,14 @@ export function Portal({ target = "body", disabled = false, className, children 
   // Only create the portal after mount so the server render and the first
   // client render agree (no DOM access during SSR).
   const [mounted, setMounted] = useState(false);
+  const targetValue = useValue(target);
+  const disabledValue = useValue(disabled);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (disabled) {
+  if (disabledValue) {
     return (
       <div className={classNames("st-portal", className)} data-st-portal="inline">
         {children}
@@ -63,7 +66,7 @@ export function Portal({ target = "body", disabled = false, className, children 
     );
   }
 
-  const destination = resolvePortalTarget(target);
+  const destination = resolvePortalTarget(targetValue);
   if (!destination) return null;
 
   return createPortal(
