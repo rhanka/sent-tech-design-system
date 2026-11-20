@@ -56,6 +56,8 @@ const reactTests: string[] = [
   "lib/AdvancedPivotDataTable.test.tsx", // emitted AdvancedPivotDataTable + advancedPivotData
   "lib/AnalyticsCharts.test.tsx", // emitted AnalyticsClusterPlot + analyticsDsData
   "lib/BookmarkNavigator.test.tsx", // emitted BookmarkNavigator
+  "lib/DistributionCharts.test.tsx", // emitted BoxPlotChart, BulletChart, CalendarHeatmapChart + distributionData
+  "lib/CalculationEditor.test.tsx", // emitted CalculationEditor
 ];
 
 export default defineConfig({
