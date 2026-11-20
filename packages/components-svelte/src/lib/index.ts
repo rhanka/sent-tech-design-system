@@ -592,6 +592,13 @@ export { default as CommentComposer } from "./CommentComposer.svelte";
 export type { CommentComposerProps } from "./CommentComposer.svelte";
 export { default as CommentThread } from "./CommentThread.svelte";
 export type { CommentThreadProps } from "./CommentThread.svelte";
+export { default as CommentLayer } from "./CommentLayer.svelte";
+export type {
+  CommentLayerComposerContext,
+  CommentLayerCreatePayload,
+  CommentLayerProps,
+  ReviewMode,
+} from "./CommentLayer.svelte";
 export {
   formatAnchorLabel,
   formatPinAriaLabel,
