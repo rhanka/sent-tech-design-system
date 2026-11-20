@@ -4,6 +4,7 @@ import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svel
 import type { DiagramSceneFigureProps } from './DiagramSceneFigure.types.js';
 import type { SceneDocument, ScenePresentation, SceneOccurrenceRef } from './diagramSceneModel.js';
 import { CURRENT_SCHEMA_VERSION, DEFAULT_PRESENTATION, DIAGRAM_PRESENTATION_CONTRACT_PIN, createView, entityRef, m3ProfileRegistry, occurrenceRef, shippedExecutorBindings, viewRef } from '../../diagram-canvas/tests/scene-host-fixtures.js';
+import { hCondInput } from '../../diagram-canvas/tests/layout/dc2a/h-cond.js';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
@@ -897,5 +898,168 @@ describe('scene host DOM and camera/fold behavior', () => {
     expect(vueWide.vm.getCamera().zoom).toBe(0.45);
     vueWide.unmount(); svelteWide.unmount();
     vi.unstubAllGlobals();
+  });
+  it('should refit camera and frame height without overflow when unfolding the largest zone of a reference scene and refit back on folding (Svelte and Vue)', async () => {
+    const snap = (px: number): number => Math.round(px * 64) / 64;
+    const originalRect = Element.prototype.getBoundingClientRect;
+    const sheet = document.createElement('style');
+    sheet.textContent = '.st-diagramSceneFigure-edge { fill: none; stroke: rgb(100, 116, 139); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }';
+    document.head.append(sheet);
+    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+      const world = this.closest<HTMLElement>('.st-diagramSceneFigure-world');
+      if (world === null) return originalRect.call(this);
+      const match = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/.exec(world.style.transform);
+      if (match === null) return new DOMRect();
+      const [tx, ty, scale] = match.slice(1).map(Number) as [number, number, number];
+      if (this === world) return new DOMRect(snap(tx), snap(ty), 0, 0);
+      if (this.matches('[data-scene-edge]')) {
+        const pts = (this.getAttribute('points') ?? '').trim().split(/\s+/).filter(Boolean).map(p => p.split(',').map(Number) as [number, number]);
+        if (pts.length === 0) return new DOMRect();
+        const xs = pts.map(([x]) => x), ys = pts.map(([, y]) => y);
+        const left = snap(tx + Math.min(...xs) * scale), top = snap(ty + Math.min(...ys) * scale);
+        return new DOMRect(left, top, snap(tx + Math.max(...xs) * scale) - left, snap(ty + Math.max(...ys) * scale) - top);
+      }
+      if (!(this instanceof HTMLElement) || !this.matches('[data-scene-occurrence],[data-scene-label]')) return new DOMRect();
+      const x = parseFloat(this.style.left), y = parseFloat(this.style.top);
+      const w = parseFloat(this.style.width), h = parseFloat(this.style.height);
+      const left = snap(tx + x * scale), top = snap(ty + y * scale);
+      return new DOMRect(left, top, snap(tx + (x + w) * scale) - left, snap(ty + (y + h) * scale) - top);
+    });
+
+    const assertNoOverflow = (root: Element, frameW: number, maxFrameH: number) => {
+      const figure = (root.matches('figure') ? root : root.querySelector('figure')) as HTMLElement;
+      const viewport = root.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!;
+      const extent = root.querySelector<HTMLElement>('.st-diagramSceneFigure-extent')!;
+      const world = root.querySelector<HTMLElement>('.st-diagramSceneFigure-world')!;
+      const zoom = Number(figure.dataset['zoom']);
+      const height = parseFloat(viewport.style.height);
+      const [tx, ty, scale] = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/.exec(world.style.transform)!.slice(1).map(Number) as [number, number, number];
+      expect(scale).toBe(zoom);
+      expect(zoom).toBeGreaterThanOrEqual(0.45);
+      expect(zoom).toBeLessThanOrEqual(0.62);
+      expect(height).toBeLessThanOrEqual(maxFrameH + 1 / 64);
+      expect(viewport.dataset['pans']).toBe('false');
+      expect(viewport.style.overflowX).toBe('hidden');
+      expect(viewport.style.overflowY).toBe('hidden');
+      expect(parseFloat(extent.style.width)).toBeLessThanOrEqual(frameW + 0.5);
+      expect(parseFloat(extent.style.height)).toBeLessThanOrEqual(height + 0.5);
+      for (const node of root.querySelectorAll<HTMLElement>('[data-scene-occurrence],[data-scene-label]')) {
+        const x = parseFloat(node.style.left), y = parseFloat(node.style.top);
+        const w = parseFloat(node.style.width), h = parseFloat(node.style.height);
+        expect(tx + x * zoom).toBeGreaterThanOrEqual(-0.5);
+        expect(ty + y * zoom).toBeGreaterThanOrEqual(-0.5);
+        expect(tx + (x + w) * zoom).toBeLessThanOrEqual(frameW + 0.5);
+        expect(ty + (y + h) * zoom).toBeLessThanOrEqual(height + 0.5);
+      }
+      for (const edge of root.querySelectorAll('[data-scene-edge]')) {
+        for (const pt of (edge.getAttribute('points') ?? '').trim().split(/\s+/).filter(Boolean)) {
+          const [px, py] = pt.split(',').map(Number) as [number, number];
+          expect(tx + px * zoom).toBeGreaterThanOrEqual(-0.5);
+          expect(ty + py * zoom).toBeGreaterThanOrEqual(-0.5);
+          expect(tx + px * zoom).toBeLessThanOrEqual(frameW + 0.5);
+          expect(ty + py * zoom).toBeLessThanOrEqual(height + 0.5);
+        }
+      }
+      return { height, zoom, transform: world.style.transform, viewport };
+    };
+
+    try {
+      for (const [sceneName, width, winH, largestZone, extra] of [
+        ['architecture', 1280, 720, 'occurrence:zone-engram', {}],
+        ['architecture', 1280, 720, 'occurrence:zone-engram', { flows: {} }],
+        ['ontology', 1440, 900, 'occurrence:zone-normative', {}],
+      ] as const) {
+        vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+        vi.stubGlobal('innerHeight', winH);
+        vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(width);
+        const maxFrameH = Math.min((width * 9) / 16, 0.85 * winH);
+        const { collapsed: allFolds, ...source } = hCondInput(sceneName, true);
+        const props = { ...source, measureLines: undefined, defaultFolds: allFolds, ...extra };
+        const vue = mount(SceneFigure, { props, attachTo: document.body });
+        const svelte = render(SvelteScene, { props });
+        await nextTick(); await tick(); await nextTick(); await tick();
+
+        const vueFolded = assertNoOverflow(vue.element, width, maxFrameH);
+        const svelteFolded = assertNoOverflow(svelte.container, width, maxFrameH);
+        expect(vueFolded.zoom).toBe(0.62);
+        expect(svelteFolded.zoom).toBe(0.62);
+        expect(vueFolded.height).toBe(svelteFolded.height);
+
+        const toggleIn = (root: Element) =>
+          [...root.querySelectorAll<HTMLElement>('[data-scene-occurrence]')]
+            .find(el => el.dataset['sceneOccurrence'] === largestZone)!
+            .querySelector<HTMLButtonElement>('button[aria-expanded]')!;
+
+        // Unfold the largest zone on both Vue and Svelte: both refit with zero overflow.
+        toggleIn(vue.element).click();
+        toggleIn(svelte.container).click();
+        await nextTick(); await tick(); await nextTick(); await tick();
+
+        const vueUnfolded = assertNoOverflow(vue.element, width, maxFrameH);
+        const svelteUnfolded = assertNoOverflow(svelte.container, width, maxFrameH);
+        expect(vueUnfolded.zoom).toBeLessThan(0.62);
+        expect(vueUnfolded.zoom).toBe(vue.vm.getCamera().fitZoom);
+        expect(vueUnfolded.zoom).toBe(svelteUnfolded.zoom);
+        expect(vueUnfolded.height).toBeGreaterThan(vueFolded.height);
+        expect(Math.abs(vueUnfolded.height - svelteUnfolded.height)).toBeLessThanOrEqual(0.5);
+
+        // Explicit user zoom and pan are preserved before the next fold toggle, then refitted on fold.
+        vue.vm.setZoom(0.62);
+        svelte.component.setZoom(0.62);
+        await nextTick(); await tick();
+        vueUnfolded.viewport.scrollLeft = 60;
+        vueUnfolded.viewport.scrollTop = 30;
+        svelteUnfolded.viewport.scrollLeft = 60;
+        svelteUnfolded.viewport.scrollTop = 30;
+        expect(vue.vm.getCamera().zoom).toBe(0.62);
+        expect(vueUnfolded.viewport.dataset['pans']).toBe('true');
+        expect(svelteUnfolded.viewport.dataset['pans']).toBe('true');
+
+        // Fold the largest zone back: drops user zoom/pan and refits back to the folded scene.
+        toggleIn(vue.element).click();
+        toggleIn(svelte.container).click();
+        await nextTick(); await tick(); await nextTick(); await tick();
+
+        const vueRefolded = assertNoOverflow(vue.element, width, maxFrameH);
+        const svelteRefolded = assertNoOverflow(svelte.container, width, maxFrameH);
+        expect(vueRefolded.zoom).toBe(0.62);
+        expect(svelteRefolded.zoom).toBe(0.62);
+        expect(Math.abs(vueRefolded.height - vueFolded.height)).toBeLessThanOrEqual(0.5);
+        expect(Math.abs(svelteRefolded.height - svelteFolded.height)).toBeLessThanOrEqual(0.5);
+        expect(vueRefolded.viewport.scrollLeft).toBe(0);
+        expect(vueRefolded.viewport.scrollTop).toBe(0);
+        expect(svelteRefolded.viewport.scrollLeft).toBe(0);
+        expect(svelteRefolded.viewport.scrollTop).toBe(0);
+
+        vue.unmount(); svelte.unmount();
+      }
+
+      // Controlled `collapsed` prop change on Vue also refits on unfold and fold.
+      vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+      vi.stubGlobal('innerHeight', 720);
+      vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1280);
+      const maxFrameH = Math.min((1280 * 9) / 16, 0.85 * 720);
+      const { collapsed: allFolds, ...source } = hCondInput('architecture', true);
+      const vueCtrl = mount(SceneFigure, {
+        props: { ...source, measureLines: undefined, collapsed: allFolds },
+        attachTo: document.body,
+      });
+      await nextTick(); await nextTick();
+      const ctrlFolded = assertNoOverflow(vueCtrl.element, 1280, maxFrameH);
+      await vueCtrl.setProps({ collapsed: allFolds.filter(id => id !== 'occurrence:zone-engram') });
+      await nextTick(); await nextTick();
+      const ctrlUnfolded = assertNoOverflow(vueCtrl.element, 1280, maxFrameH);
+      expect(ctrlUnfolded.zoom).toBeLessThan(ctrlFolded.zoom);
+      expect(ctrlUnfolded.height).toBeGreaterThan(ctrlFolded.height);
+      await vueCtrl.setProps({ collapsed: allFolds });
+      await nextTick(); await nextTick();
+      const ctrlRefolded = assertNoOverflow(vueCtrl.element, 1280, maxFrameH);
+      expect(ctrlRefolded.zoom).toBe(ctrlFolded.zoom);
+      expect(Math.abs(ctrlRefolded.height - ctrlFolded.height)).toBeLessThanOrEqual(0.5);
+      vueCtrl.unmount();
+    } finally {
+      sheet.remove();
+      vi.unstubAllGlobals();
+    }
   });
 });
