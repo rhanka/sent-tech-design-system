@@ -139,6 +139,11 @@ export type PropsParity = [
   Expect<Equal<Emitted.RenkoChartProps, HandWritten.RenkoChartProps>>,
   Expect<Equal<Emitted.RibbonChartProps, HandWritten.RibbonChartProps>>,
   Expect<Equal<Emitted.RoseChartProps, HandWritten.RoseChartProps>>,
+  Expect<Equal<Emitted.SankeyChartProps, HandWritten.SankeyChartProps>>,
+  Expect<Equal<Emitted.ScatterPlotProps, HandWritten.ScatterPlotProps>>,
+  Expect<Equal<Emitted.ScatterPlotMatrixProps, HandWritten.ScatterPlotMatrixProps>>,
+  Expect<Equal<Emitted.ScoreCardProps, HandWritten.ScoreCardProps>>,
+  Expect<Equal<Emitted.SelectionLegendProps, HandWritten.SelectionLegendProps>>,
 ];
 
 export type ComponentParity = [
@@ -233,6 +238,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.RenkoChart, typeof HandWritten.RenkoChart>>,
   Expect<Equal<typeof Emitted.RibbonChart, typeof HandWritten.RibbonChart>>,
   Expect<Equal<typeof Emitted.RoseChart, typeof HandWritten.RoseChart>>,
+  Expect<Equal<typeof Emitted.SankeyChart, typeof HandWritten.SankeyChart>>,
+  Expect<Equal<typeof Emitted.ScatterPlot, typeof HandWritten.ScatterPlot>>,
+  Expect<Equal<typeof Emitted.ScatterPlotMatrix, typeof HandWritten.ScatterPlotMatrix>>,
+  Expect<Equal<typeof Emitted.ScoreCard, typeof HandWritten.ScoreCard>>,
+  Expect<Equal<typeof Emitted.SelectionLegend, typeof HandWritten.SelectionLegend>>,
 ];
 
 export type ValueParity = [

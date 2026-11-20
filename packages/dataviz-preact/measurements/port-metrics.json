@@ -7,15 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 100,
+    "portedModules": 105,
     "barrelFile": "index.ts",
-    "remainingModules": 27,
+    "remainingModules": 22,
     "remainingFiles": [
-      "lib/SankeyChart.tsx",
-      "lib/ScatterPlot.tsx",
-      "lib/ScatterPlotMatrix.tsx",
-      "lib/ScoreCard.tsx",
-      "lib/SelectionLegend.tsx",
       "lib/SmallMultiples.tsx",
       "lib/SolidGaugeChart.tsx",
       "lib/Sparkline.tsx",
@@ -1141,23 +1136,78 @@
         "total": 174,
         "touched": 2,
         "emissionRewrites": 1
+      },
+      {
+        "module": "SankeyChart",
+        "kind": "component",
+        "file": "src/lib/SankeyChart.tsx",
+        "reactSource": "lib/SankeyChart.tsx",
+        "reactLines": 44,
+        "preactLines": 49,
+        "total": 184,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ScatterPlot",
+        "kind": "component",
+        "file": "src/lib/ScatterPlot.tsx",
+        "reactSource": "lib/ScatterPlot.tsx",
+        "reactLines": 53,
+        "preactLines": 58,
+        "total": 221,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ScatterPlotMatrix",
+        "kind": "component",
+        "file": "src/lib/ScatterPlotMatrix.tsx",
+        "reactSource": "lib/ScatterPlotMatrix.tsx",
+        "reactLines": 74,
+        "preactLines": 80,
+        "total": 387,
+        "touched": 13,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ScoreCard",
+        "kind": "component",
+        "file": "src/lib/ScoreCard.tsx",
+        "reactSource": "lib/ScoreCard.tsx",
+        "reactLines": 79,
+        "preactLines": 84,
+        "total": 347,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "SelectionLegend",
+        "kind": "component",
+        "file": "src/lib/SelectionLegend.tsx",
+        "reactSource": "lib/SelectionLegend.tsx",
+        "reactLines": 40,
+        "preactLines": 42,
+        "total": 216,
+        "touched": 2,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 100,
-      "reactLines": 7779,
-      "preactLines": 8293,
-      "total": 41534,
-      "touched": 519,
-      "emissionRewrites": 102
+      "modules": 105,
+      "reactLines": 8069,
+      "preactLines": 8606,
+      "total": 42889,
+      "touched": 540,
+      "emissionRewrites": 107
     },
     "shared": {
-      "src/index.ts": 255,
+      "src/index.ts": 267,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 97
+      "vitest.react.config.ts": 98
     }
   },
   "reach": {
