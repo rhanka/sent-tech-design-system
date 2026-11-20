@@ -57,7 +57,7 @@ export type ExclusionReason =
   | "endpoint-hidden"
   /** A port occurrence whose owner entity occurrence is not visible. */
   | "owner-hidden"
-  /** An entity occurrence in a visual group whose `collapsed` is true. */
+  /** An entity occurrence in a visual group (or nested under one) whose `collapsed` is true. */
   | "group-collapsed"
   /** A reference that resolves to nothing: the scene cannot place what it cannot resolve. */
   | "unresolved-reference"
@@ -195,6 +195,26 @@ export interface Visibility {
 }
 
 /**
+ * Walk an entity occurrence's ancestor group chain (matching `diagram-core`
+ * `hiddenByFold`) and return the id of the first collapsed ancestor group, if
+ * any. A cycle in malformed group references terminates via `seen`.
+ */
+function collapsedAncestorGroupOf(view: ViewDocument, occurrenceId: OccurrenceRef): string | undefined {
+  const seen = new Set<string>();
+  let currentId: OccurrenceRef | undefined = occurrenceId;
+  while (currentId !== undefined && !seen.has(currentId)) {
+    seen.add(currentId);
+    const current: ViewDocument["entityOccurrences"][string] | undefined = view.entityOccurrences[currentId];
+    if (current === undefined || current.group === undefined) return undefined;
+    const group: ViewDocument["groups"][string] | undefined = view.groups[current.group];
+    if (group === undefined) return undefined;
+    if (group.collapsed === true) return group.id;
+    currentId = group.occurrence;
+  }
+  return undefined;
+}
+
+/**
  * The three passes are ordered because the cascade needs them so: entity
  * occurrences first, then ports (whose owner is an entity occurrence), then
  * relations (whose endpoints are either of the two). A single pass would have to
@@ -216,9 +236,9 @@ export function evaluateVisibility({ document, view }: VisibilityInput): Visibil
       });
       continue;
     }
-    const group = occurrence.group === undefined ? undefined : view.groups[occurrence.group];
-    if (group !== undefined && group.collapsed === true) {
-      exclusions.push({ occurrence: occurrence.id, kind: "entity", reason: "group-collapsed", cause: group.id });
+    const collapsedGroup = collapsedAncestorGroupOf(view, occurrence.id);
+    if (collapsedGroup !== undefined) {
+      exclusions.push({ occurrence: occurrence.id, kind: "entity", reason: "group-collapsed", cause: collapsedGroup });
       continue;
     }
     const verdict = entityVerdict(view, entity);

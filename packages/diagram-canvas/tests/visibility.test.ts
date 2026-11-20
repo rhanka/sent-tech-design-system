@@ -167,6 +167,61 @@ describe("decision 4: the cascade, reported and never silent", () => {
     expect(visible.has(OCC_PA)).toBe(false);
   });
 
+  it("excludes all deeper descendants when an outer ancestor group is collapsed", () => {
+    const document = sampleDocument();
+    const base = sampleView();
+    // Nesting chain: OCC_C (outer, collapsed) -> OCC_B (inner, expanded) -> OCC_A (grandchild, with port OCC_PA).
+    const { group: _dropGroup, ...occC } = base.entityOccurrences[OCC_C]!;
+    void _dropGroup;
+    const view: typeof base = {
+      ...base,
+      entityOccurrences: {
+        ...base.entityOccurrences,
+        [OCC_C]: occC,
+        [OCC_B]: { ...base.entityOccurrences[OCC_B]!, group: "grp.outer" },
+        [OCC_A]: { ...base.entityOccurrences[OCC_A]!, group: "grp.inner" },
+      },
+      groups: {
+        "grp.outer": { id: "grp.outer", occurrence: OCC_C, collapsed: true },
+        "grp.inner": { id: "grp.inner", occurrence: OCC_B, collapsed: false },
+      },
+    };
+    const { visible, exclusions } = evaluateVisibility({ document, view });
+    expect(visible.has(OCC_C)).toBe(true);
+    expect(visible.has(OCC_B)).toBe(false);
+    expect(visible.has(OCC_A)).toBe(false);
+    expect(visible.has(OCC_PA)).toBe(false);
+    expect(visible.has(OCC_PB)).toBe(false);
+    expect(visible.has(OCC_E1)).toBe(false);
+    expect(visible.has(OCC_E2)).toBe(false);
+    expect(exclusions).toContainEqual({ occurrence: OCC_B, kind: "entity", reason: "group-collapsed", cause: "grp.outer" });
+    expect(exclusions).toContainEqual({ occurrence: OCC_A, kind: "entity", reason: "group-collapsed", cause: "grp.outer" });
+    expect(exclusions).toContainEqual({ occurrence: OCC_PA, kind: "port", reason: "owner-hidden", cause: OCC_A });
+    expect(exclusions).toContainEqual({ occurrence: OCC_PB, kind: "port", reason: "owner-hidden", cause: OCC_B });
+    expect(visible.size + exclusions.length).toBe(occurrenceCount(view));
+  });
+
+  it("terminates cleanly on cyclic ancestor groups without excluding non-collapsed members", () => {
+    const document = sampleDocument();
+    const base = sampleView();
+    const view: typeof base = {
+      ...base,
+      entityOccurrences: {
+        ...base.entityOccurrences,
+        [OCC_A]: { ...base.entityOccurrences[OCC_A]!, group: "grp.b" },
+        [OCC_B]: { ...base.entityOccurrences[OCC_B]!, group: "grp.a" },
+      },
+      groups: {
+        "grp.a": { id: "grp.a", occurrence: OCC_A, collapsed: false },
+        "grp.b": { id: "grp.b", occurrence: OCC_B, collapsed: false },
+      },
+    };
+    const { visible, exclusions } = evaluateVisibility({ document, view });
+    expect(visible.has(OCC_A)).toBe(true);
+    expect(visible.has(OCC_B)).toBe(true);
+    expect(exclusions).toEqual([]);
+  });
+
   it("conserves every occurrence under the hardest cascade", () => {
     const { view, visible, exclusions } = evaluate({
       filters: [{ id: "f1", kind: "entity-type", types: ["container"], mode: "include" }],
