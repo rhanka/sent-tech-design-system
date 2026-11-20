@@ -46,6 +46,11 @@ const reactTests: string[] = [
   "index.test.ts", // emitted adapter.ts (useDashboard + core re-exports)
   "lib/drill.test.tsx", // emitted lib/drill.ts (drillLevel, onDrillSelect, drillDepth)
   "lib/CategoricalCharts.test.tsx", // emitted AreaChart, ComboChart, LollipopChart, StackedBarChart, StepLineChart + categoricalData
+  "lib/CrossfilteredBarChart.test.tsx", // emitted CrossfilteredBarChart (vertical DS BarChart + horizontal SVG)
+  "lib/TimeSeriesLineChart.test.tsx", // emitted TimeSeriesLineChart (native SVG time-series)
+  "lib/DivergingBarChart.test.tsx", // emitted DivergingBarChart
+  "lib/ParetoChart.test.tsx", // emitted ParetoChart
+  "lib/DateHistogramChart.test.tsx", // emitted DateHistogramChart
 ];
 
 export default defineConfig({

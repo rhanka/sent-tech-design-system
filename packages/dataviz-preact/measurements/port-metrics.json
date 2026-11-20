@@ -7,9 +7,9 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 10,
+    "portedModules": 15,
     "barrelFile": "index.ts",
-    "remainingModules": 117,
+    "remainingModules": 112,
     "remainingFiles": [
       "lib/AdvancedPivotDataTable.tsx",
       "lib/AnalyticsClusterPlot.tsx",
@@ -33,16 +33,13 @@
       "lib/ColumnRangeChart.tsx",
       "lib/ContourChart.tsx",
       "lib/CorrelationMatrix.tsx",
-      "lib/CrossfilteredBarChart.tsx",
       "lib/DashboardActiveFilters.tsx",
       "lib/DashboardFilterBar.tsx",
       "lib/DashboardGrid.tsx",
-      "lib/DateHistogramChart.tsx",
       "lib/DateRangeFilter.tsx",
       "lib/DecompositionTreeChart.tsx",
       "lib/Density2DChart.tsx",
       "lib/DependencyWheelChart.tsx",
-      "lib/DivergingBarChart.tsx",
       "lib/DonutChart.tsx",
       "lib/DrillBarChart.tsx",
       "lib/DrillBreadcrumb.tsx",
@@ -79,7 +76,6 @@
       "lib/PackedBubbleChart.tsx",
       "lib/PalettePicker.tsx",
       "lib/ParallelCoordinatesChart.tsx",
-      "lib/ParetoChart.tsx",
       "lib/PercentileBandChart.tsx",
       "lib/PivotDataTable.tsx",
       "lib/PointAndFigureChart.tsx",
@@ -106,7 +102,6 @@
       "lib/StreamgraphChart.tsx",
       "lib/SunburstChart.tsx",
       "lib/TileMapChart.tsx",
-      "lib/TimeSeriesLineChart.tsx",
       "lib/TimelineChart.tsx",
       "lib/TopNFilter.tsx",
       "lib/TraceWaterfallChart.tsx",
@@ -241,23 +236,78 @@
         "total": 190,
         "touched": 2,
         "emissionRewrites": 1
+      },
+      {
+        "module": "CrossfilteredBarChart",
+        "kind": "component",
+        "file": "src/lib/CrossfilteredBarChart.tsx",
+        "reactSource": "lib/CrossfilteredBarChart.tsx",
+        "reactLines": 290,
+        "preactLines": 296,
+        "total": 2171,
+        "touched": 44,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "TimeSeriesLineChart",
+        "kind": "component",
+        "file": "src/lib/TimeSeriesLineChart.tsx",
+        "reactSource": "lib/TimeSeriesLineChart.tsx",
+        "reactLines": 282,
+        "preactLines": 289,
+        "total": 2888,
+        "touched": 53,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DivergingBarChart",
+        "kind": "component",
+        "file": "src/lib/DivergingBarChart.tsx",
+        "reactSource": "lib/DivergingBarChart.tsx",
+        "reactLines": 74,
+        "preactLines": 81,
+        "total": 301,
+        "touched": 3,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ParetoChart",
+        "kind": "component",
+        "file": "src/lib/ParetoChart.tsx",
+        "reactSource": "lib/ParetoChart.tsx",
+        "reactLines": 60,
+        "preactLines": 66,
+        "total": 265,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DateHistogramChart",
+        "kind": "component",
+        "file": "src/lib/DateHistogramChart.tsx",
+        "reactSource": "lib/DateHistogramChart.tsx",
+        "reactLines": 164,
+        "preactLines": 175,
+        "total": 1016,
+        "touched": 20,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 10,
-      "reactLines": 838,
-      "preactLines": 905,
-      "total": 4523,
-      "touched": 21,
-      "emissionRewrites": 6
+      "modules": 15,
+      "reactLines": 1708,
+      "preactLines": 1812,
+      "total": 11164,
+      "touched": 143,
+      "emissionRewrites": 11
     },
     "shared": {
-      "src/index.ts": 26,
+      "src/index.ts": 38,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 66
+      "vitest.react.config.ts": 71
     }
   },
   "reach": {

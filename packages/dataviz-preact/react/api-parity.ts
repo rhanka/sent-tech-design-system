@@ -26,6 +26,14 @@ export type PropsParity = [
   Expect<Equal<Emitted.LollipopChartProps, HandWritten.LollipopChartProps>>,
   Expect<Equal<Emitted.StackedBarChartProps, HandWritten.StackedBarChartProps>>,
   Expect<Equal<Emitted.StepLineChartProps, HandWritten.StepLineChartProps>>,
+  Expect<Equal<Emitted.CrossfilteredBarChartProps, HandWritten.CrossfilteredBarChartProps>>,
+  Expect<Equal<Emitted.TimeSeriesLineChartProps, HandWritten.TimeSeriesLineChartProps>>,
+  Expect<Equal<Emitted.TimeSeriesLineChartTone, HandWritten.TimeSeriesLineChartTone>>,
+  Expect<Equal<Emitted.DivergingBarChartProps, HandWritten.DivergingBarChartProps>>,
+  Expect<Equal<Emitted.ParetoChartProps, HandWritten.ParetoChartProps>>,
+  Expect<Equal<Emitted.DateHistogramChartProps, HandWritten.DateHistogramChartProps>>,
+  Expect<Equal<Emitted.DateHistogramChartTone, HandWritten.DateHistogramChartTone>>,
+  Expect<Equal<Emitted.DateHistogramLabelFormatter, HandWritten.DateHistogramLabelFormatter>>,
 ];
 
 export type ComponentParity = [
@@ -34,6 +42,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.LollipopChart, typeof HandWritten.LollipopChart>>,
   Expect<Equal<typeof Emitted.StackedBarChart, typeof HandWritten.StackedBarChart>>,
   Expect<Equal<typeof Emitted.StepLineChart, typeof HandWritten.StepLineChart>>,
+  Expect<Equal<typeof Emitted.CrossfilteredBarChart, typeof HandWritten.CrossfilteredBarChart>>,
+  Expect<Equal<typeof Emitted.TimeSeriesLineChart, typeof HandWritten.TimeSeriesLineChart>>,
+  Expect<Equal<typeof Emitted.DivergingBarChart, typeof HandWritten.DivergingBarChart>>,
+  Expect<Equal<typeof Emitted.ParetoChart, typeof HandWritten.ParetoChart>>,
+  Expect<Equal<typeof Emitted.DateHistogramChart, typeof HandWritten.DateHistogramChart>>,
 ];
 
 export type ValueParity = [
