@@ -53,9 +53,11 @@ async function loadMatrix() {
   const core = await import(distIndexUrl());
   const pin = await import(distPinUrl());
   const ajv = new Ajv2020({ allErrors: true, strict: true });
+  const validateV4 = ajv.compile(pin.DIAGRAM_VIEW_SCHEMA_V4);
+  const validateV3 = ajv.compile(pin.DIAGRAM_VIEW_SCHEMA_V3);
   const validateV2 = ajv.compile(pin.DIAGRAM_VIEW_SCHEMA_V2);
   const validateV1 = ajv.compile(pin.DIAGRAM_VIEW_SCHEMA_V1);
-  return { core, pin, validateV2, validateV1 };
+  return { core, pin, validateV4, validateV3, validateV2, validateV1 };
 }
 
 function scopedOptions(core, profiles) {
@@ -450,4 +452,49 @@ test("view-schema guard: duplicate triple with relationOccurrences [] reports su
   });
   assert.equal(validateV2(view), true);
   assert.equal(dsCheckOf(core, view, document, "sum:two"), "summary-duplicate-key");
+});
+
+test("view-schema guard: @4 accepts DE-2 connector words and refuses raw geometry while @3 stays unchanged", async () => {
+  const { core, pin, validateV4, validateV3 } = await loadMatrix();
+  assert.equal(pin.DIAGRAM_VIEW_SCHEMA_V4["$id"], "engram:diagram-view-schema/4");
+  const document = conformanceDocument(core);
+  const options = scopedOptions(core, [core.generic2Profile]);
+  const view = conformanceView(core, document);
+  const styled = {
+    ...view,
+    presentation: { ...view.presentation, anatomy: "v2" },
+    relationOccurrences: {
+      ...view.relationOccurrences,
+      "occurrence:o1": {
+        ...view.relationOccurrences["occurrence:o1"],
+        strokeStyle: "dotted",
+        arrowhead: "open-triangle",
+        emphasis: "emphasis",
+      },
+      "occurrence:o2": {
+        ...view.relationOccurrences["occurrence:o2"],
+        strokeStyle: "dashed",
+        arrowhead: "none",
+        emphasis: "default",
+      },
+    },
+  };
+  assert.equal(validateV4(styled), true);
+  assert.equal(validateV3(styled), false);
+  assert.deepEqual(core.validateView(styled, document, options), []);
+
+  const rawGeometry = {
+    ...view,
+    relationOccurrences: {
+      ...view.relationOccurrences,
+      "occurrence:o1": {
+        ...view.relationOccurrences["occurrence:o1"],
+        strokeStyle: "8 6",
+        arrowhead: "M0 0L10 5L0 10Z",
+        emphasis: "dashed",
+      },
+    },
+  };
+  assert.equal(validateV4(rawGeometry), false);
+  assert.equal(core.validateView(rawGeometry, document, options).length, 3);
 });

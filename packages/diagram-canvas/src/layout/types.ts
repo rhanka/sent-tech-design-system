@@ -14,6 +14,7 @@ import type {
   ExecutorProfileBindings,
   OccurrenceRef,
   ProfileRegistry,
+  RelationPresentation,
   ViewDocument,
   ViewRef,
 } from "@sentropic/diagram-core";
@@ -203,6 +204,11 @@ export interface LayoutOptions {
    */
   readonly presentation?: DiagramPresentation & {
     readonly entities: Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>;
+    /**
+     * Word-addressed connector styles keyed by relation occurrence id or
+     * semantic relation id (DE-2). Closed registry words only, never raw geometry.
+     */
+    readonly relations?: Readonly<Record<string, RelationPresentation>>;
   };
   /** Injected shared line measurer for measured views (M3 §4.6.2/§5.6). */
   readonly measureLines?: LineMeasurer;

@@ -1,4 +1,16 @@
-import { flowIndex, parentOccurrenceOf, representativeOf, type FlowIndex, type FlowStep } from "@sentropic/diagram-core";
+import {
+  flowIndex,
+  parentOccurrenceOf,
+  representativeOf,
+  resolveArrowhead,
+  resolveDashPattern,
+  resolveLinkEmphasis,
+  type ArrowheadKind,
+  type FlowIndex,
+  type FlowStep,
+  type LinkEmphasis,
+  type StrokeStyle,
+} from "@sentropic/diagram-core";
 import type { FlowArrow, FlowBundle, FlowVisibleTarget } from "../layout/flows.js";
 import { DEFAULT_FLOW_STRINGS, type Visible } from "./flowModel.js";
 import type { DiagramSceneFigureLabels } from "./diagramSceneTypes.js";
@@ -59,6 +71,17 @@ import type { EntityPresentation } from "@sentropic/diagram-core";
 import type { AlignPinned, AnatomyPinned, DepthPinned, DiagramAnatomy } from "./diagramCardModel.js";
 
 export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
+export {
+  ARROWHEAD_MARKER_GEOMETRY,
+  connectorDashArray,
+  connectorMarkerIds,
+  connectorMarkerKind,
+  connectorMarkerRef,
+  extraConnectorMarkers,
+  type ConnectorMarkerEdgeInput,
+  type ConnectorMarkerIds,
+  type ConnectorMarkerSpec,
+} from "./connectorStyle.js";
 export {
   DEFAULT_EDGE_LABEL_SIZE,
   DEFAULT_LINK_STROKE_WIDTH,
@@ -370,6 +393,12 @@ export interface SceneEdgeModel {
   readonly occurrence: SceneOccurrenceRef;
   readonly points: readonly Vec2[];
   readonly markers?: string;
+  /** Closed dash-pattern word from the view/presentation (`solid | dashed | dotted`). */
+  readonly strokeStyle?: StrokeStyle;
+  /** Closed arrowhead word from the view/presentation (`arrow | filled-triangle | open-triangle | none`). */
+  readonly arrowhead?: ArrowheadKind;
+  /** Closed link-emphasis word from the view/presentation (`default | emphasis`). */
+  readonly emphasis?: LinkEmphasis;
 }
 
 export interface SceneLabelModel {
@@ -486,8 +515,21 @@ export function resolveScene(
   );
   const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
   // Non-scaling connector paint is widest in world units at the readability
-  // floor. Reserve the dedicated link stroke token (DE-2), never the zone border.
-  const linkStrokeWidth = input.metrics?.linkStrokeWidth ?? DEFAULT_LINK_STROKE_WIDTH;
+  // floor. Reserve the dedicated link stroke token (DE-2), expanding to the
+  // emphasis stroke width when any drawn connector carries emphasis.
+  const relationPresentation = input.presentation.relations;
+  const hasEmphasizedEdge = [...visibleEdges].some((id) => {
+    const occurrence = view.relationOccurrences[id];
+    if (occurrence === undefined) return false;
+    const rawEmphasis =
+      occurrence.emphasis ??
+      relationPresentation?.[occurrence.id]?.emphasis ??
+      relationPresentation?.[occurrence.relation]?.emphasis;
+    return resolveLinkEmphasis(rawEmphasis)?.emphasis === "emphasis";
+  });
+  const baseLinkStrokeWidth = input.metrics?.linkStrokeWidth ?? DEFAULT_LINK_STROKE_WIDTH;
+  const emphasisLinkStrokeWidth = input.metrics?.linkEmphasisStrokeWidth ?? DEFAULT_LINK_EMPHASIS_STROKE_WIDTH;
+  const linkStrokeWidth = hasEmphasizedEdge ? Math.max(baseLinkStrokeWidth, emphasisLinkStrokeWidth) : baseLinkStrokeWidth;
   const paintClearance = margin + linkStrokeWidth / (2 * DEFAULT_MIN_READABLE_SCALE);
   const zoneInset = input.metrics?.containerPadding ?? ZONE_GEOMETRY.contentInsetInline;
   for (const node of nodes) {
@@ -570,7 +612,25 @@ export function resolveScene(
       const first = points[0]!, second = points[1]!, last = points[points.length-1]!, before = points[points.length-2]!;
       markers = renderErdMarkerSvg(erdText(semantic.attributes,'fromCardinality') as ErdCardinality, first, {x:second.x-first.x,y:second.y-first.y}) + renderErdMarkerSvg(erdText(semantic.attributes,'toCardinality') as ErdCardinality,last,{x:before.x-last.x,y:before.y-last.y});
     }
-    edges.push({ ...(markers === undefined ? {} : { markers }), occurrence: occurrence.id, points, directed: flow !== undefined, arrows: result.arrowBoxes?.[occurrence.id] ?? [], ...(flow === undefined ? {} : { flow }), ...(bundle === undefined ? {} : { bundle }) });
+    const relStyle = relationPresentation?.[occurrence.id] ?? relationPresentation?.[occurrence.relation];
+    const rawStrokeStyle = occurrence.strokeStyle ?? relStyle?.strokeStyle;
+    const resolvedStrokeStyle = rawStrokeStyle === undefined ? undefined : resolveDashPattern(rawStrokeStyle)?.style;
+    const rawArrowhead = occurrence.arrowhead ?? relStyle?.arrowhead;
+    const resolvedArrowhead = rawArrowhead === undefined ? undefined : resolveArrowhead(rawArrowhead)?.canonicalKind;
+    const rawEmphasis = occurrence.emphasis ?? relStyle?.emphasis;
+    const resolvedEmphasis = rawEmphasis === undefined ? undefined : resolveLinkEmphasis(rawEmphasis)?.emphasis;
+    edges.push({
+      ...(markers === undefined ? {} : { markers }),
+      occurrence: occurrence.id,
+      points,
+      directed: flow !== undefined,
+      arrows: result.arrowBoxes?.[occurrence.id] ?? [],
+      ...(flow === undefined ? {} : { flow }),
+      ...(bundle === undefined ? {} : { bundle }),
+      ...(resolvedStrokeStyle === undefined || resolvedStrokeStyle === "solid" ? {} : { strokeStyle: resolvedStrokeStyle }),
+      ...(resolvedArrowhead === undefined || resolvedArrowhead === "filled-triangle" ? {} : { arrowhead: resolvedArrowhead }),
+      ...(resolvedEmphasis !== "emphasis" ? {} : { emphasis: resolvedEmphasis }),
+    });
     if (result.labelBoxes !== undefined && result.labelBoxes[id] === undefined) continue;
     const label = result.edgeBundles?.[id]?.label ?? (semantic?.profile === 'erd@1'
       ? ['fromRole','toRole'].map(role => erdText(semantic.attributes,role)).filter(Boolean).join(' / ') || edgeLabelOf(input.document, occurrence.relation)

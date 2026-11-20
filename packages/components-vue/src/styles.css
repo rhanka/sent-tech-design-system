@@ -18652,6 +18652,12 @@
     stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
     stroke-width: var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px);
   }
+  .st-diagramSceneFigure-edge[data-edge-stroke="dashed"] {
+    stroke-dasharray: var(--st-component-diagramScene-linkDashDashed, 8 6);
+  }
+  .st-diagramSceneFigure-edge[data-edge-stroke="dotted"] {
+    stroke-dasharray: var(--st-component-diagramScene-linkDashDotted, 2 5);
+  }
   .st-diagramSceneFigure-edgeLabel {
     align-items: center;
     color: var(--st-semantic-text-secondary);

@@ -36,9 +36,13 @@
   } from "./diagramCardModel.js";
   import {
     collapsedOccurrencesOf,
+    connectorDashArray,
+    connectorMarkerIds,
+    connectorMarkerRef,
     connectorPath,
     DEFAULT_EDGE_CORNER_RADIUS,
     DEFAULT_SCENE_LABELS,
+    extraConnectorMarkers,
     sceneContentSize,
     type DiagramSceneSize,
     type SceneLayoutCache,
@@ -254,6 +258,7 @@
   const collapsedNow = $derived(collapsed ?? foldState);
   const arrowInstance = $props.id();
   const arrowId = "diagram-arrow-" + arrowInstance;
+  const markerIds = connectorMarkerIds(arrowId);
   const maskId = "diagram-connector-mask-" + arrowInstance;
   let browserMeasure = $state.raw<CardLineMeasure>();
   const effectiveMeasure = $derived(sceneCardMeasure(measure === defaultCardMeasure ? browserMeasure ?? measure : measure));
@@ -1029,6 +1034,7 @@
               </div>
             {/snippet}
             {@const connectorMask = sceneConnectorMask(scene)}
+            {@const extraMarkers = extraConnectorMarkers(scene.edges, markerIds)}
             <!-- Paint order (diagram-canvas `scenePaintPlane`): expanded zone
                  frames, connectors, boxes, labels last. A zone frame is opaque:
                  painted after the connectors it would hide every route that
@@ -1042,10 +1048,10 @@
               aria-hidden="true"
               style={animating ? `opacity:${eased}` : undefined}
             >
-              <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker>{#if connectorMask !== undefined}<mask id={maskId} maskUnits="userSpaceOnUse" x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height}><rect x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height} fill="#fff" />{#each connectorMask.cutouts as cutout, index (index)}<rect data-scene-cutout={index} x={cutout.x} y={cutout.y} width={cutout.width} height={cutout.height} fill="#000" />{/each}</mask>{/if}</defs>
+              <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker>{#each extraMarkers as marker (marker.id)}<marker id={marker.id} data-arrowhead-kind={marker.kind} data-arrowhead-emphasis={marker.emphasis} viewBox={marker.viewBox} refX={marker.refX} refY={marker.refY} markerWidth={marker.markerWidth} markerHeight={marker.markerHeight} orient={marker.orient}><path d={marker.path} fill={marker.fill} stroke={marker.stroke} stroke-width={marker.strokeWidth} /></marker>{/each}{#if connectorMask !== undefined}<mask id={maskId} maskUnits="userSpaceOnUse" x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height}><rect x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height} fill="#fff" />{#each connectorMask.cutouts as cutout, index (index)}<rect data-scene-cutout={index} x={cutout.x} y={cutout.y} width={cutout.width} height={cutout.height} fill="#000" />{/each}</mask>{/if}</defs>
               <g data-scene-connectors="" mask={connectorMask === undefined ? undefined : `url(#${maskId})`}>
               {#each scene.edges as edge (edge.occurrence)}
-                <path marker-end={edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} d={pathOf(edge.points)} />
+                <path marker-end={connectorMarkerRef(edge, markerIds)} stroke-dasharray={connectorDashArray(edge.strokeStyle)} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-edge-stroke={edge.strokeStyle} data-edge-arrowhead={edge.arrowhead} data-edge-emphasis={edge.emphasis} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} d={pathOf(edge.points)} />
                 {#if edge.directed}
                   <path class="st-diagramSceneFigure-flowHit" data-flow-hit={edge.occurrence} d={pathOf(edge.points)} />
                   {#each edge.arrows as arrow, index (index)}
@@ -1220,6 +1226,12 @@
   .st-diagramSceneFigure-edge[data-edge-emphasis="emphasis"] {
     stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
     stroke-width: var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px);
+  }
+  .st-diagramSceneFigure-edge[data-edge-stroke="dashed"] {
+    stroke-dasharray: var(--st-component-diagramScene-linkDashDashed, 8 6);
+  }
+  .st-diagramSceneFigure-edge[data-edge-stroke="dotted"] {
+    stroke-dasharray: var(--st-component-diagramScene-linkDashDotted, 2 5);
   }
   .st-diagramSceneFigure-edgeLabel {
     box-sizing: border-box;
