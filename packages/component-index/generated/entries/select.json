@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Select.svelte",
-      "version": "0.43.0"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Styled native select, sm/md/lg sizes.",
     "fr": "Sélecteur natif stylé, tailles sm/md/lg."
   },
-  "digest": "sha256:805812ed09f26011bc6d4fa6e2396f096785c112bc1ecae4059b60108ef93aa0",
+  "digest": "sha256:4d027117b04826c4201a71e25e2b4380061ccc4248f038f89ba04c8140e80f80",
   "displayName": "Select",
   "format": "component-entry/v1",
   "frameworks": [

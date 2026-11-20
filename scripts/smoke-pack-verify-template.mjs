@@ -8,7 +8,7 @@
 // an escaped string literal inside smoke-pack.mjs.
 //
 // SMOKE_TARGETS placeholder -> JSON array of package names to deep-verify in
-//                                 this run (a subset of the 17 packages
+//                                 this run (a subset of the 18 packages
 //                                 below, depending on which the CI shard, or
 //                                 a local --workspaces= selection, packed).
 // SMOKE_MIN_EXPORT_COUNTS placeholder -> JSON object mapping the react/vue/
@@ -439,6 +439,61 @@ async function verifyRichText() {
   console.log("OK @sentropic/design-system-rich-text/editor: createRichTextEditor import verified");
 }
 
+async function verifyReviewCore() {
+  const mod = await import("@sentropic/design-system-review-core");
+  for (const name of [
+    "groupCommentsIntoThreads",
+    "filterThreads",
+    "isUnread",
+    "layoutPins",
+    "createFixtureCommentsAdapter",
+    "resolveAuthorshipFromFallback",
+    "getCommentStateLabel",
+    "encodeAnchor",
+    "decodeAnchor",
+    "tryEncodeAnchor",
+    "createAnchor",
+    "createAnchorFromSelection",
+    "createAnchorFromElement",
+    "createAnchorFromRegion",
+    "resolveAnchor",
+  ]) {
+    if (typeof mod[name] !== "function") {
+      fail("@sentropic/design-system-review-core", "missing " + name + " export (or not a function)");
+      return;
+    }
+  }
+  if (mod.getCommentStateLabel("closed") !== "Resolved") {
+    fail("@sentropic/design-system-review-core", "getCommentStateLabel('closed') must return 'Resolved'");
+    return;
+  }
+  const pins = mod.layoutPins([
+    { id: "b", targetY: 20 },
+    { id: "a", targetY: 10 },
+  ]);
+  if (pins.length !== 2 || pins[0].id !== "a" || pins[1].y - pins[0].y < 28) {
+    fail("@sentropic/design-system-review-core", "layoutPins failed smoke contract");
+    return;
+  }
+  const sampleAnchor = {
+    t: "text",
+    q: { exact: "« Résolu — 42 € 🚀 »", prefix: "Note : ", suffix: " fin." },
+    pos: { start: 7, end: 27 },
+    v: "1",
+  };
+  const encoded = mod.encodeAnchor(sampleAnchor);
+  if (!encoded.startsWith("a1:") || encoded.length > 2048) {
+    fail("@sentropic/design-system-review-core", "encodeAnchor produced invalid sectionKey: " + encoded);
+    return;
+  }
+  const decoded = mod.decodeAnchor(encoded);
+  if (!decoded || decoded.t !== "text" || decoded.q.exact !== sampleAnchor.q.exact) {
+    fail("@sentropic/design-system-review-core", "decodeAnchor failed UTF-8 round-trip");
+    return;
+  }
+  console.log("OK @sentropic/design-system-review-core: DS-1 + DS-2 exports import verified");
+}
+
 // Actually `import()`s the installed @sentropic/design-system-elements
 // tarball (its `dependencies` resolved from the registry in the throwaway
 // project — no monorepo, no workspace symlinks) and drives the real
@@ -619,6 +674,7 @@ const verifiers = {
   "@sentropic/diagram-core": verifyDiagramCore,
   "@sentropic/diagram-canvas": verifyDiagramCanvas,
   "@sentropic/design-system-rich-text": verifyRichText,
+  "@sentropic/design-system-review-core": verifyReviewCore,
   "@sentropic/design-system-elements": verifyElements,
   "@sentropic/dataviz-core": verifyDatavizCore,
   "@sentropic/dataviz-svelte": verifyDatavizSvelte,

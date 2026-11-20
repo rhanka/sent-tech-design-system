@@ -1,8 +1,8 @@
 {
   "componentId": "violin-chart",
   "contractSource": "derived",
-  "digest": "sha256:05a566fcdd5766591406b59ce11eab69869d617b928759c88adbd14c0dc3c85b",
-  "entryDigest": "sha256:134c694586eaefa5cb69271d9eb37d991977cce46bdd997a1b484ae67e277a80",
+  "digest": "sha256:44774a81a54ce43156d684b80fc3217d03740bab22ee7fcb8f062731aa784af2",
+  "entryDigest": "sha256:8449e85dfcd3078ed9711ce8efea24d1cd375df0c7387e8b06fdaa5bc07f938e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -262,7 +262,7 @@
         "declarationPath": "packages/components-svelte/dist/ViolinChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ViolinChartProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

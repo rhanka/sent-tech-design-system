@@ -1,8 +1,8 @@
 {
   "componentId": "skeleton-text",
   "contractSource": "derived",
-  "digest": "sha256:461a954570d26e5d8599562c21cad78f3152c7fb1e11cd877dc9f75a87c43c56",
-  "entryDigest": "sha256:2fcf3ed20bc1f4ee07b528f9263c4458bd9770f51ea7435daaa3d4ba13c4ca43",
+  "digest": "sha256:01d47b0bebd07c5cf4e809112ba315682e9f595370b4a4dc694a9bcd7e11c9b2",
+  "entryDigest": "sha256:0ead9d8cb7bd2dbcabd0167a25ee233e7b603ad08059749c1ee634d77d3e76ee",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -147,7 +147,7 @@
         "declarationPath": "packages/components-svelte/dist/SkeletonText.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SkeletonTextProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

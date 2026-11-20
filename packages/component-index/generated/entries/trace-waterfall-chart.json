@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TraceWaterfallChart.svelte",
-      "version": "0.43.0"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Distributed span trace: start → duration bars on the time axis, ordered and indented by hierarchy.",
     "fr": "Trace de spans distribués : barres start → durée sur l'axe temps, ordonnées et indentées par hiérarchie."
   },
-  "digest": "sha256:00fbd711a5043d91932b754e896cea4f364972629a13f7622aa1641dfd1750ec",
+  "digest": "sha256:90aaae86d593602a42bb18cd98db462d598f814ba303784bc3a6f6ae18c02b49",
   "displayName": "TraceWaterfallChart",
   "format": "component-entry/v1",
   "frameworks": [

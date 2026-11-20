@@ -1,8 +1,8 @@
 {
   "componentId": "treemap-chart",
   "contractSource": "derived",
-  "digest": "sha256:3eefc788c5a5e379dd995c9065827f46439a3f1c252eaaa6fd76c629363755f0",
-  "entryDigest": "sha256:fa84e5fbc392ea23837ee890017a92bf4f7acb83774313b83ae05851461e44f1",
+  "digest": "sha256:ffe64de0dfd6d1ee67ef457084d3fd917e296e3d9663fad5689bf90e15a154ba",
+  "entryDigest": "sha256:4b9cb23b5e893664afff66acac6b08265d28c2e55320ab9a8d287b6a915422b5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -288,7 +288,7 @@
         "declarationPath": "packages/components-svelte/dist/TreemapChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TreemapChartProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

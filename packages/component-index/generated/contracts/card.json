@@ -1,8 +1,8 @@
 {
   "componentId": "card",
   "contractSource": "derived",
-  "digest": "sha256:01a5bc09782835dc9f90eb0b6d56ad027b9a27692464f1f22efb18927c628b3b",
-  "entryDigest": "sha256:554800636ea1e7b36121beaf31a16e71f2ebd3f0f51cce5dd45bf06ca4f2e2fb",
+  "digest": "sha256:f47de905b101da54dbd35bd2fb72b3ccf90efcfd2028ada3f1a9ed3e331f105a",
+  "entryDigest": "sha256:29e4cab9fcd110683d5213c1855b1f2da7e52fb317fda000a830c39d95d1b61f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -110,7 +110,7 @@
         "declarationPath": "packages/components-svelte/dist/Card.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CardProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

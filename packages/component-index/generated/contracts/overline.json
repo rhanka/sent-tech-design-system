@@ -1,8 +1,8 @@
 {
   "componentId": "overline",
   "contractSource": "derived",
-  "digest": "sha256:eeafede72cb1b90b07009ac532bb4c0eb97be78f18afd03fc04c3407c3a380ef",
-  "entryDigest": "sha256:f773248e74552a2dce90e76ebf296c25f36f6da9bc5519c8c4a20a59303baef6",
+  "digest": "sha256:f3e633b9f4218c9b8c462b0402cf14d350fb1a5dbe92a9ff2d3133a08f16f166",
+  "entryDigest": "sha256:3383e9b41d23a515345e286ce9064aa97abd5fe78bb9055b93dde9dc8978a4fd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -136,7 +136,7 @@
         "declarationPath": "packages/components-svelte/dist/Overline.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OverlineProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

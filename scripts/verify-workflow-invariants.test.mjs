@@ -192,7 +192,7 @@ test("every workflow under .github/workflows is structurally readable", () => {
 
 test("the guard actually sees the known publish workflows", () => {
   const files = publishWorkflowFiles();
-  for (const expected of ["npm-publish.yml", "svelte-publish.yml", "dataviz-publish.yml", "diagram-canvas-publish.yml"]) {
+  for (const expected of ["npm-publish.yml", "svelte-publish.yml", "dataviz-publish.yml", "diagram-canvas-publish.yml", "review-core-publish.yml"]) {
     assert.ok(files.includes(expected), `expected ${expected} among the inspected publish workflows`);
   }
 });
@@ -496,6 +496,7 @@ test("the AC-L7a tarball guard runs in a built CI job and pack-smoke shards cove
   for (const name of [
     "@sentropic/design-system-elements",
     "@sentropic/design-system-rich-text",
+    "@sentropic/design-system-review-core",
     "@sentropic/diagram-core",
     "@sentropic/diagram-canvas",
   ]) {

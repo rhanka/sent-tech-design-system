@@ -1,8 +1,8 @@
 {
   "componentId": "message-status-badge",
   "contractSource": "derived",
-  "digest": "sha256:8c7f40078e6580cb321d321bca6b416f68d87dcfd8529a12ef2e0ed35d13e930",
-  "entryDigest": "sha256:e8a4e53fe2828bd9135cca3e10cbbd86dbe4342a5b42c0dbdccc5d83793af94f",
+  "digest": "sha256:ab66205ebf347cb3a86ae598396a6a2ba794590ccf36614f81cf98d8d4ec46c1",
+  "entryDigest": "sha256:a643152165771090cff6c67a9f05ba7230c9859459e046d8af77c677153b213f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -187,7 +187,7 @@
         "declarationPath": "packages/components-svelte/dist/MessageStatusBadge.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "partial",
       "unresolved": [],

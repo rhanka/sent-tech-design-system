@@ -1,8 +1,8 @@
 {
   "componentId": "heatmap-chart",
   "contractSource": "derived",
-  "digest": "sha256:d01300d8b84d97384324fe954d8b4343969e62be3bcb9b58b5a3ecebde664831",
-  "entryDigest": "sha256:dfac8904daff8196dac449d9ced470b168c4965cca947f943b84bfa54c626ec8",
+  "digest": "sha256:e830baf40ad63da0a7853603aa39d0620cc0cc2445c93d8d08e6d2d9cd92fad8",
+  "entryDigest": "sha256:f3a29007350b547a2dfeddb772b50459045ca6eaae14ae89b44527331e0dad4a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -274,7 +274,7 @@
         "declarationPath": "packages/components-svelte/dist/HeatmapChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HeatmapChartProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

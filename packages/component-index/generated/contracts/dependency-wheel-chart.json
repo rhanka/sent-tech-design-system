@@ -1,8 +1,8 @@
 {
   "componentId": "dependency-wheel-chart",
   "contractSource": "derived",
-  "digest": "sha256:48af57714920cb0465fa61f0734be3490bf6c2b46d4701d79fb0e71be81e0771",
-  "entryDigest": "sha256:79cae33f1517489dafec3c50386b31396ebf7208cc9f1aa33afd4b1bd740f45f",
+  "digest": "sha256:ee5389dc7910dda352e410ac798c823025b97d3856e1eae8fa39a1b92dc29ef1",
+  "entryDigest": "sha256:27a53c9dc21ebcafb56c167b1328809cb1438a5e3307b461afa220534350aa60",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/DependencyWheelChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DependencyWheelChartProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "partial",
       "unresolved": [],

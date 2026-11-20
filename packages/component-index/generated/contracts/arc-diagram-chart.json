@@ -1,8 +1,8 @@
 {
   "componentId": "arc-diagram-chart",
   "contractSource": "derived",
-  "digest": "sha256:f2d4fa8177981a3cf80b816dfee27f7a4ea244d35dcd5309768d414dfe88777d",
-  "entryDigest": "sha256:6cf4de9c8e07b95e2939d425d6171dfc15bb3fd5fc09dc730f07d6922d9635f8",
+  "digest": "sha256:87db3413a3bd63bb96da87dc4d4cba4f7833f74b271c84fab573c8c7d8c6dbf3",
+  "entryDigest": "sha256:0362be37bd6baf6f0ef74b6a7aaa19f7606f14b567c49a685f7fdf2fa4e49f9f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/ArcDiagramChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ArcDiagramChartProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "grid",
   "contractSource": "derived",
-  "digest": "sha256:6e2df3805f4d6c5d01f556f46ba06fc3be0b1fdb9dccc43fa086281e898f8096",
-  "entryDigest": "sha256:c9bc1970a96325c47c2ad31e9cc67dfe0aa52e5f59934c6c1d67e7a54f6ffcaa",
+  "digest": "sha256:3fc387ff513e385f797d7f537b7ef336df60ad6a80c4604b34353ff2883e3148",
+  "entryDigest": "sha256:75de89fe56d00e59099d550b62cb18063d0b1103b6c92644401670f929ca5e54",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -148,7 +148,7 @@
         "declarationPath": "packages/components-svelte/dist/Grid.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "GridProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

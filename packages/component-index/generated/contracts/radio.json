@@ -1,8 +1,8 @@
 {
   "componentId": "radio",
   "contractSource": "derived",
-  "digest": "sha256:83f6c2a664d61bba537198ed8ad8ab2a99e4fa3924fff4b15233fc1fb93140fb",
-  "entryDigest": "sha256:3fe4a4d05dfc56d0d722d57cc27f1803439d06be3911cba71fd12bc3478cef90",
+  "digest": "sha256:6d601f26a29fea020daa52a91b692beffa19db42494cc46ebe12b37fad91be03",
+  "entryDigest": "sha256:cb2d94d6b39e0abf97ea5745460d2586f10bec88cae2897ad49cbc527782c46c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -184,7 +184,7 @@
         "declarationPath": "packages/components-svelte/dist/Radio.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RadioProps",
-        "version": "0.43.0"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],
