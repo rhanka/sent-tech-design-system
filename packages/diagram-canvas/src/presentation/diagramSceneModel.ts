@@ -66,6 +66,7 @@ import {
 import { measureBundleLabel, type BundleLabelGroup } from "../layout/bundleLabel.js";
 import { getDiagramGlyph } from "./registry.js";
 import { anatomyZoneGeometry, lineBoxHeight, ZONE_GEOMETRY } from "./diagramCardModel.js";
+import { buildSceneLinkLegend, type LinkLegendAnchor, type SceneLinkLegend } from "./linkLegend.js";
 import { clearSceneLabels } from "./sceneLabelClearance.js";
 import type { EntityPresentation } from "@sentropic/diagram-core";
 import type { AlignPinned, AnatomyPinned, DepthPinned, DiagramAnatomy } from "./diagramCardModel.js";
@@ -82,6 +83,32 @@ export {
   type ConnectorMarkerIds,
   type ConnectorMarkerSpec,
 } from "./connectorStyle.js";
+export {
+  buildSceneLinkLegend,
+  collectLinkLegendStyles,
+  defaultLinkStyleLabel,
+  LINK_LEGEND_ARROWHEAD_ORDER,
+  LINK_LEGEND_EMPHASIS_ORDER,
+  LINK_LEGEND_FONT_SIZE,
+  LINK_LEGEND_GAP,
+  LINK_LEGEND_HEADER_HEIGHT,
+  LINK_LEGEND_MIN_WIDTH,
+  LINK_LEGEND_PADDING,
+  LINK_LEGEND_ROW_GAP,
+  LINK_LEGEND_ROW_HEIGHT,
+  LINK_LEGEND_STROKE_ORDER,
+  LINK_LEGEND_SWATCH_GAP,
+  LINK_LEGEND_SWATCH_WIDTH,
+  linkLegendSwatchGeometry,
+  linkStyleKey,
+  type BuildSceneLinkLegendInput,
+  type LinkLegendAnchor,
+  type LinkLegendEdgeInput,
+  type LinkLegendEntry,
+  type LinkLegendStyleKey,
+  type LinkLegendSwatchGeometry,
+  type SceneLinkLegend,
+} from "./linkLegend.js";
 export {
   DEFAULT_EDGE_LABEL_SIZE,
   DEFAULT_LINK_STROKE_WIDTH,
@@ -234,6 +261,12 @@ export interface SceneLayoutInput {
   readonly depthParityStart?: 0 | 1;
   /** Opt-in informational `zone-surface-same` diagnostic on untinted leaf cards inside `surface1` zones. */
   readonly reportSurfaceSame?: boolean;
+  /** Automatic link-style legend anchor (`"right"` default; `"none"` suppresses). */
+  readonly legend?: LinkLegendAnchor;
+  /** Heading for the automatic link-style legend strip (defaults to `"Legend"`). */
+  readonly legendTitle?: string;
+  /** Optional custom labels for automatic link-style legend entries, keyed by `linkStyleKey(...)`. */
+  readonly legendLabels?: Readonly<Record<string, string>>;
   readonly resolveGlyph?: (name: string) => import("./diagramCardModel.js").DiagramGlyphPaths | undefined;
   readonly cache?: SceneLayoutCache;
   readonly document: SceneDocument;
@@ -436,7 +469,13 @@ export interface SceneModel {
    */
   readonly connectorCutouts: readonly Rect[];
   /**
-   * Fit bbox (BF-7): `rectUnion(scene.bounds, placed label boxes)`.
+   * Automatic legend of the visible link styles actually used in this fold
+   * state, anchored on an edge strip outside the functional zones (`undefined`
+   * when fewer than two distinct styles are visible or `legend: "none"`).
+   */
+  readonly linkLegend?: SceneLinkLegend;
+  /**
+   * Fit bbox (BF-7): `rectUnion(scene.bounds, placed label boxes, linkLegend.rect)`.
    * `undefined` for an empty scene.
    */
   readonly bounds?: Rect;
@@ -465,7 +504,7 @@ function edgeLabelOf(document: SceneDocument, relation: string): string | undefi
  */
 export function resolveScene(
   result: SceneLaidOut,
-  input: Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics" | "iconBindings" | "strictIcons" | "view" | "resolveGlyph" | "flows" | "depthParityStart">,
+  input: Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics" | "iconBindings" | "strictIcons" | "view" | "resolveGlyph" | "flows" | "depthParityStart" | "legend" | "legendTitle" | "legendLabels">,
 ): SceneModel {
   const view = result.view;
   const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, view, input.resolveGlyph,
@@ -686,6 +725,18 @@ export function resolveScene(
     const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
     bounds = bounds === undefined ? padded : rectUnion(bounds, padded);
   }
+  const linkLegend = buildSceneLinkLegend({
+    edges,
+    contentBounds: bounds,
+    measureLines: input.measureLines,
+    ...(input.legend === undefined ? {} : { anchor: input.legend }),
+    ...(input.legendTitle === undefined ? {} : { title: input.legendTitle }),
+    ...(input.legendLabels === undefined ? {} : { labels: input.legendLabels }),
+    ...(input.metrics?.edgeLabelSize === undefined ? {} : { fontSize: input.metrics.edgeLabelSize }),
+  });
+  if (linkLegend !== undefined) {
+    bounds = bounds === undefined ? linkLegend.rect : rectUnion(bounds, linkLegend.rect);
+  }
   if (bounds !== undefined) {
     const x = Math.floor(bounds.x * 64) / 64, y = Math.floor(bounds.y * 64) / 64;
     bounds = { x, y, width: Math.ceil((bounds.x + bounds.width) * 64) / 64 - x, height: Math.ceil((bounds.y + bounds.height) * 64) / 64 - y };
@@ -699,6 +750,7 @@ export function resolveScene(
     edges,
     labels: clearedLabels,
     connectorCutouts,
+    ...(linkLegend === undefined ? {} : { linkLegend }),
     ...(bounds === undefined ? {} : { bounds }),
     orientations: result.orientations ?? {},
   };
@@ -716,6 +768,7 @@ export const DEFAULT_SCENE_LABELS: DiagramSceneFigureLabels = Object.freeze({
   expand: (title: string) => `Expand ${title}`,
   collapse: (title: string) => `Collapse ${title}`,
   contains: "includes",
+  legend: "Legend",
 });
 
 function isContainmentRelation(document: SceneDocument, relation: SceneDocument["relations"][string]): boolean {

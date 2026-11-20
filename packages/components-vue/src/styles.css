@@ -18671,6 +18671,48 @@
     position: absolute;
     white-space: nowrap;
   }
+  .st-diagramSceneFigure-legend {
+    background: var(--st-component-diagramScene-labelSurface, var(--st-semantic-surface-raised));
+    box-shadow: inset 0 0 0 var(--st-component-diagramScene-labelBorderWidth, 1px) var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
+    box-sizing: border-box;
+    color: var(--st-component-diagramScene-labelText, var(--st-semantic-text-primary));
+    display: flex;
+    flex-direction: column;
+    font-family: var(--st-component-diagramCard-fontFamily, inherit);
+    font-size: var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px));
+    gap: var(--st-component-diagramCard-padding, 8px);
+    line-height: var(--st-component-diagramScene-edgeLabelLineHeight, 22px);
+    padding: var(--st-component-diagramScene-containerPadding, 16px);
+    position: absolute;
+  }
+  .st-diagramSceneFigure-legendTitle {
+    border-bottom: var(--st-component-diagramScene-labelBorderWidth, 1px) solid var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
+    font-weight: var(--st-component-diagramCard-titleFontWeight, 700);
+    padding-bottom: var(--st-component-diagramScene-labelPadding, 4px);
+    white-space: nowrap;
+  }
+  .st-diagramSceneFigure-legendList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--st-component-diagramCard-padding, 8px);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .st-diagramSceneFigure-legendItem {
+    align-items: center;
+    display: flex;
+    gap: var(--st-component-diagramCard-bodyInsetFromBar, 14px);
+    min-height: calc(var(--st-component-diagramCard-bodyInsetFromBar, 14px) * 2);
+    white-space: nowrap;
+  }
+  .st-diagramSceneFigure-legendSwatch {
+    flex: none;
+    height: var(--st-component-diagramScene-containerPadding, 16px);
+    overflow: visible;
+    width: calc(var(--st-component-diagramCard-bodyInsetFromBar, 14px) * 4);
+  }
+  .st-diagramSceneFigure-legendLabel { white-space: nowrap; }
 
 
   .st-diagramCard {

@@ -11,7 +11,7 @@ import DiagramCard from './DiagramCard.vue';
 import DiagramZone from './DiagramZone.vue';
 import DiagramControlGlyph from './DiagramControlGlyph.vue';
 import { projectCardProps, projectZoneProps } from './diagramCardModel.js';
-import { collapsedOccurrencesOf, connectorDashArray, connectorMarkerIds, connectorMarkerRef, connectorPath, DEFAULT_EDGE_CORNER_RADIUS, DEFAULT_SCENE_LABELS, displayedRects, extraConnectorMarkers, layoutScene, parseDurationMs, parseEasing, rectsOf, resolveScene, sameRects, sceneConnectorMask, scenePaintPlane, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
+import { collapsedOccurrencesOf, connectorDashArray, connectorMarkerIds, connectorMarkerRef, connectorPath, DEFAULT_EDGE_CORNER_RADIUS, DEFAULT_SCENE_LABELS, displayedRects, extraConnectorMarkers, layoutScene, linkLegendSwatchGeometry, parseDurationMs, parseEasing, rectsOf, resolveScene, sameRects, sceneConnectorMask, scenePaintPlane, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
 import type { DiagramSceneFigureProps as SceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
 export type DiagramSceneFigureProps = SceneFigureProps;
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { strictIcons: true });
@@ -86,6 +86,9 @@ const scene = computed(() => layoutResult.value.status === 'laid-out'
         ...(props.iconBindings === undefined ? {} : { iconBindings: props.iconBindings }),
         strictIcons: props.strictIcons ?? true,
         ...(props.depthParityStart === undefined ? {} : { depthParityStart: props.depthParityStart }),
+        ...(props.legend === undefined ? {} : { legend: props.legend }),
+        ...(strings.value.legend === undefined ? {} : { legendTitle: strings.value.legend }),
+        ...(props.legendLabels === undefined ? {} : { legendLabels: props.legendLabels }),
         resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
         metrics: effectiveMetrics.value,
     }) : undefined);
@@ -256,6 +259,10 @@ const paintLayers = computed(() => [
 // The connector layer is masked over the footer text a frame paints itself.
 const connectorMask = computed(() => scene.value === undefined ? undefined : sceneConnectorMask(scene.value));
 const extraMarkers = computed(() => scene.value === undefined ? [] : extraConnectorMarkers(scene.value.edges, markerIds));
+const legendEntries = computed(() => scene.value?.linkLegend?.entries.map(entry => ({
+    entry,
+    swatch: linkLegendSwatchGeometry(entry, effectiveMetrics.value),
+})) ?? []);
 const edgeCornerRadius = computed(() => effectiveMetrics.value.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS);
 const pathOf = (items: readonly { readonly x: number; readonly y: number }[]) => connectorPath(items, edgeCornerRadius.value);
 const worldStyle = computed(() => `transform:translate(${placement.value.translateX}px,${placement.value.translateY}px) scale(${zoom.value})`);
@@ -316,6 +323,19 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
                 </template>
                 <template v-else><span v-for="(line, index) in edgeLabel.lines" :key="index">{{ line }}</span></template>
               </div>
+              <aside v-if="scene.linkLegend !== undefined" class="st-diagramSceneFigure-legend" role="region" :aria-label="scene.linkLegend.title" data-scene-legend="" :data-legend-anchor="scene.linkLegend.anchor"
+                :style="`left:${scene.linkLegend.rect.x}px;top:${scene.linkLegend.rect.y}px;width:${scene.linkLegend.rect.width}px;height:${scene.linkLegend.rect.height}px${animating ? `;opacity:${eased}` : ''}`">
+                <div class="st-diagramSceneFigure-legendTitle">{{ scene.linkLegend.title }}</div>
+                <ul class="st-diagramSceneFigure-legendList">
+                  <li v-for="{ entry, swatch } in legendEntries" :key="entry.key" class="st-diagramSceneFigure-legendItem" :data-legend-style="entry.key" :data-edge-stroke="entry.strokeStyle" :data-edge-arrowhead="entry.arrowhead" :data-edge-emphasis="entry.emphasis">
+                    <svg class="st-diagramSceneFigure-legendSwatch" :viewBox="swatch.viewBox" aria-hidden="true">
+                      <path :data-legend-swatch="entry.key" :d="swatch.linePath" fill="none" :stroke="swatch.stroke" :stroke-width="swatch.strokeWidth" :stroke-dasharray="swatch.dashArray" vector-effect="non-scaling-stroke" />
+                      <path v-if="swatch.arrowPath !== undefined" :d="swatch.arrowPath" :fill="swatch.arrowFill" :stroke="swatch.arrowStroke" :stroke-width="swatch.arrowStrokeWidth" />
+                    </svg>
+                    <span class="st-diagramSceneFigure-legendLabel">{{ entry.label }}</span>
+                  </li>
+                </ul>
+              </aside>
             </template>
           </div>
         </div>
@@ -448,4 +468,46 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
   .st-diagramSceneFigure-bundleHeader { display: block; padding: var(--st-component-diagramScene-labelPadding, 4px); font-weight: 400; }
   .st-diagramSceneFigure-bundleRelation { display: flex; align-self: stretch; gap: var(--st-component-diagramScene-bundleMarkerGap, 6px); padding: var(--st-component-diagramScene-labelPadding, 4px); box-shadow: inset 0 var(--st-component-diagramScene-labelBorderWidth, 1px) 0 var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle)); }
   .st-diagramSceneFigure-bundleRelation div { display: flex; flex-direction: column; }
+  .st-diagramSceneFigure-legend {
+    background: var(--st-component-diagramScene-labelSurface, var(--st-semantic-surface-raised));
+    box-shadow: inset 0 0 0 var(--st-component-diagramScene-labelBorderWidth, 1px) var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
+    box-sizing: border-box;
+    color: var(--st-component-diagramScene-labelText, var(--st-semantic-text-primary));
+    display: flex;
+    flex-direction: column;
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
+    font-size: var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px));
+    gap: var(--st-component-diagramCard-padding, 8px);
+    line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
+    padding: var(--st-component-diagramScene-containerPadding, 16px);
+    position: absolute;
+  }
+  .st-diagramSceneFigure-legendTitle {
+    border-bottom: var(--st-component-diagramScene-labelBorderWidth, 1px) solid var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
+    font-weight: var(--st-component-diagramCard-titleFontWeight, 700);
+    padding-bottom: var(--st-component-diagramScene-labelPadding, 4px);
+    white-space: nowrap;
+  }
+  .st-diagramSceneFigure-legendList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--st-component-diagramCard-padding, 8px);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .st-diagramSceneFigure-legendItem {
+    align-items: center;
+    display: flex;
+    gap: var(--st-component-diagramCard-bodyInsetFromBar, 14px);
+    min-height: calc(var(--st-component-diagramCard-bodyInsetFromBar, 14px) * 2);
+    white-space: nowrap;
+  }
+  .st-diagramSceneFigure-legendSwatch {
+    flex: none;
+    height: var(--st-component-diagramScene-containerPadding, 16px);
+    overflow: visible;
+    width: calc(var(--st-component-diagramCard-bodyInsetFromBar, 14px) * 4);
+  }
+  .st-diagramSceneFigure-legendLabel { white-space: nowrap; }
 </style>

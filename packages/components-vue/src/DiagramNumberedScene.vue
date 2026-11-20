@@ -10,7 +10,7 @@ import {
   type FlowState, type FlowAction, type Visible,
 } from "@sentropic/diagram-canvas/flowModel";
 import {
-  collapsedOccurrencesOf, connectorDashArray, connectorMarkerIds, connectorMarkerRef, connectorPath, DEFAULT_EDGE_CORNER_RADIUS, DEFAULT_SCENE_LABELS, extraConnectorMarkers, sceneContentSize, layoutScene, resolveScene,
+  collapsedOccurrencesOf, connectorDashArray, connectorMarkerIds, connectorMarkerRef, connectorPath, DEFAULT_EDGE_CORNER_RADIUS, DEFAULT_SCENE_LABELS, extraConnectorMarkers, sceneContentSize, layoutScene, linkLegendSwatchGeometry, resolveScene,
   parseScale, sceneConnectorMask, sceneNodesOnPlane,
   type SceneModel, type SceneNodeModel, type SceneOrientations, type SceneOccurrenceRef,
 } from "@sentropic/diagram-canvas/diagramSceneModel";
@@ -62,6 +62,9 @@ const scene = computed<SceneModel | undefined>(() => layout.value.status !== "la
   ...(props.iconBindings === undefined ? {} : { iconBindings: props.iconBindings }),
   strictIcons: props.strictIcons ?? true,
   ...(props.depthParityStart === undefined ? {} : { depthParityStart: props.depthParityStart }),
+  ...(props.legend === undefined ? {} : { legend: props.legend }),
+  ...(strings.value.legend === undefined ? {} : { legendTitle: strings.value.legend }),
+  ...(props.legendLabels === undefined ? {} : { legendLabels: props.legendLabels }),
   resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
 }));
 // Paint order (diagram-canvas `scenePaintPlane`): expanded zone frames, the
@@ -75,6 +78,10 @@ const paintLayers = computed(() => [
 // The connector layer is masked over the footer text a frame paints itself.
 const connectorMask = computed(() => scene.value === undefined ? undefined : sceneConnectorMask(scene.value));
 const extraMarkers = computed(() => scene.value === undefined ? [] : extraConnectorMarkers(scene.value.edges, markerIds));
+const legendEntries = computed(() => scene.value?.linkLegend?.entries.map((entry) => ({
+  entry,
+  swatch: linkLegendSwatchGeometry(entry, effectiveMetrics.value),
+})) ?? []);
 watch(layout, (result) => props.onLayout?.(result), { immediate: true });
 watch(() => sceneContentSize(layout.value), (size) => { props.onSizeChange?.(size); emit("update:contentSize", size); }, { immediate: true });
 
@@ -300,6 +307,18 @@ const scenarioId = useId();
                 </template>
                 <template v-else><span v-for="(line, index) in label.lines" :key="index">{{ line }}</span></template>
               </div>
+              <aside v-if="scene.linkLegend !== undefined" class="st-diagramSceneFigure-legend" role="region" :aria-label="scene.linkLegend.title" data-scene-legend="" :data-legend-anchor="scene.linkLegend.anchor" :style="boxStyle(scene.linkLegend.rect)">
+                <div class="st-diagramSceneFigure-legendTitle">{{ scene.linkLegend.title }}</div>
+                <ul class="st-diagramSceneFigure-legendList">
+                  <li v-for="{ entry, swatch } in legendEntries" :key="entry.key" class="st-diagramSceneFigure-legendItem" :data-legend-style="entry.key" :data-edge-stroke="entry.strokeStyle" :data-edge-arrowhead="entry.arrowhead" :data-edge-emphasis="entry.emphasis">
+                    <svg class="st-diagramSceneFigure-legendSwatch" :viewBox="swatch.viewBox" aria-hidden="true">
+                      <path :data-legend-swatch="entry.key" :d="swatch.linePath" fill="none" :stroke="swatch.stroke" :stroke-width="swatch.strokeWidth" :stroke-dasharray="swatch.dashArray" vector-effect="non-scaling-stroke" />
+                      <path v-if="swatch.arrowPath !== undefined" :d="swatch.arrowPath" :fill="swatch.arrowFill" :stroke="swatch.arrowStroke" :stroke-width="swatch.arrowStrokeWidth" />
+                    </svg>
+                    <span class="st-diagramSceneFigure-legendLabel">{{ entry.label }}</span>
+                  </li>
+                </ul>
+              </aside>
             </template>
           </div>
         </div>

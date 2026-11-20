@@ -102,12 +102,24 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     expect(edgeEl(crossEdge).getAttribute("data-edge-emphasis")).toBe("emphasis");
     expect(edgeEl(crossEdge).getAttribute("marker-end")).toMatch(/-open-emphasis\)$/);
 
-    // Fold the nested zone: cross-boundary edge re-routes with rounded path and keeps its style words.
+    // Automatic link-style legend lists the 4 active styles in fixed canonical order on the right strip.
+    const legendEl = () => view.container.querySelector<HTMLElement>("[data-scene-legend]");
+    expect(legendEl()).not.toBeNull();
+    expect(legendEl()!.getAttribute("data-legend-anchor")).toBe("right");
+    expect([...view.container.querySelectorAll("[data-legend-style]")].map((el) => el.getAttribute("data-legend-style"))).toEqual([
+      "solid:filled-triangle:default",
+      "solid:none:emphasis",
+      "dashed:open-triangle:emphasis",
+      "dotted:open-triangle:default",
+    ]);
+
+    // Fold the nested zone: only 1 cross-boundary edge remains -> single style -> legend disappears.
     const [, ontology] = fixture.zones as [string, string];
     const toggle = () => view.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${ontology}"] button[aria-expanded]`)!;
     await fireEvent.click(toggle());
     await tick();
     expect(view.container.querySelectorAll("path[data-scene-edge]")).toHaveLength(1);
+    expect(legendEl()).toBeNull();
     const foldedEdge = edgeEl(crossEdge);
     expect(foldedEdge.getAttribute("stroke-dasharray")).toBe("8 6");
     expect(foldedEdge.getAttribute("data-edge-stroke")).toBe("dashed");
@@ -115,12 +127,39 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     expect(foldedEdge.getAttribute("data-edge-emphasis")).toBe("emphasis");
     expect(foldedEdge.getAttribute("marker-end")).toMatch(/-open-emphasis\)$/);
 
-    // Unfold: all styled edges return intact.
+    // Unfold: all styled edges and the 4-entry legend return intact.
     await fireEvent.click(toggle());
     await tick();
     expect(view.container.querySelectorAll("path[data-scene-edge]")).toHaveLength(fixture.relations.length);
+    expect(legendEl()).not.toBeNull();
+    expect([...view.container.querySelectorAll("[data-legend-style]")].map((el) => el.getAttribute("data-legend-style"))).toEqual([
+      "solid:filled-triangle:default",
+      "solid:none:emphasis",
+      "dashed:open-triangle:emphasis",
+      "dotted:open-triangle:default",
+    ]);
     expect(edgeEl(r0!).getAttribute("stroke-dasharray")).toBe("2 5");
     expect(edgeEl(r1!).getAttribute("marker-end")).toBeNull();
     expect(edgeEl(r1!).getAttribute("data-edge-emphasis")).toBe("emphasis");
+  });
+
+  it("should omit the automatic link legend for single-style scenes and when legend='none'", async () => {
+    const fixture = nestedZoneFixture({ outside: true });
+    const single = render(DiagramSceneFigure, propsOf(fixture));
+    await tick();
+    expect(single.container.querySelector("[data-scene-legend]")).toBeNull();
+    single.unmount();
+
+    const [r0, r1] = fixture.relations.map((r) => r.occurrence);
+    const presentation = {
+      ...fixture.presentation,
+      relations: {
+        [r0!]: { strokeStyle: "dashed" as const },
+        [r1!]: { strokeStyle: "dotted" as const },
+      },
+    };
+    const suppressed = render(DiagramSceneFigure, { ...propsOf(fixture), presentation, legend: "none" } as DiagramSceneFigureProps);
+    await tick();
+    expect(suppressed.container.querySelector("[data-scene-legend]")).toBeNull();
   });
 });
