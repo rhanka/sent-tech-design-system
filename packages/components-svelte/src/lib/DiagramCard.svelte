@@ -130,7 +130,7 @@
   data-tone={tone}
   data-proposed={proposed === true ? "true" : undefined}
   style={effectiveAnatomy === "v2"
-    ? `height:${layout.box.height}px;--st-component-diagramCard-width:var(--st-component-diagramCardCompact-width, 352px);--st-component-diagramCard-padding:var(--st-component-diagramCardCompact-padding, 6px);--st-component-diagramCard-accentWidth:var(--st-component-diagramCardCompact-accentWidth, 6px);--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)${surfaceStyle}`
+    ? `height:${layout.box.height}px;--st-component-diagramCard-width:var(--st-component-diagramCardCompact-width, 352px);--st-component-diagramCard-padding:var(--st-component-diagramCardCompact-padding, 6px);--st-component-diagramCard-accentWidth:var(--st-component-diagramCardCompact-accentWidth, 6px);--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px);--st-component-diagramCard-iconTextGap:var(--st-component-diagramCardCompact-iconTextGap, 4px)${surfaceStyle}`
     : `height:${layout.box.height}px${surfaceStyle}`}
   data-card-overflow={overflowSlot}
   data-card-icon-unknown={unknownIcon ? "" : undefined}

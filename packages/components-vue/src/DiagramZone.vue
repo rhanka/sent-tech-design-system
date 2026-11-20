@@ -133,7 +133,7 @@ const frameInset = (inset: number): string => `calc(${inset}px - ${borderToken})
 // inline insets, as tall as the layout's header block + subtitle.
 const headerStyle = computed(() => header.value === undefined
     ? undefined
-    : `top:${frameTop(y + zoneGeometry.value.headerInset)};left:${frameInset(zoneGeometry.value.headerInset)};right:${frameInset(containerPadding ?? zoneGeometry.value.contentInsetInline)};height:${header.value.ruleY - zoneGeometry.value.headerRuleGap - y - zoneGeometry.value.headerInset}px`);
+    : `top:${frameTop(y + zoneGeometry.value.headerInset)};left:${frameInset(zoneGeometry.value.headerInset)};right:${frameInset(containerPadding ?? zoneGeometry.value.headerInset)};height:${header.value.ruleY - zoneGeometry.value.headerRuleGap - y - zoneGeometry.value.headerInset}px`);
 const ruleStyle = computed(() => header.value === undefined
     ? undefined
     : `top:${frameTop(header.value.ruleY)};left:${frameInset(zoneGeometry.value.ruleInsetStart)};right:${frameInset(zoneGeometry.value.ruleInsetEnd)}`);
@@ -162,7 +162,7 @@ defineSlots<{ "default"?: () => unknown }>();
     <DiagramCard v-bind="cardProps" :measure="measure" @select="onSelect"></DiagramCard>
   </template><template v-else>
 
-    <div :class="`st-diagramZone st-diagramZone--expanded${effectiveAlign === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}${anatomy === 'v2' ? ' st-diagramZone--v2' : ''}`" :style="anatomy === 'v2' ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)${surfaceStyle}` : `width:${layout.box.width}px;height:${layout.box.height}px${surfaceStyle}`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :title="zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })" :aria-label="title" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
+    <div :class="`st-diagramZone st-diagramZone--expanded${effectiveAlign === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}${anatomy === 'v2' ? ' st-diagramZone--v2' : ''}`" :style="anatomy === 'v2' ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px);--st-component-diagramCard-iconTextGap:var(--st-component-diagramCardCompact-iconTextGap, 4px);--st-component-diagramZone-headerInset:var(--st-component-diagramCardCompact-headerInset, 12px)${surfaceStyle}` : `width:${layout.box.width}px;height:${layout.box.height}px${surfaceStyle}`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :title="zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })" :aria-label="title" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
       <span :id="descriptionId" hidden>{{ zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed }) }}</span>
     <template v-if="header !== undefined">
 

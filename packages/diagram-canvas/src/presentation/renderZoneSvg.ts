@@ -17,6 +17,7 @@
  */
 import {
   zoneFullText,
+  anatomyZoneGeometry,
   CARD_GEOMETRY,
   ZONE_GEOMETRY,
   defaultCardMeasure,
@@ -109,7 +110,7 @@ export function zoneContent(
   children: readonly ZoneChildSpec[],
   measure: CardLineMeasure,
 ): { content: string; layout: ZoneLayout; diagnostics: readonly ZoneDiagnostic[] } {
-  const g = ZONE_GEOMETRY;
+  const g = anatomyZoneGeometry(props.anatomy);
   const layout = layoutZone(props, measure, children);
   const x = layout.box.x;
   const y = layout.box.y;
