@@ -167,7 +167,7 @@
   const headerStyle = $derived(
     header === undefined
       ? undefined
-      : `top:${frameTop(y + zoneGeometry.headerInset)};left:${frameInset(zoneGeometry.headerInset)};right:${frameInset(containerPadding ?? zoneGeometry.contentInsetInline)};height:${header.ruleY - zoneGeometry.headerRuleGap - y - zoneGeometry.headerInset}px`,
+      : `top:${frameTop(y + zoneGeometry.headerInset)};left:${frameInset(zoneGeometry.headerInset)};right:${frameInset(containerPadding ?? zoneGeometry.headerInset)};height:${header.ruleY - zoneGeometry.headerRuleGap - y - zoneGeometry.headerInset}px`,
   );
   const ruleStyle = $derived(
     header === undefined
@@ -222,7 +222,7 @@
     <div
       class="st-diagramZone st-diagramZone--expanded{effectiveAlign === "center" ? " st-diagramZone--center" : ""}{proposed === true ? " st-diagramZone--proposed" : ""}{anatomy === "v2" ? " st-diagramZone--v2" : ""}"
       style={anatomy === "v2"
-        ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)${surfaceStyle}`
+        ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px);--st-component-diagramCard-iconTextGap:var(--st-component-diagramCardCompact-iconTextGap, 4px);--st-component-diagramZone-headerInset:var(--st-component-diagramCardCompact-headerInset, 12px)${surfaceStyle}`
         : `width:${layout.box.width}px;height:${layout.box.height}px${surfaceStyle}`}
       data-tone={tone}
       data-proposed={proposed === true ? "true" : undefined}

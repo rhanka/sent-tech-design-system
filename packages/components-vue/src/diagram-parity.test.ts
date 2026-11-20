@@ -142,12 +142,37 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
     { entityId: 'overflow', title: 'X'.repeat(200), body: ['body'] },
     { entityId: 'unknown', title: 'Unknown', body: ['body'], icon: 'unmapped' },
     { entityId: 'proposed', title: 'Proposal', body: ['body'], proposed: true, align: 'center', toggle: { collapsed: true, label: 'Expand' } },
+    { entityId: 'v2-default', title: 'Compact', body: ['Line'], anatomy: 'v2' },
+    { entityId: 'v2-left', title: 'Compact left', body: ['Line'], anatomy: 'v2', align: 'left' },
   ] satisfies DiagramCardProps[]) {
     it(`should preserve ${props.entityId} state and diagnostics`, async () => {
       const vue = mount(DiagramCard, { props }); const svelte = render(SvelteCard, { props });
       await nextTick(); await tick(); expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
       expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderCardSvg(props).diagnostics);
+      if (props.anatomy === 'v2') {
+        expect(vue.element.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap: var(--st-component-diagramCardCompact-iconTextGap, 4px)');
+      }
       await vue.trigger('click'); expect(vue.emitted('select')).toEqual([[{ entityId: props.entityId }]]);
+      vue.unmount(); svelte.unmount();
+    });
+  }
+  for (const collapsed of [true, false]) {
+    it(`should match v2 zone anatomy and inline tokens on both hosts with collapsed=${collapsed}`, async () => {
+      const props = { entityId: 'v2-zone', title: 'Zone', subtitle: 'Sub', collapsed, toggleLabel: 'Toggle', anatomy: 'v2' as const, ...(collapsed ? {} : { width: 492 }) };
+      const vue = mount(DiagramZone, { props }); const svelte = render(SvelteZone, { props });
+      await nextTick(); await tick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderZoneSvg(props).diagnostics);
+      const frame = vue.element.querySelector('.st-diagramZone') ?? vue.element.querySelector('.st-diagramCard');
+      const style = frame?.getAttribute('style') ?? '';
+      expect(style).toContain('--st-component-diagramCard-iconTextGap');
+      if (collapsed) {
+        expect(style).toContain('height: 154px');
+      } else {
+        expect(style).toContain('--st-component-diagramZone-headerInset');
+        const toggle = vue.element.querySelector<HTMLElement>('.st-diagramCard-toggle');
+        expect(toggle?.style.top).toBe(toggle?.style.right);
+      }
       vue.unmount(); svelte.unmount();
     });
   }
