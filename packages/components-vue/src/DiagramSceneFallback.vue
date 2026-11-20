@@ -2,11 +2,12 @@
 import { computed } from 'vue';
 import { renderErdTable } from '@sentropic/diagram-canvas';
 import { sceneTextRows, type SceneModel, type DiagramSceneFigureProps } from '@sentropic/diagram-canvas/diagramSceneModel';
-const props = defineProps<{ scene: SceneModel | undefined; document: DiagramSceneFigureProps['document'] }>();
+const props = defineProps<{ scene: SceneModel | undefined; document: DiagramSceneFigureProps['document']; containsLabel?: string }>();
 const erdTable = computed(() => props.document.profileRefs.includes('erd@1') ? renderErdTable(props.document) : '');
+const rows = computed(() => props.scene === undefined ? [] : sceneTextRows(props.scene, props.document, props.containsLabel === undefined ? undefined : { contains: props.containsLabel }));
 </script>
 <template>
-  <div v-if="scene" class="st-diagramSceneFigure-fallback"><p v-for="(row, i) in sceneTextRows(scene, document)" :key="i">{{ row }}</p></div>
+  <div v-if="scene" class="st-diagramSceneFigure-fallback"><p v-for="(row, i) in rows" :key="i">{{ row }}</p></div>
   <div v-if="erdTable" class="st-diagramErd-fallback" v-html="erdTable" />
 </template>
 <style>

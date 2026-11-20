@@ -1,8 +1,8 @@
 {
   "componentId": "data-table",
   "contractSource": "derived",
-  "digest": "sha256:5c06905da280a1beb5069f2b29e45338e8889e249ae772b71198be0e7edaf9a5",
-  "entryDigest": "sha256:6802b598cb53a4a8efa407e6af9cca6427568eb3ddee0f99e8146960bc9e8b9d",
+  "digest": "sha256:e1248a5d543f88adab3b4360a68795ebc5ba8673d1ca9da2e2bda4bce7fa0291",
+  "entryDigest": "sha256:df956960b87e0fd31e069b472f0bdaaefdeb44149cf4588f352ad4976d0df9c9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -859,7 +859,7 @@
         "declarationPath": "packages/components-svelte/dist/DataTable.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DataTableProps",
-        "version": "0.41.5"
+        "version": "0.42.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -1237,7 +1237,7 @@
         "declarationPath": "packages/components-vue/dist/DataTable.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DataTableProps",
-        "version": "0.41.0-next.7"
+        "version": "0.41.0-next.8"
       },
       "status": "partial",
       "unresolved": [],

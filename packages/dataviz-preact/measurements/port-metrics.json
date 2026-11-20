@@ -1,0 +1,1512 @@
+{
+  "baseRef": "81083403e58dd1810bd1bd4f639882d226375d97",
+  "tree": {
+    "files": 128,
+    "tsx": 116,
+    "ts": 12,
+    "lines": 9562
+  },
+  "progress": {
+    "portedModules": 127,
+    "barrelFile": "index.ts",
+    "remainingModules": 0,
+    "remainingFiles": []
+  },
+  "port": {
+    "modules": [
+      {
+        "module": "adapter",
+        "kind": "adapter",
+        "file": "src/adapter.ts",
+        "reactSource": "adapter.ts",
+        "reactLines": 41,
+        "preactLines": 44,
+        "total": 147,
+        "touched": 4,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "categoricalData",
+        "kind": "helper",
+        "file": "src/lib/categoricalData.ts",
+        "reactSource": "lib/categoricalData.ts",
+        "reactLines": 75,
+        "preactLines": 75,
+        "total": 450,
+        "touched": 0,
+        "emissionRewrites": 0
+      },
+      {
+        "module": "partOfWholeData",
+        "kind": "helper",
+        "file": "src/lib/partOfWholeData.ts",
+        "reactSource": "lib/partOfWholeData.ts",
+        "reactLines": 206,
+        "preactLines": 206,
+        "total": 1494,
+        "touched": 0,
+        "emissionRewrites": 0
+      },
+      {
+        "module": "distributionData",
+        "kind": "helper",
+        "file": "src/lib/distributionData.ts",
+        "reactSource": "lib/distributionData.ts",
+        "reactLines": 108,
+        "preactLines": 108,
+        "total": 630,
+        "touched": 0,
+        "emissionRewrites": 0
+      },
+      {
+        "module": "drill",
+        "kind": "helper",
+        "file": "src/lib/drill.ts",
+        "reactSource": "lib/drill.ts",
+        "reactLines": 87,
+        "preactLines": 87,
+        "total": 345,
+        "touched": 0,
+        "emissionRewrites": 0
+      },
+      {
+        "module": "AreaChart",
+        "kind": "component",
+        "file": "src/lib/AreaChart.tsx",
+        "reactSource": "lib/AreaChart.tsx",
+        "reactLines": 55,
+        "preactLines": 78,
+        "total": 291,
+        "touched": 4,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ComboChart",
+        "kind": "component",
+        "file": "src/lib/ComboChart.tsx",
+        "reactSource": "lib/ComboChart.tsx",
+        "reactLines": 98,
+        "preactLines": 107,
+        "total": 463,
+        "touched": 5,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "LollipopChart",
+        "kind": "component",
+        "file": "src/lib/LollipopChart.tsx",
+        "reactSource": "lib/LollipopChart.tsx",
+        "reactLines": 59,
+        "preactLines": 65,
+        "total": 245,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "StackedBarChart",
+        "kind": "component",
+        "file": "src/lib/StackedBarChart.tsx",
+        "reactSource": "lib/StackedBarChart.tsx",
+        "reactLines": 67,
+        "preactLines": 78,
+        "total": 268,
+        "touched": 4,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "StepLineChart",
+        "kind": "component",
+        "file": "src/lib/StepLineChart.tsx",
+        "reactSource": "lib/StepLineChart.tsx",
+        "reactLines": 42,
+        "preactLines": 57,
+        "total": 190,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "CrossfilteredBarChart",
+        "kind": "component",
+        "file": "src/lib/CrossfilteredBarChart.tsx",
+        "reactSource": "lib/CrossfilteredBarChart.tsx",
+        "reactLines": 290,
+        "preactLines": 296,
+        "total": 2171,
+        "touched": 44,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "TimeSeriesLineChart",
+        "kind": "component",
+        "file": "src/lib/TimeSeriesLineChart.tsx",
+        "reactSource": "lib/TimeSeriesLineChart.tsx",
+        "reactLines": 282,
+        "preactLines": 289,
+        "total": 2888,
+        "touched": 53,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DivergingBarChart",
+        "kind": "component",
+        "file": "src/lib/DivergingBarChart.tsx",
+        "reactSource": "lib/DivergingBarChart.tsx",
+        "reactLines": 74,
+        "preactLines": 81,
+        "total": 301,
+        "touched": 3,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ParetoChart",
+        "kind": "component",
+        "file": "src/lib/ParetoChart.tsx",
+        "reactSource": "lib/ParetoChart.tsx",
+        "reactLines": 60,
+        "preactLines": 66,
+        "total": 265,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DateHistogramChart",
+        "kind": "component",
+        "file": "src/lib/DateHistogramChart.tsx",
+        "reactSource": "lib/DateHistogramChart.tsx",
+        "reactLines": 164,
+        "preactLines": 175,
+        "total": 1016,
+        "touched": 20,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "advancedPivotData",
+        "kind": "helper",
+        "file": "src/lib/advancedPivotData.ts",
+        "reactSource": "lib/advancedPivotData.ts",
+        "reactLines": 94,
+        "preactLines": 94,
+        "total": 601,
+        "touched": 0,
+        "emissionRewrites": 0
+      },
+      {
+        "module": "analyticsDsData",
+        "kind": "helper",
+        "file": "src/lib/analyticsDsData.ts",
+        "reactSource": "lib/analyticsDsData.ts",
+        "reactLines": 109,
+        "preactLines": 109,
+        "total": 801,
+        "touched": 1,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "chart-export",
+        "kind": "helper",
+        "file": "src/lib/chart-export.ts",
+        "reactSource": "lib/chart-export.ts",
+        "reactLines": 372,
+        "preactLines": 372,
+        "total": 2103,
+        "touched": 0,
+        "emissionRewrites": 0
+      },
+      {
+        "module": "geoMapLayers",
+        "kind": "helper",
+        "file": "src/lib/geoMapLayers.ts",
+        "reactSource": "lib/geoMapLayers.ts",
+        "reactLines": 137,
+        "preactLines": 137,
+        "total": 866,
+        "touched": 1,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "url-sync",
+        "kind": "helper",
+        "file": "src/lib/url-sync.ts",
+        "reactSource": "lib/url-sync.ts",
+        "reactLines": 179,
+        "preactLines": 179,
+        "total": 842,
+        "touched": 0,
+        "emissionRewrites": 0
+      },
+      {
+        "module": "useUrlSync",
+        "kind": "helper",
+        "file": "src/lib/useUrlSync.ts",
+        "reactSource": "lib/useUrlSync.ts",
+        "reactLines": 80,
+        "preactLines": 80,
+        "total": 302,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "AdvancedPivotDataTable",
+        "kind": "component",
+        "file": "src/lib/AdvancedPivotDataTable.tsx",
+        "reactSource": "lib/AdvancedPivotDataTable.tsx",
+        "reactLines": 67,
+        "preactLines": 74,
+        "total": 291,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "AnalyticsClusterPlot",
+        "kind": "component",
+        "file": "src/lib/AnalyticsClusterPlot.tsx",
+        "reactSource": "lib/AnalyticsClusterPlot.tsx",
+        "reactLines": 49,
+        "preactLines": 57,
+        "total": 220,
+        "touched": 15,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "AnimatedBubbleChart",
+        "kind": "component",
+        "file": "src/lib/AnimatedBubbleChart.tsx",
+        "reactSource": "lib/AnimatedBubbleChart.tsx",
+        "reactLines": 160,
+        "preactLines": 166,
+        "total": 758,
+        "touched": 39,
+        "emissionRewrites": 3
+      },
+      {
+        "module": "AnomalySwimLaneChart",
+        "kind": "component",
+        "file": "src/lib/AnomalySwimLaneChart.tsx",
+        "reactSource": "lib/AnomalySwimLaneChart.tsx",
+        "reactLines": 61,
+        "preactLines": 67,
+        "total": 214,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ArcDiagramChart",
+        "kind": "component",
+        "file": "src/lib/ArcDiagramChart.tsx",
+        "reactSource": "lib/ArcDiagramChart.tsx",
+        "reactLines": 58,
+        "preactLines": 64,
+        "total": 206,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "AreaRangeChart",
+        "kind": "component",
+        "file": "src/lib/AreaRangeChart.tsx",
+        "reactSource": "lib/AreaRangeChart.tsx",
+        "reactLines": 57,
+        "preactLines": 63,
+        "total": 204,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "AreaSplineRangeChart",
+        "kind": "component",
+        "file": "src/lib/AreaSplineRangeChart.tsx",
+        "reactSource": "lib/AreaSplineRangeChart.tsx",
+        "reactLines": 57,
+        "preactLines": 63,
+        "total": 204,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "BellCurveChart",
+        "kind": "component",
+        "file": "src/lib/BellCurveChart.tsx",
+        "reactSource": "lib/BellCurveChart.tsx",
+        "reactLines": 54,
+        "preactLines": 61,
+        "total": 201,
+        "touched": 3,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "BookmarkNavigator",
+        "kind": "component",
+        "file": "src/lib/BookmarkNavigator.tsx",
+        "reactSource": "lib/BookmarkNavigator.tsx",
+        "reactLines": 142,
+        "preactLines": 148,
+        "total": 812,
+        "touched": 11,
+        "emissionRewrites": 2
+      },
+      {
+        "module": "BoxPlotChart",
+        "kind": "component",
+        "file": "src/lib/BoxPlotChart.tsx",
+        "reactSource": "lib/BoxPlotChart.tsx",
+        "reactLines": 22,
+        "preactLines": 27,
+        "total": 185,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "BulletChart",
+        "kind": "component",
+        "file": "src/lib/BulletChart.tsx",
+        "reactSource": "lib/BulletChart.tsx",
+        "reactLines": 25,
+        "preactLines": 30,
+        "total": 225,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "BumpChart",
+        "kind": "component",
+        "file": "src/lib/BumpChart.tsx",
+        "reactSource": "lib/BumpChart.tsx",
+        "reactLines": 63,
+        "preactLines": 69,
+        "total": 209,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "CalculationEditor",
+        "kind": "component",
+        "file": "src/lib/CalculationEditor.tsx",
+        "reactSource": "lib/CalculationEditor.tsx",
+        "reactLines": 109,
+        "preactLines": 112,
+        "total": 643,
+        "touched": 15,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "CalendarHeatmapChart",
+        "kind": "component",
+        "file": "src/lib/CalendarHeatmapChart.tsx",
+        "reactSource": "lib/CalendarHeatmapChart.tsx",
+        "reactLines": 22,
+        "preactLines": 27,
+        "total": 174,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "CandlestickChart",
+        "kind": "component",
+        "file": "src/lib/CandlestickChart.tsx",
+        "reactSource": "lib/CandlestickChart.tsx",
+        "reactLines": 62,
+        "preactLines": 68,
+        "total": 208,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ExportMenu",
+        "kind": "component",
+        "file": "src/lib/ExportMenu.tsx",
+        "reactSource": "lib/ExportMenu.tsx",
+        "reactLines": 69,
+        "preactLines": 71,
+        "total": 495,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ChartExport",
+        "kind": "component",
+        "file": "src/lib/ChartExport.tsx",
+        "reactSource": "lib/ChartExport.tsx",
+        "reactLines": 113,
+        "preactLines": 115,
+        "total": 672,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ChordChart",
+        "kind": "component",
+        "file": "src/lib/ChordChart.tsx",
+        "reactSource": "lib/ChordChart.tsx",
+        "reactLines": 39,
+        "preactLines": 45,
+        "total": 194,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ChoroplethMap",
+        "kind": "component",
+        "file": "src/lib/ChoroplethMap.tsx",
+        "reactSource": "lib/ChoroplethMap.tsx",
+        "reactLines": 32,
+        "preactLines": 37,
+        "total": 183,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ColumnPyramidChart",
+        "kind": "component",
+        "file": "src/lib/ColumnPyramidChart.tsx",
+        "reactSource": "lib/ColumnPyramidChart.tsx",
+        "reactLines": 50,
+        "preactLines": 56,
+        "total": 179,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ColumnRangeChart",
+        "kind": "component",
+        "file": "src/lib/ColumnRangeChart.tsx",
+        "reactSource": "lib/ColumnRangeChart.tsx",
+        "reactLines": 57,
+        "preactLines": 63,
+        "total": 202,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ContourChart",
+        "kind": "component",
+        "file": "src/lib/ContourChart.tsx",
+        "reactSource": "lib/ContourChart.tsx",
+        "reactLines": 61,
+        "preactLines": 67,
+        "total": 216,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "CorrelationMatrix",
+        "kind": "component",
+        "file": "src/lib/CorrelationMatrix.tsx",
+        "reactSource": "lib/CorrelationMatrix.tsx",
+        "reactLines": 22,
+        "preactLines": 28,
+        "total": 187,
+        "touched": 3,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DashboardActiveFilters",
+        "kind": "component",
+        "file": "src/lib/DashboardActiveFilters.tsx",
+        "reactSource": "lib/DashboardActiveFilters.tsx",
+        "reactLines": 53,
+        "preactLines": 55,
+        "total": 241,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DashboardFilterBar",
+        "kind": "component",
+        "file": "src/lib/DashboardFilterBar.tsx",
+        "reactSource": "lib/DashboardFilterBar.tsx",
+        "reactLines": 166,
+        "preactLines": 173,
+        "total": 1021,
+        "touched": 22,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DashboardGrid",
+        "kind": "component",
+        "file": "src/lib/DashboardGrid.tsx",
+        "reactSource": "lib/DashboardGrid.tsx",
+        "reactLines": 269,
+        "preactLines": 275,
+        "total": 1799,
+        "touched": 18,
+        "emissionRewrites": 2
+      },
+      {
+        "module": "DateRangeFilter",
+        "kind": "component",
+        "file": "src/lib/DateRangeFilter.tsx",
+        "reactSource": "lib/DateRangeFilter.tsx",
+        "reactLines": 48,
+        "preactLines": 50,
+        "total": 310,
+        "touched": 3,
+        "emissionRewrites": 2
+      },
+      {
+        "module": "DecompositionTreeChart",
+        "kind": "component",
+        "file": "src/lib/DecompositionTreeChart.tsx",
+        "reactSource": "lib/DecompositionTreeChart.tsx",
+        "reactLines": 53,
+        "preactLines": 59,
+        "total": 192,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "Density2DChart",
+        "kind": "component",
+        "file": "src/lib/Density2DChart.tsx",
+        "reactSource": "lib/Density2DChart.tsx",
+        "reactLines": 61,
+        "preactLines": 67,
+        "total": 217,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DependencyWheelChart",
+        "kind": "component",
+        "file": "src/lib/DependencyWheelChart.tsx",
+        "reactSource": "lib/DependencyWheelChart.tsx",
+        "reactLines": 58,
+        "preactLines": 64,
+        "total": 206,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DonutChart",
+        "kind": "component",
+        "file": "src/lib/DonutChart.tsx",
+        "reactSource": "lib/DonutChart.tsx",
+        "reactLines": 54,
+        "preactLines": 60,
+        "total": 231,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DrillBarChart",
+        "kind": "component",
+        "file": "src/lib/DrillBarChart.tsx",
+        "reactSource": "lib/DrillBarChart.tsx",
+        "reactLines": 75,
+        "preactLines": 80,
+        "total": 388,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DrillBreadcrumb",
+        "kind": "component",
+        "file": "src/lib/DrillBreadcrumb.tsx",
+        "reactSource": "lib/DrillBreadcrumb.tsx",
+        "reactLines": 53,
+        "preactLines": 55,
+        "total": 304,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "TreemapChart",
+        "kind": "component",
+        "file": "src/lib/TreemapChart.tsx",
+        "reactSource": "lib/TreemapChart.tsx",
+        "reactLines": 48,
+        "preactLines": 56,
+        "total": 207,
+        "touched": 4,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DrillChart",
+        "kind": "component",
+        "file": "src/lib/DrillChart.tsx",
+        "reactSource": "lib/DrillChart.tsx",
+        "reactLines": 125,
+        "preactLines": 130,
+        "total": 544,
+        "touched": 3,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "DumbbellChart",
+        "kind": "component",
+        "file": "src/lib/DumbbellChart.tsx",
+        "reactSource": "lib/DumbbellChart.tsx",
+        "reactLines": 66,
+        "preactLines": 72,
+        "total": 240,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ErrorBarsChart",
+        "kind": "component",
+        "file": "src/lib/ErrorBarsChart.tsx",
+        "reactSource": "lib/ErrorBarsChart.tsx",
+        "reactLines": 53,
+        "preactLines": 59,
+        "total": 275,
+        "touched": 15,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "EventFeedPanel",
+        "kind": "component",
+        "file": "src/lib/EventFeedPanel.tsx",
+        "reactSource": "lib/EventFeedPanel.tsx",
+        "reactLines": 60,
+        "preactLines": 63,
+        "total": 202,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "FieldPane",
+        "kind": "component",
+        "file": "src/lib/FieldPane.tsx",
+        "reactSource": "lib/FieldPane.tsx",
+        "reactLines": 52,
+        "preactLines": 61,
+        "total": 217,
+        "touched": 3,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "FlamegraphChart",
+        "kind": "component",
+        "file": "src/lib/FlamegraphChart.tsx",
+        "reactSource": "lib/FlamegraphChart.tsx",
+        "reactLines": 61,
+        "preactLines": 67,
+        "total": 210,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ForceGraph",
+        "kind": "component",
+        "file": "src/lib/ForceGraph.tsx",
+        "reactSource": "lib/ForceGraph.tsx",
+        "reactLines": 44,
+        "preactLines": 49,
+        "total": 185,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ForecastLineChart",
+        "kind": "component",
+        "file": "src/lib/ForecastLineChart.tsx",
+        "reactSource": "lib/ForecastLineChart.tsx",
+        "reactLines": 53,
+        "preactLines": 60,
+        "total": 256,
+        "touched": 16,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "FormatPanel",
+        "kind": "component",
+        "file": "src/lib/FormatPanel.tsx",
+        "reactSource": "lib/FormatPanel.tsx",
+        "reactLines": 123,
+        "preactLines": 127,
+        "total": 934,
+        "touched": 14,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "FunnelChart",
+        "kind": "component",
+        "file": "src/lib/FunnelChart.tsx",
+        "reactSource": "lib/FunnelChart.tsx",
+        "reactLines": 59,
+        "preactLines": 67,
+        "total": 260,
+        "touched": 4,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "GanttChart",
+        "kind": "component",
+        "file": "src/lib/GanttChart.tsx",
+        "reactSource": "lib/GanttChart.tsx",
+        "reactLines": 62,
+        "preactLines": 68,
+        "total": 211,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "GaugeChart",
+        "kind": "component",
+        "file": "src/lib/GaugeChart.tsx",
+        "reactSource": "lib/GaugeChart.tsx",
+        "reactLines": 43,
+        "preactLines": 48,
+        "total": 310,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "GeoClusterMap",
+        "kind": "component",
+        "file": "src/lib/GeoClusterMap.tsx",
+        "reactSource": "lib/GeoClusterMap.tsx",
+        "reactLines": 46,
+        "preactLines": 51,
+        "total": 202,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "GeoDensityMap",
+        "kind": "component",
+        "file": "src/lib/GeoDensityMap.tsx",
+        "reactSource": "lib/GeoDensityMap.tsx",
+        "reactLines": 45,
+        "preactLines": 50,
+        "total": 194,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "GeoFlowMap",
+        "kind": "component",
+        "file": "src/lib/GeoFlowMap.tsx",
+        "reactSource": "lib/GeoFlowMap.tsx",
+        "reactLines": 53,
+        "preactLines": 58,
+        "total": 201,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "GeoHexbinMap",
+        "kind": "component",
+        "file": "src/lib/GeoHexbinMap.tsx",
+        "reactSource": "lib/GeoHexbinMap.tsx",
+        "reactLines": 44,
+        "preactLines": 49,
+        "total": 193,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "GeoJsonMap",
+        "kind": "component",
+        "file": "src/lib/GeoJsonMap.tsx",
+        "reactSource": "lib/GeoJsonMap.tsx",
+        "reactLines": 50,
+        "preactLines": 55,
+        "total": 197,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "GeoPointMap",
+        "kind": "component",
+        "file": "src/lib/GeoPointMap.tsx",
+        "reactSource": "lib/GeoPointMap.tsx",
+        "reactLines": 53,
+        "preactLines": 58,
+        "total": 205,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "HLCChart",
+        "kind": "component",
+        "file": "src/lib/HLCChart.tsx",
+        "reactSource": "lib/HLCChart.tsx",
+        "reactLines": 58,
+        "preactLines": 63,
+        "total": 199,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "HeatmapChart",
+        "kind": "component",
+        "file": "src/lib/HeatmapChart.tsx",
+        "reactSource": "lib/HeatmapChart.tsx",
+        "reactLines": 24,
+        "preactLines": 30,
+        "total": 212,
+        "touched": 3,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "HeikinAshiChart",
+        "kind": "component",
+        "file": "src/lib/HeikinAshiChart.tsx",
+        "reactSource": "lib/HeikinAshiChart.tsx",
+        "reactLines": 62,
+        "preactLines": 67,
+        "total": 208,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "HistogramChart",
+        "kind": "component",
+        "file": "src/lib/HistogramChart.tsx",
+        "reactSource": "lib/HistogramChart.tsx",
+        "reactLines": 23,
+        "preactLines": 28,
+        "total": 197,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "HollowCandlestickChart",
+        "kind": "component",
+        "file": "src/lib/HollowCandlestickChart.tsx",
+        "reactSource": "lib/HollowCandlestickChart.tsx",
+        "reactLines": 62,
+        "preactLines": 67,
+        "total": 208,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ItemChart",
+        "kind": "component",
+        "file": "src/lib/ItemChart.tsx",
+        "reactSource": "lib/ItemChart.tsx",
+        "reactLines": 50,
+        "preactLines": 55,
+        "total": 181,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "KpiCardGroup",
+        "kind": "component",
+        "file": "src/lib/KpiCardGroup.tsx",
+        "reactSource": "lib/KpiCardGroup.tsx",
+        "reactLines": 65,
+        "preactLines": 70,
+        "total": 301,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "MekkoChart",
+        "kind": "component",
+        "file": "src/lib/MekkoChart.tsx",
+        "reactSource": "lib/MekkoChart.tsx",
+        "reactLines": 47,
+        "preactLines": 52,
+        "total": 181,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "OHLCChart",
+        "kind": "component",
+        "file": "src/lib/OHLCChart.tsx",
+        "reactSource": "lib/OHLCChart.tsx",
+        "reactLines": 62,
+        "preactLines": 67,
+        "total": 208,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ObjectLayers",
+        "kind": "component",
+        "file": "src/lib/ObjectLayers.tsx",
+        "reactSource": "lib/ObjectLayers.tsx",
+        "reactLines": 112,
+        "preactLines": 120,
+        "total": 566,
+        "touched": 11,
+        "emissionRewrites": 2
+      },
+      {
+        "module": "OrganizationChart",
+        "kind": "component",
+        "file": "src/lib/OrganizationChart.tsx",
+        "reactSource": "lib/OrganizationChart.tsx",
+        "reactLines": 54,
+        "preactLines": 59,
+        "total": 197,
+        "touched": 5,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "PackedBubbleChart",
+        "kind": "component",
+        "file": "src/lib/PackedBubbleChart.tsx",
+        "reactSource": "lib/PackedBubbleChart.tsx",
+        "reactLines": 37,
+        "preactLines": 42,
+        "total": 188,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "PalettePicker",
+        "kind": "component",
+        "file": "src/lib/PalettePicker.tsx",
+        "reactSource": "lib/PalettePicker.tsx",
+        "reactLines": 72,
+        "preactLines": 74,
+        "total": 359,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ParallelCoordinatesChart",
+        "kind": "component",
+        "file": "src/lib/ParallelCoordinatesChart.tsx",
+        "reactSource": "lib/ParallelCoordinatesChart.tsx",
+        "reactLines": 53,
+        "preactLines": 58,
+        "total": 207,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "PercentileBandChart",
+        "kind": "component",
+        "file": "src/lib/PercentileBandChart.tsx",
+        "reactSource": "lib/PercentileBandChart.tsx",
+        "reactLines": 48,
+        "preactLines": 54,
+        "total": 303,
+        "touched": 15,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "PivotDataTable",
+        "kind": "component",
+        "file": "src/lib/PivotDataTable.tsx",
+        "reactSource": "lib/PivotDataTable.tsx",
+        "reactLines": 98,
+        "preactLines": 100,
+        "total": 518,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "PointAndFigureChart",
+        "kind": "component",
+        "file": "src/lib/PointAndFigureChart.tsx",
+        "reactSource": "lib/PointAndFigureChart.tsx",
+        "reactLines": 61,
+        "preactLines": 66,
+        "total": 220,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "PolygonChart",
+        "kind": "component",
+        "file": "src/lib/PolygonChart.tsx",
+        "reactSource": "lib/PolygonChart.tsx",
+        "reactLines": 53,
+        "preactLines": 58,
+        "total": 193,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "QueryBar",
+        "kind": "component",
+        "file": "src/lib/QueryBar.tsx",
+        "reactSource": "lib/QueryBar.tsx",
+        "reactLines": 59,
+        "preactLines": 63,
+        "total": 285,
+        "touched": 16,
+        "emissionRewrites": 2
+      },
+      {
+        "module": "RadarChart",
+        "kind": "component",
+        "file": "src/lib/RadarChart.tsx",
+        "reactSource": "lib/RadarChart.tsx",
+        "reactLines": 51,
+        "preactLines": 57,
+        "total": 223,
+        "touched": 3,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "RangeSliderFilter",
+        "kind": "component",
+        "file": "src/lib/RangeSliderFilter.tsx",
+        "reactSource": "lib/RangeSliderFilter.tsx",
+        "reactLines": 79,
+        "preactLines": 81,
+        "total": 500,
+        "touched": 3,
+        "emissionRewrites": 2
+      },
+      {
+        "module": "RecordsTable",
+        "kind": "component",
+        "file": "src/lib/RecordsTable.tsx",
+        "reactSource": "lib/RecordsTable.tsx",
+        "reactLines": 90,
+        "preactLines": 92,
+        "total": 510,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ReferenceLineChart",
+        "kind": "component",
+        "file": "src/lib/ReferenceLineChart.tsx",
+        "reactSource": "lib/ReferenceLineChart.tsx",
+        "reactLines": 73,
+        "preactLines": 80,
+        "total": 425,
+        "touched": 16,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "RelativeDateFilter",
+        "kind": "component",
+        "file": "src/lib/RelativeDateFilter.tsx",
+        "reactSource": "lib/RelativeDateFilter.tsx",
+        "reactLines": 79,
+        "preactLines": 81,
+        "total": 450,
+        "touched": 4,
+        "emissionRewrites": 2
+      },
+      {
+        "module": "RenkoChart",
+        "kind": "component",
+        "file": "src/lib/RenkoChart.tsx",
+        "reactSource": "lib/RenkoChart.tsx",
+        "reactLines": 57,
+        "preactLines": 62,
+        "total": 207,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "RibbonChart",
+        "kind": "component",
+        "file": "src/lib/RibbonChart.tsx",
+        "reactSource": "lib/RibbonChart.tsx",
+        "reactLines": 57,
+        "preactLines": 62,
+        "total": 201,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "RoseChart",
+        "kind": "component",
+        "file": "src/lib/RoseChart.tsx",
+        "reactSource": "lib/RoseChart.tsx",
+        "reactLines": 33,
+        "preactLines": 38,
+        "total": 174,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "SankeyChart",
+        "kind": "component",
+        "file": "src/lib/SankeyChart.tsx",
+        "reactSource": "lib/SankeyChart.tsx",
+        "reactLines": 44,
+        "preactLines": 49,
+        "total": 184,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ScatterPlot",
+        "kind": "component",
+        "file": "src/lib/ScatterPlot.tsx",
+        "reactSource": "lib/ScatterPlot.tsx",
+        "reactLines": 53,
+        "preactLines": 58,
+        "total": 221,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ScatterPlotMatrix",
+        "kind": "component",
+        "file": "src/lib/ScatterPlotMatrix.tsx",
+        "reactSource": "lib/ScatterPlotMatrix.tsx",
+        "reactLines": 74,
+        "preactLines": 80,
+        "total": 387,
+        "touched": 13,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ScoreCard",
+        "kind": "component",
+        "file": "src/lib/ScoreCard.tsx",
+        "reactSource": "lib/ScoreCard.tsx",
+        "reactLines": 79,
+        "preactLines": 84,
+        "total": 347,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "SelectionLegend",
+        "kind": "component",
+        "file": "src/lib/SelectionLegend.tsx",
+        "reactSource": "lib/SelectionLegend.tsx",
+        "reactLines": 40,
+        "preactLines": 42,
+        "total": 216,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "SmallMultiples",
+        "kind": "component",
+        "file": "src/lib/SmallMultiples.tsx",
+        "reactSource": "lib/SmallMultiples.tsx",
+        "reactLines": 91,
+        "preactLines": 96,
+        "total": 524,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "SolidGaugeChart",
+        "kind": "component",
+        "file": "src/lib/SolidGaugeChart.tsx",
+        "reactSource": "lib/SolidGaugeChart.tsx",
+        "reactLines": 43,
+        "preactLines": 48,
+        "total": 310,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "Sparkline",
+        "kind": "component",
+        "file": "src/lib/Sparkline.tsx",
+        "reactSource": "lib/Sparkline.tsx",
+        "reactLines": 54,
+        "preactLines": 60,
+        "total": 235,
+        "touched": 4,
+        "emissionRewrites": 2
+      },
+      {
+        "module": "StateTimelineChart",
+        "kind": "component",
+        "file": "src/lib/StateTimelineChart.tsx",
+        "reactSource": "lib/StateTimelineChart.tsx",
+        "reactLines": 58,
+        "preactLines": 63,
+        "total": 198,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "StatusHistoryChart",
+        "kind": "component",
+        "file": "src/lib/StatusHistoryChart.tsx",
+        "reactSource": "lib/StatusHistoryChart.tsx",
+        "reactLines": 57,
+        "preactLines": 62,
+        "total": 201,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "StreamgraphChart",
+        "kind": "component",
+        "file": "src/lib/StreamgraphChart.tsx",
+        "reactSource": "lib/StreamgraphChart.tsx",
+        "reactLines": 64,
+        "preactLines": 71,
+        "total": 226,
+        "touched": 4,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "SunburstChart",
+        "kind": "component",
+        "file": "src/lib/SunburstChart.tsx",
+        "reactSource": "lib/SunburstChart.tsx",
+        "reactLines": 45,
+        "preactLines": 51,
+        "total": 193,
+        "touched": 3,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "TileMapChart",
+        "kind": "component",
+        "file": "src/lib/TileMapChart.tsx",
+        "reactSource": "lib/TileMapChart.tsx",
+        "reactLines": 58,
+        "preactLines": 63,
+        "total": 199,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "TimelineChart",
+        "kind": "component",
+        "file": "src/lib/TimelineChart.tsx",
+        "reactSource": "lib/TimelineChart.tsx",
+        "reactLines": 58,
+        "preactLines": 63,
+        "total": 201,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "TopNFilter",
+        "kind": "component",
+        "file": "src/lib/TopNFilter.tsx",
+        "reactSource": "lib/TopNFilter.tsx",
+        "reactLines": 55,
+        "preactLines": 57,
+        "total": 313,
+        "touched": 8,
+        "emissionRewrites": 2
+      },
+      {
+        "module": "TraceWaterfallChart",
+        "kind": "component",
+        "file": "src/lib/TraceWaterfallChart.tsx",
+        "reactSource": "lib/TraceWaterfallChart.tsx",
+        "reactLines": 65,
+        "preactLines": 70,
+        "total": 223,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "TreegraphChart",
+        "kind": "component",
+        "file": "src/lib/TreegraphChart.tsx",
+        "reactSource": "lib/TreegraphChart.tsx",
+        "reactLines": 54,
+        "preactLines": 59,
+        "total": 197,
+        "touched": 5,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "TrendLineChart",
+        "kind": "component",
+        "file": "src/lib/TrendLineChart.tsx",
+        "reactSource": "lib/TrendLineChart.tsx",
+        "reactLines": 42,
+        "preactLines": 49,
+        "total": 305,
+        "touched": 16,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ValueSlicer",
+        "kind": "component",
+        "file": "src/lib/ValueSlicer.tsx",
+        "reactSource": "lib/ValueSlicer.tsx",
+        "reactLines": 56,
+        "preactLines": 58,
+        "total": 323,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "VariablePieChart",
+        "kind": "component",
+        "file": "src/lib/VariablePieChart.tsx",
+        "reactSource": "lib/VariablePieChart.tsx",
+        "reactLines": 54,
+        "preactLines": 59,
+        "total": 190,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "VectorFieldChart",
+        "kind": "component",
+        "file": "src/lib/VectorFieldChart.tsx",
+        "reactSource": "lib/VectorFieldChart.tsx",
+        "reactLines": 61,
+        "preactLines": 66,
+        "total": 212,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "VennChart",
+        "kind": "component",
+        "file": "src/lib/VennChart.tsx",
+        "reactSource": "lib/VennChart.tsx",
+        "reactLines": 31,
+        "preactLines": 36,
+        "total": 100,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "ViolinChart",
+        "kind": "component",
+        "file": "src/lib/ViolinChart.tsx",
+        "reactSource": "lib/ViolinChart.tsx",
+        "reactLines": 60,
+        "preactLines": 66,
+        "total": 215,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "WaffleChart",
+        "kind": "component",
+        "file": "src/lib/WaffleChart.tsx",
+        "reactSource": "lib/WaffleChart.tsx",
+        "reactLines": 53,
+        "preactLines": 58,
+        "total": 194,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "WaterfallChart",
+        "kind": "component",
+        "file": "src/lib/WaterfallChart.tsx",
+        "reactSource": "lib/WaterfallChart.tsx",
+        "reactLines": 54,
+        "preactLines": 60,
+        "total": 219,
+        "touched": 3,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "WindBarbChart",
+        "kind": "component",
+        "file": "src/lib/WindBarbChart.tsx",
+        "reactSource": "lib/WindBarbChart.tsx",
+        "reactLines": 57,
+        "preactLines": 62,
+        "total": 203,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "WordCloudChart",
+        "kind": "component",
+        "file": "src/lib/WordCloudChart.tsx",
+        "reactSource": "lib/WordCloudChart.tsx",
+        "reactLines": 50,
+        "preactLines": 55,
+        "total": 181,
+        "touched": 2,
+        "emissionRewrites": 1
+      }
+    ],
+    "totals": {
+      "modules": 127,
+      "reactLines": 9289,
+      "preactLines": 9938,
+      "total": 48051,
+      "touched": 613,
+      "emissionRewrites": 131
+    },
+    "shared": {
+      "src/index.ts": 321,
+      "src/classNames.ts": 16,
+      "preactAdapters": 247,
+      "reactTwins": 81,
+      "scripts/emit-react.mjs": 183,
+      "vitest.react.config.ts": 101
+    }
+  },
+  "reach": {
+    "svgCasing": {
+      "onElements": {
+        "files": 2,
+        "uses": 12
+      },
+      "onComponentProps": {
+        "files": 5,
+        "uses": 5
+      },
+      "all": {
+        "files": 7,
+        "uses": 17
+      }
+    },
+    "focusEvents": {
+      "onElements": {
+        "files": 0,
+        "uses": 0
+      },
+      "onComponentProps": {
+        "files": 0,
+        "uses": 0
+      },
+      "all": {
+        "files": 0,
+        "uses": 0
+      }
+    },
+    "onChange": {
+      "onTextControls": {
+        "files": 1,
+        "uses": 1
+      },
+      "onOtherElements": {
+        "files": 0,
+        "uses": 0
+      },
+      "onComponentProps": {
+        "files": 11,
+        "uses": 27
+      },
+      "all": {
+        "files": 12,
+        "uses": 28
+      }
+    },
+    "reactNamespace": {
+      "files": 3,
+      "uses": 12
+    },
+    "inlineStyle": {
+      "objectLiteralOnElements": {
+        "files": 4,
+        "uses": 12
+      },
+      "all": {
+        "files": 5,
+        "uses": 27
+      }
+    },
+    "apis": {
+      "forwardRef": {
+        "files": 0,
+        "uses": 0
+      },
+      "useSyncExternalStore": {
+        "files": 1,
+        "uses": 1
+      },
+      "useInsertionEffect": {
+        "files": 0,
+        "uses": 0
+      },
+      "createPortal": {
+        "files": 0,
+        "uses": 0
+      }
+    }
+  }
+}

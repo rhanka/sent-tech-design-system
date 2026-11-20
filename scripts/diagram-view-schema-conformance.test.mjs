@@ -122,7 +122,11 @@ function conformanceDocument(core) {
 }
 
 function conformanceView(core, document, summaryLabels) {
-  const view = core.createView({ viewId: core.viewRef("conform"), semanticDocumentId: document.documentId });
+  const view = core.createView({
+    viewId: core.viewRef("conform"),
+    semanticDocumentId: document.documentId,
+    presentation: { camera: { x: 0, y: 0, zoom: 1 } },
+  });
   return {
     ...view,
     revision: document.revision,
