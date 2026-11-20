@@ -48,6 +48,10 @@ export type PropsParity = [
   Expect<Equal<Emitted.RasterizeOptions, HandWritten.RasterizeOptions>>,
   Expect<Equal<Emitted.ChartExportFormat, HandWritten.ChartExportFormat>>,
   Expect<Equal<Emitted.UrlSyncOptions, HandWritten.UrlSyncOptions>>,
+  Expect<Equal<Emitted.AdvancedPivotDataTableProps, HandWritten.AdvancedPivotDataTableProps>>,
+  Expect<Equal<Emitted.AnalyticsClusterPlotProps, HandWritten.AnalyticsClusterPlotProps>>,
+  Expect<Equal<Emitted.AnimatedBubbleChartProps, HandWritten.AnimatedBubbleChartProps>>,
+  Expect<Equal<Emitted.AnomalySwimLaneChartProps, HandWritten.AnomalySwimLaneChartProps>>,
 ];
 
 export type ComponentParity = [
@@ -61,6 +65,10 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.DivergingBarChart, typeof HandWritten.DivergingBarChart>>,
   Expect<Equal<typeof Emitted.ParetoChart, typeof HandWritten.ParetoChart>>,
   Expect<Equal<typeof Emitted.DateHistogramChart, typeof HandWritten.DateHistogramChart>>,
+  Expect<Equal<typeof Emitted.AdvancedPivotDataTable, typeof HandWritten.AdvancedPivotDataTable>>,
+  Expect<Equal<typeof Emitted.AnalyticsClusterPlot, typeof HandWritten.AnalyticsClusterPlot>>,
+  Expect<Equal<typeof Emitted.AnimatedBubbleChart, typeof HandWritten.AnimatedBubbleChart>>,
+  Expect<Equal<typeof Emitted.AnomalySwimLaneChart, typeof HandWritten.AnomalySwimLaneChart>>,
 ];
 
 export type ValueParity = [
@@ -82,6 +90,7 @@ export type ValueParity = [
   Expect<Equal<typeof Emitted.writeStateToUrl, typeof HandWritten.writeStateToUrl>>,
   Expect<Equal<typeof Emitted.readLocationSearch, typeof HandWritten.readLocationSearch>>,
   Expect<Equal<typeof Emitted.DEFAULT_URL_SYNC_PARAM, typeof HandWritten.DEFAULT_URL_SYNC_PARAM>>,
+  Expect<Equal<typeof Emitted.useUrlSync, typeof HandWritten.useUrlSync>>,
 ];
 
 export type InternalHelpersParity = [
