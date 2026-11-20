@@ -5,6 +5,8 @@ import { render } from "@testing-library/svelte";
 import { createRawSnippet } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import DiagramZone from "./DiagramZone.svelte";
+import DiagramZoneHeader from "./DiagramZoneHeader.svelte";
+import DiagramCardHeader from "./DiagramCardHeader.svelte";
 import { getDiagramGlyph } from "./diagram-icons/registry.js";
 import {
   COLLAPSED_SUBTITLE_MEASURE,
@@ -560,6 +562,48 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
         expect(hover[mode], `${theme} mode ${mode} hover vs surface2`).not.toBe(s2[mode]);
       }
     }
+  });
+
+  it("omits data-zone-overflow on non-truncated fallback-v1 zones and computes toggle offset from headerInset/toggleTopOffset without CSS var cascade (W1-19, W1-40, W1-46)", () => {
+    const fbZone = render(DiagramZone, {
+      props: { ...baseProps({ collapsed: true, anatomy: "v2" }), measure: defaultCardMeasure },
+    });
+    expect(fbZone.container.querySelector(".st-diagramZone-pos")?.getAttribute("data-zone-overflow")).toBeNull();
+    expect(fbZone.container.querySelector(".st-diagramCard")?.getAttribute("data-card-overflow")).toBeNull();
+    fbZone.unmount();
+
+    const zh = render(DiagramZoneHeader, {
+      props: {
+        kicker: [],
+        title: [{ text: "Zone", x: 0, baseline: 30, size: 32, weight: 700, secondary: false }],
+        subtitle: [],
+        headerInset: 12,
+        headerTextWidth: 300,
+        headerBlockHeight: 52,
+        subtitleWidth: 300,
+        toggle: { collapsed: false, label: "Collapse" },
+        toggleTopInset: 8,
+      },
+    });
+    const zhToggle = zh.container.querySelector<HTMLElement>(".st-diagramCard-toggle")!;
+    expect(zhToggle.style.top).toBe("calc(var(--st-component-diagramZone-toggleInset, 8px) - 12px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+    expect(zhToggle.style.right).toBe(zhToggle.style.top);
+    zh.unmount();
+
+    const ch = render(DiagramCardHeader, {
+      props: {
+        kicker: [],
+        title: [{ text: "Card", x: 0, baseline: 30, size: 32, weight: 700, secondary: false }],
+        headerTextWidth: 300,
+        headerBlockHeight: 70,
+        toggle: { collapsed: false, label: "Collapse" },
+        toggleTopOffset: -6,
+      },
+    });
+    const chToggle = ch.container.querySelector<HTMLElement>(".st-diagramCard-toggle")!;
+    expect(chToggle.style.top).toBe("calc(-6px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+    expect(chToggle.style.right).toBe(chToggle.style.top);
+    ch.unmount();
   });
 });
 

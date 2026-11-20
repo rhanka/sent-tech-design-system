@@ -31,6 +31,7 @@ import {
   resolveScene,
   resolveScenePresentation,
   sceneTextRows,
+  type DiagramSceneFigureLabels,
   type SceneDocument,
   type ScenePresentation,
   type SceneView,
@@ -803,19 +804,145 @@ describe("diagram anatomy v2 (DE-1)", () => {
     } as unknown as SceneDocument;
 
     const scene = { nodes: [] } as unknown as ReturnType<typeof resolveScene>;
+    // W1-28: DiagramSceneFigureLabels without `contains` stays backward-compatible in TypeScript.
+    const legacyLabels: DiagramSceneFigureLabels = {
+      navigator: "Steps",
+      step: "Step",
+      scenario: "Scenario",
+      count: "{n}",
+      node: "Node",
+      previous: "Previous",
+      next: "Next",
+      allScenarios: "All",
+      controls: "Zoom",
+      zoomIn: "Zoom in",
+      zoomOut: "Zoom out",
+      fit: "Fit",
+      zoomLevel: (percent: number) => `Zoom ${percent} %`,
+      viewport: "Diagram",
+      expand: (title: string) => `Expand ${title}`,
+      collapse: (title: string) => `Collapse ${title}`,
+    };
+    expect(legacyLabels.contains).toBeUndefined();
+
+    // W1-28: plain "contains" is localized via labels.contains; refined subtype "owns" keeps its own type name.
     const defaultRows = sceneTextRows(scene, document);
     expect(defaultRows).toContain("System → Service · includes");
-    expect(defaultRows).toContain("System → Worker · includes");
+    expect(defaultRows).toContain("System → Worker · owns");
     expect(defaultRows).toContain("System → Store · hosts");
     expect(defaultRows).toContain("Service → Store · queries");
     expect(defaultRows.join("\n")).not.toContain("· contains");
 
     const localizedRows = sceneTextRows(scene, document, { contains: "contient" });
     expect(localizedRows).toContain("System → Service · contient");
-    expect(localizedRows).toContain("System → Worker · contient");
+    expect(localizedRows).toContain("System → Worker · owns");
     expect(localizedRows).toContain("System → Store · hosts");
     expect(localizedRows).toContain("Service → Store · queries");
     expect(localizedRows.join("\n")).not.toContain("· contains");
+  });
+
+  it("should align v2 bodyInsetFromBar (W1-10), collapsed subtitle insets (W1-23), fallback-v1 SVG overflow attr (W1-19), and v2 legend-key width (W1-31) while keeping v1 frozen", () => {
+    // W1-10: v1 keeps bodyInsetFromBar 14 (−2px from headerInset 16); v2 sets 10 (−2px from headerInset 12).
+    expect(CARD_GEOMETRY.bodyInsetFromBar).toBe(14);
+    expect(CARD_GEOMETRY_V2.bodyInsetFromBar).toBe(10);
+    const v1Card = layoutCard({ ...COMPACT }, defaultCardMeasure);
+    const v2Card = layoutCard({ ...COMPACT, anatomy: "v2" }, defaultCardMeasure);
+    expect(v1Card.bodyX - CARD_GEOMETRY.headerInset).toBe(-2);
+    expect(v2Card.bodyX - CARD_GEOMETRY_V2.headerInset).toBe(-2);
+
+    // W1-23: v1 keeps collapsedInset 16 / margin 16 (subtitleMeasure 396); v2 scales to 12 / 12 (subtitleMeasure 304).
+    expect(ZONE_GEOMETRY.collapsedInset).toBe(16);
+    expect(ZONE_GEOMETRY.collapsedSubtitleMarginInline).toBe(16);
+    expect(ZONE_GEOMETRY_V2.collapsedInset).toBe(12);
+    expect(ZONE_GEOMETRY_V2.collapsedSubtitleMarginInline).toBe(12);
+    const v2FoldedZone = layoutZone(
+      { entityId: "z-sub", title: "Zone", subtitle: "Subtitle", collapsed: true, toggleLabel: "Expand", anatomy: "v2" },
+      defaultCardMeasure,
+    );
+    expect(v2FoldedZone.card?.bodyWidth).toBe(304);
+
+    // W1-19: fallback-v1 without truncation keeps info diagnostic but omits data-card-overflow / data-zone-overflow on SVG.
+    const fbCardSvg = renderCardSvg({ ...CONTRACT, anatomy: "v2" }, defaultCardMeasure);
+    expect(fbCardSvg.kind).toBe("rendered");
+    if (fbCardSvg.kind === "rendered") {
+      expect(fbCardSvg.diagnostics.some((d) => d.code === "card-overflow" && d.reason === "fallback-v1")).toBe(true);
+      expect(fbCardSvg.svg).not.toContain("data-card-overflow=");
+    }
+    const truncatedFbSvg = renderCardSvg({ entityId: "trunc", title: "W".repeat(100), body: ["Body"], anatomy: "v2" }, defaultCardMeasure);
+    expect(truncatedFbSvg.kind).toBe("rendered");
+    if (truncatedFbSvg.kind === "rendered") {
+      expect(truncatedFbSvg.svg).toContain('data-card-overflow="title"');
+    }
+    const fbZoneSvg = renderZoneSvg(
+      { entityId: "z-fb-svg", kicker: "KICKER", title: "Zone", subtitle: "Subtitle", footer: "Footer", collapsed: true, toggleLabel: "Expand", anatomy: "v2" },
+      { measure: defaultCardMeasure },
+    );
+    expect(fbZoneSvg.kind).toBe("rendered");
+    if (fbZoneSvg.kind === "rendered") {
+      expect(fbZoneSvg.diagnostics.some((d) => d.code === "zone-overflow" && d.reason === "fallback-v1")).toBe(true);
+      expect(fbZoneSvg.svg).not.toContain("data-zone-overflow=");
+    }
+
+    // W1-31: v2 legend-key width tracks compact legend width (352 - 32 = 320); v1 keeps 428 (460 - 32).
+    const legendDoc = {
+      documentId: "document:legend-v2-key-width",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: {
+        "entity:lg": { id: entityRef("lg"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Legend" } } },
+        "entity:k1": { id: entityRef("k1"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Key" } } },
+        "entity:rootKey": { id: entityRef("rootKey"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "RootKey" } } },
+      },
+      relations: {
+        "relation:c.k1": {
+          id: relationRef("c.k1"),
+          profile: "generic@2",
+          type: "contains",
+          endpoints: [
+            { role: "parent", target: entityRef("lg") },
+            { role: "child", target: entityRef("k1") },
+          ],
+          attributes: {},
+        },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SceneDocument;
+    for (const [anatomy, expectedKeyWidth] of [
+      [undefined, 428],
+      ["v2", 320],
+    ] as const) {
+      const pres = {
+        contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+        entities: {
+          "occurrence:e.lg": { form: "legend", text: { title: "Legend" }, ...(anatomy === undefined ? {} : { anatomy }) },
+          "occurrence:e.k1": { form: "legend-key", text: { title: "Key" }, ...(anatomy === undefined ? {} : { anatomy }) },
+          "occurrence:e.rootKey": { form: "legend-key", text: { title: "RootKey" }, ...(anatomy === undefined ? {} : { anatomy }) },
+        },
+        legends: { "occurrence:e.lg": { order: [entityRef("k1")] } },
+        categoryTokens: [],
+      } as unknown as ScenePresentation;
+      const res = layoutMeasured(
+        legendDoc,
+        {
+          registry: m3ProfileRegistry,
+          bindings: shippedExecutorBindings,
+          presentation: pres,
+          measureText: (text) => ({ width: text.length * 10, height: 24 }),
+          measureLines: cardLineMeasurer(defaultCardMeasure),
+          collapsed: [],
+          targetWidth: 1440,
+          rowPack: {},
+        },
+      );
+      expect(res.status, String(anatomy)).toBe("laid-out");
+      if (res.status !== "laid-out") continue;
+      expect(res.view.entityOccurrences["occurrence:e.k1"]?.geometry.width).toBe(expectedKeyWidth);
+      expect(res.view.entityOccurrences["occurrence:e.rootKey"]?.geometry.width).toBe(expectedKeyWidth);
+    }
   });
 
   it("should pin v1 and fallback-v1 fold toggle size and placement to exact 0.2.5 / 0.41.5 geometry", () => {

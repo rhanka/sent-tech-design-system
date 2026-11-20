@@ -136,7 +136,9 @@
   );
 
   const overflowSlot = $derived(
-    layout.diagnostics.find((diagnostic) => diagnostic.code === "zone-overflow")?.slot,
+    layout.diagnostics.find(
+      (diagnostic) => diagnostic.code === "zone-overflow" && diagnostic.reason !== "fallback-v1",
+    )?.slot,
   );
   const unknownIcon = $derived(
     layout.diagnostics.some((diagnostic) => diagnostic.code === "zone-icon-unknown"),
