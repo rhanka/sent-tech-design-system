@@ -306,6 +306,13 @@ const packages = [
     absentPatterns: ["\\.map$", "\\.srchash$"],
   },
   {
+    name: "@sentropic/diagram-codecs",
+    // E2: the static draw.io/SVG codecs. Same tarball promise as
+    // diagram-core: entry points present, no maps, no build stamp.
+    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/toDrawio.js"],
+    absentPatterns: ["\\.map$", "\\.srchash$"],
+  },
+  {
     name: "@sentropic/graph",
     // GD-M2-PROCESSING: the DOM-free computation subpath ships alongside the
     // root entry; both are required in the tarball.
@@ -490,6 +497,8 @@ const deepVerify = {
   "@sentropic/diagram-core": { closure: [], peers: [] },
   // DC-2a BF-5: one local dependency, resolved from the workspace tarball.
   "@sentropic/diagram-canvas": { closure: ["@sentropic/diagram-core"], peers: [] },
+  // E2: one local dependency chain, resolved from the workspace tarballs.
+  "@sentropic/diagram-codecs": { closure: ["@sentropic/diagram-canvas", "@sentropic/diagram-core"], peers: [] },
   "@sentropic/dataviz-core": { closure: [], peers: [] },
   "@sentropic/dataviz-svelte": {
     // Compiling .svelte source never resolves the component's own imports

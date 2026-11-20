@@ -39,7 +39,7 @@ const DEFAULT_DELAY_MS = 15000;
 const FETCH_TIMEOUT_MS = 15000;
 // Packages verified by the dist-only leg (package.json version + dist entry
 // points + npm view); every other package takes the elements leg.
-const DIST_ONLY_PACKAGES = new Set(["@sentropic/diagram-core", "@sentropic/diagram-canvas"]);
+const DIST_ONLY_PACKAGES = new Set(["@sentropic/diagram-core", "@sentropic/diagram-canvas", "@sentropic/diagram-codecs"]);
 
 function usage() {
   return [

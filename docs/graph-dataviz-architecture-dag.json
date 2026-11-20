@@ -34,6 +34,10 @@
       "diagram-core"
     ],
     [
+      "diagram-codecs",
+      "diagram-canvas"
+    ],
+    [
       "diagram-core",
       "graph"
     ],

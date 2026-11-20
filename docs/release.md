@@ -20,6 +20,7 @@ Sent Tech Design System publishes twenty-three public npm packages from this pri
 - `@sentropic/design-system-elements` (tag `elements-v<version>`)
 - `@sentropic/diagram-core` (tag `diagram-core-v<version>`)
 - `@sentropic/diagram-canvas` (tag `diagram-canvas-v<version>`, after `diagram-core`, before `svelte`)
+- `@sentropic/diagram-codecs` (tag `diagram-codecs-v<version>`, after `svelte`)
 
 The release model follows Graphify: GitHub Actions verifies the repo, packs the npm artifacts, guards the tag, publishes through npm Trusted Publishing, waits until npm registry propagation is visible, then installs the published packages back from npm.
 
@@ -72,6 +73,13 @@ Plus, for the diagram-canvas package:
 - Workflow: `.github/workflows/diagram-canvas-publish.yml`
 - Registry: `https://registry.npmjs.org`
 
+Plus, for the diagram-codecs package:
+
+- Package: `@sentropic/diagram-codecs`
+- Repository: `rhanka/sent-tech-design-system`
+- Workflow: `.github/workflows/diagram-codecs-publish.yml`
+- Registry: `https://registry.npmjs.org`
+
 Plus, for the review-core package:
 
 - Package: `@sentropic/design-system-review-core`
@@ -109,7 +117,7 @@ git diff --check
 git status --short --branch
 ```
 
-`npm run pack:smoke` verifies eighteen package tarballs (the design-system ports including `rich-text`, `review-core` and `elements`, `graph`, `diagram-core`, `diagram-canvas` and the five `dataviz-*`) and installs them together in a clean temporary project.
+`npm run pack:smoke` verifies nineteen package tarballs (the design-system ports including `rich-text`, `review-core` and `elements`, `graph`, `diagram-core`, `diagram-canvas`, `diagram-codecs` and the five `dataviz-*`) and installs them together in a clean temporary project.
 
 `npm run dist:import-closure` additionally packs **every publishable workspace** and installs each candidate in its own temporary consumer outside the repository. Dependencies come from npm, including already-published siblings. Only an exact sibling version missing from the registry may use a local tarball, reported as `UNPUBLISHED SIBLING`; authentication or network failures fail the gate. `--workspaces=<comma-separated package names>` selects release candidates. Every `*-publish.yml` runs this gate in the publish job before publication; CI verify runs it for all publishable packages.
 
@@ -185,8 +193,9 @@ Measured on 2026-09-25 against the registry (`npm view <name> version` for each 
 | `@sentropic/design-system-elements` | 0.1.0 | E404 (measured 2026-11-01) | bootstrap in `elements-publish.yml`, tag `elements-v<version>` |
 | `@sentropic/diagram-core` | 0.1.0 | E404 (measured 2026-11-03) | bootstrap in `diagram-core-publish.yml`, tag `diagram-core-v<version>` |
 | `@sentropic/diagram-canvas` | 0.1.0 | unverified (not measured; `private: true` in this repository until DC-2a L4, 2026-11-11, so no workflow here ever published it — run `npm view @sentropic/diagram-canvas version` before the first tag) | bootstrap in `diagram-canvas-publish.yml`, tag `diagram-canvas-v<version>` |
+| `@sentropic/diagram-codecs` | 0.1.0 | unverified (new package, lot E2; `npm view @sentropic/diagram-codecs version` returns E404 until the first tag) | bootstrap in `diagram-codecs-publish.yml`, tag `diagram-codecs-v<version>` |
 
-For these seven (the seventh pending its registry measurement), the bootstrap checklist above is the only order that works: the trusted publisher cannot be declared first, because npm has no package page to declare it on. The seven names whose registry version is behind the repository (`design-system-angular`, `dataviz-core`, `dataviz-react`, `dataviz-svelte`, `dataviz-vue`, `graph`, `design-system-skills`) exist on npm and need nothing but their tag, with the trusted publisher declared.
+For these eight (the seventh and eighth pending their registry measurement), the bootstrap checklist above is the only order that works: the trusted publisher cannot be declared first, because npm has no package page to declare it on. The seven names whose registry version is behind the repository (`design-system-angular`, `dataviz-core`, `dataviz-react`, `dataviz-svelte`, `dataviz-vue`, `graph`, `design-system-skills`) exist on npm and need nothing but their tag, with the trusted publisher declared.
 
 ### The eight whose version number is already taken
 
@@ -290,6 +299,14 @@ git tag diagram-canvas-v0.1.0
 git push origin diagram-canvas-v0.1.0
 ```
 
+Publish the diagram-codecs package by pushing the `diagram-codecs-v<version>` tag, once `@sentropic/diagram-canvas` at the version its manifest pins is visible on npm (its `publish` job runs `node scripts/verify-deps-published.mjs --workspace packages/diagram-codecs` and fails closed otherwise):
+
+```bash
+git push origin main
+git tag diagram-codecs-v0.1.0
+git push origin diagram-codecs-v0.1.0
+```
+
 ### Release order for the scene host (DC-2a)
 
 `@sentropic/design-system-svelte` pins `@sentropic/diagram-canvas` exactly (the `DiagramSceneFigure` host), and `@sentropic/diagram-canvas` pins `@sentropic/diagram-core` exactly. Publication goes through CI only — no local `npm publish` — in this order, each tag pushed only after the previous run's `post-publish-check` is green:
@@ -298,6 +315,7 @@ git push origin diagram-canvas-v0.1.0
 2. `diagram-canvas-v<version>` — `diagram-canvas-publish.yml`; refuses while the pinned `diagram-core` version is absent from the registry.
 3. `core-v<version>` — only if tokens/themes changed (DC-2a adds tokens, so the svelte pin moves with them); tokens first, then themes, via `npm-publish.yml`.
 4. `svelte-v<version>` — `svelte-publish.yml`; its fail-closed step refuses while any pinned `@sentropic/*` version, `@sentropic/diagram-canvas` included, is absent from the registry. Pushing the svelte tag early therefore fails the run instead of shipping an unresolvable dependency.
+5. `diagram-codecs-v<version>` — `diagram-codecs-publish.yml`; refuses while the pinned `@sentropic/diagram-canvas` version is absent from the registry (lot E2, wave 2; first publish bootstraps with the temporary token, then the OIDC validation patch follows).
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
