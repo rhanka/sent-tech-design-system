@@ -1,5 +1,16 @@
 export { renderSceneSvg } from "./renderSceneSvg.js";
 export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
+export {
+  ARROWHEAD_MARKER_GEOMETRY,
+  connectorDashArray,
+  connectorMarkerIds,
+  connectorMarkerKind,
+  connectorMarkerRef,
+  extraConnectorMarkers,
+  type ConnectorMarkerEdgeInput,
+  type ConnectorMarkerIds,
+  type ConnectorMarkerSpec,
+} from "./connectorStyle.js";
 import {
   renderCardSvg,
   renderCardSvgFromPresentation,

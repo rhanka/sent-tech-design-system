@@ -25,6 +25,8 @@
     },
     "./schemas/diagram-view-schema-3.json": "./schemas/diagram-view-schema-3.json",
     "./schemas/diagram-view-schema-3.sha256": "./schemas/diagram-view-schema-3.sha256",
+    "./schemas/diagram-view-schema-4.json": "./schemas/diagram-view-schema-4.json",
+    "./schemas/diagram-view-schema-4.sha256": "./schemas/diagram-view-schema-4.sha256",
     "./schemas/ds-layout-hints-1.json": "./schemas/ds-layout-hints-1.json",
     "./schemas/ds-layout-hints-1.sha256": "./schemas/ds-layout-hints-1.sha256"
   },

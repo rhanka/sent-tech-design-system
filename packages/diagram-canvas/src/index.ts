@@ -26,3 +26,14 @@ export * from "./layout/index.js";
 
 export * from "./presentation/erd.js";
 export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./presentation/connectorPath.js";
+export {
+  ARROWHEAD_MARKER_GEOMETRY,
+  connectorDashArray,
+  connectorMarkerIds,
+  connectorMarkerKind,
+  connectorMarkerRef,
+  extraConnectorMarkers,
+  type ConnectorMarkerEdgeInput,
+  type ConnectorMarkerIds,
+  type ConnectorMarkerSpec,
+} from "./presentation/connectorStyle.js";

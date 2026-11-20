@@ -593,6 +593,63 @@ describe('scene host DOM and camera/fold behavior', () => {
     vue.unmount(); svelte.unmount();
     vi.unstubAllGlobals();
   });
+  it('should match dash patterns, arrowheads and emphasis identically on Svelte and Vue across fold and unfold (DE-2)', async () => {
+    frame();
+    const base = sceneOf(
+      'de2-connector-parity',
+      [
+        { id: 'zone', container: true },
+        { id: 'a', parent: 'zone' },
+        { id: 'b', parent: 'zone' },
+        { id: 'ext' },
+      ],
+      [
+        { from: 'a', to: 'b', label: 'dotted-open' },
+        { from: 'b', to: 'ext', label: 'emphasis-none' },
+        { from: 'a', to: 'ext', label: 'proposed-emphasis' },
+      ],
+    );
+    const presentation = {
+      ...base.presentation,
+      relations: {
+        'relation:link.a.b': { strokeStyle: 'dotted', arrowhead: 'open-triangle' },
+        'relation:link.b.ext': { arrowhead: 'none', emphasis: 'emphasis' },
+        'relation:link.a.ext': { strokeStyle: 'dashed', arrowhead: 'filled-triangle', emphasis: 'emphasis' },
+      },
+    } as unknown as ScenePresentation;
+    const props = { ...host, ...base, presentation };
+    const vue = mount(SceneFigure, { props, attachTo: document.body });
+    const svelte = render(SvelteScene, { props });
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+
+    for (const root of [vue.element, svelte.container]) {
+      const ab = root.querySelector('path[data-scene-edge="occurrence:r.link.a.b"]')!;
+      const be = root.querySelector('path[data-scene-edge="occurrence:r.link.b.ext"]')!;
+      const ae = root.querySelector('path[data-scene-edge="occurrence:r.link.a.ext"]')!;
+      expect(ab.getAttribute('stroke-dasharray')).toBe('2 5');
+      expect(ab.getAttribute('marker-end')).toMatch(/-open\)$/);
+      expect(be.getAttribute('stroke-dasharray')).toBeNull();
+      expect(be.getAttribute('marker-end')).toBeNull();
+      expect(be.getAttribute('data-edge-emphasis')).toBe('emphasis');
+      expect(ae.getAttribute('stroke-dasharray')).toBe('8 6');
+      expect(ae.getAttribute('marker-end')).toMatch(/-emphasis\)$/);
+      expect(ae.getAttribute('data-edge-emphasis')).toBe('emphasis');
+    }
+
+    await vue.find(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`).trigger('click');
+    svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`)!.click();
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+
+    await vue.find(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`).trigger('click');
+    svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`)!.click();
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+
+    vue.unmount(); svelte.unmount();
+    vi.unstubAllGlobals();
+  });
   it('should render default and overridden localized inclusion labels in the fallback text identically on Svelte and Vue (DE-1b)', async () => {
     frame();
     const rowsOf = (root: Element) => [...root.querySelectorAll('.st-diagramSceneFigure-fallback p')].map(p => p.textContent);

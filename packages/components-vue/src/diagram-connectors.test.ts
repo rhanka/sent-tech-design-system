@@ -72,6 +72,60 @@ for (const host of ["base", "numbered-flow"] as const) {
       expectConnectorPaint(view.container, { frames: fixture.zones, boxes: fixture.cards, relations: fixture.relations });
       expect([...view.container.querySelectorAll("path[data-scene-edge]")].some((edge) => (edge.getAttribute("d") ?? "").includes("Q"))).toBe(true);
     });
+
+    it("should paint dash patterns, arrowheads and emphasis from presentation words and preserve them across fold/unfold", async () => {
+      const fixture = nestedZoneFixture({ outside: true });
+      const [r0, r1, r2] = fixture.relations.map((r) => r.occurrence);
+      const crossEdge = fixture.relations[fixture.relations.length - 1]!.occurrence;
+      const presentation = {
+        ...fixture.presentation,
+        relations: {
+          [r0!]: { strokeStyle: "dotted" as const, arrowhead: "open-triangle" as const },
+          [r1!]: { arrowhead: "none" as const, emphasis: "emphasis" as const },
+          [r2!]: { strokeStyle: "solid" as const, arrowhead: "arrow" as const },
+          [crossEdge]: { strokeStyle: "dashed" as const, arrowhead: "open-triangle" as const, emphasis: "emphasis" as const },
+        },
+      };
+      const view = render(hostProps({ ...propsOf(fixture), presentation } as DiagramSceneFigureProps));
+      await tick();
+
+      const markers = [...view.container.querySelectorAll("defs marker")];
+      expect(markers.length).toBeGreaterThanOrEqual(3);
+      expect(markers[0]!.id).toMatch(/^diagram-arrow-/);
+      expect(markers[0]!.hasAttribute("data-arrowhead-kind")).toBe(false);
+
+      const edgeEl = (occ: string) => view.container.querySelector(`path[data-scene-edge="${occ}"]`)!;
+      expect(edgeEl(r0!).getAttribute("stroke-dasharray")).toBe("2 5");
+      expect(edgeEl(r0!).getAttribute("data-edge-stroke")).toBe("dotted");
+      expect(edgeEl(r0!).getAttribute("marker-end")).toMatch(/-open\)$/);
+
+      expect(edgeEl(r1!).getAttribute("stroke-dasharray")).toBeNull();
+      expect(edgeEl(r1!).getAttribute("marker-end")).toBeNull();
+      expect(edgeEl(r1!).getAttribute("data-edge-emphasis")).toBe("emphasis");
+
+      expect(edgeEl(crossEdge).getAttribute("stroke-dasharray")).toBe("8 6");
+      expect(edgeEl(crossEdge).getAttribute("data-edge-emphasis")).toBe("emphasis");
+      expect(edgeEl(crossEdge).getAttribute("marker-end")).toMatch(/-open-emphasis\)$/);
+
+      const [, ontology] = fixture.zones as [string, string];
+      const toggle = () => view.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${ontology}"] button[aria-expanded]`)!;
+      await fireEvent.click(toggle());
+      await tick();
+      expect(view.container.querySelectorAll("path[data-scene-edge]")).toHaveLength(1);
+      const foldedEdge = edgeEl(crossEdge);
+      expect(foldedEdge.getAttribute("stroke-dasharray")).toBe("8 6");
+      expect(foldedEdge.getAttribute("data-edge-stroke")).toBe("dashed");
+      expect(foldedEdge.getAttribute("data-edge-arrowhead")).toBe("open-triangle");
+      expect(foldedEdge.getAttribute("data-edge-emphasis")).toBe("emphasis");
+      expect(foldedEdge.getAttribute("marker-end")).toMatch(/-open-emphasis\)$/);
+
+      await fireEvent.click(toggle());
+      await tick();
+      expect(view.container.querySelectorAll("path[data-scene-edge]")).toHaveLength(fixture.relations.length);
+      expect(edgeEl(r0!).getAttribute("stroke-dasharray")).toBe("2 5");
+      expect(edgeEl(r1!).getAttribute("marker-end")).toBeNull();
+      expect(edgeEl(r1!).getAttribute("data-edge-emphasis")).toBe("emphasis");
+    });
   });
 }
 

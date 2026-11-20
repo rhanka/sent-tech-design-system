@@ -62,6 +62,7 @@ exports[`h-cond golden scenes > should keep architecture/folded/390 complete and
           "y": 272,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -85,6 +86,7 @@ exports[`h-cond golden scenes > should keep architecture/folded/390 complete and
           "y": 0,
         },
       ],
+      "strokeStyle": "dashed",
     },
   ],
   "labels": [
@@ -326,6 +328,7 @@ exports[`h-cond golden scenes > should keep architecture/folded/1440 complete an
           "y": 272,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -349,6 +352,7 @@ exports[`h-cond golden scenes > should keep architecture/folded/1440 complete an
           "y": 0,
         },
       ],
+      "strokeStyle": "dashed",
     },
   ],
   "labels": [
@@ -675,6 +679,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 442.125,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -706,6 +711,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 549.125,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -737,6 +743,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 456.125,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -768,6 +775,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 549.125,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -791,6 +799,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 723.6875,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -814,6 +823,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 623.6875,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -845,6 +855,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 789.125,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -868,6 +879,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 1141.125,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -891,6 +903,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 1141.125,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -914,6 +927,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 374.5625,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -937,6 +951,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 374.5625,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -960,6 +975,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 374.5625,
         },
       ],
+      "strokeStyle": "dashed",
     },
   ],
   "labels": [
@@ -1515,6 +1531,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 442.125,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -1546,6 +1563,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 549.125,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -1577,6 +1595,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 456.125,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -1608,6 +1627,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 549.125,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -1631,6 +1651,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 723.6875,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -1654,6 +1675,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 623.6875,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -1685,6 +1707,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 789.125,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -1708,6 +1731,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 1141.125,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -1731,6 +1755,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 1141.125,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -1754,6 +1779,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 374.5625,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -1777,6 +1803,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 374.5625,
         },
       ],
+      "strokeStyle": "dashed",
     },
     {
       "arrows": [],
@@ -1800,6 +1827,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 374.5625,
         },
       ],
+      "strokeStyle": "dashed",
     },
   ],
   "labels": [

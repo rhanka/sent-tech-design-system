@@ -36,7 +36,10 @@ import {
   foldGroupId,
   GENERIC_PROFILE_ID,
   hasErrors,
+  isArrowheadKind,
+  isLinkEmphasis,
   isPresentationContractV2Pin,
+  isStrokeStyle,
   localIdOf,
   occurrenceRef,
   parentOccurrenceOf,
@@ -54,6 +57,7 @@ import {
   type PortSide,
   type ProfileRegistry,
   type RelationOccurrence,
+  type RelationPresentation,
   type RelationRef,
   type SemanticDocument,
   type ViewDocument,
@@ -168,7 +172,9 @@ function formOf(presentation: DiagramPresentation, occurrence: OccurrenceRef): D
  * and `align` under `@1`) before persisting `presentation.diagram` on the
  * emitted `ViewDocument`, so every laid-out view passes `validateView`.
  */
-function persistableDiagramPresentation(presentation: DiagramPresentation): DiagramPresentation {
+function persistableDiagramPresentation(
+  presentation: DiagramPresentation & { readonly relations?: Readonly<Record<string, RelationPresentation>> },
+): DiagramPresentation {
   const allowsAlign =
     presentation.contractPin !== undefined &&
     isPresentationContractV2Pin(presentation.contractPin);
@@ -183,7 +189,60 @@ function persistableDiagramPresentation(presentation: DiagramPresentation): Diag
     }
     entities[key] = cleanEntry as unknown as DiagramPresentation["entities"][string];
   }
-  return { ...presentation, entities };
+  const { relations: _transientRelations, ...base } = presentation;
+  void _transientRelations;
+  return { ...base, entities };
+}
+
+function relationPresentationFor(
+  relations: Readonly<Record<string, RelationPresentation>> | undefined,
+  occurrence: OccurrenceRef,
+  relation: RelationRef,
+): RelationPresentation | undefined {
+  if (relations === undefined) return undefined;
+  return relations[occurrence] ?? relations[relation];
+}
+
+function validateRelationPresentations(
+  relations: Readonly<Record<string, RelationPresentation>> | undefined,
+): LayoutRefusal[] {
+  if (relations === undefined) return [];
+  const refusals: LayoutRefusal[] = [];
+  for (const key of Object.keys(relations).sort(byString)) {
+    const entry = relations[key] as unknown as Record<string, unknown> | undefined;
+    if (entry === undefined) continue;
+    for (const field of Object.keys(entry).sort(byString)) {
+      if (field !== "strokeStyle" && field !== "arrowhead" && field !== "emphasis") {
+        refusals.push({
+          code: "document-invalid",
+          path: `presentation.relations.${key}.${field}`,
+          message: `unknown connector presentation field ${field}; select connectors by closed registry words only`,
+        });
+      }
+    }
+    if (entry["strokeStyle"] !== undefined && !isStrokeStyle(entry["strokeStyle"])) {
+      refusals.push({
+        code: "document-invalid",
+        path: `presentation.relations.${key}.strokeStyle`,
+        message: `strokeStyle ${String(entry["strokeStyle"])} is not a closed dash-pattern registry word`,
+      });
+    }
+    if (entry["arrowhead"] !== undefined && !isArrowheadKind(entry["arrowhead"])) {
+      refusals.push({
+        code: "document-invalid",
+        path: `presentation.relations.${key}.arrowhead`,
+        message: `arrowhead ${String(entry["arrowhead"])} is not a closed arrowhead registry word`,
+      });
+    }
+    if (entry["emphasis"] !== undefined && !isLinkEmphasis(entry["emphasis"])) {
+      refusals.push({
+        code: "document-invalid",
+        path: `presentation.relations.${key}.emphasis`,
+        message: `emphasis ${String(entry["emphasis"])} is not a closed link-emphasis registry word`,
+      });
+    }
+  }
+  return refusals;
 }
 
 /** Slot text for one occurrence: typed presentation slots, else the semantic name as title. */
@@ -322,6 +381,10 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       refusals: [{ code: "document-invalid", path: "presentation", message: "measured layout needs presentation.diagram" }],
       diagnostics: [],
     };
+  }
+  const relationStyleRefusals = validateRelationPresentations(presentation.relations);
+  if (relationStyleRefusals.length > 0) {
+    return { status: "refused", refusals: relationStyleRefusals, diagnostics: [] };
   }
   /**
    * Per-occurrence pinned anatomy (DE-1): the presentation entry selects
@@ -483,6 +546,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         edge.target.port === undefined
           ? occurrenceOf(edge.target.entity)
           : occurrenceRef(`p.s.${coded(localIdOf(edge.target.port))}`);
+      const style = relationPresentationFor(presentation.relations, occurrence, edge.id);
       relationOccurrences[occurrence] = {
         id: occurrence,
         relation: edge.id,
@@ -490,6 +554,9 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
           { role: "source", occurrence: sourceOccurrence },
           { role: "target", occurrence: targetOccurrence },
         ],
+        ...(style?.strokeStyle === undefined ? {} : { strokeStyle: style.strokeStyle }),
+        ...(style?.arrowhead === undefined ? {} : { arrowhead: style.arrowhead }),
+        ...(style?.emphasis === undefined ? {} : { emphasis: style.emphasis }),
       };
     }
     return {
@@ -2216,6 +2283,13 @@ function buildMeasuredView(
   for (const occurrence of Object.values(projected.relationOccurrences).sort((left, right) =>
     byString(left.id, right.id),
   )) {
+    const style = relationPresentationFor(options.presentation?.relations, occurrence.id, occurrence.relation);
+    const styledOccurrence: RelationOccurrence = {
+      ...occurrence,
+      ...(occurrence.strokeStyle === undefined && style?.strokeStyle !== undefined ? { strokeStyle: style.strokeStyle } : {}),
+      ...(occurrence.arrowhead === undefined && style?.arrowhead !== undefined ? { arrowhead: style.arrowhead } : {}),
+      ...(occurrence.emphasis === undefined && style?.emphasis !== undefined ? { emphasis: style.emphasis } : {}),
+    };
     const occurrenceId = occurrence.id as unknown as RelationRef;
     const pair = docks.get(occurrenceId);
     const route = routes.get(occurrenceId);
@@ -2226,10 +2300,10 @@ function buildMeasuredView(
           pair.target.port === undefined ? route.length : route.length - 1,
         )
         .map((point) => ({ x: clean(point.x), y: clean(point.y) }));
-      relationOccurrences[occurrence.id] = { ...occurrence, waypoints };
+      relationOccurrences[occurrence.id] = { ...styledOccurrence, waypoints };
     } else {
-      const { waypoints: _oldRoute, ...retained } = occurrence;
-      relationOccurrences[occurrence.id] = document.relations[occurrence.relation]?.type === "flow-step" ? retained : { ...occurrence };
+      const { waypoints: _oldRoute, ...retained } = styledOccurrence;
+      relationOccurrences[occurrence.id] = document.relations[occurrence.relation]?.type === "flow-step" ? retained : { ...styledOccurrence };
     }
   }
   // Ports keep their projected identities: every drawn end landing on a

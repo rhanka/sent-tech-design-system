@@ -25,7 +25,7 @@ export interface ViewSchemaPin {
   readonly contentDigest: string;
 }
 
-export type ViewSchemaVersion = "1" | "2" | "3";
+export type ViewSchemaVersion = "1" | "2" | "3" | "4";
 
 export const DIAGRAM_VIEW_SCHEMA_ID = "diagram-view-schema" as const;
 
@@ -136,6 +136,38 @@ export const DIAGRAM_VIEW_SCHEMA_V3_PIN: ViewSchemaPin = deepFreezeValue({
   id: DIAGRAM_VIEW_SCHEMA_ID, version: "3", contentDigest: DIAGRAM_VIEW_SCHEMA_V3_DIGEST,
 });
 
+/**
+ * Additive successor (DE-2): closed connector presentation registries
+ * (`strokeStyle: solid | dashed | dotted`, `arrowhead: arrow | filled-triangle | open-triangle | none`,
+ * `emphasis: default | emphasis`) plus DE-1 `presentation.anatomy` and `diagram-presentation@2`
+ * (`align`). `@1/@2/@3` bytes and digests remain untouched.
+ */
+const PRIVATE_V4_SCHEMA: Record<string, unknown> = (() => {
+  const schema = deepCloneValue(PRIVATE_V3_SCHEMA);
+  schema["$id"] = "engram:diagram-view-schema/4";
+  const rootProps = schema["properties"] as Record<string, Record<string, unknown>>;
+  const presentationProps = rootProps["presentation"]!["properties"] as Record<string, Record<string, unknown>>;
+  presentationProps["anatomy"] = { enum: ["v1", "v2"] };
+  const diagramProps = presentationProps["diagram"]!["properties"] as Record<string, Record<string, unknown>>;
+  const pinProps = diagramProps["contractPin"]!["properties"] as Record<string, Record<string, unknown>>;
+  pinProps["version"] = { enum: ["1", "2"] };
+  const entityProps = (diagramProps["entities"]!["additionalProperties"] as Record<string, unknown>)["properties"] as Record<string, Record<string, unknown>>;
+  entityProps["align"] = { enum: ["left", "center"] };
+  const relOccProps = (rootProps["relationOccurrences"]!["additionalProperties"] as Record<string, unknown>)["properties"] as Record<string, Record<string, unknown>>;
+  relOccProps["strokeStyle"] = { enum: ["solid", "dashed", "dotted"] };
+  relOccProps["arrowhead"] = { enum: ["arrow", "filled-triangle", "open-triangle", "none"] };
+  relOccProps["emphasis"] = { enum: ["default", "emphasis"] };
+  const summaryProps = (rootProps["summaryLabels"]!["additionalProperties"] as Record<string, unknown>)["properties"] as Record<string, Record<string, unknown>>;
+  summaryProps["strokeStyle"] = { enum: ["solid", "dashed", "dotted"] };
+  return schema;
+})();
+deepFreezeValue(PRIVATE_V4_SCHEMA);
+export const DIAGRAM_VIEW_SCHEMA_V4: Record<string, unknown> = frozenCopy(PRIVATE_V4_SCHEMA);
+export const DIAGRAM_VIEW_SCHEMA_V4_DIGEST: string = sha256Hex(canonicalBytes(PRIVATE_V4_SCHEMA));
+export const DIAGRAM_VIEW_SCHEMA_V4_PIN: ViewSchemaPin = deepFreezeValue({
+  id: DIAGRAM_VIEW_SCHEMA_ID, version: "4", contentDigest: DIAGRAM_VIEW_SCHEMA_V4_DIGEST,
+});
+
 const ALLOWED_PIN_KEYS = new Set(["id", "version", "contentDigest"]);
 
 /**
@@ -189,14 +221,22 @@ export function resolveViewSchema(pin: unknown): ViewSchemaResolution {
     }
     if (!DIGEST_PATTERN.test(contentDigest)) return { ok: false, refusal: { code: "pin-malformed" } };
     if (id !== DIAGRAM_VIEW_SCHEMA_ID) return { ok: false, refusal: { code: "unknown-schema-id" } };
-    if (version !== "1" && version !== "2" && version !== "3") return { ok: false, refusal: { code: "unknown-schema-version" } };
-    const expected = version === "1" ? DIAGRAM_VIEW_SCHEMA_V1_DIGEST : version === "2" ? DIAGRAM_VIEW_SCHEMA_V2_DIGEST : DIAGRAM_VIEW_SCHEMA_V3_DIGEST;
+    if (version !== "1" && version !== "2" && version !== "3" && version !== "4") return { ok: false, refusal: { code: "unknown-schema-version" } };
+    const expected =
+      version === "1"
+        ? DIAGRAM_VIEW_SCHEMA_V1_DIGEST
+        : version === "2"
+          ? DIAGRAM_VIEW_SCHEMA_V2_DIGEST
+          : version === "3"
+            ? DIAGRAM_VIEW_SCHEMA_V3_DIGEST
+            : DIAGRAM_VIEW_SCHEMA_V4_DIGEST;
     if (contentDigest !== expected) return { ok: false, refusal: { code: "schema-digest-mismatch" } };
     if (version === "1") {
       if (DIAGRAM_VIEW_SCHEMA_V1 === undefined) return { ok: false, refusal: { code: "schema-bytes-unavailable" } };
       return { ok: true, version: "1", pin: frozenCopy(DIAGRAM_VIEW_SCHEMA_V1_PIN), schema: DIAGRAM_VIEW_SCHEMA_V1 };
     }
     if (version === "3") return { ok: true, version: "3", pin: frozenCopy(DIAGRAM_VIEW_SCHEMA_V3_PIN), schema: DIAGRAM_VIEW_SCHEMA_V3 };
+    if (version === "4") return { ok: true, version: "4", pin: frozenCopy(DIAGRAM_VIEW_SCHEMA_V4_PIN), schema: DIAGRAM_VIEW_SCHEMA_V4 };
     if (DIAGRAM_VIEW_SCHEMA_V2 === undefined) return { ok: false, refusal: { code: "schema-bytes-unavailable" } };
     return { ok: true, version: "2", pin: frozenCopy(DIAGRAM_VIEW_SCHEMA_V2_PIN), schema: DIAGRAM_VIEW_SCHEMA_V2 };
   } catch {
