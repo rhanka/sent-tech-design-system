@@ -44,7 +44,7 @@ import { CASE_IDS, layScene, sceneInput, viewNamesOf, type CaseId, type SceneLay
 const BASELINE = new URL("./baseline.json", import.meta.url);
 const AFTER = new URL("./after.json", import.meta.url);
 const GAP_CAP = 240;
-const BASE_X = spacing.gapMin, BASE_Y = spacing.gapMinBlock;
+const BASE_X = spacing.gapMin, BASE_Y = spacing.gapMinBlock, ZONE_GUTTER = spacing.zoneGutter;
 
 interface FillProof {
   readonly view: string;
@@ -112,7 +112,7 @@ describe("DC-2a L2 row-pack gates", () => {
       const view = views.find((view) => view.key === proof.view)!;
       expect(view, proof.view).toBeDefined();
       const input = sceneInput(view.caseId, view.viewName);
-      const base = layScene(input, { metrics: { gapInlineMax: BASE_X, gapBlockMax: BASE_Y } }, { rootOrder: input.rootOrder });
+      const base = layScene(input, { metrics: { gapInlineMax: Math.max(BASE_X, ZONE_GUTTER), gapBlockMax: Math.max(BASE_Y, ZONE_GUTTER) } }, { rootOrder: input.rootOrder });
       const metrics = placementMetrics(base);
       expect(metrics.visibleLeaves, proof.view).toBe(proof.leafCount);
       expect([metrics.bboxWidth, metrics.bboxHeight], proof.view).toEqual(
@@ -194,19 +194,19 @@ describe("DC-2a L2 row-pack gates", () => {
     expect(Object.values(before).reduce((sum, metrics) => sum + metrics.edgeContainerEscapes, 0)).toBe(26);
   });
 
-  it("BF-6: widening a gutter never re-wraps a shelf — shelf membership is the one packed at the base gaps", () => {
-    // With the caps at the base gap no gutter can widen: the drawing is pass 1.
-    let widened = 0;
+  it("BF-6 / DE-2 ask 3: fixed sibling gutters never widen or re-wrap a shelf — shelf membership stays at the token gaps", () => {
     for (const view of views) {
       const input = sceneInput(view.caseId, view.viewName);
-      const base = layScene(input, { metrics: { gapInlineMax: BASE_X, gapBlockMax: BASE_Y } }, { rootOrder: input.rootOrder });
+      const base = layScene(input, { metrics: { gapInlineMax: Math.max(BASE_X, ZONE_GUTTER), gapBlockMax: Math.max(BASE_Y, ZONE_GUTTER) } }, { rootOrder: input.rootOrder });
       const shelvesOf = (layout: SceneLayout): string => JSON.stringify(levelShelves(layout).map((level) => [level.level, level.rows, level.shelves]));
       expect(shelvesOf(layouts.get(view.key)!), view.key).toBe(shelvesOf(base));
       expect(base.orientations).toEqual(layouts.get(view.key)!.orientations);
-      expect(siblingGaps(base).every((gap) => Math.abs(gap.gap - (gap.axis === "x" ? BASE_X : BASE_Y)) <= GAP_TOLERANCE)).toBe(true);
-      widened += after[view.key]!.widenedGutters;
+      for (const channel of layouts.get(view.key)!.channels ?? []) {
+        const expected = channel.zone ? ZONE_GUTTER : (channel.axis === "horizontal" ? BASE_X : BASE_Y);
+        expect(Math.abs(channel.gap - expected), `${view.key} ${channel.id}`).toBeLessThanOrEqual(GAP_TOLERANCE);
+      }
+      expect(after[view.key]!.widenedGutters, view.key).toBe(0);
     }
-    expect(widened).toBeGreaterThan(0);
   }, 120_000);
 
   it("AC-19/AC-3: every sibling gap, root included, is within [base, cap] on both axes", () => {

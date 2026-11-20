@@ -2075,6 +2075,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       readonly base: number;
       readonly authoredBase: boolean;
       readonly max: number;
+      readonly zone: boolean;
     }
     const gutters: Gutter[] = [];
     for (const [key, packed] of [...packedRuns].sort(([left], [right]) => byString(left, right))) {
@@ -2109,6 +2110,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
             base: gapAfter(shelf.at(-1)!) ?? packed.acrossBase,
             authoredBase: gapAfter(shelf.at(-1)!) !== undefined || axisAuthored(!rows),
             max: rows ? rowGaps.maxY : rowGaps.maxX,
+            zone,
           });
         }
         shelf.forEach((slot, index) => {
@@ -2136,15 +2138,18 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
             base: Math.max(...strips.map(({slot}) => gapAfter(slot) ?? packed.alongBase)),
             authoredBase: strips.some(({slot}) => gapAfter(slot) !== undefined) || axisAuthored(rows),
             max,
+            zone,
           });
         } else {
           for (const { shelf, slot, strip } of strips) {
-            gutters.push({ id: `${key}|along|${String(index)}|${String(shelf)}`, horizontal: !rows, strips: [strip], gap: thickness(strip), base: gapAfter(slot) ?? packed.alongBase, authoredBase: gapAfter(slot) !== undefined || axisAuthored(rows), max });
+            gutters.push({ id: `${key}|along|${String(index)}|${String(shelf)}`, horizontal: !rows, strips: [strip], gap: thickness(strip), base: gapAfter(slot) ?? packed.alongBase, authoredBase: gapAfter(slot) !== undefined || axisAuthored(rows), max, zone });
           }
         }
       }
     }
     // Count each routed occurrence once in the physical channel, including lifted bundle traffic.
+    // DE-2 ask 3: gutters are fixed by their spacing token (one `zoneGutter` between sibling zones);
+    // routing subdivides the fixed gutter into tracks instead of widening it.
     const channels: LayoutChannel[] = gutters.map(gutter => {
       const edges = [...retryRoutes].filter(([, route]) => gutter.strips.some(strip => route.some((point, i) => {
         const next = route[i + 1];
@@ -2155,9 +2160,9 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const n = edges.reduce((sum, id) => sum + (edgeBundles[id]?.members.length ?? 1), 0);
       const intersecting = [...labelBoxes.values()].filter(box => gutter.strips.some(strip => rectsIntersect(strip, box)));
       const labelled = intersecting.length > 0;
-      const placedFloor = Math.max(0, ...intersecting.map(box => (gutter.horizontal ? box.height : box.width) + 2 * metrics.labelMargin).filter(needed => needed <= gutter.max));
       const axis = gutter.horizontal ? 'vertical' as const : 'horizontal' as const;
       const parameters = channelMetrics(metrics, axis === 'horizontal');
+      const fixedGap = gutter.base;
       return {
         id: gutter.id,
         axis,
@@ -2166,46 +2171,16 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         n,
         labelled,
         gap: gutter.gap,
-        expected: Math.min(gutter.max, Math.max(placedFloor, channelGap(n, labelled, { ...parameters, gapMin: gutter.authoredBase ? gutter.base : Math.max(parameters.gapMin, gutter.base) }))),
+        expected: channelGap(n, labelled, { ...parameters, gapMin: fixedGap }),
         capacity: channelCapacity(gutter.gap, routeSpacing, borderClearance),
+        zone: gutter.zone,
       };
     });
-    // A widened gutter in which no placed label sits is an empty lane: a bare
-    // route needs no more than the base gap (two clearances).
+    // DE-2 ask 3: fixed gutters never widen for traffic or labels; routing and
+    // exterior comb lanes adapt instead, and excess demand is reported as a
+    // non-blocking channel-capacity diagnostic.
     const unused: string[] = [];
-    const gutterIds = new Set(gutters.map((gutter) => gutter.id));
-    for (const id of [...(plan?.widen.keys() ?? [])].sort(byString)) if (!gutterIds.has(id)) unused.push(id);
-
-    // A label with no room is probed with the free space of a base gap above
-    // and under it: where it then fits, the lanes it sits in are asked to
-    // widen to its thickness plus its two margins — never past the axis cap.
     const requested = new Map<string, number>();
-    const probed: Rect[] = [...taken];
-    for (const entry of unplaced) {
-      const probe = probeMarginOf(entry.size.height);
-      if (probe < 0) continue;
-      const choice = placePackedLabel(entry, fixedShapes, probed, metrics.labelMargin, probe);
-      if (choice === undefined) continue;
-      probed.push(choice.box);
-      const edge = drawnEdges.find((candidate) => (candidate.occurrence as string) === entry.id)!;
-      const shared = sharedContainerOf(edge.source.entity, edge.target.entity);
-      const level = shared === undefined ? ROOT_LEVEL_KEY : representativeOf(shared);
-      for (const gutter of gutters) {
-        // S-1: an outgoing edge may use a level's base gutter, but cannot
-        // change its geometry when a different level is folded.
-        if (!gutter.id.startsWith(`${level}|`)) continue;
-        if (!gutter.strips.some((strip) => rectsIntersect(strip, choice.box))) continue;
-        const needed = (gutter.horizontal ? entry.size.height : entry.size.width) + 2 * metrics.labelMargin;
-        if (needed > gutter.max || needed <= gutter.gap) continue;
-        requested.set(gutter.id, Math.max(requested.get(gutter.id) ?? 0, needed));
-      }
-    }
-
-    for (const channel of channels) {
-      const target = Math.max(requested.get(channel.id) ?? 0, channel.expected);
-      if (Math.abs(target - channel.gap) > 0.5) requested.set(channel.id, target);
-      else requested.delete(channel.id);
-    }
 
     // Built-in geometric check for minimum route spacing (DE-2 ask 2).
     const checkedRoutes: CheckedRoute[] = [];

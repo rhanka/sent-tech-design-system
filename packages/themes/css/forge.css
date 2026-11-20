@@ -860,6 +860,7 @@
   --st-component-diagramZone-proposedDashArray: 4 5;
   --st-component-diagramZone-childGapInline: var(--st-component-diagramScene-gapMin);
   --st-component-diagramZone-childGapBlock: var(--st-component-diagramScene-gapMinBlock);
+  --st-component-diagramZone-siblingGutter: var(--st-component-diagramScene-zoneGutter);
   --st-component-diagramZone-gapInlineMax: var(--st-component-diagramScene-gapMax);
   --st-component-diagramZone-gapBlockMax: var(--st-component-diagramScene-gapMax);
   --st-component-diagramZone-rowPackTargetAspect: 1.78;
@@ -877,6 +878,7 @@
   --st-component-iconButton-text: #0f172a;
   --st-component-iconButton-focusRing: oklch(50% 0.134 242.749);
   --st-component-diagramScene-containerPadding: 16px;
+  --st-component-diagramScene-zoneGutter: 96px;
   --st-component-diagramScene-gapMin: 96px;
   --st-component-diagramScene-gapMinBlock: 72px;
   --st-component-diagramScene-gapBase: 64px;
@@ -1808,6 +1810,7 @@
   --st-component-diagramZone-proposedDashArray: 4 5;
   --st-component-diagramZone-childGapInline: var(--st-component-diagramScene-gapMin);
   --st-component-diagramZone-childGapBlock: var(--st-component-diagramScene-gapMinBlock);
+  --st-component-diagramZone-siblingGutter: var(--st-component-diagramScene-zoneGutter);
   --st-component-diagramZone-gapInlineMax: var(--st-component-diagramScene-gapMax);
   --st-component-diagramZone-gapBlockMax: var(--st-component-diagramScene-gapMax);
   --st-component-diagramZone-rowPackTargetAspect: 1.78;
@@ -1825,6 +1828,7 @@
   --st-component-iconButton-text: oklch(96% 0.005 250);
   --st-component-iconButton-focusRing: oklch(72% 0.13 242);
   --st-component-diagramScene-containerPadding: 16px;
+  --st-component-diagramScene-zoneGutter: 96px;
   --st-component-diagramScene-gapMin: 96px;
   --st-component-diagramScene-gapMinBlock: 72px;
   --st-component-diagramScene-gapBase: 64px;
@@ -2756,6 +2760,7 @@
   --st-component-diagramZone-proposedDashArray: 4 5;
   --st-component-diagramZone-childGapInline: var(--st-component-diagramScene-gapMin);
   --st-component-diagramZone-childGapBlock: var(--st-component-diagramScene-gapMinBlock);
+  --st-component-diagramZone-siblingGutter: var(--st-component-diagramScene-zoneGutter);
   --st-component-diagramZone-gapInlineMax: var(--st-component-diagramScene-gapMax);
   --st-component-diagramZone-gapBlockMax: var(--st-component-diagramScene-gapMax);
   --st-component-diagramZone-rowPackTargetAspect: 1.78;
@@ -2773,6 +2778,7 @@
   --st-component-iconButton-text: oklch(96% 0.005 250);
   --st-component-iconButton-focusRing: oklch(72% 0.13 242);
   --st-component-diagramScene-containerPadding: 16px;
+  --st-component-diagramScene-zoneGutter: 96px;
   --st-component-diagramScene-gapMin: 96px;
   --st-component-diagramScene-gapMinBlock: 72px;
   --st-component-diagramScene-gapBase: 64px;
