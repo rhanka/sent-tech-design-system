@@ -23,6 +23,8 @@ export interface PresentationPin {
 
 export type StrokeStyle = "solid" | "dashed";
 export type DiagramForm = "card" | "container" | "legend" | "legend-key";
+/** Text/header alignment governed by `diagram-presentation@2` (DE-1). */
+export type PresentationAlign = "left" | "center";
 
 export interface PresentationText {
   readonly title?: string;
@@ -38,6 +40,8 @@ export interface EntityPresentation {
   readonly text: PresentationText;
   readonly icon?: string;
   readonly categoryRef?: EntityRef;
+  /** Optional alignment (`diagram-presentation@2`, DE-1). */
+  readonly align?: PresentationAlign;
 }
 
 export interface LegendPresentation {
@@ -328,8 +332,83 @@ export function parsePinnedAdapterReference(ref: string): PresentationPin | unde
 /** The contract ProfileId form, never a valid semantic profileRef. */
 export const DIAGRAM_PRESENTATION_PROFILE_ID = "diagram-presentation@1" as const;
 
+/**
+ * diagram-presentation@2 (DE-1): additive successor to @1 carrying optional
+ * `align: "left" | "center"` on `EntityPresentation`. `@1` bytes, digests and
+ * packaged catalog remain untouched.
+ */
+const ENTITY_PRESENTATION_V2_SCHEMA = {
+  ...ENTITY_PRESENTATION_SCHEMA,
+  properties: {
+    ...ENTITY_PRESENTATION_SCHEMA.properties,
+    align: { enum: ["left", "center"] },
+  },
+};
+
+const DIAGRAM_VALUE_V2_PROPERTIES = {
+  ...DIAGRAM_VALUE_PROPERTIES,
+  contractPin: {
+    type: "object",
+    properties: {
+      id: { const: "diagram-presentation" },
+      version: { const: "2" },
+      contentDigest: { type: "string", pattern: "^[0-9a-f]{64}$" },
+    },
+    required: ["id", "version", "contentDigest"],
+    additionalProperties: false,
+  },
+  entities: { type: "object", additionalProperties: ENTITY_PRESENTATION_V2_SCHEMA },
+};
+
+const PRIVATE_PRESENTATION_V2_SCHEMA: Record<string, unknown> = {
+  $schema: "https://json-schema.org/draft/2020-12/schema",
+  $id: "engram:diagram-presentation-schema/2",
+  title: "diagram-presentation@2 contract",
+  type: "object",
+  properties: DIAGRAM_VALUE_V2_PROPERTIES,
+  required: [...DIAGRAM_VALUE_REQUIRED],
+  additionalProperties: false,
+};
+deepFreezeValue(PRIVATE_PRESENTATION_V2_SCHEMA);
+
+export const DIAGRAM_PRESENTATION_V2_SCHEMA: Record<string, unknown> = frozenCopy(PRIVATE_PRESENTATION_V2_SCHEMA);
+export const DIAGRAM_PRESENTATION_V2_SCHEMA_DIGEST: string = sha256Hex(canonicalBytes(PRIVATE_PRESENTATION_V2_SCHEMA));
+
+const PRIVATE_PRESENTATION_V2_SCHEMA_PIN: PresentationPin = {
+  id: "diagram-presentation-schema",
+  version: "2",
+  contentDigest: DIAGRAM_PRESENTATION_V2_SCHEMA_DIGEST,
+};
+deepFreezeValue(PRIVATE_PRESENTATION_V2_SCHEMA_PIN);
+export const DIAGRAM_PRESENTATION_V2_SCHEMA_PIN: PresentationPin = frozenCopy(PRIVATE_PRESENTATION_V2_SCHEMA_PIN);
+
+export const DIAGRAM_PRESENTATION_V2_CONTRACT_ID = "diagram-presentation@2" as const;
+export const DIAGRAM_PRESENTATION_V2_PROFILE_ID = "diagram-presentation@2" as const;
+
+const PRIVATE_CONTRACT_V2_DESCRIPTOR = {
+  id: DIAGRAM_PRESENTATION_V2_CONTRACT_ID,
+  artifactKind: DIAGRAM_PRESENTATION_ARTIFACT_KIND,
+  schemaPin: { ...PRIVATE_PRESENTATION_V2_SCHEMA_PIN },
+  compatibilityMatrixVersion: "2" as const,
+};
+deepFreezeValue(PRIVATE_CONTRACT_V2_DESCRIPTOR);
+
+export const DIAGRAM_PRESENTATION_V2_CONTRACT_DESCRIPTOR = frozenCopy(PRIVATE_CONTRACT_V2_DESCRIPTOR);
+export const DIAGRAM_PRESENTATION_V2_CONTRACT_CONTENT: string = sha256Hex(
+  canonicalBytes(PRIVATE_CONTRACT_V2_DESCRIPTOR),
+);
+
+const PRIVATE_CONTRACT_V2_PIN: PresentationPin = {
+  id: "diagram-presentation",
+  version: "2",
+  contentDigest: DIAGRAM_PRESENTATION_V2_CONTRACT_CONTENT,
+};
+deepFreezeValue(PRIVATE_CONTRACT_V2_PIN);
+
+export const DIAGRAM_PRESENTATION_V2_CONTRACT_PIN: PresentationPin = frozenCopy(PRIVATE_CONTRACT_V2_PIN);
+
 export function isPresentationContractProfileId(id: string): boolean {
-  return id === DIAGRAM_PRESENTATION_PROFILE_ID;
+  return id === DIAGRAM_PRESENTATION_PROFILE_ID || id === DIAGRAM_PRESENTATION_V2_PROFILE_ID;
 }
 
 export function isPresentationContractPin(pin: PresentationPin): boolean {
@@ -340,11 +419,27 @@ export function isPresentationContractPin(pin: PresentationPin): boolean {
   );
 }
 
+export function isPresentationContractV2Pin(pin: PresentationPin): boolean {
+  return (
+    pin.id === PRIVATE_CONTRACT_V2_PIN.id &&
+    pin.version === PRIVATE_CONTRACT_V2_PIN.version &&
+    pin.contentDigest === PRIVATE_CONTRACT_V2_PIN.contentDigest
+  );
+}
+
 export function isPresentationSchemaPin(pin: PresentationPin): boolean {
   return (
     pin.id === PRIVATE_PRESENTATION_SCHEMA_PIN.id &&
     pin.version === PRIVATE_PRESENTATION_SCHEMA_PIN.version &&
     pin.contentDigest === PRIVATE_PRESENTATION_SCHEMA_PIN.contentDigest
+  );
+}
+
+export function isPresentationSchemaV2Pin(pin: PresentationPin): boolean {
+  return (
+    pin.id === PRIVATE_PRESENTATION_V2_SCHEMA_PIN.id &&
+    pin.version === PRIVATE_PRESENTATION_V2_SCHEMA_PIN.version &&
+    pin.contentDigest === PRIVATE_PRESENTATION_V2_SCHEMA_PIN.contentDigest
   );
 }
 

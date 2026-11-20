@@ -72,7 +72,7 @@ import {
   type RelationRef,
 } from "./refs.js";
 import { createTypeResolver, type TypeResolver } from "./resolver.js";
-import { DIAGRAM_PRESENTATION_PROFILE_ID } from "./presentation.js";
+import { isPresentationContractProfileId } from "./presentation.js";
 import { validateDiagramPresentation } from "./presentation-relations.js";
 import {
   analyzeSummaries,
@@ -1621,33 +1621,35 @@ export function validateDocument(document: SemanticDocument, options: Validation
     return [diagnostic({ code: "document-not-an-object", path: "document", message: "a document is an object" })];
   }
 
-  if (
-    Array.isArray((document as { profileRefs?: unknown }).profileRefs) &&
-    ((document as unknown as { profileRefs: readonly string[] }).profileRefs as readonly string[]).includes(
-      DIAGRAM_PRESENTATION_PROFILE_ID,
-    )
-  ) {
+  const contractProfileRef = Array.isArray((document as { profileRefs?: unknown }).profileRefs)
+    ? ((document as unknown as { profileRefs: readonly string[] }).profileRefs as readonly string[]).find((id) =>
+        isPresentationContractProfileId(id),
+      )
+    : undefined;
+  if (contractProfileRef !== undefined) {
     return [
       diagnostic({
         code: "unknown-profile",
         severity: "error",
         path: "profileRefs",
-        message: `profile ${DIAGRAM_PRESENTATION_PROFILE_ID} is not a diagram profile; diagram-presentation@1 is a contract artifact, not a semantic profile`,
-        details: { profile: DIAGRAM_PRESENTATION_PROFILE_ID },
+        message: `profile ${contractProfileRef} is not a diagram profile; ${contractProfileRef} is a contract artifact, not a semantic profile`,
+        details: { profile: contractProfileRef },
       }),
     ];
   }
-  if (
-    options.bindings !== undefined &&
-    options.bindings.rows.some((row) => row.profileId === (DIAGRAM_PRESENTATION_PROFILE_ID as never))
-  ) {
+  const contractBindingRow =
+    options.bindings !== undefined
+      ? options.bindings.rows.find((row) => isPresentationContractProfileId(row.profileId as unknown as string))
+      : undefined;
+  if (contractBindingRow !== undefined) {
+    const profileId = contractBindingRow.profileId as unknown as string;
     return [
       diagnostic({
         code: "type-definition-conflict",
         severity: "error",
-        path: `bindings.${DIAGRAM_PRESENTATION_PROFILE_ID}`,
-        message: `executor binding for ${DIAGRAM_PRESENTATION_PROFILE_ID} is refused; a contract artifact is never a family layer`,
-        details: { profile: DIAGRAM_PRESENTATION_PROFILE_ID },
+        path: `bindings.${profileId}`,
+        message: `executor binding for ${profileId} is refused; a contract artifact is never a family layer`,
+        details: { profile: profileId },
       }),
     ];
   }
