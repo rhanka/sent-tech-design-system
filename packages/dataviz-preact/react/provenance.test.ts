@@ -85,6 +85,11 @@ import * as handWrittenHistogramChart from "../../dataviz-react/src/lib/Histogra
 import * as handWrittenHollowCandlestickChart from "../../dataviz-react/src/lib/HollowCandlestickChart.js";
 import * as handWrittenItemChart from "../../dataviz-react/src/lib/ItemChart.js";
 import * as handWrittenKpiCardGroup from "../../dataviz-react/src/lib/KpiCardGroup.js";
+import * as handWrittenMekkoChart from "../../dataviz-react/src/lib/MekkoChart.js";
+import * as handWrittenOHLCChart from "../../dataviz-react/src/lib/OHLCChart.js";
+import * as handWrittenObjectLayers from "../../dataviz-react/src/lib/ObjectLayers.js";
+import * as handWrittenOrganizationChart from "../../dataviz-react/src/lib/OrganizationChart.js";
+import * as handWrittenPackedBubbleChart from "../../dataviz-react/src/lib/PackedBubbleChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -185,6 +190,13 @@ const switched = [
   "HollowCandlestickChart",
   "ItemChart",
   "KpiCardGroup",
+  "MekkoChart",
+  "OHLCChart",
+  "WebFrame",
+  "DataImage",
+  "ObjectLayerPanel",
+  "OrganizationChart",
+  "PackedBubbleChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -277,6 +289,13 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   HollowCandlestickChart: handWrittenHollowCandlestickChart.HollowCandlestickChart,
   ItemChart: handWrittenItemChart.ItemChart,
   KpiCardGroup: handWrittenKpiCardGroup.KpiCardGroup,
+  MekkoChart: handWrittenMekkoChart.MekkoChart,
+  OHLCChart: handWrittenOHLCChart.OHLCChart,
+  WebFrame: handWrittenObjectLayers.WebFrame,
+  DataImage: handWrittenObjectLayers.DataImage,
+  ObjectLayerPanel: handWrittenObjectLayers.ObjectLayerPanel,
+  OrganizationChart: handWrittenOrganizationChart.OrganizationChart,
+  PackedBubbleChart: handWrittenPackedBubbleChart.PackedBubbleChart,
 };
 
 describe("dataviz React leg provenance", () => {
