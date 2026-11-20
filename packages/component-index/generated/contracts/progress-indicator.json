@@ -1,8 +1,8 @@
 {
   "componentId": "progress-indicator",
   "contractSource": "derived",
-  "digest": "sha256:45e8b3ec5e0cc2802052ca96ca659f0e005efcb35c23e90e14fe8f27bd59fe2d",
-  "entryDigest": "sha256:67c9a754f4bff96f36a6ef4603da8368cad9f18adaf7f4d7c08e2f01d0b70669",
+  "digest": "sha256:a3f9d82f3bc468bc63ae4754778f6d78497c45c4ea6f07a53d80595dd73dc517",
+  "entryDigest": "sha256:dd6a3345d405326b3f2acfc42327a7e65374c47a688d7ad971be09c98e402cfe",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-svelte/dist/ProgressIndicator.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ProgressIndicatorProps",
-        "version": "0.41.5"
+        "version": "0.42.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -403,7 +403,7 @@
         "declarationPath": "packages/components-vue/dist/ProgressIndicator.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ProgressIndicatorProps",
-        "version": "0.41.0-next.7"
+        "version": "0.41.0-next.8"
       },
       "status": "complete",
       "unresolved": [],

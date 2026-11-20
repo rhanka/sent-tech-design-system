@@ -1823,6 +1823,54 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       secondaryText: semantic.text.secondary,
       rule: semantic.border.subtle
     },
+    // DE-1 — compact card anatomy (`diagram-anatomy/v2`, 352 × 154).
+    // Unlisted geometry aliases the v1 `diagramCard` tokens so the type
+    // scale and chrome stay identical by construction; only the PLAN DE-1
+    // insets differ (padding 6, header inset 12, accent 6, icon 52 / gap 4).
+    diagramCardCompact: {
+      width: "352px",
+      height: "154px",
+      radius: "var(--st-component-diagramCard-radius)",
+      borderWidth: "var(--st-component-diagramCard-borderWidth)",
+      accentWidth: "6px",
+      padding: "6px",
+      headerInset: "12px",
+      iconSize: "52px",
+      iconTextGap: "4px",
+      kickerFontSize: "var(--st-component-diagramCard-kickerFontSize)",
+      kickerFontWeight: "var(--st-component-diagramCard-kickerFontWeight)",
+      kickerLineHeight: "var(--st-component-diagramCard-kickerLineHeight)",
+      kickerLetterSpacing: "var(--st-component-diagramCard-kickerLetterSpacing)",
+      kickerTextTransform: "var(--st-component-diagramCard-kickerTextTransform)",
+      titleFontSize: "var(--st-component-diagramCard-titleFontSize)",
+      titleFontWeight: "var(--st-component-diagramCard-titleFontWeight)",
+      titleLineHeight: "var(--st-component-diagramCard-titleLineHeight)",
+      gap: "var(--st-component-diagramCard-gap)",
+      bodyFontSize: "var(--st-component-diagramCard-bodyFontSize)",
+      bodyFontWeight: "var(--st-component-diagramCard-bodyFontWeight)",
+      bodyLineHeight: "var(--st-component-diagramCard-bodyLineHeight)",
+      bodyInsetFromBar: "var(--st-component-diagramCard-bodyInsetFromBar)",
+      ruleHeight: "var(--st-component-diagramCard-ruleHeight)",
+      ruleMargin: "var(--st-component-diagramCard-ruleMargin)",
+      ruleInsetStart: "var(--st-component-diagramCard-ruleInsetStart)",
+      ruleInsetEnd: "var(--st-component-diagramCard-ruleInsetEnd)",
+      footerFontSize: "var(--st-component-diagramCard-footerFontSize)",
+      footerFontWeight: "var(--st-component-diagramCard-footerFontWeight)",
+      footerLineHeight: "var(--st-component-diagramCard-footerLineHeight)",
+      footerBottomInset: "var(--st-component-diagramCard-footerBottomInset)",
+      toggleAllocation: "var(--st-component-diagramCard-toggleAllocation)",
+      toggleBoxSize: "var(--st-component-diagramCard-toggleBoxSize)",
+      toggleInset: "var(--st-component-diagramCard-toggleInset)",
+      foldedHeaderTextWidth: "210px",
+      proposedDashArray: "var(--st-component-diagramCard-proposedDashArray)",
+      fontFamily: "var(--st-component-diagramCard-fontFamily)",
+      border: "var(--st-component-diagramCard-border)",
+      accent: "var(--st-component-diagramCard-accent)",
+      surface: "var(--st-component-diagramCard-surface)",
+      text: "var(--st-component-diagramCard-text)",
+      secondaryText: "var(--st-component-diagramCard-secondaryText)",
+      rule: "var(--st-component-diagramCard-rule)"
+    },
     // DC-1 — wrapping diagram card (spec §6.4, Appendix A). Kicker/title
     // leaves alias the atomic card tokens so the "same typography"
     // requirement holds by construction. Collapsed zones reuse the atomic
@@ -1872,6 +1920,13 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       rowPackTargetAspect: "1.78",
       border: semantic.border.strong,
       surface: semantic.surface.raised,
+      // DE-1 owner addendum 1 — alternating backgrounds by nesting depth:
+      // even depths (top level first) paint `surface1`, odd depths paint
+      // `surface2`. Both alias the semantic layer so light and dark themes
+      // resolve them (dark derives from the same builder over the dark
+      // inputs); card semantic tints are untouched.
+      surface1: semantic.surface.raised,
+      surface2: semantic.surface.subtle,
       text: semantic.text.primary,
       secondaryText: semantic.text.secondary,
       rule: semantic.border.subtle

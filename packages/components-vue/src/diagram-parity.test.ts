@@ -127,19 +127,87 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
       vue.unmount(); svelte.unmount();
     });
   }
+  for (const collapsed of [true, false]) {
+    it(`should paint the depth surface on both hosts with collapsed=${collapsed} (addendum 1)`, async () => {
+      const props = { entityId: 'depth-zone', title: 'Depth', collapsed, toggleLabel: 'Toggle', depth: 1, ...(collapsed ? {} : { width: 492 }) };
+      const vue = mount(DiagramZone, { props }); const svelte = render(SvelteZone, { props });
+      await nextTick(); await tick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      const frame = vue.element.querySelector('.st-diagramZone') ?? vue.element.querySelector('.st-diagramCard');
+      expect(frame?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+      vue.unmount(); svelte.unmount();
+    });
+  }
   for (const props of [
     { entityId: 'overflow', title: 'X'.repeat(200), body: ['body'] },
     { entityId: 'unknown', title: 'Unknown', body: ['body'], icon: 'unmapped' },
     { entityId: 'proposed', title: 'Proposal', body: ['body'], proposed: true, align: 'center', toggle: { collapsed: true, label: 'Expand' } },
+    { entityId: 'v2-default', title: 'Compact', body: ['Line'], anatomy: 'v2' },
+    { entityId: 'v2-left', title: 'Compact left', body: ['Line'], anatomy: 'v2', align: 'left' },
+    { entityId: 'v2-fallback', kicker: 'KICKER', title: 'Title', body: ['Body', 'Detail'], detailCount: 1, footer: 'Footer', anatomy: 'v2' },
   ] satisfies DiagramCardProps[]) {
     it(`should preserve ${props.entityId} state and diagnostics`, async () => {
       const vue = mount(DiagramCard, { props }); const svelte = render(SvelteCard, { props });
       await nextTick(); await tick(); expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
       expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderCardSvg(props).diagnostics);
+      if (props.anatomy === 'v2' && props.entityId !== 'v2-fallback') {
+        expect(vue.element.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap: var(--st-component-diagramCardCompact-iconTextGap, 4px)');
+      } else if (props.entityId === 'v2-fallback') {
+        expect(vue.element.getAttribute('style') ?? '').not.toContain('--st-component-diagramCard-iconTextGap');
+        expect(vue.element.getAttribute('style') ?? '').toContain('height: 200px');
+      }
       await vue.trigger('click'); expect(vue.emitted('select')).toEqual([[{ entityId: props.entityId }]]);
       vue.unmount(); svelte.unmount();
     });
   }
+  for (const collapsed of [true, false]) {
+    it(`should match v2 zone anatomy and inline tokens on both hosts with collapsed=${collapsed}`, async () => {
+      const props = { entityId: 'v2-zone', title: 'Zone', subtitle: 'Sub', collapsed, toggleLabel: 'Toggle', anatomy: 'v2' as const, ...(collapsed ? {} : { width: 492 }) };
+      const vue = mount(DiagramZone, { props }); const svelte = render(SvelteZone, { props });
+      await nextTick(); await tick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderZoneSvg(props).diagnostics);
+      const frame = vue.element.querySelector('.st-diagramZone') ?? vue.element.querySelector('.st-diagramCard');
+      const style = frame?.getAttribute('style') ?? '';
+      expect(style).toContain('--st-component-diagramCard-iconTextGap');
+      if (collapsed) {
+        expect(style).toContain('height: 154px');
+      } else {
+        expect(style).toContain('--st-component-diagramZone-headerInset');
+        const header = vue.element.querySelector<HTMLElement>('.st-diagramZone-header');
+        expect(header?.style.right).toBe(header?.style.left);
+        const toggle = vue.element.querySelector<HTMLElement>('.st-diagramCard-toggle');
+        expect(toggle?.style.top).toBe(toggle?.style.right);
+      }
+      vue.unmount(); svelte.unmount();
+    });
+  }
+  it('should anchor expanded v2 zone header right to headerInset (12px) when containerPadding is 16px on both hosts', async () => {
+    const props = {
+      entityId: 'v2-zone-padded',
+      title: 'Zone',
+      subtitle: 'Sub',
+      collapsed: false,
+      toggleLabel: 'Collapse',
+      anatomy: 'v2' as const,
+      containerPadding: 16,
+      width: 492,
+      height: 400,
+    };
+    const vue = mount(DiagramZone, { props });
+    const svelte = render(SvelteZone, { props });
+    await nextTick(); await tick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    for (const root of [vue.element, svelte.container]) {
+      const header = root.querySelector<HTMLElement>('.st-diagramZone-header')!;
+      const toggle = root.querySelector<HTMLElement>('.st-diagramCard-toggle')!;
+      expect(header.style.left).toBe('calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+      expect(header.style.right).toBe('calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+      expect(header.style.top).toBe(header.style.right);
+      expect(toggle.style.top).toBe(toggle.style.right);
+    }
+    vue.unmount(); svelte.unmount();
+  });
   for (const name of DIAGRAM_GLYPH_NAMES) it(`should match icon ${name}`, () => {
     const vue = mount(DiagramIcon, { props: { name } }); const svelte = render(SvelteIcon, { props: { name } });
     expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!))); vue.unmount(); svelte.unmount();
@@ -367,5 +435,188 @@ describe('scene host DOM and camera/fold behavior', () => {
     const vue = mount(SceneFigure, { props: { ...host, ...SINGLE, registry: { get: () => undefined, list: () => [] } as never } });
     expect(vue.find('[role="alert"]').text()).toContain('Diagram unavailable');
     expect(vue.attributes('data-scene-refused')).toBeTruthy(); vue.unmount();
+  });
+  it('should wire depthParityStart and stamp synthesized nested-zone surfaces identically on Svelte and Vue', async () => {
+    frame();
+    const nested = sceneOf('nested-depth', [
+      { id: 'outer', container: true },
+      { id: 'inner', container: true, parent: 'outer' },
+      { id: 'leaf', parent: 'inner' },
+    ]);
+    for (const depthParityStart of [undefined, 1] as const) {
+      for (const extra of [{}, { flows: {} }] as const) {
+        const props = { ...host, ...nested, ...extra, ...(depthParityStart === undefined ? {} : { depthParityStart }) };
+        const vue = mount(SceneFigure, { props }); const svelte = render(SvelteScene, { props });
+        await nextTick(); await tick(); await nextTick();
+        if (Object.keys(extra).length === 0) {
+          expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+        }
+        const outerFrame = vue.element.querySelector(`[data-scene-occurrence="${occurrence('outer')}"] .st-diagramZone`);
+        const innerFrame = vue.element.querySelector(`[data-scene-occurrence="${occurrence('inner')}"] .st-diagramZone`);
+        if (depthParityStart === undefined) {
+          expect(innerFrame?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+        } else {
+          expect(outerFrame?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+          expect(innerFrame?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface1');
+        }
+        vue.unmount(); svelte.unmount();
+      }
+    }
+    vi.unstubAllGlobals();
+  });
+  it('should keep icon none without unknown fallback or warning under strict DiagramSceneFigure on Svelte and Vue', async () => {
+    frame();
+    const base = sceneOf('icon-none-host', [
+      { id: 'zone', container: true },
+      { id: 'card', parent: 'zone' },
+    ]);
+    const presentation = {
+      ...base.presentation,
+      entities: {
+        [occurrence('zone')]: { ...base.presentation.entities[occurrence('zone')], icon: 'none' },
+        [occurrence('card')]: { ...base.presentation.entities[occurrence('card')], icon: 'none' },
+      },
+    } as unknown as ScenePresentation;
+    const props = { ...host, ...base, presentation, strictIcons: true };
+    const vue = mount(SceneFigure, { props }); const svelte = render(SvelteScene, { props });
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    expect(vue.element.querySelector('[data-diagram-icon]')).toBeNull();
+    expect(vue.element.querySelector('[data-card-icon-unknown]')).toBeNull();
+    expect(vue.element.querySelector('[data-zone-icon-unknown]')).toBeNull();
+    const layoutEvent = vue.emitted('layout')?.at(-1)?.[0] as { status?: string; warnings?: readonly { code: string }[] } | undefined;
+    expect(layoutEvent?.status).toBe('laid-out');
+    expect(layoutEvent?.warnings?.filter(w => w.code === 'card-icon-missing') ?? []).toEqual([]);
+    vue.unmount(); svelte.unmount();
+    vi.unstubAllGlobals();
+  });
+  it('should fold and unfold a v2 multi-container nested scene identically on Svelte and Vue without ejecting grandchildren', async () => {
+    frame();
+    const base = sceneOf(
+      'v2-nested-parity',
+      [
+        { id: 'outerA', container: true },
+        { id: 'innerA', container: true, parent: 'outerA' },
+        { id: 'a1', parent: 'innerA' },
+        { id: 'a2', parent: 'innerA' },
+        { id: 'aSibling', parent: 'outerA' },
+        { id: 'outerB', container: true },
+        { id: 'b1', parent: 'outerB' },
+        { id: 'ext' },
+      ],
+      [
+        { from: 'a1', to: 'a2', label: 'inner' },
+        { from: 'a1', to: 'aSibling', label: 'sibling' },
+        { from: 'a1', to: 'b1', label: 'sync1' },
+        { from: 'a2', to: 'b1', label: 'sync2' },
+        { from: 'aSibling', to: 'b1', label: 'sync3' },
+        { from: 'a2', to: 'ext', label: 'pub' },
+      ],
+    );
+    const presentation = {
+      ...base.presentation,
+      entities: Object.fromEntries(
+        Object.entries(base.presentation.entities).map(([id, entry]) => [
+          id,
+          entry.form === 'container'
+            ? { form: 'container', text: { title: id.replace('occurrence:e.', ''), subtitle: 'Sub' }, anatomy: 'v2' }
+            : { form: 'card', text: { title: id.replace('occurrence:e.', ''), body: 'Work' }, anatomy: 'v2' },
+        ]),
+      ),
+    } as unknown as ScenePresentation;
+    const props = { ...host, ...base, presentation };
+    const vue = mount(SceneFigure, { props, attachTo: document.body });
+    const svelte = render(SvelteScene, { props });
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+
+    const occurrencesOf = (root: Element) =>
+      [...root.querySelectorAll<HTMLElement>('[data-scene-occurrence]')].map(el => el.dataset['sceneOccurrence']!).sort();
+    const rectOf = (root: Element, id: string) => {
+      const el = root.querySelector<HTMLElement>(`[data-scene-occurrence="${occurrence(id)}"]`)!;
+      return { x: parseFloat(el.style.left), y: parseFloat(el.style.top), width: parseFloat(el.style.width), height: parseFloat(el.style.height) };
+    };
+
+    expect(occurrencesOf(vue.element)).toEqual([
+      occurrence('a1'), occurrence('a2'), occurrence('aSibling'), occurrence('b1'),
+      occurrence('ext'), occurrence('innerA'), occurrence('outerA'), occurrence('outerB'),
+    ]);
+    expect(rectOf(vue.element, 'a1')).toMatchObject({ width: 352, height: 154 });
+    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(6);
+    expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('innerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+    const outerHeader = vue.element.querySelector<HTMLElement>(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone-header`)!;
+    expect(outerHeader.style.left).toBe('calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+    expect(outerHeader.style.right).toBe(outerHeader.style.left);
+    // Compact v2 cards and expanded v2 zones both apply host iconTextGap override.
+    expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('a1')}"] .st-diagramCard`)?.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap');
+    expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap');
+    const initialOuterB = rectOf(vue.element, 'outerB');
+    const initialExt = rectOf(vue.element, 'ext');
+
+    // Fold outerA on both hosts while innerA is expanded: all descendants hide, links re-route and bundle.
+    await vue.find(`[data-scene-occurrence="${occurrence('outerA')}"] button[aria-expanded]`).trigger('click');
+    svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${occurrence('outerA')}"] button[aria-expanded]`)!.click();
+    await nextTick(); await tick(); await nextTick();
+
+    expect(occurrencesOf(vue.element)).toEqual([
+      occurrence('b1'), occurrence('ext'), occurrence('outerA'), occurrence('outerB'),
+    ]);
+    expect(occurrencesOf(svelte.container)).toEqual(occurrencesOf(vue.element));
+    expect(rectOf(vue.element, 'outerA')).toMatchObject({ width: 352, height: 154 });
+    const foldedOuterB = rectOf(vue.element, 'outerB');
+    const foldedExt = rectOf(vue.element, 'ext');
+    expect(
+      initialOuterB.x !== foldedOuterB.x || initialOuterB.y !== foldedOuterB.y ||
+      initialExt.x !== foldedExt.x || initialExt.y !== foldedExt.y,
+    ).toBe(true);
+    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(2);
+    expect(vue.element.querySelectorAll('[data-bundle-relation]')).toHaveLength(3);
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+
+    // Unfold outerA on both hosts: exact same structure, geometry, edges and depth surfaces return.
+    await vue.find(`[data-scene-occurrence="${occurrence('outerA')}"] button[aria-expanded]`).trigger('click');
+    svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${occurrence('outerA')}"] button[aria-expanded]`)!.click();
+    await nextTick(); await tick(); await nextTick();
+
+    expect(occurrencesOf(vue.element)).toEqual([
+      occurrence('a1'), occurrence('a2'), occurrence('aSibling'), occurrence('b1'),
+      occurrence('ext'), occurrence('innerA'), occurrence('outerA'), occurrence('outerB'),
+    ]);
+    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(6);
+    expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('innerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+    for (const key of ['x', 'y', 'width', 'height'] as const) {
+      expect(Math.abs(rectOf(vue.element, 'outerB')[key] - initialOuterB[key])).toBeLessThanOrEqual(1 / 64);
+      expect(Math.abs(rectOf(vue.element, 'ext')[key] - initialExt[key])).toBeLessThanOrEqual(1 / 64);
+    }
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+
+    vue.unmount(); svelte.unmount();
+    vi.unstubAllGlobals();
+  });
+  it('should render default and overridden localized inclusion labels in the fallback text identically on Svelte and Vue (DE-1b)', async () => {
+    frame();
+    const rowsOf = (root: Element) => [...root.querySelectorAll('.st-diagramSceneFigure-fallback p')].map(p => p.textContent);
+    for (const extra of [{}, { flows: {} }] as const) {
+      for (const override of [undefined, 'contient'] as const) {
+        const props = {
+          ...host,
+          ...WIDE,
+          ...extra,
+          ...(override === undefined ? {} : { labels: { contains: override } }),
+        };
+        const vue = mount(SceneFigure, { props });
+        const svelte = render(SvelteScene, { props });
+        await nextTick(); await tick(); await nextTick();
+        const expectedLabel = override ?? 'includes';
+        const vueRows = rowsOf(vue.element);
+        const svelteRows = rowsOf(svelte.container);
+        expect(vueRows).toEqual(svelteRows);
+        expect(vueRows).toContain(`a → a1 · ${expectedLabel}`);
+        expect(vueRows).toContain('a1 → c · calls');
+        expect(vueRows.some(row => row?.includes('· contains'))).toBe(false);
+        vue.unmount(); svelte.unmount();
+      }
+    }
+    vi.unstubAllGlobals();
   });
 });

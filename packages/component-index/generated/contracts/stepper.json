@@ -1,8 +1,8 @@
 {
   "componentId": "stepper",
   "contractSource": "derived",
-  "digest": "sha256:6c66ae1d218ab497cafd5692faafdb1ee59a99123f2302b0592e38cc444fd30e",
-  "entryDigest": "sha256:cb05ee480034b99b583df56dc4f3cb6c6c9628c48e65f5564545645ce99bd425",
+  "digest": "sha256:86372887857b48b0376bef98565b9a752a2caaea8661c02c6df58b6e4a13d5a2",
+  "entryDigest": "sha256:d3f333ca4a56b6c50bb774761a7c4611a4cbefbc9298b4474dfaf0f98f79ca64",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -252,7 +252,7 @@
         "declarationPath": "packages/components-svelte/dist/Stepper.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StepperProps",
-        "version": "0.41.5"
+        "version": "0.42.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -346,7 +346,7 @@
         "declarationPath": "packages/components-vue/dist/Stepper.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StepperProps",
-        "version": "0.41.0-next.7"
+        "version": "0.41.0-next.8"
       },
       "status": "partial",
       "unresolved": [],

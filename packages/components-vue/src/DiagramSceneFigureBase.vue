@@ -7,12 +7,11 @@ import { getDiagramGlyph } from './diagram-icons/registry.js';
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, useId, watch } from 'vue';
 import { createLayoutCache, type Rect, type LayoutResult } from '@sentropic/diagram-canvas';
 import { sceneContentSize, type DiagramSceneSize } from './diagramSceneModel.js';
-import { DEFAULT_FLOW_STRINGS } from '@sentropic/diagram-canvas/flowModel';
 import DiagramCard from './DiagramCard.vue';
 import DiagramZone from './DiagramZone.vue';
 import DiagramControlGlyph from './DiagramControlGlyph.vue';
 import { projectCardProps, projectZoneProps } from './diagramCardModel.js';
-import { collapsedOccurrencesOf, displayedRects, layoutScene, parseDurationMs, parseEasing, rectsOf, resolveScene, sameRects, sceneConnectorMask, scenePaintPlane, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
+import { collapsedOccurrencesOf, DEFAULT_SCENE_LABELS, displayedRects, layoutScene, parseDurationMs, parseEasing, rectsOf, resolveScene, sameRects, sceneConnectorMask, scenePaintPlane, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
 import type { DiagramSceneFigureProps as SceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
 export type DiagramSceneFigureProps = SceneFigureProps;
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { strictIcons: true });
@@ -38,12 +37,7 @@ const emit = defineEmits<{
         camera: DiagramSceneCamera
     ];
 }>();
-const defaults: DiagramSceneFigureLabels = {
-    ...DEFAULT_FLOW_STRINGS,
-    controls: 'Zoom', zoomIn: 'Zoom in', zoomOut: 'Zoom out', fit: 'Fit',
-    zoomLevel: percent => `Zoom ${percent} %`, viewport: 'Diagram',
-    expand: title => `Expand ${title}`, collapse: title => `Collapse ${title}`,
-};
+const defaults: DiagramSceneFigureLabels = DEFAULT_SCENE_LABELS;
 const strings = computed(() => ({ ...defaults, ...props.labels }));
 const hostId = useId();
 const arrowId = 'diagram-arrow-' + hostId;
@@ -68,7 +62,9 @@ const layoutResult = computed(() => {
         cache: props.layoutCache ?? ownedCache,
         document: props.document, registry: props.registry, presentation: props.presentation,
         ...(props.iconBindings === undefined ? {} : { iconBindings: props.iconBindings }),
-        strictIcons: props.strictIcons ?? true, resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
+        strictIcons: props.strictIcons ?? true,
+        ...(props.depthParityStart === undefined ? {} : { depthParityStart: props.depthParityStart }),
+        resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
         measureLines: measureLines.value, collapsed: collapsedNow.value,
         ...(props.view === undefined ? {} : { view: props.view }),
         ...(props.bindings === undefined ? {} : { bindings: props.bindings }),
@@ -87,7 +83,9 @@ const scene = computed(() => layoutResult.value.status === 'laid-out'
         document: props.document, presentation: props.presentation, measureLines: measureLines.value,
         ...(props.view === undefined ? {} : { view: props.view }),
         ...(props.iconBindings === undefined ? {} : { iconBindings: props.iconBindings }),
-        strictIcons: props.strictIcons ?? true, resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
+        strictIcons: props.strictIcons ?? true,
+        ...(props.depthParityStart === undefined ? {} : { depthParityStart: props.depthParityStart }),
+        resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
         metrics: effectiveMetrics.value,
     }) : undefined);
 const sceneRects = computed<ReadonlyMap<string, Rect>>(() => scene.value === undefined ? new Map() : rectsOf(scene.value));
@@ -319,7 +317,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
         </div>
       </div>
     </div>
-  <DiagramSceneFallback :scene="scene" :document="props.document" />
+  <DiagramSceneFallback :scene="scene" :document="props.document" :contains-label="strings.contains" />
   </figure>
 </template>
 

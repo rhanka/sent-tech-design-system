@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { borderDistance, centredBodyFindings, connectorFindings, exposedSegments, segmentInterval } from '../tools/diagram-first-paint/geometry.mjs';
+import { borderDistance, centredBodyFindings, compactCardFindings, connectorFindings, exposedSegments, segmentInterval } from '../tools/diagram-first-paint/geometry.mjs';
 
 test('should clip a crossing connector against the stroke-inset badge disk', () => {
   const a = { x: -20, y: 0 }, b = { x: 20, y: 0 };
@@ -99,4 +99,29 @@ test('should fail a card with no body ink at all', () => {
   assert.deepEqual(centredBodyFindings({ ...paintArgs, labels: [], scale: 1 }), [
     'card occurrence:e.a has no "First paint" body ink',
   ]);
+});
+
+test('should verify compact 352x154 card centering within 1/64 px and slot containment', () => {
+  const slot = {
+    id: 'occurrence:e.a',
+    card: { left: 0, top: 0, right: 352, bottom: 154, width: 352, height: 154 },
+    headerText: { left: 68, top: 8, right: 344, bottom: 60, width: 276, height: 52 },
+    bodyArea: { left: 14, top: 66, right: 344, bottom: 146, width: 330, height: 80 },
+    titleLines: [{ left: 68, top: 13.203125, right: 344, bottom: 54.796875, width: 276, height: 41.59375 }],
+    bodyLines: [{ left: 14, top: 90.40625, right: 344, bottom: 121.59375, width: 330, height: 31.1875 }],
+  };
+  const labels = [
+    { id: 'Card a', left: 156, top: 20, right: 256, bottom: 48, width: 100, height: 28 },
+    { id: 'First paint', left: 129, top: 94, right: 229, bottom: 118, width: 100, height: 24 },
+  ];
+  assert.deepEqual(compactCardFindings({ cardSlots: [slot], labels, scale: 1 }), []);
+  // Body block shifted vertically beyond 1/64 px must fail.
+  const shifted = { ...slot, bodyLines: [{ ...slot.bodyLines[0], top: 91, bottom: 122.1875 }] };
+  assert.ok(compactCardFindings({ cardSlots: [shifted], labels, scale: 1 }).some(f => f.includes('centre-y')));
+  // Left-aligned title ink in a compact card must fail.
+  const leftTitle = [
+    { id: 'Card a', left: 68, top: 20, right: 168, bottom: 48, width: 100, height: 28 },
+    labels[1],
+  ];
+  assert.ok(compactCardFindings({ cardSlots: [slot], labels: leftTitle, scale: 1 }).some(f => f.includes('title ink off-centre')));
 });
