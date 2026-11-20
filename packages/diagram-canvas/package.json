@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/diagram-canvas",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "description": "Headless diagram scenes, layout, hit testing and pure presentation models/SVG helpers. No DOM or framework.",
   "publishConfig": {
     "access": "public"
@@ -48,6 +48,7 @@
       "import": "./dist/presentation/index.js"
     },
     "./diagram-anatomy": "./contracts/diagram-anatomy.v1.json",
+    "./diagram-anatomy-v2": "./contracts/diagram-anatomy.v2.json",
     "./flowModel": {
       "types": "./dist/presentation/flowModel.d.ts",
       "import": "./dist/presentation/flowModel.js"
@@ -57,7 +58,7 @@
   "main": "./dist/index.js",
   "sideEffects": false,
   "dependencies": {
-    "@sentropic/diagram-core": "0.3.0"
+    "@sentropic/diagram-core": "0.4.0"
   },
   "scripts": {
     "build": "node ../../scripts/sync-diagram-spacing.mjs && tsc -p tsconfig.json",

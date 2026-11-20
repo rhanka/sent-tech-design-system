@@ -1,0 +1,1219 @@
+{
+  "version": 1,
+  "programmeLot": "P6",
+  "workstream": "W3",
+  "source": "src",
+  "reactEmission": ".react-emit/src",
+  "totalReactFiles": 128,
+  "reference": {
+    "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
+    "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
+  },
+  "ownershipNote": "Lot P6 complete (127/127 modules + index.ts = 128/128 files of dataviz-react ported, 0 remaining): scaffold + groups 1-3 (70 files) + group 4 batches 1-12 (57 files).",
+  "modules": [
+    {
+      "module": "adapter",
+      "file": "src/adapter.ts",
+      "reactSource": "dataviz-react/src/adapter.ts",
+      "kind": "adapter",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "categoricalData",
+      "file": "src/lib/categoricalData.ts",
+      "reactSource": "dataviz-react/src/lib/categoricalData.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": false
+    },
+    {
+      "module": "partOfWholeData",
+      "file": "src/lib/partOfWholeData.ts",
+      "reactSource": "dataviz-react/src/lib/partOfWholeData.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": false
+    },
+    {
+      "module": "distributionData",
+      "file": "src/lib/distributionData.ts",
+      "reactSource": "dataviz-react/src/lib/distributionData.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": false
+    },
+    {
+      "module": "drill",
+      "file": "src/lib/drill.ts",
+      "reactSource": "dataviz-react/src/lib/drill.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "AreaChart",
+      "file": "src/lib/AreaChart.tsx",
+      "reactSource": "dataviz-react/src/lib/AreaChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ComboChart",
+      "file": "src/lib/ComboChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ComboChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "LollipopChart",
+      "file": "src/lib/LollipopChart.tsx",
+      "reactSource": "dataviz-react/src/lib/LollipopChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "StackedBarChart",
+      "file": "src/lib/StackedBarChart.tsx",
+      "reactSource": "dataviz-react/src/lib/StackedBarChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "StepLineChart",
+      "file": "src/lib/StepLineChart.tsx",
+      "reactSource": "dataviz-react/src/lib/StepLineChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "CrossfilteredBarChart",
+      "file": "src/lib/CrossfilteredBarChart.tsx",
+      "reactSource": "dataviz-react/src/lib/CrossfilteredBarChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "TimeSeriesLineChart",
+      "file": "src/lib/TimeSeriesLineChart.tsx",
+      "reactSource": "dataviz-react/src/lib/TimeSeriesLineChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DivergingBarChart",
+      "file": "src/lib/DivergingBarChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DivergingBarChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ParetoChart",
+      "file": "src/lib/ParetoChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ParetoChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DateHistogramChart",
+      "file": "src/lib/DateHistogramChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DateHistogramChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "advancedPivotData",
+      "file": "src/lib/advancedPivotData.ts",
+      "reactSource": "dataviz-react/src/lib/advancedPivotData.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": false
+    },
+    {
+      "module": "analyticsDsData",
+      "file": "src/lib/analyticsDsData.ts",
+      "reactSource": "dataviz-react/src/lib/analyticsDsData.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": false
+    },
+    {
+      "module": "chart-export",
+      "file": "src/lib/chart-export.ts",
+      "reactSource": "dataviz-react/src/lib/chart-export.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "geoMapLayers",
+      "file": "src/lib/geoMapLayers.ts",
+      "reactSource": "dataviz-react/src/lib/geoMapLayers.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": false
+    },
+    {
+      "module": "url-sync",
+      "file": "src/lib/url-sync.ts",
+      "reactSource": "dataviz-react/src/lib/url-sync.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "useUrlSync",
+      "file": "src/lib/useUrlSync.ts",
+      "reactSource": "dataviz-react/src/lib/useUrlSync.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "AdvancedPivotDataTable",
+      "file": "src/lib/AdvancedPivotDataTable.tsx",
+      "reactSource": "dataviz-react/src/lib/AdvancedPivotDataTable.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "AnalyticsClusterPlot",
+      "file": "src/lib/AnalyticsClusterPlot.tsx",
+      "reactSource": "dataviz-react/src/lib/AnalyticsClusterPlot.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "AnimatedBubbleChart",
+      "file": "src/lib/AnimatedBubbleChart.tsx",
+      "reactSource": "dataviz-react/src/lib/AnimatedBubbleChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "AnomalySwimLaneChart",
+      "file": "src/lib/AnomalySwimLaneChart.tsx",
+      "reactSource": "dataviz-react/src/lib/AnomalySwimLaneChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ArcDiagramChart",
+      "file": "src/lib/ArcDiagramChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ArcDiagramChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "AreaRangeChart",
+      "file": "src/lib/AreaRangeChart.tsx",
+      "reactSource": "dataviz-react/src/lib/AreaRangeChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "AreaSplineRangeChart",
+      "file": "src/lib/AreaSplineRangeChart.tsx",
+      "reactSource": "dataviz-react/src/lib/AreaSplineRangeChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "BellCurveChart",
+      "file": "src/lib/BellCurveChart.tsx",
+      "reactSource": "dataviz-react/src/lib/BellCurveChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "BookmarkNavigator",
+      "file": "src/lib/BookmarkNavigator.tsx",
+      "reactSource": "dataviz-react/src/lib/BookmarkNavigator.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "BoxPlotChart",
+      "file": "src/lib/BoxPlotChart.tsx",
+      "reactSource": "dataviz-react/src/lib/BoxPlotChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "BulletChart",
+      "file": "src/lib/BulletChart.tsx",
+      "reactSource": "dataviz-react/src/lib/BulletChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "BumpChart",
+      "file": "src/lib/BumpChart.tsx",
+      "reactSource": "dataviz-react/src/lib/BumpChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "CalculationEditor",
+      "file": "src/lib/CalculationEditor.tsx",
+      "reactSource": "dataviz-react/src/lib/CalculationEditor.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "CalendarHeatmapChart",
+      "file": "src/lib/CalendarHeatmapChart.tsx",
+      "reactSource": "dataviz-react/src/lib/CalendarHeatmapChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "CandlestickChart",
+      "file": "src/lib/CandlestickChart.tsx",
+      "reactSource": "dataviz-react/src/lib/CandlestickChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ExportMenu",
+      "file": "src/lib/ExportMenu.tsx",
+      "reactSource": "dataviz-react/src/lib/ExportMenu.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ChartExport",
+      "file": "src/lib/ChartExport.tsx",
+      "reactSource": "dataviz-react/src/lib/ChartExport.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ChordChart",
+      "file": "src/lib/ChordChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ChordChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ChoroplethMap",
+      "file": "src/lib/ChoroplethMap.tsx",
+      "reactSource": "dataviz-react/src/lib/ChoroplethMap.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ColumnPyramidChart",
+      "file": "src/lib/ColumnPyramidChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ColumnPyramidChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ColumnRangeChart",
+      "file": "src/lib/ColumnRangeChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ColumnRangeChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ContourChart",
+      "file": "src/lib/ContourChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ContourChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "CorrelationMatrix",
+      "file": "src/lib/CorrelationMatrix.tsx",
+      "reactSource": "dataviz-react/src/lib/CorrelationMatrix.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DashboardActiveFilters",
+      "file": "src/lib/DashboardActiveFilters.tsx",
+      "reactSource": "dataviz-react/src/lib/DashboardActiveFilters.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DashboardFilterBar",
+      "file": "src/lib/DashboardFilterBar.tsx",
+      "reactSource": "dataviz-react/src/lib/DashboardFilterBar.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DashboardGrid",
+      "file": "src/lib/DashboardGrid.tsx",
+      "reactSource": "dataviz-react/src/lib/DashboardGrid.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DateRangeFilter",
+      "file": "src/lib/DateRangeFilter.tsx",
+      "reactSource": "dataviz-react/src/lib/DateRangeFilter.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DecompositionTreeChart",
+      "file": "src/lib/DecompositionTreeChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DecompositionTreeChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "Density2DChart",
+      "file": "src/lib/Density2DChart.tsx",
+      "reactSource": "dataviz-react/src/lib/Density2DChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DependencyWheelChart",
+      "file": "src/lib/DependencyWheelChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DependencyWheelChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DonutChart",
+      "file": "src/lib/DonutChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DonutChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DrillBarChart",
+      "file": "src/lib/DrillBarChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DrillBarChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DrillBreadcrumb",
+      "file": "src/lib/DrillBreadcrumb.tsx",
+      "reactSource": "dataviz-react/src/lib/DrillBreadcrumb.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "TreemapChart",
+      "file": "src/lib/TreemapChart.tsx",
+      "reactSource": "dataviz-react/src/lib/TreemapChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DrillChart",
+      "file": "src/lib/DrillChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DrillChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "DumbbellChart",
+      "file": "src/lib/DumbbellChart.tsx",
+      "reactSource": "dataviz-react/src/lib/DumbbellChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ErrorBarsChart",
+      "file": "src/lib/ErrorBarsChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ErrorBarsChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "EventFeedPanel",
+      "file": "src/lib/EventFeedPanel.tsx",
+      "reactSource": "dataviz-react/src/lib/EventFeedPanel.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "FieldPane",
+      "file": "src/lib/FieldPane.tsx",
+      "reactSource": "dataviz-react/src/lib/FieldPane.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "FlamegraphChart",
+      "file": "src/lib/FlamegraphChart.tsx",
+      "reactSource": "dataviz-react/src/lib/FlamegraphChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ForceGraph",
+      "file": "src/lib/ForceGraph.tsx",
+      "reactSource": "dataviz-react/src/lib/ForceGraph.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ForecastLineChart",
+      "file": "src/lib/ForecastLineChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ForecastLineChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "FormatPanel",
+      "file": "src/lib/FormatPanel.tsx",
+      "reactSource": "dataviz-react/src/lib/FormatPanel.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "FunnelChart",
+      "file": "src/lib/FunnelChart.tsx",
+      "reactSource": "dataviz-react/src/lib/FunnelChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "GanttChart",
+      "file": "src/lib/GanttChart.tsx",
+      "reactSource": "dataviz-react/src/lib/GanttChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "GaugeChart",
+      "file": "src/lib/GaugeChart.tsx",
+      "reactSource": "dataviz-react/src/lib/GaugeChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "GeoClusterMap",
+      "file": "src/lib/GeoClusterMap.tsx",
+      "reactSource": "dataviz-react/src/lib/GeoClusterMap.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "GeoDensityMap",
+      "file": "src/lib/GeoDensityMap.tsx",
+      "reactSource": "dataviz-react/src/lib/GeoDensityMap.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "GeoFlowMap",
+      "file": "src/lib/GeoFlowMap.tsx",
+      "reactSource": "dataviz-react/src/lib/GeoFlowMap.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "GeoHexbinMap",
+      "file": "src/lib/GeoHexbinMap.tsx",
+      "reactSource": "dataviz-react/src/lib/GeoHexbinMap.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "GeoJsonMap",
+      "file": "src/lib/GeoJsonMap.tsx",
+      "reactSource": "dataviz-react/src/lib/GeoJsonMap.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "GeoPointMap",
+      "file": "src/lib/GeoPointMap.tsx",
+      "reactSource": "dataviz-react/src/lib/GeoPointMap.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "HLCChart",
+      "file": "src/lib/HLCChart.tsx",
+      "reactSource": "dataviz-react/src/lib/HLCChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "HeatmapChart",
+      "file": "src/lib/HeatmapChart.tsx",
+      "reactSource": "dataviz-react/src/lib/HeatmapChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "HeikinAshiChart",
+      "file": "src/lib/HeikinAshiChart.tsx",
+      "reactSource": "dataviz-react/src/lib/HeikinAshiChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "HistogramChart",
+      "file": "src/lib/HistogramChart.tsx",
+      "reactSource": "dataviz-react/src/lib/HistogramChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "HollowCandlestickChart",
+      "file": "src/lib/HollowCandlestickChart.tsx",
+      "reactSource": "dataviz-react/src/lib/HollowCandlestickChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ItemChart",
+      "file": "src/lib/ItemChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ItemChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "KpiCardGroup",
+      "file": "src/lib/KpiCardGroup.tsx",
+      "reactSource": "dataviz-react/src/lib/KpiCardGroup.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "MekkoChart",
+      "file": "src/lib/MekkoChart.tsx",
+      "reactSource": "dataviz-react/src/lib/MekkoChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "OHLCChart",
+      "file": "src/lib/OHLCChart.tsx",
+      "reactSource": "dataviz-react/src/lib/OHLCChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ObjectLayers",
+      "file": "src/lib/ObjectLayers.tsx",
+      "reactSource": "dataviz-react/src/lib/ObjectLayers.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "OrganizationChart",
+      "file": "src/lib/OrganizationChart.tsx",
+      "reactSource": "dataviz-react/src/lib/OrganizationChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "PackedBubbleChart",
+      "file": "src/lib/PackedBubbleChart.tsx",
+      "reactSource": "dataviz-react/src/lib/PackedBubbleChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "PalettePicker",
+      "file": "src/lib/PalettePicker.tsx",
+      "reactSource": "dataviz-react/src/lib/PalettePicker.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ParallelCoordinatesChart",
+      "file": "src/lib/ParallelCoordinatesChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ParallelCoordinatesChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "PercentileBandChart",
+      "file": "src/lib/PercentileBandChart.tsx",
+      "reactSource": "dataviz-react/src/lib/PercentileBandChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "PivotDataTable",
+      "file": "src/lib/PivotDataTable.tsx",
+      "reactSource": "dataviz-react/src/lib/PivotDataTable.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "PointAndFigureChart",
+      "file": "src/lib/PointAndFigureChart.tsx",
+      "reactSource": "dataviz-react/src/lib/PointAndFigureChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "PolygonChart",
+      "file": "src/lib/PolygonChart.tsx",
+      "reactSource": "dataviz-react/src/lib/PolygonChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "QueryBar",
+      "file": "src/lib/QueryBar.tsx",
+      "reactSource": "dataviz-react/src/lib/QueryBar.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "RadarChart",
+      "file": "src/lib/RadarChart.tsx",
+      "reactSource": "dataviz-react/src/lib/RadarChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "RangeSliderFilter",
+      "file": "src/lib/RangeSliderFilter.tsx",
+      "reactSource": "dataviz-react/src/lib/RangeSliderFilter.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "RecordsTable",
+      "file": "src/lib/RecordsTable.tsx",
+      "reactSource": "dataviz-react/src/lib/RecordsTable.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ReferenceLineChart",
+      "file": "src/lib/ReferenceLineChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ReferenceLineChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "RelativeDateFilter",
+      "file": "src/lib/RelativeDateFilter.tsx",
+      "reactSource": "dataviz-react/src/lib/RelativeDateFilter.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "RenkoChart",
+      "file": "src/lib/RenkoChart.tsx",
+      "reactSource": "dataviz-react/src/lib/RenkoChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "RibbonChart",
+      "file": "src/lib/RibbonChart.tsx",
+      "reactSource": "dataviz-react/src/lib/RibbonChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "RoseChart",
+      "file": "src/lib/RoseChart.tsx",
+      "reactSource": "dataviz-react/src/lib/RoseChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "SankeyChart",
+      "file": "src/lib/SankeyChart.tsx",
+      "reactSource": "dataviz-react/src/lib/SankeyChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ScatterPlot",
+      "file": "src/lib/ScatterPlot.tsx",
+      "reactSource": "dataviz-react/src/lib/ScatterPlot.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ScatterPlotMatrix",
+      "file": "src/lib/ScatterPlotMatrix.tsx",
+      "reactSource": "dataviz-react/src/lib/ScatterPlotMatrix.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ScoreCard",
+      "file": "src/lib/ScoreCard.tsx",
+      "reactSource": "dataviz-react/src/lib/ScoreCard.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "SelectionLegend",
+      "file": "src/lib/SelectionLegend.tsx",
+      "reactSource": "dataviz-react/src/lib/SelectionLegend.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "SmallMultiples",
+      "file": "src/lib/SmallMultiples.tsx",
+      "reactSource": "dataviz-react/src/lib/SmallMultiples.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "SolidGaugeChart",
+      "file": "src/lib/SolidGaugeChart.tsx",
+      "reactSource": "dataviz-react/src/lib/SolidGaugeChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "Sparkline",
+      "file": "src/lib/Sparkline.tsx",
+      "reactSource": "dataviz-react/src/lib/Sparkline.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "StateTimelineChart",
+      "file": "src/lib/StateTimelineChart.tsx",
+      "reactSource": "dataviz-react/src/lib/StateTimelineChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "StatusHistoryChart",
+      "file": "src/lib/StatusHistoryChart.tsx",
+      "reactSource": "dataviz-react/src/lib/StatusHistoryChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "StreamgraphChart",
+      "file": "src/lib/StreamgraphChart.tsx",
+      "reactSource": "dataviz-react/src/lib/StreamgraphChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "SunburstChart",
+      "file": "src/lib/SunburstChart.tsx",
+      "reactSource": "dataviz-react/src/lib/SunburstChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "TileMapChart",
+      "file": "src/lib/TileMapChart.tsx",
+      "reactSource": "dataviz-react/src/lib/TileMapChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "TimelineChart",
+      "file": "src/lib/TimelineChart.tsx",
+      "reactSource": "dataviz-react/src/lib/TimelineChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "TopNFilter",
+      "file": "src/lib/TopNFilter.tsx",
+      "reactSource": "dataviz-react/src/lib/TopNFilter.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "TraceWaterfallChart",
+      "file": "src/lib/TraceWaterfallChart.tsx",
+      "reactSource": "dataviz-react/src/lib/TraceWaterfallChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "TreegraphChart",
+      "file": "src/lib/TreegraphChart.tsx",
+      "reactSource": "dataviz-react/src/lib/TreegraphChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "TrendLineChart",
+      "file": "src/lib/TrendLineChart.tsx",
+      "reactSource": "dataviz-react/src/lib/TrendLineChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ValueSlicer",
+      "file": "src/lib/ValueSlicer.tsx",
+      "reactSource": "dataviz-react/src/lib/ValueSlicer.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "VariablePieChart",
+      "file": "src/lib/VariablePieChart.tsx",
+      "reactSource": "dataviz-react/src/lib/VariablePieChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "VectorFieldChart",
+      "file": "src/lib/VectorFieldChart.tsx",
+      "reactSource": "dataviz-react/src/lib/VectorFieldChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "VennChart",
+      "file": "src/lib/VennChart.tsx",
+      "reactSource": "dataviz-react/src/lib/VennChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "ViolinChart",
+      "file": "src/lib/ViolinChart.tsx",
+      "reactSource": "dataviz-react/src/lib/ViolinChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "WaffleChart",
+      "file": "src/lib/WaffleChart.tsx",
+      "reactSource": "dataviz-react/src/lib/WaffleChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "WaterfallChart",
+      "file": "src/lib/WaterfallChart.tsx",
+      "reactSource": "dataviz-react/src/lib/WaterfallChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "WindBarbChart",
+      "file": "src/lib/WindBarbChart.tsx",
+      "reactSource": "dataviz-react/src/lib/WindBarbChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "WordCloudChart",
+      "file": "src/lib/WordCloudChart.tsx",
+      "reactSource": "dataviz-react/src/lib/WordCloudChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    }
+  ],
+  "adapters": [
+    {
+      "module": "compat.ts",
+      "file": "src/compat.ts",
+      "twin": "react/compat.ts",
+      "lot": "P6",
+      "role": "The only module importing preact/compat (createPortal -> react-dom)"
+    },
+    {
+      "module": "runtime.ts",
+      "file": "src/runtime.ts",
+      "twin": "react/runtime.ts",
+      "lot": "P6",
+      "role": "Core-only Preact adapter: forwardRef, SVG presentation-attribute and tabIndex normalisation, useInsertionEffect, useSyncExternalStore, textInput, textChange, dblClick, focusWithin, focusOut, type aliases"
+    },
+    {
+      "module": "signals.ts",
+      "file": "src/signals.ts",
+      "twin": "react/signals.ts",
+      "lot": "P6",
+      "role": "The only module importing @preact/signals (MaybeSignal, isSignal, useValue, unwrap)"
+    }
+  ],
+  "semanticMapping": [
+    {
+      "key": "signals-at-edges",
+      "preact": "MaybeSignal<T> = T | ReadonlySignal<T>; components read edge props via useValue() and keep hooks inside",
+      "react": "MaybeSignal<T> = T; emitted React props stay type-identical to @sentropic/dataviz-react",
+      "decision": "recorded"
+    },
+    {
+      "key": "external-store",
+      "preact": "useSyncExternalStore implemented on Preact core in src/runtime.ts (Object.is bailout, layout recheck, SSR getServerSnapshot)",
+      "react": "react useSyncExternalStore",
+      "decision": "recorded"
+    },
+    {
+      "key": "svg-presentation-attributes",
+      "preact": "Intrinsic SVG presentation attributes normalised to kebab-case by options.vnode in src/runtime.ts (textAnchor, dominantBaseline, strokeWidth, strokeDasharray, strokeLinecap, strokeLinejoin, fontSize; viewBox, preserveAspectRatio, clipPathUnits and textLength preserved); tabIndex normalised to tabindex on every intrinsic element including SVG",
+      "react": "React camelCase SVG props and tabIndex",
+      "decision": "recorded"
+    },
+    {
+      "key": "design-system-specifier",
+      "preact": "Imports design-system primitives and charts from @sentropic/design-system-preact",
+      "react": "Specifiers rewritten to @sentropic/design-system-react by scripts/emit-react.mjs",
+      "decision": "recorded"
+    },
+    {
+      "key": "class-spelling",
+      "preact": "React spelling className kept; signal-valued className read via useValue/classNames",
+      "react": "Plain string className",
+      "decision": "recorded"
+    },
+    {
+      "key": "consumer-handler-preserved",
+      "preact": "Local handlers compose with, never overwrite, consumer callbacks",
+      "react": "Identical composed handlers on the emitted React leg",
+      "decision": "recorded"
+    }
+  ]
+}

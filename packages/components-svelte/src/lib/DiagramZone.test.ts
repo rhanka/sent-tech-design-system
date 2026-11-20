@@ -400,6 +400,59 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
       expandedDom.querySelector(".st-diagramZone")?.classList.contains("st-diagramZone--center"),
     ).toBe(true);
   });
+
+  it("depth alternates the frame and folded-card surface (addendum 1)", () => {
+    const expanded = layoutZone(
+      baseProps({ collapsed: false, width: 492, depth: 1 }),
+      defaultCardMeasure,
+    );
+    expect(expanded.surface).toBe("surface2");
+    const folded = layoutZone(baseProps({ depth: 1 }), defaultCardMeasure);
+    expect(folded.surface).toBe("surface2");
+
+    const { container: expandedDom } = render(DiagramZone, {
+      props: { ...baseProps({ collapsed: false, width: 492, depth: 1 }), measure: defaultCardMeasure },
+    });
+    expect(
+      expandedDom.querySelector(".st-diagramZone")?.getAttribute("style") ?? "",
+    ).toContain("--st-component-diagramZone-surface2");
+    const { container: foldedDom } = render(DiagramZone, {
+      props: { ...baseProps({ depth: 1 }), measure: defaultCardMeasure },
+    });
+    expect(
+      foldedDom.querySelector(".st-diagramCard")?.getAttribute("style") ?? "",
+    ).toContain("--st-component-diagramCard-surface:");
+    expect(
+      foldedDom.querySelector(".st-diagramCard")?.getAttribute("style") ?? "",
+    ).toContain("--st-component-diagramZone-surface2");
+    // No depth pins: no surface override, byte-identical rendering.
+    const { container: plainDom } = render(DiagramZone, {
+      props: { ...baseProps({ collapsed: false, width: 492 }), measure: defaultCardMeasure },
+    });
+    expect(
+      plainDom.querySelector(".st-diagramZone")?.getAttribute("style") ?? "",
+    ).not.toContain("--st-component-diagramZone-surface:");
+  });
+
+  it("anchors expanded v2 zone header right to headerInset (12px) even when containerPadding is 16px, preventing 4px toggle drift", () => {
+    for (const containerPadding of [16, 24]) {
+      const { container } = render(DiagramZone, {
+        props: {
+          ...baseProps({ collapsed: false, width: 492, height: 400, x: 0, y: 0, anatomy: "v2", containerPadding }),
+          measure: defaultCardMeasure,
+        },
+      });
+      const header = container.querySelector<HTMLElement>(".st-diagramZone-header")!;
+      const content = container.querySelector<HTMLElement>(".st-diagramZone-content")!;
+      const toggle = container.querySelector<HTMLElement>(".st-diagramCard-toggle")!;
+      expect(header.style.top).toBe("calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+      expect(header.style.left).toBe("calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+      expect(header.style.right).toBe(header.style.left);
+      expect(toggle.style.top).toBe(toggle.style.right);
+      expect(content.style.left).toBe(`calc(${containerPadding}px - var(--st-component-diagramZone-borderWidth, 1.5px))`);
+      expect(content.style.right).toBe(`calc(${containerPadding}px - var(--st-component-diagramZone-borderWidth, 1.5px))`);
+    }
+  });
 });
 
 describe("DiagramZone — projection (§4.2/§6.1)", () => {
