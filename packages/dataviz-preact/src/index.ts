@@ -277,3 +277,15 @@ export { StateTimelineChart } from './lib/StateTimelineChart.js';
 export type { StateTimelineChartProps } from './lib/StateTimelineChart.js';
 export { StatusHistoryChart } from './lib/StatusHistoryChart.js';
 export type { StatusHistoryChartProps } from './lib/StatusHistoryChart.js';
+
+// Group 4 batch 9 components.
+export { StreamgraphChart } from './lib/StreamgraphChart.js';
+export type { StreamgraphChartProps } from './lib/StreamgraphChart.js';
+export { SunburstChart } from './lib/SunburstChart.js';
+export type { SunburstChartProps } from './lib/SunburstChart.js';
+export { TileMapChart } from './lib/TileMapChart.js';
+export type { TileMapChartProps } from './lib/TileMapChart.js';
+export { TimelineChart } from './lib/TimelineChart.js';
+export type { TimelineChartProps } from './lib/TimelineChart.js';
+export { TopNFilter } from './lib/TopNFilter.js';
+export type { TopNFilterProps } from './lib/TopNFilter.js';
