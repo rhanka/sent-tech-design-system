@@ -124,6 +124,7 @@ export function resolveScenePresentation(document: SceneDocument, presentation: 
     if (binding?.shape !== undefined && binding.shape !== "component") return [id, withViewAnatomy({ ...entry, icon: entry.icon ?? "none" })];
     const role = binding?.role ?? (entry.form === "card" ? "card" : "zone");
     const icon = entry.icon ?? binding?.icon ?? ROLE_ICONS[role];
+    if (icon === "none") return [id, withViewAnatomy({ ...entry, icon: "none" })];
     if (icon === undefined || resolveGlyph(icon) === undefined) {
       missing.push(id);
       return [id, withViewAnatomy({ ...entry, icon: strict ? "unknown" : "none" })];
