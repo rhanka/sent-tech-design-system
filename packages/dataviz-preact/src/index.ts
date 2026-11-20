@@ -93,3 +93,15 @@ export { CalculationEditor } from './lib/CalculationEditor.js';
 export type { CalculationEditorProps } from './lib/CalculationEditor.js';
 export { CalendarHeatmapChart } from './lib/CalendarHeatmapChart.js';
 export type { CalendarHeatmapChartProps } from './lib/CalendarHeatmapChart.js';
+
+// Group 2 batch 5 components.
+export { CandlestickChart } from './lib/CandlestickChart.js';
+export type { CandlestickChartProps } from './lib/CandlestickChart.js';
+export { ExportMenu, rowsToCsv } from './lib/ExportMenu.js';
+export type { ExportMenuProps } from './lib/ExportMenu.js';
+export { ChartExport } from './lib/ChartExport.js';
+export type { ChartExportProps, ChartExportTarget } from './lib/ChartExport.js';
+export { ChordChart } from './lib/ChordChart.js';
+export type { ChordChartProps } from './lib/ChordChart.js';
+export { ChoroplethMap } from './lib/ChoroplethMap.js';
+export type { ChoroplethMapProps } from './lib/ChoroplethMap.js';

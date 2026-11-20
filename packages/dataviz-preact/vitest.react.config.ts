@@ -58,6 +58,10 @@ const reactTests: string[] = [
   "lib/BookmarkNavigator.test.tsx", // emitted BookmarkNavigator
   "lib/DistributionCharts.test.tsx", // emitted BoxPlotChart, BulletChart, CalendarHeatmapChart + distributionData
   "lib/CalculationEditor.test.tsx", // emitted CalculationEditor
+  "lib/ExportMenu.test.tsx", // emitted ExportMenu + rowsToCsv
+  "lib/ChartExport.test.tsx", // emitted ChartExport + ExportMenu + chart-export
+  "lib/PartOfWholeCharts.test.tsx", // emitted ChordChart + partOfWholeData
+  "lib/GeoCharts.test.tsx", // emitted ChoroplethMap + geoMapLayers
 ];
 
 export default defineConfig({
