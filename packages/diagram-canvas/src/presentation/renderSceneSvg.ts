@@ -11,6 +11,7 @@ import {
   DEFAULT_LINK_STROKE_WIDTH,
   extraConnectorMarkers,
   layoutScene,
+  linkLegendSwatchGeometry,
   resolveScene,
   sceneConnectorMask,
   sceneFit,
@@ -99,6 +100,30 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
     const leader=label.leader===undefined?'':`<path d="${connectorPath(label.leader,cornerRadius)}" fill="none" stroke="var(--st-component-diagramScene-edgeStroke, #64748b)"/>`;
     return leader+`<g data-scene-label="${escape(label.occurrence)}" transform="translate(${b.x} ${b.y})" font-size="${edgeLabelSize}" fill="var(--st-component-diagramScene-labelText, #172033)"><rect width="${b.width}" height="${b.height}" fill="var(--st-component-diagramScene-labelSurface, #ffffff)" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)"/>${text}</g>`;
   }).join('');
-  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box.x-2} ${box.y-2} ${box.width+4} ${box.height+4}" width="${(box.width+4)*fit.zoom}" height="${(box.height+4)*fit.zoom}" data-viewport-width="${viewportWidth}" data-display-scale="${fit.zoom}" role="img" aria-label="${escape(options.title??input.document.documentId)}" font-family="Inter, system-ui, sans-serif"><title>${escape(options.title??input.document.documentId)}</title><style>@font-face{font-family:Inter;src:local('Inter');font-weight:100 900}svg{--st-font-sans:Inter,system-ui,sans-serif;--st-semantic-surface-raised:#fff;--st-semantic-surface-subtle:#f8fafc;--st-component-diagramZone-surface1:#fff;--st-component-diagramZone-surface2:#f8fafc;--st-semantic-text-primary:#172033;--st-semantic-text-secondary:#475569;--st-semantic-border-strong:#64748b;--st-semantic-border-subtle:#cbd5e1;--st-semantic-border-interactive:#2563eb;--st-semantic-feedback-info:#2563eb;--st-component-diagramScene-edgeStroke:#64748b;--st-component-diagramScene-linkStrokeWidth:2.5px;--st-component-diagramScene-linkRelatedStrokeWidth:3px;--st-component-diagramScene-linkPrimaryStrokeWidth:3.5px;--st-component-diagramScene-linkEmphasisStroke:#2563eb;--st-component-diagramScene-linkEmphasisStrokeWidth:3.5px;--st-component-diagramScene-linkDashDashed:8 6;--st-component-diagramScene-linkDashDotted:2 5;--st-component-diagramScene-edgeCornerRadius:12px;--st-component-diagramScene-edgeLabelSize:18px}</style><defs><marker id="scene-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)"/></marker>${extraMarkerDefs}${maskDef}</defs>${frames}${connectors}${boxes}${labels}</svg>`;
+  const legend=(()=>{
+    const l=scene.linkLegend;
+    if(l===undefined)return '';
+    const r=l.rect;
+    const ruleY=l.padding+l.headerHeight-6;
+    const rows=l.entries.map(entry=>{
+      const swatch=linkLegendSwatchGeometry(entry,{linkStrokeWidth,linkEmphasisStrokeWidth});
+      const swatchY=entry.rowY+(entry.rowHeight-swatch.height)/2;
+      const lineAttrs=[
+        `data-legend-swatch="${escape(entry.key)}"`,
+        `d="${swatch.linePath}"`,
+        'fill="none"',
+        `stroke="${escape(swatch.stroke)}"`,
+        `stroke-width="${swatch.strokeWidth}"`,
+        'vector-effect="non-scaling-stroke"',
+        ...(swatch.dashArray===undefined?[]:[`stroke-dasharray="${escape(swatch.dashArray)}"`]),
+      ].join(' ');
+      const arrow=swatch.arrowPath===undefined?'':`<path d="${swatch.arrowPath}" fill="${escape(swatch.arrowFill??swatch.stroke)}"${swatch.arrowStroke===undefined?'':` stroke="${escape(swatch.arrowStroke)}" stroke-width="${swatch.arrowStrokeWidth??1.5}"`}/>`;
+      const textX=l.padding+l.swatchWidth+l.swatchGap;
+      const textY=entry.rowY+entry.rowHeight/2+l.fontSize*0.35;
+      return `<g data-legend-style="${escape(entry.key)}" data-edge-stroke="${escape(entry.strokeStyle)}" data-edge-arrowhead="${escape(entry.arrowhead)}" data-edge-emphasis="${escape(entry.emphasis)}"><g transform="translate(${l.padding} ${swatchY})"><path ${lineAttrs}/>${arrow}</g><text x="${textX}" y="${textY}" font-size="${l.fontSize}" fill="var(--st-component-diagramScene-labelText, #172033)">${escape(entry.label)}</text></g>`;
+    }).join('');
+    return `<g data-scene-legend="" data-legend-anchor="${escape(l.anchor)}" transform="translate(${r.x} ${r.y})"><rect width="${r.width}" height="${r.height}" fill="var(--st-component-diagramScene-labelSurface, #ffffff)" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)"/><text x="${l.padding}" y="${l.padding+l.fontSize}" font-size="${l.fontSize}" font-weight="700" fill="var(--st-component-diagramScene-labelText, #172033)">${escape(l.title)}</text><path d="M${l.padding} ${ruleY}H${r.width-l.padding}" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)"/>${rows}</g>`;
+  })();
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box.x-2} ${box.y-2} ${box.width+4} ${box.height+4}" width="${(box.width+4)*fit.zoom}" height="${(box.height+4)*fit.zoom}" data-viewport-width="${viewportWidth}" data-display-scale="${fit.zoom}" role="img" aria-label="${escape(options.title??input.document.documentId)}" font-family="Inter, system-ui, sans-serif"><title>${escape(options.title??input.document.documentId)}</title><style>@font-face{font-family:Inter;src:local('Inter');font-weight:100 900}svg{--st-font-sans:Inter,system-ui,sans-serif;--st-semantic-surface-raised:#fff;--st-semantic-surface-subtle:#f8fafc;--st-component-diagramZone-surface1:#fff;--st-component-diagramZone-surface2:#f8fafc;--st-semantic-text-primary:#172033;--st-semantic-text-secondary:#475569;--st-semantic-border-strong:#64748b;--st-semantic-border-subtle:#cbd5e1;--st-semantic-border-interactive:#2563eb;--st-semantic-feedback-info:#2563eb;--st-component-diagramScene-edgeStroke:#64748b;--st-component-diagramScene-linkStrokeWidth:2.5px;--st-component-diagramScene-linkRelatedStrokeWidth:3px;--st-component-diagramScene-linkPrimaryStrokeWidth:3.5px;--st-component-diagramScene-linkEmphasisStroke:#2563eb;--st-component-diagramScene-linkEmphasisStrokeWidth:3.5px;--st-component-diagramScene-linkDashDashed:8 6;--st-component-diagramScene-linkDashDotted:2 5;--st-component-diagramScene-edgeCornerRadius:12px;--st-component-diagramScene-edgeLabelSize:18px}</style><defs><marker id="scene-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)"/></marker>${extraMarkerDefs}${maskDef}</defs>${frames}${connectors}${boxes}${labels}${legend}</svg>`;
   return {svg,result,scene};
 }

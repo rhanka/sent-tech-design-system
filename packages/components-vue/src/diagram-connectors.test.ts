@@ -107,11 +107,22 @@ for (const host of ["base", "numbered-flow"] as const) {
       expect(edgeEl(crossEdge).getAttribute("data-edge-emphasis")).toBe("emphasis");
       expect(edgeEl(crossEdge).getAttribute("marker-end")).toMatch(/-open-emphasis\)$/);
 
+      const legendEl = () => view.container.querySelector<HTMLElement>("[data-scene-legend]");
+      expect(legendEl()).not.toBeNull();
+      expect(legendEl()!.getAttribute("data-legend-anchor")).toBe("right");
+      expect([...view.container.querySelectorAll("[data-legend-style]")].map((el) => el.getAttribute("data-legend-style"))).toEqual([
+        "solid:filled-triangle:default",
+        "solid:none:emphasis",
+        "dashed:open-triangle:emphasis",
+        "dotted:open-triangle:default",
+      ]);
+
       const [, ontology] = fixture.zones as [string, string];
       const toggle = () => view.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${ontology}"] button[aria-expanded]`)!;
       await fireEvent.click(toggle());
       await tick();
       expect(view.container.querySelectorAll("path[data-scene-edge]")).toHaveLength(1);
+      expect(legendEl()).toBeNull();
       const foldedEdge = edgeEl(crossEdge);
       expect(foldedEdge.getAttribute("stroke-dasharray")).toBe("8 6");
       expect(foldedEdge.getAttribute("data-edge-stroke")).toBe("dashed");
@@ -122,6 +133,13 @@ for (const host of ["base", "numbered-flow"] as const) {
       await fireEvent.click(toggle());
       await tick();
       expect(view.container.querySelectorAll("path[data-scene-edge]")).toHaveLength(fixture.relations.length);
+      expect(legendEl()).not.toBeNull();
+      expect([...view.container.querySelectorAll("[data-legend-style]")].map((el) => el.getAttribute("data-legend-style"))).toEqual([
+        "solid:filled-triangle:default",
+        "solid:none:emphasis",
+        "dashed:open-triangle:emphasis",
+        "dotted:open-triangle:default",
+      ]);
       expect(edgeEl(r0!).getAttribute("stroke-dasharray")).toBe("2 5");
       expect(edgeEl(r1!).getAttribute("marker-end")).toBeNull();
       expect(edgeEl(r1!).getAttribute("data-edge-emphasis")).toBe("emphasis");

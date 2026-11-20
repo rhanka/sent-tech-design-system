@@ -635,17 +635,29 @@ describe('scene host DOM and camera/fold behavior', () => {
       expect(ae.getAttribute('stroke-dasharray')).toBe('8 6');
       expect(ae.getAttribute('marker-end')).toMatch(/-emphasis\)$/);
       expect(ae.getAttribute('data-edge-emphasis')).toBe('emphasis');
+      const legend = root.querySelector('[data-scene-legend]');
+      expect(legend).not.toBeNull();
+      expect(legend!.getAttribute('data-legend-anchor')).toBe('right');
+      expect([...root.querySelectorAll('[data-legend-style]')].map((el) => el.getAttribute('data-legend-style'))).toEqual([
+        'solid:none:emphasis',
+        'dashed:filled-triangle:emphasis',
+        'dotted:open-triangle:default',
+      ]);
     }
 
     await vue.find(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`).trigger('click');
     svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`)!.click();
     await nextTick(); await tick(); await nextTick();
     expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    expect(vue.element.querySelector('[data-scene-legend]')).toBeNull();
+    expect(svelte.container.querySelector('[data-scene-legend]')).toBeNull();
 
     await vue.find(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`).trigger('click');
     svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`)!.click();
     await nextTick(); await tick(); await nextTick();
     expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    expect(vue.element.querySelectorAll('[data-legend-style]')).toHaveLength(3);
+    expect(svelte.container.querySelectorAll('[data-legend-style]')).toHaveLength(3);
 
     vue.unmount(); svelte.unmount();
     vi.unstubAllGlobals();

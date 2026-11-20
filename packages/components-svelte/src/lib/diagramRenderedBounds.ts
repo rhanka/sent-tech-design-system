@@ -173,7 +173,7 @@ export function measureRenderedBounds(frame: HTMLElement, fallback: Rect | undef
   // computed value of the painting element itself counts.
   const paints = (element: Element) => !element.closest('defs,[hidden],[data-flow-hit],[data-flow-node]')
     && styleOf(element).visibility !== 'hidden' && styleOf(element).visibility !== 'collapse' && inPaintedSubtree(element);
-  for (const element of world.querySelectorAll('[data-scene-occurrence],.st-diagramCard,.st-diagramZone,[data-scene-label],[data-diagram-icon],.st-badge,[data-badge],.st-diagramCard-rule,.st-diagramZone-rule,.st-diagramZone-footerRule,button,svg polyline,svg path,svg line,svg rect,svg circle,svg text')) {
+  for (const element of world.querySelectorAll('[data-scene-occurrence],.st-diagramCard,.st-diagramZone,[data-scene-label],[data-scene-legend],[data-diagram-icon],.st-badge,[data-badge],.st-diagramCard-rule,.st-diagramZone-rule,.st-diagramZone-footerRule,button,svg polyline,svg path,svg line,svg rect,svg circle,svg text')) {
     if (!paints(element)) continue;
     const style = styleOf(element);
     let pad = 0;
