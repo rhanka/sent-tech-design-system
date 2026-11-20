@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "programmeLot": "P6",
+  "workstream": "W3",
+  "source": "src",
+  "reactEmission": ".react-emit/src",
+  "totalReactFiles": 128,
+  "reference": {
+    "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
+    "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
+  },
+  "ownershipNote": "Lot P6 scaffold: package layout, single JSX source build (Preact dist + React emission by specifier rewrite), compat/runtime/signals adapters and React twins, coverage-manifest hook, port-metrics, package-guard, and React-leg harness. Modules are ported incrementally in groups of batches.",
+  "modules": [],
+  "adapters": [
+    {
+      "module": "compat.ts",
+      "file": "src/compat.ts",
+      "twin": "react/compat.ts",
+      "lot": "P6",
+      "role": "The only module importing preact/compat (createPortal -> react-dom)"
+    },
+    {
+      "module": "runtime.ts",
+      "file": "src/runtime.ts",
+      "twin": "react/runtime.ts",
+      "lot": "P6",
+      "role": "Core-only Preact adapter: forwardRef, SVG presentation-attribute and tabIndex normalisation, useInsertionEffect, useSyncExternalStore, textInput, textChange, dblClick, focusWithin, focusOut, type aliases"
+    },
+    {
+      "module": "signals.ts",
+      "file": "src/signals.ts",
+      "twin": "react/signals.ts",
+      "lot": "P6",
+      "role": "The only module importing @preact/signals (MaybeSignal, isSignal, useValue, unwrap)"
+    }
+  ],
+  "semanticMapping": [
+    {
+      "key": "signals-at-edges",
+      "preact": "MaybeSignal<T> = T | ReadonlySignal<T>; components read edge props via useValue() and keep hooks inside",
+      "react": "MaybeSignal<T> = T; emitted React props stay type-identical to @sentropic/dataviz-react",
+      "decision": "recorded"
+    },
+    {
+      "key": "external-store",
+      "preact": "useSyncExternalStore implemented on Preact core in src/runtime.ts (Object.is bailout, layout recheck, SSR getServerSnapshot)",
+      "react": "react useSyncExternalStore",
+      "decision": "recorded"
+    },
+    {
+      "key": "svg-presentation-attributes",
+      "preact": "Intrinsic SVG presentation attributes normalised to kebab-case by options.vnode in src/runtime.ts (textAnchor, dominantBaseline, strokeWidth, strokeDasharray, strokeLinecap, strokeLinejoin, fontSize; viewBox, preserveAspectRatio, clipPathUnits and textLength preserved); tabIndex normalised to tabindex on every intrinsic element including SVG",
+      "react": "React camelCase SVG props and tabIndex",
+      "decision": "recorded"
+    },
+    {
+      "key": "design-system-specifier",
+      "preact": "Imports design-system primitives and charts from @sentropic/design-system-preact",
+      "react": "Specifiers rewritten to @sentropic/design-system-react by scripts/emit-react.mjs",
+      "decision": "recorded"
+    },
+    {
+      "key": "class-spelling",
+      "preact": "React spelling className kept; signal-valued className read via useValue/classNames",
+      "react": "Plain string className",
+      "decision": "recorded"
+    },
+    {
+      "key": "consumer-handler-preserved",
+      "preact": "Local handlers compose with, never overwrite, consumer callbacks",
+      "react": "Identical composed handlers on the emitted React leg",
+      "decision": "recorded"
+    }
+  ]
+}
