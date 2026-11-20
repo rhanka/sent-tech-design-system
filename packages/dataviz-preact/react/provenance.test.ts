@@ -110,6 +110,11 @@ import * as handWrittenScatterPlot from "../../dataviz-react/src/lib/ScatterPlot
 import * as handWrittenScatterPlotMatrix from "../../dataviz-react/src/lib/ScatterPlotMatrix.js";
 import * as handWrittenScoreCard from "../../dataviz-react/src/lib/ScoreCard.js";
 import * as handWrittenSelectionLegend from "../../dataviz-react/src/lib/SelectionLegend.js";
+import * as handWrittenSmallMultiples from "../../dataviz-react/src/lib/SmallMultiples.js";
+import * as handWrittenSolidGaugeChart from "../../dataviz-react/src/lib/SolidGaugeChart.js";
+import * as handWrittenSparkline from "../../dataviz-react/src/lib/Sparkline.js";
+import * as handWrittenStateTimelineChart from "../../dataviz-react/src/lib/StateTimelineChart.js";
+import * as handWrittenStatusHistoryChart from "../../dataviz-react/src/lib/StatusHistoryChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -241,6 +246,11 @@ const switched = [
   "ScatterPlotMatrix",
   "ScoreCard",
   "SelectionLegend",
+  "SmallMultiples",
+  "SolidGaugeChart",
+  "Sparkline",
+  "StateTimelineChart",
+  "StatusHistoryChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -364,6 +374,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   ScatterPlotMatrix: handWrittenScatterPlotMatrix.ScatterPlotMatrix,
   ScoreCard: handWrittenScoreCard.ScoreCard,
   SelectionLegend: handWrittenSelectionLegend.SelectionLegend,
+  SmallMultiples: handWrittenSmallMultiples.SmallMultiples,
+  SolidGaugeChart: handWrittenSolidGaugeChart.SolidGaugeChart,
+  Sparkline: handWrittenSparkline.Sparkline,
+  StateTimelineChart: handWrittenStateTimelineChart.StateTimelineChart,
+  StatusHistoryChart: handWrittenStatusHistoryChart.StatusHistoryChart,
 };
 
 describe("dataviz React leg provenance", () => {
