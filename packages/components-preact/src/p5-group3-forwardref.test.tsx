@@ -5,12 +5,16 @@ import type { CSSProperties } from "preact";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Avatar } from "./Avatar.js";
 import { AvatarGroup } from "./AvatarGroup.js";
+import { BackToTop } from "./BackToTop.js";
+import { Badge } from "./Badge.js";
 import { CheckboxGroup } from "./CheckboxGroup.js";
 import { DisplaySettings } from "./DisplaySettings.js";
 import type { DisplaySettingsState } from "./DisplaySettings.js";
 import { Embed } from "./Embed.js";
 import { MediaContent } from "./MediaContent.js";
 import { SelectableRow } from "./SelectableRow.js";
+import { Stepper } from "./Stepper.js";
+import { TableOfContents } from "./TableOfContents.js";
 import { Transcription } from "./Transcription.js";
 
 afterEach(cleanup);
@@ -532,6 +536,258 @@ describe("P5 group 3 forwardRef modules — Batch 2 (Embed, MediaContent, Transc
     );
     expect(objRef.current).toBeNull();
     expect(cbRef).toHaveBeenLastCalledWith(fieldset);
+
+    unmount();
+    expect(cbRef).toHaveBeenLastCalledWith(null);
+  });
+});
+
+describe("P5 group 3 forwardRef modules — Batch 3 (BackToTop, Stepper, TableOfContents, Badge)", () => {
+  it("BackToTop forwards refs to <button>, mutates className/disabled/autoHide/smooth signals, normalises SVG, and composes consumer onClick", async () => {
+    const cls = signal("btt-before");
+    const disabled = signal(false);
+    const autoHide = signal(true);
+    const smooth = signal(true);
+    const calls: string[] = [];
+    const onClick = vi.fn(() => calls.push("consumer"));
+    const scrollSpy = vi.spyOn(window, "scrollTo").mockImplementation(() => {
+      calls.push("scroll");
+    });
+    const objRef = createRef<HTMLButtonElement>();
+    const cbRef = vi.fn();
+
+    try {
+      const { container, rerender, unmount } = render(
+        <BackToTop
+          ref={objRef}
+          label="Top"
+          targetId="missing-anchor"
+          threshold={240}
+          autoHide={autoHide}
+          smooth={smooth}
+          disabled={disabled}
+          className={cls}
+          onClick={onClick}
+        />,
+      );
+      const btn = container.querySelector("button.st-backToTop") as HTMLButtonElement;
+      expect(objRef.current).toBe(btn);
+      expect(objRef.current?.tagName).toBe("BUTTON");
+      expect(btn.className).toBe("st-backToTop btt-before");
+      expect(btn.disabled).toBe(false);
+      // With scrollY=0 and threshold=240, autoHide hides the button.
+      expect(btn.getAttribute("aria-hidden")).toBe("true");
+      expect(btn.getAttribute("tabindex")).toBe("-1");
+
+      // SVG normaliser from runtime.ts converts camelCase attributes on ArrowUp icon.
+      const svg = container.querySelector(".st-backToTop__icon svg");
+      expect(svg?.getAttribute("stroke-width")).not.toBeNull();
+      expect(svg?.getAttribute("strokeWidth")).toBeNull();
+
+      // Mutate autoHide, className, smooth signals post-mount.
+      cls.value = "btt-after";
+      autoHide.value = false;
+      await waitFor(() => expect(btn.className).toBe("st-backToTop btt-after"));
+      await waitFor(() => expect(btn.getAttribute("aria-hidden")).toBeNull());
+      expect(btn.getAttribute("tabindex")).toBeNull();
+
+      // Consumer onClick runs first, then window.scrollTo with smooth behavior.
+      fireEvent.click(btn);
+      expect(onClick).toHaveBeenCalledTimes(1);
+      expect(scrollSpy).toHaveBeenLastCalledWith({ top: 0, behavior: "smooth" });
+      expect(calls).toEqual(["consumer", "scroll"]);
+
+      // Mutate smooth signal post-mount -> scrollTo switches to "auto".
+      smooth.value = false;
+      await waitFor(() => {
+        scrollSpy.mockClear();
+        fireEvent.click(btn);
+        expect(scrollSpy).toHaveBeenLastCalledWith({ top: 0, behavior: "auto" });
+      });
+
+      // Mutate disabled signal post-mount.
+      disabled.value = true;
+      await waitFor(() => expect(btn.disabled).toBe(true));
+      disabled.value = false;
+      await waitFor(() => expect(btn.disabled).toBe(false));
+
+      rerender(
+        <BackToTop
+          ref={cbRef}
+          label="Top"
+          targetId="missing-anchor"
+          autoHide={autoHide}
+          smooth={smooth}
+          disabled={disabled}
+          className={cls}
+          onClick={onClick}
+        />,
+      );
+      expect(objRef.current).toBeNull();
+      expect(cbRef).toHaveBeenLastCalledWith(btn);
+
+      unmount();
+      expect(cbRef).toHaveBeenLastCalledWith(null);
+    } finally {
+      scrollSpy.mockRestore();
+    }
+  });
+
+  it("Stepper forwards refs to <ol>, mutates className/current/clickable signals, normalises SVG stroke-width, and preserves consumer handlers", async () => {
+    const cls = signal("stp-before");
+    const current = signal(0);
+    const clickable = signal(false);
+    const onStepClick = vi.fn();
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLOListElement>();
+    const cbRef = vi.fn();
+    const steps = [{ label: "Start" }, { label: "Review" }, { label: "Done" }];
+
+    const { container, rerender, unmount } = render(
+      <Stepper
+        ref={objRef}
+        steps={steps}
+        current={current}
+        clickable={clickable}
+        onStepClick={onStepClick}
+        className={cls}
+        onClick={onClick}
+      />,
+    );
+    const list = screen.getByRole("list", { name: "Progression" }) as HTMLOListElement;
+    expect(objRef.current).toBe(list);
+    expect(objRef.current?.tagName).toBe("OL");
+    expect(list.className).toBe("st-stepper st-stepper--horizontal stp-before");
+    expect(list.querySelectorAll("li")[0].getAttribute("aria-current")).toBe("step");
+    expect(list.querySelectorAll("button.st-stepper__circle--button")).toHaveLength(0);
+
+    // Mutate current, clickable, and className signals post-mount.
+    cls.value = "stp-after";
+    current.value = 1;
+    clickable.value = true;
+    await waitFor(() => expect(list.className).toBe("st-stepper st-stepper--horizontal stp-after"));
+    await waitFor(() => expect(list.querySelectorAll("li")[1].getAttribute("aria-current")).toBe("step"));
+    expect(list.querySelectorAll("li")[0].className).toContain("st-stepper__step--complete");
+
+    // Completed step renders lucide Check SVG with normalised stroke-width="2.5".
+    const svg = container.querySelector(".st-stepper__step--complete svg");
+    expect(svg?.getAttribute("stroke-width")).toBe("2.5");
+    expect(svg?.getAttribute("strokeWidth")).toBeNull();
+
+    // Clickable step button invokes onStepClick AND bubbles to consumer onClick on <ol>.
+    const stepButton = screen.getByRole("button", { name: "Review" });
+    fireEvent.click(stepButton);
+    expect(onStepClick).toHaveBeenCalledWith(1);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    clickable.value = false;
+    await waitFor(() => expect(list.querySelectorAll("button.st-stepper__circle--button")).toHaveLength(0));
+
+    rerender(
+      <Stepper
+        ref={cbRef}
+        steps={steps}
+        current={current}
+        clickable={clickable}
+        onStepClick={onStepClick}
+        className={cls}
+        onClick={onClick}
+      />,
+    );
+    expect(objRef.current).toBeNull();
+    expect(cbRef).toHaveBeenLastCalledWith(list);
+
+    unmount();
+    expect(cbRef).toHaveBeenLastCalledWith(null);
+  });
+
+  it("TableOfContents forwards refs to <nav>, mutates className/activeId signals, and preserves consumer handlers", async () => {
+    const cls = signal("toc-before");
+    const activeId = signal("intro");
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLElement>();
+    const cbRef = vi.fn();
+    const items = [
+      { id: "intro", label: "Introduction", level: 1 },
+      { id: "#api", label: "API", level: 2 },
+    ];
+
+    const { rerender, unmount } = render(
+      <TableOfContents
+        ref={objRef}
+        title="Sommaire"
+        items={items}
+        activeId={activeId}
+        className={cls}
+        onClick={onClick}
+      />,
+    );
+    const nav = screen.getByRole("navigation", { name: "Sommaire" });
+    const introLink = screen.getByRole("link", { name: "Introduction" });
+    const apiLink = screen.getByRole("link", { name: "API" });
+    expect(objRef.current).toBe(nav);
+    expect(objRef.current?.tagName).toBe("NAV");
+    expect(nav.className).toBe("st-tableOfContents toc-before");
+    expect(introLink.getAttribute("aria-current")).toBe("location");
+    expect(apiLink.getAttribute("aria-current")).toBeNull();
+
+    fireEvent.click(nav);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    cls.value = "toc-after";
+    activeId.value = "#api";
+    await waitFor(() => expect(nav.className).toBe("st-tableOfContents toc-after"));
+    await waitFor(() => expect(apiLink.getAttribute("aria-current")).toBe("location"));
+    expect(introLink.getAttribute("aria-current")).toBeNull();
+
+    rerender(
+      <TableOfContents
+        ref={cbRef}
+        title="Sommaire"
+        items={items}
+        activeId={activeId}
+        className={cls}
+        onClick={onClick}
+      />,
+    );
+    expect(objRef.current).toBeNull();
+    expect(cbRef).toHaveBeenLastCalledWith(nav);
+
+    unmount();
+    expect(cbRef).toHaveBeenLastCalledWith(null);
+  });
+
+  it("Badge forwards refs to <span>, mutates className signal, and preserves consumer handlers", async () => {
+    const cls = signal("bdg-before");
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLSpanElement>();
+    const cbRef = vi.fn();
+
+    const { rerender, unmount } = render(
+      <Badge ref={objRef} data-testid="bdg" tone="info" shape="circle" size="sm" className={cls} onClick={onClick}>
+        4
+      </Badge>,
+    );
+    const badge = screen.getByTestId("bdg") as HTMLSpanElement;
+    expect(objRef.current).toBe(badge);
+    expect(objRef.current?.tagName).toBe("SPAN");
+    expect(badge.className).toBe("st-badge st-badge--info st-badge--circle st-badge--sm bdg-before");
+
+    fireEvent.click(badge);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    cls.value = "bdg-after";
+    await waitFor(() =>
+      expect(badge.className).toBe("st-badge st-badge--info st-badge--circle st-badge--sm bdg-after"),
+    );
+
+    rerender(
+      <Badge ref={cbRef} data-testid="bdg" tone="info" shape="circle" size="sm" className={cls} onClick={onClick}>
+        4
+      </Badge>,
+    );
+    expect(objRef.current).toBeNull();
+    expect(cbRef).toHaveBeenLastCalledWith(badge);
 
     unmount();
     expect(cbRef).toHaveBeenLastCalledWith(null);
