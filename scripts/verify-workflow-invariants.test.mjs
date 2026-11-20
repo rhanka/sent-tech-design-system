@@ -496,6 +496,7 @@ test("the AC-L7a tarball guard runs in a built CI job and pack-smoke shards cove
   for (const name of [
     "@sentropic/design-system-elements",
     "@sentropic/design-system-rich-text",
+    "@sentropic/design-system-review-core",
     "@sentropic/diagram-core",
     "@sentropic/diagram-canvas",
   ]) {
