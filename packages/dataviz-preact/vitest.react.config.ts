@@ -54,13 +54,13 @@ const reactTests: string[] = [
   "lib/chart-export.test.ts", // emitted lib/chart-export.ts
   "lib/url-sync.test.tsx", // emitted lib/url-sync.ts + lib/useUrlSync.ts
   "lib/AdvancedPivotDataTable.test.tsx", // emitted AdvancedPivotDataTable + advancedPivotData
-  "lib/AnalyticsCharts.test.tsx", // emitted AnalyticsClusterPlot, ErrorBarsChart + analyticsDsData
+  "lib/AnalyticsCharts.test.tsx", // emitted AnalyticsClusterPlot, ErrorBarsChart, ForecastLineChart + analyticsDsData
   "lib/BookmarkNavigator.test.tsx", // emitted BookmarkNavigator
   "lib/DistributionCharts.test.tsx", // emitted BoxPlotChart, BulletChart, CalendarHeatmapChart + distributionData
   "lib/CalculationEditor.test.tsx", // emitted CalculationEditor
   "lib/ExportMenu.test.tsx", // emitted ExportMenu + rowsToCsv
   "lib/ChartExport.test.tsx", // emitted ChartExport + ExportMenu + chart-export
-  "lib/PartOfWholeCharts.test.tsx", // emitted ChordChart, DonutChart, TreemapChart + partOfWholeData
+  "lib/PartOfWholeCharts.test.tsx", // emitted ChordChart, DonutChart, TreemapChart, FunnelChart + partOfWholeData
   "lib/GeoCharts.test.tsx", // emitted ChoroplethMap + geoMapLayers
   "lib/DashboardActiveFilters.test.tsx", // emitted DashboardActiveFilters
   "lib/DashboardFilterBar.test.tsx", // emitted DashboardFilterBar
@@ -69,6 +69,7 @@ const reactTests: string[] = [
   "lib/DrillBarChart.test.tsx", // emitted DrillBarChart
   "lib/DrillBreadcrumb.test.tsx", // emitted DrillBreadcrumb
   "lib/FieldPane.test.tsx", // emitted FieldPane
+  "lib/FormatPanel.test.tsx", // emitted FormatPanel
 ];
 
 export default defineConfig({
