@@ -58,7 +58,7 @@
   "main": "./dist/index.js",
   "sideEffects": false,
   "dependencies": {
-    "@sentropic/diagram-core": "0.3.0"
+    "@sentropic/diagram-core": "0.4.0"
   },
   "scripts": {
     "build": "node ../../scripts/sync-diagram-spacing.mjs && tsc -p tsconfig.json",

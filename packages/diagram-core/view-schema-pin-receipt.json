@@ -38,7 +38,7 @@
     "files": {
       "packages/diagram-core/src/view.ts": "0b87c5187fef980f7c7f9ba3d9aabbe7ef7dd0b2bcb221226acb0318aef6d932",
       "packages/diagram-core/src/fold.ts": "44ba83fd5257d98d489220e27f9ee24a54c410440b456ce0ddb87441f229a60f",
-      "packages/diagram-core/src/validate.ts": "9e7f9677c8e390163439d1af283323f3de595e222cdc0f2da7b57d2e342d0363"
+      "packages/diagram-core/src/validate.ts": "96981aa55989f32768d47e733d9f6993165ccd36e9a8cab68e5ba1e6b5088a71"
     }
   },
   "presentation": {

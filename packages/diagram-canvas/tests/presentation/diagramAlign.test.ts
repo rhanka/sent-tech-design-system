@@ -1,11 +1,30 @@
 import { describe, expect, it } from "vitest";
 import {
+  CURRENT_SCHEMA_VERSION,
+  DIAGRAM_PRESENTATION_CONTRACT_PIN,
+  DIAGRAM_PRESENTATION_V2_CONTRACT_PIN,
+  createView,
+  entityRef,
+  m3ProfileRegistry,
+  occurrenceRef,
+  shippedExecutorBindings,
+  validateView,
+  viewRef,
+} from "@sentropic/diagram-core";
+import {
+  cardLineMeasurer,
   defaultCardMeasure,
   layoutCard,
   layoutZone,
   projectCardProps,
   projectZoneProps,
 } from "../../src/presentation/diagramCardModel.js";
+import {
+  layoutScene,
+  type SceneDocument,
+  type ScenePresentation,
+  type SceneView,
+} from "../../src/presentation/diagramSceneModel.js";
 
 /**
  * DE-1 step 2 — alignment carried by the presentation and passed by the
@@ -115,5 +134,95 @@ describe("diagram presentation alignment (DE-1 step 2)", () => {
     expect(fallback.kind).toBe("zone");
     if (fallback.kind !== "zone") return;
     expect(fallback.props.align).toBe("center");
+  });
+
+  it("should emit ViewDocuments from layoutScene/layoutMeasured that pass validateView for @1 and @2 DE-1 scenes", () => {
+    const document = {
+      documentId: "document:validate-de1",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: {
+        "entity:outer": { id: entityRef("outer"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Outer" } } },
+        "entity:inner": { id: entityRef("inner"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Inner" } } },
+        "entity:card": { id: entityRef("card"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Card" } } },
+      },
+      relations: {
+        "relation:c1": {
+          id: "relation:c1",
+          profile: "generic@2",
+          type: "contains",
+          endpoints: [
+            { role: "parent", target: "entity:outer" },
+            { role: "child", target: "entity:inner" },
+          ],
+          attributes: {},
+        },
+        "relation:c2": {
+          id: "relation:c2",
+          profile: "generic@2",
+          type: "contains",
+          endpoints: [
+            { role: "parent", target: "entity:inner" },
+            { role: "child", target: "entity:card" },
+          ],
+          attributes: {},
+        },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SceneDocument;
+
+    const view = {
+      ...createView({ viewId: viewRef("de1"), semanticDocumentId: document.documentId, revision: 1 }),
+      entityOccurrences: {
+        "occurrence:e.outer": { id: occurrenceRef("e.outer"), entity: entityRef("outer"), geometry: { x: 0, y: 0, width: 600, height: 400 } },
+        "occurrence:e.inner": { id: occurrenceRef("e.inner"), entity: entityRef("inner"), group: "grp.7.e.outer", geometry: { x: 16, y: 80, width: 400, height: 240 } },
+        "occurrence:e.card": { id: occurrenceRef("e.card"), entity: entityRef("card"), group: "grp.7.e.inner", geometry: { x: 32, y: 140, width: 352, height: 154 } },
+      },
+      groups: {
+        "grp.7.e.outer": { id: "grp.7.e.outer", occurrence: occurrenceRef("e.outer") },
+        "grp.7.e.inner": { id: "grp.7.e.inner", occurrence: occurrenceRef("e.inner") },
+      },
+    } as unknown as SceneView;
+
+    const validationOptions = { registry: m3ProfileRegistry, bindings: shippedExecutorBindings };
+
+    for (const [label, contractPin, extra] of [
+      ["@1", DIAGRAM_PRESENTATION_CONTRACT_PIN, {}],
+      ["@2", DIAGRAM_PRESENTATION_V2_CONTRACT_PIN, { align: "center" as const }],
+    ] as const) {
+      const presentation = {
+        contractPin: { ...contractPin },
+        entities: {
+          "occurrence:e.outer": { form: "container", text: { title: "Outer" }, ...extra },
+          "occurrence:e.inner": { form: "container", text: { title: "Inner" }, ...extra },
+          "occurrence:e.card": { form: "card", text: { title: "Card", body: "Text" }, ...extra },
+        },
+        legends: {},
+        categoryTokens: [],
+      } as unknown as ScenePresentation;
+
+      const result = layoutScene({
+        document,
+        view,
+        registry: m3ProfileRegistry,
+        bindings: shippedExecutorBindings,
+        presentation,
+        measureLines: cardLineMeasurer(defaultCardMeasure),
+        collapsed: [],
+        depthParityStart: 1,
+      });
+      expect(result.status, label).toBe("laid-out");
+      if (result.status !== "laid-out") continue;
+      expect(validateView(result.view, document, validationOptions), label).toEqual([]);
+      const emittedCard = result.view.presentation.diagram?.entities["occurrence:e.card"] as Record<string, unknown> | undefined;
+      expect(emittedCard?.["anatomy"]).toBeUndefined();
+      expect(emittedCard?.["depth"]).toBeUndefined();
+      expect(emittedCard?.["depthParityStart"]).toBeUndefined();
+      if (label === "@2") expect(emittedCard?.["align"]).toBe("center");
+    }
   });
 });
