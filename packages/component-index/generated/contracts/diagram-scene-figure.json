@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:8ad4ac42bf4d4088c50ee4ce219021126c650eae9b38e9c9d8899b310e0136d9",
-  "entryDigest": "sha256:f99ecc0358453fe0b11e2f295093081e40e0fd9c0f38c4c3cab3d254c4880ce6",
+  "digest": "sha256:b367b765578d2c2f2747855896338bf1032daaf42b2617ceace0282384d912ed",
+  "entryDigest": "sha256:2e2fdc8362868a9e495fa39193493e02c8e55f55f6ad468bb98cf744cf9e124f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -2449,12 +2449,10 @@
             "additionalProperties": false,
             "properties": {
               "arrowhead": {
-                "description": "Arrowhead registry word (`arrow | filled-triangle | open-triangle | none`, DE-2).\nAbsent means default filled triangle and is preserved byte-for-byte.",
+                "description": "Arrowhead registry word (`arrow | none`, DE-2; further heads reserved for N2).\nAbsent means default arrow and is preserved byte-for-byte.",
                 "enum": [
                   "none",
-                  "arrow",
-                  "filled-triangle",
-                  "open-triangle"
+                  "arrow"
                 ]
               },
               "emphasis": {
@@ -2535,9 +2533,7 @@
               "arrowhead": {
                 "enum": [
                   "none",
-                  "arrow",
-                  "filled-triangle",
-                  "open-triangle"
+                  "arrow"
                 ]
               },
               "emphasis": {
@@ -7462,12 +7458,10 @@
             "additionalProperties": false,
             "properties": {
               "arrowhead": {
-                "description": "Arrowhead registry word (`arrow | filled-triangle | open-triangle | none`, DE-2).\nAbsent means default filled triangle and is preserved byte-for-byte.",
+                "description": "Arrowhead registry word (`arrow | none`, DE-2; further heads reserved for N2).\nAbsent means default arrow and is preserved byte-for-byte.",
                 "enum": [
                   "none",
-                  "arrow",
-                  "filled-triangle",
-                  "open-triangle"
+                  "arrow"
                 ]
               },
               "emphasis": {
@@ -7548,9 +7542,7 @@
               "arrowhead": {
                 "enum": [
                   "none",
-                  "arrow",
-                  "filled-triangle",
-                  "open-triangle"
+                  "arrow"
                 ]
               },
               "emphasis": {

@@ -64,6 +64,40 @@ export interface LineLayout {
 
 export type LineMeasurer = ((request: MeasureRequest) => LineLayout) & { readonly version?: string };
 
+/**
+ * Scale an injected `LineMeasurer` for the `edge-label` role when a caller
+ * overrides `metrics.edgeLabelSize` away from the default 18 px token size
+ * (REQ-R7-11). Returns `measureLines` unchanged at the default size.
+ */
+export function scaleEdgeLabelMeasurer(
+  measureLines: LineMeasurer,
+  edgeLabelSize: number | undefined,
+  baseSize: number = 18,
+): LineMeasurer {
+  if (
+    edgeLabelSize === undefined ||
+    !Number.isFinite(edgeLabelSize) ||
+    edgeLabelSize <= 0 ||
+    Math.abs(edgeLabelSize - baseSize) < 1e-9
+  ) {
+    return measureLines;
+  }
+  const scale = edgeLabelSize / baseSize;
+  const scaled: LineMeasurer = (request: MeasureRequest): LineLayout => {
+    if (request.role !== "edge-label") return measureLines(request);
+    const availableWidth = Number.isFinite(request.availableWidth)
+      ? request.availableWidth / scale
+      : request.availableWidth;
+    const measured = measureLines({ ...request, availableWidth });
+    return {
+      ...measured,
+      width: measured.width * scale,
+      height: measured.height * scale,
+    };
+  };
+  return scaled;
+}
+
 export interface EntityMeasurementInput {
   readonly entity: EntityRef;
   readonly occurrence: OccurrenceRef;

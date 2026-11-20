@@ -89,14 +89,16 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
   const boxes=sceneNodesOnPlane(scene.nodes,'box').map(drawNode).join('');
   const labels=scene.labels.map(label=>{
     const b=label.box;
+    const labelLineHeight=Math.round(22*(edgeLabelSize/DEFAULT_EDGE_LABEL_SIZE));
+    const firstBaseline=Math.round(edgeLabelSize);
     let text='';
     if(label.bundle){
-      text=`<text x="${b.width/2}" y="22" text-anchor="middle">${escape(label.bundle.header)}</text>`;
+      text=`<text x="${b.width/2}" y="${labelLineHeight}" text-anchor="middle">${escape(label.bundle.header)}</text>`;
       label.bundle.groups.forEach((group,index)=>{
-        text+=`<g data-bundle-relation="${index}"><path d="M0 ${group.top}H${b.width}" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)"/><text x="5" y="${group.top+22}">•</text>`;
-        group.lines.forEach((line,i)=>{text+=`<text x="22" y="${group.top+22+i*22}">${escape(line)}</text>`;});text+='</g>';
+        text+=`<g data-bundle-relation="${index}"><path d="M0 ${group.top}H${b.width}" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)"/><text x="5" y="${group.top+labelLineHeight}">•</text>`;
+        group.lines.forEach((line,i)=>{text+=`<text x="22" y="${group.top+labelLineHeight+i*labelLineHeight}">${escape(line)}</text>`;});text+='</g>';
       });
-    }else label.lines.forEach((line,i)=>{text+=`<text x="${b.width/2}" y="${18+i*22}" text-anchor="middle">${escape(line)}</text>`;});
+    }else label.lines.forEach((line,i)=>{text+=`<text x="${b.width/2}" y="${firstBaseline+i*labelLineHeight}" text-anchor="middle">${escape(line)}</text>`;});
     const leader=label.leader===undefined?'':`<path d="${connectorPath(label.leader,cornerRadius)}" fill="none" stroke="var(--st-component-diagramScene-edgeStroke, #64748b)"/>`;
     return leader+`<g data-scene-label="${escape(label.occurrence)}" transform="translate(${b.x} ${b.y})" font-size="${edgeLabelSize}" fill="var(--st-component-diagramScene-labelText, #172033)"><rect width="${b.width}" height="${b.height}" fill="var(--st-component-diagramScene-labelSurface, #ffffff)" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)"/>${text}</g>`;
   }).join('');

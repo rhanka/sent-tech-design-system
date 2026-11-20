@@ -57,6 +57,7 @@
     resolveScene,
     resolveZoom,
     sameRects,
+    scaleEdgeLabelMeasurer,
     sceneConnectorMask,
     sceneFit,
     sceneNodesOnPlane,
@@ -950,7 +951,7 @@
   const pathOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
     connectorPath(points, edgeCornerRadius);
 
-  const edgeLabelLineHeight = $derived(lineMeasurer({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
+  const edgeLabelLineHeight = $derived(scaleEdgeLabelMeasurer(lineMeasurer, effectiveMetrics.edgeLabelSize)({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
   const viewportStyle = $derived(
     `height:${fit.fitHeight + scrollbarHeight}px;${fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );

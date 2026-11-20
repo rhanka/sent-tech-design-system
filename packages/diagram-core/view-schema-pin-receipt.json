@@ -30,13 +30,13 @@
       "fixture": "packages/diagram-core/tests/fixtures/diagram-view-schema-2-50c97fc8.json"
     },
     "record": "packages/diagram-core/src/view-schema-pin.ts",
-    "recordSha256": "350902a6abd5309462db22b995eb27f3c28d60b63479851070d440e1c3ede76b",
+    "recordSha256": "84609fd185e9fe7d807efd8dc93dd17f406deabd8411b3f5c85cb3d594a49885",
     "lifecycle": "@1 exact-pin-only, no latest, no fallback, no reverse migration"
   },
   "dsRevision": {
     "note": "Current implementation file hashes after DE-2 view-schema@4 connector registries; @1/@2/@3 canonical schemas and presentation pin remain unchanged.",
     "files": {
-      "packages/diagram-core/src/view.ts": "e69c6017b3954318d8a8eb60a98f6457e9b214d05cd3f2456ea116b7158e5640",
+      "packages/diagram-core/src/view.ts": "2a66f29a0ed67fbd47cee661bbf0efe52ba58626c8a0c8e35a87c10cff1d7789",
       "packages/diagram-core/src/fold.ts": "203cc35623075be69bf18d5bce4a000b2f6602f8989440943b0fe618aacdb867",
       "packages/diagram-core/src/validate.ts": "860b929d25b71dea259f0ac0c415326c36c52d07ba6e631d7521759d566f15e1"
     }

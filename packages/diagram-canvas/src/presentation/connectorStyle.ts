@@ -9,14 +9,12 @@ import {
 
 export interface ConnectorMarkerIds {
   readonly filled: string;
-  readonly open: string;
   readonly filledEmphasis: string;
-  readonly openEmphasis: string;
 }
 
 export interface ConnectorMarkerSpec {
   readonly id: string;
-  readonly kind: "filled-triangle" | "open-triangle";
+  readonly kind: "arrow";
   readonly emphasis: LinkEmphasis;
   readonly viewBox: string;
   readonly refX: number;
@@ -31,12 +29,11 @@ export interface ConnectorMarkerSpec {
 }
 
 /**
- * Closed marker geometry table for the arrowhead registry (DE-2).
- * Consumers select arrowheads strictly by closed words from the view /
- * presentation; hosts paint them from this shared table.
+ * Closed marker geometry table for the `@4` arrowhead registry (`arrow | none`, DE-2).
+ * Additional heads (hollow triangles, diamonds) are reserved for N2.
  */
 export const ARROWHEAD_MARKER_GEOMETRY = Object.freeze({
-  "filled-triangle": Object.freeze({
+  arrow: Object.freeze({
     viewBox: "0 0 10 10",
     refX: 9,
     refY: 5,
@@ -45,28 +42,15 @@ export const ARROWHEAD_MARKER_GEOMETRY = Object.freeze({
     orient: "auto-start-reverse" as const,
     path: "M0 0L10 5L0 10Z",
   }),
-  "open-triangle": Object.freeze({
-    viewBox: "0 0 10 10",
-    refX: 9,
-    refY: 5,
-    markerWidth: 8,
-    markerHeight: 8,
-    orient: "auto-start-reverse" as const,
-    path: "M1 1L9 5L1 9Z",
-  }),
 });
 
-const EDGE_STROKE = "var(--st-component-diagramScene-edgeStroke, #64748b)";
 const EMPHASIS_STROKE = "var(--st-component-diagramScene-linkEmphasisStroke, #2563eb)";
-const OPEN_SURFACE_FILL = "var(--st-semantic-surface-raised, #ffffff)";
 
-/** Derive deterministic per-host marker ids keeping the default filled arrow id first. */
+/** Derive deterministic per-host marker ids keeping the default arrow id first. */
 export function connectorMarkerIds(baseArrowId: string): ConnectorMarkerIds {
   return {
     filled: baseArrowId,
-    open: `${baseArrowId}-open`,
     filledEmphasis: `${baseArrowId}-emphasis`,
-    openEmphasis: `${baseArrowId}-open-emphasis`,
   };
 }
 
@@ -77,9 +61,9 @@ export function connectorDashArray(strokeStyle: StrokeStyle | undefined): string
   return descriptor.dashArray.join(" ");
 }
 
-/** Normalize a closed `ArrowheadKind` word (`"arrow"` aliases `"filled-triangle"`). */
+/** Normalize a closed `ArrowheadKind` word (`arrow | none`). */
 export function connectorMarkerKind(arrowhead: ArrowheadKind | undefined): CanonicalArrowheadKind {
-  return resolveArrowhead(arrowhead)?.canonicalKind ?? "filled-triangle";
+  return resolveArrowhead(arrowhead)?.canonicalKind ?? "arrow";
 }
 
 export interface ConnectorMarkerEdgeInput {
@@ -98,65 +82,34 @@ export function connectorMarkerRef(
   const kind = connectorMarkerKind(edge.arrowhead);
   if (kind === "none") return undefined;
   const emphasized = edge.emphasis === "emphasis";
-  if (kind === "open-triangle") {
-    return `url(#${emphasized ? ids.openEmphasis : ids.open})`;
-  }
   return `url(#${emphasized ? ids.filledEmphasis : ids.filled})`;
 }
 
 /**
  * Additional `<marker>` definitions required by the scene beyond the default
- * filled-triangle marker (which hosts always emit first in `<defs>`).
+ * arrow marker (which hosts always emit first in `<defs>`).
  */
 export function extraConnectorMarkers(
   edges: readonly ConnectorMarkerEdgeInput[],
   ids: ConnectorMarkerIds,
 ): readonly ConnectorMarkerSpec[] {
-  let needOpen = false;
   let needFilledEmphasis = false;
-  let needOpenEmphasis = false;
   for (const edge of edges) {
     if (edge.markers !== undefined || edge.directed === true) continue;
     const kind = connectorMarkerKind(edge.arrowhead);
     if (kind === "none") continue;
-    const emphasized = edge.emphasis === "emphasis";
-    if (kind === "open-triangle") {
-      if (emphasized) needOpenEmphasis = true;
-      else needOpen = true;
-    } else if (emphasized) {
+    if (edge.emphasis === "emphasis") {
       needFilledEmphasis = true;
     }
   }
   const specs: ConnectorMarkerSpec[] = [];
-  if (needOpen) {
-    specs.push({
-      id: ids.open,
-      kind: "open-triangle",
-      emphasis: "default",
-      ...ARROWHEAD_MARKER_GEOMETRY["open-triangle"],
-      fill: OPEN_SURFACE_FILL,
-      stroke: EDGE_STROKE,
-      strokeWidth: 1.5,
-    });
-  }
   if (needFilledEmphasis) {
     specs.push({
       id: ids.filledEmphasis,
-      kind: "filled-triangle",
+      kind: "arrow",
       emphasis: "emphasis",
-      ...ARROWHEAD_MARKER_GEOMETRY["filled-triangle"],
+      ...ARROWHEAD_MARKER_GEOMETRY.arrow,
       fill: EMPHASIS_STROKE,
-    });
-  }
-  if (needOpenEmphasis) {
-    specs.push({
-      id: ids.openEmphasis,
-      kind: "open-triangle",
-      emphasis: "emphasis",
-      ...ARROWHEAD_MARKER_GEOMETRY["open-triangle"],
-      fill: OPEN_SURFACE_FILL,
-      stroke: EMPHASIS_STROKE,
-      strokeWidth: 1.5,
     });
   }
   return specs;

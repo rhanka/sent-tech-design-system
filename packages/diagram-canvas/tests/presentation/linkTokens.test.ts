@@ -41,10 +41,16 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
       ...fixture,
       measureLines,
       collapsed: [],
-      metrics: { linkStrokeWidth: 4, edgeLabelSize: 20 },
+      metrics: { linkStrokeWidth: 4, edgeLabelSize: 24 },
     });
     expect(thicker.svg).toContain('stroke-width="4"');
-    expect(thicker.svg).toContain('font-size="20"');
+    expect(thicker.svg).toContain('font-size="24"');
+    // Overriding edgeLabelSize scales measured edge-label boxes proportionally without overflow.
+    const baseLabel = base.scene.labels[0]!;
+    const biggerLabel = thicker.scene.labels.find((l) => l.occurrence === baseLabel.occurrence)!;
+    expect(biggerLabel.box.width).toBeGreaterThan(baseLabel.box.width);
+    expect(biggerLabel.box.height).toBeGreaterThan(baseLabel.box.height);
+    expect(biggerLabel.box.height).toBeCloseTo(baseLabel.box.height * (24 / 18), 4);
   });
 
   it("recomputes footer connector cutouts and label clearance from linkStrokeWidth", () => {

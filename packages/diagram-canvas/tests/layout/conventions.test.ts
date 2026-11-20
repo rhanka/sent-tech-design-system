@@ -95,7 +95,7 @@ describe("lintArrowDirection (DE-2 ask 5)", () => {
     expect(ARROW_DIRECTION_CONVENTION).toBe("source-is-initiator");
     const warnings = lintArrowDirection({
       edges: [
-        { id: "occurrence:r.1", sourceEntity: "entity:a", targetEntity: "entity:b", arrowhead: "filled-triangle" },
+        { id: "occurrence:r.1", sourceEntity: "entity:a", targetEntity: "entity:b", arrowhead: "arrow" },
       ],
     });
     expect(warnings).toEqual([]);
@@ -104,8 +104,8 @@ describe("lintArrowDirection (DE-2 ask 5)", () => {
   it("passes when source is the declared initiator and flags inverted edges as info", () => {
     const warnings = lintArrowDirection({
       edges: [
-        { id: "occurrence:r.ok", sourceEntity: "entity:client", targetEntity: "entity:api", arrowhead: "filled-triangle" },
-        { id: "occurrence:r.inv", sourceEntity: "entity:api", targetEntity: "entity:client", arrowhead: "filled-triangle" },
+        { id: "occurrence:r.ok", sourceEntity: "entity:client", targetEntity: "entity:api", arrowhead: "arrow" },
+        { id: "occurrence:r.inv", sourceEntity: "entity:api", targetEntity: "entity:client", arrowhead: "arrow" },
         { id: "occurrence:r.undir", sourceEntity: "entity:api", targetEntity: "entity:client", arrowhead: "none" },
       ],
       initiators: {
