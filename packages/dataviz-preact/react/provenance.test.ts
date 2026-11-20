@@ -80,6 +80,11 @@ import * as handWrittenGeoJsonMap from "../../dataviz-react/src/lib/GeoJsonMap.j
 import * as handWrittenGeoPointMap from "../../dataviz-react/src/lib/GeoPointMap.js";
 import * as handWrittenHLCChart from "../../dataviz-react/src/lib/HLCChart.js";
 import * as handWrittenHeatmapChart from "../../dataviz-react/src/lib/HeatmapChart.js";
+import * as handWrittenHeikinAshiChart from "../../dataviz-react/src/lib/HeikinAshiChart.js";
+import * as handWrittenHistogramChart from "../../dataviz-react/src/lib/HistogramChart.js";
+import * as handWrittenHollowCandlestickChart from "../../dataviz-react/src/lib/HollowCandlestickChart.js";
+import * as handWrittenItemChart from "../../dataviz-react/src/lib/ItemChart.js";
+import * as handWrittenKpiCardGroup from "../../dataviz-react/src/lib/KpiCardGroup.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -175,6 +180,11 @@ const switched = [
   "GeoPointMap",
   "HLCChart",
   "HeatmapChart",
+  "HeikinAshiChart",
+  "HistogramChart",
+  "HollowCandlestickChart",
+  "ItemChart",
+  "KpiCardGroup",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -262,6 +272,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   GeoPointMap: handWrittenGeoPointMap.GeoPointMap,
   HLCChart: handWrittenHLCChart.HLCChart,
   HeatmapChart: handWrittenHeatmapChart.HeatmapChart,
+  HeikinAshiChart: handWrittenHeikinAshiChart.HeikinAshiChart,
+  HistogramChart: handWrittenHistogramChart.HistogramChart,
+  HollowCandlestickChart: handWrittenHollowCandlestickChart.HollowCandlestickChart,
+  ItemChart: handWrittenItemChart.ItemChart,
+  KpiCardGroup: handWrittenKpiCardGroup.KpiCardGroup,
 };
 
 describe("dataviz React leg provenance", () => {
