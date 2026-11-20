@@ -1886,8 +1886,8 @@
       "gitBlob": "0324f1612dd9a0405d50dddd2ba7e1c58a029f2d",
       "sha256": "97141365d0ab46106c6d894e5ede74c342efbf46b4771d9c9d6ba22b3dfc6777",
       "status": "adapted-packaging-only",
-      "destinationSha256": "b66b3e655baf205c3b9bed0fd318073faf74ce6d661f6c1d48b7c404a15bbd5e",
-      "note": "angular devDeps pinned to exact 21.2.17 (single runtime; ^ resolved a nested 21.2.23 breaking TestBed); @angular/* devDeps moved to exact 21.2.24 by #72 (single hoisted runtime, clears the i18n XSS advisory); @sentropic/design-system-angular dependency bumped to 0.38.0 by the Calendar onMonthChange release; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); @sentropic/design-system-angular dependency bumped to 0.38.1 by the Checkbox centring patch (pin only); @sentropic/design-system-angular dependency bumped to 0.39.0 by the Icon glyph prop release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; DE-1: align @sentropic/design-system-themes pin with 0.15.0"
+      "destinationSha256": "37893c72ad5e71e8ce7ac78e884d5b35c07b184a13bad015129741ebb022fa8a",
+      "note": "angular devDeps pinned to exact 21.2.17 (single runtime; ^ resolved a nested 21.2.23 breaking TestBed); @angular/* devDeps moved to exact 21.2.24 by #72 (single hoisted runtime, clears the i18n XSS advisory); @sentropic/design-system-angular dependency bumped to 0.38.0 by the Calendar onMonthChange release; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); @sentropic/design-system-angular dependency bumped to 0.38.1 by the Checkbox centring patch (pin only); @sentropic/design-system-angular dependency bumped to 0.39.0 by the Icon glyph prop release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; DE-1: align @sentropic/design-system-themes pin with 0.15.0; DE-2: align workspace dependency pins (themes 0.16.0 / svelte 0.43.0 / vue 0.41.0-next.9)"
     },
     {
       "repository": "dataviz",
@@ -2044,8 +2044,8 @@
       "gitBlob": "546b6243e5eff9d9bec2a03c1b96c4cc2ce25441",
       "sha256": "a44c704dbcacbcf93081f4f488c5b285de14f469cdc9459768fb246a29553800",
       "status": "adapted-packaging-only",
-      "destinationSha256": "68c5ce73dc7875e23663af7d34da495193702a29d17ddacb70814f18bb5882a9",
-      "note": "@sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; DE-1: align @sentropic/design-system-themes pin with 0.15.0"
+      "destinationSha256": "8715670efb7d697ef6cd7caf7d0b0475a02cb1d5430c12d32d04a3c1faaad10c",
+      "note": "@sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; DE-1: align @sentropic/design-system-themes pin with 0.15.0; DE-2: align workspace dependency pins (themes 0.16.0 / svelte 0.43.0 / vue 0.41.0-next.9)"
     },
     {
       "repository": "dataviz",
@@ -3593,8 +3593,8 @@
       "gitBlob": "f32a53f263658fb563ecc81febd33693dfe3bc43",
       "sha256": "4de2b350a549668ad67d5972bdc237539dcbcc03e133e835eea3d47657bb0da8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "0e975b7d6fd425a482674860a885febbaa8c57fb95f5560ea40ad2d679f29341",
-      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure.; diagram initial fit: host patch dependency pin; card body centring: align the design-system-svelte pin with 0.41.5; DE-1: align @sentropic/design-system-themes (0.15.0) and @sentropic/design-system-svelte (0.42.0) pins"
+      "destinationSha256": "3d8085172efe6da1ab69ffed45797b8947a1e4abb7e9d70035e146d64799461f",
+      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure.; diagram initial fit: host patch dependency pin; card body centring: align the design-system-svelte pin with 0.41.5; DE-1: align @sentropic/design-system-themes (0.15.0) and @sentropic/design-system-svelte (0.42.0) pins; DE-2: align workspace dependency pins (themes 0.16.0 / svelte 0.43.0 / vue 0.41.0-next.9)"
     },
     {
       "repository": "dataviz",
@@ -5160,8 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-vue-vapor",
-      "destinationSha256": "606eb56eede593617387d4d7ddefdbcbde0e99da8f2aa93b643dbfc57a801c5c",
-      "note": "Vue Vapor SFC port: dual Classic/Vapor builds, exports, published declaration parity and exact Vue toolchain 3.6.0-rc.15; consumer peer ^3.5 || ^3.6.0-0. Current runtime pins: design-system-themes 0.15.0 and design-system-vue 0.41.0-next.8, whose diagram-canvas 0.3.0 -> diagram-core 0.4.0 closure awaits public npm. PR 282 final review: exclude cache markers/maps and enforce source/dist control-byte safety during build. Card body centring: align the design-system-vue pin with 0.41.0-next.7. DE-1: align design-system-themes (0.15.0) and design-system-vue (0.41.0-next.8) pins. Upstream identity retained."
+      "destinationSha256": "eada26c6870fdf10399fd19b6c5bad5ee00d30aee0ea59ead766246835ac450b",
+      "note": "Vue Vapor SFC port: dual Classic/Vapor builds, exports, published declaration parity and exact Vue toolchain 3.6.0-rc.15; consumer peer ^3.5 || ^3.6.0-0. Current runtime pins: design-system-themes 0.15.0 and design-system-vue 0.41.0-next.8, whose diagram-canvas 0.3.0 -> diagram-core 0.4.0 closure awaits public npm. PR 282 final review: exclude cache markers/maps and enforce source/dist control-byte safety during build. Card body centring: align the design-system-vue pin with 0.41.0-next.7. DE-1: align design-system-themes (0.15.0) and design-system-vue (0.41.0-next.8) pins. Upstream identity retained.; DE-2: align workspace dependency pins (themes 0.16.0 / svelte 0.43.0 / vue 0.41.0-next.9)"
     },
     {
       "repository": "dataviz",

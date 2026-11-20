@@ -1,8 +1,8 @@
 {
   "componentId": "time-picker",
   "contractSource": "derived",
-  "digest": "sha256:0d3096552d7937995c2082cc2397c37962f47093e1c4c711d39a7287d383d0ee",
-  "entryDigest": "sha256:8ebc6a95a411b13d6812a8592419faa48717b1680d8b6bbcd0b053a4573133f1",
+  "digest": "sha256:bac813f3df428f2e41ad2b022ef1356925e7cf6c7a8f014435d70b879f87d3d6",
+  "entryDigest": "sha256:7082f35c38b000247719e16634d4a325ab662e8ce031678ecd079bf22d7b912b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -242,7 +242,7 @@
         "declarationPath": "packages/components-svelte/dist/TimePicker.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimePickerProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -343,7 +343,7 @@
         "declarationPath": "packages/components-vue/dist/TimePicker.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TimePickerProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "partial",
       "unresolved": [],

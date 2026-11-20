@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SkipLink.svelte",
-      "version": "0.42.0"
+      "version": "0.43.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/SkipLink.vue",
-      "version": "0.41.0-next.8"
+      "version": "0.41.0-next.9"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Skip link (a11y): off-screen until keyboard focus.",
     "fr": "Lien d'évitement (a11y) : hors écran jusqu'au focus clavier."
   },
-  "digest": "sha256:0edda98ba4eb9a6ccf276fb5a83acfb844016d8e4a6cf204f12c0d0eff3b259e",
+  "digest": "sha256:5ef3f7f81d7fee9e88638b70748cf6ad00f909cf87304562e41c38fec63c1ee4",
   "displayName": "SkipLink",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "area-spline-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:8075e81dda55ec47611ce7e9bdbbdc0f1abb13804d5b7c0c971c675e30dbcaad",
-  "entryDigest": "sha256:76eb5431f564485330f02714016132b81b7448d7b89f148cf021ab3ba8bb7059",
+  "digest": "sha256:e67feef36a050f2f48c3e76a713bf0454f3cd5861d3988554bef79c57fa58cb7",
+  "entryDigest": "sha256:ab25e2d9f6178e6ad99588c56172b3c303ac3abb7acf88ccbc5c7e8cd193ea68",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-svelte/dist/AreaSplineRangeChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AreaSplineRangeChartProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -358,7 +358,7 @@
         "declarationPath": "packages/components-vue/dist/AreaSplineRangeChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AreaSplineRangeChartProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "complete",
       "unresolved": [],

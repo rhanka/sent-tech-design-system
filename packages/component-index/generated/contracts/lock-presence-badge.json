@@ -1,8 +1,8 @@
 {
   "componentId": "lock-presence-badge",
   "contractSource": "derived",
-  "digest": "sha256:7511b28d7ec3fdcc269f085938fc5fbf4686472713327431aea88107ec02507b",
-  "entryDigest": "sha256:eca5cf0c1ca8684e242c153882fc6cf9d2f75fed5055b852365b76635276caed",
+  "digest": "sha256:c650c7a325f94acc4c197d5d511a7027d681b5bfba7fa978fe8ca1908fb74efb",
+  "entryDigest": "sha256:1b5a238c3455b01b835f77e4bae5192bd535328920c9f610d4b20d7ac87b95c4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -425,7 +425,7 @@
         "declarationPath": "packages/components-svelte/dist/presence-badge/LockPresenceBadge.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LockPresenceBadgeProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -846,7 +846,7 @@
         "declarationPath": "packages/components-vue/dist/presence-badge/LockPresenceBadge.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LockPresenceBadgeProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "partial",
       "unresolved": [],

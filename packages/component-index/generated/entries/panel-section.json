@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/PanelSection.svelte",
-      "version": "0.42.0"
+      "version": "0.43.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/PanelSection.vue",
-      "version": "0.41.0-next.8"
+      "version": "0.41.0-next.9"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "One PanelStack section: collapsible header and scroll-owning body.",
     "fr": "Section d'un PanelStack : en-tête repliable et corps propriétaire du défilement."
   },
-  "digest": "sha256:381cda51c801175ddb05e1c0ca56e8f9cb46d00f24d0ae0ed17ec0b4b5e78fb9",
+  "digest": "sha256:1fb549536b97e2f8ae3fd7437e86a9aac547ad39c0a3eed8570c36d01b8636a6",
   "displayName": "PanelSection",
   "format": "component-entry/v1",
   "frameworks": [

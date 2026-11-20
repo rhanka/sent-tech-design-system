@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Pagination.svelte",
-      "version": "0.42.0"
+      "version": "0.43.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Pagination.vue",
-      "version": "0.41.0-next.8"
+      "version": "0.41.0-next.9"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Page navigation with current page.",
     "fr": "Navigation de pages avec page courante."
   },
-  "digest": "sha256:b4cdad2b10d2b8ad824e4f28015fde26ed9608f2e0dbd307bf1ed28eed13c36f",
+  "digest": "sha256:97f4cfab8ac68d3655f4e3cd2817fcfc15096f7621304d989230b3a149d75f85",
   "displayName": "Pagination",
   "format": "component-entry/v1",
   "frameworks": [

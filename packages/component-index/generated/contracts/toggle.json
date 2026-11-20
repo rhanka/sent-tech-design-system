@@ -1,8 +1,8 @@
 {
   "componentId": "toggle",
   "contractSource": "derived",
-  "digest": "sha256:f63a70432877150e079f456fe37070ab6fafb1db093930d537a01c66920eaee5",
-  "entryDigest": "sha256:831f7002649267c817bf8815a779be1b5386dde99784a9df7557e159526e3dff",
+  "digest": "sha256:44d796f88c06aa16268673b6a4b4608741211a4441f432f2312904fbccda59af",
+  "entryDigest": "sha256:4e8c740269865f24b887bf0d65e5a11a3bcec8b43f5de6f459c4378f60b1eefd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -205,7 +205,7 @@
         "declarationPath": "packages/components-svelte/dist/Toggle.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ToggleProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -314,7 +314,7 @@
         "declarationPath": "packages/components-vue/dist/Toggle.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ToggleProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "partial",
       "unresolved": [

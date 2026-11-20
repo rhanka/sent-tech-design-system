@@ -1,8 +1,8 @@
 {
   "componentId": "tile-map-chart",
   "contractSource": "derived",
-  "digest": "sha256:65f9880540a3d44adfea633999184b812281f5a82e6d2f7788f2cf83b677db2b",
-  "entryDigest": "sha256:2ef7b3ecc3e636e8b3c4d9df238a9ff734906a5e5917ed7db2c3386165cc7baf",
+  "digest": "sha256:4d0f5aafe513b31ae979924e03d2c1b8b36c6b015a7c776efea33ffec692ba2b",
+  "entryDigest": "sha256:b1b4130c593c29ada464fffaedcac6525acf27ef2cdd409a6ec5ce4748e68a84",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -223,7 +223,7 @@
         "declarationPath": "packages/components-svelte/dist/TileMapChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TileMapChartProps",
-        "version": "0.42.0"
+        "version": "0.43.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -298,7 +298,7 @@
         "declarationPath": "packages/components-vue/dist/TileMapChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TileMapChartProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "complete",
       "unresolved": [],
