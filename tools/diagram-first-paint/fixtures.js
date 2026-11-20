@@ -2,7 +2,7 @@ import architecture from '../../packages/diagram-canvas/tests/layout/dc2a/fixtur
 import architectureView from '../../packages/diagram-canvas/tests/layout/dc2a/fixtures/h-cond/appctx-architecture.view-architecture.json';
 import ontology from '../../packages/diagram-canvas/tests/layout/dc2a/fixtures/h-cond/appctx-ontology.semantic.json';
 import ontologyView from '../../packages/diagram-canvas/tests/layout/dc2a/fixtures/h-cond/appctx-ontology.view-ontology.json';
-import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN,
+import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, createView, entityRef, occurrenceRef, viewRef,
   m3ProfileRegistry, shippedExecutorBindings } from '@sentropic/diagram-core';
 import { flowFixture } from '../../packages/diagram-canvas/test-support/flowFixture.ts';
 import { nestedZoneFixture } from '../../packages/diagram-canvas/test-support/nestedZoneFixture.ts';
@@ -23,6 +23,25 @@ export function fixture(name) {
     // runs inside both zone surfaces (the consumer-reported ERD view shape).
     const source = nestedZoneFixture({ outside: name.endsWith('-outside') });
     return { ...common, document: source.document, view: source.view, presentation: source.presentation, collapsed: [] };
+  }
+  if (name === 'three-cards-compact') {
+    const ids = ['a', 'b', 'c'];
+    const document = { documentId: 'document:first-paint-compact', schemaVersion: CURRENT_SCHEMA_VERSION, revision: 1,
+      profileRefs: ['generic@2'], typeDefinitions: {}, ports: {}, resources: {}, extensions: [],
+      entities: Object.fromEntries(ids.map(id => [`entity:${id}`, { id: `entity:${id}`,
+        profile: 'generic@2', type: 'node', attributes: { name: { kind: 'text', value: id } } }])),
+      relations: {} };
+    // New view via createView defaults to anatomy "v2" (352 × 154, compact-face centred).
+    const view = {
+      ...createView({ viewId: viewRef('compact'), semanticDocumentId: document.documentId, revision: 1 }),
+      entityOccurrences: Object.fromEntries(ids.map((id, index) => [`occurrence:e.${id}`, {
+        id: occurrenceRef(`e.${id}`), entity: entityRef(id),
+        geometry: { x: index * 400, y: 0, width: 352, height: 154 },
+      }])),
+    };
+    return { ...common, document, view,
+      presentation: { contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN }, legends: {}, categoryTokens: [],
+        entities: Object.fromEntries(ids.map(id => [`occurrence:e.${id}`, { form: 'card', text: { title: `Card ${id}`, body: 'First paint' } }])) } };
   }
   if (name !== 'three-cards') {
     const document = name.startsWith('architecture') ? architecture : ontology;

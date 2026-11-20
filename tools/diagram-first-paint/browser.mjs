@@ -9,7 +9,7 @@ const { tmpdir } = await import('node:os');
 const { join } = await import('node:path');
 const { buildHarness, root } = await import('./build.mjs');
 const { cases } = await import('./scenes.js');
-const { segmentInterval, exposedSegments, centredBodyFindings, connectorFindings } = await import('./geometry.mjs');
+const { segmentInterval, exposedSegments, centredBodyFindings, compactCardFindings, connectorFindings } = await import('./geometry.mjs');
 const { preview } = await import('vite');
 const { default: puppeteer } = await import('puppeteer-core');
 const assert = (await import('node:assert/strict')).default;
@@ -127,6 +127,20 @@ function measure() {
     outerScroll: (() => { const el = figure.querySelector('.st-diagramSceneFigure-frame');
       return [el.scrollWidth, el.clientWidth, el.scrollHeight, el.clientHeight]; })(),
     nodes: [...figure.querySelectorAll('[data-scene-occurrence]')].map(element => ({ id: element.dataset.sceneOccurrence, ...box(element) })),
+    cardSlots: [...figure.querySelectorAll('[data-scene-occurrence]')].flatMap(element => {
+      const card = element.querySelector('.st-diagramCard');
+      if (!card) return [];
+      const headerText = card.querySelector('.st-diagramCardHeader-text');
+      const bodyArea = card.querySelector('.st-diagramCard-body');
+      return [{
+        id: element.dataset.sceneOccurrence,
+        card: box(card),
+        headerText: headerText ? box(headerText) : null,
+        bodyArea: bodyArea ? box(bodyArea) : null,
+        titleLines: [...card.querySelectorAll('.st-diagramCard-title')].map(box),
+        bodyLines: [...card.querySelectorAll('.st-diagramCard-line,.st-diagramCard-detail')].map(box),
+      }];
+    }),
     connectorLabels: [...figure.querySelectorAll('[data-scene-label]')].map(element => element.dataset.sceneLabel),
     relations: window.__relations ?? null,
     labels, paths, occluders };
@@ -201,8 +215,14 @@ function check(state, scene) {
   assert.ok(Number.isFinite(state.camera.fitZoom), 'finite fit');
   assert.ok(state.scale >= 0.45, `display scale ${state.scale} < 0.45`);
   assert.ok(Number.isFinite(state.clearance) && state.clearance > 0, 'clearance token must resolve');
-  if (scene !== 'three-cards') {
+  if (scene !== 'three-cards' && scene !== 'three-cards-compact') {
     assert.ok(state.paths.length > 0 && state.labels.length > 0, 'golden must have connectors and labels');
+  } else if (scene === 'three-cards-compact') {
+    // DE-1 compact-face gate: 352 × 154 cards, centred body centre within
+    // 1/64 px of body-area centre, title and body inside slots at desktop
+    // and phone widths.
+    assert.deepEqual(compactCardFindings({ cardSlots: state.cardSlots, labels: state.labels,
+      bodyText: 'First paint', expectedWidth: 352, expectedHeight: 154, scale: state.scale, epsilon, inkTolerance: 2 }), [], 'compact card anatomy');
   } else {
     // Owner card-body-centring: every card centres its single-line
     // `First paint` body ink horizontally in the frozen body box

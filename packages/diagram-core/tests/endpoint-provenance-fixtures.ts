@@ -63,7 +63,12 @@ export function single(kind: "p1" | "p2" | "p3" = "p1", drawn = "svc", hops = ["
     nested: "package", repo: "repo", repo2: "repo", runtime: "runtime", system: "system", mid: "component" })) {
     d.entities[entityRef(id)] = ent(id, chainProfile.id, type, type === "system" ? { externalVendor: { kind: "boolean", value: true } } : {});
   }
-  const v = { ...createView({ viewId: viewRef("chains"), semanticDocumentId: d.documentId }),
+  const v = {
+    ...createView({
+      viewId: viewRef("chains"),
+      semanticDocumentId: d.documentId,
+      presentation: { camera: { x: 0, y: 0, zoom: 1 } },
+    }),
     entityOccurrences: {} as Record<string, EntityOccurrence>, relationOccurrences: {} as Record<string, RelationOccurrence>,
     groups: {} as Record<string, VisualGroup> };
   const f = { d, v, profile: chainProfile };

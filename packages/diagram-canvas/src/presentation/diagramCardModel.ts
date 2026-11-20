@@ -26,6 +26,15 @@ import { getDiagramGlyph } from "./registry.js";
  * kicker baseline `headerY + 16 + 22`, title `+ 32`, subtitle `+ 22`).
  */
 
+/**
+ * Versioned card anatomy (DE-1). `"v1"` is the frozen `460 × 200` box every
+ * existing view keeps; `"v2"` is the compact `352 × 154` default new views
+ * pin. A view pins one anatomy; geometry is selected per box, never patched
+ * in place. The engine default stays `"v1"` so unpinned views do not move;
+ * `createView` pins `"v2"` for genuinely new views.
+ */
+export type DiagramAnatomy = "v1" | "v2";
+
 /** Frozen card geometry, in card pixels (spec §5.3, Appendix A). */
 export const CARD_GEOMETRY = {
   width: 460,
@@ -79,6 +88,52 @@ export const CARD_GEOMETRY = {
 } as const;
 
 /**
+ * Compact card geometry (`diagram-anatomy/v2`): `352 × 154` with padding
+ * `6`, header inset `12`, accent `6`, icon `52` / gap `4`. Type scale is
+ * unchanged (`22 / 32 / 24`). Unlisted leaves keep their v1 values. Title is
+ * one line first (owner addendum 8): over-long titles report `card-overflow`
+ * instead of growing the box. The folded header width is derived, not
+ * pinned: `352 − border 2 − padding 6 − toggle 66 − headerText 68 = 210`.
+ */
+export const CARD_GEOMETRY_V2 = {
+  ...CARD_GEOMETRY,
+  width: 352,
+  height: 154,
+  padding: 6,
+  accentWidth: 6,
+  headerInset: 12,
+  iconSize: 52,
+  iconTextGap: 4,
+  foldedHeaderTextWidth: 210,
+  /** Title on one line first (addendum 8); v1 keeps two lines. */
+  allocatedLines: { kicker: 1, title: 1, body: 2, footer: 1 },
+} as const;
+
+/** Select the card geometry for a pinned anatomy (default `"v1"`). */
+export function anatomyCardGeometry(anatomy: DiagramAnatomy | undefined): typeof CARD_GEOMETRY | typeof CARD_GEOMETRY_V2 {
+  return anatomy === "v2" ? CARD_GEOMETRY_V2 : CARD_GEOMETRY;
+}
+
+/**
+ * Additive per-entity pin carried alongside a governed `EntityPresentation`
+ * (structural, never persisted in the governed fragment): the pinned
+ * `diagram-anatomy/v1 | v2` for this box. Absent means `"v1"`.
+ */
+export interface AnatomyPinned {
+  readonly anatomy?: DiagramAnatomy;
+}
+
+/**
+ * Additive alignment pin (DE-1 step 2), same carrying pattern as
+ * `AnatomyPinned`: structural, never persisted in the governed fragment.
+ * `"left"` keeps the frozen behaviour; `"center"` centres title and body
+ * on both axes. Absent means `"left"`.
+ */
+export interface AlignPinned {
+  readonly align?: "left" | "center";
+}
+
+/**
  * Edge label typography (DC-2a, tokens `diagramScene.edgeLabelFontSize` /
  * `diagramScene.edgeLabelLineHeight`): 18 px on a 22 px line box. One line
  * plus the engine's two 4 px label margins is 30 px, inside the 32 px sibling
@@ -117,6 +172,16 @@ export interface CardPresentationInput {
   readonly categoryRef?: string;
   /** Neutral status prop: drawn as a dashed border, independent of tint. */
   readonly proposed?: boolean;
+  /**
+   * Pinned card anatomy (`diagram-anatomy/v1 | v2`). Absent means `"v1"`;
+   * a view pins `"v2"` for the compact box.
+   */
+  readonly anatomy?: DiagramAnatomy;
+  /**
+   * Additive alignment pin (DE-1 step 2, `AnatomyPinned` pattern):
+   * `"center"` centres title and body on both axes. Absent means `"left"`.
+   */
+  readonly align?: "left" | "center";
 }
 
 /** Resolved glyph path data (structural twin of the `diagram-icons`
@@ -127,7 +192,7 @@ export interface DiagramGlyphPaths {
   readonly darkLine?: true;
   readonly text?: string;
   readonly severity?: "info";
-  readonly reason?: "truncated";
+  readonly reason?: "truncated" | "fallback-v1";
   readonly hiddenLength?: number;
 }
 
@@ -178,6 +243,17 @@ export interface DiagramCardProps {
    * area (§6.2.1).
    */
   readonly bodyMode?: "leaf" | "subtitle";
+  /**
+   * Pinned card anatomy (`diagram-anatomy/v1 | v2`). Absent means `"v1"`;
+   * `"v2"` selects the compact `352 × 154` box.
+   */
+  readonly anatomy?: DiagramAnatomy;
+  /**
+   * Zone depth surface, set only for zone-collapsed cards (a folded zone
+   * keeps its depth background). Leaf cards never set it: their semantic
+   * tints are unchanged. Hosts paint the matching zone surface token.
+   */
+  readonly surface?: ZoneDepthSurface;
 }
 
 export type CardResolveResult =
@@ -188,6 +264,16 @@ export interface ProjectCardOptions {
   readonly entityId: string;
   readonly toggle?: DiagramCardToggle;
   readonly resolveGlyph?: (name: string) => DiagramGlyphPaths | undefined;
+  /**
+   * Fallback anatomy when the presentation pins none. Absent means `"v1"`;
+   * scene entry points for new views pass `"v2"`.
+   */
+  readonly anatomy?: DiagramAnatomy;
+  /**
+   * Fallback alignment when the presentation pins none. Absent means
+   * `"left"`; centred scenes pass `"center"`.
+   */
+  readonly align?: "left" | "center";
 }
 
 /**
@@ -238,6 +324,14 @@ export function projectCardProps(
       ...(presentation.categoryRef === undefined ? {} : { tone: presentation.categoryRef }),
       ...(presentation.proposed === undefined ? {} : { proposed: presentation.proposed }),
       ...(opts.toggle === undefined ? {} : { toggle: opts.toggle }),
+      ...(() => {
+        const anatomy = presentation.anatomy ?? opts.anatomy;
+        return anatomy === undefined ? {} : { anatomy };
+      })(),
+      ...(() => {
+        const align = presentation.align ?? opts.align;
+        return align === undefined ? {} : { align };
+      })(),
     },
   };
 }
@@ -699,7 +793,7 @@ export interface CardDiagnostic {
    */
   readonly text?: string;
   readonly severity?: "info";
-  readonly reason?: "truncated";
+  readonly reason?: "truncated" | "fallback-v1";
   readonly hiddenLength?: number;
 }
 
@@ -737,19 +831,22 @@ export function headerSlotGeometry(opts: {
   readonly hasIcon: boolean;
   readonly kickerLines: number;
   readonly titleLines: number;
+  /** Icon floor for the block height; defaults to the v1 `70`. */
+  readonly iconSize?: number;
 }): HeaderSlotGeometry {
   const g = CARD_GEOMETRY;
   const kickerHeight = lineBoxHeight(g.kicker.size);
   const titleHeight = lineBoxHeight(g.title.size);
   const contentHeight = opts.kickerLines * kickerHeight + opts.titleLines * titleHeight;
-  const blockHeight = opts.hasIcon ? Math.max(g.iconSize, contentHeight) : contentHeight;
+  const iconSize = opts.iconSize ?? g.iconSize;
+  const blockHeight = opts.hasIcon ? Math.max(iconSize, contentHeight) : contentHeight;
   return {
     kickerHeight,
     titleHeight,
     contentHeight,
     blockHeight,
     textTopOffset: (blockHeight - contentHeight) / 2,
-    iconTopOffset: opts.hasIcon ? (blockHeight - g.iconSize) / 2 : 0,
+    iconTopOffset: opts.hasIcon ? (blockHeight - iconSize) / 2 : 0,
   };
 }
 
@@ -813,23 +910,24 @@ export interface CardLayout {
   /** Footer text-box bottom (pinned at `height − border − 9.25`). */
   readonly footerBottom: number;
   readonly toggleBox?: { readonly x: number; readonly y: number; readonly size: number };
+  /** Present when a `v2` compact card overflowed and fell back per box to frozen `v1` (`460 × 200`). */
+  readonly anatomyFallback?: "v1";
   readonly diagnostics: readonly CardDiagnostic[];
 }
 
-/**
- * Lay out fixed card slots with measured ellipses and a pinned footer.
- * Informational diagnostics retain the original text and hidden length.
- * Missing glyphs use the visible unknown icon (owner A2/A11).
- */
-export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): CardLayout {
+function layoutCardAt(
+  props: DiagramCardProps,
+  measure: CardLineMeasure,
+  anatomy: DiagramAnatomy | undefined,
+  align: "left" | "center",
+): CardLayout {
   const icon = props.icon ?? "base";
   const suppressed = icon === "none";
   const missing = !suppressed && props.iconGlyph === undefined && getDiagramGlyph(icon) === undefined;
   props = { ...props, autoSize: props.autoSize ?? true, icon: missing ? "unknown" : icon,
     iconGlyph: suppressed ? { face: "" } : props.iconGlyph ?? getDiagramGlyph(icon) ?? getDiagramGlyph("unknown")! };
-  const g = CARD_GEOMETRY;
+  const g = anatomyCardGeometry(anatomy);
   const diagnostics: CardDiagnostic[] = missing ? [{code:"card-icon-missing",slot:"icon",entityId:props.entityId,neededPx:1,allocatedPx:0}] : [];
-  const align = props.align ?? "left";
   const bodyMode = props.bodyMode ?? "leaf";
   const contentTop = g.borderWidth + g.padding;
   const contentRight = g.width - g.borderWidth - g.padding;
@@ -879,6 +977,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
     hasIcon,
     kickerLines: kickerTexts.length,
     titleLines: titleTexts.length,
+    iconSize: g.iconSize,
   });
   const kickerHeight = headerGeo.kickerHeight;
   const titleHeight = headerGeo.titleHeight;
@@ -900,7 +999,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
   // frozen 396 px measure (width − 2 × (collapsedInset + marginInline)).
   const subtitleMode = bodyMode === "subtitle";
   const subtitleMeasure =
-    g.width - 2 * (ZONE_GEOMETRY.collapsedInset + ZONE_GEOMETRY.collapsedSubtitleMarginInline);
+    g.width - 2 * (anatomyZoneGeometry(anatomy).collapsedInset + anatomyZoneGeometry(anatomy).collapsedSubtitleMarginInline);
   const bodyTextX = subtitleMode ? (g.width - subtitleMeasure) / 2 : g.bodyInsetFromBar;
   const bodyWidth = subtitleMode ? subtitleMeasure : contentRight - bodyTextX;
   // The body block is centred horizontally inside its box on every card
@@ -1024,6 +1123,43 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
   };
 }
 
+/**
+ * Lay out fixed card slots with measured ellipses and a pinned footer.
+ * Informational diagnostics retain the original text and hidden length.
+ * Missing glyphs use the visible unknown icon (owner A2/A11).
+ * Compact `v2` cards default to `"center"` alignment and fall back per box
+ * to frozen `v1` (`460 × 200`) on overflow instead of dropping slots.
+ */
+export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): CardLayout {
+  const align = props.align ?? (props.anatomy === "v2" ? "center" : "left");
+  const primary = layoutCardAt(props, measure, props.anatomy, align);
+  if (props.anatomy !== "v2") return primary;
+  const v2Overflows = primary.diagnostics.filter((diagnostic) => diagnostic.code === "card-overflow");
+  if (v2Overflows.length === 0) return primary;
+  const fallback = layoutCardAt(props, measure, "v1", align);
+  const stillOverflows = fallback.diagnostics.some((diagnostic) => diagnostic.code === "card-overflow");
+  const diagnostics: CardDiagnostic[] = stillOverflows
+    ? [...fallback.diagnostics]
+    : [
+        ...fallback.diagnostics,
+        ...v2Overflows.map((diagnostic): CardDiagnostic => ({
+          code: "card-overflow",
+          slot: diagnostic.slot,
+          entityId: diagnostic.entityId,
+          neededPx: diagnostic.neededPx,
+          allocatedPx: diagnostic.allocatedPx,
+          ...(diagnostic.text === undefined ? {} : { text: diagnostic.text }),
+          severity: "info",
+          reason: "fallback-v1",
+        })),
+      ];
+  return {
+    ...fallback,
+    anatomyFallback: "v1",
+    diagnostics,
+  };
+}
+
 /* ------------------------------------------------------------------ *
  * DC-2 static half — the wrapping card `DiagramZone` (spec §6).      *
  * Same module, same rules: zero imports, one geometry source.        *
@@ -1084,6 +1220,53 @@ export const ZONE_GEOMETRY = {
   allocatedLines: { kicker: 1, title: 2, subtitle: 2, footer: 1 },
 } as const;
 
+/**
+ * Compact zone geometry (`diagram-anatomy/v2`): the collapsed zone IS the
+ * compact card (`352 × 154`, collapsed subtitle measure `352 − 2 × 32`);
+ * expanded chrome follows the compact insets (header `12`, icon `52`,
+ * gap `4`). Unlisted leaves keep v1 values; type scale unchanged.
+ */
+export const ZONE_GEOMETRY_V2 = {
+  ...ZONE_GEOMETRY,
+  headerInset: CARD_GEOMETRY_V2.headerInset,
+  iconSize: CARD_GEOMETRY_V2.iconSize,
+  iconTextGap: CARD_GEOMETRY_V2.iconTextGap,
+  /**
+   * Expanded header text inset for v2: `12 + 52 + 4 + 86 = 154` so the
+   * inline-end toggle reserve stays `86 px` (matching v1) instead of
+   * growing to `110 px`.
+   */
+  headerTextInset: 154,
+  collapsedWidth: CARD_GEOMETRY_V2.width,
+  collapsedHeight: CARD_GEOMETRY_V2.height,
+  allocatedLines: { kicker: 1, title: 1, subtitle: 2, footer: 1 },
+} as const;
+
+/** Select the zone geometry for a pinned anatomy (default `"v1"`). */
+export function anatomyZoneGeometry(anatomy: DiagramAnatomy | undefined): typeof ZONE_GEOMETRY | typeof ZONE_GEOMETRY_V2 {
+  return anatomy === "v2" ? ZONE_GEOMETRY_V2 : ZONE_GEOMETRY;
+}
+
+/**
+ * Owner addendum 1 — one engine rule for alternating zone backgrounds by
+ * nesting depth. Even depths (top level first) paint `surface1`, odd depths
+ * paint `surface2`; `startParity` is selectable per scene and flips which
+ * parity the top level takes. Depth normalises to a non-negative integer;
+ * card semantic tints are untouched (leaf cards never read this rule).
+ */
+export type ZoneDepthSurface = "surface1" | "surface2";
+
+/** Nesting depth of a zone: `0` is the top level. */
+export function normalizeZoneDepth(depth: number | undefined): number {
+  if (depth === undefined || !Number.isFinite(depth)) return 0;
+  return Math.max(0, Math.floor(depth));
+}
+
+/** Resolve the depth surface for a zone (default start parity `0`). */
+export function zoneDepthSurface(depth: number | undefined, startParity: 0 | 1 = 0): ZoneDepthSurface {
+  return (normalizeZoneDepth(depth) + startParity) % 2 === 0 ? "surface1" : "surface2";
+}
+
 /** Centred collapsed-subtitle measure (§6.2.1): 460 − 2 × (16 + 16). */
 export const COLLAPSED_SUBTITLE_MEASURE =
   ZONE_GEOMETRY.collapsedWidth -
@@ -1098,6 +1281,11 @@ export interface DiagramZoneToggle {
 export interface DiagramZoneProps {
   readonly containerPadding?: number;
   readonly autoSize?: boolean;
+  /**
+   * Pinned zone anatomy (`diagram-anatomy/v1 | v2`). Absent means `"v1"`;
+   * `"v2"` selects the compact collapsed `352 × 154` box.
+   */
+  readonly anatomy?: DiagramAnatomy;
   readonly entityId: string;
   readonly kicker?: string;
   readonly title: string;
@@ -1116,6 +1304,23 @@ export interface DiagramZoneProps {
   readonly toggleLabel?: string;
   /** Owner variant: `"center"` centres every text slot, both states. */
   readonly align?: "left" | "center";
+  /**
+   * Nesting depth of the zone (owner addendum 1): `0` is the top level.
+   * The frame — and the folded card — paint the depth surface from the
+   * engine rule. Absent means `0`.
+   */
+  readonly depth?: number;
+  /**
+   * Opt-in informational diagnostic (owner addendum 1): when true, a leaf
+   * card on a same-colour zone surface reports `zone-surface-same`. Off by
+   * default — a fitting child renders with no diagnostics.
+   */
+  readonly reportSurfaceSame?: boolean;
+  /**
+   * Selectable start parity for the depth rule: `1` flips which parity the
+   * top level takes. Scene-global; absent means `0`.
+   */
+  readonly depthParityStart?: 0 | 1;
   /**
    * Occurrence box supplied by the host layout (§6.1: the component paints
    * around the box it is given). Collapsed, the box is the frozen
@@ -1138,6 +1343,7 @@ export function zoneCollapsedCardProps(props: DiagramZoneProps): DiagramCardProp
   return {
     ...(props.autoSize === undefined ? {} : { autoSize: props.autoSize }),
     ...(props.height === undefined ? {} : { height: props.height }),
+    ...(props.anatomy === undefined ? {} : { anatomy: props.anatomy }),
     entityId: props.entityId,
     ...(props.kicker === undefined ? {} : { kicker: props.kicker }),
     title: props.title,
@@ -1151,6 +1357,11 @@ export function zoneCollapsedCardProps(props: DiagramZoneProps): DiagramCardProp
       ? {}
       : { toggle: { collapsed: true, label: props.toggleLabel } }),
     ...(props.align === undefined ? {} : { align: props.align }),
+    // A folded zone keeps its depth background (owner addendum 1); no pin
+    // means no surface key, so unthreaded cards render byte-identical.
+    ...((props.depth === undefined && props.depthParityStart === undefined
+      ? {}
+      : { surface: zoneDepthSurface(props.depth, props.depthParityStart) })),
     bodyMode: "subtitle",
   };
 }
@@ -1160,8 +1371,11 @@ export interface ZoneDiagnostic {
    * `zone-overflow` / `zone-icon-unknown` are the zone's own; a descendant
    * card or nested zone keeps its own `card-overflow` / `card-icon-unknown`
    * code with its own `entityId` when `renderZoneSvg` aggregates them.
+   * `zone-surface-same` is informational and opt-in (owner addendum 1):
+   * a leaf card on a same-colour zone, reported only for explicitly
+   * composed children when the zone sets `reportSurfaceSame`.
    */
-  readonly code: "zone-overflow" | "zone-icon-unknown" | "card-icon-missing" | "zone-grown" | "card-overflow" | "card-icon-unknown" | "card-grown";
+  readonly code: "zone-overflow" | "zone-icon-unknown" | "card-icon-missing" | "zone-grown" | "card-overflow" | "card-icon-unknown" | "card-grown" | "zone-surface-same";
   readonly slot: string;
   readonly entityId: string;
   readonly neededPx: number;
@@ -1169,7 +1383,7 @@ export interface ZoneDiagnostic {
   /** Original, unwrapped slot text retained with the diagnostic. */
   readonly text?: string;
   readonly severity?: "info";
-  readonly reason?: "truncated";
+  readonly reason?: "truncated" | "fallback-v1";
   readonly hiddenLength?: number;
 }
 
@@ -1186,6 +1400,14 @@ export interface ZoneLayout {
   readonly icon: { readonly name: string; readonly glyph: DiagramGlyphPaths };
   readonly box: { readonly x: number; readonly y: number; readonly width: number; readonly height: number };
   readonly collapsed: boolean;
+  /**
+   * Owner addendum 1: resolved depth surface (`surface1` at even depths,
+   * top level first) and normalised depth. Present only when depth pins
+   * are threaded (absent means `surface1` / `0`); hosts paint the matching
+   * zone surface token on the frame and on the folded card.
+   */
+  readonly surface?: ZoneDepthSurface;
+  readonly depth?: number;
   /** Collapsed: the card layout of the folded card (same geometry source). */
   readonly card?: CardLayout;
   /** Expanded: header + rule + footer geometry inside the frame. */
@@ -1246,10 +1468,23 @@ export function layoutZone(
   const missing = !suppressed && props.iconGlyph === undefined && getDiagramGlyph(icon) === undefined;
   props = { ...props, autoSize: props.autoSize ?? true, icon: missing ? "unknown" : icon,
     iconGlyph: suppressed ? { face: "" } : props.iconGlyph ?? getDiagramGlyph(icon) ?? getDiagramGlyph("unknown")! };
-  const g = { ...ZONE_GEOMETRY, ...(props.containerPadding === undefined ? {} : { contentInsetTop: props.containerPadding, contentInsetBottom: props.containerPadding, contentInsetInline: props.containerPadding }) };
+  const g = { ...anatomyZoneGeometry(props.anatomy), ...(props.containerPadding === undefined ? {} : { contentInsetTop: props.containerPadding, contentInsetBottom: props.containerPadding, contentInsetInline: props.containerPadding }) };
   const x = props.x ?? 0;
   const y = props.y ?? 0;
   const diagnostics: ZoneDiagnostic[] = missing ? [{code:"card-icon-missing",slot:"icon",entityId:props.entityId,neededPx:1,allocatedPx:0}] : [];
+  // Owner addendum 1: resolve the depth surface once; both states and the
+  // folded card share it, so fold/unfold never repaints the layer. Without
+  // depth pins the layout keeps its exact v1 shape (anatomy golden).
+  const hasDepthPins = props.depth !== undefined || props.depthParityStart !== undefined;
+  const depth = normalizeZoneDepth(props.depth);
+  const surface = zoneDepthSurface(props.depth, props.depthParityStart);
+  // Informational and opt-in: a leaf card (default card surface) on a
+  // same-colour zone surface. Only explicit children compositions report
+  // it — hosts lay children out flat, so host rendering never changes.
+  if (props.reportSurfaceSame === true && surface === "surface1"
+    && children.some((child) => child.kind === "card" && child.zone === undefined && child.card?.tone === undefined)) {
+    diagnostics.push({ code: "zone-surface-same", slot: "surface", entityId: props.entityId, neededPx: 1, allocatedPx: 0 });
+  }
 
   if (missing) {
     diagnostics.push({
@@ -1271,13 +1506,16 @@ export function layoutZone(
         neededPx: diagnostic.neededPx,
         allocatedPx: diagnostic.allocatedPx,
         ...(diagnostic.text === undefined ? {} : { text: diagnostic.text }),
-        ...(diagnostic.hiddenLength === undefined ? {} : { hiddenLength: diagnostic.hiddenLength, severity: diagnostic.severity, reason: diagnostic.reason }),
+        ...(diagnostic.severity === undefined ? {} : { severity: diagnostic.severity }),
+        ...(diagnostic.reason === undefined ? {} : { reason: diagnostic.reason }),
+        ...(diagnostic.hiddenLength === undefined ? {} : { hiddenLength: diagnostic.hiddenLength }),
       });
     }
     return {
       icon: { name: props.icon!, glyph: props.iconGlyph! },
-      box: { x, y, width: g.collapsedWidth, height: card.box.height },
+      box: { x, y, width: card.box.width, height: card.box.height },
       collapsed: true,
+      ...(hasDepthPins ? { surface, depth } : {}),
       card,
       diagnostics,
     };
@@ -1298,7 +1536,7 @@ export function layoutZone(
       ? g.headerInset
       : g.headerTextInset - (g.headerInset + g.iconSize + g.iconTextGap);
   const headerTextWidth = Math.max(0, x + width - headerTextX - rightHeaderReserve);
-  const align = props.align ?? "left";
+  const align = props.align ?? (props.anatomy === "v2" ? "center" : "left");
   const headerAnchor: "start" | "middle" = align === "center" ? "middle" : "start";
   const headerLineX = align === "center" ? headerTextX + headerTextWidth / 2 : headerTextX;
 
@@ -1318,6 +1556,7 @@ export function layoutZone(
     hasIcon,
     kickerLines: kickerTexts.length,
     titleLines: titleTexts.length,
+    iconSize: g.iconSize,
   });
   const kickerHeight = headerGeo.kickerHeight;
   const titleHeight = headerGeo.titleHeight;
@@ -1458,6 +1697,7 @@ export function layoutZone(
     icon: { name: props.icon!, glyph: props.iconGlyph! },
     box: { x, y, width, height },
     collapsed: false,
+    ...(hasDepthPins ? { surface, depth } : {}),
     header: {
       ...(iconBox === undefined ? {} : { iconBox }),
       headerTextX,
@@ -1492,6 +1732,33 @@ export interface ZonePresentationInput {
   readonly categoryRef?: string;
   /** Neutral status prop: drawn as a dashed border, independent of tint. */
   readonly proposed?: boolean;
+  /**
+   * Pinned zone anatomy (`diagram-anatomy/v1 | v2`). Absent means `"v1"`.
+   */
+  readonly anatomy?: DiagramAnatomy;
+  /**
+   * Additive alignment pin (DE-1 step 2, `AnatomyPinned` pattern):
+   * `"center"` centres title and body on both axes. Absent means `"left"`.
+   */
+  readonly align?: "left" | "center";
+  /**
+   * Additive depth pins (owner addendum 1, `AnatomyPinned` pattern):
+   * nesting depth (`0` top) and selectable start parity. Absent means
+   * `0` / `0`; the scene stamps depth from the view groups.
+   */
+  readonly depth?: number;
+  readonly depthParityStart?: 0 | 1;
+}
+
+/**
+ * Additive depth pins (owner addendum 1), same carrying pattern as
+ * `AnatomyPinned`: structural, never persisted in the governed fragment.
+ * The scene stamps `depth` from the view groups; `depthParityStart`
+ * selects which parity the top level takes.
+ */
+export interface DepthPinned {
+  readonly depth?: number;
+  readonly depthParityStart?: 0 | 1;
 }
 
 export type ZoneResolveResult =
@@ -1500,10 +1767,21 @@ export type ZoneResolveResult =
 
 export interface ProjectZoneOptions {
   readonly containerPadding?: number;
+  /**
+   * Fallback anatomy when the presentation pins none. Absent means `"v1"`;
+   * scene entry points for new views pass `"v2"`.
+   */
+  readonly anatomy?: DiagramAnatomy;
   readonly entityId: string;
   readonly collapsed: boolean;
   readonly toggleLabel?: string;
   readonly align?: "left" | "center";
+  /**
+   * Fallback depth pins when the presentation pins none. Absent means
+   * `0` / `0`; the scene stamps them from the view groups.
+   */
+  readonly depth?: number;
+  readonly depthParityStart?: 0 | 1;
   readonly x?: number;
   readonly y?: number;
   readonly width?: number;
@@ -1553,9 +1831,24 @@ export function projectZoneProps(
           })()),
       ...(presentation.categoryRef === undefined ? {} : { tone: presentation.categoryRef }),
       ...(presentation.proposed === undefined ? {} : { proposed: presentation.proposed }),
+      ...(() => {
+        const anatomy = presentation.anatomy ?? opts.anatomy;
+        return anatomy === undefined ? {} : { anatomy };
+      })(),
       collapsed: opts.collapsed,
       ...(opts.toggleLabel === undefined ? {} : { toggleLabel: opts.toggleLabel }),
-      ...(opts.align === undefined ? {} : { align: opts.align }),
+      ...(() => {
+        const align = presentation.align ?? opts.align;
+        return align === undefined ? {} : { align };
+      })(),
+      ...(() => {
+        const depth = presentation.depth ?? opts.depth;
+        return depth === undefined ? {} : { depth };
+      })(),
+      ...(() => {
+        const start = presentation.depthParityStart ?? opts.depthParityStart;
+        return start === undefined ? {} : { depthParityStart: start };
+      })(),
       ...(opts.x === undefined ? {} : { x: opts.x }),
       ...(opts.y === undefined ? {} : { y: opts.y }),
       ...(opts.width === undefined ? {} : { width: opts.width }),
