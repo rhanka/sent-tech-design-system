@@ -3,7 +3,7 @@
 defineOptions({ name: 'DiagramCard' });
 import { computed, onMounted, watch, useId } from "vue";
 import DiagramCardHeader from "./DiagramCardHeader.vue";
-import { anatomyCardGeometry, cardFullText, defaultCardMeasure, layoutCard } from "./diagramCardModel.js";
+import { anatomyCardGeometry, cardFullText, defaultCardMeasure, layoutCard, resolveDiagramAlign } from "./diagramCardModel.js";
 import type { CardDiagnostic, CardLineMeasure, DiagramCardProps as DiagramCardData, } from "./diagramCardModel.js";
 /**
  * `DiagramCard` — the atomic diagram card (DC-1).
@@ -78,7 +78,7 @@ const layout = computed(() => layoutCard({
 const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) => diagnostic.code === "card-overflow")?.slot);
 const unknownIcon = computed(() => layout.value.diagnostics.some((diagnostic) => diagnostic.code === "card-icon-unknown"));
 const effectiveAnatomy = computed(() => layout.value.anatomyFallback ?? anatomy);
-const effectiveAlign = computed(() => align ?? (anatomy === "v2" ? "center" : "left"));
+const effectiveAlign = computed(() => resolveDiagramAlign(effectiveAnatomy.value, align));
 const cardGeometry = computed(() => anatomyCardGeometry(effectiveAnatomy.value));
 
 

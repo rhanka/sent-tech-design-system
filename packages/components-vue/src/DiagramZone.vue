@@ -4,7 +4,7 @@ defineOptions({ name: 'DiagramZone' });
 import { computed, onMounted, watch, useId } from "vue";
 import DiagramCard from "./DiagramCard.vue";
 import DiagramZoneHeader from "./DiagramZoneHeader.vue";
-import { anatomyZoneGeometry, zoneFullText, defaultCardMeasure, layoutZone, zoneCollapsedCardProps, type CardLineMeasure, type DiagramZoneProps as DiagramZoneData, type ZoneDiagnostic, } from "./diagramCardModel.js";
+import { anatomyZoneGeometry, zoneFullText, defaultCardMeasure, layoutZone, resolveDiagramAlign, zoneCollapsedCardProps, type CardLineMeasure, type DiagramZoneProps as DiagramZoneData, type ZoneDiagnostic, } from "./diagramCardModel.js";
 /**
  * `DiagramZone` — the wrapping diagram card (DC-2, spec §6).
  *
@@ -42,7 +42,7 @@ export interface DiagramZoneProps extends DiagramZoneData {
 }
 const { autoSize = true, entityId, containerPadding, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, anatomy, depth, depthParityStart, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
 const zoneGeometry = computed(() => anatomyZoneGeometry(anatomy));
-const effectiveAlign = computed(() => align ?? (anatomy === "v2" ? "center" : "left"));
+const effectiveAlign = computed(() => resolveDiagramAlign(anatomy, align));
 /** Owner addendum 1: an explicitly threaded depth paints the resolved depth surface. */
 const surfaceStyle = computed(() => zoneProps.value.depth === undefined && zoneProps.value.depthParityStart === undefined ? "" : `;--st-component-diagramZone-surface:var(--st-component-diagramZone-${layout.value.surface ?? "surface1"}, var(--st-semantic-surface-${(layout.value.surface ?? "surface1") === "surface1" ? "raised" : "subtle"}))`);
 const emit = defineEmits<{

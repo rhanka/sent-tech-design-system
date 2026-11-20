@@ -114,8 +114,15 @@ export function resolveScenePresentation(document: SceneDocument, presentation: 
    * everywhere means `"v1"` — existing views do not move.
    */
   const viewAnatomy = (view?.presentation as { readonly anatomy?: DiagramAnatomy } | undefined)?.anatomy;
-  const withViewAnatomy = <T extends { readonly anatomy?: DiagramAnatomy }>(entry: T): T =>
-    entry.anatomy === undefined && viewAnatomy !== undefined ? { ...entry, anatomy: viewAnatomy } : entry;
+  const withViewAnatomy = <T extends { readonly anatomy?: DiagramAnatomy; readonly align?: "left" | "center" }>(entry: T): T => {
+    const resolved = entry.anatomy === undefined && viewAnatomy !== undefined ? { ...entry, anatomy: viewAnatomy } : entry;
+    // View-level centring applies only when explicitly requested on compact v2 anatomy.
+    if (resolved.anatomy !== "v2" && resolved.align === "center") {
+      const { align: _ignored, ...rest } = resolved;
+      return rest as T;
+    }
+    return resolved;
+  };
   const entities = Object.fromEntries(Object.entries(presentation.entities).map(([id, entry]) => {
     if (entry.form !== "card" && entry.form !== "container" && entry.form !== "legend") return [id, withViewAnatomy(entry)];
     const entityId = view?.entityOccurrences[id]?.entity ?? id.replace(/^occurrence:e\./, "entity:");
