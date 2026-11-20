@@ -433,6 +433,26 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
       plainDom.querySelector(".st-diagramZone")?.getAttribute("style") ?? "",
     ).not.toContain("--st-component-diagramZone-surface:");
   });
+
+  it("anchors expanded v2 zone header right to headerInset (12px) even when containerPadding is 16px, preventing 4px toggle drift", () => {
+    for (const containerPadding of [16, 24]) {
+      const { container } = render(DiagramZone, {
+        props: {
+          ...baseProps({ collapsed: false, width: 492, height: 400, x: 0, y: 0, anatomy: "v2", containerPadding }),
+          measure: defaultCardMeasure,
+        },
+      });
+      const header = container.querySelector<HTMLElement>(".st-diagramZone-header")!;
+      const content = container.querySelector<HTMLElement>(".st-diagramZone-content")!;
+      const toggle = container.querySelector<HTMLElement>(".st-diagramCard-toggle")!;
+      expect(header.style.top).toBe("calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+      expect(header.style.left).toBe("calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+      expect(header.style.right).toBe(header.style.left);
+      expect(toggle.style.top).toBe(toggle.style.right);
+      expect(content.style.left).toBe(`calc(${containerPadding}px - var(--st-component-diagramZone-borderWidth, 1.5px))`);
+      expect(content.style.right).toBe(`calc(${containerPadding}px - var(--st-component-diagramZone-borderWidth, 1.5px))`);
+    }
+  });
 });
 
 describe("DiagramZone — projection (§4.2/§6.1)", () => {

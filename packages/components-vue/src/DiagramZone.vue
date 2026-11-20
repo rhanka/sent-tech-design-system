@@ -129,11 +129,13 @@ const subtitleWidth = computed(() => header.value?.subtitleWidth ?? 0);
 const borderToken = "var(--st-component-diagramZone-borderWidth, 1.5px)";
 const frameTop = (frameY: number): string => `calc(${frameY - y}px - ${borderToken})`;
 const frameInset = (inset: number): string => `calc(${inset}px - ${borderToken})`;
-// Header band: frame top + headerInset, spanning the header/content
-// inline insets, as tall as the layout's header block + subtitle.
+// Header band: frame top + headerInset, spanning the header inline insets
+// (left and right both anchored to headerInset, matching layoutZone and the
+// toggle inset even when containerPadding differs on v2), as tall as the
+// layout's header block + subtitle.
 const headerStyle = computed(() => header.value === undefined
     ? undefined
-    : `top:${frameTop(y + zoneGeometry.value.headerInset)};left:${frameInset(zoneGeometry.value.headerInset)};right:${frameInset(containerPadding ?? zoneGeometry.value.headerInset)};height:${header.value.ruleY - zoneGeometry.value.headerRuleGap - y - zoneGeometry.value.headerInset}px`);
+    : `top:${frameTop(y + zoneGeometry.value.headerInset)};left:${frameInset(zoneGeometry.value.headerInset)};right:${frameInset(zoneGeometry.value.headerInset)};height:${header.value.ruleY - zoneGeometry.value.headerRuleGap - y - zoneGeometry.value.headerInset}px`);
 const ruleStyle = computed(() => header.value === undefined
     ? undefined
     : `top:${frameTop(header.value.ruleY)};left:${frameInset(zoneGeometry.value.ruleInsetStart)};right:${frameInset(zoneGeometry.value.ruleInsetEnd)}`);
