@@ -90,6 +90,11 @@ import * as handWrittenOHLCChart from "../../dataviz-react/src/lib/OHLCChart.js"
 import * as handWrittenObjectLayers from "../../dataviz-react/src/lib/ObjectLayers.js";
 import * as handWrittenOrganizationChart from "../../dataviz-react/src/lib/OrganizationChart.js";
 import * as handWrittenPackedBubbleChart from "../../dataviz-react/src/lib/PackedBubbleChart.js";
+import * as handWrittenPalettePicker from "../../dataviz-react/src/lib/PalettePicker.js";
+import * as handWrittenParallelCoordinatesChart from "../../dataviz-react/src/lib/ParallelCoordinatesChart.js";
+import * as handWrittenPercentileBandChart from "../../dataviz-react/src/lib/PercentileBandChart.js";
+import * as handWrittenPivotDataTable from "../../dataviz-react/src/lib/PivotDataTable.js";
+import * as handWrittenPointAndFigureChart from "../../dataviz-react/src/lib/PointAndFigureChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -197,6 +202,11 @@ const switched = [
   "ObjectLayerPanel",
   "OrganizationChart",
   "PackedBubbleChart",
+  "PalettePicker",
+  "ParallelCoordinatesChart",
+  "PercentileBandChart",
+  "PivotDataTable",
+  "PointAndFigureChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -296,6 +306,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   ObjectLayerPanel: handWrittenObjectLayers.ObjectLayerPanel,
   OrganizationChart: handWrittenOrganizationChart.OrganizationChart,
   PackedBubbleChart: handWrittenPackedBubbleChart.PackedBubbleChart,
+  PalettePicker: handWrittenPalettePicker.PalettePicker,
+  ParallelCoordinatesChart: handWrittenParallelCoordinatesChart.ParallelCoordinatesChart,
+  PercentileBandChart: handWrittenPercentileBandChart.PercentileBandChart,
+  PivotDataTable: handWrittenPivotDataTable.PivotDataTable,
+  PointAndFigureChart: handWrittenPointAndFigureChart.PointAndFigureChart,
 };
 
 describe("dataviz React leg provenance", () => {
