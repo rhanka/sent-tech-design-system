@@ -662,6 +662,31 @@ async function verifyDiagramCanvas() {
   console.log("OK @sentropic/diagram-canvas: camera + layout + scene import verified");
 }
 
+// E2: the static draw.io/SVG codecs. The public entry loads from the installed
+// tarball (its diagram-canvas dependency resolved beside it) and exports an
+// empty scene to a well-formed-static mxfile skeleton.
+async function verifyDiagramCodecs() {
+  const mod = await import("@sentropic/diagram-codecs");
+  for (const name of ["toDrawio", "toSvg"]) {
+    if (typeof mod[name] !== "function") {
+      fail("@sentropic/diagram-codecs", "missing " + name + " export (or not a function)");
+      return;
+    }
+  }
+  let xml;
+  try {
+    xml = mod.toDrawio({ nodes: [], edges: [], labels: [], badges: [], connectorCutouts: [], bounds: { x: 0, y: 0, width: 100, height: 100 } });
+  } catch (error) {
+    fail("@sentropic/diagram-codecs", "toDrawio threw: " + String(error && error.message ? error.message : error));
+    return;
+  }
+  if (typeof xml !== "string" || !xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>') || !xml.includes("<mxfile") || !xml.includes("</mxfile>")) {
+    fail("@sentropic/diagram-codecs", "toDrawio did not produce an mxfile document");
+    return;
+  }
+  console.log("OK @sentropic/diagram-codecs: toDrawio + toSvg import verified");
+}
+
 const verifiers = {
   "@sentropic/design-system-tokens": verifyTokens,
   "@sentropic/design-system-themes": verifyThemes,
@@ -673,6 +698,7 @@ const verifiers = {
   "@sentropic/graph": verifyGraph,
   "@sentropic/diagram-core": verifyDiagramCore,
   "@sentropic/diagram-canvas": verifyDiagramCanvas,
+  "@sentropic/diagram-codecs": verifyDiagramCodecs,
   "@sentropic/design-system-rich-text": verifyRichText,
   "@sentropic/design-system-review-core": verifyReviewCore,
   "@sentropic/design-system-elements": verifyElements,
