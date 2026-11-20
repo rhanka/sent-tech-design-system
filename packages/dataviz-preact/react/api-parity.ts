@@ -165,6 +165,8 @@ export type PropsParity = [
   Expect<Equal<Emitted.ViolinChartProps, HandWritten.ViolinChartProps>>,
   Expect<Equal<Emitted.WaffleChartProps, HandWritten.WaffleChartProps>>,
   Expect<Equal<Emitted.WaterfallChartProps, HandWritten.WaterfallChartProps>>,
+  Expect<Equal<Emitted.WindBarbChartProps, HandWritten.WindBarbChartProps>>,
+  Expect<Equal<Emitted.WordCloudChartProps, HandWritten.WordCloudChartProps>>,
 ];
 
 export type ComponentParity = [
@@ -284,6 +286,8 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.ViolinChart, typeof HandWritten.ViolinChart>>,
   Expect<Equal<typeof Emitted.WaffleChart, typeof HandWritten.WaffleChart>>,
   Expect<Equal<typeof Emitted.WaterfallChart, typeof HandWritten.WaterfallChart>>,
+  Expect<Equal<typeof Emitted.WindBarbChart, typeof HandWritten.WindBarbChart>>,
+  Expect<Equal<typeof Emitted.WordCloudChart, typeof HandWritten.WordCloudChart>>,
 ];
 
 export type ValueParity = [
@@ -334,5 +338,8 @@ export type InternalHelpersParity = [
   Expect<Equal<typeof EmittedChartExportComponent, typeof HandWrittenChartExportComponent>>,
 ];
 
-// The emitted barrel publishes no value the hand-written package keeps internal.
+// The emitted barrel publishes the exact whole surface of `@sentropic/dataviz-react`
+// with no extra export and no missing export.
 export type NoExtraExport = Expect<Equal<Exclude<keyof typeof Emitted, keyof typeof HandWritten>, never>>;
+export type NoMissingExport = Expect<Equal<Exclude<keyof typeof HandWritten, keyof typeof Emitted>, never>>;
+export type WholeBarrelParity = Expect<Equal<typeof Emitted, typeof HandWritten>>;

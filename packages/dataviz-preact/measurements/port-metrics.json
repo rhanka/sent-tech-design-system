@@ -7,13 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 125,
+    "portedModules": 127,
     "barrelFile": "index.ts",
-    "remainingModules": 2,
-    "remainingFiles": [
-      "lib/WindBarbChart.tsx",
-      "lib/WordCloudChart.tsx"
-    ]
+    "remainingModules": 0,
+    "remainingFiles": []
   },
   "port": {
     "modules": [
@@ -1391,18 +1388,40 @@
         "total": 219,
         "touched": 3,
         "emissionRewrites": 1
+      },
+      {
+        "module": "WindBarbChart",
+        "kind": "component",
+        "file": "src/lib/WindBarbChart.tsx",
+        "reactSource": "lib/WindBarbChart.tsx",
+        "reactLines": 57,
+        "preactLines": 62,
+        "total": 203,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "WordCloudChart",
+        "kind": "component",
+        "file": "src/lib/WordCloudChart.tsx",
+        "reactSource": "lib/WordCloudChart.tsx",
+        "reactLines": 50,
+        "preactLines": 55,
+        "total": 181,
+        "touched": 2,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 125,
-      "reactLines": 9182,
-      "preactLines": 9821,
-      "total": 47667,
-      "touched": 609,
-      "emissionRewrites": 129
+      "modules": 127,
+      "reactLines": 9289,
+      "preactLines": 9938,
+      "total": 48051,
+      "touched": 613,
+      "emissionRewrites": 131
     },
     "shared": {
-      "src/index.ts": 315,
+      "src/index.ts": 321,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
