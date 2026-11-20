@@ -57,6 +57,11 @@ export type PropsParity = [
   Expect<Equal<Emitted.AreaSplineRangeChartProps, HandWritten.AreaSplineRangeChartProps>>,
   Expect<Equal<Emitted.BellCurveChartProps, HandWritten.BellCurveChartProps>>,
   Expect<Equal<Emitted.BookmarkNavigatorProps, HandWritten.BookmarkNavigatorProps>>,
+  Expect<Equal<Emitted.BoxPlotChartProps, HandWritten.BoxPlotChartProps>>,
+  Expect<Equal<Emitted.BulletChartProps, HandWritten.BulletChartProps>>,
+  Expect<Equal<Emitted.BumpChartProps, HandWritten.BumpChartProps>>,
+  Expect<Equal<Emitted.CalculationEditorProps, HandWritten.CalculationEditorProps>>,
+  Expect<Equal<Emitted.CalendarHeatmapChartProps, HandWritten.CalendarHeatmapChartProps>>,
 ];
 
 export type ComponentParity = [
@@ -79,6 +84,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.AreaSplineRangeChart, typeof HandWritten.AreaSplineRangeChart>>,
   Expect<Equal<typeof Emitted.BellCurveChart, typeof HandWritten.BellCurveChart>>,
   Expect<Equal<typeof Emitted.BookmarkNavigator, typeof HandWritten.BookmarkNavigator>>,
+  Expect<Equal<typeof Emitted.BoxPlotChart, typeof HandWritten.BoxPlotChart>>,
+  Expect<Equal<typeof Emitted.BulletChart, typeof HandWritten.BulletChart>>,
+  Expect<Equal<typeof Emitted.BumpChart, typeof HandWritten.BumpChart>>,
+  Expect<Equal<typeof Emitted.CalculationEditor, typeof HandWritten.CalculationEditor>>,
+  Expect<Equal<typeof Emitted.CalendarHeatmapChart, typeof HandWritten.CalendarHeatmapChart>>,
 ];
 
 export type ValueParity = [

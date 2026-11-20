@@ -7,15 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 30,
+    "portedModules": 35,
     "barrelFile": "index.ts",
-    "remainingModules": 97,
+    "remainingModules": 92,
     "remainingFiles": [
-      "lib/BoxPlotChart.tsx",
-      "lib/BulletChart.tsx",
-      "lib/BumpChart.tsx",
-      "lib/CalculationEditor.tsx",
-      "lib/CalendarHeatmapChart.tsx",
       "lib/CandlestickChart.tsx",
       "lib/ChartExport.tsx",
       "lib/ChordChart.tsx",
@@ -441,23 +436,78 @@
         "total": 812,
         "touched": 11,
         "emissionRewrites": 2
+      },
+      {
+        "module": "BoxPlotChart",
+        "kind": "component",
+        "file": "src/lib/BoxPlotChart.tsx",
+        "reactSource": "lib/BoxPlotChart.tsx",
+        "reactLines": 22,
+        "preactLines": 27,
+        "total": 185,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "BulletChart",
+        "kind": "component",
+        "file": "src/lib/BulletChart.tsx",
+        "reactSource": "lib/BulletChart.tsx",
+        "reactLines": 25,
+        "preactLines": 30,
+        "total": 225,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "BumpChart",
+        "kind": "component",
+        "file": "src/lib/BumpChart.tsx",
+        "reactSource": "lib/BumpChart.tsx",
+        "reactLines": 63,
+        "preactLines": 69,
+        "total": 209,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "CalculationEditor",
+        "kind": "component",
+        "file": "src/lib/CalculationEditor.tsx",
+        "reactSource": "lib/CalculationEditor.tsx",
+        "reactLines": 109,
+        "preactLines": 112,
+        "total": 643,
+        "touched": 15,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "CalendarHeatmapChart",
+        "kind": "component",
+        "file": "src/lib/CalendarHeatmapChart.tsx",
+        "reactSource": "lib/CalendarHeatmapChart.tsx",
+        "reactLines": 22,
+        "preactLines": 27,
+        "total": 174,
+        "touched": 2,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 30,
-      "reactLines": 3384,
-      "preactLines": 3546,
-      "total": 19789,
-      "touched": 225,
-      "emissionRewrites": 26
+      "modules": 35,
+      "reactLines": 3625,
+      "preactLines": 3811,
+      "total": 21225,
+      "touched": 248,
+      "emissionRewrites": 31
     },
     "shared": {
-      "src/index.ts": 83,
+      "src/index.ts": 95,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 76
+      "vitest.react.config.ts": 78
     }
   },
   "reach": {
