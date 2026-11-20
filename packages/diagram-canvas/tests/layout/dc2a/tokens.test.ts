@@ -24,6 +24,8 @@ import {
   DEFAULT_LINK_STROKE_WIDTH,
   DEFAULT_MAX_DISPLAY_SCALE,
   DEFAULT_MIN_READABLE_SCALE,
+  DEFAULT_ROUTE_BORDER_CLEARANCE,
+  DEFAULT_ROUTE_SPACING,
   DEFAULT_ROW_GAP,
   DEFAULT_ROW_GAP_MAX,
   DEFAULT_ROW_PACK,
@@ -59,6 +61,8 @@ describe("DC-2a tokens (AC-6)", () => {
     expect(token("diagramScene", "linkEmphasisStrokeWidth")).toBe(`${DEFAULT_LINK_EMPHASIS_STROKE_WIDTH}px`);
     expect(token("diagramScene", "linkEmphasisStroke")).not.toBe(token("diagramScene", "edgeStroke"));
     expect(token("diagramScene", "edgeCornerRadius")).toBe(`${DEFAULT_EDGE_CORNER_RADIUS}px`);
+    expect(token("diagramScene", "routeSpacing")).toBe(`${DEFAULT_ROUTE_SPACING}px`);
+    expect(token("diagramScene", "routeBorderClearance")).toBe(`${DEFAULT_ROUTE_BORDER_CLEARANCE}px`);
     expect(token("diagramScene", "flowStrokeWidth")).toBe(`${DEFAULT_LINK_STROKE_WIDTH}px`);
     expect(token("diagramScene", "flowRelatedStrokeWidth")).toBe(`${DEFAULT_LINK_RELATED_STROKE_WIDTH}px`);
     expect(token("diagramScene", "flowPrimaryStrokeWidth")).toBe(`${DEFAULT_LINK_PRIMARY_STROKE_WIDTH}px`);

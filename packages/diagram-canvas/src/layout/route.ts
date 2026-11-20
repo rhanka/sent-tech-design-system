@@ -109,10 +109,34 @@ export function routesConflict(left: readonly Vec2[], right: readonly Vec2[]): b
   );
 }
 
+const SPACING_EPS = 1e-4;
+
+/**
+ * Subdivide a clear corridor `[low, high]` (between two consecutive grown
+ * boundaries) into parallel routing tracks spaced by at least `routeSpacing`.
+ * Always deterministic and symmetric around the corridor midpoint.
+ */
+export function subdivideChannelTracks(low: number, high: number, routeSpacing: number): number[] {
+  const span = high - low;
+  if (!(span >= 0) || !Number.isFinite(span)) return [];
+  const mid = (low + high) / 2;
+  if (!(routeSpacing > 0) || !Number.isFinite(routeSpacing) || span < routeSpacing - SPACING_EPS) {
+    return [mid];
+  }
+  const count = Math.min(16, Math.floor((span + SPACING_EPS) / routeSpacing) + 1);
+  if (count <= 1) return [mid];
+  const tracks: number[] = [];
+  for (let k = 0; k < count; k += 1) {
+    tracks.push(mid + (k - (count - 1) / 2) * routeSpacing);
+  }
+  return tracks;
+}
+
 /**
  * BF-6: try horizontal label channels without changing any box or gutter.
  * Dock joins keep their outward normals. Every full candidate is checked
- * against raw obstacles, containment and the other routes of its pair.
+ * against raw obstacles, containment, same-pair bans and optional minimum
+ * route spacing / border clearance.
  */
 export function labelDetour(input: {
   readonly request: RouteRequest;
@@ -121,26 +145,64 @@ export function labelDetour(input: {
   readonly xs: readonly number[];
   readonly ys: readonly number[];
   readonly accepts: (points: readonly Vec2[]) => boolean;
+  /** Dock exit stub length (defaults to 2 for legacy callers; measured layout passes `borderClearance`). */
+  readonly step?: number;
+  /** All other fixed routes to preserve cross-pair spacing against when `routeSpacing > 0`. */
+  readonly allFixed?: readonly (readonly Vec2[])[];
+  readonly routeSpacing?: number;
+  readonly borderClearance?: number;
 }): readonly Vec2[] | undefined {
   const { request, shapes, earlier } = input;
-  const step = 2;
+  const step = input.step ?? 2;
+  const routeSpacing = input.routeSpacing ?? 0;
+  const borderClearance = input.borderClearance ?? 0;
+  const allFixed = input.allFixed ?? [];
   const s = { x: request.start.x + step * request.startExit.x, y: request.start.y + step * request.startExit.y };
   const t = { x: request.end.x + step * request.endExit.x, y: request.end.y + step * request.endExit.y };
   const clear = (points: readonly Vec2[]): boolean => {
     const within = request.within;
     if (within !== undefined && points.some((p) => p.x < within.x || p.x > within.x + within.width || p.y < within.y || p.y > within.y + within.height)) return false;
+    const lastIdx = points.length - 1;
     for (let i = 1; i < points.length; i += 1) {
       const a = points[i - 1]!;
       const b = points[i]!;
       if (shapes.some((r) => a.y === b.y
         ? a.y > r.y && a.y < r.y + r.height && Math.max(Math.min(a.x, b.x), r.x) < Math.min(Math.max(a.x, b.x), r.x + r.width)
         : a.x > r.x && a.x < r.x + r.width && Math.max(Math.min(a.y, b.y), r.y) < Math.min(Math.max(a.y, b.y), r.y + r.height))) return false;
+      if (borderClearance > 0) {
+        const minX = Math.min(a.x, b.x);
+        const maxX = Math.max(a.x, b.x);
+        const minY = Math.min(a.y, b.y);
+        const maxY = Math.max(a.y, b.y);
+        const isFirst = i === 1;
+        const isLast = i === lastIdx;
+        for (const r of shapes) {
+          // Endpoint boxes legitimately touch the start/end dock of the first/last leg.
+          if (isFirst && pointOnRectBorder(request.start, r)) continue;
+          if (isLast && pointOnRectBorder(request.end, r)) continue;
+          const dx = maxX < r.x ? r.x - maxX : minX > r.x + r.width ? minX - (r.x + r.width) : 0;
+          const dy = maxY < r.y ? r.y - maxY : minY > r.y + r.height ? minY - (r.y + r.height) : 0;
+          if (Math.hypot(dx, dy) < borderClearance - SPACING_EPS) return false;
+        }
+      }
       if (sharesSamePair(a, b, earlier) || crossesSamePair(a, b, earlier)) return false;
+      if (routeSpacing > 0 && violatesParallelSpacing(a, b, allFixed, routeSpacing)) return false;
       // Reject a folded-back leg or a self intersection after simplification.
       for (let j = 1; j < i - 1; j += 1) {
         const c = points[j - 1]!;
         const d = points[j]!;
         if (fullSharesSegment([a, b], [c, d]) || segmentsCrossTransversal(a, b, c, d)) return false;
+        if (routeSpacing > 0 && segmentsCloserThan(a, b, c, d, routeSpacing)) return false;
+      }
+    }
+    if (routeSpacing > 0 && points.length > 2) {
+      for (let i = 1; i < points.length - 1; i += 1) {
+        const elbow = points[i]!;
+        for (const other of allFixed) {
+          for (let k = 1; k < other.length - 1; k += 1) {
+            if (Math.hypot(elbow.x - other[k]!.x, elbow.y - other[k]!.y) < routeSpacing - SPACING_EPS) return false;
+          }
+        }
       }
     }
     const first = points[1]!;
@@ -172,6 +234,38 @@ export function labelDetour(input: {
 const OVERLAP_PENALTY = 2;
 const DX = [1, 0, -1, 0] as const;
 const DY = [0, 1, 0, -1] as const;
+
+function pointOnRectBorder(point: Vec2, rect: Rect): boolean {
+  const onX = (Math.abs(point.x - rect.x) <= SPACING_EPS || Math.abs(point.x - (rect.x + rect.width)) <= SPACING_EPS)
+    && point.y >= rect.y - SPACING_EPS && point.y <= rect.y + rect.height + SPACING_EPS;
+  const onY = (Math.abs(point.y - rect.y) <= SPACING_EPS || Math.abs(point.y - (rect.y + rect.height)) <= SPACING_EPS)
+    && point.x >= rect.x - SPACING_EPS && point.x <= rect.x + rect.width + SPACING_EPS;
+  return onX || onY;
+}
+
+function segmentsCloserThan(a1: Vec2, a2: Vec2, b1: Vec2, b2: Vec2, minSpacing: number): boolean {
+  if (Math.abs(a1.y - a2.y) <= SPACING_EPS && Math.abs(b1.y - b2.y) <= SPACING_EPS) {
+    if (Math.abs(a1.y - b1.y) >= minSpacing - SPACING_EPS) return false;
+    const overlap = Math.min(Math.max(a1.x, a2.x), Math.max(b1.x, b2.x)) - Math.max(Math.min(a1.x, a2.x), Math.min(b1.x, b2.x));
+    return overlap > SPACING_EPS;
+  }
+  if (Math.abs(a1.x - a2.x) <= SPACING_EPS && Math.abs(b1.x - b2.x) <= SPACING_EPS) {
+    if (Math.abs(a1.x - b1.x) >= minSpacing - SPACING_EPS) return false;
+    const overlap = Math.min(Math.max(a1.y, a2.y), Math.max(b1.y, b2.y)) - Math.max(Math.min(a1.y, a2.y), Math.min(b1.y, b2.y));
+    return overlap > SPACING_EPS;
+  }
+  return false;
+}
+
+function violatesParallelSpacing(a1: Vec2, a2: Vec2, routes: readonly (readonly Vec2[])[], minSpacing: number): boolean {
+  if (Math.abs(a1.x - a2.x) <= SPACING_EPS && Math.abs(a1.y - a2.y) <= SPACING_EPS) return false;
+  for (const route of routes) {
+    for (let j = 1; j < route.length; j += 1) {
+      if (segmentsCloserThan(a1, a2, route[j - 1]!, route[j]!, minSpacing)) return true;
+    }
+  }
+  return false;
+}
 
 /** Two orthogonal full routes share a segment: a collinear overlap of positive length. */
 function fullSharesSegment(left: readonly Vec2[], right: readonly Vec2[]): boolean {
@@ -411,6 +505,15 @@ export function routeEdges(input: {
   readonly requests: readonly RouteRequest[];
   readonly clearance: number;
   /**
+   * Minimum world-unit spacing between parallel segments and neighbouring elbows
+   * across all routes (DE-2 ask 2). When positive, channels are subdivided into
+   * parallel tracks at this pitch and A* runs a strict-spacing tier before
+   * falling back to cross-pair relaxation if capacity is exhausted.
+   */
+  readonly routeSpacing?: number;
+  /** Inflation applied to `barriers` (title bands); defaults to `clearance` when `routeSpacing` is absent, or `1` when active so top-row north exits stay clear of title bands. */
+  readonly barrierClearance?: number;
+  /**
    * Rectangles no route may cross, whatever its ends: they belong to no
    * entity, so no request can list them as passable. The row-pack path passes
    * the title band of every expanded container (a route may cross the wall of
@@ -428,34 +531,78 @@ export function routeEdges(input: {
   readonly avoidFallbackInteriors?: boolean;
 }): RouteOutcome {
   const { rects, requests, clearance } = input;
+  const routeSpacing = input.routeSpacing !== undefined && input.routeSpacing > 0 ? input.routeSpacing : 0;
+  const useSpacing = routeSpacing > 0;
+  const barrierPad = input.barrierClearance ?? (useSpacing ? Math.min(clearance, 1) : clearance);
   const entities = [...rects.keys()].sort();
 
-  const grow = (id: EntityRef, rect: Rect) => ({
+  const grow = (id: EntityRef, rect: Rect, pad: number = clearance) => ({
     id,
-    left: rect.x - clearance,
-    right: rect.x + rect.width + clearance,
-    top: rect.y - clearance,
-    bottom: rect.y + rect.height + clearance,
+    left: rect.x - pad,
+    right: rect.x + rect.width + pad,
+    top: rect.y - pad,
+    bottom: rect.y + rect.height + pad,
   });
   const grown = [
-    ...entities.map((id) => grow(id, rects.get(id)!)),
+    ...entities.map((id) => grow(id, rects.get(id)!, clearance)),
     // Synthetic ids: never an entity reference, hence never in `passable`.
-    ...(input.barriers ?? []).map((rect, index) => grow(`barrier:${String(index)}` as EntityRef, rect)),
+    ...(input.barriers ?? []).map((rect, index) => grow(`barrier:${String(index)}` as EntityRef, rect, barrierPad)),
   ];
 
-  const withChannels = (values: number[]): number[] => {
+  const withChannels = (pairs: readonly (readonly [number, number])[]): number[] => {
+    const starts = new Set<number>();
+    const ends = new Set<number>();
+    const values: number[] = [];
+    for (const [lo, hi] of pairs) {
+      starts.add(lo);
+      ends.add(hi);
+      values.push(lo, hi);
+    }
     const sorted = [...new Set(values)].sort((a, b) => a - b);
-    const mids: number[] = [];
-    for (let index = 1; index < sorted.length; index += 1) mids.push((sorted[index - 1]! + sorted[index]!) / 2);
-    return [...sorted, ...mids];
+    const tracks: number[] = [];
+    for (let index = 1; index < sorted.length; index += 1) {
+      const low = sorted[index - 1]!;
+      const high = sorted[index]!;
+      const span = high - low;
+      if (useSpacing) {
+        const isCorridor = ends.has(low) && starts.has(high);
+        if (isCorridor || span <= 260) {
+          tracks.push(...subdivideChannelTracks(low, high, routeSpacing));
+        } else {
+          // Wide span (typically a box interior or broad margin): keep midpoint
+          // plus one edge-inset track on each side without flooding the grid.
+          tracks.push((low + high) / 2);
+          if (span >= 2 * routeSpacing) {
+            tracks.push(low + routeSpacing, high - routeSpacing);
+          }
+        }
+      } else {
+        tracks.push((low + high) / 2);
+      }
+    }
+    return [...sorted, ...tracks];
   };
   const clearancePoint = (point: Vec2, exit: Vec2): Vec2 => ({
     x: point.x + exit.x * clearance,
     y: point.y + exit.y * clearance,
   });
 
-  const xValues = withChannels(grown.flatMap((box) => [box.left, box.right]));
-  const yValues = withChannels(grown.flatMap((box) => [box.top, box.bottom]));
+  const xValues = withChannels(grown.map((box) => [box.left, box.right] as const));
+  const yValues = withChannels(grown.map((box) => [box.top, box.bottom] as const));
+  // When spacing is active, add outer perimeter tracks spaced by `routeSpacing`
+  // around the drawing so routes overflowing an interior channel can detour cleanly.
+  if (useSpacing && rects.size > 0 && requests.length > 1) {
+    const rawList = [...rects.values()];
+    const minX = Math.min(...rawList.map((r) => r.x)) - clearance;
+    const maxX = Math.max(...rawList.map((r) => r.x + r.width)) + clearance;
+    const minY = Math.min(...rawList.map((r) => r.y)) - clearance;
+    const maxY = Math.max(...rawList.map((r) => r.y + r.height)) + clearance;
+    const perimeterTracks = Math.min(4, requests.length);
+    for (let k = 1; k <= perimeterTracks; k += 1) {
+      xValues.push(minX - k * routeSpacing, maxX + k * routeSpacing);
+      yValues.push(minY - k * routeSpacing, maxY + k * routeSpacing);
+    }
+  }
   for (const request of requests) {
     for (const point of [clearancePoint(request.start, request.startExit), clearancePoint(request.end, request.endExit)]) {
       xValues.push(point.x);
@@ -583,6 +730,25 @@ export function routeEdges(input: {
   // the L-R9 bans (shared segment, transversal crossing) are enforced against
   // these, and reserved through them.
   const pairFull = new Map<string, (readonly Vec2[])[]>();
+  // Cross-pair spacing state (active only when `useSpacing` is true).
+  const fixedH: { readonly y: number; readonly lo: number; readonly hi: number }[] = [];
+  const fixedV: { readonly x: number; readonly lo: number; readonly hi: number }[] = [];
+  const fixedElbows: Vec2[] = [];
+  const recordFixedRoute = (full: readonly Vec2[]): void => {
+    if (!useSpacing) return;
+    for (let k = 1; k < full.length; k += 1) {
+      const a = full[k - 1]!;
+      const b = full[k]!;
+      if (Math.abs(a.y - b.y) <= SPACING_EPS && Math.abs(a.x - b.x) > SPACING_EPS) {
+        fixedH.push({ y: (a.y + b.y) / 2, lo: Math.min(a.x, b.x), hi: Math.max(a.x, b.x) });
+      } else if (Math.abs(a.x - b.x) <= SPACING_EPS && Math.abs(a.y - b.y) > SPACING_EPS) {
+        fixedV.push({ x: (a.x + b.x) / 2, lo: Math.min(a.y, b.y), hi: Math.max(a.y, b.y) });
+      }
+    }
+    for (let k = 1; k + 1 < full.length; k += 1) {
+      fixedElbows.push(full[k]!);
+    }
+  };
   let generation = 0;
   const heap = new LexHeap();
 
@@ -661,7 +827,23 @@ export function routeEdges(input: {
     return best;
   };
 
-  for (const request of permuteFlowRuns([...requests].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)), (request) => request.flowRun, (request) => request.flowRank!)) {
+  const orderedRequests = permuteFlowRuns(
+    [...requests].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)),
+    (request) => request.flowRun,
+    (request) => request.flowRank!,
+  );
+  // Precompute fixed dock stubs for every request so earlier routes never walk
+  // across or drop elbows onto a later request's already-fixed dock exit.
+  const samePoint = (a: Vec2, b: Vec2): boolean =>
+    Math.abs(a.x - b.x) <= SPACING_EPS && Math.abs(a.y - b.y) <= SPACING_EPS;
+  const dockStubs = orderedRequests.map((req) => {
+    const sp = clearancePoint(req.start, req.startExit);
+    const ep = clearancePoint(req.end, req.endExit);
+    return { start: req.start, startPoint: sp, end: req.end, endPoint: ep };
+  });
+
+  for (let reqIndex = 0; reqIndex < orderedRequests.length; reqIndex += 1) {
+    const request = orderedRequests[reqIndex]!;
     let goalParent = -1;
     let pairId = pairIds.get(request.pairKey);
     if (pairId === undefined) {
@@ -671,11 +853,97 @@ export function routeEdges(input: {
     const pid = pairId;
     const earlier: readonly (readonly Vec2[])[] = pairFull.get(request.pairKey) ?? [];
     const hasSamePair = earlier.length > 0;
-    const startPoint = clearancePoint(request.start, request.startExit);
-    const endPoint = clearancePoint(request.end, request.endExit);
-    // BF-3: first inside the containment rectangle, then — only when nothing
-    // is admissible there — without it.
+    const startPoint = dockStubs[reqIndex]!.startPoint;
+    const endPoint = dockStubs[reqIndex]!.endPoint;
+    // Precompute O(1)/near-bucket cross-pair spacing structures once per request,
+    // combining already-routed segments/elbows with remaining requests' fixed dock stubs.
+    let nearH: ({ readonly y: number; readonly lo: number; readonly hi: number }[])[] | undefined;
+    let nearV: ({ readonly x: number; readonly lo: number; readonly hi: number }[])[] | undefined;
+    let blockedElbow: Uint8Array | undefined;
+    if (useSpacing) {
+      const futureH: { readonly y: number; readonly lo: number; readonly hi: number }[] = [];
+      const futureV: { readonly x: number; readonly lo: number; readonly hi: number }[] = [];
+      const futureClearancePts: Vec2[] = [];
+      const pushStub = (dock: Vec2, cp: Vec2) => {
+        // Skip stubs sharing the exact same port point as the current request.
+        if (samePoint(dock, request.start) || samePoint(dock, request.end)) return;
+        if (Math.abs(dock.y - cp.y) <= SPACING_EPS && Math.abs(dock.x - cp.x) > SPACING_EPS) {
+          futureH.push({ y: (dock.y + cp.y) / 2, lo: Math.min(dock.x, cp.x), hi: Math.max(dock.x, cp.x) });
+        } else if (Math.abs(dock.x - cp.x) <= SPACING_EPS && Math.abs(dock.y - cp.y) > SPACING_EPS) {
+          futureV.push({ x: (dock.x + cp.x) / 2, lo: Math.min(dock.y, cp.y), hi: Math.max(dock.y, cp.y) });
+        }
+        futureClearancePts.push(cp);
+      };
+      for (let otherIdx = reqIndex + 1; otherIdx < dockStubs.length; otherIdx += 1) {
+        const stub = dockStubs[otherIdx]!;
+        pushStub(stub.start, stub.startPoint);
+        pushStub(stub.end, stub.endPoint);
+      }
+      const allH = futureH.length > 0 ? [...fixedH, ...futureH] : fixedH;
+      const allV = futureV.length > 0 ? [...fixedV, ...futureV] : fixedV;
+      const allElbows = futureClearancePts.length > 0 ? [...fixedElbows, ...futureClearancePts] : fixedElbows;
+      if (allH.length > 0 || allV.length > 0 || allElbows.length > 0) {
+        nearH = ys.map((y) => allH.filter((seg) => Math.abs(seg.y - y) < routeSpacing - SPACING_EPS));
+        nearV = xs.map((x) => allV.filter((seg) => Math.abs(seg.x - x) < routeSpacing - SPACING_EPS));
+        blockedElbow = new Uint8Array(nx * ny);
+        if (allElbows.length > 0) {
+          const r2 = (routeSpacing - SPACING_EPS) * (routeSpacing - SPACING_EPS);
+          for (const e of allElbows) {
+            for (let j = 0; j < ny; j += 1) {
+              const dy = ys[j]! - e.y;
+              if (dy * dy >= r2) continue;
+              for (let i = 0; i < nx; i += 1) {
+                const dx = xs[i]! - e.x;
+                if (dx * dx + dy * dy < r2) blockedElbow[j * nx + i] = 1;
+              }
+            }
+          }
+        }
+      }
+    }
+    const violatesFixedH = (j: number, xA: number, xB: number): boolean => {
+      const list = nearH?.[j];
+      if (list === undefined || list.length === 0) return false;
+      const lo = Math.min(xA, xB);
+      const hi = Math.max(xA, xB);
+      if (hi - lo <= SPACING_EPS) return false;
+      for (const seg of list) {
+        if (Math.min(hi, seg.hi) - Math.max(lo, seg.lo) > SPACING_EPS) return true;
+      }
+      return false;
+    };
+    const violatesFixedV = (i: number, yA: number, yB: number): boolean => {
+      const list = nearV?.[i];
+      if (list === undefined || list.length === 0) return false;
+      const lo = Math.min(yA, yB);
+      const hi = Math.max(yA, yB);
+      if (hi - lo <= SPACING_EPS) return false;
+      for (const seg of list) {
+        if (Math.min(hi, seg.hi) - Math.max(lo, seg.lo) > SPACING_EPS) return true;
+      }
+      return false;
+    };
+    const violatesFixedSegment = (a: Vec2, b: Vec2): boolean => {
+      if (Math.abs(a.y - b.y) <= SPACING_EPS) {
+        const j = yIndex.get(a.y);
+        if (j !== undefined) return violatesFixedH(j, a.x, b.x);
+        const lo = Math.min(a.x, b.x);
+        const hi = Math.max(a.x, b.x);
+        return hi - lo > SPACING_EPS && fixedH.some((seg) => Math.abs(seg.y - a.y) < routeSpacing - SPACING_EPS && Math.min(hi, seg.hi) - Math.max(lo, seg.lo) > SPACING_EPS);
+      }
+      if (Math.abs(a.x - b.x) <= SPACING_EPS) {
+        const i = xIndex.get(a.x);
+        if (i !== undefined) return violatesFixedV(i, a.y, b.y);
+        const lo = Math.min(a.y, b.y);
+        const hi = Math.max(a.y, b.y);
+        return hi - lo > SPACING_EPS && fixedV.some((seg) => Math.abs(seg.x - a.x) < routeSpacing - SPACING_EPS && Math.min(hi, seg.hi) - Math.max(lo, seg.lo) > SPACING_EPS);
+      }
+      return false;
+    };
+    // BF-3 + DE-2: stay inside `within` first (strict spacing, then relaxed cross-pair spacing);
+    // only escape `within` if no route exists inside it even with relaxed cross-pair spacing.
     const clamps: (Rect | undefined)[] = request.within === undefined ? [undefined] : [request.within, undefined];
+    const spacingTiers: readonly boolean[] = useSpacing && nearH !== undefined ? [true, false] : [false];
     let terminalObstructed = false;
     for (const clamp of clamps) {
     if (goalParent >= 0 || terminalObstructed) break;
@@ -684,6 +952,8 @@ export function routeEdges(input: {
       clamp === undefined ||
       (x >= clamp.x && x <= clamp.x + clamp.width && y >= clamp.y && y <= clamp.y + clamp.height);
     if (!insideClamp(startPoint.x, startPoint.y) || !insideClamp(endPoint.x, endPoint.y)) continue;
+    for (const strictSpacing of spacingTiers) {
+    if (goalParent >= 0 || terminalObstructed) break;
     generation += 1;
     heap.clear();
     const excluded = obstacles.filter((o) => request.passable.has(o.id));
@@ -756,12 +1026,26 @@ export function routeEdges(input: {
       const gl = gLen[state]!;
       if (i === ti && j === tj) {
         if ((h + 2) % 4 !== arrival) {
+          let closeAllowed = true;
+          if (strictSpacing) {
+            if (h === arrival) {
+              const straightStart = runSI[state]! === si && runSJ[state]! === sj && h === startHeading;
+              const a1: Vec2 = straightStart ? request.start : { x: xs[runSI[state]!]!, y: ys[runSJ[state]!]! };
+              if (violatesFixedSegment(a1, request.end)) closeAllowed = false;
+            } else {
+              if (blockedElbow !== undefined && blockedElbow[tj * nx + ti] === 1) closeAllowed = false;
+              else if (violatesFixedSegment(endPoint, request.end)) closeAllowed = false;
+              else if (si === ti && sj === tj && violatesFixedSegment(request.start, startPoint)) closeAllowed = false;
+            }
+          }
           // When the arrival is straight (`h === arrival`), `simplifyRoute`
           // merges the last grid run with the target dock-to-clearance join
           // (endPoint to dock, same line): the closing check runs on the
           // merged run-start-to-dock segment, so a crossing at the clearance
           // point is still forbidden (L-R9, joins included).
-          if (hasSamePair && h === arrival) {
+          if (!closeAllowed) {
+            // Try another arrival heading or track.
+          } else if (hasSamePair && h === arrival) {
             const a1: Vec2 = { x: xs[runSI[state]!]!, y: ys[runSJ[state]!]! };
             if (crossesSamePair(a1, request.end, earlier) || sharesSamePair(a1, request.end, earlier)) {
               // No closing via this straight arrival: another heading or a
@@ -812,7 +1096,7 @@ export function routeEdges(input: {
           length = ys[uj + 1]! - ys[uj]!;
         }
         const occupied = isOccupied(unit);
-        if (occupied && isUsedBy(unit, pid)) continue;
+        if (occupied && (strictSpacing || isUsedBy(unit, pid))) continue;
         // The candidate's current straight run, from its last bend (or the
         // start clearance point) to the new point: the transversal and
         // terminal-sharing bans are checked on this whole simplified segment,
@@ -831,6 +1115,20 @@ export function routeEdges(input: {
         } else {
           nrsx = i;
           nrsy = j;
+        }
+        if (strictSpacing) {
+          if (nh !== h) {
+            if (blockedElbow !== undefined && blockedElbow[j * nx + i] === 1) continue;
+            if (i === si && j === sj && violatesFixedSegment(request.start, startPoint)) continue;
+          }
+          const straightStart = nrsx === si && nrsy === sj && nh === startHeading;
+          const a1x = straightStart ? request.start.x : xs[nrsx]!;
+          const a1y = straightStart ? request.start.y : ys[nrsy]!;
+          if (nh % 2 === 0) {
+            if (violatesFixedH(j, a1x, xs[ni]!)) continue;
+          } else {
+            if (violatesFixedV(i, a1y, ys[nj]!)) continue;
+          }
         }
         if (hasSamePair) {
           const straightStart = nrsx === si && nrsy === sj && nh === startHeading;
@@ -861,6 +1159,7 @@ export function routeEdges(input: {
     }
 
     }
+    }
 
     if (goalParent < 0) {
       // MAJ-2: retry with reduced 2 px inflation is covered by the outer-lane
@@ -874,6 +1173,7 @@ export function routeEdges(input: {
       const list = pairFull.get(request.pairKey) ?? [];
       list.push(full);
       pairFull.set(request.pairKey, list);
+      recordFixedRoute(full);
       reserveGridPath([startPoint, ...elbow, endPoint], pid);
       continue;
     }
@@ -933,6 +1233,7 @@ export function routeEdges(input: {
       const list = pairFull.get(request.pairKey) ?? [];
       list.push(fallback);
       pairFull.set(request.pairKey, list);
+      recordFixedRoute(fallback);
       reserveGridPath([startPoint, ...elbow, endPoint], pid);
       continue;
     }
@@ -941,6 +1242,7 @@ export function routeEdges(input: {
     const list = pairFull.get(request.pairKey) ?? [];
     list.push(full);
     pairFull.set(request.pairKey, list);
+    recordFixedRoute(full);
   }
 
   return { routes, obstructed, escaped };

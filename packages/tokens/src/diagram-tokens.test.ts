@@ -122,6 +122,8 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     gapMin: `${spacing.gapMin}px`,
     gapBase: `${spacing.gapBase}px`,
     trackSpacing: `${spacing.trackSpacing}px`,
+    routeSpacing: `${spacing.routeSpacing}px`,
+    routeBorderClearance: `${spacing.routeBorderClearance}px`,
     gapMinBlock: `${spacing.gapMinBlock}px`,
     gapBaseBlock: `${spacing.gapBaseBlock}px`,
     trackSpacingBlock: `${spacing.trackSpacingBlock}px`,

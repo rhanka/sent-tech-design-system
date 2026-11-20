@@ -883,6 +883,8 @@
   --st-component-diagramScene-gapBaseBlock: 8px;
   --st-component-diagramScene-trackSpacing: 14px;
   --st-component-diagramScene-trackSpacingBlock: 7px;
+  --st-component-diagramScene-routeSpacing: 24px;
+  --st-component-diagramScene-routeBorderClearance: 15px;
   --st-component-diagramScene-labelBand: 30px;
   --st-component-diagramScene-gapMax: 240px;
   --st-component-diagramScene-bundleLabelMaxWidth: 320px;
@@ -1829,6 +1831,8 @@
   --st-component-diagramScene-gapBaseBlock: 8px;
   --st-component-diagramScene-trackSpacing: 14px;
   --st-component-diagramScene-trackSpacingBlock: 7px;
+  --st-component-diagramScene-routeSpacing: 24px;
+  --st-component-diagramScene-routeBorderClearance: 15px;
   --st-component-diagramScene-labelBand: 30px;
   --st-component-diagramScene-gapMax: 240px;
   --st-component-diagramScene-bundleLabelMaxWidth: 320px;
@@ -2775,6 +2779,8 @@
   --st-component-diagramScene-gapBaseBlock: 8px;
   --st-component-diagramScene-trackSpacing: 14px;
   --st-component-diagramScene-trackSpacingBlock: 7px;
+  --st-component-diagramScene-routeSpacing: 24px;
+  --st-component-diagramScene-routeBorderClearance: 15px;
   --st-component-diagramScene-labelBand: 30px;
   --st-component-diagramScene-gapMax: 240px;
   --st-component-diagramScene-bundleLabelMaxWidth: 320px;

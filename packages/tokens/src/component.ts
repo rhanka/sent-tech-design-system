@@ -1949,6 +1949,8 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       gapBaseBlock: `${spacing.gapBaseBlock}px`,
       trackSpacing: `${spacing.trackSpacing}px`,
       trackSpacingBlock: `${spacing.trackSpacingBlock}px`,
+      routeSpacing: `${spacing.routeSpacing}px`,
+      routeBorderClearance: `${spacing.routeBorderClearance}px`,
       labelBand: `${spacing.labelBand}px`,
       gapMax: `${spacing.gapMax}px`,
       bundleLabelMaxWidth: "320px",

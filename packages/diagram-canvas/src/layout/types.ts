@@ -73,6 +73,10 @@ export interface LayoutMetrics {
   readonly labelBand?: number;
   readonly gapMax?: number;
   readonly bundleLabelMaxWidth?: number;
+  /** Minimum spacing between parallel segments, neighbouring elbows, ports and arrowheads (DE-2, default 24). */
+  readonly routeSpacing?: number;
+  /** Minimum clearance from a routed link segment to non-endpoint borders (DE-2, default 15). */
+  readonly routeBorderClearance?: number;
   /** World-unit corner radius for rounded-elbow connectors (DE-2, default 12). */
   readonly edgeCornerRadius?: number;
   /** Dedicated resting connector stroke width, CSS px (token `diagramScene.linkStrokeWidth`, DE-2, default 2.5). */
@@ -278,6 +282,8 @@ export type LayoutWarningCode =
   | "label-unplaced"
   | "label-budget-exhausted"
   | "route-obstructed"
+  | "route-spacing-conflict"
+  | "channel-capacity-exceeded"
   | "row-fill-partial"
   | "card-overflow"
   | "card-grown"
@@ -342,6 +348,8 @@ export type LayoutResult =
        * bounds (DEC-5, BF-7).
        */
       readonly channels?: readonly import("./channels.js").LayoutChannel[];
+      /** Built-in geometric route-spacing audit report (DE-2 ask 2). */
+      readonly routeSpacing?: import("./routeSpacing.js").RouteSpacingReport;
       readonly labelBoxes?: Readonly<Record<string, { readonly x: number; readonly y: number; readonly width: number; readonly height: number }>>;
       /** Lifted parallel relations share a route; semantic occurrences remain intact. */
       readonly edgeBundles?: Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string; readonly relations?: readonly string[]; chip?: ReturnType<typeof import("./bundleLabel.js").measureBundleLabel> }>>;
