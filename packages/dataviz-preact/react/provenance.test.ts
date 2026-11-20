@@ -5,11 +5,37 @@
 // the emission while this file can still reach the hand-written module.
 import { describe, expect, it } from "vitest";
 import * as barrel from "../../dataviz-react/src/index.js";
+import * as handWrittenAdapter from "../../dataviz-react/src/adapter.js";
+import * as handWrittenDrill from "../../dataviz-react/src/lib/drill.js";
+import * as handWrittenCategoricalData from "../../dataviz-react/src/lib/categoricalData.js";
+import * as handWrittenDistributionData from "../../dataviz-react/src/lib/distributionData.js";
+import * as handWrittenPartOfWholeData from "../../dataviz-react/src/lib/partOfWholeData.js";
 import * as emitted from "../.react-emit/src/index.js";
+import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
+import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
+import * as emittedPartOfWholeData from "../.react-emit/src/lib/partOfWholeData.js";
+
+const switched = ["useDashboard", "drillLevel", "onDrillSelect", "drillDepth"] as const;
+
+const handWritten: Record<(typeof switched)[number], unknown> = {
+  useDashboard: handWrittenAdapter.useDashboard,
+  drillLevel: handWrittenDrill.drillLevel,
+  onDrillSelect: handWrittenDrill.onDrillSelect,
+  drillDepth: handWrittenDrill.drillDepth,
+};
 
 describe("dataviz React leg provenance", () => {
-  it("loads both the dataviz-react barrel and the emitted barrel on the React leg", () => {
-    expect(typeof barrel).toBe("object");
-    expect(typeof emitted).toBe("object");
+  for (const name of switched) {
+    it(`the dataviz-react barrel serves the emitted ${name}`, () => {
+      expect(emitted[name]).toBeTruthy();
+      expect(barrel[name]).toBe(emitted[name]);
+      expect(barrel[name]).not.toBe(handWritten[name]);
+    });
+  }
+
+  it("internal derivation helpers emit distinct module instances ready for React-leg switching", () => {
+    expect(emittedCategoricalData.buildSafeCategoricalSeries).not.toBe(handWrittenCategoricalData.buildSafeCategoricalSeries);
+    expect(emittedPartOfWholeData.buildSafePartWholeModel).not.toBe(handWrittenPartOfWholeData.buildSafePartWholeModel);
+    expect(emittedDistributionData.buildHistogramData).not.toBe(handWrittenDistributionData.buildHistogramData);
   });
 });

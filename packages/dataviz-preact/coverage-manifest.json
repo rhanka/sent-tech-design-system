@@ -9,8 +9,54 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
-  "ownershipNote": "Lot P6 scaffold: package layout, single JSX source build (Preact dist + React emission by specifier rewrite), compat/runtime/signals adapters and React twins, coverage-manifest hook, port-metrics, package-guard, and React-leg harness. Modules are ported incrementally in groups of batches.",
-  "modules": [],
+  "ownershipNote": "Lot P6 scaffold + group 1 batch 1: ports the core store adapter (adapter.ts) and the four primary shared derivation/drill helpers (lib/categoricalData.ts, lib/partOfWholeData.ts, lib/distributionData.ts, lib/drill.ts — byte-identical copies pinned by scripts/verify-dataviz-helper-copies.test.mjs).",
+  "modules": [
+    {
+      "module": "adapter",
+      "file": "src/adapter.ts",
+      "reactSource": "dataviz-react/src/adapter.ts",
+      "kind": "adapter",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "categoricalData",
+      "file": "src/lib/categoricalData.ts",
+      "reactSource": "dataviz-react/src/lib/categoricalData.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": false
+    },
+    {
+      "module": "partOfWholeData",
+      "file": "src/lib/partOfWholeData.ts",
+      "reactSource": "dataviz-react/src/lib/partOfWholeData.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": false
+    },
+    {
+      "module": "distributionData",
+      "file": "src/lib/distributionData.ts",
+      "reactSource": "dataviz-react/src/lib/distributionData.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": false
+    },
+    {
+      "module": "drill",
+      "file": "src/lib/drill.ts",
+      "reactSource": "dataviz-react/src/lib/drill.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": true
+    }
+  ],
   "adapters": [
     {
       "module": "compat.ts",
