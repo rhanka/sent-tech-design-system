@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:b95500d1bbaa9218569fcc0b3f887b075ad367166f6057b6a1d24173068efdb2",
+  "contractsRevision": "sha256:f9709facfd94a8b937a2b54af96dce046596e2edd77b45fecb2626e210e1da3e",
   "counts": {
     "byFramework": {
       "angular": {
@@ -775,7 +775,7 @@
         "vue": "partial"
       },
       "componentId": "diagram-card",
-      "contractDigest": "sha256:89aae18049c3d487eecabda63d82cece406257f2989d3f7bdd03d8987accb3c9",
+      "contractDigest": "sha256:064194629fadceabcb5eff770fb427125c76d5e539cad4f4f9526919402c09fa",
       "entryDigest": "sha256:5a02c69ba62ab6ac82c4789ae770e099bd6a31ff8cf6a9379e5a56af3cee20d0",
       "path": "contracts/diagram-card.json",
       "producerId": "sentropic-ds"
@@ -788,7 +788,7 @@
         "vue": "partial"
       },
       "componentId": "diagram-scene-figure",
-      "contractDigest": "sha256:fc61dbd0e330b5f30112ceee874e121c1c268a34de52d5d416370a4b41fba9bd",
+      "contractDigest": "sha256:c625c8d1f8612d4d7717428a20b14668e755f39e383f656f76831e73354b3a33",
       "entryDigest": "sha256:c139a7ae857ec6544f3f9cd24f11f8f6b485774c327bec4a7866336752f9ec63",
       "path": "contracts/diagram-scene-figure.json",
       "producerId": "sentropic-ds"
@@ -801,7 +801,7 @@
         "vue": "partial"
       },
       "componentId": "diagram-zone",
-      "contractDigest": "sha256:45515368af1283452bd4c61e4b6e824b63797cfdc40a120d2affb649ae7177ca",
+      "contractDigest": "sha256:1066771e88d35b87b7574274b38203d3947cd76c837e00c4ec428c1819a63b25",
       "entryDigest": "sha256:4ad818223d2acefa01b17234bb833e9a44b68019c5b982c13d1c910e3059495b",
       "path": "contracts/diagram-zone.json",
       "producerId": "sentropic-ds"
@@ -2863,5 +2863,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "6af41def773351ee94822d5877c3a0398b3b2c61"
+  "sourceCommit": "078454674549fe7d72a7a4cd7095d38ab27ce1c7"
 }
