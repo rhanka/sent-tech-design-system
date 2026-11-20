@@ -129,13 +129,15 @@ const subtitleWidth = computed(() => header.value?.subtitleWidth ?? 0);
 const borderToken = "var(--st-component-diagramZone-borderWidth, 1.5px)";
 const frameTop = (frameY: number): string => `calc(${frameY - y}px - ${borderToken})`;
 const frameInset = (inset: number): string => `calc(${inset}px - ${borderToken})`;
-// Header band: frame top + headerInset, spanning the header inline insets
-// (left and right both anchored to headerInset, matching layoutZone and the
-// toggle inset even when containerPadding differs on v2), as tall as the
-// layout's header block + subtitle.
+// Header band: frame top + headerInset. For v1 keep the frozen 0.41.5 right
+// inset (`containerPadding ?? contentInsetInline`); for v2 anchor right to
+// `headerInset` (12px) and scope the v2 header CSS custom properties strictly
+// to `.st-diagramZone-header` so they never leak into nested v1 cards/zones.
+const headerRightInset = computed(() => anatomy === "v2" ? zoneGeometry.value.headerInset : (containerPadding ?? zoneGeometry.value.contentInsetInline));
+const v2HeaderVars = ";--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px);--st-component-diagramCard-iconTextGap:var(--st-component-diagramCardCompact-iconTextGap, 4px);--st-component-diagramZone-headerInset:var(--st-component-diagramCardCompact-headerInset, 12px)";
 const headerStyle = computed(() => header.value === undefined
     ? undefined
-    : `top:${frameTop(y + zoneGeometry.value.headerInset)};left:${frameInset(zoneGeometry.value.headerInset)};right:${frameInset(zoneGeometry.value.headerInset)};height:${header.value.ruleY - zoneGeometry.value.headerRuleGap - y - zoneGeometry.value.headerInset}px`);
+    : `top:${frameTop(y + zoneGeometry.value.headerInset)};left:${frameInset(zoneGeometry.value.headerInset)};right:${frameInset(headerRightInset.value)};height:${header.value.ruleY - zoneGeometry.value.headerRuleGap - y - zoneGeometry.value.headerInset}px${anatomy === "v2" ? v2HeaderVars : ""}`);
 const ruleStyle = computed(() => header.value === undefined
     ? undefined
     : `top:${frameTop(header.value.ruleY)};left:${frameInset(zoneGeometry.value.ruleInsetStart)};right:${frameInset(zoneGeometry.value.ruleInsetEnd)}`);
@@ -164,7 +166,7 @@ defineSlots<{ "default"?: () => unknown }>();
     <DiagramCard v-bind="cardProps" :measure="measure" @select="onSelect"></DiagramCard>
   </template><template v-else>
 
-    <div :class="`st-diagramZone st-diagramZone--expanded${effectiveAlign === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}${anatomy === 'v2' ? ' st-diagramZone--v2' : ''}`" :style="anatomy === 'v2' ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px);--st-component-diagramCard-iconTextGap:var(--st-component-diagramCardCompact-iconTextGap, 4px);--st-component-diagramZone-headerInset:var(--st-component-diagramCardCompact-headerInset, 12px)${surfaceStyle}` : `width:${layout.box.width}px;height:${layout.box.height}px${surfaceStyle}`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :title="zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })" :aria-label="title" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
+    <div :class="`st-diagramZone st-diagramZone--expanded${effectiveAlign === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}${anatomy === 'v2' ? ' st-diagramZone--v2' : ''}`" :style="`width:${layout.box.width}px;height:${layout.box.height}px${surfaceStyle}`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :title="zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })" :aria-label="title" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
       <span :id="descriptionId" hidden>{{ zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed }) }}</span>
     <template v-if="header !== undefined">
 

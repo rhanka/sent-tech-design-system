@@ -36,6 +36,7 @@ import {
   type SceneView,
 } from "../../src/presentation/diagramSceneModel.js";
 import { renderCardSvg } from "../../src/presentation/renderCardSvg.js";
+import { renderZoneSvg } from "../../src/presentation/renderZoneSvg.js";
 import { nestedZoneFixture } from "../../test-support/nestedZoneFixture.js";
 
 const CONTRACT = {
@@ -770,5 +771,60 @@ describe("diagram anatomy v2 (DE-1)", () => {
     expect(localizedRows).toContain("System → Store · hosts");
     expect(localizedRows).toContain("Service → Store · queries");
     expect(localizedRows.join("\n")).not.toContain("· contains");
+  });
+
+  it("should pin v1 and fallback-v1 fold toggle size and placement to exact 0.2.5 / 0.41.5 geometry", () => {
+    expect(CARD_GEOMETRY.toggleBoxSize).toBe(32);
+    expect(CARD_GEOMETRY.toggleInset).toBe(8);
+    expect(CARD_GEOMETRY.toggleAllocation).toBe(66);
+    expect(CARD_GEOMETRY.foldedHeaderTextWidth).toBe(290);
+    expect(ZONE_GEOMETRY.headerInset).toBe(16);
+    expect(ZONE_GEOMETRY.toggleBoxSize).toBe(32);
+    expect(ZONE_GEOMETRY.toggleTopInset).toBe(8);
+    expect(ZONE_GEOMETRY.toggleInset).toBe(8);
+
+    // v1 card and fallback-v1 card share the exact 0.2.5 toggleBox (420, 8, 32) and SVG transform.
+    for (const anatomy of [undefined, "v1", "v2"] as const) {
+      const card = layoutCard({ ...CONTRACT, ...(anatomy === undefined ? {} : { anatomy }) }, defaultCardMeasure);
+      expect(card.box).toEqual({ width: 460, height: 200 });
+      expect(card.toggleBox).toEqual({ x: 420, y: 8, size: 32 });
+      expect(card.headerTextWidth).toBe(290);
+      const rendered = renderCardSvg({ ...CONTRACT, ...(anatomy === undefined ? {} : { anatomy }) }, defaultCardMeasure);
+      expect(rendered.kind).toBe("rendered");
+      if (rendered.kind === "rendered") {
+        expect(rendered.svg).toContain('transform="translate(420 8)"');
+        expect(rendered.svg).toContain('<rect width="32" height="32" fill="transparent"/>');
+      }
+    }
+
+    // Collapsed v1 / fallback-v1 zone and expanded v1 zone keep exact 0.2.5 toggleBox and SVG glyph placement.
+    const collapsedV1 = layoutZone(
+      { entityId: "z-v1", kicker: "KICKER", title: "Zone", subtitle: "Subtitle", footer: "Footer", collapsed: true, toggleLabel: "Expand", anatomy: "v1" },
+      defaultCardMeasure,
+    );
+    const collapsedFallback = layoutZone(
+      { entityId: "z-fb", kicker: "KICKER", title: "Zone", subtitle: "Subtitle", footer: "Footer", collapsed: true, toggleLabel: "Expand", anatomy: "v2" },
+      defaultCardMeasure,
+    );
+    expect(collapsedV1.card?.toggleBox).toEqual({ x: 420, y: 8, size: 32 });
+    expect(collapsedFallback.card?.anatomyFallback).toBe("v1");
+    expect(collapsedFallback.card?.toggleBox).toEqual({ x: 420, y: 8, size: 32 });
+
+    for (const anatomy of [undefined, "v1"] as const) {
+      const expanded = layoutZone(
+        { entityId: "z-exp", kicker: "KICKER", title: "Zone", subtitle: "Subtitle", footer: "Footer", collapsed: false, toggleLabel: "Collapse", x: 10, y: 20, width: 600, ...(anatomy === undefined ? {} : { anatomy }) },
+        defaultCardMeasure,
+      );
+      expect(expanded.header?.toggleBox).toEqual({ x: 10 + 600 - 40, y: 20 + 8, size: 32 });
+      const svg = renderZoneSvg(
+        { entityId: "z-exp", kicker: "KICKER", title: "Zone", subtitle: "Subtitle", footer: "Footer", collapsed: false, toggleLabel: "Collapse", x: 10, y: 20, width: 600, ...(anatomy === undefined ? {} : { anatomy }) },
+        { measure: defaultCardMeasure },
+      );
+      expect(svg.kind).toBe("rendered");
+      if (svg.kind === "rendered") {
+        expect(svg.svg).toContain('transform="translate(560 8)"');
+        expect(svg.svg).toContain('<rect width="32" height="32" fill="transparent"/>');
+      }
+    }
   });
 });

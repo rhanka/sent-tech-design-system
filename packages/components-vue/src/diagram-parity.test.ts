@@ -175,12 +175,16 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
       expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderZoneSvg(props).diagnostics);
       const frame = vue.element.querySelector('.st-diagramZone') ?? vue.element.querySelector('.st-diagramCard');
       const style = frame?.getAttribute('style') ?? '';
-      expect(style).toContain('--st-component-diagramCard-iconTextGap');
       if (collapsed) {
+        expect(style).toContain('--st-component-diagramCard-iconTextGap');
         expect(style).toContain('height: 154px');
       } else {
-        expect(style).toContain('--st-component-diagramZone-headerInset');
+        // v2 header vars are scoped to .st-diagramZone-header so they never leak into nested v1 children.
+        expect(style).not.toContain('--st-component-diagramZone-headerInset');
+        expect(style).not.toContain('--st-component-diagramCard-iconTextGap');
         const header = vue.element.querySelector<HTMLElement>('.st-diagramZone-header');
+        expect(header?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-headerInset');
+        expect(header?.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap');
         expect(header?.style.right).toBe(header?.style.left);
         const toggle = vue.element.querySelector<HTMLElement>('.st-diagramCard-toggle');
         expect(toggle?.style.top).toBe(toggle?.style.right);
@@ -188,6 +192,68 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
       vue.unmount(); svelte.unmount();
     });
   }
+  it('should pin v1 expanded zone header inset and toggle geometry to 0.41.5 / next.7 on both hosts without v2 leakage', async () => {
+    for (const anatomy of [undefined, 'v1'] as const) {
+      const props = {
+        entityId: 'v1-zone-padded',
+        kicker: 'KICKER',
+        title: 'Zone',
+        subtitle: 'Sub',
+        footer: 'Footer',
+        collapsed: false,
+        toggleLabel: 'Collapse',
+        ...(anatomy === undefined ? {} : { anatomy }),
+        containerPadding: 24,
+        width: 492,
+        height: 400,
+      };
+      const vue = mount(DiagramZone, { props });
+      const svelte = render(SvelteZone, { props });
+      await nextTick(); await tick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      for (const root of [vue.element, svelte.container]) {
+        const frame = root.querySelector<HTMLElement>('.st-diagramZone')!;
+        const header = root.querySelector<HTMLElement>('.st-diagramZone-header')!;
+        const toggle = root.querySelector<HTMLElement>('.st-diagramCard-toggle')!;
+        const button = toggle.querySelector<HTMLButtonElement>('button')!;
+        expect(frame.getAttribute('style') ?? '').not.toContain('--st-component-diagramZone-headerInset');
+        expect(header.getAttribute('style') ?? '').not.toContain('--st-component-diagramZone-headerInset');
+        expect(header.style.top).toBe('calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+        expect(header.style.left).toBe('calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+        expect(header.style.right).toBe('calc(24px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+        expect(toggle.style.top).toBe(
+          'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))',
+        );
+        expect(toggle.style.right).toBe(toggle.style.top);
+        expect(button.classList.contains('st-iconButton--sm')).toBe(true);
+      }
+      vue.unmount(); svelte.unmount();
+    }
+    // Collapsed fallback-v1 zone matches 0.41.5 / next.7 card toggle placement and size on both hosts.
+    const fbProps = {
+      entityId: 'v2-zone-fallback-toggle',
+      kicker: 'KICKER',
+      title: 'Zone',
+      subtitle: 'Sub',
+      footer: 'Footer',
+      collapsed: true,
+      toggleLabel: 'Expand',
+      anatomy: 'v2' as const,
+    };
+    const vueFb = mount(DiagramZone, { props: fbProps });
+    const svelteFb = render(SvelteZone, { props: fbProps });
+    await nextTick(); await tick();
+    expect(dom(vueFb.element)).toEqual(dom(withControlIconTokens(svelteFb.container.firstElementChild!)));
+    for (const root of [vueFb.element, svelteFb.container]) {
+      const toggle = root.querySelector<HTMLElement>('.st-diagramCard-toggle')!;
+      expect(toggle.style.top).toBe(
+        'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))',
+      );
+      expect(toggle.style.right).toBe(toggle.style.top);
+      expect(toggle.querySelector('button')?.classList.contains('st-iconButton--sm')).toBe(true);
+    }
+    vueFb.unmount(); svelteFb.unmount();
+  });
   it('should anchor expanded v2 zone header right to headerInset (12px) when containerPadding is 16px on both hosts', async () => {
     const props = {
       entityId: 'v2-zone-padded',
@@ -553,9 +619,10 @@ describe('scene host DOM and camera/fold behavior', () => {
     const outerHeader = vue.element.querySelector<HTMLElement>(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone-header`)!;
     expect(outerHeader.style.left).toBe('calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))');
     expect(outerHeader.style.right).toBe(outerHeader.style.left);
-    // Compact v2 cards and expanded v2 zones both apply host iconTextGap override.
+    // Compact v2 cards and expanded v2 zone headers apply host iconTextGap override without leaking onto outer zone frames.
     expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('a1')}"] .st-diagramCard`)?.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap');
-    expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap');
+    expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').not.toContain('--st-component-diagramCard-iconTextGap');
+    expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone-header`)?.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap');
     const initialOuterB = rectOf(vue.element, 'outerB');
     const initialExt = rectOf(vue.element, 'ext');
 
