@@ -1,5 +1,6 @@
 // Thread grouping and `ReviewThread.anchor` derivation (SPEC-r5 §1, §3).
 
+import { decodeAnchor } from "./anchor-codec.js";
 import {
   normalizeCommentTarget,
   type AnchorPayload,
@@ -57,7 +58,7 @@ export function groupCommentsIntoThreads(
     }
   });
 
-  const decoder = options?.decodeAnchor;
+  const decoder = options?.decodeAnchor ?? decodeAnchor;
   const threads: Array<{ thread: ReviewThread; earliestAt: string }> = [];
 
   for (const [threadId, entries] of byThread) {
