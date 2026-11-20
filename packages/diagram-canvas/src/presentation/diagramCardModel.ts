@@ -1482,7 +1482,7 @@ export function layoutZone(
   // same-colour zone surface. Only explicit children compositions report
   // it — hosts lay children out flat, so host rendering never changes.
   if (props.reportSurfaceSame === true && surface === "surface1"
-    && children.some((child) => child.kind === "card" && child.zone === undefined)) {
+    && children.some((child) => child.kind === "card" && child.zone === undefined && child.card?.tone === undefined)) {
     diagnostics.push({ code: "zone-surface-same", slot: "surface", entityId: props.entityId, neededPx: 1, allocatedPx: 0 });
   }
 

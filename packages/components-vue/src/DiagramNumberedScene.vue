@@ -47,7 +47,9 @@ const layout = computed(() => {
   const result = layoutScene({
     cache: props.layoutCache ?? ownedCache, document: props.document, registry: props.registry, presentation: props.presentation,
     ...(props.iconBindings === undefined ? {} : { iconBindings: props.iconBindings }),
-    strictIcons: props.strictIcons ?? true, resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
+    strictIcons: props.strictIcons ?? true,
+    ...(props.depthParityStart === undefined ? {} : { depthParityStart: props.depthParityStart }),
+    resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
     measureLines: measureLines.value, collapsed: collapsedNow.value, flows: flowOptions.value, flowTokens: tokens.value,
     ...(props.view === undefined ? {} : { view: props.view }), ...(props.bindings === undefined ? {} : { bindings: props.bindings }),
     ...(props.hints === undefined ? {} : { hints: props.hints }), metrics: effectiveMetrics.value,
@@ -60,7 +62,9 @@ const layout = computed(() => {
 const scene = computed<SceneModel | undefined>(() => layout.value.status !== "laid-out" ? undefined : resolveScene(layout.value, { document: props.document, presentation: props.presentation, measureLines: measureLines.value, flows: flowOptions.value, metrics: effectiveMetrics.value,
   ...(props.view === undefined ? {} : { view: props.view }),
   ...(props.iconBindings === undefined ? {} : { iconBindings: props.iconBindings }),
-  strictIcons: props.strictIcons ?? true, resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
+  strictIcons: props.strictIcons ?? true,
+  ...(props.depthParityStart === undefined ? {} : { depthParityStart: props.depthParityStart }),
+  resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
 }));
 // Paint order (diagram-canvas `scenePaintPlane`): expanded zone frames, the
 // connectors, then every box. A zone frame is opaque: painted after the

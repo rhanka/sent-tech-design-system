@@ -68,7 +68,9 @@ const layoutResult = computed(() => {
         cache: props.layoutCache ?? ownedCache,
         document: props.document, registry: props.registry, presentation: props.presentation,
         ...(props.iconBindings === undefined ? {} : { iconBindings: props.iconBindings }),
-        strictIcons: props.strictIcons ?? true, resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
+        strictIcons: props.strictIcons ?? true,
+        ...(props.depthParityStart === undefined ? {} : { depthParityStart: props.depthParityStart }),
+        resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
         measureLines: measureLines.value, collapsed: collapsedNow.value,
         ...(props.view === undefined ? {} : { view: props.view }),
         ...(props.bindings === undefined ? {} : { bindings: props.bindings }),
@@ -87,7 +89,9 @@ const scene = computed(() => layoutResult.value.status === 'laid-out'
         document: props.document, presentation: props.presentation, measureLines: measureLines.value,
         ...(props.view === undefined ? {} : { view: props.view }),
         ...(props.iconBindings === undefined ? {} : { iconBindings: props.iconBindings }),
-        strictIcons: props.strictIcons ?? true, resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
+        strictIcons: props.strictIcons ?? true,
+        ...(props.depthParityStart === undefined ? {} : { depthParityStart: props.depthParityStart }),
+        resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
         metrics: effectiveMetrics.value,
     }) : undefined);
 const sceneRects = computed<ReadonlyMap<string, Rect>>(() => scene.value === undefined ? new Map() : rectsOf(scene.value));

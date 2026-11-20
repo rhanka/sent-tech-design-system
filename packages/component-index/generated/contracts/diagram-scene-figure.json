@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:00050ecbe191d1ccb3202b6e56be3437743a6fcfe0e78899bac585bbe1f53d5e",
-  "entryDigest": "sha256:a30372ebfcdf3abe932909599f6f029a1be42c03e3edb9aad99041112146871b",
+  "digest": "sha256:5ab41dfaa5ce51706a10f17008da022f64a3296ac8cda68fc78361b6effa41a4",
+  "entryDigest": "sha256:8d77c6f94c7f40efbb9b9986037e47544436d96dd3621cc5e42c8aa9288a088b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1642,6 +1642,7 @@
                   "route-obstructed",
                   "row-fill-partial",
                   "zone-overflow",
+                  "zone-surface-same",
                   "docking-overflow"
                 ]
               },
@@ -3865,6 +3866,13 @@
           "defaultScenario": {
             "type": "string"
           },
+          "depthParityStart": {
+            "description": "Selectable start parity for alternating zone depth surfaces (`0` default, `1` flipped).",
+            "enum": [
+              0,
+              1
+            ]
+          },
           "document": {
             "$ref": "#/$defs/SemanticDocument"
           },
@@ -4262,7 +4270,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:ebfc6246b87514647f6791154de5c1cdb589489f1803c2018fc82d87cc2685d0",
+        "declarationDigest": "sha256:96fdb37c715d0e746b63cefe3f9e8a40643ae66cc2b40d3c7f6fb9a05f01c822",
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
@@ -6436,6 +6444,7 @@
                   "route-obstructed",
                   "row-fill-partial",
                   "zone-overflow",
+                  "zone-surface-same",
                   "docking-overflow"
                 ]
               },
@@ -8671,6 +8680,13 @@
           },
           "defaultScenario": {
             "type": "string"
+          },
+          "depthParityStart": {
+            "description": "Selectable start parity for alternating zone depth surfaces (`0` default, `1` flipped).",
+            "enum": [
+              0,
+              1
+            ]
           },
           "document": {
             "$ref": "#/$defs/SemanticDocument"

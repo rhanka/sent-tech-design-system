@@ -232,6 +232,12 @@ export interface LayoutOptions {
    * the previous orientation of a level is kept (O-4).
    */
   readonly previousOrientation?: Readonly<Record<string, LevelOrientation>>;
+  /**
+   * Opt-in informational diagnostic (owner addendum 1): when true, report
+   * `zone-surface-same` for untinted leaf cards sitting directly on a
+   * `surface1` expanded zone.
+   */
+  readonly reportSurfaceSame?: boolean;
 }
 
 /** The outcome of the L-R5 / L-R7 decision for one call. Derived, never persisted. */
@@ -262,6 +268,7 @@ export type LayoutWarningCode =
   | "card-overflow"
   | "card-grown"
   | "zone-overflow"
+  | "zone-surface-same"
   | "docking-overflow";
 
 export interface LayoutWarning {
