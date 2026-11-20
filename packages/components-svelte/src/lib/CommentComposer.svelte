@@ -32,7 +32,7 @@
 </script>
 
 <script lang="ts">
-  import { untrack } from "svelte";
+  import { tick, untrack } from "svelte";
   import Button from "./Button.svelte";
   import CommentAuthorship from "./CommentAuthorship.svelte";
   import { formatReviewError, handleFocusTrapKeydown } from "./review-markdown.js";
@@ -83,17 +83,22 @@
 
   // Attach direct DOM listener on the form so Escape stopPropagation happens BEFORE
   // leaving the composer (Svelte 5 delegates template `onkeydown` to document).
+  // Only intercept Escape when `onCancel` is bound so permanent inline reply composers
+  // let Escape bubble up to close the enclosing ThreadPanel / bottom-sheet Drawer.
   $effect(() => {
     const node = formEl;
     if (!node) return;
     const onKeydown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        event.preventDefault();
-        event.stopPropagation();
-        handleCancel();
+        if (onCancel) {
+          event.preventDefault();
+          event.stopPropagation();
+          handleCancel();
+        }
         return;
       }
-      if (trapFocus) {
+      if (trapFocus && event.key === "Tab") {
+        event.stopPropagation();
         handleFocusTrapKeydown(event, node);
       }
     };
@@ -126,6 +131,8 @@
     if (!onSubmit) return;
 
     const shouldClear = shouldClearOnSubmit;
+    const doc = formEl?.ownerDocument ?? (typeof document !== "undefined" ? document : null);
+    let failed = false;
     internalSubmitting = true;
     try {
       await onSubmit(trimmed);
@@ -134,10 +141,23 @@
         onDraftChange?.("");
       }
     } catch (err) {
+      failed = true;
       localError = formatReviewError(err);
-      textareaEl?.focus();
     } finally {
       internalSubmitting = false;
+    }
+
+    // Wait for `disabled={disabled || isBusy}` to clear before restoring focus.
+    // Keep focus in the textarea on error, or on success when the composer remains mounted
+    // and focus was dropped to document.body (or stayed inside the form).
+    await tick();
+    if (textareaEl?.isConnected && !disabled) {
+      const active = doc?.activeElement ?? null;
+      const focusDroppedOrInside =
+        active === null || active === doc?.body || (formEl !== undefined && formEl.contains(active));
+      if (failed || focusDroppedOrInside) {
+        textareaEl.focus();
+      }
     }
   }
 
@@ -198,7 +218,9 @@
   {/if}
 
   <div class="st-review-composer__footer">
-    <span class="st-review-composer__hint">Cmd/Ctrl+Enter to submit · Esc to cancel</span>
+    <span class="st-review-composer__hint">
+      {onCancel ? "Cmd/Ctrl+Enter to submit · Esc to cancel" : "Cmd/Ctrl+Enter to submit"}
+    </span>
     <div class="st-review-composer__actions">
       {#if onCancel}
         <Button

@@ -42,6 +42,7 @@
 </script>
 
 <script lang="ts">
+  import { tick } from "svelte";
   import { CheckCircle2, ExternalLink, Link2, Pencil, RotateCcw, Trash2 } from "@lucide/svelte";
   import {
     canEditOrDeleteComment,
@@ -84,6 +85,7 @@
     ...rest
   }: CommentThreadProps = $props();
 
+  let threadEl: HTMLElement | undefined = $state();
   let editingCommentId = $state<string | null>(null);
   let editInvokerEl = $state<HTMLElement | null>(null);
   let mutationError = $state<string | null>(null);
@@ -187,6 +189,26 @@
     }
   }
 
+  function focusEditButtonFor(commentId: string | null, fallbackInvoker: HTMLElement | null) {
+    void tick().then(() => {
+      if (commentId && threadEl) {
+        const items = threadEl.querySelectorAll<HTMLElement>("[data-comment-id]");
+        for (const item of items) {
+          if (item.getAttribute("data-comment-id") === commentId) {
+            const btn = item.querySelector<HTMLElement>('button[aria-label="Edit comment"]');
+            if (btn) {
+              btn.focus();
+              return;
+            }
+          }
+        }
+      }
+      if (fallbackInvoker?.isConnected) {
+        fallbackInvoker.focus();
+      }
+    });
+  }
+
   function startEdit(commentId: string, event: MouseEvent) {
     mutationError = null;
     editInvokerEl = event.currentTarget as HTMLElement | null;
@@ -194,9 +216,11 @@
   }
 
   function cancelEdit() {
+    const id = editingCommentId;
+    const invoker = editInvokerEl;
     editingCommentId = null;
-    editInvokerEl?.focus();
     editInvokerEl = null;
+    focusEditButtonFor(id, invoker);
   }
 
   async function submitEdit(commentId: string, nextBody: string) {
@@ -206,12 +230,13 @@
     optimisticEdits = { ...optimisticEdits, [commentId]: nextBody };
     try {
       await onEditComment(commentId, nextBody);
+      const invoker = editInvokerEl;
       editingCommentId = null;
-      editInvokerEl?.focus();
       editInvokerEl = null;
       const next = { ...optimisticEdits };
       delete next[commentId];
       optimisticEdits = next;
+      focusEditButtonFor(commentId, invoker);
     } catch (err) {
       optimisticEdits = prev;
       mutationError = formatReviewError(err);
@@ -270,6 +295,7 @@
 
 <section
   {...rest}
+  bind:this={threadEl}
   class={classes}
   aria-label={`Comment thread ${thread.threadId}`}
   data-thread-id={thread.threadId}
