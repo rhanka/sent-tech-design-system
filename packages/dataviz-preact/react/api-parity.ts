@@ -95,6 +95,11 @@ export type PropsParity = [
   Expect<Equal<Emitted.ErrorBarsChartProps, HandWritten.ErrorBarsChartProps>>,
   Expect<Equal<Emitted.EventFeedPanelProps, HandWritten.EventFeedPanelProps>>,
   Expect<Equal<Emitted.FieldPaneProps, HandWritten.FieldPaneProps>>,
+  Expect<Equal<Emitted.FlamegraphChartProps, HandWritten.FlamegraphChartProps>>,
+  Expect<Equal<Emitted.ForceGraphProps, HandWritten.ForceGraphProps>>,
+  Expect<Equal<Emitted.ForecastLineChartProps, HandWritten.ForecastLineChartProps>>,
+  Expect<Equal<Emitted.FormatPanelProps, HandWritten.FormatPanelProps>>,
+  Expect<Equal<Emitted.FunnelChartProps, HandWritten.FunnelChartProps>>,
 ];
 
 export type ComponentParity = [
@@ -147,6 +152,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.ErrorBarsChart, typeof HandWritten.ErrorBarsChart>>,
   Expect<Equal<typeof Emitted.EventFeedPanel, typeof HandWritten.EventFeedPanel>>,
   Expect<Equal<typeof Emitted.FieldPane, typeof HandWritten.FieldPane>>,
+  Expect<Equal<typeof Emitted.FlamegraphChart, typeof HandWritten.FlamegraphChart>>,
+  Expect<Equal<typeof Emitted.ForceGraph, typeof HandWritten.ForceGraph>>,
+  Expect<Equal<typeof Emitted.ForecastLineChart, typeof HandWritten.ForecastLineChart>>,
+  Expect<Equal<typeof Emitted.FormatPanel, typeof HandWritten.FormatPanel>>,
+  Expect<Equal<typeof Emitted.FunnelChart, typeof HandWritten.FunnelChart>>,
 ];
 
 export type ValueParity = [

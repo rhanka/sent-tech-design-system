@@ -65,6 +65,11 @@ import * as handWrittenDumbbellChart from "../../dataviz-react/src/lib/DumbbellC
 import * as handWrittenErrorBarsChart from "../../dataviz-react/src/lib/ErrorBarsChart.js";
 import * as handWrittenEventFeedPanel from "../../dataviz-react/src/lib/EventFeedPanel.js";
 import * as handWrittenFieldPane from "../../dataviz-react/src/lib/FieldPane.js";
+import * as handWrittenFlamegraphChart from "../../dataviz-react/src/lib/FlamegraphChart.js";
+import * as handWrittenForceGraph from "../../dataviz-react/src/lib/ForceGraph.js";
+import * as handWrittenForecastLineChart from "../../dataviz-react/src/lib/ForecastLineChart.js";
+import * as handWrittenFormatPanel from "../../dataviz-react/src/lib/FormatPanel.js";
+import * as handWrittenFunnelChart from "../../dataviz-react/src/lib/FunnelChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -145,6 +150,11 @@ const switched = [
   "ErrorBarsChart",
   "EventFeedPanel",
   "FieldPane",
+  "FlamegraphChart",
+  "ForceGraph",
+  "ForecastLineChart",
+  "FormatPanel",
+  "FunnelChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -217,6 +227,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   ErrorBarsChart: handWrittenErrorBarsChart.ErrorBarsChart,
   EventFeedPanel: handWrittenEventFeedPanel.EventFeedPanel,
   FieldPane: handWrittenFieldPane.FieldPane,
+  FlamegraphChart: handWrittenFlamegraphChart.FlamegraphChart,
+  ForceGraph: handWrittenForceGraph.ForceGraph,
+  ForecastLineChart: handWrittenForecastLineChart.ForecastLineChart,
+  FormatPanel: handWrittenFormatPanel.FormatPanel,
+  FunnelChart: handWrittenFunnelChart.FunnelChart,
 };
 
 describe("dataviz React leg provenance", () => {
