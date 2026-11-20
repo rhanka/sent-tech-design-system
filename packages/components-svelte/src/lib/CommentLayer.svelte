@@ -166,6 +166,7 @@
   let slotHostEl: HTMLElement | undefined = $state();
   let overlayEl: HTMLElement | undefined = $state();
   let clusterPopoverEl: HTMLElement | undefined = $state();
+  let selectionTriggerEl: HTMLElement | undefined = $state();
 
   let domRevision = $state(0);
   let hoverBox = $state<OverlayBox | null>(null);
@@ -182,6 +183,8 @@
   let mutationQueued = false;
   let flashTimer: ReturnType<typeof setTimeout> | undefined;
   let selectionTimer: ReturnType<typeof setTimeout> | undefined;
+  let selectionTriggerReleaseTimer: ReturnType<typeof setTimeout> | undefined;
+  let selectionTriggerPressed = false;
   let clusterInvoker: HTMLElement | null = null;
 
   const effectiveRoot = $derived.by<HTMLElement | null>(() => {
@@ -634,6 +637,25 @@
       }
     };
 
+    const isTriggerEngaged = (): boolean =>
+      selectionTriggerPressed ||
+      (selectionTriggerEl !== undefined &&
+        doc.activeElement !== null &&
+        selectionTriggerEl.contains(doc.activeElement));
+
+    const hasValidRootSelection = (): boolean => {
+      const selection = doc.defaultView?.getSelection();
+      if (!selection || selection.rangeCount === 0) return false;
+      const range = selection.getRangeAt(0);
+      return (
+        !range.collapsed &&
+        range.toString().trim().length > 0 &&
+        root.contains(range.commonAncestorContainer) &&
+        !isInsideOverlay(range.commonAncestorContainer) &&
+        !isEditableElement(doc.activeElement)
+      );
+    };
+
     const handleSelectionChange = () => {
       if (selectionTimer !== undefined) {
         clearTimeout(selectionTimer);
@@ -641,7 +663,9 @@
       }
       const selection = doc.defaultView?.getSelection();
       if (!selection || selection.rangeCount === 0) {
-        pendingSelection = null;
+        if (!isTriggerEngaged()) {
+          pendingSelection = null;
+        }
         return;
       }
       const range = selection.getRangeAt(0);
@@ -652,7 +676,9 @@
         isInsideOverlay(range.commonAncestorContainer) ||
         isEditableElement(doc.activeElement)
       ) {
-        pendingSelection = null;
+        if (!isTriggerEngaged()) {
+          pendingSelection = null;
+        }
         return;
       }
 
@@ -680,6 +706,22 @@
           left: Math.max(0, rect.right - rootRect.left),
         };
       }, selectionSettleMs);
+    };
+
+    const handleSelectionTriggerPointerRelease = () => {
+      if (!selectionTriggerPressed) return;
+      if (selectionTriggerReleaseTimer !== undefined) {
+        clearTimeout(selectionTriggerReleaseTimer);
+      }
+      // Keep the trigger mounted past mouseup/pointerup until click fires.
+      selectionTriggerReleaseTimer = setTimeout(() => {
+        selectionTriggerReleaseTimer = undefined;
+        selectionTriggerPressed = false;
+        if (!pendingSelection || composerSession) return;
+        if (!isTriggerEngaged() && !hasValidRootSelection()) {
+          pendingSelection = null;
+        }
+      }, 0);
     };
 
     const handleGlobalKeydown = (event: KeyboardEvent) => {
@@ -749,12 +791,20 @@
     root.addEventListener("focusout", handleFocusOut);
     doc.addEventListener("selectionchange", handleSelectionChange);
     doc.addEventListener("keydown", handleGlobalKeydown);
+    doc.addEventListener("mouseup", handleSelectionTriggerPointerRelease);
+    doc.addEventListener("pointerup", handleSelectionTriggerPointerRelease);
+    doc.addEventListener("pointercancel", handleSelectionTriggerPointerRelease);
 
     return () => {
       if (selectionTimer !== undefined) {
         clearTimeout(selectionTimer);
         selectionTimer = undefined;
       }
+      if (selectionTriggerReleaseTimer !== undefined) {
+        clearTimeout(selectionTriggerReleaseTimer);
+        selectionTriggerReleaseTimer = undefined;
+      }
+      selectionTriggerPressed = false;
       if (flashTimer !== undefined) {
         clearTimeout(flashTimer);
         flashTimer = undefined;
@@ -766,6 +816,9 @@
       root.removeEventListener("focusout", handleFocusOut);
       doc.removeEventListener("selectionchange", handleSelectionChange);
       doc.removeEventListener("keydown", handleGlobalKeydown);
+      doc.removeEventListener("mouseup", handleSelectionTriggerPointerRelease);
+      doc.removeEventListener("pointerup", handleSelectionTriggerPointerRelease);
+      doc.removeEventListener("pointercancel", handleSelectionTriggerPointerRelease);
     };
   });
 
@@ -790,6 +843,11 @@
     hoverBox = null;
     flashBox = null;
     pendingSelection = null;
+    selectionTriggerPressed = false;
+    if (selectionTriggerReleaseTimer !== undefined) {
+      clearTimeout(selectionTriggerReleaseTimer);
+      selectionTriggerReleaseTimer = undefined;
+    }
     composerSession = null;
     draftBody = "";
     openClusterId = null;
@@ -823,7 +881,41 @@
         };
   }
 
+  function handleSelectionTriggerPointerDown(event: PointerEvent | MouseEvent) {
+    event.preventDefault();
+    selectionTriggerPressed = true;
+    if (selectionTriggerReleaseTimer !== undefined) {
+      clearTimeout(selectionTriggerReleaseTimer);
+      selectionTriggerReleaseTimer = undefined;
+    }
+  }
+
+  function handleSelectionTriggerFocusOut(event: FocusEvent) {
+    if (selectionTriggerPressed) return;
+    const related = event.relatedTarget as Node | null;
+    if (related && selectionTriggerEl?.contains(related)) return;
+    const root = effectiveRoot;
+    if (!root) {
+      pendingSelection = null;
+      return;
+    }
+    const selection = root.ownerDocument.defaultView?.getSelection();
+    if (
+      !selection ||
+      selection.rangeCount === 0 ||
+      selection.getRangeAt(0).collapsed ||
+      !root.contains(selection.getRangeAt(0).commonAncestorContainer)
+    ) {
+      pendingSelection = null;
+    }
+  }
+
   function handleSelectionTriggerClick(event: MouseEvent) {
+    selectionTriggerPressed = false;
+    if (selectionTriggerReleaseTimer !== undefined) {
+      clearTimeout(selectionTriggerReleaseTimer);
+      selectionTriggerReleaseTimer = undefined;
+    }
     if (!pendingSelection) return;
     const { anchor, top, left } = pendingSelection;
     pendingSelection = null;
@@ -1013,11 +1105,20 @@
 
       {#if pendingSelection && !composerSession}
         <div
+          bind:this={selectionTriggerEl}
           class="st-review-layer__selection-trigger"
           style:top={`${pendingSelection.top}px`}
           style:left={`${pendingSelection.left}px`}
         >
-          <Button type="button" variant="primary" size="sm" onclick={handleSelectionTriggerClick}>
+          <Button
+            type="button"
+            variant="primary"
+            size="sm"
+            onpointerdown={handleSelectionTriggerPointerDown}
+            onmousedown={handleSelectionTriggerPointerDown}
+            onfocusout={handleSelectionTriggerFocusOut}
+            onclick={handleSelectionTriggerClick}
+          >
             Add comment
           </Button>
         </div>
