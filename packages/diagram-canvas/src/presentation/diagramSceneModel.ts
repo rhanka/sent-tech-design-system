@@ -131,21 +131,36 @@ export function resolveScenePresentation(document: SceneDocument, presentation: 
     return [id, withViewAnatomy({ ...entry, icon })];
   }));
   /**
-   * Owner addendum 1 — stamp nesting depth from the view groups onto zone
+   * Owner addendum 1 — stamp nesting depth from the view groups (or from
+   * semantic `contains` relations when no view is supplied) onto zone
    * entries (top level `0`), so frames alternate without page code. Entries
    * pinning their own depth keep it; card entries are untouched (their
-   * semantic tints never change). Without a view there is no group
-   * structure to read, so nothing is stamped. The selectable `startParity`
-   * rides along the same way when the scene selects it.
+   * semantic tints never change). The selectable `startParity` rides along
+   * the same way when the scene selects it.
    */
-  // Without a view there is no group structure to read: entities pass
-  // through exactly as resolved above (existing no-view callers unaffected).
-  if (view === undefined) return { presentation: { ...presentation, entities }, missing };
   const startParity = options.depthParityStart ?? 0;
+  const semanticParentOf = new Map<string, string>();
+  if (view === undefined && document.relations !== undefined) {
+    for (const relation of Object.values(document.relations)) {
+      const baseType = document.typeDefinitions?.[relation.type]?.baseType ?? relation.type;
+      if (baseType !== "contains") continue;
+      const parent = relation.endpoints.find((endpoint) => endpoint.role === "parent")?.target;
+      const child = relation.endpoints.find((endpoint) => endpoint.role === "child")?.target;
+      if (parent !== undefined && child !== undefined) semanticParentOf.set(child, parent);
+    }
+  }
   const depthOf = (id: string): number => {
     let depth = 0;
     const seen = new Set<string>();
-    for (let parent = parentOccurrenceOf(view, id as SceneOccurrenceRef); parent !== undefined && !seen.has(parent); parent = parentOccurrenceOf(view, parent)) {
+    if (view !== undefined) {
+      for (let parent = parentOccurrenceOf(view, id as SceneOccurrenceRef); parent !== undefined && !seen.has(parent); parent = parentOccurrenceOf(view, parent)) {
+        seen.add(parent);
+        depth += 1;
+      }
+      return depth;
+    }
+    const entityId = id.replace(/^occurrence:e\./, "entity:");
+    for (let parent = semanticParentOf.get(entityId); parent !== undefined && !seen.has(parent); parent = semanticParentOf.get(parent)) {
       seen.add(parent);
       depth += 1;
     }
@@ -175,6 +190,8 @@ export interface SceneLayoutInput {
    * flips which parity the top level takes. Absent means `0`.
    */
   readonly depthParityStart?: 0 | 1;
+  /** Opt-in informational `zone-surface-same` diagnostic on untinted leaf cards inside `surface1` zones. */
+  readonly reportSurfaceSame?: boolean;
   readonly resolveGlyph?: (name: string) => import("./diagramCardModel.js").DiagramGlyphPaths | undefined;
   readonly cache?: SceneLayoutCache;
   readonly document: SceneDocument;
@@ -227,6 +244,7 @@ export function layoutScene(input: SceneLayoutInput): LayoutResult {
     rowPack: input.rowPack ?? {},
     targetWidth: input.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
     ...(input.previousOrientation === undefined ? {} : { previousOrientation: input.previousOrientation }),
+    ...(input.reportSurfaceSame === undefined ? {} : { reportSurfaceSame: input.reportSurfaceSame }),
   };
   const result = input.cache !== undefined
     ? (input.view === undefined
@@ -402,7 +420,7 @@ export function resolveScene(
   input: Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics" | "iconBindings" | "strictIcons" | "view" | "resolveGlyph" | "flows" | "depthParityStart">,
 ): SceneModel {
   const view = result.view;
-  const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, input.view, input.resolveGlyph,
+  const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, view, input.resolveGlyph,
     input.depthParityStart === undefined ? {} : { depthParityStart: input.depthParityStart });
   const frame = buildScene({ document: input.document, views: { [view.viewId]: view } }, view.viewId);
   const bundledMembers = new Set(Object.values(result.edgeBundles ?? {}).flatMap(bundle => bundle.members.slice(1)));

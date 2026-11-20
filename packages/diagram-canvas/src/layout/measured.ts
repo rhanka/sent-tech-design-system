@@ -73,7 +73,7 @@ import {
   type LayoutHints,
 } from "./hints.js";
 import { measureSceneBox } from "./sceneMeasure.js";
-import { anatomyCardGeometry, anatomyZoneGeometry, ZONE_GEOMETRY, type DiagramAnatomy } from "../presentation/diagramCardModel.js";
+import { anatomyCardGeometry, anatomyZoneGeometry, ZONE_GEOMETRY, zoneDepthSurface, type DiagramAnatomy } from "../presentation/diagramCardModel.js";
 import { placePackedLabel } from "./labels.js";
 import {
   CONTENT_INSET,
@@ -1157,6 +1157,30 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         }
       } else for (const overflow of headerOverflows(headerInputs.get(id)!, headers.get(id)!, lineHeightOf)) {
         warnOverflow(overflow, kinds.get(id) !== "leaf");
+      }
+    }
+    if (options.reportSurfaceSame === true) {
+      for (const id of headerIds) {
+        const kind = kinds.get(id);
+        if (kind !== "container-expanded" && kind !== "legend-expanded") continue;
+        const zoneOcc = representativeOf(id);
+        const zoneEntry = presentation.entities[zoneOcc] as { readonly depth?: number; readonly depthParityStart?: 0 | 1 } | undefined;
+        const zoneDepth = zoneEntry?.depth ?? graph.nodes.get(id)?.depth ?? 0;
+        const surface = zoneDepthSurface(zoneDepth, zoneEntry?.depthParityStart);
+        if (surface !== "surface1") continue;
+        for (const childId of orderedChildrenOf(id)) {
+          if (kinds.get(childId) !== "leaf") continue;
+          const childOcc = representativeOf(childId);
+          const childEntry = presentation.entities[childOcc] as { readonly categoryRef?: string } | undefined;
+          if (childEntry?.categoryRef !== undefined) continue;
+          warnings.push({
+            code: "zone-surface-same",
+            severity: "info",
+            refs: [zoneOcc, childOcc],
+            message: `white leaf card ${childOcc} sits on same-colour surface1 zone ${zoneOcc}`,
+            details: { zone: zoneOcc, card: childOcc, surface },
+          });
+        }
       }
     }
 

@@ -171,6 +171,8 @@
     labels?: Partial<DiagramSceneFigureLabels>;
     iconBindings?: import("@sentropic/diagram-canvas/diagramSceneModel").SceneIconBindings;
     strictIcons?: boolean;
+    /** Selectable start parity for alternating zone depth surfaces (`0` default, `1` flipped). */
+    depthParityStart?: 0 | 1;
     resolveGlyph?: (name: string) => DiagramGlyphPaths | undefined;
     onFoldChange?: (
       collapsed: readonly SceneOccurrenceRef[],
@@ -224,6 +226,7 @@
     resolveGlyph = getDiagramGlyph,
     iconBindings,
     strictIcons = true,
+    depthParityStart,
     onFoldChange,
     onSelect,
     onLayout,
@@ -285,6 +288,7 @@
       presentation,
       ...(iconBindings === undefined ? {} : { iconBindings }),
       strictIcons,
+      ...(depthParityStart === undefined ? {} : { depthParityStart }),
       resolveGlyph: resolveGlyph as typeof getDiagramGlyph,
       measureLines: lineMeasurer,
       collapsed: collapsedNow,
@@ -308,6 +312,7 @@
           presentation,
       ...(iconBindings === undefined ? {} : { iconBindings }),
       strictIcons,
+      ...(depthParityStart === undefined ? {} : { depthParityStart }),
       resolveGlyph,
           measureLines: lineMeasurer,
           flows: flowOptions,

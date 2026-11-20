@@ -404,4 +404,28 @@ describe('scene host DOM and camera/fold behavior', () => {
     expect(vue.find('[role="alert"]').text()).toContain('Diagram unavailable');
     expect(vue.attributes('data-scene-refused')).toBeTruthy(); vue.unmount();
   });
+  it('should wire depthParityStart and stamp synthesized nested-zone surfaces identically on Svelte and Vue', async () => {
+    frame();
+    const nested = sceneOf('nested-depth', [
+      { id: 'outer', container: true },
+      { id: 'inner', container: true, parent: 'outer' },
+      { id: 'leaf', parent: 'inner' },
+    ]);
+    for (const depthParityStart of [undefined, 1] as const) {
+      const props = { ...host, ...nested, ...(depthParityStart === undefined ? {} : { depthParityStart }) };
+      const vue = mount(SceneFigure, { props }); const svelte = render(SvelteScene, { props });
+      await nextTick(); await tick(); await nextTick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      const outerFrame = vue.element.querySelector(`[data-scene-occurrence="${occurrence('outer')}"] .st-diagramZone`);
+      const innerFrame = vue.element.querySelector(`[data-scene-occurrence="${occurrence('inner')}"] .st-diagramZone`);
+      if (depthParityStart === undefined) {
+        expect(innerFrame?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+      } else {
+        expect(outerFrame?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+        expect(innerFrame?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface1');
+      }
+      vue.unmount(); svelte.unmount();
+    }
+    vi.unstubAllGlobals();
+  });
 });

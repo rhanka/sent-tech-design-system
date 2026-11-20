@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:95d2aab129e822830a03991ce17cbe7a818c44dea78e7da4376b741879f7f3bc",
+  "digest": "sha256:90a58f47b34a70ce8def3b2332b39c25e278fbc6d6489004d0a1bb283fb3a286",
   "entryDigest": "sha256:f2285040cf622dc77c841d32e0638cfb565512d1b52d9cccef7b3d3b3f4be059",
   "format": "component-contract/v1",
   "frameworks": {
@@ -155,9 +155,9 @@
                   "card-icon-missing",
                   "card-grown",
                   "zone-overflow",
+                  "zone-surface-same",
                   "zone-icon-unknown",
-                  "zone-grown",
-                  "zone-surface-same"
+                  "zone-grown"
                 ]
               },
               "entityId": {
@@ -468,9 +468,9 @@
                   "card-icon-missing",
                   "card-grown",
                   "zone-overflow",
+                  "zone-surface-same",
                   "zone-icon-unknown",
-                  "zone-grown",
-                  "zone-surface-same"
+                  "zone-grown"
                 ]
               },
               "entityId": {
