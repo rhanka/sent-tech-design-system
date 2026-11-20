@@ -100,6 +100,11 @@ export type PropsParity = [
   Expect<Equal<Emitted.ForecastLineChartProps, HandWritten.ForecastLineChartProps>>,
   Expect<Equal<Emitted.FormatPanelProps, HandWritten.FormatPanelProps>>,
   Expect<Equal<Emitted.FunnelChartProps, HandWritten.FunnelChartProps>>,
+  Expect<Equal<Emitted.GanttChartProps, HandWritten.GanttChartProps>>,
+  Expect<Equal<Emitted.GaugeChartProps, HandWritten.GaugeChartProps>>,
+  Expect<Equal<Emitted.GeoClusterMapProps, HandWritten.GeoClusterMapProps>>,
+  Expect<Equal<Emitted.GeoDensityMapProps, HandWritten.GeoDensityMapProps>>,
+  Expect<Equal<Emitted.GeoFlowMapProps, HandWritten.GeoFlowMapProps>>,
 ];
 
 export type ComponentParity = [
@@ -157,6 +162,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.ForecastLineChart, typeof HandWritten.ForecastLineChart>>,
   Expect<Equal<typeof Emitted.FormatPanel, typeof HandWritten.FormatPanel>>,
   Expect<Equal<typeof Emitted.FunnelChart, typeof HandWritten.FunnelChart>>,
+  Expect<Equal<typeof Emitted.GanttChart, typeof HandWritten.GanttChart>>,
+  Expect<Equal<typeof Emitted.GaugeChart, typeof HandWritten.GaugeChart>>,
+  Expect<Equal<typeof Emitted.GeoClusterMap, typeof HandWritten.GeoClusterMap>>,
+  Expect<Equal<typeof Emitted.GeoDensityMap, typeof HandWritten.GeoDensityMap>>,
+  Expect<Equal<typeof Emitted.GeoFlowMap, typeof HandWritten.GeoFlowMap>>,
 ];
 
 export type ValueParity = [

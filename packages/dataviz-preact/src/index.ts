@@ -165,3 +165,15 @@ export { FormatPanel } from './lib/FormatPanel.js';
 export type { FormatPanelProps } from './lib/FormatPanel.js';
 export { FunnelChart } from './lib/FunnelChart.js';
 export type { FunnelChartProps } from './lib/FunnelChart.js';
+
+// Group 3 batch 6 components.
+export { GanttChart } from './lib/GanttChart.js';
+export type { GanttChartProps } from './lib/GanttChart.js';
+export { GaugeChart } from './lib/GaugeChart.js';
+export type { GaugeChartProps } from './lib/GaugeChart.js';
+export { GeoClusterMap } from './lib/GeoClusterMap.js';
+export type { GeoClusterMapProps } from './lib/GeoClusterMap.js';
+export { GeoDensityMap } from './lib/GeoDensityMap.js';
+export type { GeoDensityMapProps } from './lib/GeoDensityMap.js';
+export { GeoFlowMap } from './lib/GeoFlowMap.js';
+export type { GeoFlowMapProps } from './lib/GeoFlowMap.js';
