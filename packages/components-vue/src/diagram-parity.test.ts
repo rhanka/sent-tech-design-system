@@ -144,13 +144,17 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
     { entityId: 'proposed', title: 'Proposal', body: ['body'], proposed: true, align: 'center', toggle: { collapsed: true, label: 'Expand' } },
     { entityId: 'v2-default', title: 'Compact', body: ['Line'], anatomy: 'v2' },
     { entityId: 'v2-left', title: 'Compact left', body: ['Line'], anatomy: 'v2', align: 'left' },
+    { entityId: 'v2-fallback', kicker: 'KICKER', title: 'Title', body: ['Body', 'Detail'], detailCount: 1, footer: 'Footer', anatomy: 'v2' },
   ] satisfies DiagramCardProps[]) {
     it(`should preserve ${props.entityId} state and diagnostics`, async () => {
       const vue = mount(DiagramCard, { props }); const svelte = render(SvelteCard, { props });
       await nextTick(); await tick(); expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
       expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderCardSvg(props).diagnostics);
-      if (props.anatomy === 'v2') {
+      if (props.anatomy === 'v2' && props.entityId !== 'v2-fallback') {
         expect(vue.element.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap: var(--st-component-diagramCardCompact-iconTextGap, 4px)');
+      } else if (props.entityId === 'v2-fallback') {
+        expect(vue.element.getAttribute('style') ?? '').not.toContain('--st-component-diagramCard-iconTextGap');
+        expect(vue.element.getAttribute('style') ?? '').toContain('height: 200px');
       }
       await vue.trigger('click'); expect(vue.emitted('select')).toEqual([[{ entityId: props.entityId }]]);
       vue.unmount(); svelte.unmount();
@@ -440,19 +444,23 @@ describe('scene host DOM and camera/fold behavior', () => {
       { id: 'leaf', parent: 'inner' },
     ]);
     for (const depthParityStart of [undefined, 1] as const) {
-      const props = { ...host, ...nested, ...(depthParityStart === undefined ? {} : { depthParityStart }) };
-      const vue = mount(SceneFigure, { props }); const svelte = render(SvelteScene, { props });
-      await nextTick(); await tick(); await nextTick();
-      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
-      const outerFrame = vue.element.querySelector(`[data-scene-occurrence="${occurrence('outer')}"] .st-diagramZone`);
-      const innerFrame = vue.element.querySelector(`[data-scene-occurrence="${occurrence('inner')}"] .st-diagramZone`);
-      if (depthParityStart === undefined) {
-        expect(innerFrame?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
-      } else {
-        expect(outerFrame?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
-        expect(innerFrame?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface1');
+      for (const extra of [{}, { flows: {} }] as const) {
+        const props = { ...host, ...nested, ...extra, ...(depthParityStart === undefined ? {} : { depthParityStart }) };
+        const vue = mount(SceneFigure, { props }); const svelte = render(SvelteScene, { props });
+        await nextTick(); await tick(); await nextTick();
+        if (Object.keys(extra).length === 0) {
+          expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+        }
+        const outerFrame = vue.element.querySelector(`[data-scene-occurrence="${occurrence('outer')}"] .st-diagramZone`);
+        const innerFrame = vue.element.querySelector(`[data-scene-occurrence="${occurrence('inner')}"] .st-diagramZone`);
+        if (depthParityStart === undefined) {
+          expect(innerFrame?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+        } else {
+          expect(outerFrame?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+          expect(innerFrame?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface1');
+        }
+        vue.unmount(); svelte.unmount();
       }
-      vue.unmount(); svelte.unmount();
     }
     vi.unstubAllGlobals();
   });
@@ -539,6 +547,9 @@ describe('scene host DOM and camera/fold behavior', () => {
     const outerHeader = vue.element.querySelector<HTMLElement>(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone-header`)!;
     expect(outerHeader.style.left).toBe('calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))');
     expect(outerHeader.style.right).toBe(outerHeader.style.left);
+    // Compact v2 cards and expanded v2 zones both apply host iconTextGap override.
+    expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('a1')}"] .st-diagramCard`)?.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap');
+    expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap');
     const initialOuterB = rectOf(vue.element, 'outerB');
     const initialExt = rectOf(vue.element, 'ext');
 

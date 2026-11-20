@@ -75,6 +75,14 @@ describe("diagram depth stamping (DE-1 addendum 1)", () => {
       const zone = entry as { form?: string; depthParityStart?: 0 | 1 };
       if (zone.form === "container") expect(zone.depthParityStart).toBe(1);
     }
+    // An explicitly pinned depth still inherits a non-default scene depthParityStart.
+    const pinnedAndFlipped = resolveScenePresentation(document, pinned, {}, true, view, undefined, {
+      depthParityStart: 1,
+    });
+    expect((pinnedAndFlipped.presentation.entities["occurrence:nested"] as { depth?: number; depthParityStart?: 0 | 1 })).toMatchObject({
+      depth: 7,
+      depthParityStart: 1,
+    });
   });
 
   it("should stamp nesting depth and start parity on viewless/synthesized scenes across fold and SVG render", () => {
@@ -173,5 +181,87 @@ describe("diagram depth stamping (DE-1 addendum 1)", () => {
     for (const entry of Object.values(resolvedOwner.presentation.entities)) {
       expect("depthParityStart" in (entry as object)).toBe(false);
     }
+  });
+
+  it("should stamp 3-level viewless/v2 depth surfaces and paint surface2 in renderSceneSvg across fold and depthParityStart", () => {
+    const deepDoc = {
+      documentId: "document:deep-svg-surface2",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: {
+        "entity:l0": { id: entityRef("l0"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Level 0" } } },
+        "entity:l1": { id: entityRef("l1"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Level 1" } } },
+        "entity:l2": { id: entityRef("l2"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Level 2" } } },
+        "entity:leaf": { id: entityRef("leaf"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Leaf" } } },
+      },
+      relations: {
+        "relation:c1": { id: relationRef("c1"), profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: entityRef("l0") }, { role: "child", target: entityRef("l1") }], attributes: {} },
+        "relation:c2": { id: relationRef("c2"), profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: entityRef("l1") }, { role: "child", target: entityRef("l2") }], attributes: {} },
+        "relation:c3": { id: relationRef("c3"), profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: entityRef("l2") }, { role: "child", target: entityRef("leaf") }], attributes: {} },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SceneDocument;
+    const deepPres = {
+      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      entities: {
+        "occurrence:e.l0": { form: "container", text: { title: "L0" }, anatomy: "v2" },
+        "occurrence:e.l1": { form: "container", text: { title: "L1" }, anatomy: "v2" },
+        "occurrence:e.l2": { form: "container", text: { title: "L2" }, anatomy: "v2" },
+        "occurrence:e.leaf": { form: "card", text: { title: "Leaf", body: "Work" }, anatomy: "v2" },
+      },
+      legends: {},
+      categoryTokens: [],
+    } as unknown as ScenePresentation;
+    const measureLines = cardLineMeasurer(defaultCardMeasure);
+
+    // View-without-groups fallback stamps semantic nesting depth (0, 1, 2).
+    const grouplessView = {
+      ...createView({ viewId: viewRef("groupless"), semanticDocumentId: deepDoc.documentId, revision: 1 }),
+      entityOccurrences: {
+        "occurrence:e.l0": { id: occurrenceRef("e.l0"), entity: entityRef("l0"), geometry: { x: 0, y: 0, width: 352, height: 154 } },
+        "occurrence:e.l1": { id: occurrenceRef("e.l1"), entity: entityRef("l1"), geometry: { x: 0, y: 0, width: 352, height: 154 } },
+        "occurrence:e.l2": { id: occurrenceRef("e.l2"), entity: entityRef("l2"), geometry: { x: 0, y: 0, width: 352, height: 154 } },
+        "occurrence:e.leaf": { id: occurrenceRef("e.leaf"), entity: entityRef("leaf"), geometry: { x: 0, y: 0, width: 352, height: 154 } },
+      },
+      groups: {},
+    } as unknown as SceneView;
+    const stamped = resolveScenePresentation(deepDoc, deepPres, {}, true, grouplessView).presentation.entities as Record<string, { depth?: number }>;
+    expect(stamped["occurrence:e.l0"]?.depth).toBeUndefined();
+    expect(stamped["occurrence:e.l1"]?.depth).toBe(1);
+    expect(stamped["occurrence:e.l2"]?.depth).toBe(2);
+
+    // Expanded & folded renderSceneSvg carry surface2 fallback and paint depth-1 folded card with surface2.
+    const foldedL1 = renderSceneSvg({
+      document: deepDoc,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: deepPres,
+      measureLines,
+      collapsed: [occurrenceRef("e.l1")],
+    });
+    expect(foldedL1.scene.nodes.map((n) => n.occurrence).sort()).toEqual(["occurrence:e.l0", "occurrence:e.l1"]);
+    expect(foldedL1.svg).toContain("--st-component-diagramZone-surface2:#f8fafc");
+    expect(foldedL1.svg).toContain("--st-semantic-surface-subtle:#f8fafc");
+    expect(foldedL1.svg).toContain("var(--st-component-diagramZone-surface2, var(--st-semantic-surface-subtle))");
+
+    // Flipped depthParityStart: 1 paints depth-0 outer zone with surface2 and depth-1 middle zone with surface1.
+    const flippedSvg = renderSceneSvg({
+      document: deepDoc,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: deepPres,
+      measureLines,
+      collapsed: [],
+      depthParityStart: 1,
+    });
+    expect(flippedSvg.scene.nodes.find((n) => n.occurrence === "occurrence:e.l0")?.presentation?.depthParityStart).toBe(1);
+    expect(flippedSvg.scene.nodes.find((n) => n.occurrence === "occurrence:e.l1")?.presentation?.depth).toBe(1);
+    expect(flippedSvg.scene.nodes.find((n) => n.occurrence === "occurrence:e.l2")?.presentation?.depth).toBe(2);
+    expect(flippedSvg.svg).toContain("var(--st-component-diagramZone-surface2, var(--st-semantic-surface-subtle))");
+    expect(flippedSvg.svg).toContain("var(--st-component-diagramZone-surface1, var(--st-semantic-surface-raised))");
   });
 });

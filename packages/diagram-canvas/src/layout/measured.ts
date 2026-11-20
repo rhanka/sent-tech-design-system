@@ -1125,7 +1125,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       for (const id of headerIds) {
         const kind = kinds.get(id)!;
         const folded = kind === "container-collapsed" || kind === "legend-collapsed";
-        headerAt(id, folded ? innerWidthOf(packedSizes.get(id)?.width ?? cardWidthOf(representativeOf(id))) : innerWidthOf(outerWidths.get(id) ?? FIXED_CARD_WIDTH));
+        headerAt(id, folded ? innerWidthOf(packedSizes.get(id)?.width ?? cardWidthOf(representativeOf(id))) : innerWidthOf(outerWidths.get(id) ?? cardWidthOf(representativeOf(id))));
       }
     };
     sizeAll();
