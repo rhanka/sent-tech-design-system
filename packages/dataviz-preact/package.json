@@ -1,0 +1,71 @@
+{
+  "name": "@sentropic/dataviz-preact",
+  "version": "0.0.0-p6.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Preact + Signals adapter and dashboard components for @sentropic/dataviz-core, built on @sentropic/design-system-preact. JSX source of truth for the Preact and the emitted React builds (lot P6 scaffold; private until lot P8).",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
+    "directory": "packages/dataviz-preact"
+  },
+  "sideEffects": [
+    "./dist/runtime.js",
+    "./dist/signals.js"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!dist/.srchash",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/emit-react.mjs && tsc -p .react-emit/tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json && node scripts/emit-react.mjs && tsc -p .react-emit/tsconfig.json --noEmit && tsc -p react/tsconfig.json",
+    "test": "npm run test:emit && npm run test:scaffold && npm run test:preact && npm run test:react",
+    "test:emit": "node --test scripts/emit-react.test.mjs scripts/port-metrics.test.mjs && npm run measure:port:check",
+    "test:scaffold": "node --test scripts/scaffold.test.mjs && node scripts/coverage-manifest.mjs --check && node scripts/package-guard.mjs --check",
+    "test:preact": "vitest run",
+    "test:react": "node scripts/emit-react.mjs && cd ../dataviz-react && vitest run --config ../dataviz-preact/vitest.react.config.ts",
+    "emit:react": "node scripts/emit-react.mjs",
+    "measure:port": "node scripts/port-metrics.mjs --write",
+    "measure:port:check": "node scripts/port-metrics.mjs --check"
+  },
+  "dependencies": {
+    "@sentropic/dataviz-core": "0.5.0",
+    "@sentropic/design-system-preact": "0.0.0-p0.0",
+    "@sentropic/design-system-themes": "0.14.0",
+    "jspdf": "^4.2.1",
+    "svg2pdf.js": "^2.7.0"
+  },
+  "peerDependencies": {
+    "@preact/signals": "^2.11.4",
+    "preact": "^10.29.8"
+  },
+  "devDependencies": {
+    "@babel/core": "7.29.7",
+    "@preact/preset-vite": "2.10.6",
+    "@preact/signals": "2.11.4",
+    "@sentropic/dataviz-react": "0.5.0",
+    "@sentropic/design-system-react": "0.40.0",
+    "@testing-library/preact": "3.2.6",
+    "@testing-library/react": "16.3.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.2.3",
+    "jsdom": "27.4.0",
+    "preact": "10.29.8",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "typescript": "5.9.3",
+    "vite": "8.3.4",
+    "vitest": "4.1.11"
+  }
+}
