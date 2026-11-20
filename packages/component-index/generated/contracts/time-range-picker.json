@@ -1,8 +1,8 @@
 {
   "componentId": "time-range-picker",
   "contractSource": "derived",
-  "digest": "sha256:7c77fca2e65352b2a9561a8c52970d2db00c976b1fc26d37024f24edc99c8253",
-  "entryDigest": "sha256:72b857147fc87ae7b6ee565026122e905c4d19daabeaf37f0061f956b01e3461",
+  "digest": "sha256:c7c4be05598291c94f85feaaa001773d375f5cbcefec522e2cb2f02c0c25e0d5",
+  "entryDigest": "sha256:39111add216575cb37dc422c2291ef08df78601fb2561508b9cb5bc57f77397c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -542,7 +542,7 @@
         "declarationPath": "packages/components-svelte/dist/TimeRangePicker.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimeRangePickerProps",
-        "version": "0.41.5"
+        "version": "0.42.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -758,7 +758,7 @@
         "declarationPath": "packages/components-vue/dist/TimeRangePicker.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TimeRangePickerProps",
-        "version": "0.41.0-next.7"
+        "version": "0.41.0-next.8"
       },
       "status": "partial",
       "unresolved": [],
