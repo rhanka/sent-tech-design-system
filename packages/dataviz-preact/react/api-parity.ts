@@ -155,6 +155,11 @@ export type PropsParity = [
   Expect<Equal<Emitted.TileMapChartProps, HandWritten.TileMapChartProps>>,
   Expect<Equal<Emitted.TimelineChartProps, HandWritten.TimelineChartProps>>,
   Expect<Equal<Emitted.TopNFilterProps, HandWritten.TopNFilterProps>>,
+  Expect<Equal<Emitted.TraceWaterfallChartProps, HandWritten.TraceWaterfallChartProps>>,
+  Expect<Equal<Emitted.TreegraphChartProps, HandWritten.TreegraphChartProps>>,
+  Expect<Equal<Emitted.TrendLineChartProps, HandWritten.TrendLineChartProps>>,
+  Expect<Equal<Emitted.ValueSlicerProps, HandWritten.ValueSlicerProps>>,
+  Expect<Equal<Emitted.VariablePieChartProps, HandWritten.VariablePieChartProps>>,
 ];
 
 export type ComponentParity = [
@@ -264,6 +269,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.TileMapChart, typeof HandWritten.TileMapChart>>,
   Expect<Equal<typeof Emitted.TimelineChart, typeof HandWritten.TimelineChart>>,
   Expect<Equal<typeof Emitted.TopNFilter, typeof HandWritten.TopNFilter>>,
+  Expect<Equal<typeof Emitted.TraceWaterfallChart, typeof HandWritten.TraceWaterfallChart>>,
+  Expect<Equal<typeof Emitted.TreegraphChart, typeof HandWritten.TreegraphChart>>,
+  Expect<Equal<typeof Emitted.TrendLineChart, typeof HandWritten.TrendLineChart>>,
+  Expect<Equal<typeof Emitted.ValueSlicer, typeof HandWritten.ValueSlicer>>,
+  Expect<Equal<typeof Emitted.VariablePieChart, typeof HandWritten.VariablePieChart>>,
 ];
 
 export type ValueParity = [
