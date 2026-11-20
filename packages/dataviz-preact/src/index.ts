@@ -69,3 +69,15 @@ export { AnimatedBubbleChart } from './lib/AnimatedBubbleChart.js';
 export type { AnimatedBubbleChartProps } from './lib/AnimatedBubbleChart.js';
 export { AnomalySwimLaneChart } from './lib/AnomalySwimLaneChart.js';
 export type { AnomalySwimLaneChartProps } from './lib/AnomalySwimLaneChart.js';
+
+// Group 2 batch 3 components.
+export { ArcDiagramChart } from './lib/ArcDiagramChart.js';
+export type { ArcDiagramChartProps } from './lib/ArcDiagramChart.js';
+export { AreaRangeChart } from './lib/AreaRangeChart.js';
+export type { AreaRangeChartProps } from './lib/AreaRangeChart.js';
+export { AreaSplineRangeChart } from './lib/AreaSplineRangeChart.js';
+export type { AreaSplineRangeChartProps } from './lib/AreaSplineRangeChart.js';
+export { BellCurveChart } from './lib/BellCurveChart.js';
+export type { BellCurveChartProps } from './lib/BellCurveChart.js';
+export { BookmarkNavigator } from './lib/BookmarkNavigator.js';
+export type { BookmarkNavigatorProps } from './lib/BookmarkNavigator.js';
