@@ -1625,7 +1625,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:027a487f6f4e23d919f329368239b93fa3b97376ac1cf0522a1c4c4b58950dc0",
+      "digest": "sha256:659772715618f10f38ba36370f95324251e68465d5ec6384584a72d504ab08d5",
       "frameworks": [
         "svelte",
         "vue"
@@ -5868,6 +5868,6 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "registryRevision": "sha256:a6043be59cd08e5a0434a44df21d09347e2c1274b401870d3c3995bd04de6705",
-  "sourceCommit": "de8d03fd84d2d715f8ede6a3962577c71c2f207e"
+  "registryRevision": "sha256:f099ca941bd12200eb037d8a8e442c15e89e462889cd0f051cf5d845fe80b20f",
+  "sourceCommit": "1b55385a552d20be073acc8a2323732ce6fd8843"
 }
