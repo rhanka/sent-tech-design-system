@@ -40,6 +40,19 @@ Round 1 replayed `rtk npm run test --workspace packages/review-core` (60 tests),
 
 The candidate `review-core` archive still identifies as 0.1.1. It was packed from the updated fixture source at `b2954e161` with integrity `sha512-XHYJLCgJnhaJkxC4T/o10tHhX8lyZi5v2p6bnzsqhV4q2PyLZVhkNRE67cH89MpIqpE6VqhselRpEEUGj8tXUA==`. Release the fixture corrections as `review-core` 0.1.2 in the release PR. The Svelte 0.43.1 candidate retains archive integrity `sha512-D/iHwKU4Mqgwj44JUJRIgW3j1E/62IR2efVD7Uj8aRu9S+sQxusn0vDmywPKx0D4cv4nGSbWc8t3D64MUhZE2Q==`.
 
+## Round 2 corrections
+
+| Regression | Red run | Green run |
+| --- | --- | --- |
+| Live session scope | Reusing a tool-call ID replaced the visible agent and run across tenants and workspaces. | Agent writes and explicit registrations use the same tenant, workspace and tool-call key as reads. |
+| Thread summary | An anchored reply supplied the assignee and anchor for an unanchored root. | The summary uses the root target and assignee. A root without an assignee stays unassigned, while the C2 reference can fall back to a reply. |
+| Record queries | Both list verbs missed records when the query omitted `recordType`. | Kind and ID select the records. Section and status filters still apply, and rows retain their record type. |
+| Timestamp ties | Locale sorting placed a reply before the root at the same timestamp. | ID comparison uses the C2 ordering. |
+
+The parity suite replays all ten port verbs against `@sentropic/comments@0.3.2`, locked as a development dependency with integrity `sha512-GAV+M49yK/J1DiaDBcwjZ5UpZsJpnFQ8MCfJlacSVc1uYS5CnMNZz9h1IEAgJNIbDmaPUyAz2ZB3TKuEYLslQQ==`. npm provenance identifies source commit `75bc6d28d1d5f0fc2b29d1e2ad3be955780aee39`. The reference store and its port, types and event modules are identical at the pinned C2 commit `13490b16b9ac717d5abf5c5128146a536aa80f66`. The tests compare raw port results, scope failures, and the persisted row projection after host-side normalization, anchor inheritance and provenance handling.
+
+Round 2 passed all 71 review-core tests, including nine parity cases, the review-core type check, and all 23 workflow invariant tests. The isolated published consumer passed against the archives above.
+
 ## To execute in the integration lots
 
 FA-D3 owns the dossier kit build, mounting from `reviewRoot` on `st-dossier-ready`, root replacement, and the no-adapter path. H1 owns the Focus Web graph, and H5/FA-H5 own the persistent C2 path. The DS-7 adapter tests exercise an in-memory fixture. The accessibility and client-bundle checks use jsdom.
