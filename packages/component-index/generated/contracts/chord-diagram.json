@@ -1,8 +1,8 @@
 {
   "componentId": "chord-diagram",
   "contractSource": "derived",
-  "digest": "sha256:0b1b396d4e96c5b807e6950da1347c419fcb9df2828beb866c234ca28b36609f",
-  "entryDigest": "sha256:a56ccc3fcd6df2a4c95300e84303d6bcea75b43e4095c39dd665f843c36952bc",
+  "digest": "sha256:1efbfc3b7afdfc4171b0b97f8dea5559a4269fe86574ea456b3762a8c195c0dd",
+  "entryDigest": "sha256:e02b3ece853eb0a1c7958bc12eebdc639c10dcd3c46b65534987569ae10399d6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/ChordDiagram.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChordDiagramProps",
-        "version": "0.43.0"
+        "version": "0.43.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -341,7 +341,7 @@
         "declarationPath": "packages/components-vue/dist/ChordDiagram.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChordDiagramProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "partial",
       "unresolved": [],

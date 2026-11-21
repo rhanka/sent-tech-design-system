@@ -7,6 +7,7 @@
   import {
     anatomyZoneGeometry,
     defaultCardMeasure,
+    resolveDiagramAlign,
     zoneFullText,
     layoutZone,
     zoneCollapsedCardProps,
@@ -106,17 +107,19 @@
   const layout = $derived(layoutZone(zoneProps, measure, []));
   /** Expanded chrome geometry for the pinned anatomy (v1 values by default). */
   const zoneGeometry = $derived(anatomyZoneGeometry(anatomy));
-  const effectiveAlign = $derived(align ?? (anatomy === "v2" ? "center" : "left"));
+  const effectiveAlign = $derived(resolveDiagramAlign(anatomy, align));
 
   /**
    * Owner addendum 1: an explicitly threaded depth paints the resolved
-   * depth surface; without depth the frame keeps its resting surface,
-   * byte-identical.
+   * depth surface via non-inherited `background` (never mutating the
+   * inherited `--st-component-diagramZone-surface` custom property, so
+   * nested child zones keep their own surface); without depth the frame
+   * keeps its resting surface, byte-identical.
    */
   const surfaceStyle = $derived(
     zoneProps.depth === undefined && zoneProps.depthParityStart === undefined
       ? ""
-      : `;--st-component-diagramZone-surface:var(--st-component-diagramZone-${layout.surface ?? "surface1"}, var(--st-semantic-surface-${(layout.surface ?? "surface1") === "surface1" ? "raised" : "subtle"}))`,
+      : `;background:var(--st-component-diagramZone-${layout.surface ?? "surface1"}, var(--st-semantic-surface-${(layout.surface ?? "surface1") === "surface1" ? "raised" : "subtle"}))`,
   );
 
   const cardProps = $derived(
@@ -133,7 +136,9 @@
   );
 
   const overflowSlot = $derived(
-    layout.diagnostics.find((diagnostic) => diagnostic.code === "zone-overflow")?.slot,
+    layout.diagnostics.find(
+      (diagnostic) => diagnostic.code === "zone-overflow" && diagnostic.reason !== "fallback-v1",
+    )?.slot,
   );
   const unknownIcon = $derived(
     layout.diagnostics.some((diagnostic) => diagnostic.code === "zone-icon-unknown"),
@@ -162,14 +167,29 @@
   const borderToken = "var(--st-component-diagramZone-borderWidth, 1.5px)";
   const frameTop = (frameY: number): string => `calc(${frameY - y}px - ${borderToken})`;
   const frameInset = (inset: number): string => `calc(${inset}px - ${borderToken})`;
-  // Header band: frame top + headerInset, spanning the header inline insets
-  // (left and right both anchored to headerInset, matching layoutZone and the
-  // toggle inset even when containerPadding differs on v2), as tall as the
-  // layout's header block + subtitle.
+  // Header band: frame top + headerInset. For v1 keep the frozen 0.41.5 right
+  // inset (`containerPadding ?? contentInsetInline`); for v2 anchor right to
+  // `headerInset` (12px) and scope the v2 header CSS custom properties strictly
+  // to `.st-diagramZone-header` so they never leak into nested v1 cards/zones.
+  const headerRightInset = $derived(
+    anatomy === "v2" ? zoneGeometry.headerInset : (containerPadding ?? zoneGeometry.contentInsetInline),
+  );
+  const v2HeaderVars =
+    ";--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px);--st-component-diagramCard-iconTextGap:var(--st-component-diagramCardCompact-iconTextGap, 4px);--st-component-diagramZone-headerInset:var(--st-component-diagramCardCompact-headerInset, 12px)";
+  // W1-12: on surface2 zones only (where 0.41.5's surface-subtle hover equals
+  // the zone background and becomes invisible), switch the toggle's hover token
+  // to secondaryHoverBackground — scoped strictly to `.st-diagramZone-header`
+  // so nested children and v1/surface1 zones stay byte-identical to 0.41.5.
+  const surface2ToggleHoverVars =
+    ";--st-component-control-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)));--st-component-iconButton-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)))";
+  const hasSurface2 = $derived(
+    (zoneProps.depth !== undefined || zoneProps.depthParityStart !== undefined) &&
+      layout.surface === "surface2",
+  );
   const headerStyle = $derived(
     header === undefined
       ? undefined
-      : `top:${frameTop(y + zoneGeometry.headerInset)};left:${frameInset(zoneGeometry.headerInset)};right:${frameInset(zoneGeometry.headerInset)};height:${header.ruleY - zoneGeometry.headerRuleGap - y - zoneGeometry.headerInset}px`,
+      : `top:${frameTop(y + zoneGeometry.headerInset)};left:${frameInset(zoneGeometry.headerInset)};right:${frameInset(headerRightInset)};height:${header.ruleY - zoneGeometry.headerRuleGap - y - zoneGeometry.headerInset}px${anatomy === "v2" ? v2HeaderVars : ""}${hasSurface2 ? surface2ToggleHoverVars : ""}`,
   );
   const ruleStyle = $derived(
     header === undefined
@@ -223,9 +243,7 @@
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <div
       class="st-diagramZone st-diagramZone--expanded{effectiveAlign === "center" ? " st-diagramZone--center" : ""}{proposed === true ? " st-diagramZone--proposed" : ""}{anatomy === "v2" ? " st-diagramZone--v2" : ""}"
-      style={anatomy === "v2"
-        ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px);--st-component-diagramCard-iconTextGap:var(--st-component-diagramCardCompact-iconTextGap, 4px);--st-component-diagramZone-headerInset:var(--st-component-diagramCardCompact-headerInset, 12px)${surfaceStyle}`
-        : `width:${layout.box.width}px;height:${layout.box.height}px${surfaceStyle}`}
+      style={`width:${layout.box.width}px;height:${layout.box.height}px${surfaceStyle}`}
       data-tone={tone}
       data-proposed={proposed === true ? "true" : undefined}
       role="group"

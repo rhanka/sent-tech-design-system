@@ -2,7 +2,12 @@
 // Keep the model dependency in diagram-canvas rather than DS components.
 export {
   CURRENT_SCHEMA_VERSION,
+  DEFAULT_PRESENTATION,
   DIAGRAM_PRESENTATION_CONTRACT_PIN,
+  createView,
+  entityRef,
   m3ProfileRegistry,
+  occurrenceRef,
   shippedExecutorBindings,
+  viewRef,
 } from "@sentropic/diagram-core";
