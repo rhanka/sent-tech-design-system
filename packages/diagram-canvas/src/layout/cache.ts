@@ -9,6 +9,7 @@ import {
 } from "@sentropic/diagram-core";
 
 import { DEFAULT_EDGE_LABEL_SIZE } from "../camera.js";
+import { measureLegendProbe } from "../presentation/linkLegend.js";
 import { isR7ConnectorPresentation } from "../r7Mode.js";
 import { layoutDocument } from "./engine.js";
 import { digestOf, layoutFingerprint } from "./fingerprint.js";
@@ -109,12 +110,20 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
     const fn = measured ? options.measureLines : options.measureText;
     if (fn === undefined) return "missing";
     const known = measurers.get(fn);
-    if (known !== undefined && known.version === fn.version && known.flows === flows) return known.digest;
-    const probe = measured
-      ? roles.filter((role) => flows || role !== "flow-badge").map((role) => options.measureLines!({ text: "Mm09 É—", role, availableWidth: 290, allocatedLines: DEFAULT_ALLOCATED_LINES[role], folded: false }))
-      : (["node", "container-title", "edge-label"] as const).map((role) => options.measureText("Mm09 É—", role));
-    const digest = digestOf(canonicalise({ version: fn.version, probe }));
-    measurers.set(fn, { version: fn.version, flows, digest });
+    let digest: string;
+    if (known !== undefined && known.version === fn.version && known.flows === flows) {
+      digest = known.digest;
+    } else {
+      const probe = measured
+        ? roles.filter((role) => flows || role !== "flow-badge").map((role) => options.measureLines!({ text: "Mm09 É—", role, availableWidth: 290, allocatedLines: DEFAULT_ALLOCATED_LINES[role], folded: false }))
+        : (["node", "container-title", "edge-label"] as const).map((role) => options.measureText("Mm09 É—", role));
+      digest = digestOf(canonicalise({ version: fn.version, probe }));
+      measurers.set(fn, { version: fn.version, flows, digest });
+    }
+    if (measured && options.hints?.composition !== undefined && options.measureLines !== undefined) {
+      const legendProbe = measureLegendProbe(options.measureLines, options.legendTitle, options.legendLabels);
+      return digest + digestOf(canonicalise(legendProbe));
+    }
     return digest;
   }
 
@@ -155,6 +164,13 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
       bindings: options.bindings === undefined ? "" : inputDigest(options.bindings),
       ...(options.reportSurfaceSame === true ? { reportSurfaceSame: true } : {}),
       ...(options.conventions === undefined ? {} : { conventions: options.conventions }),
+      ...(options.hints?.composition === undefined ? {} : {
+        legend: {
+          anchor: options.legend ?? "right",
+          title: options.legendTitle ?? "Legend",
+          labels: options.legendLabels ?? {},
+        },
+      }),
     });
     // Invalid serialisable inputs still reach the engine's normal refusal path.
     if (!input.ok) return undefined;
@@ -199,7 +215,7 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
       : layoutDocument(document, options);
     if (disposed || key === undefined || result.status === "refused" || maxEntries === 0) return result;
     const viewText = canonicalise(result.view, "view");
-    const size = utf8ByteLength(viewText) + utf8ByteLength(canonicalise(result.measurements ?? null)) + utf8ByteLength(canonicalise(result.labelBoxes ?? null)) + utf8ByteLength(canonicalise(result.edgeBundles ?? null)) + utf8ByteLength(canonicalise(result.channels ?? null));
+    const size = utf8ByteLength(viewText) + utf8ByteLength(canonicalise(result.measurements ?? null)) + utf8ByteLength(canonicalise(result.labelBoxes ?? null)) + utf8ByteLength(canonicalise(result.edgeBundles ?? null)) + utf8ByteLength(canonicalise(result.channels ?? null)) + (result.linkLegend === undefined ? 0 : utf8ByteLength(canonicalise(result.linkLegend)));
     if (size > maxBytes) return result;
     const stored: Entry = {
       base: key.base, exact: key.exact, previous: { ...options.previousOrientation }, result, bytes: size,

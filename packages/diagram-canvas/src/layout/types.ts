@@ -268,6 +268,14 @@ export interface LayoutOptions {
    * acronym zone tags (with `DLR-315` product kicker allowlist). Off by default.
    */
   readonly conventions?: import("./conventions.js").DiagramConventionLintOptions;
+  /**
+   * Automatic link-style legend inputs forwarded under `hints.composition`
+   * (H2.2). Ignored when `hints.composition` is absent so `@1` views stay
+   * byte-identical.
+   */
+  readonly legend?: import("../presentation/linkLegend.js").LinkLegendAnchor;
+  readonly legendTitle?: string;
+  readonly legendLabels?: Readonly<Record<string, string>>;
 }
 
 /** The outcome of the L-R5 / L-R7 decision for one call. Derived, never persisted. */
@@ -303,7 +311,10 @@ export type LayoutWarningCode =
   | "zone-surface-same"
   | "arrow-direction-convention"
   | "zone-tag-opaque-acronym"
-  | "docking-overflow";
+  | "docking-overflow"
+  | "composition-unplaced"
+  | "aspect-unreached"
+  | "comb-fallback";
 
 export interface LayoutWarning {
   readonly severity?: "info";
@@ -367,6 +378,10 @@ export type LayoutResult =
       readonly labelBoxes?: Readonly<Record<string, { readonly x: number; readonly y: number; readonly width: number; readonly height: number }>>;
       /** Lifted parallel relations share a route; semantic occurrences remain intact. */
       readonly edgeBundles?: Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string; readonly relations?: readonly string[]; chip?: ReturnType<typeof import("./bundleLabel.js").measureBundleLabel> }>>;
+      /** Link-style legend measured in layout for composed scenes (H2.2/H2.8). */
+      readonly linkLegend?: import("../presentation/linkLegend.js").SceneLinkLegend;
+      /** True when layout resolved the legend (including suppression) for a composed scene. */
+      readonly legendResolved?: boolean;
     }
   | {
       readonly status: "refused";

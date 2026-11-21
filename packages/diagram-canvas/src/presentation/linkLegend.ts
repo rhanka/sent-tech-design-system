@@ -25,6 +25,9 @@ import { cardLineMeasurer } from "./diagramCardModel.js";
 /** Where the automatic link-style legend strip sits relative to the functional drawing. */
 export type LinkLegendAnchor = "right" | "bottom" | "none";
 
+/** Resolved anchor emitted on `SceneLinkLegend`, including H2 `"free-cell"`. */
+export type SceneLinkLegendAnchor = Exclude<LinkLegendAnchor, "none"> | "free-cell";
+
 /** Canonical sort orders over the three closed connector registry axes. */
 export const LINK_LEGEND_STROKE_ORDER: readonly StrokeStyle[] = Object.freeze([
   "solid",
@@ -41,6 +44,22 @@ export const LINK_LEGEND_ARROWHEAD_ORDER: readonly CanonicalArrowheadKind[] = Ob
   "arrow",
   "none",
 ]);
+
+/** All 12 closed connector style combinations in canonical legend order. */
+export const ALL_LINK_LEGEND_STYLES: readonly (LinkLegendStyleKey & { readonly key: string })[] = Object.freeze(
+  LINK_LEGEND_STROKE_ORDER.flatMap((strokeStyle) =>
+    LINK_LEGEND_EMPHASIS_ORDER.flatMap((emphasis) =>
+      LINK_LEGEND_ARROWHEAD_ORDER.map((arrowhead) =>
+        Object.freeze({
+          strokeStyle,
+          arrowhead,
+          emphasis,
+          key: `${strokeStyle}:${arrowhead}:${emphasis}`,
+        }),
+      ),
+    ),
+  ),
+);
 
 /** World-unit geometry constants shared by SVG, Svelte and Vue renderers. */
 export const LINK_LEGEND_GAP = 48;
@@ -83,7 +102,7 @@ export interface LinkLegendEntry extends LinkLegendStyleKey {
 }
 
 export interface SceneLinkLegend {
-  readonly anchor: Exclude<LinkLegendAnchor, "none">;
+  readonly anchor: SceneLinkLegendAnchor;
   readonly title: string;
   /** Outer bounding rectangle in world coordinates, outside the functional flow. */
   readonly rect: Rect;
@@ -182,12 +201,9 @@ export function collectLinkLegendStyles(
     .sort((left, right) => styleRank(left) - styleRank(right));
 }
 
-export interface BuildSceneLinkLegendInput {
+export interface MeasureSceneLinkLegendInput {
   readonly edges: readonly LinkLegendEdgeInput[];
-  readonly contentBounds: Rect | undefined;
   readonly measureLines: LineMeasurer;
-  /** Anchor edge strip (`"right"` by default). `"none"` suppresses the legend. */
-  readonly anchor?: LinkLegendAnchor;
   /** Legend heading text (defaults to `"Legend"`). */
   readonly title?: string;
   /** Optional custom labels keyed by `linkStyleKey(...)`. */
@@ -196,14 +212,62 @@ export interface BuildSceneLinkLegendInput {
   readonly fontSize?: number;
 }
 
+export interface MeasuredSceneLinkLegend {
+  readonly title: string;
+  readonly width: number;
+  readonly height: number;
+  readonly entries: readonly LinkLegendEntry[];
+  readonly padding: number;
+  readonly headerHeight: number;
+  readonly headerGap: number;
+  readonly rowHeight: number;
+  readonly rowGap: number;
+  readonly swatchWidth: number;
+  readonly swatchHeight: number;
+  readonly swatchGap: number;
+  readonly fontSize: number;
+}
+
+export interface BuildSceneLinkLegendInput extends MeasureSceneLinkLegendInput {
+  readonly contentBounds: Rect | undefined;
+  /** Anchor edge strip (`"right"` by default). `"none"` suppresses the legend. */
+  readonly anchor?: LinkLegendAnchor;
+}
+
+function measureLegendLineWidth(measureLines: LineMeasurer, text: string): number {
+  const request = { text, role: "edge-label" as const, availableWidth: Number.MAX_SAFE_INTEGER, allocatedLines: 1, folded: false };
+  const layout = measureLines(request);
+  // CardLineMeasure without lineWidths reports the allocation as its width.
+  return layout.width >= request.availableWidth || !Number.isFinite(layout.width)
+    ? measureLegendFallback(request).width
+    : layout.width;
+}
+
 /**
- * Compute the automatic link-style legend and its anchored world rectangle
- * outside `contentBounds`. Returns `undefined` when suppressed or when fewer
- * than two distinct styles are drawn.
+ * Pure legend probe for composed layout cache keys (H2.2 / S-1): measures the
+ * resolved legend title and all 12 closed connector style labels using the
+ * exact request arguments of `measureSceneLinkLegend`.
  */
-export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLinkLegend | undefined {
-  const anchor = input.anchor ?? "right";
-  if (anchor === "none" || input.contentBounds === undefined) return undefined;
+export function measureLegendProbe(
+  measureLines: LineMeasurer,
+  title?: string,
+  labels?: Readonly<Record<string, string>>,
+): readonly number[] {
+  const resolvedTitle = title ?? "Legend";
+  return [
+    measureLegendLineWidth(measureLines, resolvedTitle),
+    ...ALL_LINK_LEGEND_STYLES.map((style) =>
+      measureLegendLineWidth(measureLines, labels?.[style.key] ?? defaultLinkStyleLabel(style)),
+    ),
+  ];
+}
+
+/**
+ * Pure geometry sizing for the automatic link-style legend (H2.2): returns
+ * dimensions and row layout independent of anchor placement, or `undefined`
+ * when fewer than two distinct connector styles are visible.
+ */
+export function measureSceneLinkLegend(input: MeasureSceneLinkLegendInput): MeasuredSceneLinkLegend | undefined {
   const collected = collectLinkLegendStyles(input.edges);
   if (collected.length < 2) return undefined;
 
@@ -217,14 +281,7 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
     scale === 1 ? LINK_LEGEND_ROW_HEIGHT : Math.ceil(LINK_LEGEND_ROW_HEIGHT * scale),
   );
   const rowGap = scale === 1 ? LINK_LEGEND_ROW_GAP : Math.ceil(LINK_LEGEND_ROW_GAP * scale);
-  const measureWidth = (text: string): number => {
-    const request = { text, role: "edge-label" as const, availableWidth: Number.MAX_SAFE_INTEGER, allocatedLines: 1, folded: false };
-    const layout = input.measureLines(request);
-    // CardLineMeasure without lineWidths reports the allocation as its width.
-    return (layout.width >= request.availableWidth || !Number.isFinite(layout.width)
-      ? measureLegendFallback(request).width
-      : layout.width) * scale;
-  };
+  const measureWidth = (text: string): number => measureLegendLineWidth(input.measureLines, text) * scale;
   const scaledTitleWidth = measureWidth(title);
 
   let maxLabelWidth = 0;
@@ -257,25 +314,10 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
     entries.length * rowHeight +
     Math.max(0, entries.length - 1) * rowGap;
 
-  const rect: Rect =
-    anchor === "bottom"
-      ? {
-          x: input.contentBounds.x,
-          y: input.contentBounds.y + input.contentBounds.height + LINK_LEGEND_GAP,
-          width,
-          height,
-        }
-      : {
-          x: input.contentBounds.x + input.contentBounds.width + LINK_LEGEND_GAP,
-          y: input.contentBounds.y,
-          width,
-          height,
-        };
-
   return {
-    anchor,
     title,
-    rect,
+    width,
+    height,
     entries,
     padding: LINK_LEGEND_PADDING,
     headerHeight,
@@ -287,6 +329,60 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
     swatchGap: LINK_LEGEND_SWATCH_GAP,
     fontSize,
   };
+}
+
+/** Place a measured link-style legend at its anchored edge or inside an explicit cell rect. */
+export function placeSceneLinkLegend(
+  measured: MeasuredSceneLinkLegend,
+  anchor: SceneLinkLegendAnchor,
+  contentBounds: Rect,
+  explicitRect?: Rect,
+): SceneLinkLegend {
+  const rect: Rect =
+    anchor === "free-cell" && explicitRect !== undefined
+      ? { x: explicitRect.x, y: explicitRect.y, width: measured.width, height: measured.height }
+      : anchor === "bottom"
+        ? {
+            x: contentBounds.x,
+            y: contentBounds.y + contentBounds.height + LINK_LEGEND_GAP,
+            width: measured.width,
+            height: measured.height,
+          }
+        : {
+            x: contentBounds.x + contentBounds.width + LINK_LEGEND_GAP,
+            y: contentBounds.y,
+            width: measured.width,
+            height: measured.height,
+          };
+
+  return {
+    anchor: anchor === "free-cell" && explicitRect === undefined ? "right" : anchor,
+    title: measured.title,
+    rect,
+    entries: measured.entries,
+    padding: measured.padding,
+    headerHeight: measured.headerHeight,
+    headerGap: measured.headerGap,
+    rowHeight: measured.rowHeight,
+    rowGap: measured.rowGap,
+    swatchWidth: measured.swatchWidth,
+    swatchHeight: measured.swatchHeight,
+    swatchGap: measured.swatchGap,
+    fontSize: measured.fontSize,
+  };
+}
+
+/**
+ * Compute the automatic link-style legend and its anchored world rectangle
+ * outside `contentBounds`. Returns `undefined` when suppressed or when fewer
+ * than two distinct styles are drawn.
+ */
+export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLinkLegend | undefined {
+  const anchor = input.anchor ?? "right";
+  if (anchor === "none" || input.contentBounds === undefined) return undefined;
+  const measured = measureSceneLinkLegend(input);
+  if (measured === undefined) return undefined;
+  return placeSceneLinkLegend(measured, anchor, input.contentBounds);
 }
 
 /**

@@ -6,7 +6,26 @@ import { DIAGRAM_SCENE_SPACING as spacing } from './spacing.generated.js';
  * interleave. There is no tree parser and no scene flag in the engine: hints
  * are input data, and no source coordinate is ever copied as layout input.
  */
-import type { EntityRef } from "@sentropic/diagram-core";
+import type {
+  EntityRef,
+  LayoutBand,
+  LayoutCell,
+  LayoutCellAlign,
+  LayoutComposition,
+  LayoutGrid,
+  LayoutPeripheralColumn,
+  LayoutStack,
+} from "@sentropic/diagram-core";
+
+export type {
+  LayoutBand,
+  LayoutCell,
+  LayoutCellAlign,
+  LayoutComposition,
+  LayoutGrid,
+  LayoutPeripheralColumn,
+  LayoutStack,
+};
 
 import { DEFAULT_ROW_GAP, DEFAULT_ROW_GAP_MAX, type LayoutMetrics, type LayoutRefusal } from "./types.js";
 
@@ -35,6 +54,8 @@ export interface LayoutHints {
   readonly rootOrder?: readonly EntityRef[];
   readonly grouping?: readonly LayoutGroup[];
   readonly stretch?: boolean;
+  /** Composed `ds-layout-hints@2` placement (`stage-columns`). Absent on `@1` and `auto-pack`. */
+  readonly composition?: LayoutComposition;
   readonly cardGapX?: number;
   readonly cardGapY?: number;
   readonly zoneGapX?: number;
@@ -64,6 +85,8 @@ export function groupLeaves(group: LayoutGroup): EntityRef[] {
 export interface HintScope {
   readonly roots: ReadonlySet<EntityRef>;
   readonly parentOf: ReadonlyMap<EntityRef, EntityRef | undefined>;
+  /** Entities whose document/presentation kind is container or legend (expanded or collapsed). */
+  readonly containers?: ReadonlySet<EntityRef>;
 }
 
 /**
@@ -155,7 +178,142 @@ export function validateHints(hints: LayoutHints, scope: HintScope): LayoutRefus
       claimed.set(leaf, group.id);
     }
   }
+  if (hints.composition !== undefined) {
+    validateCompositionHints(hints.composition, scope, refuse);
+  }
   return refusals;
+}
+
+function validateCompositionHints(
+  composition: LayoutComposition,
+  scope: HintScope,
+  refuse: (path: string, message: string, refs: readonly string[]) => void,
+): void {
+  const byString = (left: string, right: string): number => (left < right ? -1 : left > right ? 1 : 0);
+  const hasEntity = (ref: EntityRef): boolean => scope.roots.has(ref) || scope.parentOf.has(ref);
+  const isContainer = (ref: EntityRef): boolean => scope.containers?.has(ref) ?? false;
+  const grids = composition.grids;
+  if (grids === undefined || grids.root === undefined) {
+    refuse("hints.composition.grids.root", "stage-columns composition requires a root grid", []);
+    return;
+  }
+  const bandOwner = new Map<EntityRef, string>();
+  const placed = new Set<EntityRef>();
+  for (const scopeKey of Object.keys(grids).sort(byString)) {
+    const grid = grids[scopeKey as keyof typeof grids];
+    if (grid === undefined) continue;
+    const gridPath = `hints.composition.grids.${scopeKey}`;
+    if (scopeKey !== "root") {
+      const entity = scopeKey as EntityRef;
+      if (!hasEntity(entity)) {
+        refuse(gridPath, `unknown grid scope ${scopeKey}`, [entity]);
+      } else if (scope.containers !== undefined && !isContainer(entity)) {
+        refuse(gridPath, `grid scope ${scopeKey} is not a container`, [entity]);
+      }
+    }
+    const checkChild = (item: EntityRef, path: string): void => {
+      if (placed.has(item)) {
+        refuse(path, `duplicate placement of ${item} in composition`, [item]);
+      } else {
+        placed.add(item);
+      }
+      if (!hasEntity(item)) {
+        refuse(path, `unknown entity ${item} in grid ${scopeKey}`, [item]);
+        return;
+      }
+      const inScope = scopeKey === "root" ? scope.roots.has(item) : scope.parentOf.get(item) === (scopeKey as EntityRef);
+      if (!inScope) {
+        refuse(path, `entity ${item} does not have ${scopeKey} as placement parent`, [item]);
+      }
+    };
+    const bandItems = new Set<EntityRef>();
+    for (const band of grid.transverse_bands) {
+      const bandPath = `${gridPath}.transverse_bands.${band.id}.items`;
+      for (const item of band.items) {
+        checkChild(item, bandPath);
+        bandItems.add(item);
+        if (!bandOwner.has(item)) bandOwner.set(item, scopeKey);
+      }
+    }
+    for (const column of grid.peripheral_columns ?? []) {
+      const columnPath = `${gridPath}.peripheral_columns.${column.id}.items`;
+      for (const item of column.items) {
+        checkChild(item, columnPath);
+      }
+    }
+    for (const itemKey of Object.keys(grid.cells ?? {}).sort(byString)) {
+      const itemRef = itemKey as EntityRef;
+      const cell = grid.cells?.[itemRef];
+      if (cell === undefined) continue;
+      const cellPath = `${gridPath}.cells.${itemKey}`;
+      if (!hasEntity(itemRef)) {
+        refuse(cellPath, `unknown cell entity ${itemKey} in grid ${scopeKey}`, [itemRef]);
+        continue;
+      }
+      if (!bandItems.has(itemRef)) {
+        refuse(cellPath, `cell entity ${itemKey} is not a band item of grid ${scopeKey}`, [itemRef]);
+      }
+      if (
+        scope.containers !== undefined &&
+        !isContainer(itemRef) &&
+        (cell.justify === "stretch" || cell.align === "stretch")
+      ) {
+        refuse(cellPath, `stretch alignment is admitted on containers only, not leaf ${itemKey}`, [itemRef]);
+      }
+    }
+  }
+  // Check `stage_columns: "inherit"` chains against enclosing staged grids.
+  const resolving = new Set<string>();
+  const checkInherit = (scopeKey: string): boolean => {
+    const grid = grids[scopeKey as keyof typeof grids];
+    if (grid === undefined) return false;
+    if (grid.stage_columns !== "inherit") return grid.stage_columns !== undefined;
+    const path = `hints.composition.grids.${scopeKey}.stage_columns`;
+    if (scopeKey === "root" || resolving.has(scopeKey)) {
+      refuse(path, `inherit on ${scopeKey} requires a cell in an enclosing staged grid`, scopeKey === "root" ? [] : [scopeKey]);
+      return false;
+    }
+    const entity = scopeKey as EntityRef;
+    const parent = bandOwner.get(entity);
+    const parentGrid = parent === undefined ? undefined : grids[parent as keyof typeof grids];
+    const parentCell = parentGrid?.cells?.[entity];
+    if (parent === undefined || parentGrid === undefined || parentGrid.stage_columns === undefined || parentCell?.column === undefined) {
+      refuse(path, `inherit on ${scopeKey} requires a band cell in an enclosing staged grid`, [entity]);
+      return false;
+    }
+    resolving.add(scopeKey);
+    const ok = checkInherit(parent);
+    resolving.delete(scopeKey);
+    return ok;
+  };
+  for (const scopeKey of Object.keys(grids).sort(byString)) {
+    if (grids[scopeKey as keyof typeof grids]?.stage_columns === "inherit") checkInherit(scopeKey);
+  }
+  for (const stackKey of Object.keys(composition.stacks ?? {}).sort(byString)) {
+    const entity = stackKey as EntityRef;
+    const stack = composition.stacks[entity];
+    const stackPath = `hints.composition.stacks.${stackKey}`;
+    if (!hasEntity(entity)) {
+      refuse(stackPath, `unknown stack container ${stackKey}`, [entity]);
+      continue;
+    }
+    if (scope.containers !== undefined && !isContainer(entity)) {
+      refuse(stackPath, `stack key ${stackKey} is not a container`, [entity]);
+      continue;
+    }
+    if (grids[entity] !== undefined) {
+      refuse(stackPath, `container ${stackKey} cannot declare both a grid and a stack`, [entity]);
+    }
+    if (stack?.align === "stretch" && scope.containers !== undefined) {
+      const leafChildren: EntityRef[] = [];
+      for (const [child, parent] of scope.parentOf) {
+        if (parent === entity && !isContainer(child)) leafChildren.push(child);
+      }
+      if (leafChildren.length > 0) {
+        refuse(`${stackPath}.align`, `stretch alignment is admitted on containers only, not leaves in stack ${stackKey}`, leafChildren.sort(byString));
+      }
+    }
+  }
 }
 
 /**

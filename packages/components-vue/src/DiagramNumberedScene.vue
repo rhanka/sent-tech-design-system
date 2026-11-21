@@ -93,7 +93,11 @@ const layout = computed(() => {
     resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
     measureLines: measureLines.value, collapsed: collapsedNow.value, flows: flowOptions.value, flowTokens: tokens.value,
     ...(props.view === undefined ? {} : { view: props.view }), ...(props.bindings === undefined ? {} : { bindings: props.bindings }),
-    ...(props.hints === undefined ? {} : { hints: props.hints }), metrics: effectiveMetrics.value,
+    ...(props.hints === undefined ? {} : { hints: props.hints }),
+    ...(props.legend === undefined ? {} : { legend: props.legend }),
+    ...(strings.value.legend === undefined ? {} : { legendTitle: strings.value.legend }),
+    ...(props.legendLabels === undefined ? {} : { legendLabels: props.legendLabels }),
+    metrics: effectiveMetrics.value,
     ...(props.rowPack === undefined ? {} : { rowPack: props.rowPack }), ...(props.targetWidth === undefined ? {} : { targetWidth: props.targetWidth }),
     ...(orientationSeed === undefined ? {} : { previousOrientation: orientationSeed }),
   });

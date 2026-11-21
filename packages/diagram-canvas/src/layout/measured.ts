@@ -82,6 +82,12 @@ import {
 } from "./hints.js";
 import { measureSceneBox } from "./sceneMeasure.js";
 import { anatomyCardGeometry, anatomyZoneGeometry, ZONE_GEOMETRY, zoneDepthSurface, type DiagramAnatomy } from "../presentation/diagramCardModel.js";
+import {
+  measureSceneLinkLegend,
+  placeSceneLinkLegend,
+  type LinkLegendEdgeInput,
+  type SceneLinkLegend,
+} from "../presentation/linkLegend.js";
 import { placePackedLabel } from "./labels.js";
 import {
   CONTENT_INSET,
@@ -794,9 +800,23 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
   const kinds = new Map<EntityRef, OccurrenceKind>();
   for (const id of graph.nodes.keys()) kinds.set(id, classify(id));
 
+  const containerEntities = new Set<EntityRef>();
+  for (const node of graph.nodes.values()) {
+    const kind = kinds.get(node.id);
+    if (
+      node.kind === "container" ||
+      kind === "container-expanded" ||
+      kind === "container-collapsed" ||
+      kind === "legend-expanded" ||
+      kind === "legend-collapsed"
+    ) {
+      containerEntities.add(node.id);
+    }
+  }
   const hintRefusals = validateHints(hints, {
     roots: new Set(graph.roots),
     parentOf: new Map([...graph.nodes.values()].map((node) => [node.id, node.parent] as const)),
+    containers: containerEntities,
   });
   if (hintRefusals.length > 0) return { status: "refused", refusals: hintRefusals, diagnostics: [] };
 
@@ -2948,6 +2968,74 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         (left, right) => byString(left.occurrence, right.occurrence) || byString(left.slot, right.slot),
       ),
     };
+    let linkLegend: SceneLinkLegend | undefined;
+    if (hints.composition !== undefined) {
+      const effectiveLegendAnchor =
+        hints.composition.legend === "host" ? (options.legend ?? "right") : hints.composition.legend;
+      if (effectiveLegendAnchor !== "none") {
+        const bundledDuplicates = new Set(
+          Object.values(edgeBundles).flatMap((bundle) => bundle.members.slice(1)),
+        );
+        const legendEdges: LinkLegendEdgeInput[] = [];
+        for (const id of Object.keys(placedView.relationOccurrences).sort(byString)) {
+          if (bundledDuplicates.has(id)) continue;
+          const occurrence = placedView.relationOccurrences[id]!;
+          if (occurrence.waypoints === undefined) continue;
+          const route = retryRoutes.get(id as unknown as RelationRef);
+          if (route === undefined || route.length < 2) continue;
+          const semantic = document.relations[occurrence.relation];
+          if (semantic?.profile === "erd@1" || semantic?.type === "flow-step") continue;
+          const relStyle = presentation.relations?.[occurrence.id] ?? presentation.relations?.[occurrence.relation];
+          const rawStroke = occurrence.strokeStyle ?? relStyle?.strokeStyle;
+          const resolvedStroke = rawStroke === undefined ? undefined : resolveDashPattern(rawStroke)?.style;
+          const rawArrow = occurrence.arrowhead ?? relStyle?.arrowhead;
+          const resolvedArrow = rawArrow === undefined ? undefined : resolveArrowhead(rawArrow)?.canonicalKind;
+          const rawEmphasis = occurrence.emphasis ?? relStyle?.emphasis;
+          const resolvedEmphasis = rawEmphasis === undefined ? undefined : resolveLinkEmphasis(rawEmphasis)?.emphasis;
+          legendEdges.push({
+            ...(r7Routing && resolvedStroke !== undefined && resolvedStroke !== "solid" ? { strokeStyle: resolvedStroke } : {}),
+            ...(r7Routing && resolvedArrow !== undefined && resolvedArrow !== "arrow" ? { arrowhead: resolvedArrow } : {}),
+            ...(r7Routing && resolvedEmphasis === "emphasis" ? { emphasis: resolvedEmphasis } : {}),
+          });
+        }
+        const measuredLegend = measureSceneLinkLegend({
+          edges: legendEdges,
+          measureLines: measure,
+          ...(options.legendTitle === undefined ? {} : { title: options.legendTitle }),
+          ...(options.legendLabels === undefined ? {} : { labels: options.legendLabels }),
+          ...(metrics.edgeLabelSize === undefined ? {} : { fontSize: metrics.edgeLabelSize }),
+        });
+        if (measuredLegend !== undefined) {
+          const paddedBoxes = new Map<RelationRef, Rect>();
+          for (const [id, box] of labelBoxes) {
+            paddedBoxes.set(id, {
+              x: box.x - metrics.labelMargin,
+              y: box.y - metrics.labelMargin,
+              width: box.width + 2 * metrics.labelMargin,
+              height: box.height + 2 * metrics.labelMargin,
+            });
+          }
+          for (const [id, box] of Object.entries(marks.badges)) paddedBoxes.set(id as RelationRef, box);
+          for (const [id, arrows] of Object.entries(marks.arrows)) {
+            arrows.forEach((arrow, i) => paddedBoxes.set((id + String(i)) as RelationRef, arrow.box));
+          }
+          const legendUnion = unionOf(rects, retryRoutes, paddedBoxes);
+          if (!legendUnion.empty) {
+            const contentBounds: Rect = {
+              x: legendUnion.xmin,
+              y: legendUnion.ymin,
+              width: legendUnion.width,
+              height: legendUnion.height,
+            };
+            linkLegend = placeSceneLinkLegend(
+              measuredLegend,
+              effectiveLegendAnchor === "free-cell" ? "right" : effectiveLegendAnchor,
+              contentBounds,
+            );
+          }
+        }
+      }
+    }
     const result: LayoutResult = {
       status: "laid-out",
       ...(hasFlows ? { badgeBoxes: marks.badges, arrowBoxes: marks.arrows, flowBundles: flowPlan.bundles, flowTargets: marks.targets, flowRepairPasses: 0 as const } : {}),
@@ -2973,6 +3061,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
           .map(([id, box]) => [id, { x: clean(box.x), y: clean(box.y), width: box.width, height: box.height }] as const),
       ),
       ...(Object.keys(edgeBundles).length === 0 ? {} : { edgeBundles }),
+      ...(hints.composition === undefined ? {} : { legendResolved: true, ...(linkLegend === undefined ? {} : { linkLegend }) }),
     };
     return { result, chosen, requested, unused, unplaced: unplaced.length };
   };

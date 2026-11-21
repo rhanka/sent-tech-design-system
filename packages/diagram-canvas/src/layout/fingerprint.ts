@@ -78,8 +78,9 @@ export function layoutFingerprintInputs(input: LayoutFingerprintInput): Readonly
   const r7Routing = input.r7Routing ?? isR7ConnectorPresentation(options.presentation);
   const metrics: LayoutMetrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics };
   const hints: LayoutHints = options.hints ?? {};
+  const zoneRule = r7Routing || hints.composition !== undefined;
   const gaps = resolveRowGaps(hints, metrics);
-  const zoneGutter = r7Routing ? resolveRowGaps(hints, metrics, true).zoneX : undefined;
+  const zoneGutter = zoneRule ? resolveRowGaps(hints, metrics, true).zoneX : undefined;
   const tokens = input.tokens ?? {};
   const routeSpacing = r7Routing ? (options.metrics?.routeSpacing ?? DEFAULT_ROUTE_SPACING) : 0;
   const routeBorderClearance = r7Routing
@@ -117,6 +118,7 @@ export function layoutFingerprintInputs(input: LayoutFingerprintInput): Readonly
       rootOrder: hints.rootOrder,
       grouping: (hints.grouping ?? []).map(groupOf),
       stretch: hints.stretch ?? false,
+      ...(hints.composition === undefined ? {} : { composition: hints.composition }),
     },
     viewId: options.viewId,
     measuredSizes: input.measurements === undefined ? undefined : digestOf(canonical(input.measurements)),

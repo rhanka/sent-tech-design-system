@@ -90,6 +90,7 @@ export {
   type ConnectorMarkerSpec,
 } from "./connectorStyle.js";
 export {
+  ALL_LINK_LEGEND_STYLES,
   buildSceneLinkLegend,
   collectLinkLegendStyles,
   defaultLinkStyleLabel,
@@ -110,13 +111,19 @@ export {
   linkLegendBoxStyle,
   linkLegendSwatchGeometry,
   linkStyleKey,
+  measureLegendProbe,
+  measureSceneLinkLegend,
+  placeSceneLinkLegend,
   type BuildSceneLinkLegendInput,
   type LinkLegendAnchor,
   type LinkLegendEdgeInput,
   type LinkLegendEntry,
   type LinkLegendStyleKey,
   type LinkLegendSwatchGeometry,
+  type MeasuredSceneLinkLegend,
+  type MeasureSceneLinkLegendInput,
   type SceneLinkLegend,
+  type SceneLinkLegendAnchor,
 } from "./linkLegend.js";
 export {
   DEFAULT_EDGE_LABEL_SIZE,
@@ -340,6 +347,9 @@ export function layoutScene(input: SceneLayoutInput): LayoutResult {
     ...(input.previousOrientation === undefined ? {} : { previousOrientation: input.previousOrientation }),
     ...(input.reportSurfaceSame === undefined ? {} : { reportSurfaceSame: input.reportSurfaceSame }),
     ...(input.conventions === undefined ? {} : { conventions: input.conventions }),
+    ...(input.hints?.composition !== undefined && input.legend !== undefined ? { legend: input.legend } : {}),
+    ...(input.hints?.composition !== undefined && input.legendTitle !== undefined ? { legendTitle: input.legendTitle } : {}),
+    ...(input.hints?.composition !== undefined && input.legendLabels !== undefined ? { legendLabels: input.legendLabels } : {}),
   };
   const result = input.cache !== undefined
     ? (input.view === undefined
@@ -829,15 +839,17 @@ function resolveSceneAtZoom(
     const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
     bounds = bounds === undefined ? padded : rectUnion(bounds, padded);
   }
-  const linkLegend = buildSceneLinkLegend({
-    edges,
-    contentBounds: bounds,
-    measureLines: input.measureLines,
-    ...(input.legend === undefined ? {} : { anchor: input.legend }),
-    ...(input.legendTitle === undefined ? {} : { title: input.legendTitle }),
-    ...(input.legendLabels === undefined ? {} : { labels: input.legendLabels }),
-    ...(input.metrics?.edgeLabelSize === undefined ? {} : { fontSize: input.metrics.edgeLabelSize }),
-  });
+  const linkLegend = result.legendResolved
+    ? result.linkLegend
+    : buildSceneLinkLegend({
+        edges,
+        contentBounds: bounds,
+        measureLines: input.measureLines,
+        ...(input.legend === undefined ? {} : { anchor: input.legend }),
+        ...(input.legendTitle === undefined ? {} : { title: input.legendTitle }),
+        ...(input.legendLabels === undefined ? {} : { labels: input.legendLabels }),
+        ...(input.metrics?.edgeLabelSize === undefined ? {} : { fontSize: input.metrics.edgeLabelSize }),
+      });
   if (linkLegend !== undefined) {
     bounds = bounds === undefined ? linkLegend.rect : rectUnion(bounds, linkLegend.rect);
   }
