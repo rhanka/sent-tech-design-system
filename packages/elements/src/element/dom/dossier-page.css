@@ -36,6 +36,10 @@
   cursor: pointer;
 }
 
+.st-dossier summary > h2 {
+  display: inline;
+}
+
 .st-dossier table {
   border-collapse: collapse;
 }
