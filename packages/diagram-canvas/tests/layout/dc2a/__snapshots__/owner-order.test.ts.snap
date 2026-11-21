@@ -381,16 +381,14 @@ exports[`should compare vue-globale/false grouping, reading order and channel ge
     "newColumns": [
       [
         "pkg-mesh",
-        "svc-artifacts",
-      ],
-      [
-        "api-mcp-registry",
-      ],
-      [
         "pkg-artifacts",
       ],
       [
         "svc-memory-access",
+        "svc-artifacts",
+      ],
+      [
+        "api-mcp-registry",
       ],
     ],
     "oldColumns": [

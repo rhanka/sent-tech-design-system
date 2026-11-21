@@ -209,13 +209,17 @@ export interface ResolvedRowGaps {
  * the token number passed as a metric, else the engine default mirroring the
  * token. The caps come from the metrics only: no hint raises a cap.
  */
-export function resolveRowGaps(hints: LayoutHints | undefined, metrics: LayoutMetrics): ResolvedRowGaps {
-  const zoneDefault = spacing.zoneGutter;
+export function resolveRowGaps(
+  hints: LayoutHints | undefined,
+  metrics: LayoutMetrics,
+  useZoneGutter = false,
+): ResolvedRowGaps {
+  const zoneGutter = useZoneGutter ? (metrics.zoneGutter ?? spacing.zoneGutter) : undefined;
   return {
     cardX: hints?.cardGapX ?? metrics.rowGapInline ?? metrics.gapMin ?? DEFAULT_ROW_GAP,
     cardY: hints?.cardGapY ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? spacing.gapMinBlock,
-    zoneX: hints?.zoneGapX ?? metrics.zoneGutter ?? metrics.rowGapInline ?? metrics.gapMin ?? zoneDefault,
-    zoneY: hints?.zoneGapY ?? metrics.zoneGutter ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? zoneDefault,
+    zoneX: hints?.zoneGapX ?? zoneGutter ?? metrics.rowGapInline ?? metrics.gapMin ?? DEFAULT_ROW_GAP,
+    zoneY: hints?.zoneGapY ?? zoneGutter ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? spacing.gapMinBlock,
     maxX: metrics.gapInlineMax ?? metrics.gapMax ?? DEFAULT_ROW_GAP_MAX,
     maxY: metrics.gapBlockMax ?? metrics.gapMax ?? DEFAULT_ROW_GAP_MAX,
   };

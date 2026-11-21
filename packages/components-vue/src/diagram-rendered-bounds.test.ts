@@ -196,8 +196,8 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
     // routes and self-relations are: the half-stroke is the outermost ink.
     const model = { x: 0, y: 0, width: 2398, height: 400 };
     const edge = 'class="st-diagramSceneFigure-edge" data-scene-edge="e" data-flow-step="r" style="stroke:rgb(100, 116, 139);stroke-width:1.5px;vector-effect:non-scaling-stroke"';
-    const view = paintedWorld(`<div data-scene-occurrence="card"></div><svg><path ${edge}/></svg>`,
-      { '[data-scene-occurrence]': { x: 40, y: 40, width: 460, height: 200 }, 'path': model });
+    const view = paintedWorld(`<div data-scene-occurrence="card"></div><svg><polyline ${edge}/></svg>`,
+      { '[data-scene-occurrence]': { x: 40, y: 40, width: 460, height: 200 }, 'polyline': model });
     const pad = 0.75 / 0.45;
     const reads = [0.45, 0.499, 0.5, 0.54, 0.62].map(zoom => {
       Object.assign(view.camera, { zoom, tx: 12.3 + zoom, ty: 45.6 - zoom });
@@ -213,7 +213,7 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
       for (const other of reads) expect(shouldRefitRenderedBounds(other, read)).toBe(false);
     }
     // The host loop over the real measurement: fit, zoom in, Ajuster.
-    const polyline = view.world.querySelector<SVGElement>('path')!;
+    const polyline = view.world.querySelector<SVGElement>('polyline')!;
     for (const viewWidth of [1202, 1100, 1000, 900]) {
       let read: Rect | undefined;
       const state = () => {

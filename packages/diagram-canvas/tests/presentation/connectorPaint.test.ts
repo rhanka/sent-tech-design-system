@@ -54,7 +54,7 @@ function expectAttached(result: SceneLaidOut, scene: SceneModel): void {
 /** Position of every `data-scene-occurrence` group and of every connector in a standalone SVG. */
 function svgOrder(svg: string) {
   const nodes = new Map([...svg.matchAll(/<g data-scene-occurrence="([^"]+)"/g)].map((match) => [match[1]!, match.index]));
-  const edges = [...svg.matchAll(/<path data-scene-edge="/g)].map((match) => match.index);
+  const edges = [...svg.matchAll(/<polyline data-scene-edge="/g)].map((match) => match.index);
   return { nodes, firstEdge: Math.min(...edges), lastEdge: Math.max(...edges), edges: edges.length };
 }
 

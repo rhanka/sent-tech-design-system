@@ -4,6 +4,7 @@ import { relationVerdict } from "../visibility.js";
 import { DEFAULT_FLOW_TOKENS, planFlows, placeFlowMarks } from "./flows.js";
 import { layoutErd } from "./erd.js";
 import { DEFAULT_EDGE_LABEL_SIZE, DEFAULT_MIN_READABLE_SCALE } from "../camera.js";
+import { isR7ConnectorPresentation } from "../r7Mode.js";
 /**
  * Measured diagram layout (M3 §4.6–§4.8, layout half of §5.6; placement by
  * SPEC_EVOL_DC2A §3–§4).
@@ -452,9 +453,13 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
   const read = readMeasuredGraph(document, options.registry);
   if ("refusals" in read) return { status: "refused", refusals: read.refusals, diagnostics: [] };
   const graph = read.graph;
-  const routeSpacing = options.metrics?.routeSpacing ?? DEFAULT_ROUTE_SPACING;
-  const borderClearance = options.metrics?.routeBorderClearance ?? DEFAULT_ROUTE_BORDER_CLEARANCE;
+  const r7Routing = isR7ConnectorPresentation(presentation, sourceView);
+  const routeSpacing = r7Routing ? (options.metrics?.routeSpacing ?? DEFAULT_ROUTE_SPACING) : 0;
+  const borderClearance = r7Routing
+    ? (options.metrics?.routeBorderClearance ?? DEFAULT_ROUTE_BORDER_CLEARANCE)
+    : (options.metrics?.clearance ?? DEFAULT_LAYOUT_METRICS.clearance);
   const dockCornerInset = routeSpacing > 0 ? Math.ceil(routeSpacing / Math.SQRT2) : 0;
+  const baseSlotSpacing = options.metrics?.trackSpacing ?? channelMetrics({}, true).trackSpacing;
   const metrics: LayoutMetrics = {
     ...DEFAULT_LAYOUT_METRICS,
     ...options.metrics,
@@ -462,7 +467,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     routeBorderClearance: borderClearance,
     slotSpacing:
       options.metrics?.slotSpacing ??
-      Math.max(routeSpacing, options.metrics?.trackSpacing ?? channelMetrics({}, true).trackSpacing),
+      (r7Routing ? Math.max(routeSpacing, baseSlotSpacing) : baseSlotSpacing),
   };
   const hints: LayoutHints = options.hints ?? {};
   const gaps = resolveGaps(options.hints, metrics);
@@ -471,7 +476,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
   // packed; `options.rowPack` only tunes the objective.
   const rowPack = resolveRowPack(options.rowPack);
   const contentInset = metrics.containerPadding;
-  const rowGaps = resolveRowGaps(hints, metrics);
+  const rowGaps = resolveRowGaps(hints, metrics, r7Routing);
   {
     const refusals: LayoutRefusal[] = [...validateRowPack(rowPack)];
     // §3.7: a sibling-gap override above the axis cap refuses; it is never silently capped.
@@ -1844,16 +1849,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     const outerLanes: number[] = [];
     const outerLanesX: number[] = [];
     let labelLimit: Rect | undefined;
-    // REQ-R7-13 / DC-2c A12: with 24 px route spacing, outer-comb legs reach 39 px;
-    // cap flow-badge contributions to EDGE_LABEL_WIDTH (220 px, no effect on real
-    // badges) so an unplaceably wide badge cannot inflate labelLimit to absorb itself.
-    const markSizes = [...routeSizes.entries()].map(([id, size]) => {
-      const label = labelSizes.get(id);
-      return {
-        width: Math.max(label?.width ?? 0, Math.min(size.width, EDGE_LABEL_WIDTH)),
-        height: Math.max(label?.height ?? 0, Math.min(size.height, EDGE_LABEL_WIDTH)),
-      };
-    });
+    const markSizes = [...routeSizes.values()];
     const edgeClearance = Math.max(metrics.clearance, borderClearance);
     if (markSizes.length > 0 && rects.size > 0) {
       const pitch = Math.max(
@@ -2175,7 +2171,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
           || (lastLeg.x - request.end.x) * request.endExit.x + (lastLeg.y - request.end.y) * request.endExit.y <= 0) return;
         const firstLen = Math.hypot(firstLeg.x - request.start.x, firstLeg.y - request.start.y);
         const lastLen = Math.hypot(lastLeg.x - request.end.x, lastLeg.y - request.end.y);
-        if (firstLen < borderClearance - 1e-4 || lastLen < borderClearance - 1e-4) return;
+        if (routeSpacing > 0 && (firstLen < borderClearance - 1e-4 || lastLen < borderClearance - 1e-4)) return;
         const within = request.within;
         if (within !== undefined && points.some(point => point.x < within.x || point.y < within.y
           || point.x > within.x + within.width || point.y > within.y + within.height)) return;
@@ -2188,6 +2184,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
               x: Math.min(point.x, prev.x), y: Math.min(point.y, prev.y),
               width: Math.abs(point.x - prev.x), height: Math.abs(point.y - prev.y),
             })) return true;
+            if (!(routeSpacing > 0)) return false;
             if (i === 0 && (Math.abs(prev.x - shape.x) < 1e-4 || Math.abs(prev.x - (shape.x + shape.width)) < 1e-4 || Math.abs(prev.y - shape.y) < 1e-4 || Math.abs(prev.y - (shape.y + shape.height)) < 1e-4)) return false;
             if (i === points.length - 2 && (Math.abs(point.x - shape.x) < 1e-4 || Math.abs(point.x - (shape.x + shape.width)) < 1e-4 || Math.abs(point.y - shape.y) < 1e-4 || Math.abs(point.y - (shape.y + shape.height)) < 1e-4)) return false;
             return segmentToRectDistance(prev, point, shape) < borderClearance - 1e-4;
@@ -2285,6 +2282,8 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     const labelBoxes = new Map<RelationRef, Rect>();
     const taken: Rect[] = [...marks.taken];
     const unplaced: typeof entries = [];
+    const detourStep = routeSpacing > 0 ? borderClearance : 2;
+    const detourClearance = routeSpacing > 0 ? borderClearance : 0;
     for (const entry of entries) {
       const edge = drawnEdges.find((candidate) => (candidate.occurrence as string) === entry.id)!;
       let choice = placePackedLabel(entry, fixedShapes, taken, metrics.labelMargin);
@@ -2300,9 +2299,9 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
           earlier: requests.filter(other => other.id !== request.id && other.pairKey === request.pairKey && !retryObstructed.has(other.id)).map(other => retryRoutes.get(other.id)!),
           allFixed: otherRoutesOf(entry.id),
           passableZones: passableZonesOf(entry.id),
-          step: borderClearance,
+          step: detourStep,
           routeSpacing,
-          borderClearance,
+          borderClearance: detourClearance,
           xs: [...new Set([request.start.x, request.end.x, ...outerLanesX])].sort((a, b) => a - b),
           ys: [...new Set([request.start.y, request.end.y, ...outerLanes])].sort((a, b) => a - b),
           accepts: points => {
@@ -2351,7 +2350,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         const sortedXs = [...xs].sort((a, b) => a - b);
         const sortedYs = [...ys].sort((a, b) => a - b);
         const edgePassableZones = passableZonesOf(entry.id);
-        let detour = labelDetour({ request, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: borderClearance, routeSpacing, borderClearance,
+        let detour = labelDetour({ request, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
           xs: sortedXs, ys: sortedYs,
           accepts: (points) => {
             return placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined;
@@ -2362,7 +2361,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
           const wideYs = new Set<number>(ys);
           for (const x of [request.start.x, request.end.x, ...outerLanesX]) wideXs.add(x - routeSpacing), wideXs.add(x + routeSpacing);
           for (const y of [request.start.y, request.end.y, ...outerLanes]) wideYs.add(y - routeSpacing), wideYs.add(y + routeSpacing);
-          detour = labelDetour({ request, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: borderClearance, routeSpacing, borderClearance,
+          detour = labelDetour({ request, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
             xs: [...wideXs].sort((a, b) => a - b), ys: [...wideYs].sort((a, b) => a - b),
             accepts: (points) => {
               return placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined;
@@ -2374,7 +2373,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
           retryObstructed.delete(entry.id);
           choice = placePackedLabel({ ...entry, route: detour }, fixedShapes, taken, metrics.labelMargin);
         } else if (margin >= 0) {
-          const probeRoute = labelDetour({ request, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: borderClearance, routeSpacing, borderClearance,
+          const probeRoute = labelDetour({ request, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
             xs: sortedXs, ys: sortedYs,
             accepts: (points) => placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin, margin) !== undefined,
           });
@@ -2419,7 +2418,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
             if (!docksClear(pair)) continue;
             const alternative = { ...request, start: pair.source.point, startExit: pair.source.exit,
               end: pair.target.point, endExit: pair.target.exit };
-            const route = labelDetour({ request: alternative, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: borderClearance, routeSpacing, borderClearance,
+            const route = labelDetour({ request: alternative, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
               xs: sortedXs, ys: sortedYs,
               accepts: (points) => placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined,
             });
@@ -2448,7 +2447,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
             .map(candidate => retryRoutes.get(candidate.id)!);
           const allFixed = otherRoutesOf(entry.id);
           const comb = (earlier: readonly (readonly Vec2[])[]) => labelDetour({ request, shapes: shapesOf(entry.id), earlier, allFixed, passableZones: passableZonesOf(entry.id),
-            step: borderClearance, routeSpacing, borderClearance,
+            step: detourStep, routeSpacing, borderClearance: detourClearance,
             xs: [...new Set([request.start.x, request.end.x, column, ...outerLanesX])].sort((a, b) => a - b),
             ys: [...new Set([request.start.y, request.end.y, upperRow, row, ...outerLanes])].sort((a, b) => a - b),
             accepts: points => placePackedLabel({ ...unbounded, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined,
@@ -2576,7 +2575,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const labelled = intersecting.length > 0;
       const axis = gutter.horizontal ? 'vertical' as const : 'horizontal' as const;
       const parameters = channelMetrics(metrics, axis === 'horizontal');
-      const expected = gutter.zone
+      const expected = r7Routing && gutter.zone
         ? gutter.base
         : (() => {
             const placedFloor = Math.max(0, ...intersecting.map(box => (gutter.horizontal ? box.height : box.width) + 2 * metrics.labelMargin).filter(needed => needed <= gutter.max));
@@ -2591,19 +2590,18 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         labelled,
         gap: gutter.gap,
         expected,
-        capacity: channelCapacity(gutter.gap, routeSpacing, borderClearance),
-        zone: gutter.zone,
+        ...(r7Routing ? { capacity: channelCapacity(gutter.gap, routeSpacing, borderClearance), zone: gutter.zone } : {}),
       };
     });
-    // A widened leaf gutter that disappeared is dropped; sibling-zone gutters stay fixed (REQ-R7-14).
+    // A widened leaf gutter that disappeared is dropped; r7 sibling-zone gutters stay fixed (REQ-R7-14).
     const unused: string[] = [];
     const gutterIds = new Set(gutters.map((gutter) => gutter.id));
     for (const id of [...(plan?.widen.keys() ?? [])].sort(byString)) if (!gutterIds.has(id)) unused.push(id);
 
     // A label with no room is probed with the free space of a base gap above
-    // and under it: where it then fits, leaf-card lanes it sits in are asked to
-    // widen to its thickness plus its two margins — never past the axis cap,
-    // and never on fixed sibling-zone gutters (`gutter.zone`).
+    // and under it: where it then fits, leaf-card lanes (and v1 lanes) it sits in
+    // are asked to widen to its thickness plus its two margins — never past the
+    // axis cap, and never on r7 fixed sibling-zone gutters (`r7Routing && gutter.zone`).
     const requested = new Map<string, number>();
     const probed: Rect[] = [...taken];
     for (const entry of unplaced) {
@@ -2616,7 +2614,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const shared = sharedContainerOf(edge.source.entity, edge.target.entity);
       const level = shared === undefined ? ROOT_LEVEL_KEY : representativeOf(shared);
       for (const gutter of gutters) {
-        if (gutter.zone) continue;
+        if (r7Routing && gutter.zone) continue;
         // S-1: an outgoing edge may use a level's base gutter, but cannot
         // change its geometry when a different level is folded.
         if (!gutter.id.startsWith(`${level}|`)) continue;
@@ -2628,7 +2626,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     }
 
     for (const channel of channels) {
-      if (channel.zone) {
+      if (r7Routing && channel.zone) {
         requested.delete(channel.id);
         continue;
       }
@@ -2707,28 +2705,32 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         }),
       );
     }
-    const routeSpacingReport = checkRouteSpacing({
-      rects,
-      routes: checkedRoutes,
-      routeSpacing,
-      borderClearance,
-      channels,
-      barriers: auditBarriers,
-    });
-    for (const conflict of routeSpacingReport.conflicts) {
-      warnings.push({
-        severity: "info",
-        code: conflict.kind === "channel-capacity-exceeded" ? "channel-capacity-exceeded" : "route-spacing-conflict",
-        refs: conflict.routes,
-        message: conflict.message,
-        details: {
-          kind: conflict.kind,
-          actual: conflict.actual,
-          required: conflict.required,
-          ...(conflict.entity === undefined ? {} : { entity: conflict.entity }),
-          ...(conflict.channelId === undefined ? {} : { channelId: conflict.channelId }),
-        },
-      });
+    const routeSpacingReport = routeSpacing > 0
+      ? checkRouteSpacing({
+          rects,
+          routes: checkedRoutes,
+          routeSpacing,
+          borderClearance,
+          channels,
+          barriers: auditBarriers,
+        })
+      : undefined;
+    if (routeSpacingReport !== undefined) {
+      for (const conflict of routeSpacingReport.conflicts) {
+        warnings.push({
+          severity: "info",
+          code: conflict.kind === "channel-capacity-exceeded" ? "channel-capacity-exceeded" : "route-spacing-conflict",
+          refs: conflict.routes,
+          message: conflict.message,
+          details: {
+            kind: conflict.kind,
+            actual: conflict.actual,
+            required: conflict.required,
+            ...(conflict.entity === undefined ? {} : { entity: conflict.entity }),
+            ...(conflict.channelId === undefined ? {} : { channelId: conflict.channelId }),
+          },
+        });
+      }
     }
 
     // Emit the view plus measurements.
@@ -2780,7 +2782,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         [...orientationRecord].sort(([left], [right]) => byString(left, right)),
       ) as Readonly<Record<string, LevelOrientation>>,
       channels,
-      routeSpacing: routeSpacingReport,
+      ...(routeSpacingReport === undefined ? {} : { routeSpacing: routeSpacingReport }),
       labelBoxes: Object.fromEntries(
         [...labelBoxes]
           .sort(([left], [right]) => byString(left, right))

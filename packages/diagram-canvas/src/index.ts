@@ -20,6 +20,7 @@ export * from "./transform.js";
 export * from "./camera.js";
 export * from "./geometry.js";
 export * from "./visibility.js";
+export * from "./r7Mode.js";
 export * from "./scene.js";
 export * from "./hit.js";
 export * from "./layout/index.js";

@@ -105,13 +105,16 @@ function restingStrokeWidth(element: Element, style: CSSStyleDeclaration): numbe
   const state = element.getAttribute('data-flow-state');
   if (state !== 'primary' && state !== 'related') return width;
   const isFlow = element.hasAttribute('data-flow-step');
+  const isR7 = element.getAttribute('data-connector-mode') === 'r7';
   const token = isFlow
     ? '--st-component-diagramScene-flowStrokeWidth'
     : element.getAttribute('data-edge-emphasis') === 'emphasis'
       ? '--st-component-diagramScene-linkEmphasisStrokeWidth'
-      : '--st-component-diagramScene-linkStrokeWidth';
+      : isR7
+        ? '--st-component-diagramScene-linkStrokeWidth'
+        : '--st-component-diagramZone-borderWidth';
   const resting = parseFloat(style.getPropertyValue(token));
-  const fallbackWidth = isFlow ? RESTING_FLOW_STROKE_WIDTH : RESTING_EDGE_STROKE_WIDTH;
+  const fallbackWidth = isFlow || !isR7 ? RESTING_FLOW_STROKE_WIDTH : RESTING_EDGE_STROKE_WIDTH;
   return Number.isFinite(resting) ? resting : Math.min(width, fallbackWidth);
 }
 

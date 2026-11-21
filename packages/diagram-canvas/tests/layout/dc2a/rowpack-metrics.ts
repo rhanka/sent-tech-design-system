@@ -537,9 +537,7 @@ export function placementMetrics(layout: SceneLayout): PlacementMetrics {
   const { fit } = sceneFrame(layout);
   const scale = frameScale;
   const gaps = siblingGaps(layout);
-  const channelBase = (channel: NonNullable<SceneLayout["channels"]>[number]): number =>
-    channel.zone ? 96 : (channel.axis === "horizontal" ? 96 : 72);
-  const widened = (layout.channels ?? []).filter((channel) => channel.gap > channelBase(channel) + GAP_TOLERANCE);
+  const widened = gaps.filter((gap) => gap.gap > (gap.axis === "x" ? 96 : 72) + GAP_TOLERANCE);
   const levels = new Map<string, Rect[]>();
   for (const [id, parent] of layout.parentOf) {
     const list = levels.get(parent ?? "root") ?? [];
@@ -588,9 +586,9 @@ export function placementMetrics(layout: SceneLayout): PlacementMetrics {
     edgeLabelCssPx: round(edgeLabelCssPx(fit.zoom, EDGE_LABEL_FONT_SIZE)),
     gapX: stats(gaps.filter((gap) => gap.axis === "x").map((gap) => gap.gap)),
     gapY: stats(gaps.filter((gap) => gap.axis === "y").map((gap) => gap.gap)),
-    emptyLanes: (layout.channels ?? []).filter(channel => channel.gap > channelBase(channel) + GAP_TOLERANCE && channel.n === 0 && !channel.labelled).length,
+    emptyLanes: (layout.channels ?? []).filter(channel => channel.gap > (channel.axis === "horizontal" ? 96 : 72) + GAP_TOLERANCE && channel.n === 0 && !channel.labelled).length,
     widenedGutters: widened.length,
-    widenedWithoutLabel: (layout.channels ?? []).filter(channel => channel.gap > channelBase(channel) + GAP_TOLERANCE && channel.n === 0 && !channel.labelled).length,
+    widenedWithoutLabel: (layout.channels ?? []).filter(channel => channel.gap > (channel.axis === "horizontal" ? 96 : 72) + GAP_TOLERANCE && channel.n === 0 && !channel.labelled).length,
     misalignedLevels: misalignedLevels(layout).length,
     singleColumnLevels,
     sceneBandX: sceneBand(banded, "x"),
