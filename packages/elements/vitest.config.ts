@@ -12,6 +12,7 @@ export default defineConfig({
   plugins: [svelte()],
   test: {
     globals: false,
+    css: { include: [/\/dossier\.css(?:\?raw)?$/] },
     // `node` is deliberate: the validator is a pure module with no DOM. A jsdom
     // environment slipped in here would not prove anything the purity suite
     // does not already assert, and would mask a DOM dependency instead. (The

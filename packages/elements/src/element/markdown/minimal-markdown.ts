@@ -69,7 +69,7 @@ function isBullet(line: string): boolean {
  * sanitizer — the caller sanitizes (the DOM half routes this through
  * DOMPurify before insertion, §6.4).
  */
-export function renderMarkdown(source: string): string {
+export function renderMarkdown(source: string, tables = false): string {
   const lines = source.replace(/\r\n?/g, "\n").split("\n");
   const blocks: string[] = [];
   let index = 0;
@@ -87,6 +87,24 @@ export function renderMarkdown(source: string): string {
       }
       blocks.push(`<ul>\n${items.join("\n")}\n</ul>`);
       continue;
+    }
+    if (tables && line.includes("|") && lineAt(lines, index + 1).includes("|")) {
+      const cells = (row: string): string[] => row.trim().replace(/^\||(?<!\\)\|$/g, "")
+        .split(/(?<!\\)\|/).map((cell) => cell.trim().replace(/\\\|/g, "|"));
+      const headings = cells(line);
+      const separators = cells(lineAt(lines, index + 1));
+      if (headings.length === separators.length && separators.every((cell) => /^:?-{3,}:?$/.test(cell))) {
+        const head = headings.map((cell) => `<th>${renderInline(cell)}</th>`).join("");
+        const rows: string[] = [];
+        index += 2;
+        while (lineAt(lines, index).includes("|")) {
+          const row = cells(lineAt(lines, index));
+          rows.push(`<tr>${headings.map((_heading, col) => `<td>${renderInline(row[col] ?? "")}</td>`).join("")}</tr>`);
+          index += 1;
+        }
+        blocks.push(`<table><thead><tr>${head}</tr></thead><tbody>${rows.join("")}</tbody></table>`);
+        continue;
+      }
     }
     const paragraph: string[] = [];
     while (index < lines.length) {
