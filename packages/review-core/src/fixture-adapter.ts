@@ -516,15 +516,15 @@ export function createFixtureCommentsAdapter(
         else grouped.set(row.threadId, [row]);
       }
       const summaries = [...grouped].map(([threadId, thread]): StoreThreadSummary => {
-        const first = thread[0]!;
+        const root = thread[0]!;
         const last = thread.at(-1)!;
-        const target = normalizeCommentTarget((firstAnchoredRow(thread) ?? first).target);
-        const assignee = thread.filter((row) => row.assignedTo).at(-1)?.assignedTo;
+        const target = normalizeCommentTarget(root.target);
+        const assignee = root.assignedTo;
         return {
           threadId,
           target,
-          rootMessage: first.body,
-          rootMessageAt: first.createdAt,
+          rootMessage: root.body,
+          rootMessageAt: root.createdAt,
           lastMessage: last.body,
           lastMessageAt: last.createdAt,
           messageCount: thread.length,
