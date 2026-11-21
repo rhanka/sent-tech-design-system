@@ -8,6 +8,7 @@ import {
   type ViewDocument,
 } from "@sentropic/diagram-core";
 
+import { DEFAULT_EDGE_LABEL_SIZE } from "../camera.js";
 import { layoutDocument } from "./engine.js";
 import { digestOf, layoutFingerprint } from "./fingerprint.js";
 import { layoutFolded, layoutMeasured } from "./measured.js";
@@ -135,11 +136,18 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
     });
     if (documentDigest === undefined || presentationDigest === undefined || sourceViewDigest === undefined) return undefined;
     const metrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics };
+    const edgeLabelSize =
+      metrics.edgeLabelSize !== undefined && Number.isFinite(metrics.edgeLabelSize) && metrics.edgeLabelSize > 0
+        ? metrics.edgeLabelSize
+        : DEFAULT_EDGE_LABEL_SIZE;
     const input = tryCanonicalise({
       fingerprint, targetWidth: options.targetWidth,
       // The fingerprint already resolves row gaps and routing metrics. These
       // remaining compatibility metrics also affect the returned view bytes.
-      metrics: Object.fromEntries((["nodePaddingX", "nodePaddingY", "nodeMinWidth", "nodeMinHeight", "containerPadding", "titlePaddingY", "rankGap"] as const).map((name) => [name, name === "rankGap" ? options.hints?.rankGap ?? metrics.rankGap : metrics[name]])),
+      metrics: {
+        ...Object.fromEntries((["nodePaddingX", "nodePaddingY", "nodeMinWidth", "nodeMinHeight", "containerPadding", "titlePaddingY", "rankGap"] as const).map((name) => [name, name === "rankGap" ? options.hints?.rankGap ?? metrics.rankGap : metrics[name]])),
+        edgeLabelSize,
+      },
       pathKind: measured ? "measured" : "compatibility",
       documentDigest, presentationDigest, sourceViewDigest, registry,
       bindings: options.bindings === undefined ? "" : inputDigest(options.bindings),

@@ -35,7 +35,8 @@ const tokens = shallowRef<FlowTokens>(DEFAULT_FLOW_TOKENS);
 const { frameEl: frame, viewportEl: viewport, measure, measureLines, effectiveMetrics,
   fit, zoom, readout, placement, viewportStyle, refitOnFold,
   setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
-    props, () => scene.value, camera => props.onCameraChange?.(camera), readFlowTokens);
+    props, () => scene.value, camera => props.onCameraChange?.(camera), readFlowTokens,
+    undefined, () => ownedCache.clear());
 defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 const foldState = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? foldState.value);

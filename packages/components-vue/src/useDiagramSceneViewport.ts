@@ -12,6 +12,7 @@ export function useDiagramSceneViewport(
     onCameraChange: (camera: DiagramSceneCamera) => void,
     readExtraTokens?: (token: (name: string) => string | undefined) => void,
     transition?: { animating: () => boolean; settle: () => void },
+    onTokenMetricsChange?: () => void,
 ) {
     const scene = computed(getScene);
     const browserMeasure = shallowRef<CardLineMeasure>();
@@ -60,7 +61,10 @@ export function useDiagramSceneViewport(
         }
         const labelMargin = parseFloat(token('--st-component-diagramScene-labelPadding') ?? '');
         if (Number.isFinite(labelMargin)) values.labelMargin = labelMargin;
-        if (JSON.stringify(values) !== JSON.stringify(tokenMetrics.value)) tokenMetrics.value = values;
+        if (JSON.stringify(values) !== JSON.stringify(tokenMetrics.value)) {
+            onTokenMetricsChange?.();
+            tokenMetrics.value = values;
+        }
         readExtraTokens?.(token);
         maxDisplayScale.value = parseScale(token('--st-component-diagramScene-maxDisplayScale'));
         minReadableScale.value = parseScale(token('--st-component-diagramScene-minReadableScale'));
