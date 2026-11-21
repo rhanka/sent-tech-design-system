@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:f99deb11e57af37b3f5a10081ab1657325d8c91358e7cfcea19c95dcb243e85e",
-  "entryDigest": "sha256:20288fe2fed7e84d36de4f72577226989693f1c6f14f703c406ff7de9603e38a",
+  "digest": "sha256:4bdbcc9401f2f2960f43ad1014efdefdb221ee57f2409449befacfa92c54dcf8",
+  "entryDigest": "sha256:12e56ebd6f56bf56a21b123384c0b24330a5265fe77298390ea52718e54efb10",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1843,7 +1843,7 @@
             "additionalProperties": false,
             "properties": {
               "anatomy": {
-                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). New views default to `\"v2\"`.",
+                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). Absent means legacy `\"v1\"`; `\"v2\"` is opt-in.",
                 "enum": [
                   "v1",
                   "v2"
@@ -4270,11 +4270,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:2659deb6d21bf0df3a6441090e85f64f87783cb3e292c6f358cc880a3a211961",
+        "declarationDigest": "sha256:1639236ce7839b46bf39fe576dfe7a12a3acf892b6d35f04cfa036716332c860",
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.43.0"
+        "version": "0.43.1"
       },
       "status": "partial",
       "unresolved": [
@@ -6645,7 +6645,7 @@
             "additionalProperties": false,
             "properties": {
               "anatomy": {
-                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). New views default to `\"v2\"`.",
+                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). Absent means legacy `\"v1\"`; `\"v2\"` is opt-in.",
                 "enum": [
                   "v1",
                   "v2"
@@ -9131,7 +9131,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "partial",
       "unresolved": [

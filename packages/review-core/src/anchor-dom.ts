@@ -346,8 +346,8 @@ export function createAnchorFromSelection(
 }
 
 /**
- * Captures an `ElementAnchorPayload` (`sel`, optional `aid` on the element itself, `v`)
- * for an element inside `root`. Returns `null` when `element` is outside `root`.
+ * Captures an `ElementAnchorPayload` (`sel`, optional `aid` resolved through the
+ * closest `data-anchor-id` ancestor, `v`) for an element inside `root`. Returns `null` when `element` is outside `root`.
  */
 export function createAnchorFromElement(
   root: Element,
@@ -362,7 +362,7 @@ export function createAnchorFromElement(
   }
 
   const sel = buildCssPath(root, element);
-  const aid = element.getAttribute(DATA_ANCHOR_ID_ATTR);
+  const aid = findClosestAnchorId(element, root);
   const payload: ElementAnchorPayload = {
     t: "element",
     sel,
@@ -716,6 +716,16 @@ export function resolveAnchor(
           versionChanged,
         };
       }
+      // Explicit aid missing from root means the anchored block was removed.
+      // Return orphan immediately with no positional fallback onto the neighbour
+      // that shifted into the stale `sel` slot.
+      return {
+        status: "orphan",
+        kind: "element",
+        reason: "not-found",
+        element: null,
+        range: null,
+      };
     }
 
     const selEl = queryRelativeSelector(root, anchor.sel);

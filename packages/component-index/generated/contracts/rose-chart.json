@@ -1,8 +1,8 @@
 {
   "componentId": "rose-chart",
   "contractSource": "derived",
-  "digest": "sha256:46db8d385117854e95b3d3957a7c0e62d74e582a3c2d383b07f3f2cbb67c5193",
-  "entryDigest": "sha256:baaea8e80cfc70f5ffc8ab8043665928c4a33901518ff632631b379de40a2d5a",
+  "digest": "sha256:81dbcf0697a775310f824624669f034c9b2dd46f37f9d7092ca67b78d9742a21",
+  "entryDigest": "sha256:a5dc2b3cb75b8e9454aad0145eaa69df553c5aed82aac5051945ec2e6db5a185",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/RoseChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RoseChartProps",
-        "version": "0.43.0"
+        "version": "0.43.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -314,7 +314,7 @@
         "declarationPath": "packages/components-vue/dist/RoseChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RoseChartProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "complete",
       "unresolved": [],

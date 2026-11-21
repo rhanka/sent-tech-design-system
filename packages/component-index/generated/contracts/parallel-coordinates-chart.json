@@ -1,8 +1,8 @@
 {
   "componentId": "parallel-coordinates-chart",
   "contractSource": "derived",
-  "digest": "sha256:5878177ce3e32f4f17215f775a194adaaa3e85b4d542b8461d1faf2938d5d00d",
-  "entryDigest": "sha256:f5f2736ecfd225dbb457d20fc1b4f733471d1e673c5b61e574966894ae3799b2",
+  "digest": "sha256:67a06c9cf15cec323b084f3e3899c4892e08b4df1bf249db04d6c3b42465d3c2",
+  "entryDigest": "sha256:04fff495c2eadb621ff625c977b4bd9e7a3accb68e2737f5e91af5aa05fc3eb4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -309,7 +309,7 @@
         "declarationPath": "packages/components-svelte/dist/ParallelCoordinatesChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ParallelCoordinatesChartProps",
-        "version": "0.43.0"
+        "version": "0.43.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -413,7 +413,7 @@
         "declarationPath": "packages/components-vue/dist/ParallelCoordinatesChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ParallelCoordinatesChartProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "partial",
       "unresolved": [],

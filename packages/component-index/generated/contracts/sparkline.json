@@ -1,8 +1,8 @@
 {
   "componentId": "sparkline",
   "contractSource": "derived",
-  "digest": "sha256:5bb634775ac70fafaa35bc07fa68446b61dc1e998e6368973b36bad98ef44bdf",
-  "entryDigest": "sha256:d658a235c35996ab54423d8ee7a5dd7e61fff8791ba2e12caea076f574088277",
+  "digest": "sha256:7da04f17d85da883d79c6e024b77203770122a5350ef3b461cc75569eeaa38f5",
+  "entryDigest": "sha256:37f56921178b2fdcdbf23c606a4e72ca6b4a621b6e87eebf5ea88357c0053ecc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -185,7 +185,7 @@
         "declarationPath": "packages/components-svelte/dist/Sparkline.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SparklineProps",
-        "version": "0.43.0"
+        "version": "0.43.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -247,7 +247,7 @@
         "declarationPath": "packages/components-vue/dist/Sparkline.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SparklineProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "complete",
       "unresolved": [],
