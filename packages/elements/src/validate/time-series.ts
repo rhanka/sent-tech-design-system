@@ -6,7 +6,7 @@ function invalid(path: string, message: string): Diagnostic {
 }
 
 /** Cross-record rules, after the JSON Schema has accepted the shape. */
-export function validateTimeSeries({ series }: TimeSeriesChartProps): readonly Diagnostic[] {
+export function validateTimeSeries({ series, referenceLines }: TimeSeriesChartProps): readonly Diagnostic[] {
   const ids = new Set<string>();
   const diagnostics: Diagnostic[] = [];
   for (const [index, entry] of series.entries()) {
@@ -19,6 +19,11 @@ export function validateTimeSeries({ series }: TimeSeriesChartProps): readonly D
         diagnostics.push(invalid(`${path}/data/${pointIndex}/x`, "timestamps must increase strictly within a series"));
       }
       previous = x;
+    }
+  }
+  for (const [index, line] of (referenceLines ?? []).entries()) {
+    if (line.axis === "x" && (!Number.isInteger(line.value) || Math.abs(line.value) > 8_640_000_000_000_000)) {
+      diagnostics.push(invalid(`/root/referenceLines/${index}/value`, "x-axis references require whole UTC epoch milliseconds"));
     }
   }
   return diagnostics;
