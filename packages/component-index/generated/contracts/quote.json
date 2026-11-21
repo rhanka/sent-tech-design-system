@@ -1,8 +1,8 @@
 {
   "componentId": "quote",
   "contractSource": "derived",
-  "digest": "sha256:c31ec83ca9ade0731f0debb11252f3b9bd3ba34e32c8d5c39ed87286f76592e8",
-  "entryDigest": "sha256:1fc1113ddb23f269e3c1ccebbbe28fd1ad219ce6959159c1ff1d99d27666d008",
+  "digest": "sha256:da77ff77e926c876c297a1b6f0d823eb96451054e4bbbf996b60f42c7e8dfad6",
+  "entryDigest": "sha256:cf3e2f7ac4342fccccb447ae7a3f90da5aceadd96493c5b0bbf3e00b14fcf57c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -141,7 +141,7 @@
         "declarationPath": "packages/components-svelte/dist/Quote.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "QuoteProps",
-        "version": "0.43.1"
+        "version": "0.43.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -200,7 +200,7 @@
         "declarationPath": "packages/components-vue/dist/Quote.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "QuoteProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "complete",
       "unresolved": [],

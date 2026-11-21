@@ -1,8 +1,8 @@
 {
   "componentId": "footer",
   "contractSource": "derived",
-  "digest": "sha256:faccc75d2a0b886414aecdd0ca14fe9974267ff30aa1c728b7d25592a7a3b206",
-  "entryDigest": "sha256:853e9ab68d2282d5dd3fedabd34a7cf42796d9f9a137e1e3f471418d5da0fcd4",
+  "digest": "sha256:274cbe88f5323506ac9bea1e0ed91f36f39f0f5cb42792e3e543a4c93814bbe8",
+  "entryDigest": "sha256:e58dce75bd9c6b0d4ce7806ddb04995a4f5f01ec60db78a1a38ee7ef25d71bd2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -329,7 +329,7 @@
         "declarationPath": "packages/components-svelte/dist/Footer.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FooterProps",
-        "version": "0.43.1"
+        "version": "0.43.2"
       },
       "status": "partial",
       "unresolved": [],
@@ -486,7 +486,7 @@
         "declarationPath": "packages/components-vue/dist/Footer.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FooterProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "complete",
       "unresolved": [],

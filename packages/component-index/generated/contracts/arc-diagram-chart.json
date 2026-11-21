@@ -1,8 +1,8 @@
 {
   "componentId": "arc-diagram-chart",
   "contractSource": "derived",
-  "digest": "sha256:0acdca5abb8e1f50e49dadc80843593724aaf2f20c850c615050a08bd08b4508",
-  "entryDigest": "sha256:544790499151c9b88bdefcaf5c296fbae56784702193a341e05b836d5042ae22",
+  "digest": "sha256:e79efba59f8b15a228c2e5c3fe78c7eedb94d39c34f0259f044fdcffcf8fd9d8",
+  "entryDigest": "sha256:f3a0b00cbc5e8f01652c55884f7d627a41f7ea27d366930acc73c93ae4a72edb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/ArcDiagramChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ArcDiagramChartProps",
-        "version": "0.43.1"
+        "version": "0.43.2"
       },
       "status": "partial",
       "unresolved": [],
@@ -341,7 +341,7 @@
         "declarationPath": "packages/components-vue/dist/ArcDiagramChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ArcDiagramChartProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "partial",
       "unresolved": [],

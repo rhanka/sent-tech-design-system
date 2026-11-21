@@ -1,8 +1,8 @@
 {
   "componentId": "slider",
   "contractSource": "derived",
-  "digest": "sha256:3e7fa4c929a9bff798c59aad46f27bfe79ecf747c84ccda2cf4e0bbfb7521358",
-  "entryDigest": "sha256:c6dfebe4e29663380702258b4562163a69053c704cf0d38f2eba30e71f45c1df",
+  "digest": "sha256:fdd7f7b8299d7d3eeaa38d041a7741ce22a742af29394c25997752bdaaa5256d",
+  "entryDigest": "sha256:e958d94ea55ba9a237fd6257e9fddf1a737cdcba97d776050f1ccf88c8466002",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -259,7 +259,7 @@
         "declarationPath": "packages/components-svelte/dist/Slider.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SliderProps",
-        "version": "0.43.1"
+        "version": "0.43.2"
       },
       "status": "partial",
       "unresolved": [],
@@ -366,7 +366,7 @@
         "declarationPath": "packages/components-vue/dist/Slider.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SliderProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "partial",
       "unresolved": [],
