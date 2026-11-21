@@ -196,7 +196,8 @@ data or protocol code.
 A `partial` BPMN entry records the measured complete candidate and requests
 the text fallback with a URL supplied by the host when available. The
 chunked browser entry still supports the full canvas. See the
-[EZ-1 build evidence](docs/ez-1-evidence.md) for measurements and fixtures.
+[EZ-1 build evidence](https://github.com/rhanka/sent-tech-design-system/blob/main/packages/elements/docs/ez-1-evidence.md)
+for measurements and fixtures.
 
 ## CDN (§7)
 

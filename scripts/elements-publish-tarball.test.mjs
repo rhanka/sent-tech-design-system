@@ -357,6 +357,34 @@ test("AC-L7a: the tarball carries the publishable shape and no source, test, scr
   assert.deepStrictEqual(maps, [], `published tarball ships source maps: ${maps.join(", ")}`);
 });
 
+test("EZ-1: the packed README links to the build evidence in the repository", (t) => {
+  if (skipWhenUnbuilt(t)) return;
+  const { packageDir, manifest } = packedTarballContext();
+  const readme = readFileSync(join(packageDir, "README.md"), "utf8");
+  const receiptPath = "packages/elements/docs/ez-1-evidence.md";
+  const repository = manifest.repository.url.replace(/^git\+/, "").replace(/\.git$/, "");
+  assert.ok(existsSync(join(repoRoot, receiptPath)), "build evidence is missing from the repository");
+  assert.ok(readme.includes(`[EZ-1 build evidence](${repository}/blob/main/${receiptPath})`),
+    "the packed README must link to the repository copy of the build evidence");
+});
+
+test("EZ-1: the local reference build matches the recorded receipt", {
+  skip: process.env.EZ1_VERIFY_BUILD_RECEIPT !== "1",
+}, () => {
+  const { packageDir, tarball } = packedTarballContext();
+  const read = (path) => readFileSync(join(packageDir, path));
+  const manifest = JSON.parse(read("dist/shells/manifest.json"));
+  const receipt = readFileSync(join(elementsDir, "docs", "ez-1-evidence.md"), "utf8").split("\n## Round 1 history\n")[0];
+  const expected = Object.entries(manifest.components).map(([name, { complete, status }]) =>
+    `| ${name} | ${complete.bytes} | ${complete.gzip} | ${status} | \`${complete.sha256}\` |`);
+  for (const path of ["dist/browser/sri.json", "dist/shells/manifest.json"]) {
+    expected.push(`| \`${path}\` | \`${createHash("sha256").update(read(path)).digest("hex")}\` |`);
+  }
+  const integrity = createHash("sha512").update(readFileSync(tarball)).digest("base64");
+  expected.push(`| Local npm pack integrity | \`sha512-${integrity}\` |`);
+  assert.deepStrictEqual(expected.filter((line) => !receipt.includes(line)), [], "the reference build receipt differs");
+});
+
 test("EZ-1: the packed temporal fixtures are publicly resolvable and match their recorded hashes", (t) => {
   if (skipWhenUnbuilt(t)) return;
   const { files, manifest, packageDir } = packedTarballContext();
