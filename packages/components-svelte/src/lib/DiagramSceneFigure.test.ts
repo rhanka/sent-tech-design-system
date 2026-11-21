@@ -568,7 +568,7 @@ describe("DiagramSceneFigure camera", () => {
         snap(ty + (y + parseFloat(this.style.height)) * scale) - top);
     });
     const zooms: number[] = [];
-    for (const [width, height] of [[1920, 1080], [1600, 900], [1280, 720]] as const) {
+    for (const [width, height] of [[1920, 1080], [1600, 900], [600, 720]] as const) {
       setWindow(width, height);
       const view = mount(WIDE);
       await tick();
@@ -630,7 +630,7 @@ describe("DiagramSceneFigure camera", () => {
     expect(view.button("Zoom out").disabled).toBe(true);
   });
 
-  it("Z-6 / AC-15 zoom, fit and reset run no layout and change no rectangle or orientation", async () => {
+  it("Z-6 / AC-15 zoom, fit, reset and resize run no layout and change no rectangle or orientation", async () => {
     const view = mount(WIDE);
     await tick();
     const layoutsBefore = view.layouts.length;
@@ -652,7 +652,7 @@ describe("DiagramSceneFigure camera", () => {
     expect(view.lastLayout().orientations).toEqual(orientations);
   });
 
-  it("Z-7 a fold relayout refits the camera to the new bounds; explicit user zoom/pan is kept until the next fold toggle", async () => {
+  it("Z-7 a fold or resize refits the whole figure and resets explicit zoom and pan", async () => {
     reducedMotion = true;
     setWindow(800, 600);
     const view = mount(WIDE, { defaultFolds: [occurrence("a"), occurrence("b")] });
@@ -677,7 +677,7 @@ describe("DiagramSceneFigure camera", () => {
     await tick();
     expect(view.zoom()).toBe(unfoldedFit);
 
-    // Explicit user zoom and pan are preserved while no fold toggle happens (including across a resize).
+    // The user can zoom and pan until the next resize.
     view.component.setZoom(DEFAULT_MAX_DISPLAY_SCALE);
     await tick();
     view.viewport.scrollLeft = 40;
@@ -685,9 +685,15 @@ describe("DiagramSceneFigure camera", () => {
     expect(view.zoom()).toBe(DEFAULT_MAX_DISPLAY_SCALE);
     expect(view.viewport.dataset["pans"]).toBe("true");
     await resize(820, 600);
-    expect(view.zoom()).toBe(DEFAULT_MAX_DISPLAY_SCALE);
-    expect(view.viewport.scrollLeft).toBe(40);
-    expect(view.viewport.scrollTop).toBe(20);
+    expect(view.zoom()).toBe(view.component.getCamera().fitZoom);
+    expect(view.zoom()).toBeLessThan(DEFAULT_MAX_DISPLAY_SCALE);
+    expect(view.viewport.scrollLeft).toBe(0);
+    expect(view.viewport.scrollTop).toBe(0);
+
+    view.component.setZoom(DEFAULT_MAX_DISPLAY_SCALE);
+    await tick();
+    view.viewport.scrollLeft = 40;
+    view.viewport.scrollTop = 20;
 
     // Next fold toggle (folding back) drops the user zoom/pan and refits back to the folded scene.
     await fireEvent.click(view.toggle("a"));
@@ -921,7 +927,7 @@ describe("DiagramSceneFigure camera", () => {
     }
   });
 
-  it("reclamps on resize: a camera at the fit follows the new fit box, any other zoom is clamped", async () => {
+  it("refits on resize using the new fit box", async () => {
     const view = mount(WIDE);
     await tick();
     const { model } = modelOf(WIDE);
@@ -945,7 +951,8 @@ describe("DiagramSceneFigure camera", () => {
     expect(view.readout()).toBe("100 %");
   });
 
-  it("pins v1 and fallback-v1 figure max size and zoom bounds (maxDisplayScale, minReadableScale, fit) to 0.41.5 values", async () => {
+  // Décision du 21/11. « L'utilisateur a les boutons de zoom et autolayout. Par défaut quand on redimensionne on autolayout zoom intégral + plancher à 30 % ».
+  it("pins v1 and fallback-v1 figure max size, cap and R7 zoom floor", async () => {
     // 1. Explicit v1 view and unpinned v1 scene produce identical 0.41.5 camera bounds and figure fit height.
     const completeSingle = sceneOf("complete-single", [{ id: "solo" }]);
     const completeEntity = {
@@ -1012,7 +1019,7 @@ describe("DiagramSceneFigure camera", () => {
     expect(defaultCreateViewMounted.component.getCamera()).toMatchObject({ zoom: 0.62, maxZoom: 0.62, readout: 100 });
     defaultCreateViewMounted.unmount();
 
-    // 2. Wide v1 scene at narrow viewport floors at 0.45 and caps at 0.62, with nested fold hiding descendants cleanly.
+    // 2. Wide v1 scene at narrow viewport floors at 0.30 and caps at 0.62, with nested fold hiding descendants cleanly.
     reducedMotion = true;
     const nested = sceneOf("nested-v1-zoom", [
       { id: "outer", container: true },
@@ -1025,8 +1032,8 @@ describe("DiagramSceneFigure camera", () => {
     await tick();
     const initialCam = view.component.getCamera();
     expect(initialCam.maxZoom).toBe(0.62);
-    expect(initialCam.minZoom).toBe(0.45);
-    expect(initialCam.zoom).toBe(0.45);
+    expect(initialCam.minZoom).toBe(0.30);
+    expect(initialCam.zoom).toBe(0.30);
     expect(initialCam.pans).toBe(true);
     expect(view.drawn()).toContain(occurrence("inner1"));
     // DE-1 nested fold fix stays intact: folding outer hides inner AND all 6 grandchildren,
@@ -1037,7 +1044,7 @@ describe("DiagramSceneFigure camera", () => {
     await fireEvent.click(view.button("Fit"));
     await tick();
     expect(view.component.getCamera().maxZoom).toBe(0.62);
-    expect(view.component.getCamera().minZoom).toBeGreaterThanOrEqual(0.45);
+    expect(view.component.getCamera().minZoom).toBeGreaterThanOrEqual(0.30);
     expect(view.zoom()).toBeLessThanOrEqual(0.62);
     view.unmount();
   });
@@ -1510,7 +1517,7 @@ describe("M1 production edge labels (BF-6) and readability floor", () => {
     expect(tokenSource()).toContain('edgeLabelLineHeight: "22px"');
     expect(edgeSample("ok").height).toBe(22);
     expect(edgeSample("ok").height + 2 * 4).toBeLessThanOrEqual(32);
-    expect(18 * DEFAULT_MIN_READABLE_SCALE).toBeGreaterThanOrEqual(8);
+    expect(18 * DEFAULT_MIN_READABLE_SCALE).toBeCloseTo(5.4);
   });
 
   it("LABELLED and WIDE draw the engine placed set with the default measurer, readable at fit and at 100%", async () => {
@@ -1661,13 +1668,13 @@ describe("DiagramSceneFigure cheap minors", () => {
     expect(view.root.querySelector('[role="alert"]')).not.toBeNull();
   });
 
-  it("m6 fit width uses the viewport narrowed by its scrollbar", async () => {
+  it("refits in the full frame even when the previous zoom left a scrollbar", async () => {
     const view = mount(WIDE);
     await tick();
     Object.defineProperty(view.viewport, "clientWidth", { configurable: true, value: 1000 });
     await resize(1280, 720);
     const { model } = modelOf(WIDE);
-    const expected = sceneFit({ bounds: model.bounds!, viewWidth: 1000, windowHeight: 720 });
+    const expected = sceneFit({ bounds: model.bounds!, viewWidth: 1280, windowHeight: 720 });
     expect(view.zoom()).toBe(expected.zoom);
   });
 
@@ -1712,15 +1719,16 @@ describe("DC-2b cache and content size", () => {
       await fireEvent.wheel(view.viewport, { ctrlKey: true, deltaY: step % 2 === 0 ? -10 : 10 });
       times.push(performance.now() - start);
     }
-    setWindow(1024, 768);
-    await fireEvent(window, new Event("resize"));
-    await tick();
     expect(cache.stats()).toEqual(before);
     expect(view.counting).toHaveBeenCalledTimes(measurements);
     expect(size).not.toHaveBeenCalled();
     const p95 = times.sort((a, b) => a - b)[113]!;
     console.info(`DC-2b Svelte mounted camera: 120 pan + 120 zoom events, p95 ${p95.toFixed(3)} ms <= 16.7 ms; 0 layout/measurement/size emissions`);
     expect(p95).toBeLessThanOrEqual(16.7);
+    await resize(1024, 768);
+    expect(cache.stats()).toEqual(before);
+    expect(view.counting).toHaveBeenCalledTimes(measurements);
+    expect(size).not.toHaveBeenCalled();
     await fireEvent.click(view.toggle("a"));
     await tick();
     expect(size).toHaveBeenLastCalledWith({ width: view.lastLayout().fit.width, height: view.lastLayout().fit.height });

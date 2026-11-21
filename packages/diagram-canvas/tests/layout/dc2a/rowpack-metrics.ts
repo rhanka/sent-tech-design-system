@@ -99,7 +99,7 @@ export interface PlacementMetrics {
   readonly displayScale: number;
   /** True when the fit is held at the floor and the host pans. */
   readonly pans: boolean;
-  /** Rendered edge-label font size at `displayScale`, CSS px (§5.3: at least 8). */
+  /** Rendered edge-label font size at `displayScale`, CSS px. */
   readonly edgeLabelCssPx: number;
   readonly gapX: GapStats;
   readonly gapY: GapStats;

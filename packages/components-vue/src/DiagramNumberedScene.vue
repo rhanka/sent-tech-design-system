@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineOptions({ name: "DiagramSceneFigure" });
-import { computed, nextTick, onBeforeUnmount, shallowRef, useId, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useId, watch } from "vue";
 import { getDiagramGlyph } from './diagram-icons/registry.js';
 import { createLayoutCache, DEFAULT_FLOW_TOKENS, type FlowTokens, type Rect } from "@sentropic/diagram-canvas";
 import { useDiagramSceneViewport } from "./useDiagramSceneViewport.js";
@@ -12,7 +12,7 @@ import {
 import {
   collapsedOccurrencesOf, connectorDashArray, connectorDashPaint, connectorMarkerIds, connectorMarkerRef, connectorPath, DEFAULT_EDGE_CORNER_RADIUS, DEFAULT_SCENE_LABELS, extraConnectorMarkers, sceneContentSize, layoutScene, linkLegendBoxStyle, linkLegendSwatchGeometry, resolveScene,
   parseScale, sceneConnectorMask, sceneNodesOnPlane,
-  type SceneModel, type SceneNodeModel, type SceneOrientations, type SceneOccurrenceRef,
+  type DiagramSceneSize, type SceneModel, type SceneNodeModel, type SceneOrientations, type SceneOccurrenceRef,
 } from "@sentropic/diagram-canvas/diagramSceneModel";
 import DiagramSceneFallback from "./DiagramSceneFallback.vue";
 import SceneNode from "./DiagramFlowNode.vue";
@@ -24,7 +24,7 @@ export type { DiagramSceneFigureLabels, DiagramSceneCamera } from "@sentropic/di
 const DEFAULT_LABELS: DiagramSceneFigureLabels = DEFAULT_SCENE_LABELS;
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { compact: false });
-const emit = defineEmits<{ "update:contentSize": [size: { width: number; height: number }] }>();
+const emit = defineEmits<{ "update:contentSize": [size: DiagramSceneSize] }>();
 const ownedCache = createLayoutCache(), hostId = useId();
 const arrowId = 'diagram-arrow-' + hostId;
 const markerIds = connectorMarkerIds(arrowId);
@@ -33,14 +33,14 @@ const strings = computed(() => ({ ...DEFAULT_LABELS, ...props.labels }));
 const flowOptions = computed(() => ({ ...props.flows, countTemplate: strings.value.count }));
 const tokens = shallowRef<FlowTokens>(DEFAULT_FLOW_TOKENS);
 const { frameEl: frame, viewportEl: viewport, measure, measureLines, effectiveMetrics, r7Mode,
-  fit, zoom, readout, placement, viewportStyle, fitInput, refitOnFold,
+  fit, zoom, readout, placement, viewportStyle, sceneFitInput, resetToFit,
   setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
     props, () => scene.value, camera => props.onCameraChange?.(camera), readFlowTokens,
     undefined, () => ownedCache.clear());
 defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 const foldState = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? foldState.value);
-watch(() => [...collapsedNow.value].sort().join('\0'), () => refitOnFold(), { flush: 'pre' });
+watch(() => [...collapsedNow.value].sort().join('\0'), resetToFit, { flush: 'pre' });
 let previousOrientation: SceneOrientations | undefined, orientationDocument: string | undefined;
 let orientationInputTuple: readonly unknown[] | undefined;
 const orientationSeedByFold = new Map<string, SceneOrientations | undefined>();
@@ -94,7 +94,8 @@ const layout = computed(() => {
     measureLines: measureLines.value, collapsed: collapsedNow.value, flows: flowOptions.value, flowTokens: tokens.value,
     ...(props.view === undefined ? {} : { view: props.view }), ...(props.bindings === undefined ? {} : { bindings: props.bindings }),
     ...(props.hints === undefined ? {} : { hints: props.hints }), metrics: effectiveMetrics.value,
-    ...(props.rowPack === undefined ? {} : { rowPack: props.rowPack }), ...(props.targetWidth === undefined ? {} : { targetWidth: props.targetWidth }),
+    ...(props.rowPack === undefined ? {} : { rowPack: props.rowPack }),
+    ...(props.targetWidth === undefined ? {} : { targetWidth: props.targetWidth }),
     ...(orientationSeed === undefined ? {} : { previousOrientation: orientationSeed }),
   });
   if (result.status === "laid-out") previousOrientation = result.orientations;
@@ -109,7 +110,7 @@ const scene = computed<SceneModel | undefined>(() => layout.value.status !== "la
   ...(strings.value.legend === undefined ? {} : { legendTitle: strings.value.legend }),
   ...(props.legendLabels === undefined ? {} : { legendLabels: props.legendLabels }),
   resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
-}, props.fitToWindow ? fitInput.value : undefined));
+}, props.fitToWindow ? sceneFitInput.value : undefined));
 // Paint order (diagram-canvas `scenePaintPlane`): expanded zone frames, the
 // connectors, then every box. A zone frame is opaque: painted after the
 // connectors it would hide every route that runs inside it.
@@ -125,8 +126,17 @@ const legendEntries = computed(() => scene.value?.linkLegend?.entries.map((entry
   entry,
   swatch: linkLegendSwatchGeometry(entry, effectiveMetrics.value),
 })) ?? []);
-watch(layout, (result) => props.onLayout?.(result), { immediate: true });
-watch(() => sceneContentSize(layout.value), (size) => { props.onSizeChange?.(size); emit("update:contentSize", size); }, { immediate: true });
+onMounted(() => {
+  watch(layout, (result) => props.onLayout?.(result), { immediate: true });
+  let publishedSize: DiagramSceneSize | undefined;
+  watch(layout, (result) => {
+    const size = sceneContentSize(result);
+    if (publishedSize?.width === size.width && publishedSize?.height === size.height) return;
+    publishedSize = size;
+    props.onSizeChange?.(size);
+    emit("update:contentSize", size);
+  }, { immediate: true });
+});
 
 const local = shallowRef<FlowState>({ ...INITIAL_FLOW_STATE, selection: props.defaultActiveStep === undefined ? null : { kind: "step", relation: props.defaultActiveStep }, ...(props.defaultScenario === undefined ? {} : { scenario: props.defaultScenario }) });
 const state = computed<FlowState>(() => {

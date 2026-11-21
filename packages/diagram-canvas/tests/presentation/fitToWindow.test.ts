@@ -55,10 +55,10 @@ describe("fit-to-window host framing (DE-2 ask 9)", () => {
 
     const phone = { bounds, viewWidth: 390, windowHeight: 844 };
     const legacyPhone = sceneFit(phone);
-    expect(legacyPhone.zoom).toBe(0.45);
+    expect(legacyPhone.zoom).toBe(0.30);
     expect(legacyPhone.pans).toBe(true);
     const overview = sceneFit({ ...phone, fitToWindow: true });
-    expect(overview.zoom).toBeLessThan(0.45);
+    expect(overview.zoom).toBeLessThan(0.30);
     expect(overview.pans).toBe(false);
     expect(scenePlacement(bounds, overview.zoom, overview)).toMatchObject({ overflowX: false, overflowY: false });
   });

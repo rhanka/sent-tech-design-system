@@ -5160,8 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-vue-vapor",
-      "destinationSha256": "3f12418aa2e012a3c1536084ff224b883ed095e09fd3b5fa050421ffee7efc6b",
-      "note": "Vue Vapor SFC port: dual Classic/Vapor builds, exports, published declaration parity and exact Vue toolchain 3.6.0-rc.15; consumer peer ^3.5 || ^3.6.0-0. Current runtime pins: design-system-themes 0.15.1 and design-system-vue 0.41.0-next.9, whose diagram-canvas 0.3.1 -> diagram-core 0.4.1 closure awaits public npm. PR 282 final review: exclude cache markers/maps and enforce source/dist control-byte safety during build. Card body centring: align the design-system-vue pin with 0.41.0-next.7. DE-1: align design-system-themes (0.15.0) and design-system-vue (0.41.0-next.8) pins. r7 v1 regressions fix: align design-system-themes (0.15.1) and design-system-vue (0.41.0-next.9) pins. Upstream identity retained; DE-2: align workspace dependency pins (themes 0.16.0 / svelte 0.44.0 / vue 0.41.0-next.10)"
+      "destinationSha256": "955130b3e12213e6cd68f74f12c8ffa4cb6ed04b761d59a43d8c242fb4aec1a0",
+      "note": "Vue Vapor SFC port: dual Classic/Vapor builds, exports, published declaration parity and exact Vue toolchain 3.6.0-rc.15; consumer peer ^3.5 || ^3.6.0-0. Current runtime pins: design-system-themes 0.15.1 and design-system-vue 0.41.0-next.9, whose diagram-canvas 0.3.1 -> diagram-core 0.4.1 closure awaits public npm. PR 282 final review: exclude cache markers/maps and enforce source/dist control-byte safety during build. Card body centring: align the design-system-vue pin with 0.41.0-next.7. DE-1: align design-system-themes (0.15.0) and design-system-vue (0.41.0-next.8) pins. r7 v1 regressions fix: align design-system-themes (0.15.1) and design-system-vue (0.41.0-next.9) pins. Upstream identity retained; DE-2: align workspace dependency pins (themes 0.16.0 / svelte 0.44.0 / vue 0.41.0-next.11)"
     },
     {
       "repository": "dataviz",

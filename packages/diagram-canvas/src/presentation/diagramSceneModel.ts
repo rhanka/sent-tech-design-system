@@ -41,7 +41,6 @@ import {
   DEFAULT_LINK_RELATED_STROKE_WIDTH,
   DEFAULT_LINK_STROKE_WIDTH,
   DEFAULT_LINK_EMPHASIS_STROKE_WIDTH,
-  DEFAULT_MIN_READABLE_SCALE,
   FIT_PAINT_INSET,
   MIN_EDGE_LABEL_CSS_PX,
   diagramAnatomyOf, isR7ConnectorPresentation,
@@ -67,6 +66,7 @@ import {
 } from "../index.js";
 
 import { measureBundleLabel, type BundleLabelGroup } from "../layout/bundleLabel.js";
+import { LABEL_CLEARANCE_REFERENCE_SCALE } from "../layout/labels.js";
 import { getDiagramGlyph } from "./registry.js";
 import { anatomyZoneGeometry, lineBoxHeight, ZONE_GEOMETRY } from "./diagramCardModel.js";
 import { buildSceneLinkLegend, type LinkLegendAnchor, type SceneLinkLegend } from "./linkLegend.js";
@@ -148,9 +148,8 @@ export interface SceneLayoutCache {
 }
 
 /**
- * `targetWidth` handed to the engine when the host supplies none. The
- * measured path never re-packs on it (D-3) and the host never reads the
- * layout fit report (Z-8), so a resize re-runs no layout.
+ * Default layout report width. The measured path never re-packs on it (D-3).
+ * Hosts use the measured frame width for the camera fit (Z-8).
  */
 export const DEFAULT_SCENE_TARGET_WIDTH = 1440;
 /**
@@ -539,7 +538,7 @@ export function resolveScene(
   if (!viewport?.fitToWindow || !scene.r7Connectors) return scene;
 
   const labelSize = input.metrics?.edgeLabelSize ?? DEFAULT_EDGE_LABEL_SIZE;
-  let paintZoom = Math.max(DEFAULT_MIN_READABLE_SCALE, MIN_EDGE_LABEL_CSS_PX / labelSize);
+  let paintZoom = Math.max(LABEL_CLEARANCE_REFERENCE_SCALE, MIN_EDGE_LABEL_CSS_PX / labelSize);
   // Enlarging labels can extend the bounds. Repeat only when the resulting
   // fit needs more clearance, with a bound for extremely small viewports.
   for (let pass = 0; pass < 4 && scene.bounds !== undefined; pass += 1) {
@@ -611,7 +610,7 @@ function resolveSceneAtZoom(
     ? Math.ceil(MIN_EDGE_LABEL_CSS_PX / paintZoom * 64) / 64
     : undefined;
   const labelScale = overviewEdgeLabelSize === undefined ? 1 : overviewEdgeLabelSize / baseLabelSize;
-  const clearanceZoom = Math.min(DEFAULT_MIN_READABLE_SCALE, paintZoom ?? DEFAULT_MIN_READABLE_SCALE);
+  const clearanceZoom = Math.min(LABEL_CLEARANCE_REFERENCE_SCALE, paintZoom ?? LABEL_CLEARANCE_REFERENCE_SCALE);
   // Non-scaling connector paint occupies more world units at a smaller zoom.
   const relationPresentation = input.presentation.relations;
   const baseLinkStrokeWidth = r7Connectors
