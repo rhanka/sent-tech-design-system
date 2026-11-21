@@ -1,8 +1,8 @@
 {
   "componentId": "line-chart",
   "contractSource": "derived",
-  "digest": "sha256:c46aeaffb07cb40404369b66c7273c8fb3273c7611e91a136852c75422b0cb9b",
-  "entryDigest": "sha256:a329df75f283d5e4f88522eba53c074ed3e7be08a8b5886f4435035676530ed8",
+  "digest": "sha256:55c621c37144fd5078e7e14f36d40f86013f8eacb9889b24319eae5aa2890c32",
+  "entryDigest": "sha256:4c659878f1fe74670bf6dc92dc2d086867a23723500fe64dfd736bb4741174fd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
