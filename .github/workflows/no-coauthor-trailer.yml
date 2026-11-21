@@ -33,7 +33,7 @@ jobs:
             ['co-authored-by', /^\s*co-authored-by\s*:/i],
             ['claude-session', /^\s*claude-session\s*:/i],
             ['generated-by-ai', /^\s*generated-by\s*:.*\b(?:claude|anthropic|codex|openai|gemini|antigravity|agy|mistral|vibe|muse|copilot|cursor|ai)\b/i],
-            ['generated-with-ai', /generated\s+(?:with|by)\s+\[?(?:claude(?:\s+code)?|codex|gemini|antigravity|mistral\s+vibe|vibe|muse|copilot|cursor)\b/i],
+            ['generated-with-ai', /generated\s+(?:with|by)\s+\[?(?:claude|anthropic|codex|openai|gemini|antigravity|agy|mistral|vibe|muse|copilot|cursor|ai)\b/i],
             ['claude-code-url', /claude\.com\/claude-code/i],
             ['claude-session-url', /claude\.ai\/code\/session_[a-z0-9_-]+/i],
             ['robot-marker', /🤖/u],
