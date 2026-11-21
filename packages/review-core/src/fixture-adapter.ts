@@ -482,8 +482,7 @@ export function createFixtureCommentsAdapter(
         const pending = pendingLiveSessions.get(toolCallId);
         if (pending !== undefined) {
           pendingLiveSessions.delete(toolCallId);
-          const key = liveSessionKey(tenant, toolCallId);
-          if (!liveSessions.has(key)) liveSessions.set(key, pending);
+          liveSessions.set(liveSessionKey(tenant, toolCallId), pending);
         }
       }
       return cloneRawComment(row);
@@ -718,6 +717,14 @@ export function createFixtureCommentsAdapter(
       for (const row of rows) {
         if (row.provenance?.toolCallId !== id) continue;
         const key = liveSessionKey(row.tenant, id);
+        if (scopeKey !== undefined && scopeKey !== key) {
+          throw new Error("Specify the tenant and workspace to register a live session for a shared tool call ID.");
+        }
+        scopeKey = key;
+      }
+      for (const key of liveSessions.keys()) {
+        const parsed: unknown = JSON.parse(key);
+        if (!Array.isArray(parsed) || parsed[2] !== id) continue;
         if (scopeKey !== undefined && scopeKey !== key) {
           throw new Error("Specify the tenant and workspace to register a live session for a shared tool call ID.");
         }
