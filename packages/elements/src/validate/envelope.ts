@@ -28,6 +28,8 @@ import type { SemanticFinding, SemanticPort } from "../ports/types.js";
 import type { Diagnostic } from "./diagnostics.js";
 import { engineLoadFailed } from "./diagnostics.js";
 import type { StructureIssue, StructureValidator } from "./structure.js";
+import type { TimeSeriesChartProps } from "../contracts/time-series-chart.js";
+import { validateTimeSeries } from "./time-series.js";
 
 /** The §4.3 item 3 budget: 1 MiB of UTF-8 (the limit itself is accepted). */
 export const ENVELOPE_LIMIT_BYTES = 1048576;
@@ -114,7 +116,8 @@ export function utf8ByteLength(text: string): number {
     const code = text.charCodeAt(index);
     if (code <= 0x7f) total += 1;
     else if (code <= 0x7ff) total += 2;
-    else if (code >= 0xd800 && code <= 0xdbff) {
+    else if (code >= 0xd800 && code <= 0xdbff &&
+      text.charCodeAt(index + 1) >= 0xdc00 && text.charCodeAt(index + 1) <= 0xdfff) {
       total += 4;
       index += 1;
     } else total += 3;
@@ -339,6 +342,7 @@ export function createEnvelopeValidatorCore(
       // 8. The root's structure against the catalogue entry.
       const componentIssues = structure.validateComponent(component, root);
       if (componentIssues.length > 0) return structureDiagnostics(componentIssues, "/root");
+      if (component === "TimeSeriesChart") return validateTimeSeries(root as unknown as TimeSeriesChartProps);
 
       // 9. Semantics, only when the structure is clean (§4.3 item 2).
       const engine = sentropic?.engine;
