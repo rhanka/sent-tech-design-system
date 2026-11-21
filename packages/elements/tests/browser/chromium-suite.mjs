@@ -73,6 +73,7 @@ const THEMES_CSS = path.resolve(WORKTREE_ROOT, "packages", "themes", "css");
 const BAR_CHART_SOURCE = path.resolve(WORKTREE_ROOT, "packages", "components-svelte", "src", "lib", "BarChart.svelte");
 const ELEMENTS_ENTRY = join(BROWSER_DIST, "elements.js");
 const PDATA_FIXTURES = [1, 2, 3, 4, 5].map((n) => `bar-chart-pdata-${n}.json`);
+const TIME_SERIES_FIXTURES = ["single", "multi", "thresholds"].map((name) => `time-series-${name}.json`);
 
 /**
  * §6.4 pilot CSP: the MCP Apps default (MCPA:276-285 — a `ui://` document
@@ -358,6 +359,10 @@ function dossierL6Body() {
 
 const PAGES = {
   "/pilot.html": pageHtml(PILOT_CSP, pilotBody()),
+  "/time-series.html": pageHtml(STRICT_CSP, `
+    ${TIME_SERIES_FIXTURES.map((name) => elementWithIsland("st-time-series-chart", name, name)).join("\n")}
+    <script type="module" src="/bundle/elements.js"></script>
+  `),
   "/dossier-l6.html": pageHtml(PILOT_CSP, dossierL6Body()),
   "/no-bpmn.html": pageHtml(
     PILOT_CSP,
@@ -528,10 +533,7 @@ const BASE = `http://127.0.0.1:${PORT}`;
 // ---------------------------------------------------------------------------
 
 const puppeteer = await import("puppeteer-core");
-// Snap-confined Chromium cannot create its SingletonLock under $TMPDIR
-// (Permission denied, measured); /tmp is writable to it, so the throwaway
-// browser profile lives there, never in the session tmp root.
-const chromiumProfile = mkdtempSync("/tmp/st-elements-chromium-");
+const chromiumProfile = mkdtempSync(join(tmpdir(), "st-elements-chromium-"));
 const browser = await puppeteer.default.launch({
   executablePath: findChrome(),
   headless: "new",
@@ -941,6 +943,49 @@ async function shadowSvg(page, elementSelector) {
 }
 
 // ---------------------------------------------------------------------------
+// The packaged temporal element under strict CSP.
+{
+  const observed = await openPage("/time-series.html");
+  const mounts = await observed.page.evaluate(async () => {
+    return Promise.all([...document.querySelectorAll("st-time-series-chart")].map(async (element) => {
+      await element.ready;
+      const root = element.shadowRoot;
+      return {
+        state: element.state ?? null,
+        rows: [...(root?.querySelectorAll("table tbody tr") ?? [])].map((row) =>
+          [...row.cells].map((cell) => cell.textContent.trim())),
+        series: [...(root?.querySelectorAll('[role="img"]') ?? [])].map((chart) => ({
+          label: chart.getAttribute("aria-label"),
+          x: [...chart.querySelectorAll("circle[data-chart-index]")].map((point) => Number(point.getAttribute("cx"))),
+        })),
+        overlays: [...(root?.querySelectorAll("svg text") ?? [])].map((label) => label.textContent.trim()),
+      };
+    }));
+  });
+  for (const [index, name] of TIME_SERIES_FIXTURES.entries()) {
+    const { root } = JSON.parse(readFixture(name));
+    const expectedRows = root.series.flatMap((series) => series.data.map(({ x, y }) => [x, series.label, String(y)]))
+      .sort(([left], [right]) => left - right)
+      .map(([x, label, value]) => [new Date(x).toISOString(), label, value]);
+    const mount = mounts[index];
+    assert(mount.state === "rendered", name, `expected rendered, got ${mount.state}`);
+    assert(JSON.stringify(mount.rows) === JSON.stringify(expectedRows), name, `table differs: ${JSON.stringify(mount.rows)}`);
+    assert(mount.series.length === root.series.length && mount.series.every((series, i) =>
+      series.label === root.series[i].label && series.x.length === root.series[i].data.length && series.x.every(Number.isFinite)),
+    name, `plot differs: ${JSON.stringify(mount.series)}`);
+  }
+  const [east, west] = mounts[1].series;
+  assert(east?.x[1] !== undefined && east.x[1] === west?.x[0] && east.x[2] === west.x[2],
+    "time-series: shared domain", `timestamps do not align: ${JSON.stringify(mounts[1].series)}`);
+  assert(["Warning", "Deployment", "Expected range", "Goal"].every((label) => mounts[2].overlays.includes(label)),
+    "time-series: overlays", `missing labels: ${JSON.stringify(mounts[2].overlays)}`);
+  assert(observed.requests.every((url) => !url.includes("/chunks/bpmn-")), "time-series: isolated", "requested a BPMN chunk");
+  assert(observed.consoleErrors.length === 0, "time-series: zero console errors", observed.consoleErrors.join(" | "));
+  const violations = await observed.violations();
+  assert(violations.length === 0, "time-series: strict CSP", JSON.stringify(violations));
+  await observed.close();
+}
+
 // invalid-engines page: §6.6 — an invalid envelope renders its diagnostics
 // WITHOUT loading an engine (B8), on EACH lazy element; a mismatching
 // envelope on a lazy element refuses as unknown-component (B7) and also
