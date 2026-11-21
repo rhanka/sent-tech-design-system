@@ -198,6 +198,33 @@ describe("DS-5: OrphanList", () => {
 });
 
 describe("DS-5: ThreadPanel", () => {
+  it("switches the review surface when the default media query crosses 48rem", async () => {
+    const media = new EventTarget();
+    const matchMedia = vi.fn(() => Object.assign(media, { matches: false }));
+    vi.stubGlobal("matchMedia", matchMedia);
+    try {
+      const { container, unmount } = render(ThreadPanel, {
+        props: { threads: [], currentUser: ALICE },
+      });
+      expect(matchMedia).toHaveBeenCalledWith("(max-width: 47.999rem)");
+      expect(container.querySelector("aside.st-review-panel")?.hasAttribute("aria-modal")).toBe(false);
+      expect(screen.queryByRole("dialog")).toBeNull();
+
+      media.dispatchEvent(Object.assign(new Event("change"), { matches: true }));
+      await waitFor(() => {
+        expect(screen.getByRole("dialog").classList.contains("st-drawer--bottom")).toBe(true);
+      });
+      expect(screen.getByRole("dialog").getAttribute("aria-modal")).toBe("true");
+
+      media.dispatchEvent(Object.assign(new Event("change"), { matches: false }));
+      await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+      expect(container.querySelector("aside.st-review-panel")).toBeTruthy();
+      unmount();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it("renders a non-modal <aside> at >=48rem (no Drawer scrim, no aria-modal) with All/Open/Resolved/Mine filters, unread markers, orphan header count, and EmptyState", async () => {
     const { attached, orphaned, ids } = await seedMixedThreads();
     const onFilterChange = vi.fn();
