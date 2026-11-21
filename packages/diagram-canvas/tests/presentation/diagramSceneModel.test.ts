@@ -25,15 +25,15 @@ afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.useRealTimers(
 
 describe("shared scene presentation (DC-2b)", () => {
   it.each([0, 15, 20])('should keep drawing content reachable with a %i px horizontal scrollbar', (scrollbarHeight) => {
-    for (const height of [200, 472.015625, 800]) {
+    for (const height of [200, 700, 800]) {
       const bounds = { x: -20, y: -26, width: 1500, height };
       const fit = sceneFit({ bounds, viewWidth: 390, windowHeight: 844, scrollbarHeight });
       const placement = scenePlacement(bounds, fit.zoom, fit);
       const viewportHeight = fit.fitHeight + scrollbarHeight;
-      expect(fit.zoom).toBe(.45);
+      expect(fit.zoom).toBe(.30);
       expect(placement.overflowX).toBe(true);
       expect(viewportHeight).toBeLessThanOrEqual(390 * 9 / 16);
-      expect(placement.overflowY).toBe(height === 800 || (height === 472.015625 && scrollbarHeight > 0));
+      expect(placement.overflowY).toBe(height === 800 || (height === 700 && scrollbarHeight > 0));
       if (!placement.overflowY) {
         expect(placement.translateY + bounds.y * fit.zoom + bounds.height * fit.zoom)
           .toBeLessThanOrEqual(viewportHeight - scrollbarHeight);
@@ -60,7 +60,7 @@ describe("shared scene presentation (DC-2b)", () => {
     expect(sceneFit({ bounds: { x: 0, y: 0, width: 1000, height: 100 }, viewWidth: 503, windowHeight: 900 }).zoom).toBe(0.501);
     for (let width = 1950; width < 2700; width += 7.3) {
       const swept = sceneFit({ bounds: { x: -3, y: -5, width, height: 300 }, viewWidth: 1206, windowHeight: 900 });
-      expect(swept.zoom, String(width)).toBeLessThanOrEqual(Math.max(0.45, swept.zoomFit));
+      expect(swept.zoom, String(width)).toBeLessThanOrEqual(Math.max(0.30, swept.zoomFit));
       expect(swept.zoomFit - swept.zoom, String(width)).toBeLessThan(FIT_QUANTUM);
       // On the grid: the printed scale has three decimals at most.
       expect(swept.zoom, String(width)).toBe(Number(swept.zoom.toFixed(3)));
@@ -87,13 +87,13 @@ describe("shared scene presentation (DC-2b)", () => {
   it('should shrink a width-constrained frame to painted content and scroll only the overflowing axis at the floor', () => {
     const bounds = { x: -20.015625, y: -26, width: 1200, height: 200 };
     const fit = sceneFit({ bounds, viewWidth: 660, windowHeight: 900 });
-    expect(fit.zoom).toBeGreaterThan(.45);
+    expect(fit.zoom).toBeGreaterThan(.30);
     expect(fit.zoom).toBeLessThan(.62);
     expect(fit.fitHeight).toBeGreaterThanOrEqual(bounds.height * fit.zoom + 2);
     expect(fit.fitHeight).toBeLessThan(bounds.height * fit.zoom + 2 + 1 / 64);
     expect(scenePlacement(bounds, fit.zoom, fit)).toMatchObject({ overflowX: false, overflowY: false });
-    const narrow = sceneFit({ bounds, viewWidth: 400, windowHeight: 900 });
-    expect(narrow.zoom).toBe(.45);
+    const narrow = sceneFit({ bounds, viewWidth: 350, windowHeight: 900 });
+    expect(narrow.zoom).toBe(.30);
     const placement = scenePlacement(bounds, narrow.zoom, narrow);
     expect(placement).toMatchObject({ overflowX: true, overflowY: false });
     expect(placement.translateX + bounds.x * narrow.zoom).toBe(1);
@@ -233,10 +233,10 @@ describe("shared scene presentation (DC-2b)", () => {
     expect(worst).toBeLessThan(1800);
   });
 
-  it("should pin v1 figure max size and zoom bounds (maxDisplayScale, minReadableScale, fit) to exact 0.2.5 / 0.41.5 values", () => {
-    // Frozen 0.2.5 / 0.41.5 camera constants.
+  it("should pin the R7 floor, v1 figure max size, cap and fit box", () => {
+    // R7 floor with the original cap and frame dimensions.
     expect(DEFAULT_MAX_DISPLAY_SCALE).toBe(0.62);
-    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.45);
+    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.30);
     expect(FIT_WINDOW_HEIGHT_SHARE).toBe(0.85);
     expect(FIT_ASPECT).toBe(16 / 9);
     expect(FIT_PAINT_INSET).toBe(1);
@@ -263,7 +263,7 @@ describe("shared scene presentation (DC-2b)", () => {
     expect(singleBounds.width * singleFit.zoom).toBeCloseTo(285.2, 5);
     expect(singleBounds.height * singleFit.zoom).toBeCloseTo(124, 5);
 
-    // Wide v1 scene (witness) fits inside [0.45, 0.62] and pans below the 0.45 readability floor.
+    // Wide v1 scene (witness) fits inside [0.30, 0.62] and pans below the 0.30 readability floor.
     const laidOut = layoutScene(input);
     expect(laidOut.status).toBe("laid-out");
     if (laidOut.status !== "laid-out") return;
@@ -271,19 +271,19 @@ describe("shared scene presentation (DC-2b)", () => {
     expect(scene.bounds).toBeDefined();
     const wideDesktop = sceneFit({ bounds: scene.bounds!, viewWidth: 1280, windowHeight: 720 });
     expect(wideDesktop.maxZoom).toBe(0.62);
-    expect(wideDesktop.minZoom).toBeGreaterThanOrEqual(0.45);
+    expect(wideDesktop.minZoom).toBeGreaterThanOrEqual(0.30);
     expect(wideDesktop.zoom).toBeLessThanOrEqual(0.62);
     expect(wideDesktop.fitHeight).toBeLessThanOrEqual(Math.min((1280 * 9) / 16, 0.85 * 720));
 
     const widePhone = sceneFit({ bounds: scene.bounds!, viewWidth: 390, windowHeight: 844 });
-    expect(widePhone.zoom).toBe(0.45);
-    expect(widePhone.minZoom).toBe(0.45);
+    expect(widePhone.zoom).toBe(0.30);
+    expect(widePhone.minZoom).toBe(0.30);
     expect(widePhone.maxZoom).toBe(0.62);
     expect(widePhone.pans).toBe(true);
-    expect(zoomReadout(widePhone.zoom, widePhone.maxZoom)).toBe(73);
+    expect(zoomReadout(widePhone.zoom, widePhone.maxZoom)).toBe(48);
 
-    // Explicit opt-in scale overrides still apply, while the 0.45 absolute floor never lowers.
+    // Explicit opt-in scale overrides still apply, while the 0.30 absolute floor never lowers.
     expect(sceneFit({ bounds: singleBounds, viewWidth: 1280, windowHeight: 720, maxDisplayScale: 0.8 }).maxZoom).toBe(0.8);
-    expect(sceneFit({ bounds: scene.bounds!, viewWidth: 390, windowHeight: 844, minReadableScale: 0.3 }).minZoom).toBe(0.45);
+    expect(sceneFit({ bounds: scene.bounds!, viewWidth: 390, windowHeight: 844, minReadableScale: 0.2 }).minZoom).toBe(0.30);
   });
 });
