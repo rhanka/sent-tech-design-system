@@ -1,7 +1,7 @@
 /**
  * h2a's real dossier diagrams (SPEC §10.5, defects L-R7/L-R10): the five
  * `generic@1` documents h2a's dossier builder produced, copied verbatim
- * (`h2a-ecosystem.json` holds `scenes.{overview,models,knowledge,interfaces}`
+ * (`ecosystem.json` holds `scenes.{overview,models,knowledge,interfaces}`
  * and `h2a-fixture.json` the fifth). At 1200 px and 360 px each is laid out,
  * passes `validateView`, and carries no `label-unplaced`; `knowledge` at
  * 360 px is left-to-right at zoom 1. The measurer is the dossier host's:
@@ -31,7 +31,7 @@ const measure: TextMeasurer = (text) => ({ width: text.length * 7, height: 16 })
 
 const directory = new URL(".", import.meta.url);
 const ecosystem = JSON.parse(
-  readFileSync(new URL("./h2a-ecosystem.json", directory), "utf8"),
+  readFileSync(new URL("../../../elements/src/dossier/ecosystem.json", directory), "utf8"),
 ) as { scenes: Record<string, { document: SemanticDocument }> };
 const fixtureFile = JSON.parse(readFileSync(new URL("./h2a-fixture.json", directory), "utf8")) as SemanticDocument & {
   document?: SemanticDocument;
