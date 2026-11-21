@@ -129,7 +129,11 @@ function targetMatches(rowTarget: CommentTarget, queryTarget: CommentTarget): bo
 }
 
 function byCreatedThenId(a: Comment, b: Comment): number {
-  return compareIsoTimestamps(a.createdAt, b.createdAt) || a.id.localeCompare(b.id);
+  const byCreated = compareIsoTimestamps(a.createdAt, b.createdAt);
+  if (byCreated !== 0) return byCreated;
+  if (a.id < b.id) return -1;
+  if (a.id > b.id) return 1;
+  return 0;
 }
 
 function validateSectionKey(sectionKey: string | undefined): void {
