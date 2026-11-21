@@ -86,6 +86,36 @@ describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
     expect(await store.listThread(tenant, threadId)).toEqual([root]);
   });
 
+  it.each([
+    { tenantId: "tenant-b", workspaceId: TENANT },
+    { tenantId: "tenant-a", workspaceId: "ws-other" },
+  ])("isolates live sessions from $tenantId in $workspaceId", async (otherScope) => {
+    const { adapter, store, setCaller, registerLiveSession } = createFixtureCommentsAdapter({
+      caller: { userId: ALICE.actorId, actorKind: "agent", agentActor: CLAUDE, runId: "run-alice" },
+      tenantId: "tenant-a",
+    });
+    const toolCallId = "shared-tool-call";
+    const aliceComment = await adapter.create({
+      tenant: TENANT, target: TARGET, body: "Alice's comment", provenance: { toolCallId },
+    });
+    const otherAgent = { ...CLAUDE, actorId: "agent-other", displayLabel: "Other agent" };
+    setCaller({ userId: BOB.actorId, actorKind: "agent", agentActor: otherAgent, runId: "run-bob" });
+    await store.add(otherScope, {
+      tenant: otherScope, target: TARGET, body: "Bob's comment", author: { id: BOB.actorId },
+      provenance: { toolCallId },
+    });
+
+    expect(aliceComment.authorship).toMatchObject({ author: CLAUDE, runId: "run-alice" });
+    expect(await adapter.list(TENANT, TARGET)).toEqual([aliceComment]);
+
+    registerLiveSession(otherScope, toolCallId, { actor: otherAgent, runId: "run-other" });
+    expect(await adapter.list(TENANT, TARGET)).toEqual([aliceComment]);
+    registerLiveSession({ tenantId: "tenant-a", workspaceId: TENANT }, ` ${toolCallId} `, {
+      actor: CLAUDE, runId: "run-reloaded",
+    });
+    expect(await adapter.list(TENANT, TARGET)).toMatchObject([{ authorship: { author: CLAUDE, runId: "run-reloaded" } }]);
+  });
+
   it("rejects replies against a different target and edits by an author without comment rights", async () => {
     const { adapter, setCaller } = makeFixture();
     const root = await adapter.create({ tenant: TENANT, target: TARGET, body: "Original" });
