@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/WindBarbChart.svelte",
-      "version": "0.43.1"
+      "version": "0.43.2"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/WindBarbChart.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Wind barbs: one barb per point along a time axis, oriented shaft and feathers encoding the speed.",
     "fr": "Barbes de vent : une barbe par point le long d'un axe temporel, hampe orientée et barbules encodant la vitesse."
   },
-  "digest": "sha256:f6c15554007668d8e2373a75527fb901f865cd0c0ecee168795fd5c89e325576",
+  "digest": "sha256:f13eb243b6e502d4aec00a87648931a028e295ab193fa7d51f0065722ff55a90",
   "displayName": "WindBarbChart",
   "format": "component-entry/v1",
   "frameworks": [

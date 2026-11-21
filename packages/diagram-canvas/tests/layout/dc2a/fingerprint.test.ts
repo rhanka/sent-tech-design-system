@@ -72,9 +72,9 @@ describe("DC-2a layout fingerprint (§6.6)", () => {
   });
 
   it("token version = digest of the resolved token numbers; measured sizes digest when a cache has them", () => {
-    const tokens = { "diagramScene.maxDisplayScale": 0.62, "diagramScene.minReadableScale": 0.45 };
+    const tokens = { "diagramScene.maxDisplayScale": 0.62, "diagramScene.minReadableScale": 0.30 };
     expect(of({}, { tokens })).not.toBe(of({}));
-    expect(of({}, { tokens })).toBe(of({}, { tokens: { "diagramScene.minReadableScale": 0.45, "diagramScene.maxDisplayScale": 0.62 } }));
+    expect(of({}, { tokens })).toBe(of({}, { tokens: { "diagramScene.minReadableScale": 0.30, "diagramScene.maxDisplayScale": 0.62 } }));
     expect(of({}, { tokens: { ...tokens, "diagramScene.maxDisplayScale": 0.6 } })).not.toBe(of({}, { tokens }));
     // A gap token reaches the engine as a metric: it changes the token digest in the same call.
     const inputs = layoutFingerprintInputs({ options: { metrics: { rowGapBlock: 20 } } });

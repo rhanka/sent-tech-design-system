@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Alert.svelte",
-      "version": "0.43.1"
+      "version": "0.43.2"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Alert.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Info/success/warning/error banner.",
     "fr": "Bandeau d’information info/success/warning/error."
   },
-  "digest": "sha256:e7c0fbfa67ef22c95f57316d9f6afa631c74478acf2fc506081874c617f51534",
+  "digest": "sha256:896c032132a036e4ee33f2d556ed886faccab625985565a87484f76fd4370cb4",
   "displayName": "Alert",
   "format": "component-entry/v1",
   "frameworks": [

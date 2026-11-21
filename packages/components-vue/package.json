@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-vue",
-  "version": "0.41.0-next.9",
+  "version": "0.41.0-next.10",
   "license": "MIT",
   "description": "Vue 3 components for the Sentropic design system.",
   "type": "module",
@@ -81,8 +81,8 @@
     "build:classic-3.5": "node ../../scripts/vue-sfc-build.mjs --stable"
   },
   "dependencies": {
-    "@sentropic/design-system-themes": "0.15.1",
-    "@sentropic/diagram-canvas": "0.3.1",
+    "@sentropic/design-system-themes": "0.15.2",
+    "@sentropic/diagram-canvas": "0.3.2",
     "@sentropic/graph": "0.3.1",
     "@sentropic/design-system-rich-text": "0.1.1"
   },

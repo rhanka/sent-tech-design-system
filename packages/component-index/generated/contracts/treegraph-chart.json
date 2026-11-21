@@ -1,8 +1,8 @@
 {
   "componentId": "treegraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:b88ec7c136bb68c7b00ed2e963948fa51f3cff556bb572a5298df82b5827f8fc",
-  "entryDigest": "sha256:067faf69764a146ac1aba868f123ecb92ec64b9ff1a9b8500b5a3f4c164ba07e",
+  "digest": "sha256:10ad35c3e59b33bb92f75e3c9456e7d05f0fc5efe5af74fcaabeeaf4e3c51412",
+  "entryDigest": "sha256:e331fa92544a42ed4b4be29734cb30ae89a50d158c9accacc34add1c210be70c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -255,7 +255,7 @@
         "declarationPath": "packages/components-svelte/dist/TreegraphChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TreegraphChartProps",
-        "version": "0.43.1"
+        "version": "0.43.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -340,7 +340,7 @@
         "declarationPath": "packages/components-vue/dist/TreegraphChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TreegraphChartProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "complete",
       "unresolved": [],

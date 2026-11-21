@@ -1935,8 +1935,8 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     // `maxDisplayScale` (a 460 × 200 card renders at ≈ 285 × 124 CSS px);
     // `minReadableScale` is the floor a fit holds before the host pans.
     // The edge label is the smallest text of a scene: 18 px on a 22 px line
-    // box; its two 4 px margins are included in channel sizing, and it still renders at 18 × 0.45 = 8.1 CSS px at the floor
-    // (§5.3: at least 8 CSS px). 0.42 would render it at 7.56 CSS px.
+    // box; its two 4 px margins are included in channel sizing. At the R7
+    // fit floor it renders at 18 × 0.30 = 5.4 CSS px.
     iconButton: {
       smSize: "2rem", mdSize: "2.25rem", lgSize: "2.5rem",
       radius: "0.375rem", text: semantic.text.primary, focusRing: semantic.border.interactive,
@@ -1960,7 +1960,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       labelBorder: "#cbd5e1",
       labelText: "#172033",
       maxDisplayScale: "0.62",
-      minReadableScale: "0.45",
+      minReadableScale: "0.30",
       transitionDuration: "240ms",
       edgeLabelFontSize: "18px",
       edgeLabelLineHeight: "22px",

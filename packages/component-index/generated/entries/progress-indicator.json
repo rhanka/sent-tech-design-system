@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ProgressIndicator.svelte",
-      "version": "0.43.1"
+      "version": "0.43.2"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ProgressIndicator.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Step sequence with complete/current/upcoming status.",
     "fr": "Suite d’étapes avec statut complete/current/upcoming."
   },
-  "digest": "sha256:fd6ea196be780d7f3e450c79615c98906412d976676438138f85d83a152ebf0f",
+  "digest": "sha256:fb34e243d4bde6763145e06e2fda344d9b4d279288fa4f912fe27ddd12bcee6e",
   "displayName": "ProgressIndicator",
   "format": "component-entry/v1",
   "frameworks": [

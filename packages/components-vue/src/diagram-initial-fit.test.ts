@@ -3,6 +3,9 @@ import { cleanup, render } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { readFileSync } from 'node:fs';
+import { convertEngramErdScene, m3ProfileRegistry, shippedExecutorBindings, type EngramErdScene } from '@sentropic/diagram-core';
+import { createLayoutCache } from '@sentropic/diagram-canvas';
 import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svelte';
 import VueScene from './DiagramSceneFigure.vue';
 import { hCondInput } from '../../diagram-canvas/tests/layout/dc2a/h-cond.js';
@@ -48,6 +51,18 @@ const cases = [
   }))),
   { name: 'ontology through the flow host', input: () => ({ ...hCondInput('ontology', false), measureLines: undefined, flows: {} }) },
 ];
+const erdFixture = (JSON.parse(readFileSync('../diagram-core/tests/fixtures/erd/ERD-SCENES.json', 'utf8')).ontologies as EngramErdScene[])[0]!;
+const erdInput = () => ({ ...convertEngramErdScene(erdFixture), registry: m3ProfileRegistry, bindings: shippedExecutorBindings });
+const cardlessCases = [
+  { name: 'ERD', input: erdInput, selector: '[data-scene-kind="erd"]' },
+  { name: 'ERD with explicit flows', input: () => ({ ...erdInput(), flows: {} }), selector: '[data-scene-kind="erd"]' },
+  { name: 'label-only numbered flow', input: () => {
+    const input = cases.find(scene => scene.name === 'numbered flows')!.input();
+    const entities = Object.fromEntries(Object.entries(input.presentation.entities).map(([id, entry]) =>
+      [id, { ...entry, text: { body: entry.text.title } }]));
+    return { ...input, presentation: { ...input.presentation, entities } };
+  }, selector: '[data-scene-kind="label"]' },
+];
 const rect = (el: HTMLElement) => ({ x: parseFloat(el.style.left), y: parseFloat(el.style.top), width: parseFloat(el.style.width), height: parseFloat(el.style.height) });
 function geometry(element: Element) {
   const figure = element.matches('figure') ? element as HTMLElement : element.querySelector<HTMLElement>('figure')!;
@@ -67,6 +82,41 @@ function geometry(element: Element) {
 }
 const undo: (() => void)[] = [];
 afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); delete (document as Partial<Document>).fonts; for (const step of undo.splice(0)) step(); });
+
+it('should publish numbered-flow content size once per change in world dimensions', async () => {
+  const width = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(900);
+  vi.stubGlobal('innerHeight', 900);
+  const input = cases.find(scene => scene.name === 'numbered flows/container')!.input();
+  const notifications: string[] = [];
+  const view = mount(VueScene, { props: { ...input,
+    onLayout: () => notifications.push('layout'),
+    onSizeChange: () => notifications.push('sizeChange'),
+  } });
+  try {
+    await nextTick();
+    expect(notifications).toEqual(['layout', 'sizeChange']);
+    const emitted = () => view.emitted('sizeChange');
+    const initial = emitted()?.[0];
+    expect(initial?.[0]).toMatchObject({ width: expect.any(Number), height: expect.any(Number) });
+    expect.soft(emitted()).toEqual([initial]);
+    expect.soft(view.emitted('update:contentSize')).toEqual([initial]);
+
+    width.mockReturnValue(500);
+    window.dispatchEvent(new Event('resize'));
+    await nextTick();
+    expect.soft(emitted()).toEqual([initial]);
+    expect.soft(view.emitted('update:contentSize')).toEqual([initial]);
+
+    await view.setProps({ collapsed: ['occurrence:e.zone'] });
+    const folded = emitted()?.at(-1);
+    expect(folded).not.toEqual(initial);
+    expect(emitted()).toEqual([initial, folded]);
+    expect(view.emitted('update:contentSize')).toEqual([initial, folded]);
+    expect(notifications).toEqual(['layout', 'sizeChange', 'layout', 'sizeChange']);
+  } finally {
+    view.unmount();
+  }
+});
 
 /**
  * Painted rects for the jsdom hosts, derived from the rendered world
@@ -137,7 +187,7 @@ function paintOnLayoutGrid() {
     // of the document only; the Vue host renders detached from it.
     restyle() { document.head.append(sheet); } };
 }
-/** A frame width whose painted fit is neither capped at 0.62 nor floored at 0.45, for both scenes below. */
+/** A frame width whose painted fit is neither capped at 0.62 nor floored at 0.30, for both scenes below. */
 const UNCAPPED_WIDTH = 550;
 
 function snapshot(element: Element) {
@@ -204,6 +254,36 @@ it('should apply all scene spacing tokens, metric overrides and bundle markup eq
 });
 
 for (const host of hosts) describe(`${host.name} load without interaction`, () => {
+  for (const name of ['three cards', 'numbered flows']) {
+    it(`should layout ${name} once and fit on resize without touching the layout cache`, async () => {
+      const width = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(900);
+      vi.stubGlobal('innerHeight', 900);
+      const layoutCache = createLayoutCache();
+      const onLayout = vi.fn();
+      const input = cases.find(scene => scene.name === name)!.input();
+      const view = await host.mount({ ...input, layoutCache, onLayout });
+      try {
+        await view.flush();
+        expect.soft(onLayout).toHaveBeenCalledTimes(1);
+        expect.soft(layoutCache.stats()).toMatchObject({ entries: 1, misses: 1 });
+        const initial = geometry(view.element).zoom;
+        const stats = layoutCache.stats();
+
+        width.mockReturnValue(340);
+        window.dispatchEvent(new Event('resize'));
+        await view.flush();
+        expect(geometry(view.element).zoom).toBeLessThan(initial);
+        expect.soft(onLayout).toHaveBeenCalledTimes(1);
+        expect.soft(layoutCache.stats()).toEqual(stats);
+
+        await view.update({ targetWidth: 1024 });
+        await view.flush();
+        expect(onLayout).toHaveBeenCalledTimes(2);
+      } finally {
+        view.dispose();
+      }
+    });
+  }
   it('should use numbered-flow icon bindings and the supplied glyph resolver', async () => {
     const glyph = { face: 'M1 1H63V63H1Z' };
     const resolveGlyph = vi.fn(() => glyph);
@@ -221,7 +301,7 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
     view.dispose();
   });
   for (const scene of cases.filter(scene => ['numbered flows', 'ontology/unfolded'].includes(scene.name))) it(`should follow the fitted ${scene.name} bounds when the initial font becomes ready`, async () => {
-    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1800);
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(scene.name === 'numbered flows' ? 500 : 1800);
     vi.stubGlobal('innerHeight', 1000);
     let ready!: () => void;
     Object.defineProperty(document, 'fonts', { configurable: true, value: { ready: new Promise<void>(resolve => { ready = resolve; }) } });
@@ -230,9 +310,17 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
     const view = await host.mount({ ...scene.input(),
       onCameraChange: (camera: { zoom: number; fitZoom: number }) => cameras.push(camera) });
     const initialFit = cameras.at(-1)!.fitZoom;
+    const { viewport } = geometry(view.element);
+    viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
+    await view.flush();
+    expect(geometry(view.element).zoom).toBeGreaterThan(initialFit);
+    viewport.scrollLeft = 40;
+    viewport.scrollTop = 20;
     ready(); await Promise.resolve(); await view.flush(); await view.flush();
     expect(cameras.at(-1)!.fitZoom).not.toBe(initialFit);
     expect(cameras.at(-1)!.zoom).toBe(cameras.at(-1)!.fitZoom);
+    expect(viewport.scrollLeft).toBe(0);
+    expect(viewport.scrollTop).toBe(0);
     const before = geometry(view.element).zoom;
     [...view.element.querySelectorAll('button')].find(button => button.textContent?.trim() === 'Fit')!.click();
     await view.flush();
@@ -247,14 +335,14 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
       const initial = geometry(view.element);
       const rawFit = Math.min(.62, (width - 2) / (initial.right - initial.left),
         (Math.min(width * 9 / 16, 900 * .85) - 2) / (initial.bottom - initial.top));
-      expect(initial.zoom).toBeGreaterThanOrEqual(.45);
+      expect(initial.zoom).toBeGreaterThanOrEqual(.30);
       expect(initial.zoom).toBeLessThanOrEqual(.62);
       const overX = (initial.right - initial.left) * initial.zoom > width + .5;
       const overY = (initial.bottom - initial.top) * initial.zoom > initial.height + .5;
-      if (rawFit >= .45) {
+      if (rawFit >= .30) {
         expect([overX, overY]).toEqual([false, false]);
         expect(initial.viewport.dataset.pans).toBe('false');
-      } else expect(initial.zoom).toBe(.45);
+      } else expect(initial.zoom).toBe(.30);
       expect(initial.viewport.style.overflowX).toBe(overX ? 'auto' : 'hidden');
       expect(initial.viewport.style.overflowY).toBe(overY ? 'auto' : 'hidden');
       expect(initial.height - (initial.bottom - initial.top) * initial.zoom).toBeLessThanOrEqual(2.1 + 8 * initial.zoom);
@@ -290,7 +378,7 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
   });
   // Both Vue hosts: `three cards` renders through the base scene host,
   // `numbered flows` through the numbered one. 1206 px caps the fit at 0.62;
-  // the narrower frame lands between the 0.45 floor and the cap.
+  // the narrower frame lands between the 0.30 floor and the cap.
   for (const [name, width, capped] of [['three cards', 1206, true], ['three cards', UNCAPPED_WIDTH, false],
     ['numbered flows', 1206, true], ['numbered flows', UNCAPPED_WIDTH, false]] as const) {
     it(`should keep one scale and a single fixed point across repeated Ajuster on ${name} at ${width}`, async () => {
@@ -315,7 +403,7 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
       expect(painted.reads()).toBeGreaterThan(0);
       if (capped) expect(settled.zoom).toBe(.62);
       else {
-        expect(settled.zoom).toBeGreaterThan(.45);
+        expect(settled.zoom).toBeGreaterThan(.30);
         expect(settled.zoom).toBeLessThan(.62);
       }
       for (let repeat = 0; repeat < 5; repeat++) {
@@ -370,10 +458,51 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
       view.dispose();
     });
   }
-  it('should retain the reclamped numbered-flow zoom when a resize restores the old range', async () => {
+  it('should keep a manual zoom through scrollbar changes and refit when the container resizes', async () => {
+    let frameWidth = 500;
+    let scrollbarWidth = 0;
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.matches('.st-diagramSceneFigure-viewport') ? frameWidth - scrollbarWidth : frameWidth;
+    });
+    vi.stubGlobal('innerHeight', 900);
+    let notifyResize = () => {};
+    vi.stubGlobal('ResizeObserver', class {
+      constructor(callback: () => void) { notifyResize = callback; }
+      observe() {}
+      disconnect() {}
+    });
+    const view = await host.mount(cases.find(scene => scene.name === 'numbered flows')!.input());
+    const initial = geometry(view.element);
+    initial.viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
+    await view.flush();
+    const userZoom = geometry(view.element).zoom;
+    expect(userZoom).toBeGreaterThan(initial.zoom);
+
+    initial.viewport.scrollLeft = 40;
+    initial.viewport.scrollTop = 20;
+    scrollbarWidth = 15;
+    notifyResize();
+    await view.flush();
+    expect(geometry(view.element).zoom).toBe(userZoom);
+    expect(initial.viewport.scrollLeft).toBe(40);
+    expect(initial.viewport.scrollTop).toBe(20);
+
+    frameWidth = 550;
+    notifyResize();
+    await view.flush();
+    const resized = geometry(view.element);
+    expect(resized.zoom).not.toBe(userZoom);
+    expect(resized.viewport.dataset.pans).toBe('false');
+    expect(resized.tx + resized.right * resized.zoom).toBeLessThanOrEqual(frameWidth);
+    expect(resized.viewport.scrollLeft).toBe(0);
+    expect(resized.viewport.scrollTop).toBe(0);
+    view.dispose();
+  });
+
+  it('should refit numbered flows and reset scrolling on a window resize', async () => {
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(340);
     vi.stubGlobal('innerHeight', 900);
-    let floor = '.45';
+    let floor = '.30';
     const computedStyle = getComputedStyle;
     vi.spyOn(globalThis, 'getComputedStyle').mockImplementation(element => {
       const style = computedStyle(element);
@@ -381,14 +510,19 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
       return style;
     });
     const view = await host.mount(cases.find(scene => scene.name === 'numbered flows')!.input());
-    geometry(view.element).viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
+    const initial = geometry(view.element);
+    initial.viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
     await view.flush();
-    expect(geometry(view.element).zoom).toBeGreaterThan(.45);
+    expect(geometry(view.element).zoom).toBeGreaterThan(.30);
     expect(geometry(view.element).zoom).toBeLessThan(.6);
     floor = '.6'; window.dispatchEvent(new Event('resize')); await view.flush();
     expect(geometry(view.element).zoom).toBe(.6);
-    floor = '.45'; window.dispatchEvent(new Event('resize')); await view.flush();
-    expect(geometry(view.element).zoom).toBe(.6);
+    initial.viewport.scrollLeft = 40;
+    initial.viewport.scrollTop = 20;
+    floor = '.30'; window.dispatchEvent(new Event('resize')); await view.flush();
+    expect(geometry(view.element).zoom).toBe(initial.zoom);
+    expect(initial.viewport.scrollLeft).toBe(0);
+    expect(initial.viewport.scrollTop).toBe(0);
     view.dispose();
   });
   it('should reset numbered-flow font measurement and camera for a new document', async () => {
@@ -418,6 +552,45 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
     expect(cameras.at(-1)!.zoom).toBe(cameras.at(-1)!.fitZoom);
     view.dispose();
   });
+  for (const { name, input, selector } of cardlessCases) {
+    it(`should preserve manual zoom and pan on ${name} until a new font load`, async () => {
+      vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(200);
+      vi.stubGlobal('innerHeight', 900);
+      const fonts = Object.assign(new EventTarget(), { ready: Promise.resolve() });
+      Object.defineProperty(document, 'fonts', { configurable: true, value: fonts });
+      const props = input();
+      const view = await host.mount(props);
+      try {
+        await view.flush(); await view.flush();
+        expect(view.element.querySelector(selector)).not.toBeNull();
+        expect(view.element.querySelector('.st-diagramCard, .st-diagramZone--expanded')).toBeNull();
+        const initial = geometry(view.element);
+        const { viewport } = initial;
+        viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
+        await view.flush();
+        const manual = geometry(view.element).zoom;
+        expect(manual).toBeGreaterThan(initial.zoom);
+        viewport.scrollLeft = 40;
+        viewport.scrollTop = 20;
+        const camera = () => [geometry(view.element).zoom, viewport.scrollLeft, viewport.scrollTop];
+
+        await view.update({ metrics: { labelMargin: 7 } });
+        await view.flush(); await view.flush();
+        expect.soft(camera()).toEqual([manual, 40, 20]);
+
+        fonts.dispatchEvent(new Event('loadingdone'));
+        await view.flush(); await view.flush();
+        expect.soft(camera()).toEqual([manual, 40, 20]);
+
+        fonts.ready = Promise.resolve();
+        fonts.dispatchEvent(new Event('loadingdone'));
+        await view.flush(); await view.flush();
+        expect(camera()).toEqual([initial.zoom, 0, 0]);
+      } finally {
+        view.dispose();
+      }
+    });
+  }
   for (const scene of cases) it(`should initially clear every connector from every ${scene.name} label`, async () => {
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1440);
     const view = await host.mount(scene.input());

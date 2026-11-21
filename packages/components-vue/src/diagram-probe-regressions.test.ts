@@ -55,6 +55,37 @@ function footerBands(element: Element, input: ReturnType<typeof probeInput>) {
 afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
 for (const host of hosts) describe(`${host.name} h-cond probe regressions`, () => {
+  it.each([{ width: 1440, height: 900, pans: false }, { width: 390, height: 844, pans: true }])(
+    'should frame the folded ontology label and edge points left of the origin at $width px',
+    async ({ width, height, pans }) => {
+      vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(width);
+      vi.stubGlobal('innerHeight', height);
+      const view = await host.mount(probeInput('ontology', true));
+      const viewport = view.element.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!;
+      const world = viewport.querySelector<HTMLElement>('.st-diagramSceneFigure-world')!;
+      const extent = viewport.querySelector<HTMLElement>('.st-diagramSceneFigure-extent')!;
+      const label = world.querySelector<HTMLElement>('[data-scene-label="occurrence:rel-ont-17"]')!;
+      const edge = world.querySelector('[data-scene-edge="occurrence:rel-ont-17"]')!;
+      const xOfLeftmostPoint = Math.min(...edge.getAttribute('points')!.split(' ').map(point => Number(point.split(',')[0])));
+      const paintedLabel = rect(label);
+      expect(label.textContent).toContain('reads');
+      expect(label.textContent).toContain('writes');
+      expect(paintedLabel.x).toBeLessThan(-300);
+      expect(xOfLeftmostPoint).toBeLessThan(0);
+      expect(paintedLabel.x).toBeLessThan(xOfLeftmostPoint);
+      expect([...world.querySelectorAll<HTMLElement>('[data-scene-occurrence]')].every(node => rect(node).x >= 0)).toBe(true);
+      expect(world.querySelector('polyline.st-diagramSceneFigure-edge:not([data-scene-edge])')).toBeNull();
+
+      const [translateX, zoom] = /translate\(([-\d.e+]+)px,\s*[-\d.e+]+px\) scale\(([-\d.e+]+)\)/.exec(world.style.transform)!.slice(1).map(Number);
+      const reachableRight = pans ? parseFloat(extent.style.width) : width;
+      expect(translateX + paintedLabel.x * zoom).toBeGreaterThanOrEqual(1);
+      expect(translateX + (paintedLabel.x + paintedLabel.width) * zoom).toBeLessThanOrEqual(reachableRight);
+      expect(translateX + xOfLeftmostPoint * zoom).toBeGreaterThan(1);
+      expect(viewport.dataset.pans).toBe(String(pans));
+      expect(viewport.scrollLeft).toBe(0);
+      view.dispose();
+    },
+  );
   for (const name of ['architecture', 'ontology'] as const) for (const folded of [false, true]) {
     for (const size of [{ width: 1206, height: 900 }, { width: 340, height: 844 }]) {
       it(`should expose the full ${name}/${folded} slot text at ${size.width} (second probe A14)`, async () => {
@@ -116,13 +147,13 @@ for (const host of hosts) describe(`${host.name} h-cond probe regressions`, () =
         const figure = view.element.matches('figure') ? view.element as HTMLElement : view.element.querySelector<HTMLElement>('figure')!;
         const viewport = view.element.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!;
         const fitButton = [...view.element.querySelectorAll('button')].find(el => el.textContent?.trim() === 'Fit')!;
-        expect(Number(figure.dataset.zoom), 'initial scale').toBeGreaterThanOrEqual(.45);
+        expect(Number(figure.dataset.zoom), 'initial scale').toBeGreaterThanOrEqual(.30);
         fitButton.click(); await view.flush();
         viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '-', bubbles: true })); await view.flush();
-        expect(Number(figure.dataset.zoom), 'zoom-out scale').toBeGreaterThanOrEqual(.45);
+        expect(Number(figure.dataset.zoom), 'zoom-out scale').toBeGreaterThanOrEqual(.30);
         fitButton.click(); await view.flush();
         const zoom = Number(figure.dataset.zoom);
-        expect(zoom, 'absolute display scale').toBeGreaterThanOrEqual(.45);
+        expect(zoom, 'absolute display scale').toBeGreaterThanOrEqual(.30);
         const nodes = [...view.element.querySelectorAll<HTMLElement>('[data-scene-occurrence]')];
         const parent = (id: string) => input.view.groups[input.view.entityOccurrences[id]?.group ?? '']?.occurrence;
         let checked = 0, minHorizontalGap = Infinity, minVerticalGap = Infinity;
@@ -131,20 +162,19 @@ for (const host of hosts) describe(`${host.name} h-cond probe regressions`, () =
           const x = rect(a), y = rect(b);
           const dx = Math.max(y.x - x.x - x.width, x.x - y.x - y.width);
           const dy = Math.max(y.y - x.y - x.height, x.y - y.y - y.height);
-          if (dx > 0 && dy <= 0) { expect(dx * zoom).toBeGreaterThanOrEqual(96 * .45 - .01); minHorizontalGap = Math.min(minHorizontalGap, dx); checked++; }
-          if (dy > 0 && dx <= 0) { expect(dy * zoom).toBeGreaterThanOrEqual(72 * .45 - .01); minVerticalGap = Math.min(minVerticalGap, dy); checked++; }
+          if (dx > 0 && dy <= 0) { expect(dx * zoom).toBeGreaterThanOrEqual(96 * .30 - .01); minHorizontalGap = Math.min(minHorizontalGap, dx); checked++; }
+          if (dy > 0 && dx <= 0) { expect(dy * zoom).toBeGreaterThanOrEqual(72 * .30 - .01); minVerticalGap = Math.min(minVerticalGap, dy); checked++; }
         }
         expect(checked).toBeGreaterThan(0);
-        if (size.width === 340) expect(viewport.dataset.pans).toBe('true');
         // Also exercise literal 390/1440 px frames, beyond the probe's
         // 340/1206 px content frames within those page widths.
         frameWidth.mockReturnValue(size.width === 340 ? 390 : 1440);
         window.dispatchEvent(new Event('resize')); await view.flush();
         fitButton.click(); await view.flush();
         const resizedZoom = Number(figure.dataset.zoom);
-        expect(resizedZoom).toBeGreaterThanOrEqual(.45);
-        expect(minVerticalGap * resizedZoom).toBeGreaterThanOrEqual(72 * .45 - .01);
-        expect(minHorizontalGap * resizedZoom).toBeGreaterThanOrEqual(96 * .45 - .01);
+        expect(resizedZoom).toBeGreaterThanOrEqual(.30);
+        expect(minVerticalGap * resizedZoom).toBeGreaterThanOrEqual(72 * .30 - .01);
+        expect(minHorizontalGap * resizedZoom).toBeGreaterThanOrEqual(96 * .30 - .01);
         view.dispose();
       });
       it(`should retain all painted ${name}/${folded} content after Fit at ${size.width} (probe defect 1)`, async () => {
@@ -171,7 +201,7 @@ for (const host of hosts) describe(`${host.name} h-cond probe regressions`, () =
         const overflowX = (right - left) * zoom > size.width + .5;
         const overflowY = (bottom - top) * zoom > height + .5;
         expect(viewport.dataset.pans).toBe(String(overflowX || overflowY));
-        if (overflowX || overflowY) expect(zoom).toBe(.45);
+        if (overflowX || overflowY) expect(zoom).toBe(.30);
         const extent = view.element.querySelector<HTMLElement>('.st-diagramSceneFigure-extent')!;
         expect((right - left) * zoom).toBeLessThanOrEqual(Math.max(size.width, parseFloat(extent.style.width)) + .5);
         expect((bottom - top) * zoom).toBeLessThanOrEqual(Math.max(height, parseFloat(extent.style.height)) + .5);

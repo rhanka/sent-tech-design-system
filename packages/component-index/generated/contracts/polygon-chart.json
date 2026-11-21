@@ -1,8 +1,8 @@
 {
   "componentId": "polygon-chart",
   "contractSource": "derived",
-  "digest": "sha256:939f0d14e1f09e93fc896ef1641145301fd88d3849e3c2fab668466bd30d3433",
-  "entryDigest": "sha256:581a48660e2d11d2d9cfadde473b605633ba4f291de69cd688e6337d93baecf1",
+  "digest": "sha256:799b0646ac7702d95e3e8198d32b91cc4c522e702e132631a33ef2bd65ed17ae",
+  "entryDigest": "sha256:071969d87daac79db37146501eff88161ca45afb14673d85430bc87fb11a2c10",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/PolygonChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PolygonChartProps",
-        "version": "0.43.1"
+        "version": "0.43.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -314,7 +314,7 @@
         "declarationPath": "packages/components-vue/dist/PolygonChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PolygonChartProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "complete",
       "unresolved": [],

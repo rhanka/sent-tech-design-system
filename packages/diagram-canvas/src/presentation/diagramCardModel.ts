@@ -156,7 +156,7 @@ export function resolveDiagramAlign(
  * Edge label typography (DC-2a, tokens `diagramScene.edgeLabelFontSize` /
  * `diagramScene.edgeLabelLineHeight`): 18 px on a 22 px line box. One line
  * plus the engine's two 4 px label margins is 30 px, inside the 32 px sibling
- * gap cap; at the 0.45 readability floor it renders at 8.1 CSS px.
+ * gap cap; at the 0.30 fit floor it renders at 5.4 CSS px.
  */
 export const FLOW_BADGE_GEOMETRY = { size: 16, lineHeight: 20 } as const;
 export const EDGE_LABEL_GEOMETRY = { size: 18, weight: 400, lineHeight: 22 } as const;

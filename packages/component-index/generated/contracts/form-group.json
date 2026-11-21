@@ -1,8 +1,8 @@
 {
   "componentId": "form-group",
   "contractSource": "derived",
-  "digest": "sha256:892bce58ce8fd9fa553a8606843d538766bbcd72141ad02d44ae98b4d56460c4",
-  "entryDigest": "sha256:6c442512ab8b50e25ff78f3c3820fe82bdd0a0430aa30472b10fdc0889bb25db",
+  "digest": "sha256:e8104185f5c6cd998d61203c9bd14c8b32d9b50cf81f7a11400a7bc2cf2a1b3d",
+  "entryDigest": "sha256:ddbe945974eb06e2fae8067457be99d1c854e0f710ab156d55f614dcf34d9919",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -141,7 +141,7 @@
         "declarationPath": "packages/components-svelte/dist/FormGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FormGroupProps",
-        "version": "0.43.1"
+        "version": "0.43.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -203,7 +203,7 @@
         "declarationPath": "packages/components-vue/dist/FormGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FormGroupProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "complete",
       "unresolved": [],

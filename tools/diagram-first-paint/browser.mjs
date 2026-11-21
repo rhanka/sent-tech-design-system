@@ -213,7 +213,7 @@ function check(state, scene) {
   assert.ok(state.nodes.length >= 3, 'must render at least three cards');
   assert.ok(state.frame.width > 0 && state.frame.height > 0, 'nonempty frame');
   assert.ok(Number.isFinite(state.camera.fitZoom), 'finite fit');
-  assert.ok(state.scale >= 0.45, `display scale ${state.scale} < 0.45`);
+  assert.ok(state.scale >= 0.30, `display scale ${state.scale} < 0.30`);
   assert.ok(Number.isFinite(state.clearance) && state.clearance > 0, 'clearance token must resolve');
   if (scene !== 'three-cards' && scene !== 'three-cards-compact') {
     assert.ok(state.paths.length > 0 && state.labels.length > 0, 'golden must have connectors and labels');
@@ -253,10 +253,10 @@ function check(state, scene) {
   }
   assert.ok(state.outerScroll[0] <= state.outerScroll[1] && state.outerScroll[2] <= state.outerScroll[3],
     `outer frame overflows: ${state.outerScroll}`);
-  if (unclampedFit >= 0.45) {
+  if (unclampedFit >= 0.30) {
     assert.deepEqual(overflow, [false, false], `feasible fit ${unclampedFit} must not scroll`);
   } else {
-    assert.equal(state.scale, 0.45, 'infeasible fit must stop at the readability floor');
+    assert.equal(state.scale, 0.30, 'infeasible fit must stop at the readability floor');
   }
   for (const [axis, index] of [['x', 0], ['y', 1]]) {
     assert.equal(state.scroll[index * 2] > state.scroll[index * 2 + 1], overflow[index],

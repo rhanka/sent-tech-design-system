@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:4bdbcc9401f2f2960f43ad1014efdefdb221ee57f2409449befacfa92c54dcf8",
-  "entryDigest": "sha256:12e56ebd6f56bf56a21b123384c0b24330a5265fe77298390ea52718e54efb10",
+  "digest": "sha256:8579580698629feb0df4567f9e5333d993e107d49acaaee763372d6309b0699a",
+  "entryDigest": "sha256:9f95ae77a0c985cf08ec358ebb73baabeb660cda849f7c1dac6d4cf826dbbf11",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -4274,7 +4274,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.43.1"
+        "version": "0.43.2"
       },
       "status": "partial",
       "unresolved": [
@@ -9131,7 +9131,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "partial",
       "unresolved": [

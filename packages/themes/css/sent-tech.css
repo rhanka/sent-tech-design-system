@@ -894,7 +894,7 @@
   --st-component-diagramScene-labelBorder: #cbd5e1;
   --st-component-diagramScene-labelText: #172033;
   --st-component-diagramScene-maxDisplayScale: 0.62;
-  --st-component-diagramScene-minReadableScale: 0.45;
+  --st-component-diagramScene-minReadableScale: 0.30;
   --st-component-diagramScene-transitionDuration: 240ms;
   --st-component-diagramScene-edgeLabelFontSize: 18px;
   --st-component-diagramScene-edgeLabelLineHeight: 22px;
@@ -1831,7 +1831,7 @@
   --st-component-diagramScene-labelBorder: #cbd5e1;
   --st-component-diagramScene-labelText: #172033;
   --st-component-diagramScene-maxDisplayScale: 0.62;
-  --st-component-diagramScene-minReadableScale: 0.45;
+  --st-component-diagramScene-minReadableScale: 0.30;
   --st-component-diagramScene-transitionDuration: 240ms;
   --st-component-diagramScene-edgeLabelFontSize: 18px;
   --st-component-diagramScene-edgeLabelLineHeight: 22px;
@@ -2768,7 +2768,7 @@
   --st-component-diagramScene-labelBorder: #cbd5e1;
   --st-component-diagramScene-labelText: #172033;
   --st-component-diagramScene-maxDisplayScale: 0.62;
-  --st-component-diagramScene-minReadableScale: 0.45;
+  --st-component-diagramScene-minReadableScale: 0.30;
   --st-component-diagramScene-transitionDuration: 240ms;
   --st-component-diagramScene-edgeLabelFontSize: 18px;
   --st-component-diagramScene-edgeLabelLineHeight: 22px;
