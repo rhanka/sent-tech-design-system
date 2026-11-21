@@ -11,7 +11,7 @@ import DiagramCard from './DiagramCard.vue';
 import DiagramZone from './DiagramZone.vue';
 import DiagramControlGlyph from './DiagramControlGlyph.vue';
 import { projectCardProps, projectZoneProps } from './diagramCardModel.js';
-import { collapsedOccurrencesOf, DEFAULT_SCENE_LABELS, displayedRects, layoutScene, parseDurationMs, parseEasing, rectsOf, resolveScene, sameRects, sceneConnectorMask, scenePaintPlane, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
+import { collapsedOccurrencesOf, connectorDashArray, connectorMarkerIds, connectorMarkerRef, connectorPath, DEFAULT_EDGE_CORNER_RADIUS, DEFAULT_SCENE_LABELS, displayedRects, extraConnectorMarkers, layoutScene, linkLegendBoxStyle, linkLegendSwatchGeometry, parseDurationMs, parseEasing, rectsOf, resolveScene, sameRects, sceneConnectorMask, scenePaintPlane, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
 import type { DiagramSceneFigureProps as SceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
 export type DiagramSceneFigureProps = SceneFigureProps;
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { strictIcons: true });
@@ -41,23 +41,64 @@ const defaults: DiagramSceneFigureLabels = DEFAULT_SCENE_LABELS;
 const strings = computed(() => ({ ...defaults, ...props.labels }));
 const hostId = useId();
 const arrowId = 'diagram-arrow-' + hostId;
+const markerIds = connectorMarkerIds(arrowId);
 const maskId = 'diagram-connector-mask-' + hostId;
-const { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
+const ownedCache = createLayoutCache();
+const { frameEl, viewportEl, measure, measureLines, effectiveMetrics, r7Mode, token,
     fit, zoom, readout, placement, viewportStyle, refitOnFold,
     setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
         props, () => scene.value, camera => emit('cameraChange', camera), undefined,
-        { animating: () => animating.value, settle: () => settle() });
+        { animating: () => animating.value, settle: () => settle() },
+        () => ownedCache.clear());
 defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 const folds = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? folds.value);
 watch(() => [...collapsedNow.value].sort().join('\0'), () => refitOnFold(), { flush: 'pre' });
 let previousOrientation: SceneOrientations | undefined;
 let orientationDocument: string | undefined;
-const ownedCache = createLayoutCache();
+let orientationInputTuple: readonly unknown[] | undefined;
+const orientationSeedByFold = new Map<string, SceneOrientations | undefined>();
 const layoutResult = computed(() => {
     if (orientationDocument !== props.document.documentId) {
         orientationDocument = props.document.documentId;
         previousOrientation = undefined;
+        orientationInputTuple = undefined;
+        orientationSeedByFold.clear();
+    }
+    let orientationSeed: SceneOrientations | undefined = previousOrientation;
+    if (r7Mode.value) {
+        const nextInputs: readonly unknown[] = [
+            props.document,
+            props.document.revision,
+            props.view,
+            props.presentation,
+            JSON.stringify(props.hints ?? null),
+            JSON.stringify(effectiveMetrics.value),
+            JSON.stringify(props.rowPack ?? null),
+            props.targetWidth,
+            measureLines.value,
+            measureLines.value.version,
+            props.iconBindings,
+            props.strictIcons ?? true,
+            props.depthParityStart,
+        ];
+        const sameNonFoldInputs =
+            orientationInputTuple !== undefined &&
+            orientationInputTuple.length === nextInputs.length &&
+            nextInputs.every((value, index) => Object.is(value, orientationInputTuple![index]));
+        if (!sameNonFoldInputs) {
+            orientationInputTuple = nextInputs;
+            orientationSeedByFold.clear();
+        }
+        const foldKey = [...collapsedNow.value].sort().join('\0');
+        orientationSeed = orientationSeedByFold.has(foldKey)
+            ? orientationSeedByFold.get(foldKey)
+            : previousOrientation;
+        if (!orientationSeedByFold.has(foldKey))
+            orientationSeedByFold.set(foldKey, orientationSeed);
+    } else if (orientationSeedByFold.size > 0 || orientationInputTuple !== undefined) {
+        orientationInputTuple = undefined;
+        orientationSeedByFold.clear();
     }
     const result = layoutScene({
         cache: props.layoutCache ?? ownedCache,
@@ -73,7 +114,7 @@ const layoutResult = computed(() => {
         metrics: effectiveMetrics.value,
         ...(props.rowPack === undefined ? {} : { rowPack: props.rowPack }),
         ...(props.targetWidth === undefined ? {} : { targetWidth: props.targetWidth }),
-        ...(previousOrientation === undefined ? {} : { previousOrientation }),
+        ...(orientationSeed === undefined ? {} : { previousOrientation: orientationSeed }),
     });
     if (result.status === 'laid-out' && result.orientations !== undefined)
         previousOrientation = result.orientations;
@@ -86,6 +127,9 @@ const scene = computed(() => layoutResult.value.status === 'laid-out'
         ...(props.iconBindings === undefined ? {} : { iconBindings: props.iconBindings }),
         strictIcons: props.strictIcons ?? true,
         ...(props.depthParityStart === undefined ? {} : { depthParityStart: props.depthParityStart }),
+        ...(props.legend === undefined ? {} : { legend: props.legend }),
+        ...(strings.value.legend === undefined ? {} : { legendTitle: strings.value.legend }),
+        ...(props.legendLabels === undefined ? {} : { legendLabels: props.legendLabels }),
         resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
         metrics: effectiveMetrics.value,
     }) : undefined);
@@ -254,12 +298,21 @@ const paintLayers = computed(() => [
 ]);
 // The connector layer is masked over the footer text a frame paints itself.
 const connectorMask = computed(() => scene.value === undefined ? undefined : sceneConnectorMask(scene.value));
+const extraMarkers = computed(() => scene.value === undefined ? [] : extraConnectorMarkers(scene.value.edges, markerIds));
+const legendEntries = computed(() => scene.value?.linkLegend?.entries.map(entry => ({
+    entry,
+    swatch: linkLegendSwatchGeometry(entry, effectiveMetrics.value),
+})) ?? []);
+const edgeCornerRadius = computed(() => effectiveMetrics.value.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS);
+const pathOf = (items: readonly { readonly x: number; readonly y: number }[]) => connectorPath(items, edgeCornerRadius.value);
+const pointsOf = (items: readonly { readonly x: number; readonly y: number }[]) => items.map(point => `${point.x},${point.y}`).join(' ');
 const worldStyle = computed(() => `transform:translate(${placement.value.translateX}px,${placement.value.translateY}px) scale(${zoom.value})`);
 </script>
 
 <template>
-  <figure :class="['st-diagramSceneFigure', { 'st-diagramSceneFigure--compact': compact }]"
+  <figure :class="['st-diagramSceneFigure', { 'st-diagramSceneFigure--compact': compact, 'st-diagramSceneFigure--fitToWindow': fitToWindow }]"
     :aria-label="label ?? title" :data-zoom="zoom" :data-zoom-readout="readout"
+    :data-fit-to-window="fitToWindow ? 'true' : undefined"
     :data-scene-refused="layoutResult.status === 'refused' ? layoutResult.refusals[0]?.code : undefined">
     <figcaption v-if="title !== undefined" class="st-diagramSceneFigure-title">{{ title }}</figcaption>
     <div class="st-diagramSceneFigure-controls" role="group" :aria-label="strings.controls">
@@ -283,11 +336,17 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
             <template v-if="scene !== undefined">
               <template v-for="layer in paintLayers" :key="layer.plane">
               <svg v-if="layer.plane === 'connectors'" class="st-diagramSceneFigure-edges" aria-hidden="true" :style="animating ? `opacity:${eased}` : undefined">
-                <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker><mask v-if="connectorMask !== undefined" :id="maskId" maskUnits="userSpaceOnUse" :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height"><rect :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height" fill="#fff" /><rect v-for="(cutout, index) in connectorMask.cutouts" :key="index" :data-scene-cutout="index" :x="cutout.x" :y="cutout.y" :width="cutout.width" :height="cutout.height" fill="#000" /></mask></defs>
+                <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" :markerUnits="scene.r7Connectors ? 'userSpaceOnUse' : undefined" :markerWidth="scene.r7Connectors ? '10.5' : '7'" :markerHeight="scene.r7Connectors ? '10.5' : '7'" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker><marker v-for="marker in extraMarkers" :key="marker.id" :id="marker.id" :data-arrowhead-kind="marker.kind" :data-arrowhead-emphasis="marker.emphasis" :viewBox="marker.viewBox" :refX="marker.refX" :refY="marker.refY" :markerUnits="marker.markerUnits" :markerWidth="marker.markerWidth" :markerHeight="marker.markerHeight" :orient="marker.orient"><path :d="marker.path" :fill="marker.fill" :stroke="marker.stroke" :stroke-width="marker.strokeWidth" /></marker><mask v-if="connectorMask !== undefined" :id="maskId" maskUnits="userSpaceOnUse" :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height"><rect :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height" fill="#fff" /><rect v-for="(cutout, index) in connectorMask.cutouts" :key="index" :data-scene-cutout="index" :x="cutout.x" :y="cutout.y" :width="cutout.width" :height="cutout.height" fill="#000" /></mask></defs>
                 <g data-scene-connectors="" :mask="connectorMask === undefined ? undefined : `url(#${maskId})`">
-                <polyline :marker-end="edge.markers === undefined ? `url(#${arrowId})` : undefined" v-for="edge in scene.edges" :key="edge.occurrence" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :points="edge.points.map(point => `${point.x},${point.y}`).join(' ')" />
+                <template v-for="edge in scene.edges" :key="edge.occurrence">
+                  <path v-if="edge.r7" :marker-end="connectorMarkerRef(edge, markerIds)" :stroke-dasharray="connectorDashArray(edge.strokeStyle)" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" data-connector-mode="r7" :data-edge-stroke="edge.strokeStyle" :data-edge-arrowhead="edge.arrowhead" :data-edge-emphasis="edge.emphasis" :d="pathOf(edge.points)" />
+                  <polyline v-else :marker-end="edge.markers === undefined ? `url(#${arrowId})` : undefined" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :points="pointsOf(edge.points)" />
+                </template>
                 <g v-for="edge in scene.edges.filter(edge => edge.markers)" :key="edge.occurrence" v-html="edge.markers" />
-                <polyline v-for="edgeLabel in scene.labels.filter(label => label.leader)" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edge" :points="edgeLabel.leader!.map(point => point.x + ',' + point.y).join(' ')" />
+                <template v-for="edgeLabel in scene.labels.filter(label => label.leader)" :key="edgeLabel.occurrence">
+                  <path v-if="scene.r7Connectors && !edgeLabel.erd" class="st-diagramSceneFigure-edge" data-connector-mode="r7" :d="pathOf(edgeLabel.leader!)" />
+                  <polyline v-else class="st-diagramSceneFigure-edge" :points="pointsOf(edgeLabel.leader!)" />
+                </template>
                 </g>
               </svg>
               <template v-else>
@@ -303,7 +362,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
               </div>
               </template>
               </template>
-              <div v-for="edgeLabel in scene.labels" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="edgeLabel.occurrence" :title="edgeLabel.title" :data-erd-label="edgeLabel.erd || undefined"
+              <div v-for="edgeLabel in scene.labels" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="edgeLabel.occurrence" :data-connector-mode="scene.r7Connectors && !edgeLabel.erd ? 'r7' : undefined" :title="edgeLabel.title" :data-erd-label="edgeLabel.erd || undefined"
                 :style="`left:${edgeLabel.box.x}px;top:${edgeLabel.box.y}px;width:${edgeLabel.box.width}px;height:${edgeLabel.box.height}px${animating ? `;opacity:${eased}` : ''}`">
                 <template v-if="edgeLabel.bundle !== undefined">
                   <strong class="st-diagramSceneFigure-bundleHeader">{{ edgeLabel.bundle.header }}</strong>{{ ' ' }}<div v-for="(group, index) in edgeLabel.bundle.groups" :key="index" class="st-diagramSceneFigure-bundleRelation" :data-bundle-relation="index">
@@ -312,6 +371,19 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
                 </template>
                 <template v-else><span v-for="(line, index) in edgeLabel.lines" :key="index">{{ line }}</span></template>
               </div>
+              <aside v-if="scene.linkLegend !== undefined" class="st-diagramSceneFigure-legend" role="region" :aria-label="scene.linkLegend.title" data-scene-legend="" :data-legend-anchor="scene.linkLegend.anchor"
+                :style="linkLegendBoxStyle(scene.linkLegend, animating ? eased : undefined)">
+                <div class="st-diagramSceneFigure-legendTitle">{{ scene.linkLegend.title }}</div>
+                <ul class="st-diagramSceneFigure-legendList">
+                  <li v-for="{ entry, swatch } in legendEntries" :key="entry.key" class="st-diagramSceneFigure-legendItem" :data-legend-style="entry.key" :data-edge-stroke="entry.strokeStyle" :data-edge-arrowhead="entry.arrowhead" :data-edge-emphasis="entry.emphasis">
+                    <svg class="st-diagramSceneFigure-legendSwatch" :viewBox="swatch.viewBox" aria-hidden="true">
+                      <path :data-legend-swatch="entry.key" :d="swatch.linePath" fill="none" :stroke="swatch.stroke" :stroke-width="swatch.strokeWidth" :stroke-dasharray="swatch.dashArray" vector-effect="non-scaling-stroke" />
+                      <path v-if="swatch.arrowPath !== undefined" :d="swatch.arrowPath" :fill="swatch.arrowFill" :stroke="swatch.arrowStroke" :stroke-width="swatch.arrowStrokeWidth" />
+                    </svg>
+                    <span class="st-diagramSceneFigure-legendLabel">{{ entry.label }}</span>
+                  </li>
+                </ul>
+              </aside>
             </template>
           </div>
         </div>
@@ -333,6 +405,15 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
   }
   .st-diagramSceneFigure--compact {
     gap: var(--st-spacing-1, 0.25rem);
+  }
+  .st-diagramSceneFigure--fitToWindow {
+    margin-inline: auto;
+    max-width: 100%;
+  }
+  .st-diagramSceneFigure--fitToWindow .st-diagramSceneFigure-viewport {
+    margin-inline: auto;
+    max-height: calc(100vh - var(--st-spacing-6, 1.5rem));
+    max-width: 100%;
   }
   .st-diagramSceneFigure-title {
     color: var(--st-semantic-text-primary);
@@ -414,6 +495,19 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     stroke-width: var(--st-component-diagramZone-borderWidth, 1.5px);
     vector-effect: non-scaling-stroke;
   }
+  .st-diagramSceneFigure-edge[data-connector-mode="r7"] {
+    stroke-width: var(--st-diagram-link-stroke-width, var(--st-component-diagramScene-linkStrokeWidth, 2.5px));
+  }
+  .st-diagramSceneFigure-edge[data-edge-emphasis="emphasis"] {
+    stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
+    stroke-width: var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px));
+  }
+  .st-diagramSceneFigure-edge[data-edge-stroke="dashed"] {
+    stroke-dasharray: var(--st-component-diagramScene-linkDashDashed, 8 6);
+  }
+  .st-diagramSceneFigure-edge[data-edge-stroke="dotted"] {
+    stroke-dasharray: var(--st-component-diagramScene-linkDashDotted, 2 5);
+  }
   .st-diagramSceneFigure-edgeLabel {
     box-sizing: border-box;
     background: var(--st-component-diagramScene-labelSurface, var(--st-semantic-surface-raised));
@@ -423,15 +517,66 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     display: flex;
     flex-direction: column;
     font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
-    font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
+    font-size: var(--st-diagram-edge-label-size, var(--st-component-diagramScene-edgeLabelFontSize, 18px));
     justify-content: center;
     line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
     pointer-events: none;
     position: absolute;
     white-space: nowrap;
   }
+  .st-diagramSceneFigure-edgeLabel[data-connector-mode="r7"] {
+    font-size: var(--st-diagram-edge-label-size, var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px)));
+  }
   .st-diagramSceneFigure-edgeLabel > span { display: block; flex: none; height: var(--st-diagram-label-line-height, 22px); }
   .st-diagramSceneFigure-bundleHeader { display: block; padding: var(--st-component-diagramScene-labelPadding, 4px); font-weight: 400; }
   .st-diagramSceneFigure-bundleRelation { display: flex; align-self: stretch; gap: var(--st-component-diagramScene-bundleMarkerGap, 6px); padding: var(--st-component-diagramScene-labelPadding, 4px); box-shadow: inset 0 var(--st-component-diagramScene-labelBorderWidth, 1px) 0 var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle)); }
   .st-diagramSceneFigure-bundleRelation div { display: flex; flex-direction: column; }
+  .st-diagramSceneFigure-legend {
+    background: var(--st-component-diagramScene-labelSurface, var(--st-semantic-surface-raised));
+    box-shadow: inset 0 0 0 var(--st-component-diagramScene-labelBorderWidth, 1px) var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
+    box-sizing: border-box;
+    color: var(--st-component-diagramScene-labelText, var(--st-semantic-text-primary));
+    display: flex;
+    flex-direction: column;
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
+    font-size: var(--st-diagram-legend-font-size, var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px)));
+    gap: var(--st-diagram-legend-header-gap);
+    line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
+    padding: var(--st-diagram-legend-padding);
+    position: absolute;
+  }
+  .st-diagramSceneFigure-legendTitle {
+    align-items: center;
+    border-bottom: var(--st-component-diagramScene-labelBorderWidth, 1px) solid var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
+    box-sizing: border-box;
+    display: flex;
+    flex: none;
+    font-weight: var(--st-component-diagramCard-titleFontWeight, 700);
+    height: var(--st-diagram-legend-header-height);
+    white-space: nowrap;
+  }
+  .st-diagramSceneFigure-legendList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--st-diagram-legend-row-gap);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .st-diagramSceneFigure-legendItem {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    flex: none;
+    gap: var(--st-diagram-legend-swatch-gap);
+    height: var(--st-diagram-legend-row-height);
+    white-space: nowrap;
+  }
+  .st-diagramSceneFigure-legendSwatch {
+    flex: none;
+    height: var(--st-diagram-legend-swatch-height);
+    overflow: visible;
+    width: var(--st-diagram-legend-swatch-width);
+  }
+  .st-diagramSceneFigure-legendLabel { white-space: nowrap; }
 </style>

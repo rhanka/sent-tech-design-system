@@ -30,15 +30,15 @@
       "fixture": "packages/diagram-core/tests/fixtures/diagram-view-schema-2-50c97fc8.json"
     },
     "record": "packages/diagram-core/src/view-schema-pin.ts",
-    "recordSha256": "771dc975652e01a3cec8b97ecfc1a136f2fa4d5b6d5e5da98b24d393697a69e1",
+    "recordSha256": "84609fd185e9fe7d807efd8dc93dd17f406deabd8411b3f5c85cb3d594a49885",
     "lifecycle": "@1 exact-pin-only, no latest, no fallback, no reverse migration"
   },
   "dsRevision": {
-    "note": "Current implementation file hashes after endpoint provenance; @1/@2 canonical schemas and presentation pin remain unchanged.",
+    "note": "Current implementation file hashes after DE-2 view-schema@4 connector registries; @1/@2/@3 canonical schemas and presentation pin remain unchanged.",
     "files": {
-      "packages/diagram-core/src/view.ts": "a066eb0333ff8066c96cda7367df7d7de35012d6bcf42725759943aefbb6cf76",
-      "packages/diagram-core/src/fold.ts": "44ba83fd5257d98d489220e27f9ee24a54c410440b456ce0ddb87441f229a60f",
-      "packages/diagram-core/src/validate.ts": "96981aa55989f32768d47e733d9f6993165ccd36e9a8cab68e5ba1e6b5088a71"
+      "packages/diagram-core/src/view.ts": "dda3ffaf7e3fd5ef8e3991ff55ce0a6c578ff598f1ef4cd34ff28aca5fa1fc1f",
+      "packages/diagram-core/src/fold.ts": "203cc35623075be69bf18d5bce4a000b2f6602f8989440943b0fe618aacdb867",
+      "packages/diagram-core/src/validate.ts": "3b3c9b0ed191379bed5eb3c6401c5cfcaee74f9a846c71a48f066f0b9b791d77"
     }
   },
   "presentation": {

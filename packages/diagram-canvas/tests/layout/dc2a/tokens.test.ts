@@ -13,14 +13,23 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import {
+  DEFAULT_EDGE_CORNER_RADIUS,
   DEFAULT_EDGE_LABEL_FONT_SIZE,
   DEFAULT_EDGE_LABEL_LINE_HEIGHT,
+  DEFAULT_EDGE_LABEL_SIZE,
   DEFAULT_LAYOUT_METRICS,
+  DEFAULT_LINK_EMPHASIS_STROKE_WIDTH,
+  DEFAULT_LINK_PRIMARY_STROKE_WIDTH,
+  DEFAULT_LINK_RELATED_STROKE_WIDTH,
+  DEFAULT_LINK_STROKE_WIDTH,
   DEFAULT_MAX_DISPLAY_SCALE,
   DEFAULT_MIN_READABLE_SCALE,
+  DEFAULT_ROUTE_BORDER_CLEARANCE,
+  DEFAULT_ROUTE_SPACING,
   DEFAULT_ROW_GAP,
   DEFAULT_ROW_GAP_MAX,
   DEFAULT_ROW_PACK,
+  DEFAULT_ZONE_GUTTER,
   MIN_EDGE_LABEL_CSS_PX,
 } from "../../../src/index.js";
 import { layScene, PINNED_LINE_HEIGHT, pinnedMeasurer, sceneInput } from "./scenes.js";
@@ -33,6 +42,8 @@ describe("DC-2a tokens (AC-6)", () => {
     expect(token("diagramZone", "childGapInline")).toBe("var(--st-component-diagramScene-gapMin)");
     expect(token("diagramScene", "gapMin")).toBe(`${DEFAULT_ROW_GAP}px`);
     expect(token("diagramZone", "childGapBlock")).toBe("var(--st-component-diagramScene-gapMinBlock)");
+    expect(token("diagramScene", "zoneGutter")).toBe(`${DEFAULT_ZONE_GUTTER}px`);
+    expect(DEFAULT_ZONE_GUTTER).toBeGreaterThanOrEqual(96);
     expect(token("diagramZone", "gapInlineMax")).toBe("var(--st-component-diagramScene-gapMax)");
     expect(token("diagramZone", "gapBlockMax")).toBe("var(--st-component-diagramScene-gapMax)");
     expect(Number.parseFloat(token("diagramScene", "gapMax"))).toBe(DEFAULT_ROW_GAP_MAX);
@@ -44,8 +55,20 @@ describe("DC-2a tokens (AC-6)", () => {
     expect(token("diagramCard", "rootGapInline")).toBe("var(--st-component-diagramZone-childGapInline)");
     expect(token("diagramCard", "rootGapBlock")).toBe("var(--st-component-diagramZone-childGapBlock)");
     expect(token("diagramScene", "transitionDuration")).toBe("240ms");
+    expect(token("diagramScene", "edgeLabelSize")).toBe(`${DEFAULT_EDGE_LABEL_SIZE}px`);
     expect(token("diagramScene", "edgeLabelFontSize")).toBe(`${DEFAULT_EDGE_LABEL_FONT_SIZE}px`);
     expect(token("diagramScene", "edgeLabelLineHeight")).toBe(`${DEFAULT_EDGE_LABEL_LINE_HEIGHT}px`);
+    expect(token("diagramScene", "linkStrokeWidth")).toBe(`${DEFAULT_LINK_STROKE_WIDTH}px`);
+    expect(token("diagramScene", "linkRelatedStrokeWidth")).toBe(`${DEFAULT_LINK_RELATED_STROKE_WIDTH}px`);
+    expect(token("diagramScene", "linkPrimaryStrokeWidth")).toBe(`${DEFAULT_LINK_PRIMARY_STROKE_WIDTH}px`);
+    expect(token("diagramScene", "linkEmphasisStrokeWidth")).toBe(`${DEFAULT_LINK_EMPHASIS_STROKE_WIDTH}px`);
+    expect(token("diagramScene", "linkEmphasisStroke")).not.toBe(token("diagramScene", "edgeStroke"));
+    expect(token("diagramScene", "edgeCornerRadius")).toBe(`${DEFAULT_EDGE_CORNER_RADIUS}px`);
+    expect(token("diagramScene", "routeSpacing")).toBe(`${DEFAULT_ROUTE_SPACING}px`);
+    expect(token("diagramScene", "routeBorderClearance")).toBe(`${DEFAULT_ROUTE_BORDER_CLEARANCE}px`);
+    expect(token("diagramScene", "flowStrokeWidth")).toBe("1.5px");
+    expect(token("diagramScene", "flowRelatedStrokeWidth")).toBe("2px");
+    expect(token("diagramScene", "flowPrimaryStrokeWidth")).toBe("2.5px");
   });
 
   it("the edge-label line box is one number in the token, the shipped measurer and the test measurer", () => {

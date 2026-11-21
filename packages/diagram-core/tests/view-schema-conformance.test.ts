@@ -27,7 +27,9 @@ import { readFileSync } from "node:fs";
 import { Ajv2020 } from "ajv/dist/2020.js";
 import {
   DIAGRAM_VIEW_SCHEMA_V1, DIAGRAM_VIEW_SCHEMA_V2, DIAGRAM_VIEW_SCHEMA_V3,
-  DIAGRAM_VIEW_SCHEMA_V3_DIGEST, DIAGRAM_VIEW_SCHEMA_V3_PIN, resolveViewSchema,
+  DIAGRAM_VIEW_SCHEMA_V3_DIGEST, DIAGRAM_VIEW_SCHEMA_V3_PIN,
+  DIAGRAM_VIEW_SCHEMA_V4, DIAGRAM_VIEW_SCHEMA_V4_DIGEST, DIAGRAM_VIEW_SCHEMA_V4_PIN,
+  resolveViewSchema,
 } from "../src/view-schema-pin.js";
 import { canonicalBytes, sha256Hex } from "../src/sha256.js";
 import { single, endpoint, change } from "./endpoint-provenance-fixtures.js";
@@ -86,6 +88,86 @@ describe("diagram-view-schema@3 endpoint pairing and exact pin", () => {
     expect(validators[2]!(value)).toBe(true);
     chain.callback = "forbidden";
     expect(validators[2]!(value)).toBe(false);
+  });
+});
+
+describe("diagram-view-schema@4 connector registries and exact pin", () => {
+  const ajv = new Ajv2020({ strict: true });
+  const validateV3 = ajv.compile(DIAGRAM_VIEW_SCHEMA_V3);
+  const validateV4 = ajv.compile(DIAGRAM_VIEW_SCHEMA_V4);
+
+  it("publishes exact canonical @4 schema text and digest while leaving @3 untouched", () => {
+    const schemaText = readFileSync(new URL("../schemas/diagram-view-schema-4.json", import.meta.url), "utf8");
+    const schema = JSON.parse(schemaText);
+    const digest = readFileSync(new URL("../schemas/diagram-view-schema-4.sha256", import.meta.url), "utf8").trim();
+    expect(schema).toEqual(DIAGRAM_VIEW_SCHEMA_V4);
+    expect(schemaText).toBe(canonicalBytes(schema));
+    expect(sha256Hex(schemaText)).toBe(digest);
+    expect(digest).toBe(DIAGRAM_VIEW_SCHEMA_V4_DIGEST);
+    expect(resolveViewSchema(DIAGRAM_VIEW_SCHEMA_V4_PIN)).toMatchObject({ ok: true, version: "4", schema });
+    expect(resolveViewSchema({ ...DIAGRAM_VIEW_SCHEMA_V4_PIN, contentDigest: "0".repeat(64) })).toEqual({
+      ok: false,
+      refusal: { code: "schema-digest-mismatch" },
+    });
+    expect(resolveViewSchema({ id: "diagram-view-schema", version: "4" })).toEqual({
+      ok: false,
+      refusal: { code: "partial-reference-refused" },
+    });
+  });
+
+  it("accepts closed dash, arrowhead and emphasis words in @4 while @3 refuses them", () => {
+    const doc = conformanceDocument();
+    const base = conformanceView(doc);
+    for (const strokeStyle of ["solid", "dashed", "dotted"] as const) {
+      for (const arrowhead of ["arrow", "none"] as const) {
+        for (const emphasis of ["default", "emphasis"] as const) {
+          const candidate = JSON.parse(JSON.stringify({
+            ...base,
+            relationOccurrences: {
+              ...base.relationOccurrences,
+              "occurrence:o1": {
+                ...base.relationOccurrences["occurrence:o1"]!,
+                strokeStyle,
+                arrowhead,
+                emphasis,
+              },
+            },
+          }));
+          expect(validateV4(candidate)).toBe(true);
+          expect(validateV3(candidate)).toBe(false);
+        }
+      }
+    }
+  });
+
+  it("refuses unknown words and raw geometry on relationOccurrences in @4", () => {
+    const doc = conformanceDocument();
+    const base = conformanceView(doc);
+    const invalidCases = [
+      { strokeStyle: "8 6" },
+      { strokeStyle: "wavy" },
+      { arrowhead: "filled-triangle" },
+      { arrowhead: "open-triangle" },
+      { arrowhead: "M0 0L10 5L0 10Z" },
+      { arrowhead: "diamond" },
+      { emphasis: "dashed" },
+      { emphasis: "#2563eb" },
+      { dashArray: [8, 6] },
+      { strokeWidth: 3.5 },
+    ];
+    for (const patch of invalidCases) {
+      const candidate = JSON.parse(JSON.stringify({
+        ...base,
+        relationOccurrences: {
+          ...base.relationOccurrences,
+          "occurrence:o1": {
+            ...base.relationOccurrences["occurrence:o1"]!,
+            ...patch,
+          },
+        },
+      }));
+      expect(validateV4(candidate), JSON.stringify(patch)).toBe(false);
+    }
   });
 });
 

@@ -34,6 +34,10 @@ describe('ERD measured layout and SVG', () => {
     expect(rendered.svg.match(/data-erd-field=/g)).toHaveLength(Object.keys(data.document.ports).length);
     expect(rendered.svg.match(/data-erd-marker=/g)).toHaveLength(2 * scenes[0]!.relations.length);
     expect(rendered.svg).not.toContain('marker-end="url(#scene-arrow)"');
+    expect(rendered.scene.r7Connectors).toBe(false);
+    expect(rendered.svg).toContain('<polyline data-scene-edge=');
+    expect(rendered.svg).toContain('stroke-width="1.5"');
+    expect(rendered.svg).not.toContain('stroke-width="2.5"');
     for (const label of rendered.scene.labels.filter(label => label.leader)) expect(rendered.svg).toContain(label.leader!.map(p => p.x + ',' + p.y).join(' '));
   });
   for (const source of scenes)

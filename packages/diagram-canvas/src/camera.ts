@@ -18,14 +18,26 @@ export const DEFAULT_MAX_DISPLAY_SCALE = 0.62;
  * floor; 0.42 gives 7.56) and the 22 px kicker (22 × 0.45 = 9.9 CSS px).
  */
 export const DEFAULT_MIN_READABLE_SCALE = 0.45;
-/** World font size of an edge label, px (token `diagramScene.edgeLabelFontSize`). */
-export const DEFAULT_EDGE_LABEL_FONT_SIZE = 18;
+/** World font size of an edge label, px (token `diagramScene.edgeLabelSize` / `edgeLabelFontSize`). */
+export const DEFAULT_EDGE_LABEL_SIZE = 18;
+/** Alias of `DEFAULT_EDGE_LABEL_SIZE` (token `diagramScene.edgeLabelFontSize`). */
+export const DEFAULT_EDGE_LABEL_FONT_SIZE = DEFAULT_EDGE_LABEL_SIZE;
 /** World line box of an edge label, px (token `diagramScene.edgeLabelLineHeight`). */
 export const DEFAULT_EDGE_LABEL_LINE_HEIGHT = 22;
+/** Dedicated resting connector stroke width, CSS px (token `diagramScene.linkStrokeWidth`, DE-2). */
+export const DEFAULT_LINK_STROKE_WIDTH = 2.5;
+/** Related flow connector stroke width, CSS px (token `diagramScene.linkRelatedStrokeWidth`, DE-2). */
+export const DEFAULT_LINK_RELATED_STROKE_WIDTH = 3;
+/** Primary flow connector stroke width, CSS px (token `diagramScene.linkPrimaryStrokeWidth`, DE-2). */
+export const DEFAULT_LINK_PRIMARY_STROKE_WIDTH = 3.5;
+/** Emphasized connector stroke width, CSS px (token `diagramScene.linkEmphasisStrokeWidth`, DE-2 / G6). */
+export const DEFAULT_LINK_EMPHASIS_STROKE_WIDTH = 3.5;
 /** Minimum rendered edge-label size, CSS px. */
 export const MIN_EDGE_LABEL_CSS_PX = 8;
 /** Share of the window height a figure may take (§5.1 fit box). */
 export const FIT_WINDOW_HEIGHT_SHARE = 0.85;
+/** Vertical viewport margin used by opt-in fit-to-window host framing (`calc(100vh - 24px)`, DE-2 ask 9). */
+export const FIT_WINDOW_MARGIN_PX = 24;
 /** Fit box aspect (§5.1): 16:9. */
 export const FIT_ASPECT = 16 / 9;
 
@@ -48,6 +60,12 @@ export interface CameraFitInput {
    * stay exact. Absent: the applied zoom is the exact fit.
    */
   readonly zoomQuantum?: number;
+  /**
+   * Opt-in host fit-to-window mode (DE-2 ask 9): frames against
+   * `max-height: calc(100vh - 24px)` and `max-width: 100%`, centred.
+   * Defaults to `false`, preserving the §5.1 / Z-3 / AC-23 fit box.
+   */
+  readonly fitToWindow?: boolean;
 }
 
 export interface CameraFit {
@@ -82,15 +100,28 @@ export function floorToQuantum(value: number, quantum: number): number {
   return steps / perUnit;
 }
 
-/** §5.1: `fitW = viewW`, `fitH = min(viewW × 9/16, 0.85 × windowH)`. */
-export function fitBox(viewWidth: number, windowHeight: number): { readonly width: number; readonly height: number } {
+/**
+ * §5.1 default fit box: `fitW = viewW`, `fitH = min(viewW × 9/16, 0.85 × windowH)`.
+ * When `fitToWindow` is `true` (DE-2 ask 9), uses `windowH - 24` (`calc(100vh - 24px)`).
+ */
+export function fitBox(
+  viewWidth: number,
+  windowHeight: number,
+  fitToWindow: boolean = false,
+): { readonly width: number; readonly height: number } {
+  if (fitToWindow) {
+    return {
+      width: viewWidth,
+      height: Number.isFinite(windowHeight) ? Math.max(0, windowHeight - FIT_WINDOW_MARGIN_PX) : viewWidth / FIT_ASPECT,
+    };
+  }
   return { width: viewWidth, height: Math.min(viewWidth / FIT_ASPECT, FIT_WINDOW_HEIGHT_SHARE * windowHeight) };
 }
 
 export function cameraFit(input: CameraFitInput): CameraFit {
   const maxZoom = Math.max(DEFAULT_MIN_READABLE_SCALE, input.maxDisplayScale ?? DEFAULT_MAX_DISPLAY_SCALE);
   const readableFloor = Math.min(maxZoom, Math.max(DEFAULT_MIN_READABLE_SCALE, input.minReadableScale ?? DEFAULT_MIN_READABLE_SCALE));
-  const frame = fitBox(input.viewWidth, input.windowHeight);
+  const frame = fitBox(input.viewWidth, input.windowHeight, input.fitToWindow ?? false);
   // Hosts add the scrollbar back to the outer height; fit and placement use
   // only the drawable area, keeping the combined height inside the fit box.
   const box = { width: frame.width, height: Math.max(0, frame.height - (input.scrollbarHeight ?? 0)) };

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Autosave.svelte",
-      "version": "0.43.1"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Autosave.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Autosave indicator: saving, saved, or failed states.",
     "fr": "Indicateur d'enregistrement automatique : en cours, enregistré, échec."
   },
-  "digest": "sha256:4fca406de3f3af67cd686db0ac6738a1a85df1d59d7e1e85d0fcdeb2ecd300a7",
+  "digest": "sha256:7cd48114d8ea0a66a531a254e2785f5e2f67380fd4745f8a25e09e9bee3fd021",
   "displayName": "Autosave",
   "format": "component-entry/v1",
   "frameworks": [

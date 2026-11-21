@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Modal.svelte",
-      "version": "0.43.1"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Modal.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Centered modal dialog.",
     "fr": "Dialogue modal recentré."
   },
-  "digest": "sha256:1e256b09da09c02a447a8674c599cc2323a9d46119adddc2b21a9b4199db66c7",
+  "digest": "sha256:5a780a9553946345c4ea3ee17caebaa1730a601e86b6b2c494cfd0e9c218f3bc",
   "displayName": "Modal",
   "format": "component-entry/v1",
   "frameworks": [

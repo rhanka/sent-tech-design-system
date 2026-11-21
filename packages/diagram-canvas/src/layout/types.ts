@@ -14,6 +14,7 @@ import type {
   ExecutorProfileBindings,
   OccurrenceRef,
   ProfileRegistry,
+  RelationPresentation,
   ViewDocument,
   ViewRef,
 } from "@sentropic/diagram-core";
@@ -63,6 +64,8 @@ export type TextMeasurer = ((text: string, role: TextRole | LegacyTextRole) => T
 
 /** World units (CSS px at zoom 1). Every field has a default; see {@link DEFAULT_LAYOUT_METRICS}. */
 export interface LayoutMetrics {
+  /** Single fixed gutter token between sibling zones on both axes (DE-2 ask 3, default 96). */
+  readonly zoneGutter?: number;
   readonly gapMin?: number;
   readonly gapMinBlock?: number;
   readonly gapBase?: number;
@@ -72,6 +75,18 @@ export interface LayoutMetrics {
   readonly labelBand?: number;
   readonly gapMax?: number;
   readonly bundleLabelMaxWidth?: number;
+  /** Minimum spacing between parallel segments, neighbouring elbows, ports and arrowheads (DE-2, default 24). */
+  readonly routeSpacing?: number;
+  /** Minimum clearance from a routed link segment to non-endpoint borders (DE-2, default 15). */
+  readonly routeBorderClearance?: number;
+  /** World-unit corner radius for rounded-elbow connectors (DE-2, default 12). */
+  readonly edgeCornerRadius?: number;
+  /** Dedicated resting connector stroke width, CSS px (token `diagramScene.linkStrokeWidth`, DE-2, default 2.5). */
+  readonly linkStrokeWidth?: number;
+  /** Emphasized connector stroke width, CSS px (token `diagramScene.linkEmphasisStrokeWidth`, DE-2, default 3.5). */
+  readonly linkEmphasisStrokeWidth?: number;
+  /** Edge label font size, world px (token `diagramScene.edgeLabelSize`, DE-2, default 18). */
+  readonly edgeLabelSize?: number;
   readonly nodePaddingX: number;
   readonly nodePaddingY: number;
   readonly nodeMinWidth: number;
@@ -127,6 +142,8 @@ export const DEFAULT_ROW_PACK: ResolvedRowPack = {
 /** Row-pack spacing defaults, mirroring the DS tokens (asserted by tests/layout/dc2a/tokens.test.ts). */
 export const DEFAULT_ROW_GAP = spacing.gapMin;
 export const DEFAULT_ROW_GAP_MAX = spacing.gapMax;
+/** Fixed gutter between sibling zones on both axes (DE-2 ask 3, ≥ 96 world units). */
+export const DEFAULT_ZONE_GUTTER = spacing.zoneGutter;
 
 /** Orientation of one packed level (§4.1): shelves run as rows or as columns. */
 export type LevelOrientation = "rows" | "columns";
@@ -195,6 +212,11 @@ export interface LayoutOptions {
    */
   readonly presentation?: DiagramPresentation & {
     readonly entities: Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>;
+    /**
+     * Word-addressed connector styles keyed by relation occurrence id or
+     * semantic relation id (DE-2). Closed registry words only, never raw geometry.
+     */
+    readonly relations?: Readonly<Record<string, RelationPresentation>>;
   };
   /** Injected shared line measurer for measured views (M3 §4.6.2/§5.6). */
   readonly measureLines?: LineMeasurer;
@@ -238,6 +260,12 @@ export interface LayoutOptions {
    * `surface1` expanded zone.
    */
   readonly reportSurfaceSame?: boolean;
+  /**
+   * Opt-in non-blocking convention lints (DE-2 asks 5 & 6): arrow direction
+   * (`source` = initiator, when initiator metadata is declared) and opaque
+   * acronym zone tags (with `DLR-315` product kicker allowlist). Off by default.
+   */
+  readonly conventions?: import("./conventions.js").DiagramConventionLintOptions;
 }
 
 /** The outcome of the L-R5 / L-R7 decision for one call. Derived, never persisted. */
@@ -264,11 +292,15 @@ export type LayoutWarningCode =
   | "label-unplaced"
   | "label-budget-exhausted"
   | "route-obstructed"
+  | "route-spacing-conflict"
+  | "channel-capacity-exceeded"
   | "row-fill-partial"
   | "card-overflow"
   | "card-grown"
   | "zone-overflow"
   | "zone-surface-same"
+  | "arrow-direction-convention"
+  | "zone-tag-opaque-acronym"
   | "docking-overflow";
 
 export interface LayoutWarning {
@@ -328,6 +360,8 @@ export type LayoutResult =
        * bounds (DEC-5, BF-7).
        */
       readonly channels?: readonly import("./channels.js").LayoutChannel[];
+      /** Built-in geometric route-spacing audit report (DE-2 ask 2). */
+      readonly routeSpacing?: import("./routeSpacing.js").RouteSpacingReport;
       readonly labelBoxes?: Readonly<Record<string, { readonly x: number; readonly y: number; readonly width: number; readonly height: number }>>;
       /** Lifted parallel relations share a route; semantic occurrences remain intact. */
       readonly edgeBundles?: Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string; readonly relations?: readonly string[]; chip?: ReturnType<typeof import("./bundleLabel.js").measureBundleLabel> }>>;

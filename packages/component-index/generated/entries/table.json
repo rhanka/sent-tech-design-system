@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Table.svelte",
-      "version": "0.43.1"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Table.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Styled HTML table with columns/rows.",
     "fr": "Table HTML stylée colonnes/rows."
   },
-  "digest": "sha256:1aec476ff4bec319cb4ae29074d50a53b88ebbfd71f354e57e10c897bf72c478",
+  "digest": "sha256:c63c2d15cba50ac8aba9da0a19ff2041485f1a7058f4bb5025c55870c64d1708",
   "displayName": "Table",
   "format": "component-entry/v1",
   "frameworks": [

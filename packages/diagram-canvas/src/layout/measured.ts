@@ -3,7 +3,8 @@ import { validateFlows } from "@sentropic/diagram-core";
 import { relationVerdict } from "../visibility.js";
 import { DEFAULT_FLOW_TOKENS, planFlows, placeFlowMarks } from "./flows.js";
 import { layoutErd } from "./erd.js";
-import { DEFAULT_MIN_READABLE_SCALE } from "../camera.js";
+import { DEFAULT_EDGE_LABEL_SIZE, DEFAULT_MIN_READABLE_SCALE } from "../camera.js";
+import { isR7ConnectorPresentation } from "../r7Mode.js";
 /**
  * Measured diagram layout (M3 §4.6–§4.8, layout half of §5.6; placement by
  * SPEC_EVOL_DC2A §3–§4).
@@ -36,11 +37,17 @@ import {
   foldGroupId,
   GENERIC_PROFILE_ID,
   hasErrors,
+  isArrowheadKind,
+  isLinkEmphasis,
   isPresentationContractV2Pin,
+  isStrokeStyle,
   localIdOf,
   occurrenceRef,
   parentOccurrenceOf,
   projectView,
+  resolveArrowhead,
+  resolveDashPattern,
+  resolveLinkEmphasis,
   validateDocument,
   validateView,
   viewRef,
@@ -54,12 +61,13 @@ import {
   type PortSide,
   type ProfileRegistry,
   type RelationOccurrence,
+  type RelationPresentation,
   type RelationRef,
   type SemanticDocument,
   type ViewDocument,
 } from "@sentropic/diagram-core";
 
-import { dockEdges, type Dock, type EdgeDocks } from "./dock.js";
+import { dockEdges, sideToward, type Dock, type EdgeDocks } from "./dock.js";
 import { isAncestor, type LayoutEdge, type LayoutGraph, type LayoutNode } from "./graph.js";
 import {
   effectiveStretch,
@@ -85,6 +93,7 @@ import {
   innerWidthOf,
   LEGEND_KEY_HEIGHT,
   measureHeader,
+  scaleEdgeLabelMeasurer,
   SWATCH_ALLOCATION,
   TOGGLE_ALLOCATION,
   UNWRAPPED_PROBE_WIDTH,
@@ -98,9 +107,18 @@ import {
   type SlotMeasurement,
 } from "./measure.js";
 import { measureBundleLabel } from "./bundleLabel.js";
-import { channelGap, channelMetrics, type LayoutChannel } from "./channels.js";
+import { channelCapacity, channelGap, channelMetrics, type LayoutChannel } from "./channels.js";
 import { chooseOrientation, packColumns, packRows, seatShelves, type PackBox } from "./pack.js";
 import { labelDetour, routeEdges, routesConflict } from "./route.js";
+import {
+  checkRouteSpacing,
+  DEFAULT_ROUTE_BORDER_CLEARANCE,
+  DEFAULT_ROUTE_SPACING,
+  segmentToPassableBorderDistance,
+  segmentToRectDistance,
+  type CheckedRoute,
+} from "./routeSpacing.js";
+import { lintDiagramConventions, type ArrowDirectionEdgeInput, type ZoneTagLintEntry } from "./conventions.js";
 import { rectsIntersect } from "../geometry.js";
 import type { Rect, Vec2 } from "../transform.js";
 import { evaluateVisibility } from "../visibility.js";
@@ -168,7 +186,9 @@ function formOf(presentation: DiagramPresentation, occurrence: OccurrenceRef): D
  * and `align` under `@1`) before persisting `presentation.diagram` on the
  * emitted `ViewDocument`, so every laid-out view passes `validateView`.
  */
-function persistableDiagramPresentation(presentation: DiagramPresentation): DiagramPresentation {
+function persistableDiagramPresentation(
+  presentation: DiagramPresentation & { readonly relations?: Readonly<Record<string, RelationPresentation>> },
+): DiagramPresentation {
   const allowsAlign =
     presentation.contractPin !== undefined &&
     isPresentationContractV2Pin(presentation.contractPin);
@@ -183,7 +203,150 @@ function persistableDiagramPresentation(presentation: DiagramPresentation): Diag
     }
     entities[key] = cleanEntry as unknown as DiagramPresentation["entities"][string];
   }
-  return { ...presentation, entities };
+  const { relations: _transientRelations, ...base } = presentation;
+  void _transientRelations;
+  return { ...base, entities };
+}
+
+function relationPresentationFor(
+  relations: Readonly<Record<string, RelationPresentation>> | undefined,
+  occurrence: OccurrenceRef,
+  relation: RelationRef,
+): RelationPresentation | undefined {
+  if (relations === undefined) return undefined;
+  return relations[occurrence] ?? relations[relation];
+}
+
+const ALLOWED_RELATION_OCCURRENCE_FIELDS = new Set([
+  "id",
+  "relation",
+  "endpoints",
+  "waypoints",
+  "strokeStyle",
+  "arrowhead",
+  "emphasis",
+]);
+
+function validateRelationPresentations(
+  relations: Readonly<Record<string, RelationPresentation>> | undefined,
+  contractPin: DiagramPresentation["contractPin"] | undefined,
+  sourceView: ViewDocument | undefined,
+): LayoutRefusal[] {
+  const refusals: LayoutRefusal[] = [];
+  const isV2 = contractPin !== undefined && isPresentationContractV2Pin(contractPin);
+  const isFrozenV1 = contractPin !== undefined && !isV2;
+
+  if (relations !== undefined) {
+    const keys = Object.keys(relations).sort(byString);
+    if (isFrozenV1 && keys.length > 0) {
+      for (const key of keys) {
+        refusals.push({
+          code: "document-invalid",
+          path: `presentation.relations.${key}`,
+          message: "presentation.relations requires diagram-presentation@2; frozen diagram-presentation@1 cannot persist DE-2 connector styles",
+        });
+      }
+    }
+    for (const key of keys) {
+      const entry = relations[key] as unknown as Record<string, unknown> | undefined;
+      if (entry === undefined) continue;
+      for (const field of Object.keys(entry).sort(byString)) {
+        if (field !== "strokeStyle" && field !== "arrowhead" && field !== "emphasis") {
+          refusals.push({
+            code: "document-invalid",
+            path: `presentation.relations.${key}.${field}`,
+            message: `unknown connector presentation field ${field}; select connectors by closed registry words only`,
+          });
+        }
+      }
+      if (entry["strokeStyle"] !== undefined && !isStrokeStyle(entry["strokeStyle"])) {
+        refusals.push({
+          code: "document-invalid",
+          path: `presentation.relations.${key}.strokeStyle`,
+          message: `strokeStyle ${String(entry["strokeStyle"])} is not a closed dash-pattern registry word`,
+        });
+      }
+      if (entry["arrowhead"] !== undefined && !isArrowheadKind(entry["arrowhead"])) {
+        refusals.push({
+          code: "document-invalid",
+          path: `presentation.relations.${key}.arrowhead`,
+          message: `arrowhead ${String(entry["arrowhead"])} is not a closed arrowhead registry word`,
+        });
+      }
+      if (entry["emphasis"] !== undefined && !isLinkEmphasis(entry["emphasis"])) {
+        refusals.push({
+          code: "document-invalid",
+          path: `presentation.relations.${key}.emphasis`,
+          message: `emphasis ${String(entry["emphasis"])} is not a closed link-emphasis registry word`,
+        });
+      }
+    }
+  }
+
+  if (sourceView !== undefined) {
+    for (const key of Object.keys(sourceView.relationOccurrences).sort(byString)) {
+      const occurrence = sourceView.relationOccurrences[key] as unknown as Record<string, unknown> | undefined;
+      if (occurrence === undefined) continue;
+      for (const field of Object.keys(occurrence).sort(byString)) {
+        if (!ALLOWED_RELATION_OCCURRENCE_FIELDS.has(field)) {
+          refusals.push({
+            code: "document-invalid",
+            path: `sourceView.relationOccurrences.${key}.${field}`,
+            message: `unknown connector occurrence field ${field}; select connectors by closed registry words only`,
+          });
+        }
+      }
+      const strokeStyle = occurrence["strokeStyle"];
+      if (strokeStyle !== undefined) {
+        if (!isStrokeStyle(strokeStyle)) {
+          refusals.push({
+            code: "document-invalid",
+            path: `sourceView.relationOccurrences.${key}.strokeStyle`,
+            message: `strokeStyle ${String(strokeStyle)} is not a closed dash-pattern registry word`,
+          });
+        } else if (isFrozenV1 && strokeStyle === "dotted") {
+          refusals.push({
+            code: "document-invalid",
+            path: `sourceView.relationOccurrences.${key}.strokeStyle`,
+            message: "strokeStyle dotted requires diagram-presentation@2 under view validation",
+          });
+        }
+      }
+      const arrowhead = occurrence["arrowhead"];
+      if (arrowhead !== undefined) {
+        if (!isArrowheadKind(arrowhead)) {
+          refusals.push({
+            code: "document-invalid",
+            path: `sourceView.relationOccurrences.${key}.arrowhead`,
+            message: `arrowhead ${String(arrowhead)} is not a closed arrowhead registry word`,
+          });
+        } else if (isFrozenV1) {
+          refusals.push({
+            code: "document-invalid",
+            path: `sourceView.relationOccurrences.${key}.arrowhead`,
+            message: "arrowhead requires diagram-presentation@2 under view validation",
+          });
+        }
+      }
+      const emphasis = occurrence["emphasis"];
+      if (emphasis !== undefined) {
+        if (!isLinkEmphasis(emphasis)) {
+          refusals.push({
+            code: "document-invalid",
+            path: `sourceView.relationOccurrences.${key}.emphasis`,
+            message: `emphasis ${String(emphasis)} is not a closed link-emphasis registry word`,
+          });
+        } else if (isFrozenV1) {
+          refusals.push({
+            code: "document-invalid",
+            path: `sourceView.relationOccurrences.${key}.emphasis`,
+            message: "emphasis requires diagram-presentation@2 under view validation",
+          });
+        }
+      }
+    }
+  }
+  return refusals;
 }
 
 /** Slot text for one occurrence: typed presentation slots, else the semantic name as title. */
@@ -323,6 +486,14 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       diagnostics: [],
     };
   }
+  const relationStyleRefusals = validateRelationPresentations(
+    presentation.relations,
+    presentation.contractPin,
+    sourceView,
+  );
+  if (relationStyleRefusals.length > 0) {
+    return { status: "refused", refusals: relationStyleRefusals, diagnostics: [] };
+  }
   /**
    * Per-occurrence pinned anatomy (DE-1): the presentation entry selects
    * `diagram-anatomy/v1 | v2`, falling back to `sourceView.presentation.anatomy`;
@@ -376,7 +547,22 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
   const read = readMeasuredGraph(document, options.registry);
   if ("refusals" in read) return { status: "refused", refusals: read.refusals, diagnostics: [] };
   const graph = read.graph;
-  const metrics: LayoutMetrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics, slotSpacing: options.metrics?.slotSpacing ?? options.metrics?.trackSpacing ?? channelMetrics({}, true).trackSpacing };
+  const r7Routing = isR7ConnectorPresentation(presentation, sourceView, document);
+  const routeSpacing = r7Routing ? (options.metrics?.routeSpacing ?? DEFAULT_ROUTE_SPACING) : 0;
+  const borderClearance = r7Routing
+    ? (options.metrics?.routeBorderClearance ?? DEFAULT_ROUTE_BORDER_CLEARANCE)
+    : (options.metrics?.clearance ?? DEFAULT_LAYOUT_METRICS.clearance);
+  const dockCornerInset = routeSpacing > 0 ? Math.ceil(routeSpacing / Math.SQRT2) : 0;
+  const baseSlotSpacing = options.metrics?.trackSpacing ?? channelMetrics({}, true).trackSpacing;
+  const metrics: LayoutMetrics = {
+    ...DEFAULT_LAYOUT_METRICS,
+    ...options.metrics,
+    routeSpacing,
+    routeBorderClearance: borderClearance,
+    slotSpacing:
+      options.metrics?.slotSpacing ??
+      (r7Routing ? Math.max(routeSpacing, baseSlotSpacing) : baseSlotSpacing),
+  };
   const hints: LayoutHints = options.hints ?? {};
   const gaps = resolveGaps(options.hints, metrics);
   const globalStretch = hints.stretch ?? false;
@@ -384,7 +570,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
   // packed; `options.rowPack` only tunes the objective.
   const rowPack = resolveRowPack(options.rowPack);
   const contentInset = metrics.containerPadding;
-  const rowGaps = resolveRowGaps(hints, metrics);
+  const rowGaps = resolveRowGaps(hints, metrics, r7Routing);
   {
     const refusals: LayoutRefusal[] = [...validateRowPack(rowPack)];
     // §3.7: a sibling-gap override above the axis cap refuses; it is never silently capped.
@@ -397,9 +583,9 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       });
     };
     refuseGap("hints.cardGapX", "cardGapX", rowGaps.cardX, rowGaps.maxX);
-    refuseGap("hints.zoneGapX", "zoneGapX", rowGaps.zoneX, rowGaps.maxX);
+    refuseGap("hints.zoneGapX", "zoneGapX", hints.zoneGapX ?? rowGaps.zoneX, rowGaps.maxX);
     refuseGap("hints.cardGapY", "cardGapY", rowGaps.cardY, rowGaps.maxY);
-    refuseGap("hints.zoneGapY", "zoneGapY", rowGaps.zoneY, rowGaps.maxY);
+    refuseGap("hints.zoneGapY", "zoneGapY", hints.zoneGapY ?? rowGaps.zoneY, rowGaps.maxY);
     // A group's `gapAfter` lands on whichever axis its level packs along: it is held to both caps.
     const visitGap = (group: LayoutGroup, path: string): void => {
       if (group.gapAfter !== undefined) {
@@ -483,6 +669,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         edge.target.port === undefined
           ? occurrenceOf(edge.target.entity)
           : occurrenceRef(`p.s.${coded(localIdOf(edge.target.port))}`);
+      const style = relationPresentationFor(presentation.relations, occurrence, edge.id);
       relationOccurrences[occurrence] = {
         id: occurrence,
         relation: edge.id,
@@ -490,6 +677,9 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
           { role: "source", occurrence: sourceOccurrence },
           { role: "target", occurrence: targetOccurrence },
         ],
+        ...(style?.strokeStyle === undefined ? {} : { strokeStyle: style.strokeStyle }),
+        ...(style?.arrowhead === undefined ? {} : { arrowhead: style.arrowhead }),
+        ...(style?.emphasis === undefined ? {} : { emphasis: style.emphasis }),
       };
     }
     return {
@@ -721,8 +911,11 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     );
     return { key, mode: "auto", items, stretch: false };
   };
-  const runHasZone = (run: Run): boolean =>
-    run.items.some((item) => ("entity" in item ? kinds.get(item.entity) !== "leaf" : runHasZone(item.run)));
+  const itemHasZone = (item: RunItem): boolean =>
+    "entity" in item ? kinds.get(item.entity) !== "leaf" : runHasZone(item.run);
+  const runHasZone = (run: Run): boolean => run.items.some(itemHasZone);
+  const shelfHasZone = (run: Run, shelf: readonly number[]): boolean =>
+    shelf.some((slot) => itemHasZone(run.items[slot]!));
 
   // Drawn edges: the link occurrences the projected view draws. Internal
   // edges under a collapse are excluded by the same visibility; every
@@ -764,7 +957,20 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     if (flowOccurrences.has(edge.relation)) continue;
     const projectedEdge = projected.relationOccurrences[edge.occurrence]!;
     if (!projectedEdge.endpoints.some(end => end.sourceOccurrence !== undefined)) continue;
-    const key = JSON.stringify([edge.source.entity, edge.target.entity]);
+    let key: string;
+    if (r7Routing) {
+      // Keep lifted cross-zone edges with distinct connector styles apart so
+      // bundling never silently drops a strokeStyle, arrowhead, or emphasis from
+      // the scene or its automatic link legend (REQ-R7-05 / REQ-R7-11 / REQ-R7-12).
+      const relStyle = relationPresentationFor(presentation.relations, projectedEdge.id, projectedEdge.relation);
+      const strokeStyle = resolveDashPattern(projectedEdge.strokeStyle ?? relStyle?.strokeStyle)?.style ?? "solid";
+      const arrowhead = resolveArrowhead(projectedEdge.arrowhead ?? relStyle?.arrowhead)?.canonicalKind ?? "arrow";
+      const emphasis = resolveLinkEmphasis(projectedEdge.emphasis ?? relStyle?.emphasis)?.emphasis ?? "default";
+      key = JSON.stringify([edge.source.entity, edge.target.entity, strokeStyle, arrowhead, emphasis]);
+    } else {
+      // Legacy @1 path preserves main endpoint-pair bundling regardless of strokeStyle (REQ-R7-28).
+      key = JSON.stringify([edge.source.entity, edge.target.entity]);
+    }
     const pair = liftedPairs.get(key) ?? [];
     pair.push(edge);
     liftedPairs.set(key, pair);
@@ -811,6 +1017,8 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     })),
   };
   // Edge labels, measured once: keyed by the projected relation occurrence id.
+  // Scale measured boxes when `metrics.edgeLabelSize` overrides the default 18 px token.
+  const edgeLabelMeasure = scaleEdgeLabelMeasurer(measure, metrics.edgeLabelSize, DEFAULT_EDGE_LABEL_SIZE);
   const labelSizes = new Map<RelationRef, { width: number; height: number }>();
   const edgeLayouts = new Map<RelationRef, LineLayout>();
   for (const edge of drawnEdges) {
@@ -818,8 +1026,8 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     const label = edgeBundles[edge.occurrence]?.label ?? edgeLabelOf(document, edge.relation);
     if (label === undefined) continue;
     const bundle = edgeBundles[edge.occurrence];
-    const chip = bundle?.relations === undefined ? undefined : measureBundleLabel(bundle.relations, measure, metrics.bundleLabelMaxWidth, bundle.members.length);
-    const layout = chip === undefined ? measure({
+    const chip = bundle?.relations === undefined ? undefined : measureBundleLabel(bundle.relations, edgeLabelMeasure, metrics.bundleLabelMaxWidth, bundle.members.length);
+    const layout = chip === undefined ? edgeLabelMeasure({
       text: label,
       role: "edge-label",
       availableWidth: EDGE_LABEL_WIDTH,
@@ -895,7 +1103,10 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
    * and orientations chosen. With a plan, shelves and orientations are the
    * frozen ones of pass 1 and the listed gutters take their asked gap.
    */
-  const runPass = (plan: PassPlan | undefined): PassOutcome => {
+  const runPass = (
+    plan: PassPlan | undefined,
+    orientationOverrides?: ReadonlyMap<string, LevelOrientation>,
+  ): PassOutcome => {
     const warnings: LayoutWarning[] = [];
     const overflows: MeasurementOverflow[] = [];
     const warnOverflow = (overflow: MeasurementOverflow, zone: boolean): void => {
@@ -994,7 +1205,11 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const frozen = plan?.frozen.get(run.key);
       let orientation: LevelOrientation;
       let shelves: readonly (readonly number[])[];
-      if (frozen !== undefined && frozen.shelves.reduce((count, shelf) => count + shelf.length, 0) === boxes.length) {
+      const forcedOrientation = run.mode === "auto" ? orientationOverrides?.get(run.key) : undefined;
+      if (forcedOrientation !== undefined) {
+        orientation = forcedOrientation;
+        shelves = (forcedOrientation === "rows" ? packRows : packColumns)(boxes, packOptions).rows;
+      } else if (frozen !== undefined && frozen.shelves.reduce((count, shelf) => count + shelf.length, 0) === boxes.length) {
         orientation = frozen.orientation;
         shelves = frozen.shelves;
       } else if (run.mode === "auto") {
@@ -1017,9 +1232,15 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const rows = orientation === "rows";
       const alongBase = rows ? baseX : baseY;
       const acrossBase = rows ? baseY : baseX;
+      const cardAlongBase = rows ? rowGaps.cardX : rowGaps.cardY;
+      const cardAcrossBase = rows ? rowGaps.cardY : rowGaps.cardX;
+      const zoneAlongBase = rows ? rowGaps.zoneX : rowGaps.zoneY;
+      const zoneAcrossBase = rows ? rowGaps.zoneY : rowGaps.zoneX;
       // §3.5: a gutter keeps its base gap (or the authored `gapAfter` of the
       // group before it) unless the plan widens it for a label. One along gap
       // per slot index on every shelf: the grid keeps its column starts.
+      // REQ-R7-14: on r7 mixed runs, only gutters bordering a zone stay fixed
+      // at `zoneGutter` (>= 96); leaf-to-leaf gaps keep card base & widening.
       const gapAfterOf = (slot: number): number | undefined => {
         const item = run.items[slot]!;
         return "run" in item ? item.gapAfter : undefined;
@@ -1028,14 +1249,32 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         boxes,
         shelves,
         orientation,
-        (shelf, slot) =>
-          Math.max(
-            gapAfterOf(shelves[shelf]![slot]!) ?? alongBase,
+        (shelf, slot) => {
+          const leftSlot = shelves[shelf]![slot]!;
+          const rightSlot = shelves[shelf]![slot + 1]!;
+          if (r7Routing) {
+            const isZoneGutter = itemHasZone(run.items[leftSlot]!) || itemHasZone(run.items[rightSlot]!);
+            if (isZoneGutter) return zoneAlongBase;
+            return Math.max(
+              gapAfterOf(leftSlot) ?? cardAlongBase,
+              plan?.widen.get(`${run.key}|along|${String(slot)}`) ?? 0,
+              plan?.widen.get(`${run.key}|along|${String(slot)}|${String(shelf)}`) ?? 0,
+            );
+          }
+          return Math.max(
+            gapAfterOf(leftSlot) ?? alongBase,
             plan?.widen.get(`${run.key}|along|${String(slot)}`) ?? 0,
             plan?.widen.get(`${run.key}|along|${String(slot)}|${String(shelf)}`) ?? 0,
-          ),
+          );
+        },
         (shelf) => {
           const last = shelves[shelf]![shelves[shelf]!.length - 1]!;
+          if (r7Routing) {
+            const nextShelf = shelves[shelf + 1]!;
+            const isZoneGutter = shelfHasZone(run, shelves[shelf]!) || shelfHasZone(run, nextShelf);
+            if (isZoneGutter) return zoneAcrossBase;
+            return Math.max(gapAfterOf(last) ?? cardAcrossBase, plan?.widen.get(`${run.key}|across|${String(shelf)}`) ?? 0);
+          }
           return Math.max(gapAfterOf(last) ?? acrossBase, plan?.widen.get(`${run.key}|across|${String(shelf)}`) ?? 0);
         },
       );
@@ -1351,28 +1590,33 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     })), ...footerBands.values()];
     const zoneShapes = [...rects].filter(([id]) => isStretchedBox(id));
     const shapesByEdge = new Map<RelationRef, Rect[]>();
+    const passableZonesByEdge = new Map<RelationRef, Rect[]>();
     for (const edge of drawnEdges) {
       const own = new Set<EntityRef>();
       for (const end of [edge.source.entity, edge.target.entity]) {
         for (let current = placementParentOf(end); current !== undefined; current = placementParentOf(current)) own.add(current);
       }
-      shapesByEdge.set(edge.occurrence as unknown as RelationRef, [
+      const edgeId = edge.occurrence as unknown as RelationRef;
+      shapesByEdge.set(edgeId, [
         ...routeShapes,
         ...zoneShapes.filter(([id]) => !own.has(id)).map(([, rect]) => rect),
       ]);
+      passableZonesByEdge.set(edgeId, zoneShapes.filter(([id]) => own.has(id)).map(([, rect]) => rect));
     }
     const shapesOf = (id: RelationRef): readonly Rect[] => shapesByEdge.get(id) ?? routeShapes;
-    /** BF-3 `inner(C)`: the routable interior of an expanded container (BLK-3). */
+    const passableZonesOf = (id: RelationRef): readonly Rect[] => passableZonesByEdge.get(id) ?? [];
+    /** BF-3 `inner(C)`: the routable interior of an expanded container (BLK-3, DE-2 15px border clearance). */
     const innerOf = (container: EntityRef): Rect | undefined => {
       const rect = rects.get(container);
       const band = titleBands.get(container);
       if (rect === undefined || band === undefined) return undefined;
-      const top = band.y + band.height + 4;
+      const inset = routeSpacing > 0 ? Math.max(4, borderClearance) : 4;
+      const top = band.y + band.height + inset;
       return {
-        x: rect.x + 4,
+        x: rect.x + inset,
         y: top,
-        width: Math.max(0, rect.width - 8),
-        height: Math.max(0, rect.y + rect.height - top - 4),
+        width: Math.max(0, rect.width - 2 * inset),
+        height: Math.max(0, rect.y + rect.height - top - inset),
       };
     };
     const withinOf = new Map<RelationRef, Rect>();
@@ -1444,9 +1688,12 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const trackKey = `${containerKey}|${sideBySide ? Math.max(a.y + a.height, b.y + b.height) : Math.max(a.x + a.width, b.x + b.width)}`;
       const used = usedUTracks.get(trackKey) ?? 0;
       const depth = (sideBySide ? size.height : size.width) + 2 * probe;
-      const pitch = depth + 2 * metrics.labelMargin;
+      const pitch = Math.max(depth + 2 * metrics.labelMargin, routeSpacing > 0 ? routeSpacing : 0);
+      const uEdgeClearance = routeSpacing > 0 ? borderClearance : 0;
       const laneFreeRow = (side: "south" | "north", attempt: number): boolean => {
-        const base = side === "south" ? Math.max(a.y + a.height, b.y + b.height) : Math.min(a.y, b.y) - depth;
+        const base = side === "south"
+          ? Math.max(a.y + a.height, b.y + b.height) + uEdgeClearance
+          : Math.min(a.y, b.y) - depth - uEdgeClearance;
         const top = side === "south" ? base + attempt * pitch : base - attempt * pitch;
         const centres = [a.x + a.width / 2, b.x + b.width / 2];
         const lane: Rect = { x: Math.min(...centres), y: top, width: Math.abs(centres[0]! - centres[1]!), height: depth };
@@ -1459,15 +1706,20 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         ) {
           return false;
         }
+        const laneCheck: Rect = uEdgeClearance > 0
+          ? { x: lane.x, y: lane.y - uEdgeClearance, width: lane.width, height: lane.height + 2 * uEdgeClearance }
+          : lane;
         const legs: Rect[] = [a, b].map((rect) =>
           side === "south"
             ? { x: rect.x + rect.width / 2 - 1, y: rect.y + rect.height, width: 2, height: top - (rect.y + rect.height) }
             : { x: rect.x + rect.width / 2 - 1, y: top + depth, width: 2, height: rect.y - (top + depth) },
         );
-        return ![lane, ...legs.filter((leg) => leg.height > 0)].some((zone) => shapesOf(id).some((shape) => rectsIntersect(shape, zone)));
+        return ![laneCheck, ...legs.filter((leg) => leg.height > 0)].some((zone) => shapesOf(id).some((shape) => rectsIntersect(shape, zone)));
       };
       const laneFreeCol = (side: "east" | "west", attempt: number): boolean => {
-        const base = side === "east" ? Math.max(a.x + a.width, b.x + b.width) : Math.min(a.x, b.x) - depth;
+        const base = side === "east"
+          ? Math.max(a.x + a.width, b.x + b.width) + uEdgeClearance
+          : Math.min(a.x, b.x) - depth - uEdgeClearance;
         const left = side === "east" ? base + attempt * pitch : base - attempt * pitch;
         const centres = [a.y + a.height / 2, b.y + b.height / 2];
         const lane: Rect = { x: left, y: Math.min(...centres), width: depth, height: Math.abs(centres[0]! - centres[1]!) };
@@ -1480,12 +1732,15 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         ) {
           return false;
         }
+        const laneCheck: Rect = uEdgeClearance > 0
+          ? { x: lane.x - uEdgeClearance, y: lane.y, width: lane.width + 2 * uEdgeClearance, height: lane.height }
+          : lane;
         const legs: Rect[] = [a, b].map((rect) =>
           side === "east"
             ? { x: rect.x + rect.width, y: rect.y + rect.height / 2 - 1, width: left - (rect.x + rect.width), height: 2 }
             : { x: left + depth, y: rect.y + rect.height / 2 - 1, width: rect.x - (left + depth), height: 2 },
         );
-        return ![lane, ...legs.filter((leg) => leg.width > 0)].some((zone) => shapesOf(id).some((shape) => rectsIntersect(shape, zone)));
+        return ![laneCheck, ...legs.filter((leg) => leg.width > 0)].some((zone) => shapesOf(id).some((shape) => rectsIntersect(shape, zone)));
       };
       const outside: "south" | "north" | undefined =
         within !== undefined || !sideBySide
@@ -1529,6 +1784,120 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       }
     }
 
+    // When route spacing is active:
+    // 1. Avoid docking on the north face of an entity directly beneath its parent
+    //    zone's title band (gap < 2 * borderClearance cannot clear the title barrier).
+    // 2. For cross-zone edges leaving an expanded zone `Z`, prefer an outer wall of
+    //    `Z` touched by the entity that faces toward the other end (and stays inside
+    //    any shared ancestor container `within`) over diving inward through `Z`'s
+    //    internal sibling gutters.
+    const isNorthBlockedByTitle = (entity: EntityRef): boolean => {
+      const parent = placementParentOf(entity);
+      if (parent === undefined) return false;
+      const band = titleBands.get(parent);
+      const rect = rects.get(entity);
+      if (band === undefined || rect === undefined) return false;
+      return rect.y - (band.y + band.height) < 2 * borderClearance - 1e-4;
+    };
+    const sideStaysInWithin = (entity: EntityRef, side: PortSide, within: Rect | undefined): boolean => {
+      if (within === undefined) return true;
+      const r = rects.get(entity)!;
+      // Check that exiting on `side` by `borderClearance` (and clearing any immediate
+      // parent wall between `entity` and `within`) stays inside `within`.
+      const need = borderClearance;
+      if (side === "west") return r.x - need >= within.x - 1e-4;
+      if (side === "east") return r.x + r.width + need <= within.x + within.width + 1e-4;
+      if (side === "north") return r.y - need >= within.y - 1e-4;
+      return r.y + r.height + need <= within.y + within.height + 1e-4;
+    };
+    if (routeSpacing > 0) {
+      const isDescendantOrSame = (node: EntityRef, ancestor: EntityRef): boolean => {
+        for (let cur: EntityRef | undefined = node; cur !== undefined; cur = placementParentOf(cur)) {
+          if (cur === ancestor) return true;
+        }
+        return false;
+      };
+      const outerWallsOf = (entity: EntityRef, parent: EntityRef, within: Rect | undefined): PortSide[] => {
+        const r = rects.get(entity)!;
+        const p = rects.get(parent)!;
+        const footerH = footerBands.get(parent)?.height ?? 0;
+        const walls: PortSide[] = [];
+        // When `within` is defined (nested zones inside a shared ancestor), an outer wall
+        // of `parent` is only usable if exiting `parent` by `borderClearance` still stays in `within`.
+        const inWithin = (side: PortSide): boolean => {
+          if (within === undefined) return true;
+          if (side === "west") return p.x - borderClearance >= within.x - 1e-4;
+          if (side === "east") return p.x + p.width + borderClearance <= within.x + within.width + 1e-4;
+          return p.y + p.height + borderClearance <= within.y + within.height + 1e-4;
+        };
+        if (r.x - p.x <= contentInset + 1 && inWithin("west")) walls.push("west");
+        if (p.x + p.width - (r.x + r.width) <= contentInset + 1 && inWithin("east")) walls.push("east");
+        if (p.y + p.height - footerH - (r.y + r.height) <= contentInset + 1 && inWithin("south")) walls.push("south");
+        return walls;
+      };
+      const redirectSide = (selfId: EntityRef, otherId: EntityRef, chosen: PortSide, within: Rect | undefined): PortSide => {
+        const self = rects.get(selfId)!;
+        const other = rects.get(otherId)!;
+        const selfCx = self.x + self.width / 2;
+        const selfCy = self.y + self.height / 2;
+        const otherCx = other.x + other.width / 2;
+        const otherCy = other.y + other.height / 2;
+        const parent = placementParentOf(selfId);
+        // Cross-zone endpoint: prefer an outer wall of its immediate zone facing `other`
+        // (never forcing a route away from `other` into an opposite saturated gutter).
+        if (parent !== undefined && !isDescendantOrSame(otherId, parent)) {
+          const outer = outerWallsOf(selfId, parent, within);
+          if (outer.includes(chosen)) return chosen;
+          const facingOuter = outer.filter((side) => {
+            if (side === "west") return otherCx < selfCx;
+            if (side === "east") return otherCx > selfCx;
+            return otherCy > selfCy;
+          });
+          if (facingOuter.length > 0) {
+            const score = (side: PortSide): number => {
+              if (side === "west") return -(selfCx - otherCx);
+              if (side === "east") return -(otherCx - selfCx);
+              return -(otherCy - selfCy);
+            };
+            return [...facingOuter].sort((a, b) => score(a) - score(b))[0]!;
+          }
+        }
+        if (chosen !== "north" || !isNorthBlockedByTitle(selfId)) return chosen;
+        const candidates: PortSide[] = (["east", "west", "south"] as const).filter((s) => sideStaysInWithin(selfId, s, within));
+        if (candidates.length === 0) return chosen;
+        if (other.x >= self.x + self.width && candidates.includes("east")) return "east";
+        if (self.x >= other.x + other.width && candidates.includes("west")) return "west";
+        if (Math.abs(otherCx - selfCx) > 1e-4) {
+          const pref: PortSide = otherCx > selfCx ? "east" : "west";
+          if (candidates.includes(pref)) return pref;
+        }
+        if (parent !== undefined) {
+          const parentRect = rects.get(parent)!;
+          const distLeft = self.x - parentRect.x;
+          const distRight = parentRect.x + parentRect.width - (self.x + self.width);
+          const pref: PortSide = distLeft <= distRight ? "west" : "east";
+          if (candidates.includes(pref)) return pref;
+        }
+        return candidates[0]!;
+      };
+      for (const edge of drawnEdges) {
+        const id = edge.occurrence as unknown as RelationRef;
+        if (sideOverrides.has(id)) continue;
+        const source = edge.source.entity;
+        const target = edge.target.entity;
+        if (source === target) continue;
+        if (isAncestor(filteredGraph, source, target) || isAncestor(filteredGraph, target, source)) continue;
+        const within = withinOf.get(id);
+        const sDefault = sideToward(rects.get(source)!, rects.get(target)!, "top-to-bottom");
+        const tDefault = sideToward(rects.get(target)!, rects.get(source)!, "top-to-bottom");
+        const sSide = redirectSide(source, target, sDefault, within);
+        const tSide = redirectSide(target, source, tDefault, within);
+        if (sSide !== sDefault || tSide !== tDefault) {
+          sideOverrides.set(id, { source: sSide, target: tSide, turn: false });
+        }
+      }
+    }
+
     // Dock and route against fixed boxes (§4.6.4/§4.6.5). Slots keep the
     // declared spacing: a label sits in a lane, not at its dock, so a side
     // does not spread its slots by the label width.
@@ -1540,6 +1909,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       metrics,
       labelSizes: new Map(),
       fixed: true,
+      cornerInset: dockCornerInset,
       sideOverrides,
     });
     const finalDocks = new Map<RelationRef, EdgeDocks>(docked.docks);
@@ -1569,36 +1939,32 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         });
       }
     }
-    const requests = drawnEdges.map((edge) => {
-      const occurrence = projected.relationOccurrences[edge.occurrence]!;
-      const sourceRole = occurrence.endpoints.find((endpoint) => endpoint.role === "source")!;
-      const targetRole = occurrence.endpoints.find((endpoint) => endpoint.role === "target")!;
-      const occurrenceId = edge.occurrence as unknown as RelationRef;
-      const pair = finalDocks.get(occurrenceId)!;
-      // BLK-3: containment is enforced by the `within` clamp (4 px insets) +
-      // escaped warnings below. Ancestors stay passable so the interior of the
-      // shared container remains routable; the clamp prevents exiting it.
-      // (Excluding the shared container itself from `passable` blocks its
-      // whole grown box, leaving no route inside `within` — evidenced by
-      // 0→93 escapes — so it is not done here.)
-      const passable = new Set<EntityRef>([
-        ...projectedAncestorsOf(sourceRole.occurrence),
-        ...projectedAncestorsOf(targetRole.occurrence),
-      ]);
-      const within = withinOf.get(occurrenceId);
-      return {
-        ...(flowRunRanks.has(edge.occurrence) ? { flowRank: flowRunRanks.get(edge.occurrence)!, flowRun: [edge.source.entity, edge.target.entity].sort().join("|") + "|" + String(sideOverrides.get(occurrenceId)?.turn === true) } : {}),
-        id: occurrenceId,
-        pairKey: [edge.source.entity, edge.target.entity].sort().join("|"),
-        start: pair.source.point,
-        startExit: pair.source.exit,
-        end: pair.target.point,
-        endExit: pair.target.exit,
-        passable,
-        // BF-3: an edge whose two ends share an expanded container stays in its content box.
-        ...(within === undefined ? {} : { within }),
-      };
-    });
+    const buildRequests = (docksMap: ReadonlyMap<RelationRef, EdgeDocks>) =>
+      drawnEdges.map((edge) => {
+        const occurrence = projected.relationOccurrences[edge.occurrence]!;
+        const sourceRole = occurrence.endpoints.find((endpoint) => endpoint.role === "source")!;
+        const targetRole = occurrence.endpoints.find((endpoint) => endpoint.role === "target")!;
+        const occurrenceId = edge.occurrence as unknown as RelationRef;
+        const pair = docksMap.get(occurrenceId)!;
+        const passable = new Set<EntityRef>([
+          ...projectedAncestorsOf(sourceRole.occurrence),
+          ...projectedAncestorsOf(targetRole.occurrence),
+        ]);
+        const within = withinOf.get(occurrenceId);
+        return {
+          ...(flowRunRanks.has(edge.occurrence) ? { flowRank: flowRunRanks.get(edge.occurrence)!, flowRun: [edge.source.entity, edge.target.entity].sort().join("|") + "|" + String(sideOverrides.get(occurrenceId)?.turn === true) } : {}),
+          id: occurrenceId,
+          pairKey: [edge.source.entity, edge.target.entity].sort().join("|"),
+          start: pair.source.point,
+          startExit: pair.source.exit,
+          end: pair.target.point,
+          endExit: pair.target.exit,
+          passable,
+          // BF-3: an edge whose two ends share an expanded container stays in its content box.
+          ...(within === undefined ? {} : { within }),
+        };
+      });
+    let requests = buildRequests(finalDocks);
     // Lanes outside the drawing, over and under it, one label pitch apart:
     // labelled routes going round the drawing spread over them instead of
     // sharing the one clearance line, so each keeps room for its label.
@@ -1611,25 +1977,32 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     const outerLanesX: number[] = [];
     let labelLimit: Rect | undefined;
     const markSizes = [...routeSizes.values()];
+    const edgeClearance = Math.max(metrics.clearance, borderClearance);
     if (markSizes.length > 0 && rects.size > 0) {
-      const pitch = Math.max(...markSizes.map((size) => size.height)) + 2 * metrics.labelMargin;
-      const pitchX = Math.max(...markSizes.map((size) => size.width)) + 2 * metrics.labelMargin;
+      const pitch = Math.max(
+        routeSpacing,
+        ...markSizes.map((size) => size.height + 2 * metrics.labelMargin),
+      );
+      const pitchX = Math.max(
+        routeSpacing,
+        ...markSizes.map((size) => size.width + 2 * metrics.labelMargin),
+      );
       const left = Math.min(...[...rects.values()].map((rect) => rect.x));
       const right = Math.max(...[...rects.values()].map((rect) => rect.x + rect.width));
       const width = right - left;
       const height = drawingBottom - drawingTop;
       const spareX = Math.max(0, height * rowPack.targetAspect - width) / 2;
       const spareY = Math.max(0, width / rowPack.targetAspect - height) / 2;
-      const allowance = metrics.clearance + pitch;
+      const allowance = edgeClearance + pitch;
       labelLimit = {
-        x: left - spareX - metrics.clearance - pitchX,
+        x: left - spareX - edgeClearance - pitchX,
         y: drawingTop - spareY - allowance,
-        width: width + 2 * (spareX + metrics.clearance + pitchX),
+        width: width + 2 * (spareX + edgeClearance + pitchX),
         height: height + 2 * (spareY + allowance),
       };
       const lanes = Math.min(markSizes.length, OUTER_LANES, 1 + Math.floor(spareY / pitch));
       for (let lane = 1; lane <= lanes; lane += 1) {
-        outerLanes.push(drawingTop - metrics.clearance - lane * pitch, drawingBottom + metrics.clearance + lane * pitch);
+        outerLanes.push(drawingTop - edgeClearance - lane * pitch, drawingBottom + edgeClearance + lane * pitch);
       }
       // AC-25: dense folded roots need left/right outside corridors as well —
       // the A* grid had no X lane outside the drawing, so a route that must go
@@ -1637,20 +2010,251 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       // side mirrors the Y lanes above.
       const lanesX = Math.min(markSizes.length, OUTER_LANES, 1 + Math.floor(spareX / pitchX));
       for (let lane = 1; lane <= lanesX; lane += 1) {
-        outerLanesX.push(left - metrics.clearance - lane * pitchX, right + metrics.clearance + lane * pitchX);
+        outerLanesX.push(left - edgeClearance - lane * pitchX, right + edgeClearance + lane * pitchX);
       }
     }
     // The title band of an expanded container is an obstacle for every route,
     // the ones that may cross the container wall included: a route leaving a
     // zone goes round its title, never through it.
-    const routed = routeEdges({
-      rects,
-      requests,
-      avoidFallbackInteriors: true,
-      clearance: metrics.clearance,
-      barriers: [...titleBands].sort(([left], [right]) => byString(left, right)).map(([, band]) => band),
-      lanes: { xs: outerLanesX, ys: outerLanes },
-    });
+    const sortedBarrierEntries = [...titleBands].sort(([left], [right]) => byString(left, right));
+    const sortedBarriers = sortedBarrierEntries.map(([, band]) => band);
+    const auditBarriers = sortedBarrierEntries.map(([entity, rect]) => ({ entity: String(entity), rect }));
+    const runRouter = (reqs: typeof requests, priority?: ReadonlySet<RelationRef>) =>
+      routeEdges({
+        rects,
+        requests: reqs,
+        avoidFallbackInteriors: true,
+        clearance: borderClearance,
+        routeSpacing,
+        barriers: sortedBarriers,
+        lanes: { xs: outerLanesX, ys: outerLanes },
+        ...(priority === undefined ? {} : { priority }),
+      });
+    let routed = runRouter(requests);
+
+    // Deterministic conflict repair (DE-2 ask 2): when strict route spacing has
+    // conflicts (e.g. a fixed 96 px gutter saturated on one face or an earlier
+    // route claiming a choke-point track), first try promoting conflicted routes
+    // in routing order, then greedily re-dock the most-conflicted ordinary edge
+    // onto a less-congested unblocked face (updating all docks together so port
+    // spacing stays exact). Zero overhead when pass 1 already yields 0 conflicts.
+    if (routeSpacing > 0 && drawnEdges.length > 1) {
+      const quickAudit = (outcome: typeof routed) => {
+        const checked: CheckedRoute[] = [];
+        for (const edge of drawnEdges) {
+          const id = edge.occurrence as unknown as RelationRef;
+          const pts = outcome.routes.get(id);
+          if (pts === undefined) continue;
+          const occ = projected.relationOccurrences[edge.occurrence]!;
+          const sRole = occ.endpoints.find((ep) => ep.role === "source")!;
+          const tRole = occ.endpoints.find((ep) => ep.role === "target")!;
+          const style = relationPresentationFor(presentation.relations, occ.id, occ.relation);
+          const arrowhead = resolveArrowhead(occ.arrowhead ?? style?.arrowhead).canonicalKind;
+          const passable = new Set<string>([
+            ...projectedAncestorsOf(sRole.occurrence),
+            ...projectedAncestorsOf(tRole.occurrence),
+          ]);
+          checked.push({
+            id: String(edge.occurrence),
+            source: String(edge.source.entity),
+            target: String(edge.target.entity),
+            points: pts,
+            ...(edge.source.port === undefined ? {} : { sourcePort: String(edge.source.port) }),
+            ...(edge.target.port === undefined ? {} : { targetPort: String(edge.target.port) }),
+            arrowhead,
+            passable,
+          });
+        }
+        return checkRouteSpacing({
+          rects,
+          routes: checked,
+          routeSpacing,
+          borderClearance,
+          barriers: auditBarriers,
+        });
+      };
+      const scoreOf = (outcome: typeof routed, report: ReturnType<typeof checkRouteSpacing>) =>
+        outcome.obstructed.length * 10000 + outcome.escaped.length * 1000 + report.conflictCount;
+
+      let bestReport = quickAudit(routed);
+      let bestScore = scoreOf(routed, bestReport);
+      let bestPriority: Set<RelationRef> | undefined;
+
+      // Stage 1: promote conflicted / escaped / obstructed routes in routing order.
+      // On large scenes (> 25 boxes) with > 5 initial conflicts, cap promotion to
+      // one pass to keep cold layout latency well under budget.
+      if (bestScore > 0) {
+        const maxStage1Rounds = rects.size > 25 && bestReport.conflictCount > 5 && routed.obstructed.length === 0 ? 1 : 3;
+        const promoted = new Set<RelationRef>();
+        for (let round = 0; round < maxStage1Rounds && bestScore > 0; round += 1) {
+          const beforeSize = promoted.size;
+          for (const r of routed.obstructed) promoted.add(r);
+          for (const r of routed.escaped) promoted.add(r);
+          for (const conflict of bestReport.conflicts) {
+            for (const r of conflict.routes) promoted.add(r as unknown as RelationRef);
+          }
+          if (promoted.size === beforeSize) break;
+          const candidate = runRouter(requests, promoted);
+          const candReport = quickAudit(candidate);
+          const candScore = scoreOf(candidate, candReport);
+          if (candScore < bestScore) {
+            routed = candidate;
+            bestReport = candReport;
+            bestScore = candScore;
+            bestPriority = new Set(promoted);
+          } else {
+            break;
+          }
+        }
+      }
+
+      // Stage 2: re-dock congested / escaped ordinary edges onto an unblocked face.
+      // Skip Stage 2 on large scenes (> 25 boxes) that remain structurally saturated
+      // (> 5 conflicts after Stage 1) so heavy legacy scenes stay well within budget.
+      if (bestScore > 0 && (bestReport.conflictCount <= 5 || rects.size <= 25)) {
+        const workingOverrides = new Map(sideOverrides);
+        const allSides = ["west", "east", "south", "north"] as const;
+        const sideScoreToward = (fromId: EntityRef, toId: EntityRef, side: PortSide): number => {
+          const a = rects.get(fromId)!;
+          const b = rects.get(toId)!;
+          const dx = (b.x + b.width / 2) - (a.x + a.width / 2);
+          const dy = (b.y + b.height / 2) - (a.y + a.height / 2);
+          if (side === "east") return -dx;
+          if (side === "west") return dx;
+          if (side === "south") return -dy;
+          return dy;
+        };
+        const maxStage2Calls = rects.size > 25 ? 6 : 18;
+        let stage2Calls = 0;
+        for (let round = 0; round < 4 && bestScore > 0 && stage2Calls < maxStage2Calls; round += 1) {
+          const counts = new Map<string, number>();
+          for (const r of routed.obstructed) counts.set(String(r), (counts.get(String(r)) ?? 0) + 10);
+          for (const r of routed.escaped) counts.set(String(r), (counts.get(String(r)) ?? 0) + 5);
+          for (const conflict of bestReport.conflicts) {
+            for (const r of conflict.routes) counts.set(r, (counts.get(r) ?? 0) + 1);
+          }
+          const rankedEdges = [...counts.entries()]
+            .sort((a, b) => b[1] - a[1] || byString(a[0], b[0]))
+            .map(([id]) => drawnEdges.find((e) => String(e.occurrence) === id))
+            .filter((e): e is DrawnEdge => {
+              if (e === undefined) return false;
+              if (e.source.entity === e.target.entity) return false;
+              if (e.source.port !== undefined || e.target.port !== undefined) return false;
+              if (isAncestor(filteredGraph, e.source.entity, e.target.entity) || isAncestor(filteredGraph, e.target.entity, e.source.entity)) return false;
+              return true;
+            });
+
+          let improved = false;
+          for (const edge of rankedEdges.slice(0, 2)) {
+            if (stage2Calls >= maxStage2Calls) break;
+            const id = edge.occurrence as unknown as RelationRef;
+            const within = withinOf.get(id);
+            const currentDock = finalDocks.get(id)!;
+            const validSourceSides = allSides
+              .filter((s) => (s !== "north" || !isNorthBlockedByTitle(edge.source.entity)) && sideStaysInWithin(edge.source.entity, s, within))
+              .sort((a, b) => sideScoreToward(edge.source.entity, edge.target.entity, a) - sideScoreToward(edge.source.entity, edge.target.entity, b));
+            const validTargetSides = allSides
+              .filter((s) => (s !== "north" || !isNorthBlockedByTitle(edge.target.entity)) && sideStaysInWithin(edge.target.entity, s, within))
+              .sort((a, b) => sideScoreToward(edge.target.entity, edge.source.entity, a) - sideScoreToward(edge.target.entity, edge.source.entity, b));
+            const faceCandidates: (readonly [PortSide, PortSide])[] = [];
+            for (const s of validSourceSides) {
+              if (s !== currentDock.source.side) faceCandidates.push([s, currentDock.target.side]);
+            }
+            for (const t of validTargetSides) {
+              if (t !== currentDock.target.side) faceCandidates.push([currentDock.source.side, t]);
+            }
+
+            let bestCandOverrides: Map<RelationRef, { readonly source: PortSide; readonly target: PortSide; readonly turn: boolean }> | undefined;
+            let bestCandDocks: ReadonlyMap<RelationRef, EdgeDocks> | undefined;
+            let bestCandRequests: typeof requests | undefined;
+            let bestCandOutcome: typeof routed | undefined;
+            let bestCandReport: typeof bestReport | undefined;
+            let bestCandScore = bestScore;
+
+            for (const [s, t] of faceCandidates) {
+              if (stage2Calls >= maxStage2Calls) break;
+              stage2Calls += 1;
+              const candOverrides = new Map(workingOverrides);
+              candOverrides.set(id, { source: s, target: t, turn: false });
+              const candDocked = dockEdges({
+                ...(hasFlows ? { flowBadgeSize: flowTokens.flowBadgeSize } : {}),
+                graph: filteredGraph,
+                rects,
+                direction: "top-to-bottom",
+                metrics,
+                labelSizes: new Map(),
+                fixed: true,
+                cornerInset: dockCornerInset,
+                sideOverrides: candOverrides,
+              });
+              if (candDocked.fixedOverflows.length > docked.fixedOverflows.length) continue;
+              const candRequests = buildRequests(candDocked.docks);
+              const candOutcome = runRouter(candRequests, bestPriority);
+              const candReport = quickAudit(candOutcome);
+              const candScore = scoreOf(candOutcome, candReport);
+              if (candScore < bestCandScore) {
+                bestCandScore = candScore;
+                bestCandOverrides = candOverrides;
+                bestCandDocks = candDocked.docks;
+                bestCandRequests = candRequests;
+                bestCandOutcome = candOutcome;
+                bestCandReport = candReport;
+                break;
+              }
+            }
+            if (bestCandOutcome !== undefined && bestCandDocks !== undefined && bestCandRequests !== undefined && bestCandReport !== undefined && bestCandOverrides !== undefined) {
+              workingOverrides.clear();
+              for (const [k, v] of bestCandOverrides) workingOverrides.set(k, v);
+              sideOverrides.clear();
+              for (const [k, v] of bestCandOverrides) sideOverrides.set(k, v);
+              finalDocks.clear();
+              for (const [k, v] of bestCandDocks) finalDocks.set(k, v);
+              requests = bestCandRequests;
+              routed = bestCandOutcome;
+              bestReport = bestCandReport;
+              bestScore = bestCandScore;
+              improved = true;
+              break;
+            }
+          }
+          if (!improved) break;
+        }
+      }
+      // Stage 3: if pair conflicts still remain on a modest scene after Stage 1+2,
+      // try promoting only the later-routed route of each remaining conflict (on
+      // the current docks) so constrained routes claim tracks before their blockers.
+      if (bestScore > 0 && rects.size <= 25) {
+        const orderRank = new Map<string, number>();
+        [...requests]
+          .sort((a, b) => {
+            const aIn = a.within !== undefined ? 0 : 1;
+            const bIn = b.within !== undefined ? 0 : 1;
+            if (aIn !== bIn) return aIn - bIn;
+            const aDist = Math.abs(a.start.x - a.end.x) + Math.abs(a.start.y - a.end.y);
+            const bDist = Math.abs(b.start.x - b.end.x) + Math.abs(b.start.y - b.end.y);
+            if (Math.abs(aDist - bDist) > 1e-4) return aDist - bDist;
+            return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+          })
+          .forEach((req, idx) => orderRank.set(String(req.id), idx));
+        const victims = new Set<RelationRef>();
+        for (const r of routed.obstructed) victims.add(r);
+        for (const r of routed.escaped) victims.add(r);
+        for (const conflict of bestReport.conflicts) {
+          const sorted = [...conflict.routes].sort((a, b) => (orderRank.get(b) ?? 0) - (orderRank.get(a) ?? 0));
+          if (sorted.length > 0) victims.add(sorted[0] as unknown as RelationRef);
+        }
+        if (victims.size > 0) {
+          const candidate = runRouter(requests, victims);
+          const candReport = quickAudit(candidate);
+          const candScore = scoreOf(candidate, candReport);
+          if (candScore < bestScore) {
+            routed = candidate;
+            bestReport = candReport;
+            bestScore = candScore;
+          }
+        }
+      }
+    }
     // AC-25: an 8 px dock exit can be blocked where a 2 px exit still threads
     // through — the retry is local (only the obstructed requests, same rects,
     // barriers and outer lanes, smaller inflation) and still avoids every raw
@@ -1658,6 +2262,11 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     // A retry that finds a clean A* route replaces the obstructed elbow.
     const retryRoutes = new Map(routed.routes);
     const retryObstructed = new Set(routed.obstructed);
+    const otherRoutesOf = (id: RelationRef): (readonly Vec2[])[] =>
+      requests
+        .filter((candidate) => candidate.id !== id && !retryObstructed.has(candidate.id))
+        .map((candidate) => retryRoutes.get(candidate.id)!)
+        .filter((route): route is readonly Vec2[] => route !== undefined);
     // Parallel unlabelled bridges use a centred comb. Docks and the middle
     // legs share the same pitch. Preserve every constraint of the router.
     const parallel = new Map<string, typeof requests>();
@@ -1673,8 +2282,12 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const first = pair[0]!;
       const horizontal = Math.abs(first.start.x - first.end.x) >= Math.abs(first.start.y - first.end.y);
       const center = horizontal ? (first.start.x + first.end.x) / 2 : (first.start.y + first.end.y) / 2;
+      const combPitch = Math.max(
+        routeSpacing,
+        (horizontal ? metrics.trackSpacing : metrics.trackSpacingBlock) ?? (horizontal ? 14 : 7),
+      );
       pair.forEach((request, index) => {
-        const lane = center + (index - (pair.length - 1) / 2) * ((horizontal ? metrics.trackSpacing : metrics.trackSpacingBlock) ?? (horizontal ? 14 : 7));
+        const lane = center + (index - (pair.length - 1) / 2) * combPitch;
         const points = horizontal
           ? [request.start, { x: lane, y: request.start.y }, { x: lane, y: request.end.y }, request.end]
           : [request.start, { x: request.start.x, y: lane }, { x: request.end.x, y: lane }, request.end];
@@ -1683,20 +2296,62 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         if (firstLeg === undefined || lastLeg === undefined
           || (firstLeg.x - request.start.x) * request.startExit.x + (firstLeg.y - request.start.y) * request.startExit.y <= 0
           || (lastLeg.x - request.end.x) * request.endExit.x + (lastLeg.y - request.end.y) * request.endExit.y <= 0) return;
+        const firstLen = Math.hypot(firstLeg.x - request.start.x, firstLeg.y - request.start.y);
+        const lastLen = Math.hypot(lastLeg.x - request.end.x, lastLeg.y - request.end.y);
+        if (routeSpacing > 0 && (firstLen < borderClearance - 1e-4 || lastLen < borderClearance - 1e-4)) return;
         const within = request.within;
         if (within !== undefined && points.some(point => point.x < within.x || point.y < within.y
           || point.x > within.x + within.width || point.y > within.y + within.height)) return;
         if (requests.some(other => other.id !== request.id && other.pairKey === request.pairKey
           && routesConflict(points, retryRoutes.get(other.id)!))) return;
-        if (points.slice(1).some((point, i) => shapesOf(request.id).some(shape => rectsIntersect(shape, {
-          x: Math.min(point.x, points[i]!.x), y: Math.min(point.y, points[i]!.y),
-          width: Math.abs(point.x - points[i]!.x), height: Math.abs(point.y - points[i]!.y),
-        })))) return;
+        if (points.slice(1).some((point, i) => {
+          const prev = points[i]!;
+          if (shapesOf(request.id).some(shape => {
+            if (rectsIntersect(shape, {
+              x: Math.min(point.x, prev.x), y: Math.min(point.y, prev.y),
+              width: Math.abs(point.x - prev.x), height: Math.abs(point.y - prev.y),
+            })) return true;
+            if (!(routeSpacing > 0)) return false;
+            if (i === 0 && (Math.abs(prev.x - shape.x) < 1e-4 || Math.abs(prev.x - (shape.x + shape.width)) < 1e-4 || Math.abs(prev.y - shape.y) < 1e-4 || Math.abs(prev.y - (shape.y + shape.height)) < 1e-4)) return false;
+            if (i === points.length - 2 && (Math.abs(point.x - shape.x) < 1e-4 || Math.abs(point.x - (shape.x + shape.width)) < 1e-4 || Math.abs(point.y - shape.y) < 1e-4 || Math.abs(point.y - (shape.y + shape.height)) < 1e-4)) return false;
+            return segmentToRectDistance(prev, point, shape) < borderClearance - 1e-4;
+          })) return true;
+          if (routeSpacing > 0 && passableZonesOf(request.id).some(zone => segmentToPassableBorderDistance(prev, point, zone) < borderClearance - 1e-4)) {
+            return true;
+          }
+          return false;
+        })) return;
+        if (routeSpacing > 0) {
+          const candidateElbows = points.slice(1, -1);
+          const violatesSpacing = otherRoutesOf(request.id).some((other) => {
+            for (let i = 1; i < points.length; i += 1) {
+              const a1 = points[i - 1]!;
+              const a2 = points[i]!;
+              for (let j = 1; j < other.length; j += 1) {
+                const b1 = other[j - 1]!;
+                const b2 = other[j]!;
+                if (Math.abs(a1.y - a2.y) < 1e-4 && Math.abs(b1.y - b2.y) < 1e-4 && Math.abs(a1.y - b1.y) < routeSpacing - 1e-4) {
+                  if (Math.min(Math.max(a1.x, a2.x), Math.max(b1.x, b2.x)) - Math.max(Math.min(a1.x, a2.x), Math.min(b1.x, b2.x)) > 1e-4) return true;
+                }
+                if (Math.abs(a1.x - a2.x) < 1e-4 && Math.abs(b1.x - b2.x) < 1e-4 && Math.abs(a1.x - b1.x) < routeSpacing - 1e-4) {
+                  if (Math.min(Math.max(a1.y, a2.y), Math.max(b1.y, b2.y)) - Math.max(Math.min(a1.y, a2.y), Math.min(b1.y, b2.y)) > 1e-4) return true;
+                }
+              }
+            }
+            for (const e1 of candidateElbows) {
+              for (let k = 1; k < other.length - 1; k += 1) {
+                if (Math.hypot(e1.x - other[k]!.x, e1.y - other[k]!.y) < routeSpacing - 1e-4) return true;
+              }
+            }
+            return false;
+          });
+          if (violatesSpacing) return;
+        }
         retryRoutes.set(request.id, points);
         retryObstructed.delete(request.id);
       });
     }
-    if (retryObstructed.size > 0) {
+    if (retryObstructed.size > 0 && !(routeSpacing > 0)) {
       const failed = new Set(retryObstructed);
       const retryRequests = requests.filter((request) => failed.has(request.id));
       const retried = routeEdges({
@@ -1754,6 +2409,8 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     const labelBoxes = new Map<RelationRef, Rect>();
     const taken: Rect[] = [...marks.taken];
     const unplaced: typeof entries = [];
+    const detourStep = routeSpacing > 0 ? borderClearance : 2;
+    const detourClearance = routeSpacing > 0 ? borderClearance : 0;
     for (const entry of entries) {
       const edge = drawnEdges.find((candidate) => (candidate.occurrence as string) === entry.id)!;
       let choice = placePackedLabel(entry, fixedShapes, taken, metrics.labelMargin);
@@ -1767,6 +2424,11 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         const { limit: _limit, ...unbounded } = entry;
         const route = labelDetour({ request, shapes: shapesOf(entry.id),
           earlier: requests.filter(other => other.id !== request.id && other.pairKey === request.pairKey && !retryObstructed.has(other.id)).map(other => retryRoutes.get(other.id)!),
+          allFixed: otherRoutesOf(entry.id),
+          passableZones: passableZonesOf(entry.id),
+          step: detourStep,
+          routeSpacing,
+          borderClearance: detourClearance,
           xs: [...new Set([request.start.x, request.end.x, ...outerLanesX])].sort((a, b) => a - b),
           ys: [...new Set([request.start.y, request.end.y, ...outerLanes])].sort((a, b) => a - b),
           accepts: points => {
@@ -1794,33 +2456,52 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         const request = requests.find((candidate) => candidate.id === entry.id)!;
         const samePair = requests.filter((candidate) => candidate.id !== entry.id && candidate.pairKey === request.pairKey && !retryObstructed.has(candidate.id))
           .map((candidate) => retryRoutes.get(candidate.id)!);
+        const allFixed = otherRoutesOf(entry.id);
         const shapes = shapesOf(entry.id);
         const margin = probeMargin;
         const xs = new Set<number>([request.start.x, request.end.x]);
         const ys = new Set<number>(outerLanes);
         for (const rect of shapes) {
-          xs.add(rect.x - metrics.clearance);
-          xs.add(rect.x + rect.width + metrics.clearance);
+          xs.add(rect.x - edgeClearance);
+          xs.add(rect.x + rect.width + edgeClearance);
           for (const pad of [metrics.labelMargin, Math.max(0, margin)]) {
-            ys.add(rect.y - entry.size.height / 2 - pad);
-            ys.add(rect.y + rect.height + entry.size.height / 2 + pad);
+            const dy = Math.max(edgeClearance, entry.size.height / 2 + pad);
+            ys.add(rect.y - dy);
+            ys.add(rect.y + rect.height + dy);
           }
         }
         for (const end of [request.start, request.end]) {
           xs.add(end.x - entry.size.width - 2 * metrics.labelMargin);
           xs.add(end.x + entry.size.width + 2 * metrics.labelMargin);
         }
-        const detour = labelDetour({ request, shapes, earlier: samePair, xs: [...xs].sort((a, b) => a - b), ys: [...ys].sort((a, b) => a - b),
+        const sortedXs = [...xs].sort((a, b) => a - b);
+        const sortedYs = [...ys].sort((a, b) => a - b);
+        const edgePassableZones = passableZonesOf(entry.id);
+        let detour = labelDetour({ request, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
+          xs: sortedXs, ys: sortedYs,
           accepts: (points) => {
             return placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined;
           },
         });
+        if (detour === undefined && routeSpacing > 0) {
+          const wideXs = new Set<number>([...xs, ...outerLanesX]);
+          const wideYs = new Set<number>(ys);
+          for (const x of [request.start.x, request.end.x, ...outerLanesX]) wideXs.add(x - routeSpacing), wideXs.add(x + routeSpacing);
+          for (const y of [request.start.y, request.end.y, ...outerLanes]) wideYs.add(y - routeSpacing), wideYs.add(y + routeSpacing);
+          detour = labelDetour({ request, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
+            xs: [...wideXs].sort((a, b) => a - b), ys: [...wideYs].sort((a, b) => a - b),
+            accepts: (points) => {
+              return placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined;
+            },
+          });
+        }
         if (detour !== undefined) {
           retryRoutes.set(entry.id, detour);
           retryObstructed.delete(entry.id);
           choice = placePackedLabel({ ...entry, route: detour }, fixedShapes, taken, metrics.labelMargin);
         } else if (margin >= 0) {
-          const probeRoute = labelDetour({ request, shapes, earlier: samePair, xs: [...xs].sort((a, b) => a - b), ys: [...ys].sort((a, b) => a - b),
+          const probeRoute = labelDetour({ request, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
+            xs: sortedXs, ys: sortedYs,
             accepts: (points) => placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin, margin) !== undefined,
           });
           if (probeRoute !== undefined) retryRoutes.set(entry.id, probeRoute);
@@ -1838,15 +2519,34 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
             ...sides.map((side) => [side, side] as const),
             ...sides.flatMap((source) => sides.filter((target) => target !== source).map((target) => [source, target] as const)),
           ];
+          const docksClear = (candidate: EdgeDocks): boolean => {
+            if (!(routeSpacing > 0)) return true;
+            for (const [otherId, otherDocks] of finalDocks) {
+              if (otherId === entry.id) continue;
+              for (const cDock of [candidate.source, candidate.target]) {
+                for (const oDock of [otherDocks.source, otherDocks.target]) {
+                  if (cDock.entity === oDock.entity && cDock.port !== undefined && cDock.port === oDock.port) continue;
+                  if (cDock.entity === oDock.entity && Math.hypot(cDock.point.x - oDock.point.x, cDock.point.y - oDock.point.y) < routeSpacing - 1e-4) {
+                    return false;
+                  }
+                }
+              }
+              if (Math.hypot(candidate.target.point.x - otherDocks.target.point.x, candidate.target.point.y - otherDocks.target.point.y) < routeSpacing - 1e-4) {
+                return false;
+              }
+            }
+            return true;
+          };
           for (const [source, target] of facePairs) {
             const overrides = new Map(sideOverrides);
             overrides.set(entry.id, { source, target, turn: source === target });
             const pair = dockEdges({ graph: filteredGraph, rects, direction: "top-to-bottom", metrics,
-              labelSizes: new Map(), fixed: true, sideOverrides: overrides }).docks.get(entry.id)!;
+              labelSizes: new Map(), fixed: true, cornerInset: dockCornerInset, sideOverrides: overrides }).docks.get(entry.id)!;
+            if (!docksClear(pair)) continue;
             const alternative = { ...request, start: pair.source.point, startExit: pair.source.exit,
               end: pair.target.point, endExit: pair.target.exit };
-            const route = labelDetour({ request: alternative, shapes, earlier: samePair,
-              xs: [...xs].sort((a, b) => a - b), ys: [...ys].sort((a, b) => a - b),
+            const route = labelDetour({ request: alternative, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
+              xs: sortedXs, ys: sortedYs,
               accepts: (points) => placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined,
             });
             if (route === undefined) continue;
@@ -1865,14 +2565,16 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         const request = requests.find(candidate => candidate.id === entry.id)!;
         if (entry.within === undefined) {
           const right = Math.max(...[...rects.values()].map(rect => rect.x + rect.width));
-          const pitch = Math.max(...[...labelSizes.values()].map(size => size.height)) + 2 * metrics.labelMargin;
-          const column = right + Math.max(...[...labelSizes.values()].map(size => size.width)) / 2 + metrics.clearance;
-          const row = drawingBottom + metrics.clearance + (entries.indexOf(entry) + 1) * pitch;
-          const upperRow = drawingTop - metrics.clearance - (entries.indexOf(entry) + 1) * pitch;
+          const pitch = Math.max(routeSpacing, ...[...labelSizes.values()].map(size => size.height + 2 * metrics.labelMargin));
+          const column = right + Math.max(...[...labelSizes.values()].map(size => size.width)) / 2 + edgeClearance;
+          const row = drawingBottom + edgeClearance + (entries.indexOf(entry) + 1) * pitch;
+          const upperRow = drawingTop - edgeClearance - (entries.indexOf(entry) + 1) * pitch;
           const { limit: _limit, ...unbounded } = entry;
           const samePair = requests.filter(candidate => candidate.id !== entry.id && candidate.pairKey === request.pairKey && !retryObstructed.has(candidate.id))
             .map(candidate => retryRoutes.get(candidate.id)!);
-          const comb = (earlier: readonly (readonly Vec2[])[]) => labelDetour({ request, shapes: shapesOf(entry.id), earlier,
+          const allFixed = otherRoutesOf(entry.id);
+          const comb = (earlier: readonly (readonly Vec2[])[]) => labelDetour({ request, shapes: shapesOf(entry.id), earlier, allFixed, passableZones: passableZonesOf(entry.id),
+            step: detourStep, routeSpacing, borderClearance: detourClearance,
             xs: [...new Set([request.start.x, request.end.x, column, ...outerLanesX])].sort((a, b) => a - b),
             ys: [...new Set([request.start.y, request.end.y, upperRow, row, ...outerLanes])].sort((a, b) => a - b),
             accepts: points => placePackedLabel({ ...unbounded, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined,
@@ -1913,6 +2615,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       readonly base: number;
       readonly authoredBase: boolean;
       readonly max: number;
+      readonly zone: boolean;
     }
     const gutters: Gutter[] = [];
     for (const [key, packed] of [...packedRuns].sort(([left], [right]) => byString(left, right))) {
@@ -1920,7 +2623,12 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       if (boxes === undefined || boxes.length < 2) continue;
       const rows = packed.rows;
       const zone = runHasZone(packed.run);
-      const axisAuthored = (horizontal: boolean) => (horizontal ? (zone ? hints?.zoneGapX : hints?.cardGapX) : (zone ? hints?.zoneGapY : hints?.cardGapY)) !== undefined;
+      const axisAuthored = (horizontal: boolean, isZone: boolean) =>
+        (horizontal ? (isZone ? hints?.zoneGapX : hints?.cardGapX) : (isZone ? hints?.zoneGapY : hints?.cardGapY)) !== undefined;
+      const cardAlongBase = rows ? rowGaps.cardX : rowGaps.cardY;
+      const cardAcrossBase = rows ? rowGaps.cardY : rowGaps.cardX;
+      const zoneAlongBase = rows ? rowGaps.zoneX : rowGaps.zoneY;
+      const zoneAcrossBase = rows ? rowGaps.zoneY : rowGaps.zoneX;
       const gapAfter = (slot: number) => { const item=packed.run.items[slot]!; return "run" in item ? item.gapAfter : undefined; };
       const alongOf = (rect: Rect): [number, number] => (rows ? [rect.x, rect.x + rect.width] : [rect.y, rect.y + rect.height]);
       const acrossOf = (rect: Rect): [number, number] => (rows ? [rect.y, rect.y + rect.height] : [rect.x, rect.x + rect.width]);
@@ -1932,28 +2640,34 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         Math.min(...boxes.map((rect) => alongOf(rect)[0])),
         Math.max(...boxes.map((rect) => alongOf(rect)[1])),
       ];
-      const alongStrips = new Map<number, { readonly shelf: number; readonly slot: number; readonly strip: Rect }[]>();
+      const alongStrips = new Map<number, { readonly shelf: number; readonly slot: number; readonly strip: Rect; readonly zone: boolean }[]>();
       packed.shelves.forEach((shelf, shelfIndex) => {
         const start = acrossOf(boxes[shelf[0]!]!)[0];
         const end = Math.max(...shelf.map((slot) => acrossOf(boxes[slot]!)[1]));
         const next = packed.shelves[shelfIndex + 1];
         if (next !== undefined) {
           const nextStart = acrossOf(boxes[next[0]!]!)[0];
+          const acrossZone = r7Routing ? shelfHasZone(packed.run, shelf) || shelfHasZone(packed.run, next) : zone;
+          const base = r7Routing
+            ? (acrossZone ? zoneAcrossBase : (gapAfter(shelf.at(-1)!) ?? cardAcrossBase))
+            : (gapAfter(shelf.at(-1)!) ?? packed.acrossBase);
           gutters.push({
             id: `${key}|across|${String(shelfIndex)}`,
             horizontal: rows,
             strips: [stripOf(extent, [end, nextStart])],
             gap: nextStart - end,
-            base: gapAfter(shelf.at(-1)!) ?? packed.acrossBase,
-            authoredBase: gapAfter(shelf.at(-1)!) !== undefined || axisAuthored(!rows),
+            base,
+            authoredBase: r7Routing && acrossZone ? false : gapAfter(shelf.at(-1)!) !== undefined || axisAuthored(!rows, acrossZone),
             max: rows ? rowGaps.maxY : rowGaps.maxX,
+            zone: acrossZone,
           });
         }
         shelf.forEach((slot, index) => {
           const following = shelf[index + 1];
           if (following === undefined) return;
           const strip = stripOf([alongOf(boxes[slot]!)[1], alongOf(boxes[following]!)[0]], [start, end]);
-          (alongStrips.get(index) ?? alongStrips.set(index, []).get(index)!).push({ shelf: shelfIndex, slot, strip });
+          const pairZone = r7Routing ? itemHasZone(packed.run.items[slot]!) || itemHasZone(packed.run.items[following]!) : zone;
+          (alongStrips.get(index) ?? alongStrips.set(index, []).get(index)!).push({ shelf: shelfIndex, slot, strip, zone: pairZone });
         });
       });
       for (const [index, strips] of [...alongStrips].sort(([left], [right]) => left - right)) {
@@ -1961,28 +2675,48 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         const startOf = (strip: Rect): number => (rows ? strip.x : strip.y);
         // Boxes of equal size line up: the gutters after slot `index` are one
         // lane of the level and widen together, so the grid keeps its column
-        // starts. Where they do not line up there is no lane to keep, and
-        // each shelf widens its own gutter.
-        const lane = strips.every(({ strip }) => Math.abs(startOf(strip) - startOf(strips[0]!.strip)) <= LANE_TOLERANCE);
+        // starts. Where they do not line up — or where one shelf borders a zone
+        // while another separates leaf cards on r7 — each shelf keeps its own gutter.
+        const lane = strips.every(({ strip, zone: stripZone }) =>
+          Math.abs(startOf(strip) - startOf(strips[0]!.strip)) <= LANE_TOLERANCE &&
+          stripZone === strips[0]!.zone,
+        );
         const max = rows ? rowGaps.maxX : rowGaps.maxY;
+        const baseFor = (slot: number, stripZone: boolean): number =>
+          r7Routing
+            ? (stripZone ? zoneAlongBase : (gapAfter(slot) ?? cardAlongBase))
+            : (gapAfter(slot) ?? packed.alongBase);
         if (lane) {
+          const laneZone = strips[0]!.zone;
           gutters.push({
             id: `${key}|along|${String(index)}`,
             horizontal: !rows,
             strips: strips.map(({ strip }) => strip),
             gap: Math.max(...strips.map(({ strip }) => thickness(strip))),
-            base: Math.max(...strips.map(({slot}) => gapAfter(slot) ?? packed.alongBase)),
-            authoredBase: strips.some(({slot}) => gapAfter(slot) !== undefined) || axisAuthored(rows),
+            base: Math.max(...strips.map(({ slot, zone: stripZone }) => baseFor(slot, stripZone))),
+            authoredBase: r7Routing && laneZone ? false : strips.some(({ slot }) => gapAfter(slot) !== undefined) || axisAuthored(rows, laneZone),
             max,
+            zone: laneZone,
           });
         } else {
-          for (const { shelf, slot, strip } of strips) {
-            gutters.push({ id: `${key}|along|${String(index)}|${String(shelf)}`, horizontal: !rows, strips: [strip], gap: thickness(strip), base: gapAfter(slot) ?? packed.alongBase, authoredBase: gapAfter(slot) !== undefined || axisAuthored(rows), max });
+          for (const { shelf, slot, strip, zone: stripZone } of strips) {
+            gutters.push({
+              id: `${key}|along|${String(index)}|${String(shelf)}`,
+              horizontal: !rows,
+              strips: [strip],
+              gap: thickness(strip),
+              base: baseFor(slot, stripZone),
+              authoredBase: r7Routing && stripZone ? false : gapAfter(slot) !== undefined || axisAuthored(rows, stripZone),
+              max,
+              zone: stripZone,
+            });
           }
         }
       }
     }
     // Count each routed occurrence once in the physical channel, including lifted bundle traffic.
+    // REQ-R7-14 (DE-2 ask 3): sibling-zone gutters (`gutter.zone === true`) stay fixed at `zoneGutter`
+    // and never widen for traffic or labels; leaf-card channels (`!gutter.zone`) keep dynamic widening.
     const channels: LayoutChannel[] = gutters.map(gutter => {
       const edges = [...retryRoutes].filter(([, route]) => gutter.strips.some(strip => route.some((point, i) => {
         const next = route[i + 1];
@@ -1993,21 +2727,35 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const n = edges.reduce((sum, id) => sum + (edgeBundles[id]?.members.length ?? 1), 0);
       const intersecting = [...labelBoxes.values()].filter(box => gutter.strips.some(strip => rectsIntersect(strip, box)));
       const labelled = intersecting.length > 0;
-      const placedFloor = Math.max(0, ...intersecting.map(box => (gutter.horizontal ? box.height : box.width) + 2 * metrics.labelMargin).filter(needed => needed <= gutter.max));
       const axis = gutter.horizontal ? 'vertical' as const : 'horizontal' as const;
       const parameters = channelMetrics(metrics, axis === 'horizontal');
-      return { id: gutter.id, axis, edges, strips: gutter.strips, n, labelled, gap: gutter.gap,
-        expected: Math.min(gutter.max, Math.max(placedFloor, channelGap(n, labelled, { ...parameters, gapMin: gutter.authoredBase ? gutter.base : Math.max(parameters.gapMin, gutter.base) }))) };
+      const expected = r7Routing && gutter.zone
+        ? gutter.base
+        : (() => {
+            const placedFloor = Math.max(0, ...intersecting.map(box => (gutter.horizontal ? box.height : box.width) + 2 * metrics.labelMargin).filter(needed => needed <= gutter.max));
+            return Math.min(gutter.max, Math.max(placedFloor, channelGap(n, labelled, { ...parameters, gapMin: gutter.authoredBase ? gutter.base : Math.max(parameters.gapMin, gutter.base) })));
+          })();
+      return {
+        id: gutter.id,
+        axis,
+        edges,
+        strips: gutter.strips,
+        n,
+        labelled,
+        gap: gutter.gap,
+        expected,
+        ...(r7Routing ? { capacity: channelCapacity(gutter.gap, routeSpacing, borderClearance), zone: gutter.zone } : {}),
+      };
     });
-    // A widened gutter in which no placed label sits is an empty lane: a bare
-    // route needs no more than the base gap (two clearances).
+    // A widened leaf gutter that disappeared is dropped; r7 sibling-zone gutters stay fixed (REQ-R7-14).
     const unused: string[] = [];
     const gutterIds = new Set(gutters.map((gutter) => gutter.id));
     for (const id of [...(plan?.widen.keys() ?? [])].sort(byString)) if (!gutterIds.has(id)) unused.push(id);
 
     // A label with no room is probed with the free space of a base gap above
-    // and under it: where it then fits, the lanes it sits in are asked to
-    // widen to its thickness plus its two margins — never past the axis cap.
+    // and under it: where it then fits, leaf-card lanes (and v1 lanes) it sits in
+    // are asked to widen to its thickness plus its two margins — never past the
+    // axis cap, and never on r7 fixed sibling-zone gutters (`r7Routing && gutter.zone`).
     const requested = new Map<string, number>();
     const probed: Rect[] = [...taken];
     for (const entry of unplaced) {
@@ -2020,6 +2768,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const shared = sharedContainerOf(edge.source.entity, edge.target.entity);
       const level = shared === undefined ? ROOT_LEVEL_KEY : representativeOf(shared);
       for (const gutter of gutters) {
+        if (r7Routing && gutter.zone) continue;
         // S-1: an outgoing edge may use a level's base gutter, but cannot
         // change its geometry when a different level is folded.
         if (!gutter.id.startsWith(`${level}|`)) continue;
@@ -2031,9 +2780,111 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     }
 
     for (const channel of channels) {
+      if (r7Routing && channel.zone) {
+        requested.delete(channel.id);
+        continue;
+      }
       const target = Math.max(requested.get(channel.id) ?? 0, channel.expected);
       if (Math.abs(target - channel.gap) > 0.5) requested.set(channel.id, target);
       else requested.delete(channel.id);
+    }
+
+    // Built-in geometric check for minimum route spacing (DE-2 ask 2).
+    const checkedRoutes: CheckedRoute[] = [];
+    const conventionEdges: ArrowDirectionEdgeInput[] = [];
+    for (const edge of drawnEdges) {
+      const id = edge.occurrence as unknown as RelationRef;
+      const points = retryRoutes.get(id);
+      if (points === undefined) continue;
+      const occurrence = projected.relationOccurrences[edge.occurrence]!;
+      const sourceRole = occurrence.endpoints.find((endpoint) => endpoint.role === "source")!;
+      const targetRole = occurrence.endpoints.find((endpoint) => endpoint.role === "target")!;
+      const style = relationPresentationFor(presentation.relations, occurrence.id, occurrence.relation);
+      const arrowhead = resolveArrowhead(occurrence.arrowhead ?? style?.arrowhead)?.canonicalKind ?? "arrow";
+      const passable = new Set<string>([
+        ...projectedAncestorsOf(sourceRole.occurrence),
+        ...projectedAncestorsOf(targetRole.occurrence),
+      ]);
+      const flowArrows = marks.arrows[edge.occurrence];
+      const startPt = points[0];
+      const startArrowhead =
+        flowArrows !== undefined &&
+        startPt !== undefined &&
+        flowArrows.some((a) => Math.hypot(a.tip.x - startPt.x, a.tip.y - startPt.y) <= 1e-4);
+      checkedRoutes.push({
+        id: String(edge.occurrence),
+        source: String(edge.source.entity),
+        target: String(edge.target.entity),
+        points,
+        ...(edge.source.port === undefined ? {} : { sourcePort: String(edge.source.port) }),
+        ...(edge.target.port === undefined ? {} : { targetPort: String(edge.target.port) }),
+        arrowhead,
+        ...(startArrowhead ? { startArrowhead: true } : {}),
+        passable,
+      });
+      if (options.conventions?.arrowDirection === true) {
+        const semanticRelation = document.relations[occurrence.relation];
+        const semSource = semanticRelation?.endpoints.find((ep) => ep.role === "source")?.target;
+        const semTarget = semanticRelation?.endpoints.find((ep) => ep.role === "target")?.target;
+        conventionEdges.push({
+          id: String(edge.occurrence),
+          relationId: String(occurrence.relation),
+          sourceEntity: String(edge.source.entity),
+          targetEntity: String(edge.target.entity),
+          sourceOccurrence: String(sourceRole.occurrence),
+          targetOccurrence: String(targetRole.occurrence),
+          ...(semSource === undefined ? {} : { semanticSourceEntity: String(semSource) }),
+          ...(semTarget === undefined ? {} : { semanticTargetEntity: String(semTarget) }),
+          arrowhead,
+        });
+      }
+    }
+    if (options.conventions !== undefined) {
+      const conventionZones: ZoneTagLintEntry[] = [];
+      if (options.conventions.zoneTagAcronyms === true) {
+        for (const id of [...rects.keys()].sort(byString)) {
+          const kind = kinds.get(id);
+          if (kind !== "container-expanded" && kind !== "container-collapsed") continue;
+          const occ = representativeOf(id);
+          const entry = presentation.entities[occ];
+          conventionZones.push({ id: String(occ), tag: entry?.text?.kicker });
+        }
+      }
+      warnings.push(
+        ...lintDiagramConventions({
+          options: options.conventions,
+          document,
+          edges: conventionEdges,
+          zones: conventionZones,
+        }),
+      );
+    }
+    const routeSpacingReport = routeSpacing > 0
+      ? checkRouteSpacing({
+          rects,
+          routes: checkedRoutes,
+          routeSpacing,
+          borderClearance,
+          channels,
+          barriers: auditBarriers,
+        })
+      : undefined;
+    if (routeSpacingReport !== undefined) {
+      for (const conflict of routeSpacingReport.conflicts) {
+        warnings.push({
+          severity: "info",
+          code: conflict.kind === "channel-capacity-exceeded" ? "channel-capacity-exceeded" : "route-spacing-conflict",
+          refs: conflict.routes,
+          message: conflict.message,
+          details: {
+            kind: conflict.kind,
+            actual: conflict.actual,
+            required: conflict.required,
+            ...(conflict.entity === undefined ? {} : { entity: conflict.entity }),
+            ...(conflict.channelId === undefined ? {} : { channelId: conflict.channelId }),
+          },
+        });
+      }
     }
 
     // Emit the view plus measurements.
@@ -2085,6 +2936,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         [...orientationRecord].sort(([left], [right]) => byString(left, right)),
       ) as Readonly<Record<string, LevelOrientation>>,
       channels,
+      ...(routeSpacingReport === undefined ? {} : { routeSpacing: routeSpacingReport }),
       labelBoxes: Object.fromEntries(
         [...labelBoxes]
           .sort(([left], [right]) => byString(left, right))
@@ -2134,6 +2986,50 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     previous = outcome;
     outcome = runPass({ frozen, widen, external });
   }
+  // When strict route spacing reports channel capacity overflow inside an
+  // auto-packed level (e.g. a folded child causes a column/row stack whose
+  // single fixed gutter has lower capacity than the edges crossing it), try
+  // flipping that level's orientation (`rows` <-> `columns`) and adopt it ONLY
+  // when it completely resolves all route-spacing conflicts without introducing
+  // obstructions.
+  if (
+    routeSpacing > 0 &&
+    filteredGraph.nodes.size <= 25 &&
+    outcome.result.status === "laid-out" &&
+    (outcome.result.routeSpacing?.conflictCount ?? 0) > 0
+  ) {
+    const candidateKeys = new Set<string>();
+    for (const conflict of outcome.result.routeSpacing!.conflicts) {
+      if (conflict.kind !== "channel-capacity-exceeded" || conflict.channelId === undefined) continue;
+      const key = conflict.channelId.split("|")[0];
+      if (key !== undefined && outcome.result.orientations?.[key] !== undefined) {
+        candidateKeys.add(key);
+      }
+    }
+    const metricOf = (pass: PassOutcome): readonly [number, number, number] => {
+      if (pass.result.status !== "laid-out") return [Infinity, Infinity, Infinity];
+      const obs = pass.result.warnings.filter((w) => w.code === "route-obstructed").length;
+      const cc = pass.result.routeSpacing?.conflictCount ?? 0;
+      return [obs, cc, pass.unplaced];
+    };
+
+    let bestMetric = metricOf(outcome);
+    const maxFlipCandidates = 2;
+    for (const key of [...candidateKeys].sort(byString).slice(0, maxFlipCandidates)) {
+      if (bestMetric[0] === 0 && bestMetric[1] === 0) break;
+      const currentOrient = outcome.result.status === "laid-out" ? outcome.result.orientations?.[key] : undefined;
+      if (currentOrient === undefined) continue;
+      const flipped: LevelOrientation = currentOrient === "rows" ? "columns" : "rows";
+      const overrides = new Map<string, LevelOrientation>([[key, flipped]]);
+      const candidate = runPass(undefined, overrides);
+      const candMetric = metricOf(candidate);
+      if (candMetric[0] === 0 && candMetric[1] === 0) {
+        outcome = candidate;
+        bestMetric = candMetric;
+      }
+    }
+  }
+
   if (outcome.result.status === "laid-out" && outcome.requested.size > 0) return { ...outcome.result,
     warnings: [...outcome.result.warnings, { code: "channel-unresolved", refs: [...outcome.requested.keys()],
       message: "Channel demands did not settle within the bounded routing pass" }] };
@@ -2220,6 +3116,13 @@ function buildMeasuredView(
   for (const occurrence of Object.values(projected.relationOccurrences).sort((left, right) =>
     byString(left.id, right.id),
   )) {
+    const style = relationPresentationFor(options.presentation?.relations, occurrence.id, occurrence.relation);
+    const styledOccurrence: RelationOccurrence = {
+      ...occurrence,
+      ...(occurrence.strokeStyle === undefined && style?.strokeStyle !== undefined ? { strokeStyle: style.strokeStyle } : {}),
+      ...(occurrence.arrowhead === undefined && style?.arrowhead !== undefined ? { arrowhead: style.arrowhead } : {}),
+      ...(occurrence.emphasis === undefined && style?.emphasis !== undefined ? { emphasis: style.emphasis } : {}),
+    };
     const occurrenceId = occurrence.id as unknown as RelationRef;
     const pair = docks.get(occurrenceId);
     const route = routes.get(occurrenceId);
@@ -2230,10 +3133,10 @@ function buildMeasuredView(
           pair.target.port === undefined ? route.length : route.length - 1,
         )
         .map((point) => ({ x: clean(point.x), y: clean(point.y) }));
-      relationOccurrences[occurrence.id] = { ...occurrence, waypoints };
+      relationOccurrences[occurrence.id] = { ...styledOccurrence, waypoints };
     } else {
-      const { waypoints: _oldRoute, ...retained } = occurrence;
-      relationOccurrences[occurrence.id] = document.relations[occurrence.relation]?.type === "flow-step" ? retained : { ...occurrence };
+      const { waypoints: _oldRoute, ...retained } = styledOccurrence;
+      relationOccurrences[occurrence.id] = document.relations[occurrence.relation]?.type === "flow-step" ? retained : { ...styledOccurrence };
     }
   }
   // Ports keep their projected identities: every drawn end landing on a

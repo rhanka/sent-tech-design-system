@@ -8,8 +8,8 @@ const { mkdir, writeFile, mkdtemp, rm } = await import('node:fs/promises');
 const { tmpdir } = await import('node:os');
 const { join } = await import('node:path');
 const { buildHarness, root } = await import('./build.mjs');
-const { cases } = await import('./scenes.js');
-const { segmentInterval, exposedSegments, centredBodyFindings, compactCardFindings, connectorFindings } = await import('./geometry.mjs');
+const { cases, expectedLegendStyles } = await import('./scenes.js');
+const { segmentInterval, exposedSegments, centredBodyFindings, compactCardFindings, connectorFindings, roundedElbowFindings, linkStrokeWidthFindings, legendFindings } = await import('./geometry.mjs');
 const { preview } = await import('vite');
 const { default: puppeteer } = await import('puppeteer-core');
 const assert = (await import('node:assert/strict')).default;
@@ -62,16 +62,51 @@ function measure() {
       left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height,
       ...(carrier === undefined ? {} : { carrier }) });
   }
+  const parsePathPoints = d => {
+    const tokens = (d ?? '').match(/[MLQ]|[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?/gi) ?? [];
+    const pts = [];
+    let i = 0, cmd = '', curr;
+    while (i < tokens.length) {
+      const tok = tokens[i];
+      if (/^[MLQ]$/i.test(tok)) { cmd = tok.toUpperCase(); i += 1; continue; }
+      if (cmd === 'M' || cmd === 'L') {
+        curr = { x: Number(tokens[i]), y: Number(tokens[i + 1]) }; i += 2;
+        pts.push(curr);
+        if (cmd === 'M') cmd = 'L';
+      } else if (cmd === 'Q') {
+        const cx = Number(tokens[i]), cy = Number(tokens[i + 1]);
+        const ex = Number(tokens[i + 2]), ey = Number(tokens[i + 3]); i += 4;
+        if (curr) pts.push({ x: 0.25 * curr.x + 0.5 * cx + 0.25 * ex, y: 0.25 * curr.y + 0.5 * cy + 0.25 * ey });
+        curr = { x: ex, y: ey };
+        pts.push(curr);
+      } else break;
+    }
+    return pts;
+  };
   const paths = [...figure.querySelectorAll('[data-scene-edge]')].map(element => {
     const style = getComputedStyle(element);
     const ctm = element.getScreenCTM();
     const strokeScale = style.vectorEffect === 'non-scaling-stroke' ? 1 : Math.hypot(ctm.a, ctm.b);
-    const stroke = parseFloat(style.strokeWidth) * strokeScale / 2;
-    const points = Array.from(element.points, point => {
+    const strokeWidthCss = parseFloat(style.strokeWidth);
+    const stroke = strokeWidthCss * strokeScale / 2;
+    const d = element.tagName.toLowerCase() === 'path' ? (element.getAttribute('d') ?? null) : null;
+    const raw = d !== null
+      ? parsePathPoints(d)
+      : Array.from(element.points ?? [], point => ({ x: point.x, y: point.y }));
+    const points = raw.map(point => {
       const p = new DOMPoint(point.x, point.y).matrixTransform(ctm);
       return { x: p.x, y: p.y };
     });
-    return { id: element.dataset.sceneEdge, stroke, points };
+    return {
+      id: element.dataset.sceneEdge,
+      d,
+      stroke,
+      strokeWidthCss,
+      emphasis: element.dataset.edgeEmphasis ?? 'default',
+      flow: Boolean(element.dataset.flowStep || element.dataset.flowBundle),
+      erd: false,
+      points,
+    };
   });
   // Only a surface painted AFTER the connector layer hides a connector: no
   // layer of the scene sets a z-index, so document order is paint order.
@@ -91,7 +126,7 @@ function measure() {
     const a = new DOMPoint(x, y).matrixTransform(groupMatrix), b = new DOMPoint(x + width, y + height).matrixTransform(groupMatrix);
     return { left: Math.min(a.x, b.x), top: Math.min(a.y, b.y), right: Math.max(a.x, b.x), bottom: Math.max(a.y, b.y) };
   });
-  const surfaces = [...world.querySelectorAll('.st-diagramCard,.st-diagramZone,.st-diagramSceneFigure-flowBadge')].filter(above).flatMap(element => {
+  const surfaces = [...world.querySelectorAll('.st-diagramCard,.st-diagramZone,.st-diagramSceneFigure-flowBadge,.st-diagramSceneFigure-legend')].filter(above).flatMap(element => {
     const style = getComputedStyle(element);
     if (!/^rgb\([^/]+\)$/.test(style.backgroundColor) || style.opacity !== '1') return [];
     const r = box(element);
@@ -142,6 +177,16 @@ function measure() {
       }];
     }),
     connectorLabels: [...figure.querySelectorAll('[data-scene-label]')].map(element => element.dataset.sceneLabel),
+    legend: (() => {
+      const el = figure.querySelector('[data-scene-legend]');
+      if (!el) return null;
+      return {
+        id: 'legend',
+        ...box(el),
+        anchor: el.dataset.legendAnchor ?? null,
+        styles: [...el.querySelectorAll('[data-legend-style]')].map(row => row.dataset.legendStyle),
+      };
+    })(),
     relations: window.__relations ?? null,
     labels, paths, occluders };
 }
@@ -203,6 +248,7 @@ function parityGeometry(state) {
     viewport: { width: state.viewport.width, height: state.viewport.height },
     origin: { x: state.world.left - state.viewport.left, y: state.world.top - state.viewport.top },
     nodes: state.nodes.map(bounds), labels: state.labels.map(bounds),
+    legend: state.legend === null ? null : { ...bounds(state.legend), anchor: state.legend.anchor, styles: state.legend.styles },
     edges: state.paths.map(path => ({ id: path.id, stroke: path.stroke / state.scale,
       points: path.points.map(point => ({ x: (point.x - state.world.left) / state.scale,
         y: (point.y - state.world.top) / state.scale })) })) };
@@ -242,7 +288,7 @@ function check(state, scene) {
   if (overflow[0]) assert.ok(state.scrollbars[1] > 0, 'horizontal scrolling must exercise a visible classic scrollbar');
   const reachableRight = state.viewport.right + (state.overflow[0] === 'auto' ? state.scroll[0] - state.scroll[1] : 0);
   const reachableBottom = state.viewport.bottom + (state.overflow[1] === 'auto' ? state.scroll[2] - state.scroll[3] : 0);
-  const drawing = [...state.nodes, ...state.labels, ...state.paths.flatMap(path => path.points.map(point => ({
+  const drawing = [...state.nodes, ...state.labels, ...(state.legend === null ? [] : [state.legend]), ...state.paths.flatMap(path => path.points.map(point => ({
     id: path.id, left: point.x - path.stroke, right: point.x + path.stroke,
     top: point.y - path.stroke, bottom: point.y + path.stroke,
   })))];
@@ -274,6 +320,13 @@ function check(state, scene) {
   // joins: a label never floats between two cards without its line.
   assert.deepEqual(connectorFindings({ paths: state.paths, labels: state.connectorLabels, nodes: state.nodes,
     occluders: state.occluders, relations: state.relations ?? undefined, tolerance: 1 }), [], 'connectors');
+  if (scene.startsWith('r7-')) {
+    assert.deepEqual(roundedElbowFindings({ paths: state.paths, maxRadius: 12 }), [], 'r7 rounded elbow radius cap');
+    assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths, defaultWidth: 2.5, emphasisWidth: 3.5 }), [], 'r7 link stroke widths');
+    const expectedStyles = expectedLegendStyles(scene);
+    assert.deepEqual(legendFindings({ legend: state.legend, nodes: state.nodes, expectedAnchor: 'right',
+      ...(expectedStyles === null ? {} : { expectedStyles }) }), [], 'r7 link legend order and anchor');
+  }
   for (const label of state.labels) {
     assert.ok(label.left >= state.frame.left - epsilon && label.top >= state.frame.top - epsilon
       && label.right <= state.frame.left + state.scroll[0] + epsilon
@@ -343,6 +396,29 @@ try {
           else {
             assert.ok(parity.has(key), `Svelte baseline must exist for ${key}`);
             equalGeometry(current, parity.get(key), `Svelte/Vue ${key}`);
+          }
+          if (scene === 'r7-connectors' || scene === 'r7-nested-styles') {
+            const toggle = await page.$('button[aria-expanded="true"]');
+            assert.ok(toggle, `${name} must expose an expanded zone fold toggle`);
+            await toggle.click();
+            await settle(page);
+            const folded = await page.evaluate(measure);
+            check(folded, `${scene}--folded`);
+            const expand = await page.$('button[aria-expanded="false"]');
+            assert.ok(expand, `${name} folded zone toggle must remain interactive`);
+            await expand.click();
+            await settle(page);
+            const unfolded = await page.evaluate(measure);
+            // REQ-R7-18 / REQ-R7-30: verify automatic refit on unfold BEFORE any Ajuster click.
+            check(unfolded, scene);
+            equalGeometry(parityGeometry(unfolded), current, `${name} automatic unfold refit`);
+            const refit = await page.$('button::-p-text(Ajuster)');
+            assert.ok(refit, 'Ajuster button must exist after unfold');
+            await refit.click();
+            await settle(page);
+            const restored = await page.evaluate(measure);
+            assert.deepEqual(restored.camera, unfolded.camera, `${name} unfold camera must equal state after Ajuster`);
+            equalGeometry(restored, unfolded, `${name} unfold Ajuster idempotence`);
           }
           completed++;
           console.log(`PASS ${name}`);

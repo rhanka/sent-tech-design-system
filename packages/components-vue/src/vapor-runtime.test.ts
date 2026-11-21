@@ -9,7 +9,7 @@ import { parseFullMarkdown } from '@sentropic/design-system-rich-text';
 import type { RichTextEditor as CoreEditor } from '@sentropic/design-system-rich-text/editor';
 import { DiagramIcon, DIAGRAM_GLYPH_NAMES } from '../dist/vapor/diagram-icons/index.js';
 import { BpmnCanvas } from '../dist/vapor/bpmn/index.js';
-import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '../../diagram-canvas/tests/scene-host-fixtures.js';
+import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, DIAGRAM_PRESENTATION_V2_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '../../diagram-canvas/tests/scene-host-fixtures.js';
 
 import { flowFixture, flowMeasure } from '../../diagram-canvas/test-support/flowFixture.js';
 
@@ -186,4 +186,77 @@ it('should preserve numbered flow navigation through the published Vapor scene e
   next.click(); await nextTick();
   expect(onStepChange).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ relation: 'relation:z' }));
   scene.vm.setZoom(1); expect(scene.vm.getCamera().zoom).toBeGreaterThan(0);
+});
+
+it('should render DE-2 connectors, right-anchored link legend, and live fold/unfold updates in native Vapor', async () => {
+  vi.stubGlobal('matchMedia', () => ({ matches: true }));
+  const document = {
+    documentId: 'document:vapor-de2-connectors',
+    schemaVersion: CURRENT_SCHEMA_VERSION,
+    revision: 1,
+    profileRefs: ['generic@2'],
+    typeDefinitions: {},
+    entities: {
+      'entity:zone': { id: 'entity:zone', profile: 'generic@2', type: 'container', attributes: { name: { kind: 'text', value: 'Core' } } },
+      'entity:a': { id: 'entity:a', profile: 'generic@2', type: 'node', attributes: { name: { kind: 'text', value: 'Alpha' } } },
+      'entity:b': { id: 'entity:b', profile: 'generic@2', type: 'node', attributes: { name: { kind: 'text', value: 'Beta' } } },
+      'entity:ext': { id: 'entity:ext', profile: 'generic@2', type: 'node', attributes: { name: { kind: 'text', value: 'External' } } },
+    },
+    relations: {
+      'relation:c.a': { id: 'relation:c.a', profile: 'generic@2', type: 'contains', endpoints: [{ role: 'parent', target: 'entity:zone' }, { role: 'child', target: 'entity:a' }], attributes: {} },
+      'relation:c.b': { id: 'relation:c.b', profile: 'generic@2', type: 'contains', endpoints: [{ role: 'parent', target: 'entity:zone' }, { role: 'child', target: 'entity:b' }], attributes: {} },
+      'relation:r-emph': { id: 'relation:r-emph', profile: 'generic@2', type: 'link', endpoints: [{ role: 'source', target: 'entity:a' }, { role: 'target', target: 'entity:b' }], attributes: { label: { kind: 'text', value: 'critical' } } },
+      'relation:r-dashed': { id: 'relation:r-dashed', profile: 'generic@2', type: 'link', endpoints: [{ role: 'source', target: 'entity:a' }, { role: 'target', target: 'entity:ext' }], attributes: { label: { kind: 'text', value: 'proposed' } } },
+      'relation:r-dotted': { id: 'relation:r-dotted', profile: 'generic@2', type: 'link', endpoints: [{ role: 'source', target: 'entity:b' }, { role: 'target', target: 'entity:ext' }], attributes: { label: { kind: 'text', value: 'audit' } } },
+    },
+    ports: {},
+    resources: {},
+    extensions: [],
+  };
+  const presentation = {
+    contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+    entities: {
+      'occurrence:e.zone': { form: 'container', anatomy: 'v2', text: { title: 'Core', subtitle: 'Zone' } },
+      'occurrence:e.a': { form: 'card', anatomy: 'v2', text: { title: 'Alpha', body: 'A' } },
+      'occurrence:e.b': { form: 'card', anatomy: 'v2', text: { title: 'Beta', body: 'B' } },
+      'occurrence:e.ext': { form: 'card', anatomy: 'v2', text: { title: 'External', body: 'Peer' } },
+    },
+    relations: {
+      'relation:r-emph': { strokeStyle: 'solid', arrowhead: 'none', emphasis: 'emphasis' },
+      'relation:r-dashed': { strokeStyle: 'dashed', arrowhead: 'arrow' },
+      'relation:r-dotted': { strokeStyle: 'dotted', arrowhead: 'arrow' },
+    },
+    legends: {},
+    categoryTokens: [],
+  };
+  const scene = mount(DiagramSceneFigure, {
+    document,
+    presentation,
+    registry: m3ProfileRegistry,
+    bindings: shippedExecutorBindings,
+    measureLines: flowMeasure,
+  });
+  await nextTick();
+  expect(scene.root.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(0);
+  expect(scene.root.querySelectorAll('path[data-scene-edge]')).toHaveLength(3);
+  expect(scene.root.querySelector('[data-scene-edge="occurrence:r.r-emph"]')?.getAttribute('data-edge-emphasis')).toBe('emphasis');
+  expect(scene.root.querySelector('[data-scene-edge="occurrence:r.r-emph"]')?.getAttribute('marker-end')).toBeNull();
+  expect(scene.root.querySelector('[data-scene-edge="occurrence:r.r-dashed"]')?.getAttribute('stroke-dasharray')).toBe('8 6');
+  expect(scene.root.querySelector('[data-scene-edge="occurrence:r.r-dotted"]')?.getAttribute('stroke-dasharray')).toBe('2 5');
+
+  const legendStyles = () => [...scene.root.querySelectorAll('[data-scene-legend] [data-legend-style]')].map(el => el.getAttribute('data-legend-style'));
+  expect(scene.root.querySelector('[data-scene-legend]')?.getAttribute('data-legend-anchor')).toBe('right');
+  expect(legendStyles()).toEqual(['solid:none:emphasis', 'dashed:arrow:default', 'dotted:arrow:default']);
+
+  // Fold the zone: internal emphasis edge hides, dashed + dotted lifted edges stay separate and legend updates.
+  scene.root.querySelector<HTMLButtonElement>('button[aria-expanded="true"]')!.click();
+  await nextTick();
+  expect(scene.root.querySelectorAll('path[data-scene-edge]')).toHaveLength(2);
+  expect(legendStyles()).toEqual(['dashed:arrow:default', 'dotted:arrow:default']);
+
+  // Unfold restores all 3 edges and the 3-style legend.
+  scene.root.querySelector<HTMLButtonElement>('button[aria-expanded="false"]')!.click();
+  await nextTick();
+  expect(scene.root.querySelectorAll('path[data-scene-edge]')).toHaveLength(3);
+  expect(legendStyles()).toEqual(['solid:none:emphasis', 'dashed:arrow:default', 'dotted:arrow:default']);
 });

@@ -54,8 +54,10 @@ export function shouldRefitRenderedBounds(previous: Rect | undefined, next: Rect
   return delta > RENDERED_BOUNDS_REFIT_TOLERANCE;
 }
 
-/** Token default of a resting connector stroke, CSS px. */
-const RESTING_EDGE_STROKE_WIDTH = 1.5;
+/** Token default of a resting numbered-flow stroke, CSS px (DC-2c). */
+const RESTING_FLOW_STROKE_WIDTH = 1.5;
+/** Token default of a resting connector stroke, CSS px (DE-2 `linkStrokeWidth`). */
+const RESTING_EDGE_STROKE_WIDTH = 2.5;
 
 /** Whether a computed colour paints nothing: `transparent` or a zero alpha. */
 function isTransparent(color: string): boolean {
@@ -69,11 +71,11 @@ function isTransparent(color: string): boolean {
 
 /**
  * What the scene hosts fade during a fold transition: the connector layer,
- * the edge labels and the entering nodes. A zero opacity on one of these is
- * a frame of that fade, not a hidden element: it is painted once the
- * transition settles, and the fit has to frame it.
+ * the edge labels, the entering nodes and the automatic link legend. A zero
+ * opacity on one of these is a frame of that fade, not a hidden element: it
+ * is painted once the transition settles, and the fit has to frame it.
  */
-const TRANSITION_FADED = '.st-diagramSceneFigure-edges,.st-diagramSceneFigure-edgeLabel,.st-diagramSceneFigure-node';
+const TRANSITION_FADED = '.st-diagramSceneFigure-edges,.st-diagramSceneFigure-edgeLabel,.st-diagramSceneFigure-node,.st-diagramSceneFigure-legend';
 
 /** Whether an element removes itself and its subtree from the paint for
  * good: not rendered, fully transparent at rest, or clipped to nothing (the
@@ -102,9 +104,18 @@ function restingStrokeWidth(element: Element, style: CSSStyleDeclaration): numbe
   const width = parseFloat(style.strokeWidth) || 0;
   const state = element.getAttribute('data-flow-state');
   if (state !== 'primary' && state !== 'related') return width;
-  const token = element.hasAttribute('data-flow-step') ? '--st-component-diagramScene-flowStrokeWidth' : '--st-component-diagramZone-borderWidth';
+  const isFlow = element.hasAttribute('data-flow-step');
+  const isR7 = element.getAttribute('data-connector-mode') === 'r7';
+  const token = isFlow
+    ? '--st-component-diagramScene-flowStrokeWidth'
+    : element.getAttribute('data-edge-emphasis') === 'emphasis'
+      ? '--st-component-diagramScene-linkEmphasisStrokeWidth'
+      : isR7
+        ? '--st-component-diagramScene-linkStrokeWidth'
+        : '--st-component-diagramZone-borderWidth';
   const resting = parseFloat(style.getPropertyValue(token));
-  return Number.isFinite(resting) ? resting : Math.min(width, RESTING_EDGE_STROKE_WIDTH);
+  const fallbackWidth = isFlow || !isR7 ? RESTING_FLOW_STROKE_WIDTH : RESTING_EDGE_STROKE_WIDTH;
+  return Number.isFinite(resting) ? resting : Math.min(width, fallbackWidth);
 }
 
 /**
@@ -169,7 +180,7 @@ export function measureRenderedBounds(frame: HTMLElement, fallback: Rect | undef
   // computed value of the painting element itself counts.
   const paints = (element: Element) => !element.closest('defs,[hidden],[data-flow-hit],[data-flow-node]')
     && styleOf(element).visibility !== 'hidden' && styleOf(element).visibility !== 'collapse' && inPaintedSubtree(element);
-  for (const element of world.querySelectorAll('[data-scene-occurrence],.st-diagramCard,.st-diagramZone,[data-scene-label],[data-diagram-icon],.st-badge,[data-badge],.st-diagramCard-rule,.st-diagramZone-rule,.st-diagramZone-footerRule,button,svg polyline,svg path,svg line,svg rect,svg circle,svg text')) {
+  for (const element of world.querySelectorAll('[data-scene-occurrence],.st-diagramCard,.st-diagramZone,[data-scene-label],[data-scene-legend],[data-diagram-icon],.st-badge,[data-badge],.st-diagramCard-rule,.st-diagramZone-rule,.st-diagramZone-footerRule,button,svg polyline,svg path,svg line,svg rect,svg circle,svg text')) {
     if (!paints(element)) continue;
     const style = styleOf(element);
     let pad = 0;

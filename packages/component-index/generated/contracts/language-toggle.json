@@ -1,8 +1,8 @@
 {
   "componentId": "language-toggle",
   "contractSource": "derived",
-  "digest": "sha256:c02d9ff65913cff33d2428345dc401463f6ca00e92fca55d295e2a53f7933dc4",
-  "entryDigest": "sha256:5f6b4dd8e1f39761af216125f8ad7c5abecc0efa400b197e4b53aa4566146135",
+  "digest": "sha256:9c91e3e56adfea295c116e01726d1992e4d824faec699e4c3c55b30a32b90541",
+  "entryDigest": "sha256:cd53217e355c7fa1f9e642ae48d0aebce9658c2af344b48167f138a34a8a6924",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-svelte/dist/LanguageToggle.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LanguageToggleProps",
-        "version": "0.43.1"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -294,7 +294,7 @@
         "declarationPath": "packages/components-vue/dist/LanguageToggle.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LanguageToggleProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "complete",
       "unresolved": [],

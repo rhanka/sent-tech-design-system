@@ -17,9 +17,24 @@ export function channelMetrics(metrics: Partial<LayoutMetrics>, horizontal: bool
     gapMax: (horizontal ? metrics.gapInlineMax : metrics.gapBlockMax) ?? metrics.gapMax ?? spacing.gapMax,
   };
 }
+/**
+ * Flow-sized gap for leaf-card channels (`!zone`). Sibling-zone gutters
+ * (`zone === true`, REQ-R7-14) bypass this helper and stay fixed at `zoneGutter`.
+ */
 export function channelGap(n: number, labelled: boolean, metrics: ChannelMetrics): number {
   return n === 0 ? metrics.gapMin : Math.min(metrics.gapMax,
     Math.max(metrics.gapMin, metrics.gapBase + n * metrics.trackSpacing + (labelled ? metrics.labelBand : 0)));
+}
+/** Maximum number of parallel longitudinal tracks a gutter of width `gap` holds at `routeSpacing` with `borderClearance` on both sides. */
+export function channelCapacity(
+  gap: number,
+  routeSpacing: number = spacing.routeSpacing,
+  borderClearance: number = spacing.routeBorderClearance,
+): number {
+  const usable = gap - 2 * borderClearance;
+  if (usable < 0) return 0;
+  if (!(routeSpacing > 0)) return 1;
+  return Math.floor(usable / routeSpacing) + 1;
 }
 export interface LayoutChannel {
   readonly id: string;
@@ -31,4 +46,8 @@ export interface LayoutChannel {
   readonly labelled: boolean;
   readonly gap: number;
   readonly expected: number;
+  /** Parallel longitudinal track capacity of this gutter at current spacing tokens (DE-2). */
+  readonly capacity?: number;
+  /** True when this gutter separates sibling zones (governed by `zoneGutter`, DE-2 ask 3). */
+  readonly zone?: boolean;
 }

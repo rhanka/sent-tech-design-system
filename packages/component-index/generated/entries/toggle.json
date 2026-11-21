@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Toggle.svelte",
-      "version": "0.43.1"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Toggle.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact toggle (Switch variant).",
     "fr": "Toggle compact (variante du Switch)."
   },
-  "digest": "sha256:c2c1ba296d97c055cf49e9540039a90609e834dd5dd250e1c1e0f952eb35509d",
+  "digest": "sha256:86e9f623b8e8075ea643c59a976fa5e9cc1c667d85e1b8a4827475648bc11899",
   "displayName": "Toggle",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { borderDistance, centredBodyFindings, compactCardFindings, connectorFindings, exposedSegments, segmentInterval } from '../tools/diagram-first-paint/geometry.mjs';
+import { borderDistance, centredBodyFindings, compactCardFindings, connectorFindings, exposedSegments, legendFindings, linkStrokeWidthFindings, roundedElbowFindings, segmentInterval } from '../tools/diagram-first-paint/geometry.mjs';
+import { cases, expectedLegendStyles } from '../tools/diagram-first-paint/scenes.js';
 
 test('should clip a crossing connector against the stroke-inset badge disk', () => {
   const a = { x: -20, y: 0 }, b = { x: 20, y: 0 };
@@ -124,4 +125,67 @@ test('should verify compact 352x154 card centering within 1/64 px and slot conta
     labels[1],
   ];
   assert.ok(compactCardFindings({ cardSlots: [slot], labels: leftTitle, scale: 1 }).some(f => f.includes('title ink off-centre')));
+});
+
+test('should include 3 r7 reference scenes and expected legend styles for unfolded and folded states', () => {
+  assert.ok(cases.includes('r7-connectors'));
+  assert.ok(cases.includes('r7-connectors-folded'));
+  assert.ok(cases.includes('r7-nested-styles'));
+  assert.ok(cases.length >= 13);
+  assert.deepEqual(expectedLegendStyles('r7-connectors'), ['solid:arrow:default', 'solid:none:emphasis', 'dashed:arrow:default', 'dotted:arrow:default']);
+  assert.deepEqual(expectedLegendStyles('r7-connectors--folded'), ['dashed:arrow:default', 'dotted:arrow:default']);
+  assert.deepEqual(expectedLegendStyles('r7-nested-styles--folded'), []);
+});
+
+test('should verify rounded elbow radius cap (<= 12 and <= half shorter leg)', () => {
+  assert.deepEqual(roundedElbowFindings({
+    paths: [
+      { id: 'normal', d: 'M0 0 L88 0 Q100 0 100 12 L100 100' },
+      { id: 'short-leg', d: 'M0 0 L92 0 Q100 0 100 8 Q100 16 108 16 L200 16' },
+      { id: 'straight', d: 'M0 0 L100 0' },
+    ],
+  }), []);
+  const oversized = roundedElbowFindings({
+    paths: [{ id: 'bad', d: 'M0 0 L80 0 Q100 0 100 20 L100 100' }],
+  });
+  assert.ok(oversized.some(f => f.includes('> 12')));
+  const pastHalfLeg = roundedElbowFindings({
+    paths: [{ id: 'short', d: 'M0 0 L90 0 Q100 0 100 10 L100 14' }],
+  });
+  assert.ok(pastHalfLeg.some(f => f.includes('half-leg cap')));
+});
+
+test('should verify resting (2.5px) and emphasis (3.5px) link stroke widths', () => {
+  assert.deepEqual(linkStrokeWidthFindings({
+    paths: [
+      { id: 'rest', strokeWidthCss: 2.5, emphasis: 'default', flow: false, erd: false },
+      { id: 'emph', strokeWidthCss: 3.5, emphasis: 'emphasis', flow: false, erd: false },
+      { id: 'flow', strokeWidthCss: 1.5, emphasis: 'default', flow: true, erd: false },
+    ],
+  }), []);
+  const bad = linkStrokeWidthFindings({
+    paths: [{ id: 'thin', strokeWidthCss: 1.5, emphasis: 'default', flow: false, erd: false }],
+  });
+  assert.deepEqual(bad, ['connector thin stroke width 1.5 != 2.5']);
+});
+
+test('should verify legend canonical order, right anchor, non-overlap, and omission after fold', () => {
+  const nodes = [{ id: 'n1', left: 0, top: 0, right: 400, bottom: 200 }];
+  const legend = {
+    id: 'legend',
+    left: 448, top: 0, right: 690, bottom: 160,
+    anchor: 'right',
+    styles: ['solid:arrow:default', 'solid:none:emphasis', 'dashed:arrow:default', 'dotted:arrow:default'],
+  };
+  assert.deepEqual(legendFindings({ legend, nodes, expectedStyles: legend.styles }), []);
+  assert.deepEqual(legendFindings({ legend: null, nodes, expectedStyles: [] }), []);
+  assert.ok(legendFindings({ legend, nodes, expectedStyles: [] }).some(f => f.includes('omitted')));
+  assert.ok(legendFindings({
+    legend: { ...legend, styles: ['dotted:arrow:default', 'solid:arrow:default'] },
+    nodes,
+  }).some(f => f.includes('canonical order')));
+  assert.ok(legendFindings({
+    legend: { ...legend, left: 300, right: 540 },
+    nodes,
+  }).some(f => f.includes('overlaps')));
 });

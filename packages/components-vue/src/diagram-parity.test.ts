@@ -4,6 +4,7 @@ import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svel
 import type { DiagramSceneFigureProps } from './DiagramSceneFigure.types.js';
 import type { SceneDocument, ScenePresentation, SceneOccurrenceRef } from './diagramSceneModel.js';
 import { CURRENT_SCHEMA_VERSION, DEFAULT_PRESENTATION, DIAGRAM_PRESENTATION_CONTRACT_PIN, createView, entityRef, m3ProfileRegistry, occurrenceRef, shippedExecutorBindings, viewRef } from '../../diagram-canvas/tests/scene-host-fixtures.js';
+import { DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } from '@sentropic/diagram-core';
 import { hCondInput } from '../../diagram-canvas/tests/layout/dc2a/h-cond.js';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -792,7 +793,7 @@ describe('scene host DOM and camera/fold behavior', () => {
       occurrence('ext'), occurrence('innerA'), occurrence('outerA'), occurrence('outerB'),
     ]);
     expect(rectOf(vue.element, 'a1')).toMatchObject({ width: 352, height: 154 });
-    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(6);
+    expect(vue.element.querySelectorAll('path[data-scene-edge][data-connector-mode="r7"]')).toHaveLength(6);
     expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('innerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
     const outerHeader = vue.element.querySelector<HTMLElement>(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone-header`)!;
     expect(outerHeader.style.left).toBe('calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))');
@@ -820,7 +821,7 @@ describe('scene host DOM and camera/fold behavior', () => {
       initialOuterB.x !== foldedOuterB.x || initialOuterB.y !== foldedOuterB.y ||
       initialExt.x !== foldedExt.x || initialExt.y !== foldedExt.y,
     ).toBe(true);
-    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(2);
+    expect(vue.element.querySelectorAll('path[data-scene-edge][data-connector-mode="r7"]')).toHaveLength(2);
     expect(vue.element.querySelectorAll('[data-bundle-relation]')).toHaveLength(3);
     expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
 
@@ -833,13 +834,89 @@ describe('scene host DOM and camera/fold behavior', () => {
       occurrence('a1'), occurrence('a2'), occurrence('aSibling'), occurrence('b1'),
       occurrence('ext'), occurrence('innerA'), occurrence('outerA'), occurrence('outerB'),
     ]);
-    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(6);
+    expect(vue.element.querySelectorAll('path[data-scene-edge][data-connector-mode="r7"]')).toHaveLength(6);
     expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('innerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
     for (const key of ['x', 'y', 'width', 'height'] as const) {
       expect(Math.abs(rectOf(vue.element, 'outerB')[key] - initialOuterB[key])).toBeLessThanOrEqual(1 / 64);
       expect(Math.abs(rectOf(vue.element, 'ext')[key] - initialExt[key])).toBeLessThanOrEqual(1 / 64);
     }
     expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+
+    vue.unmount(); svelte.unmount();
+    vi.unstubAllGlobals();
+  });
+  it('should match dash patterns, arrowheads and emphasis identically on Svelte and Vue across fold and unfold (DE-2)', async () => {
+    frame();
+    const base = sceneOf(
+      'de2-connector-parity',
+      [
+        { id: 'zone', container: true },
+        { id: 'a', parent: 'zone' },
+        { id: 'b', parent: 'zone' },
+        { id: 'ext' },
+      ],
+      [
+        { from: 'a', to: 'b', label: 'dotted-open' },
+        { from: 'b', to: 'ext', label: 'emphasis-none' },
+        { from: 'a', to: 'ext', label: 'proposed-emphasis' },
+      ],
+    );
+    const presentation = {
+      ...base.presentation,
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+      relations: {
+        'relation:link.a.b': { strokeStyle: 'dotted', arrowhead: 'arrow' },
+        'relation:link.b.ext': { arrowhead: 'none', emphasis: 'emphasis' },
+        'relation:link.a.ext': { strokeStyle: 'dashed', arrowhead: 'arrow', emphasis: 'emphasis' },
+      },
+    } as unknown as ScenePresentation;
+    const props = { ...host, ...base, presentation };
+    const vue = mount(SceneFigure, { props, attachTo: document.body });
+    const svelte = render(SvelteScene, { props });
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+
+    for (const root of [vue.element, svelte.container]) {
+      const ab = root.querySelector('path[data-scene-edge="occurrence:r.link.a.b"]')!;
+      const be = root.querySelector('path[data-scene-edge="occurrence:r.link.b.ext"]')!;
+      const ae = root.querySelector('path[data-scene-edge="occurrence:r.link.a.ext"]')!;
+      expect(ab.getAttribute('stroke-dasharray')).toBe('2 5');
+      expect(ab.getAttribute('marker-end')).toMatch(/^url\(#diagram-arrow-[^)]+\)$/);
+      expect(be.getAttribute('stroke-dasharray')).toBeNull();
+      expect(be.getAttribute('marker-end')).toBeNull();
+      expect(be.getAttribute('data-edge-emphasis')).toBe('emphasis');
+      expect(ae.getAttribute('stroke-dasharray')).toBe('8 6');
+      expect(ae.getAttribute('marker-end')).toMatch(/-emphasis\)$/);
+      expect(ae.getAttribute('data-edge-emphasis')).toBe('emphasis');
+      const legend = root.querySelector('[data-scene-legend]');
+      expect(legend).not.toBeNull();
+      expect(legend!.getAttribute('data-legend-anchor')).toBe('right');
+      expect([...root.querySelectorAll('[data-legend-style]')].map((el) => el.getAttribute('data-legend-style'))).toEqual([
+        'solid:none:emphasis',
+        'dashed:arrow:emphasis',
+        'dotted:arrow:default',
+      ]);
+    }
+
+    await vue.find(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`).trigger('click');
+    svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`)!.click();
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    // Lifted cross-zone edges with distinct styles stay separate instead of bundling into one style (REQ-R7-05 / REQ-R7-11 / REQ-R7-12).
+    for (const root of [vue.element, svelte.container]) {
+      expect(root.querySelectorAll('path[data-scene-edge]')).toHaveLength(2);
+      expect([...root.querySelectorAll('[data-legend-style]')].map((el) => el.getAttribute('data-legend-style'))).toEqual([
+        'solid:none:emphasis',
+        'dashed:arrow:emphasis',
+      ]);
+    }
+
+    await vue.find(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`).trigger('click');
+    svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`)!.click();
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    expect(vue.element.querySelectorAll('[data-legend-style]')).toHaveLength(3);
+    expect(svelte.container.querySelectorAll('[data-legend-style]')).toHaveLength(3);
 
     vue.unmount(); svelte.unmount();
     vi.unstubAllGlobals();
@@ -870,6 +947,26 @@ describe('scene host DOM and camera/fold behavior', () => {
     }
     vi.unstubAllGlobals();
   });
+
+  it('should apply opt-in fitToWindow identically on Svelte and Vue across fold/unfold (DE-2 ask 9)', async () => {
+    frame();
+    const props = { ...host, ...WIDE, fitToWindow: true };
+    const vue = mount(SceneFigure, { props });
+    const svelte = render(SvelteScene, { props });
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    for (const root of [vue.element, svelte.container.firstElementChild!]) {
+      expect(root.classList.contains('st-diagramSceneFigure--fitToWindow')).toBe(true);
+      expect(root.getAttribute('data-fit-to-window')).toBe('true');
+      const viewport = root.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!;
+      expect(viewport.style.maxHeight).toBe('calc(100vh - 24px)');
+      expect(viewport.style.maxWidth).toBe('100%');
+      expect(viewport.style.marginInline).toBe('auto');
+    }
+    vue.unmount(); svelte.unmount();
+    vi.unstubAllGlobals();
+  });
+
   it('should pin v1 figure max size and zoom bounds (maxDisplayScale 0.62, minReadableScale 0.45, fit) to 0.41.5 / next.7 on Svelte and Vue', async () => {
     vi.stubGlobal('matchMedia', () => ({ matches: true }));
     vi.stubGlobal('innerHeight', 720);

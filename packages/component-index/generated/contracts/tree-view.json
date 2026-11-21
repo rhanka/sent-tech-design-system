@@ -1,8 +1,8 @@
 {
   "componentId": "tree-view",
   "contractSource": "derived",
-  "digest": "sha256:e9c8bd29e4cc7b2e507f69933488de2f2556055574298c6e6e4620449c1cd0c4",
-  "entryDigest": "sha256:c75245c8b3d84c4bf2034017a5732e422f5c05bc7abaf60eb7285d1d5cb36260",
+  "digest": "sha256:d8dee614dead7a8917dbacfca54928086d7e24f6c3be655e4f1f24e58e35a815",
+  "entryDigest": "sha256:2723864395d69d3a14f5c58a64b73df7c7652ab5fee89452829f6613c21afb8b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -308,7 +308,7 @@
         "declarationPath": "packages/components-svelte/dist/TreeView.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TreeViewProps",
-        "version": "0.43.1"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -473,7 +473,7 @@
         "declarationPath": "packages/components-vue/dist/TreeView.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TreeViewProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "partial",
       "unresolved": [],

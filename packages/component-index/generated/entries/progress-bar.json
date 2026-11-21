@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ProgressBar.svelte",
-      "version": "0.43.1"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ProgressBar.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Determinate or indeterminate progress bar.",
     "fr": "Barre de progression déterminée ou indéterminée."
   },
-  "digest": "sha256:e81ec71190d9f73cd138703bfeb823dc02c37be4720adeea73b141455d0d3077",
+  "digest": "sha256:a105a306a7d42b806ed90edbe8ed3fd8d2fc1400d4f93702a5b5839e4e90bc49",
   "displayName": "ProgressBar",
   "format": "component-entry/v1",
   "frameworks": [

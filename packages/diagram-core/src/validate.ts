@@ -72,6 +72,7 @@ import {
   type RelationRef,
 } from "./refs.js";
 import { createTypeResolver, type TypeResolver } from "./resolver.js";
+import { isArrowheadKind, isLinkEmphasis, isStrokeStyle } from "./connector-registry.js";
 import { isPresentationContractProfileId } from "./presentation.js";
 import { validateDiagramPresentation } from "./presentation-relations.js";
 import {
@@ -2330,6 +2331,69 @@ export function validateView(
         ...finiteNumbers([["x", waypoint.x], ["y", waypoint.y]], `${path}.waypoints[${index}]`),
       );
     }
+
+    if (view.presentation.diagram === undefined) {
+      const allowedKeys = new Set([
+        "id",
+        "relation",
+        "endpoints",
+        "waypoints",
+        "strokeStyle",
+        "arrowhead",
+        "emphasis",
+      ]);
+      const raw = occurrence as unknown as Record<string, unknown>;
+      for (const field of Object.keys(raw).sort()) {
+        if (!allowedKeys.has(field)) {
+          diagnostics.push(
+            diagnostic({
+              code: "occurrence-endpoint-mismatch",
+              severity: "error",
+              path: `${path}.${field}`,
+              message: `relation occurrence field ${field} is not part of the closed connector vocabulary`,
+              refs: [occurrence.id],
+              details: { check: "presentation-shape-invalid" },
+            }),
+          );
+        }
+      }
+      if (raw["strokeStyle"] !== undefined && !isStrokeStyle(raw["strokeStyle"])) {
+        diagnostics.push(
+          diagnostic({
+            code: "occurrence-endpoint-mismatch",
+            severity: "error",
+            path: `${path}.strokeStyle`,
+            message: `strokeStyle ${String(raw["strokeStyle"])} must be a closed dash-pattern word`,
+            refs: [occurrence.id],
+            details: { check: "presentation-shape-invalid" },
+          }),
+        );
+      }
+      if (raw["arrowhead"] !== undefined && !isArrowheadKind(raw["arrowhead"])) {
+        diagnostics.push(
+          diagnostic({
+            code: "occurrence-endpoint-mismatch",
+            severity: "error",
+            path: `${path}.arrowhead`,
+            message: `arrowhead ${String(raw["arrowhead"])} must be a closed arrowhead word`,
+            refs: [occurrence.id],
+            details: { check: "presentation-shape-invalid" },
+          }),
+        );
+      }
+      if (raw["emphasis"] !== undefined && !isLinkEmphasis(raw["emphasis"])) {
+        diagnostics.push(
+          diagnostic({
+            code: "occurrence-endpoint-mismatch",
+            severity: "error",
+            path: `${path}.emphasis`,
+            message: `emphasis ${String(raw["emphasis"])} must be a closed link-emphasis word`,
+            refs: [occurrence.id],
+            details: { check: "presentation-shape-invalid" },
+          }),
+        );
+      }
+    }
   }
 
   // Drawn representatives of projected endpoints: their container capability
@@ -2426,6 +2490,19 @@ export function validateView(
             code: "record-key-mismatch",
             path: `summaryLabels.${id}`,
             message: `record key ${id} is not the summary definition id ${definition.id}`,
+          }),
+        );
+      }
+      const rawStyle = (definition as unknown as Record<string, unknown>)["strokeStyle"];
+      if (rawStyle !== undefined && !isStrokeStyle(rawStyle)) {
+        diagnostics.push(
+          diagnostic({
+            code: "occurrence-endpoint-mismatch",
+            severity: "error",
+            path: `summaryLabels.${id}.strokeStyle`,
+            message: `strokeStyle ${String(rawStyle)} must be a closed dash-pattern word`,
+            refs: [id],
+            details: { check: "presentation-shape-invalid" },
           }),
         );
       }
