@@ -284,6 +284,10 @@ jobs:
         if: matrix.task == 'pack-smoke'
         run: node scripts/smoke-pack.mjs --workspaces="${{ matrix.workspaces }}"
 
+      - name: Qualify the published review consumer (DS-7)
+        if: matrix.task == 'pack-smoke' && contains(matrix.workspaces, '@sentropic/design-system-svelte')
+        run: node scripts/test-review-consumer.mjs
+
       # Three tests in scripts/verify-dataviz-docs-lot1.test.mjs read a BUILT
       # docs site. Nothing built one: the unsharded `licensing` job runs the
       # guards after a bare `npm ci`, and the shards above build package dists
