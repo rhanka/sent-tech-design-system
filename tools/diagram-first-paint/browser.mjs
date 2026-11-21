@@ -403,26 +403,22 @@ try {
             await toggle.click();
             await settle(page);
             const folded = await page.evaluate(measure);
-            assert.deepEqual(roundedElbowFindings({ paths: folded.paths, maxRadius: 12 }), [], `${name} folded rounded elbows`);
-            assert.deepEqual(linkStrokeWidthFindings({ paths: folded.paths, defaultWidth: 2.5, emphasisWidth: 3.5 }), [], `${name} folded link widths`);
-            assert.deepEqual(legendFindings({ legend: folded.legend, nodes: folded.nodes, expectedAnchor: 'right',
-              expectedStyles: expectedLegendStyles(`${scene}--folded`) }), [], `${name} folded link legend`);
-            assert.deepEqual(connectorFindings({ paths: folded.paths, labels: folded.connectorLabels, nodes: folded.nodes,
-              occluders: folded.occluders, tolerance: 1 }), [], `${name} folded connectors`);
+            check(folded, `${scene}--folded`);
             const expand = await page.$('button[aria-expanded="false"]');
             assert.ok(expand, `${name} folded zone toggle must remain interactive`);
             await expand.click();
             await settle(page);
             const unfolded = await page.evaluate(measure);
-            assert.deepEqual(legendFindings({ legend: unfolded.legend, nodes: unfolded.nodes, expectedAnchor: 'right',
-              expectedStyles: expectedLegendStyles(scene) }), [], `${name} unfolded link legend`);
+            // REQ-R7-18 / REQ-R7-30: verify automatic refit on unfold BEFORE any Ajuster click.
+            check(unfolded, scene);
+            equalGeometry(parityGeometry(unfolded), current, `${name} automatic unfold refit`);
             const refit = await page.$('button::-p-text(Ajuster)');
             assert.ok(refit, 'Ajuster button must exist after unfold');
             await refit.click();
             await settle(page);
             const restored = await page.evaluate(measure);
-            check(restored, scene);
-            equalGeometry(parityGeometry(restored), current, `${name} unfold restore`);
+            assert.deepEqual(restored.camera, unfolded.camera, `${name} unfold camera must equal state after Ajuster`);
+            equalGeometry(restored, unfolded, `${name} unfold Ajuster idempotence`);
           }
           completed++;
           console.log(`PASS ${name}`);
