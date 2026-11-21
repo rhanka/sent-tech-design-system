@@ -870,7 +870,8 @@ describe('scene host DOM and camera/fold behavior', () => {
     }
     vi.unstubAllGlobals();
   });
-  it('should pin v1 figure max size and zoom bounds (maxDisplayScale 0.62, minReadableScale 0.45, fit) to 0.41.5 / next.7 on Svelte and Vue', async () => {
+  // Décision du 21/11. « L'utilisateur a les boutons de zoom et autolayout. Par défaut quand on redimensionne on autolayout zoom intégral + plancher à 30 % ».
+  it('should pin v1 figure max size, cap and R7 zoom floor on Svelte and Vue', async () => {
     vi.stubGlobal('matchMedia', () => ({ matches: true }));
     vi.stubGlobal('innerHeight', 720);
     // Single v1 complete card and fallback-v1 card both cap at 0.62 (readout 100%, viewport height 126px).
@@ -934,7 +935,7 @@ describe('scene host DOM and camera/fold behavior', () => {
     expect(svelteDef.container.querySelector('.st-diagramCard')?.classList.contains('st-diagramCard--v2')).toBe(false);
     vueDef.unmount(); svelteDef.unmount();
 
-    // Wide v1 scene at phone width floors at 0.45 and caps at 0.62 identically on Svelte and Vue.
+    // Wide v1 scene at phone width floors at 0.30 and caps at 0.62 identically on Svelte and Vue.
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(390);
     vi.stubGlobal('innerHeight', 844);
     const wideProps = { ...host, ...WIDE, title: 'Wide zoom bounds' };
@@ -942,16 +943,16 @@ describe('scene host DOM and camera/fold behavior', () => {
     const svelteWide = render(SvelteScene, { props: wideProps });
     await nextTick(); await tick(); await nextTick();
     expect(dom(vueWide.element)).toEqual(dom(withControlIconTokens(svelteWide.container.firstElementChild!)));
-    expect(vueWide.vm.getCamera()).toMatchObject({ zoom: 0.45, minZoom: 0.45, maxZoom: 0.62, fitZoom: 0.45, pans: true, readout: 73 });
+    expect(vueWide.vm.getCamera()).toMatchObject({ zoom: 0.30, minZoom: 0.30, maxZoom: 0.62, fitZoom: 0.30, pans: true, readout: 48 });
     vueWide.vm.setZoom(10);
     await nextTick();
     expect(vueWide.vm.getCamera().zoom).toBe(0.62);
     vueWide.vm.setZoom(0.1);
     await nextTick();
-    expect(vueWide.vm.getCamera().zoom).toBe(0.45);
+    expect(vueWide.vm.getCamera().zoom).toBe(0.30);
     vueWide.vm.fitToFrame();
     await nextTick();
-    expect(vueWide.vm.getCamera().zoom).toBe(0.45);
+    expect(vueWide.vm.getCamera().zoom).toBe(0.30);
     vueWide.unmount(); svelteWide.unmount();
     vi.unstubAllGlobals();
   });
@@ -1008,7 +1009,7 @@ describe('scene host DOM and camera/fold behavior', () => {
       const height = parseFloat(viewport.style.height);
       const [tx, ty, scale] = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/.exec(world.style.transform)!.slice(1).map(Number) as [number, number, number];
       expect(scale).toBe(zoom);
-      expect(zoom).toBeGreaterThanOrEqual(0.45);
+      expect(zoom).toBeGreaterThanOrEqual(0.30);
       expect(zoom).toBeLessThanOrEqual(0.62);
       expect(height).toBeLessThanOrEqual(maxFrameH + 1 / 64);
       expect(viewport.dataset['pans']).toBe('false');

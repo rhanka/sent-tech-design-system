@@ -1,8 +1,8 @@
 {
   "componentId": "link",
   "contractSource": "derived",
-  "digest": "sha256:b2f67c89f95ab118e5f2ff779a532c4f45d942f8cf3261c94b5e932ae2087d50",
-  "entryDigest": "sha256:3ac19858d4a22bc474158ad4ac419f720bc06e4c739b2cdab6ed6dd6977b1771",
+  "digest": "sha256:d7f6edc81253f3c3e195d931daec5bee88fd0507ed9ea8761241172bfd07987f",
+  "entryDigest": "sha256:af5b80f4d94d490a430ca92edf037c13781bd3184872023e0505bf7a8183bee2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -193,7 +193,7 @@
         "declarationPath": "packages/components-svelte/dist/Link.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LinkProps",
-        "version": "0.43.1"
+        "version": "0.43.2"
       },
       "status": "partial",
       "unresolved": [
@@ -257,7 +257,7 @@
         "declarationPath": "packages/components-vue/dist/Link.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LinkProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "complete",
       "unresolved": [],

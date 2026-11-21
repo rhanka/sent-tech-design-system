@@ -24,7 +24,6 @@ import {
   CONTENT_INSET,
   DEFAULT_ALLOCATED_LINES,
   DEFAULT_LAYOUT_METRICS,
-  DEFAULT_MIN_READABLE_SCALE,
   FIT_PAINT_INSET,
   layoutFolded,
   layoutMeasured,
@@ -47,6 +46,7 @@ import {
 } from "../index.js";
 
 import { measureBundleLabel, type BundleLabelGroup } from "../layout/bundleLabel.js";
+import { LABEL_CLEARANCE_REFERENCE_SCALE } from "../layout/labels.js";
 import { getDiagramGlyph } from "./registry.js";
 import { anatomyZoneGeometry, lineBoxHeight, ZONE_GEOMETRY } from "./diagramCardModel.js";
 import { clearSceneLabels } from "./sceneLabelClearance.js";
@@ -74,9 +74,8 @@ export interface SceneLayoutCache {
 }
 
 /**
- * `targetWidth` handed to the engine when the host supplies none. The
- * measured path never re-packs on it (D-3) and the host never reads the
- * layout fit report (Z-8), so a resize re-runs no layout.
+ * Default layout report width. The measured path never re-packs on it (D-3).
+ * Hosts use the measured frame width for the camera fit (Z-8).
  */
 export const DEFAULT_SCENE_TARGET_WIDTH = 1440;
 /**
@@ -478,9 +477,8 @@ export function resolveScene(
     (result.measurements?.slots ?? []).filter((slot) => slot.role === "footer").map((slot) => [slot.occurrence as string, slot.layout.width] as const),
   );
   const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
-  // Non-scaling connector paint is widest in world units at the readability
-  // floor. Reserve it as well as the label-padding token supplied by hosts.
-  const paintClearance = margin + ZONE_GEOMETRY.borderWidth / (2 * DEFAULT_MIN_READABLE_SCALE);
+  // Add a fixed allowance for non-scaling ink to the host’s label-padding token.
+  const paintClearance = margin + ZONE_GEOMETRY.borderWidth / (2 * LABEL_CLEARANCE_REFERENCE_SCALE);
   const zoneInset = input.metrics?.containerPadding ?? ZONE_GEOMETRY.contentInsetInline;
   for (const node of nodes) {
     if (node.kind !== "zone" || node.collapsed) {
@@ -490,7 +488,7 @@ export function resolveScene(
     const height = headerHeights.get(node.occurrence);
     if (height === undefined) continue;
     const zoneGeo = anatomyZoneGeometry(node.presentation?.anatomy);
-    const ruleClearance = (zoneGeo.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
+    const ruleClearance = (zoneGeo.ruleHeight / 2 + 1) / LABEL_CLEARANCE_REFERENCE_SCALE;
     blockers.push({
       x: node.rect.x,
       y: node.rect.y,

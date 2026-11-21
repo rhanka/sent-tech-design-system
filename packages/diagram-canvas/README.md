@@ -346,8 +346,8 @@ empty penalty, hysteresis); absent or empty, the DS defaults apply.
 `cameraFit` frames the scene bounds on both axes against the 16:9 fit box
 (`fitW = viewW`, `fitH = min(viewW × 9/16, 0.85 × windowH)`), never above the
 maximum display scale (0.62: readout 100 %, a card renders at about
-285 × 124 CSS px) and holds a fit at the readability floor (0.45: an 18 px
-edge label renders at 8.1 CSS px) when the drawing is larger, reporting
+285 × 124 CSS px) and holds a fit at the readability floor (0.30: an 18 px
+edge label renders at 5.4 CSS px) when the drawing is larger, reporting
 `pans`; `clampZoom` and `zoomReadout` complete it. Given a `zoomQuantum`, the
 applied fit is floored to that grid, never rounded up past the fit box;
 `sceneFit` passes `FIT_QUANTUM` (1e-3), and a scene host prints that one zoom

@@ -1,8 +1,8 @@
 {
   "componentId": "histogram-chart",
   "contractSource": "derived",
-  "digest": "sha256:24142b982e54f9efe6900099893c9b89d419e619c16d36d1ef2256eed3da865a",
-  "entryDigest": "sha256:4a6da07ac43e2e01df1f22ad93c7b0cd94215dfb6a4cd839e5f833cfb4127bf2",
+  "digest": "sha256:ffdddf38edd02f295aa15c17557028facd0b81ceb437c1cdb30ad399e7ee28c8",
+  "entryDigest": "sha256:766a10219bd7b252ad3ad4f6ca8451f193cf417d0de59f63b479f1a723c9502b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -271,7 +271,7 @@
         "declarationPath": "packages/components-svelte/dist/HistogramChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HistogramChartProps",
-        "version": "0.43.1"
+        "version": "0.43.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -360,7 +360,7 @@
         "declarationPath": "packages/components-vue/dist/HistogramChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HistogramChartProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "complete",
       "unresolved": [],

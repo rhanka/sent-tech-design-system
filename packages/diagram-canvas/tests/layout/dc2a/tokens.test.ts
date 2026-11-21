@@ -21,7 +21,6 @@ import {
   DEFAULT_ROW_GAP,
   DEFAULT_ROW_GAP_MAX,
   DEFAULT_ROW_PACK,
-  MIN_EDGE_LABEL_CSS_PX,
 } from "../../../src/index.js";
 import { layScene, PINNED_LINE_HEIGHT, pinnedMeasurer, sceneInput } from "./scenes.js";
 
@@ -107,13 +106,8 @@ describe("DC-2a §5.3 display-scale calibration", () => {
     expect([460 * DEFAULT_MAX_DISPLAY_SCALE, 200 * DEFAULT_MAX_DISPLAY_SCALE].map(round)).toEqual([285.2, 124]);
   });
 
-  it("fit: an 18 px edge label needs a scale of 0.444 to render at 8 CSS px; the floor is the next two-decimal scale, 0.45", () => {
-    const needed = MIN_EDGE_LABEL_CSS_PX / DEFAULT_EDGE_LABEL_FONT_SIZE;
-    expect(needed).toBeCloseTo(0.4444, 4);
-    expect(Math.ceil(needed * 100) / 100).toBe(0.45);
-    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.45);
-    // 0.42, the value shipped by L1, rendered the label at 7.56 CSS px.
-    expect(DEFAULT_EDGE_LABEL_FONT_SIZE * 0.42).toBeLessThan(MIN_EDGE_LABEL_CSS_PX);
-    expect(DEFAULT_EDGE_LABEL_FONT_SIZE * DEFAULT_MIN_READABLE_SCALE).toBeGreaterThanOrEqual(MIN_EDGE_LABEL_CSS_PX);
+  // Décision du 21/11. « L'utilisateur a les boutons de zoom et autolayout. Par défaut quand on redimensionne on autolayout zoom intégral + plancher à 30 % ».
+  it("fit: the R7 floor is 0.30", () => {
+    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.30);
   });
 });
