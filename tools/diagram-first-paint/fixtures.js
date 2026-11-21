@@ -60,7 +60,7 @@ function r7ConnectorsFixture(folded) {
   return {
     document,
     presentation,
-    collapsed: folded ? [occurrenceRef('e.zone-core')] : [],
+    defaultFolds: folded ? [occurrenceRef('e.zone-core')] : [],
   };
 }
 
@@ -116,7 +116,7 @@ function r7NestedStylesFixture() {
     legends: {},
     categoryTokens: [],
   };
-  return { document, presentation, collapsed: [] };
+  return { document, presentation, defaultFolds: [] };
 }
 
 export function fixture(name) {
