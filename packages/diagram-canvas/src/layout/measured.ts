@@ -1149,6 +1149,10 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       packedRuns.set(run.key, { run, rows, shelves, boxes, positions: seated.positions, alongBase, acrossBase });
       return { width: seated.width, height: seated.height };
     };
+    const legendKeyCardWidth = (id: EntityRef): number => {
+      const parent = graph.nodes.get(id)?.parent;
+      return parent !== undefined ? cardWidthOf(representativeOf(parent)) : cardWidthOf(representativeOf(id));
+    };
     const sizeBox = (id: EntityRef): { width: number; height: number } => {
       const kind = kinds.get(id)!;
       if (kind === "leaf" || kind === "container-collapsed" || kind === "legend-collapsed") {
@@ -1160,7 +1164,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         packedSizes.set(id, size);
         return size;
       }
-      if (kind === "legend-key") return { width: innerWidthOf(FIXED_CARD_WIDTH), height: LEGEND_KEY_HEIGHT };
+      if (kind === "legend-key") return { width: innerWidthOf(legendKeyCardWidth(id)), height: LEGEND_KEY_HEIGHT };
       const zoneGeo = anatomyZoneGeometry(occurrenceAnatomy(representativeOf(id)));
       const hasIcon = presentation.entities[representativeOf(id)]?.icon !== "none";
       const headerReserve = zoneGeo.headerTextInset - (hasIcon ? 0 : zoneGeo.iconSize + zoneGeo.iconTextGap);
@@ -1319,7 +1323,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         return;
       }
       if (kind === "legend-key") {
-        rects.set(id, { x, y, width: innerWidthOf(FIXED_CARD_WIDTH), height: LEGEND_KEY_HEIGHT });
+        rects.set(id, { x, y, width: innerWidthOf(legendKeyCardWidth(id)), height: LEGEND_KEY_HEIGHT });
         return;
       }
       const size = packedSizes.get(id)!;
@@ -1395,7 +1399,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       if (kind === "legend-key") {
         const parent = graph.nodes.get(id)?.parent;
         const inner =
-          parent !== undefined && legendInner.has(parent) ? legendInner.get(parent)! : innerWidthOf(FIXED_CARD_WIDTH);
+          parent !== undefined && legendInner.has(parent) ? legendInner.get(parent)! : innerWidthOf(legendKeyCardWidth(id));
         recordSlot(
           occurrence,
           "legend-label",
@@ -1411,7 +1415,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         continue;
       }
       const expanded = kind === "container-expanded" || kind === "legend-expanded";
-      const inner = expanded ? innerWidthOf(outerWidths.get(id) ?? FIXED_CARD_WIDTH) : innerWidthOf(FIXED_CARD_WIDTH);
+      const inner = expanded ? innerWidthOf(outerWidths.get(id) ?? cardWidthOf(occurrence)) : innerWidthOf(cardWidthOf(occurrence));
       const rendered = sceneBoxAt(occurrence, rects.get(id)!.width, !expanded && kind !== "leaf");
       for (const role of ["body", "detail", "footer"] as const) {
         if (text[role] === undefined) continue;

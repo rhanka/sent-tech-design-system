@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Button.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Primary, secondary, ghost, or destructive action.",
     "fr": "Action primaire, secondaire, fantôme ou destructive."
   },
-  "digest": "sha256:4b61cf2b5d5da9c80086a82ab54e5a798a056c05cc98341cfde276fc5ba3c509",
+  "digest": "sha256:07d7df0a7178c5424922af54d8f67f6e6e6e11cf7eb609a83e7fa3f4c3725fb3",
   "displayName": "Button",
   "format": "component-entry/v1",
   "frameworks": [

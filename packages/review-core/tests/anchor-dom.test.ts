@@ -416,4 +416,62 @@ describe("DS-2 resolveAnchor (re-attach after re-render, priority ladder, orphan
     const legacyRootAidAnchor: TextAnchorPayload = { ...anchor, aid: "artifact-root" };
     expect(resolveAnchor(rootV2, legacyRootAidAnchor, { artifactVersion: "v2" }).status).toBe("orphan");
   });
+
+  it("should orphan an element anchor with explicit aid when its sibling section is deleted, and reattach by aid when moved", () => {
+    const rootV1 = mountRoot(`
+      <div data-review-root>
+        <section data-anchor-id="sec-a"><p>Section A body.</p></section>
+        <section data-anchor-id="sec-b"><p>Section B body.</p></section>
+        <section data-anchor-id="sec-c"><p>Section C body.</p></section>
+      </div>
+    `);
+    // Click on the inner <p> of sec-b must carry the block aid through the closest container.
+    const innerP = rootV1.querySelector('[data-anchor-id="sec-b"] p')!;
+    const anchor = createAnchorFromElement(rootV1, innerP, "v1")!;
+    expect(anchor.aid).toBe("sec-b");
+
+    // Delete sec-b: sec-c slides into section:nth-of-type(2), the stale sel slot.
+    const rootV2 = mountRoot(`
+      <div data-review-root>
+        <section data-anchor-id="sec-a"><p>Section A body.</p></section>
+        <section data-anchor-id="sec-c"><p>Section C body.</p></section>
+      </div>
+    `);
+    const deleted = resolveAnchor(rootV2, anchor, { artifactVersion: "v2" });
+    expect(deleted.status).toBe("orphan");
+
+    // Move sec-b to the end: the anchor must reattach by aid, not by stale sel.
+    const rootV3 = mountRoot(`
+      <div data-review-root>
+        <section data-anchor-id="sec-a"><p>Section A body.</p></section>
+        <section data-anchor-id="sec-c"><p>Section C body.</p></section>
+        <section data-anchor-id="sec-b"><p>Section B body.</p></section>
+      </div>
+    `);
+    const moved = resolveAnchor(rootV3, anchor, { artifactVersion: "v2" });
+    expect(moved.status).toBe("resolved");
+    if (moved.status === "resolved") {
+      expect(moved.strategy).toBe("aid");
+      expect(moved.element.getAttribute("data-anchor-id")).toBe("sec-b");
+    }
+
+    // Anchors without aid keep the positional sel fallback.
+    const noAidRoot = mountRoot(`
+      <div data-review-root>
+        <section><p>First.</p></section>
+        <section><p>Second.</p></section>
+      </div>
+    `);
+    const noAidAnchor = createAnchorFromElement(
+      noAidRoot,
+      noAidRoot.querySelectorAll("p")[1]!,
+      "v1",
+    )!;
+    expect(noAidAnchor.aid).toBeUndefined();
+    const noAidResolved = resolveAnchor(noAidRoot, noAidAnchor, { artifactVersion: "v1" });
+    expect(noAidResolved.status).toBe("resolved");
+    if (noAidResolved.status === "resolved") {
+      expect(noAidResolved.strategy).toBe("selector");
+    }
+  });
 });

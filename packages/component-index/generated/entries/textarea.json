@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Textarea.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Multi-line text field.",
     "fr": "Champ texte multi-ligne."
   },
-  "digest": "sha256:5a55cf8d30a5828a56544d15dc85f681b94338e81bc554d396059b9aecf0f81f",
+  "digest": "sha256:15e56f73f6c1d365c6bad2e3cc8d3751d7b9ecd06c35a47ab410f614aa58fe9c",
   "displayName": "Textarea",
   "format": "component-entry/v1",
   "frameworks": [

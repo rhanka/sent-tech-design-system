@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/StreamgraphChart.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Streamgraph (themeriver): stacked smoothed areas on a centred \"wiggle\" baseline, for time-series data.",
     "fr": "Streamgraph (themeriver) : aires empilées et lissées sur une ligne de base centrée « wiggle », pour des séries temporelles."
   },
-  "digest": "sha256:2b08b8dd6edad665573841db389aef87b87553a4d62dd919e8b69ba1e5c91294",
+  "digest": "sha256:067cd0118c3a44edaab4cf80618f273fb7d0a03a8fe560f63ae91adc28a743ec",
   "displayName": "StreamgraphChart",
   "format": "component-entry/v1",
   "frameworks": [

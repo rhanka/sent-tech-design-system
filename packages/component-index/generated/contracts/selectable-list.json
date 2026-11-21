@@ -1,8 +1,8 @@
 {
   "componentId": "selectable-list",
   "contractSource": "derived",
-  "digest": "sha256:531d2448735a33aeadc281c43968415707efe5667fa60a4dd20cc4d36fa651ab",
-  "entryDigest": "sha256:35accd8df063e3e80351d7fdee08b20667f4100d8ec0aab2e48fd05d8738ad4b",
+  "digest": "sha256:8edc3fc944eeca6dae5d695de454710c892667f178715981f31157b5271bdafb",
+  "entryDigest": "sha256:07ff5cdcbabb0ebd5412f0e908028725493e044d07ddb8150ce27ad6095b6b2f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -342,7 +342,7 @@
         "declarationPath": "packages/components-vue/dist/SelectableList.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectableListProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "partial",
       "unresolved": [],

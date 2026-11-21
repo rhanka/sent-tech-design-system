@@ -180,8 +180,15 @@ export function resolveScenePresentation(document: SceneDocument, presentation: 
    * everywhere means `"v1"` — existing views do not move.
    */
   const viewAnatomy = (view?.presentation as { readonly anatomy?: DiagramAnatomy } | undefined)?.anatomy;
-  const withViewAnatomy = <T extends { readonly anatomy?: DiagramAnatomy }>(entry: T): T =>
-    entry.anatomy === undefined && viewAnatomy !== undefined ? { ...entry, anatomy: viewAnatomy } : entry;
+  const withViewAnatomy = <T extends { readonly anatomy?: DiagramAnatomy; readonly align?: "left" | "center" }>(entry: T): T => {
+    const resolved = entry.anatomy === undefined && viewAnatomy !== undefined ? { ...entry, anatomy: viewAnatomy } : entry;
+    // View-level centring applies only when explicitly requested on compact v2 anatomy.
+    if (resolved.anatomy !== "v2" && resolved.align === "center") {
+      const { align: _ignored, ...rest } = resolved;
+      return rest as T;
+    }
+    return resolved;
+  };
   const entities = Object.fromEntries(Object.entries(presentation.entities).map(([id, entry]) => {
     if (entry.form !== "card" && entry.form !== "container" && entry.form !== "legend") return [id, withViewAnatomy(entry)];
     const entityId = view?.entityOccurrences[id]?.entity ?? id.replace(/^occurrence:e\./, "entity:");
@@ -781,7 +788,7 @@ export function resolveScene(
 }
 
 /** Default labels for `DiagramSceneFigure`, including the DE-1b containment fallback label. */
-export const DEFAULT_SCENE_LABELS: DiagramSceneFigureLabels = Object.freeze({
+export const DEFAULT_SCENE_LABELS: DiagramSceneFigureLabels & { readonly contains: string } = Object.freeze({
   ...DEFAULT_FLOW_STRINGS,
   controls: "Zoom",
   zoomIn: "Zoom in",
@@ -795,11 +802,6 @@ export const DEFAULT_SCENE_LABELS: DiagramSceneFigureLabels = Object.freeze({
   legend: "Legend",
 });
 
-function isContainmentRelation(document: SceneDocument, relation: SceneDocument["relations"][string]): boolean {
-  const baseType = document.typeDefinitions?.[relation.type]?.baseType ?? relation.type;
-  return baseType === "contains";
-}
-
 /** Full presentation text retained alongside the textual relations (A14, DE-1b). */
 export function sceneTextRows(
   scene: SceneModel,
@@ -811,7 +813,9 @@ export function sceneTextRows(
   for (const relation of Object.values(document.relations)) {
     const names = relation.endpoints.map(end => { const value = document.entities[end.target]?.attributes["name"]; return value?.kind === "text" ? String(value.value) : end.target; });
     const explicit = edgeLabelOf(document, relation.id);
-    const fallback = isContainmentRelation(document, relation) ? containsLabel : relation.type;
+    // W1-28: only replace the literal "contains" relation type so refined
+    // containment subtypes (e.g. "owns" with baseType "contains") keep their name.
+    const fallback = relation.type === "contains" ? containsLabel : relation.type;
     rows.push(names.join(" → ") + " · " + (explicit ?? fallback));
   }
   return rows;

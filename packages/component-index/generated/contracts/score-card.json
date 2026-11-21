@@ -1,8 +1,8 @@
 {
   "componentId": "score-card",
   "contractSource": "derived",
-  "digest": "sha256:3324299301e5da8497ad5c636eed4397ee3a9f7cb3cd73aa69f915a102f381b4",
-  "entryDigest": "sha256:f215520267ed005495cebe98fe74548556ecc0ce76082eb9d4c3611b06c64c6b",
+  "digest": "sha256:efd9e4e6e0fa1e029c726f70d0a4eff512671f586fa94cdbce738af092c1a9ea",
+  "entryDigest": "sha256:380eaa9f941d914efbc2f47cef02068ba1c7c28c4c6b5288a14946decbcc6679",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -267,7 +267,7 @@
         "declarationPath": "packages/components-vue/dist/ScoreCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ScoreCardProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "complete",
       "unresolved": [],

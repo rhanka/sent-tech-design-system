@@ -4,14 +4,31 @@ name: Review Core Publish
 # version, indépendante des autres paquets DS.
 # Déclenchée par un tag `review-core-v<version>`.
 #
-# Publication via npm Trusted Publishing (OIDC) uniquement — aucun secret de
-# jeton npm n'est utilisé. Le trusted publisher attendu côté npm est :
-# rhanka/sent-tech-design-system + review-core-publish.yml.
+# Publication via npm Trusted Publishing (OIDC), avec le chemin d'amorçage au
+# jeton temporaire pour la PREMIÈRE publication, comme diagram-core-publish.yml.
+#
+# Pourquoi un amorçage : @sentropic/design-system-review-core n'existe pas au
+# registre (mesuré le 2026-11-20 : `npm view` rend E404), et npm ne permet de
+# déclarer un trusted publisher que sur un paquet qui existe déjà — docs/release.md :
+# « The first publication used a temporary bootstrap token because npm Trusted
+# Publishing can only be configured after each package exists. »
 #
 # Ordre de publication (docs/release.md) : review-core → svelte (le manifeste
 # de @sentropic/design-system-svelte épingle @sentropic/design-system-review-core
 # à sa version exacte et svelte-publish.yml échoue fermé tant qu'elle n'est pas
 # visible sur le registre npm).
+#
+# ACTION PROPRIÉTAIRE, dans cet ordre (checklist docs/release.md) :
+#   1. créer un jeton npm granulaire temporaire, en écriture sur le scope @sentropic ;
+#   2. le stocker dans le secret de dépôt NPM_TOKEN ;
+#   3. poser le tag `review-core-v<version>` — l'étape d'amorçage du job `publish`
+#      s'active seule quand le secret est présent et reste inerte quand il est
+#      absent, donc ce fichier ne change rien tant que l'étape 2 n'a pas eu lieu ;
+#   4. déclarer le trusted publisher (rhanka/sent-tech-design-system +
+#      review-core-publish.yml) sur le paquet désormais créé ;
+#   5. supprimer le secret (seulement quand plus aucun workflow d'amorçage n'en a
+#      besoin), révoquer le jeton, puis retirer l'étape d'amorçage ici et son
+#      entrée dans scripts/verify-workflow-invariants.test.mjs.
 
 on:
   push:
@@ -78,6 +95,9 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    env:
+      # Amorçage de la première publication uniquement (voir l'en-tête, étapes 1-5).
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -92,6 +112,9 @@ jobs:
           npm --workspace @sentropic/design-system-review-core run build
       - name: Dist import closure (packed package with registry dependencies)
         run: npm run dist:import-closure -- --workspaces=@sentropic/design-system-review-core
+      - name: Bootstrap npm auth for first publish (inactive without secret)
+        if: ${{ env.NPM_TOKEN != '' }}
+        run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
       - name: Publish review-core package
         env:
           TAG: ${{ github.ref_name }}

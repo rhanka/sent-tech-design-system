@@ -171,6 +171,8 @@ describe("diagram depth stamping (DE-1 addendum 1)", () => {
       measureLines,
       collapsed: [],
     });
+    expect(rendered.svg).toContain("svg:root{");
+    expect(rendered.svg).not.toMatch(/[^:]svg\{/);
     expect(rendered.svg).toContain("--st-semantic-surface-subtle:#f8fafc");
     expect(rendered.svg).toContain("--st-component-diagramZone-surface2:#f8fafc");
     expect(rendered.svg).toContain("--st-component-diagramZone-surface2");

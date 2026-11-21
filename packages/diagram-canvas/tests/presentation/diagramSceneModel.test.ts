@@ -2,7 +2,11 @@ import { setTimeout as realDelay } from "node:timers/promises";
 import { m3ProfileRegistry, shippedExecutorBindings } from "@sentropic/diagram-core";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { cameraFit, createLayoutCache, floorToQuantum, worldToView } from "../../src/index.js";
+import {
+  cameraFit, createLayoutCache, DEFAULT_MAX_DISPLAY_SCALE, DEFAULT_MIN_READABLE_SCALE,
+  FIT_ASPECT, FIT_PAINT_INSET, FIT_WINDOW_HEIGHT_SHARE, fitBox, floorToQuantum,
+  worldToView, zoomReadout,
+} from "../../src/index.js";
 import * as sceneModule from "../../src/scene.js";
 import * as labelsModule from "../../src/layout/labels.js";
 import {
@@ -227,5 +231,59 @@ describe("shared scene presentation (DC-2b)", () => {
     expect(cache.stats()).toMatchObject({ misses: 2, hits: 239, entries: 2, evictions: 0 });
     console.info(`DC-2b M3 engine/model: 600 actions / 240 stress toggles; worst ${worst.toFixed(3)} ms < 1800 ms`);
     expect(worst).toBeLessThan(1800);
+  });
+
+  it("should pin v1 figure max size and zoom bounds (maxDisplayScale, minReadableScale, fit) to exact 0.2.5 / 0.41.5 values", () => {
+    // Frozen 0.2.5 / 0.41.5 camera constants.
+    expect(DEFAULT_MAX_DISPLAY_SCALE).toBe(0.62);
+    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.45);
+    expect(FIT_WINDOW_HEIGHT_SHARE).toBe(0.85);
+    expect(FIT_ASPECT).toBe(16 / 9);
+    expect(FIT_PAINT_INSET).toBe(1);
+    expect(FIT_QUANTUM).toBe(1e-3);
+
+    // 16:9 fit box capped at 0.85 * windowHeight.
+    expect(fitBox(1280, 720)).toEqual({ width: 1280, height: 612 });
+    expect(fitBox(1920, 1080)).toEqual({ width: 1920, height: 918 });
+    expect(fitBox(1280, 1200)).toEqual({ width: 1280, height: 720 });
+
+    // Single v1 / fallback-v1 complete card (460 x 200) clamps at maxDisplayScale 0.62 (readout 100 %).
+    const singleBounds = { x: 0, y: 0, width: 460, height: 200 };
+    const singleFit = sceneFit({ bounds: singleBounds, viewWidth: 1280, windowHeight: 720 });
+    expect(singleFit).toEqual({
+      fitWidth: 1280,
+      fitHeight: 126,
+      zoomFit: 0.62,
+      zoom: 0.62,
+      minZoom: 0.62,
+      maxZoom: 0.62,
+      pans: false,
+    });
+    expect(zoomReadout(singleFit.zoom, singleFit.maxZoom)).toBe(100);
+    expect(singleBounds.width * singleFit.zoom).toBeCloseTo(285.2, 5);
+    expect(singleBounds.height * singleFit.zoom).toBeCloseTo(124, 5);
+
+    // Wide v1 scene (witness) fits inside [0.45, 0.62] and pans below the 0.45 readability floor.
+    const laidOut = layoutScene(input);
+    expect(laidOut.status).toBe("laid-out");
+    if (laidOut.status !== "laid-out") return;
+    const scene = resolveScene(laidOut, input);
+    expect(scene.bounds).toBeDefined();
+    const wideDesktop = sceneFit({ bounds: scene.bounds!, viewWidth: 1280, windowHeight: 720 });
+    expect(wideDesktop.maxZoom).toBe(0.62);
+    expect(wideDesktop.minZoom).toBeGreaterThanOrEqual(0.45);
+    expect(wideDesktop.zoom).toBeLessThanOrEqual(0.62);
+    expect(wideDesktop.fitHeight).toBeLessThanOrEqual(Math.min((1280 * 9) / 16, 0.85 * 720));
+
+    const widePhone = sceneFit({ bounds: scene.bounds!, viewWidth: 390, windowHeight: 844 });
+    expect(widePhone.zoom).toBe(0.45);
+    expect(widePhone.minZoom).toBe(0.45);
+    expect(widePhone.maxZoom).toBe(0.62);
+    expect(widePhone.pans).toBe(true);
+    expect(zoomReadout(widePhone.zoom, widePhone.maxZoom)).toBe(73);
+
+    // Explicit opt-in scale overrides still apply, while the 0.45 absolute floor never lowers.
+    expect(sceneFit({ bounds: singleBounds, viewWidth: 1280, windowHeight: 720, maxDisplayScale: 0.8 }).maxZoom).toBe(0.8);
+    expect(sceneFit({ bounds: scene.bounds!, viewWidth: 390, windowHeight: 844, minReadableScale: 0.3 }).minZoom).toBe(0.45);
   });
 });

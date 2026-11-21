@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/LanguageSelector.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact language switcher (i18n): current locale + menu.",
     "fr": "Sélecteur de langue compact (i18n) : langue courante + menu."
   },
-  "digest": "sha256:ff2f0f88278ac8f38bbf1934ae304cbd86a5619bf6a5b1c41c2478dbeab1381b",
+  "digest": "sha256:e63be12b163e40e5f9c48b4639326288cc1a407cba611d5233592a69de671dfe",
   "displayName": "LanguageSelector",
   "format": "component-entry/v1",
   "frameworks": [

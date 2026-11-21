@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/CodeSnippet.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Inline or block code snippet, with copy.",
     "fr": "Extrait de code inline ou bloc, avec copie."
   },
-  "digest": "sha256:48a4bca92cdeda96cca8a3c1d2fe8a19155e8a15ebf35cf97a604ee7c628c6f2",
+  "digest": "sha256:f12509444de2d361f4ac4fc176bdb859882064d92e879428b385bdf7ffac8dcd",
   "displayName": "CodeSnippet",
   "format": "component-entry/v1",
   "frameworks": [

@@ -144,7 +144,16 @@ export function useDiagramSceneViewport(
     }
     function getCamera() { return camera.value; }
 
-    function holdZoom() { requestedZoom.value = zoom.value; atFit = false; }
+    function refitOnFold() {
+        atFit = true;
+        requestedZoom.value = undefined;
+        void nextTick(() => {
+            if (viewportEl.value) {
+                if (viewportEl.value.scrollLeft !== 0) viewportEl.value.scrollLeft = 0;
+                if (viewportEl.value.scrollTop !== 0) viewportEl.value.scrollTop = 0;
+            }
+        });
+    }
     function onWheel(event: WheelEvent) {
         if (!event.ctrlKey && !event.metaKey) return;
         event.preventDefault();
@@ -187,6 +196,6 @@ export function useDiagramSceneViewport(
     const edgeLabelLineHeight = computed(() => scaleEdgeLabelMeasurer(measureLines.value, effectiveMetrics.value.edgeLabelSize)({ text: 'Mg', role: 'edge-label', availableWidth: 400, allocatedLines: 1, folded: false }).height);
     const viewportStyle = computed(() => `height:${fit.value.fitHeight + scrollbarHeight.value}px;${props.fitToWindow ? 'max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;' : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px`);
     return { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
-        fit, zoom, readout, placement, viewportStyle, holdZoom,
+        fit, zoom, readout, placement, viewportStyle, refitOnFold,
         setZoom, zoomIn, zoomOut, fitToFrame, getCamera };
 }

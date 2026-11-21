@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/StatusDot.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Status dot colored by tone (or arbitrary color), optional “live” halo and optional label.",
     "fr": "Pastille de statut colorée par tonalité (ou couleur arbitraire), halo « live » optionnel et libellé optionnel."
   },
-  "digest": "sha256:5fb9ea98617af875dbb677d097cf6fbbd167133141208b70689a48f407028f3c",
+  "digest": "sha256:15f2f7eb35f10efcfb5d628536c40ee11c218ba43d19f1a30ce5f2e8c7e65825",
   "displayName": "StatusDot",
   "format": "component-entry/v1",
   "frameworks": [

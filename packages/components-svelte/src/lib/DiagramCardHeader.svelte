@@ -18,6 +18,8 @@
     iconGlyph?: DiagramGlyphPaths;
     /** Pictogram box edge; defaults to the v1 `70` (v2: `52`). */
     iconSize?: number;
+    /** Frame header inset when rendered inside a zone header (`16` in v1, `12` in v2). */
+    headerInset?: number;
     /** Width the title/kicker block may take (toggle-aware). */
     headerTextWidth: number;
     /**
@@ -42,11 +44,22 @@
     iconName,
     iconGlyph = iconName === undefined || iconName === "none" ? undefined : getDiagramGlyph(iconName) ?? getDiagramGlyph("unknown"),
     iconSize = 70,
+    headerInset,
     headerTextWidth,
     headerBlockHeight,
     toggle,
     toggleTopOffset,
   }: DiagramCardHeaderProps = $props();
+
+  const toggleOffsetExpr = $derived(
+    toggleTopOffset === undefined
+      ? "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))"
+      : toggleTopOffset === -8 && (headerInset === undefined || headerInset === 16)
+        ? "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))"
+        : headerInset !== undefined && toggleTopOffset === 8 - headerInset
+          ? `calc(var(--st-component-diagramZone-toggleInset, 8px) - ${headerInset}px - var(--st-component-diagramZone-borderWidth, 1.5px))`
+          : `calc(${toggleTopOffset}px - var(--st-component-diagramZone-borderWidth, 1.5px))`,
+  );
 </script>
 
 <div class="st-diagramCardHeader" style={`height:${headerBlockHeight}px`}>
@@ -106,8 +119,7 @@
   {#if toggle !== undefined}
     <div
       class="st-diagramCard-toggle"
-      style={`top:${toggleTopOffset === undefined ? "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))" : 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))'};right:${toggleTopOffset === undefined ? "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))" : 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))'}`}
-
+      style={`top:${toggleOffsetExpr};right:${toggleOffsetExpr}`}
     >
       <IconButton
         size="sm"

@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DependencyWheelChart.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Dependency wheel: nodes on a circle, weighted ribbons coloured by source.",
     "fr": "Roue de dépendances : nœuds sur un cercle, rubans pondérés colorés par source."
   },
-  "digest": "sha256:27a53c9dc21ebcafb56c167b1328809cb1438a5e3307b461afa220534350aa60",
+  "digest": "sha256:c1f481e889e9e35744da4e63acf213b4b2ac1fa9025e96e4ba51547a667758f5",
   "displayName": "DependencyWheelChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "event-feed-panel",
   "contractSource": "derived",
-  "digest": "sha256:b8dceef278a0b130a5137d9af8ac5836fe90d70fe4a1ce3688bd929e4a7b4b58",
-  "entryDigest": "sha256:be41ac5a041f9b97936ae091e3da2b476e492f7f7fba415bd540f1f5bc849980",
+  "digest": "sha256:8741c4df562e5f96a8e79cb570eddfa023acf837c4f82a5d618777c5dd66e52b",
+  "entryDigest": "sha256:f8f8f4611779ec38b77394b2757d826488676202d3cd656517f45dc5418a62dc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -371,7 +371,7 @@
         "declarationPath": "packages/components-vue/dist/EventFeedPanel.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EventFeedPanelProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "complete",
       "unresolved": [],

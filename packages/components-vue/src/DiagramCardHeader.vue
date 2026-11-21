@@ -18,6 +18,8 @@ interface DiagramCardHeaderProps {
     iconGlyph?: DiagramGlyphPaths;
     /** Pictogram box edge; defaults to the v1 `70` (v2: `52`). */
     iconSize?: number;
+    /** Frame header inset when rendered inside a zone header (`16` in v1, `12` in v2). */
+    headerInset?: number;
     /** Width the title/kicker block may take (toggle-aware). */
     headerTextWidth: number;
     /**
@@ -39,8 +41,17 @@ interface DiagramCardHeaderProps {
      */
     toggleTopOffset?: number;
 }
-const { kicker, title, iconName, iconGlyph, iconSize = 70, headerTextWidth, headerBlockHeight, toggle, toggleTopOffset, } = defineProps<DiagramCardHeaderProps>();
+const { kicker, title, iconName, iconGlyph, iconSize = 70, headerInset, headerTextWidth, headerBlockHeight, toggle, toggleTopOffset, } = defineProps<DiagramCardHeaderProps>();
 const glyph = computed(() => iconGlyph ?? (iconName === undefined || iconName === "none" ? undefined : getDiagramGlyph(iconName) ?? getDiagramGlyph("unknown")));
+const toggleOffsetExpr = computed(() =>
+    toggleTopOffset === undefined
+        ? 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))'
+        : toggleTopOffset === -8 && (headerInset === undefined || headerInset === 16)
+            ? 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))'
+            : headerInset !== undefined && toggleTopOffset === 8 - headerInset
+                ? `calc(var(--st-component-diagramZone-toggleInset, 8px) - ${headerInset}px - var(--st-component-diagramZone-borderWidth, 1.5px))`
+                : `calc(${toggleTopOffset}px - var(--st-component-diagramZone-borderWidth, 1.5px))`,
+);
 </script>
 
 <template>
@@ -68,7 +79,7 @@ const glyph = computed(() => iconGlyph ?? (iconName === undefined || iconName ==
     </template>
   </div>
   <template v-if="toggle !== undefined">
-    <div class="st-diagramCard-toggle" :style="{ top: toggleTopOffset === undefined ? 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))' : 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))', right: toggleTopOffset === undefined ? 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))' : 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))' }">
+    <div class="st-diagramCard-toggle" :style="{ top: toggleOffsetExpr, right: toggleOffsetExpr }">
       <button type="button" class="st-iconButton st-iconButton--sm st-iconButton--ghost" :aria-label="toggle.label" :aria-expanded="!toggle.collapsed" @click="toggle.onToggle">
         <template v-if="toggle.collapsed">
           <DiagramControlGlyph plus size="var(--st-component-button-anatomy-density-sm-fontSize)" aria-hidden="true"></DiagramControlGlyph>

@@ -4,7 +4,7 @@ defineOptions({ name: 'DiagramZone' });
 import { computed, onMounted, watch, useId } from "vue";
 import DiagramCard from "./DiagramCard.vue";
 import DiagramZoneHeader from "./DiagramZoneHeader.vue";
-import { anatomyZoneGeometry, zoneFullText, defaultCardMeasure, layoutZone, zoneCollapsedCardProps, type CardLineMeasure, type DiagramZoneProps as DiagramZoneData, type ZoneDiagnostic, } from "./diagramCardModel.js";
+import { anatomyZoneGeometry, zoneFullText, defaultCardMeasure, layoutZone, resolveDiagramAlign, zoneCollapsedCardProps, type CardLineMeasure, type DiagramZoneProps as DiagramZoneData, type ZoneDiagnostic, } from "./diagramCardModel.js";
 /**
  * `DiagramZone` — the wrapping diagram card (DC-2, spec §6).
  *
@@ -42,9 +42,9 @@ export interface DiagramZoneProps extends DiagramZoneData {
 }
 const { autoSize = true, entityId, containerPadding, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, anatomy, depth, depthParityStart, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
 const zoneGeometry = computed(() => anatomyZoneGeometry(anatomy));
-const effectiveAlign = computed(() => align ?? (anatomy === "v2" ? "center" : "left"));
-/** Owner addendum 1: an explicitly threaded depth paints the resolved depth surface. */
-const surfaceStyle = computed(() => zoneProps.value.depth === undefined && zoneProps.value.depthParityStart === undefined ? "" : `;--st-component-diagramZone-surface:var(--st-component-diagramZone-${layout.value.surface ?? "surface1"}, var(--st-semantic-surface-${(layout.value.surface ?? "surface1") === "surface1" ? "raised" : "subtle"}))`);
+const effectiveAlign = computed(() => resolveDiagramAlign(anatomy, align));
+/** Owner addendum 1: an explicitly threaded depth paints the resolved depth surface via non-inherited `background` so nested child zones never inherit it. */
+const surfaceStyle = computed(() => zoneProps.value.depth === undefined && zoneProps.value.depthParityStart === undefined ? "" : `;background:var(--st-component-diagramZone-${layout.value.surface ?? "surface1"}, var(--st-semantic-surface-${(layout.value.surface ?? "surface1") === "surface1" ? "raised" : "subtle"}))`);
 const emit = defineEmits<{
     toggle: [
         event: {
@@ -105,7 +105,7 @@ const cardProps = computed(() => toggleLabel === undefined
             onToggle: () => onToggle?.({ entityId, collapsed: true }),
         },
     });
-const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) => diagnostic.code === "zone-overflow")?.slot);
+const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) => diagnostic.code === "zone-overflow" && diagnostic.reason !== "fallback-v1")?.slot);
 const unknownIcon = computed(() => layout.value.diagnostics.some((diagnostic) => diagnostic.code === "zone-icon-unknown"));
 // Overflow = refusal: the same predicate as the pure renderer
 // (`firstOverflowDiagnostic`), so both renderers refuse together.
@@ -129,13 +129,21 @@ const subtitleWidth = computed(() => header.value?.subtitleWidth ?? 0);
 const borderToken = "var(--st-component-diagramZone-borderWidth, 1.5px)";
 const frameTop = (frameY: number): string => `calc(${frameY - y}px - ${borderToken})`;
 const frameInset = (inset: number): string => `calc(${inset}px - ${borderToken})`;
-// Header band: frame top + headerInset, spanning the header inline insets
-// (left and right both anchored to headerInset, matching layoutZone and the
-// toggle inset even when containerPadding differs on v2), as tall as the
-// layout's header block + subtitle.
+// Header band: frame top + headerInset. For v1 keep the frozen 0.41.5 right
+// inset (`containerPadding ?? contentInsetInline`); for v2 anchor right to
+// `headerInset` (12px) and scope the v2 header CSS custom properties strictly
+// to `.st-diagramZone-header` so they never leak into nested v1 cards/zones.
+const headerRightInset = computed(() => anatomy === "v2" ? zoneGeometry.value.headerInset : (containerPadding ?? zoneGeometry.value.contentInsetInline));
+const v2HeaderVars = ";--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px);--st-component-diagramCard-iconTextGap:var(--st-component-diagramCardCompact-iconTextGap, 4px);--st-component-diagramZone-headerInset:var(--st-component-diagramCardCompact-headerInset, 12px)";
+// W1-12: on surface2 zones only (where 0.41.5's surface-subtle hover equals the
+// zone background and becomes invisible), switch the toggle's hover token to
+// secondaryHoverBackground — scoped strictly to `.st-diagramZone-header` so
+// nested children and v1/surface1 zones stay byte-identical to 0.41.5.
+const surface2ToggleHoverVars = ";--st-component-control-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)));--st-component-iconButton-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)))";
+const hasSurface2 = computed(() => (zoneProps.value.depth !== undefined || zoneProps.value.depthParityStart !== undefined) && layout.value.surface === "surface2");
 const headerStyle = computed(() => header.value === undefined
     ? undefined
-    : `top:${frameTop(y + zoneGeometry.value.headerInset)};left:${frameInset(zoneGeometry.value.headerInset)};right:${frameInset(zoneGeometry.value.headerInset)};height:${header.value.ruleY - zoneGeometry.value.headerRuleGap - y - zoneGeometry.value.headerInset}px`);
+    : `top:${frameTop(y + zoneGeometry.value.headerInset)};left:${frameInset(zoneGeometry.value.headerInset)};right:${frameInset(headerRightInset.value)};height:${header.value.ruleY - zoneGeometry.value.headerRuleGap - y - zoneGeometry.value.headerInset}px${anatomy === "v2" ? v2HeaderVars : ""}${hasSurface2.value ? surface2ToggleHoverVars : ""}`);
 const ruleStyle = computed(() => header.value === undefined
     ? undefined
     : `top:${frameTop(header.value.ruleY)};left:${frameInset(zoneGeometry.value.ruleInsetStart)};right:${frameInset(zoneGeometry.value.ruleInsetEnd)}`);
@@ -164,7 +172,7 @@ defineSlots<{ "default"?: () => unknown }>();
     <DiagramCard v-bind="cardProps" :measure="measure" @select="onSelect"></DiagramCard>
   </template><template v-else>
 
-    <div :class="`st-diagramZone st-diagramZone--expanded${effectiveAlign === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}${anatomy === 'v2' ? ' st-diagramZone--v2' : ''}`" :style="anatomy === 'v2' ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px);--st-component-diagramCard-iconTextGap:var(--st-component-diagramCardCompact-iconTextGap, 4px);--st-component-diagramZone-headerInset:var(--st-component-diagramCardCompact-headerInset, 12px)${surfaceStyle}` : `width:${layout.box.width}px;height:${layout.box.height}px${surfaceStyle}`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :title="zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })" :aria-label="title" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
+    <div :class="`st-diagramZone st-diagramZone--expanded${effectiveAlign === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}${anatomy === 'v2' ? ' st-diagramZone--v2' : ''}`" :style="`width:${layout.box.width}px;height:${layout.box.height}px${surfaceStyle}`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :title="zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })" :aria-label="title" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
       <span :id="descriptionId" hidden>{{ zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed }) }}</span>
     <template v-if="header !== undefined">
 

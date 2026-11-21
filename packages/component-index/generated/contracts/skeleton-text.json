@@ -1,8 +1,8 @@
 {
   "componentId": "skeleton-text",
   "contractSource": "derived",
-  "digest": "sha256:01d47b0bebd07c5cf4e809112ba315682e9f595370b4a4dc694a9bcd7e11c9b2",
-  "entryDigest": "sha256:0ead9d8cb7bd2dbcabd0167a25ee233e7b603ad08059749c1ee634d77d3e76ee",
+  "digest": "sha256:66c673839b5a99623977018fcd23b9f1c515ac562536ed50293e1775f0ae88ff",
+  "entryDigest": "sha256:cdd6bfbac0d6b544c7923ffbf64410c67ebe43628354df68be5014f6bbd7d3e2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -195,7 +195,7 @@
         "declarationPath": "packages/components-vue/dist/SkeletonText.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SkeletonTextProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "complete",
       "unresolved": [],

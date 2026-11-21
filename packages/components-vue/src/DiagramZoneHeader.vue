@@ -47,7 +47,7 @@ const { kicker, title, subtitle, iconName, iconGlyph, iconSize, headerInset = 16
 
 <template>
 <div class="st-diagramZoneHeader">
-  <DiagramCardHeader :kicker="kicker" :title="title" :iconName="iconName" :iconGlyph="iconGlyph" :iconSize="iconSize" :headerTextWidth="headerTextWidth" :headerBlockHeight="headerBlockHeight" :toggle="toggle" :toggleTopOffset="toggleTopInset === undefined
+  <DiagramCardHeader :kicker="kicker" :title="title" :iconName="iconName" :iconGlyph="iconGlyph" :iconSize="iconSize" :headerInset="headerInset" :headerTextWidth="headerTextWidth" :headerBlockHeight="headerBlockHeight" :toggle="toggle" :toggleTopOffset="toggleTopInset === undefined
       ? undefined
       : toggleTopInset - headerInset"></DiagramCardHeader>
   <template v-if="subtitle.length > 0">

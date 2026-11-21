@@ -88,4 +88,27 @@ describe("compileThemeWithModes", () => {
     // The dark surface.default value from semanticDark
     expect(css).toContain("oklch(15%");
   });
+
+  it("dynamically compiled brand themes emit compact diagram tokens, depth surfaces, and distinct toggle hover (W1-14)", () => {
+    const brandSemantic = {
+      ...semantic,
+      surface: { ...semantic.surface, raised: "#ffffff", subtle: "#f6f6f6" },
+      action: { ...semantic.action, secondaryHover: "#e5e7eb" },
+    };
+    const css = compileTheme({
+      id: "brand-sample",
+      label: "Brand sample",
+      mode: "light",
+      tokens: {
+        foundation,
+        semantic: brandSemantic,
+        component: createComponent(brandSemantic, foundation),
+      },
+    });
+    expect(css).toContain("--st-component-diagramCardCompact-width: 352px;");
+    expect(css).toContain("--st-component-diagramCardCompact-bodyInsetFromBar: 10px;");
+    expect(css).toContain("--st-component-diagramZone-surface1: #ffffff;");
+    expect(css).toContain("--st-component-diagramZone-surface2: #f6f6f6;");
+    expect(css).toContain("--st-component-button-secondaryHoverBackground: #e5e7eb;");
+  });
 });

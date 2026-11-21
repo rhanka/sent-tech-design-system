@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Rating.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Star rating, read-only or interactive, with half-stars.",
     "fr": "Note par étoiles, lecture seule ou interactive, demi-étoiles."
   },
-  "digest": "sha256:5309506b74edf5a98b39aa0307e1e5d4d0db5895fe2c207ee27d607984ad4cae",
+  "digest": "sha256:de02947be8b74a268ac35c9a3e13c5520edc6488e257d5f54bdc54131ba1c5d4",
   "displayName": "Rating",
   "format": "component-entry/v1",
   "frameworks": [

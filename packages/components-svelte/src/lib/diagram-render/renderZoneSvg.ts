@@ -249,7 +249,7 @@ export function renderZoneSvg(
   const { content, layout, diagnostics } = zoneContent(props, children, measure);
   const { x, y, width, height } = layout.box;
   const overflowSlots = diagnostics
-    .filter((diagnostic) => diagnostic.code === "zone-overflow")
+    .filter((diagnostic) => diagnostic.code === "zone-overflow" && diagnostic.reason !== "fallback-v1")
     .map((diagnostic) => diagnostic.slot);
   const unknownIcon = diagnostics.some((diagnostic) => diagnostic.code === "zone-icon-unknown");
   const firstOverflow = overflowSlots.length === 0 ? undefined : overflowSlots[0];

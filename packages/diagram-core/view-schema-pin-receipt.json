@@ -36,7 +36,7 @@
   "dsRevision": {
     "note": "Current implementation file hashes after DE-2 view-schema@4 connector registries; @1/@2/@3 canonical schemas and presentation pin remain unchanged.",
     "files": {
-      "packages/diagram-core/src/view.ts": "2a66f29a0ed67fbd47cee661bbf0efe52ba58626c8a0c8e35a87c10cff1d7789",
+      "packages/diagram-core/src/view.ts": "dda3ffaf7e3fd5ef8e3991ff55ce0a6c578ff598f1ef4cd34ff28aca5fa1fc1f",
       "packages/diagram-core/src/fold.ts": "203cc35623075be69bf18d5bce4a000b2f6602f8989440943b0fe618aacdb867",
       "packages/diagram-core/src/validate.ts": "860b929d25b71dea259f0ac0c415326c36c52d07ba6e631d7521759d566f15e1"
     }

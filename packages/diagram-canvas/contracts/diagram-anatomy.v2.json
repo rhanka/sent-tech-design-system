@@ -39,7 +39,7 @@
       "weight": 400,
       "lineHeight": 1.2222222222222223
     },
-    "bodyInsetFromBar": 14,
+    "bodyInsetFromBar": 10,
     "ruleHeight": 1,
     "ruleMargin": 4,
     "ruleInsetStart": 16,
@@ -105,8 +105,8 @@
     "headerTextInset": 154,
     "collapsedWidth": 352,
     "collapsedHeight": 154,
-    "collapsedInset": 16,
-    "collapsedSubtitleMarginInline": 16,
+    "collapsedInset": 12,
+    "collapsedSubtitleMarginInline": 12,
     "allocatedLines": {
       "kicker": 1,
       "title": 1,
@@ -140,17 +140,17 @@
     "title": [
       {
         "text": "Title",
-        "x": 206,
+        "x": 68,
         "baseline": 45.203125,
         "size": 32,
         "weight": 700,
         "secondary": false,
-        "anchor": "middle"
+        "anchor": "start"
       }
     ],
     "headerBlockHeight": 52,
-    "bodyX": 14,
-    "bodyWidth": 330,
+    "bodyX": 10,
+    "bodyWidth": 334,
     "bodyArea": {
       "top": 66,
       "bottom": 146
@@ -158,7 +158,7 @@
     "body": [
       {
         "text": "Body",
-        "x": 179,
+        "x": 177,
         "baseline": 112.40625,
         "size": 24,
         "weight": 400,
@@ -198,23 +198,23 @@
     "kicker": [
       {
         "text": "KICKER",
-        "x": 237,
+        "x": 92,
         "baseline": 32,
         "size": 22,
         "weight": 400,
         "secondary": true,
-        "anchor": "middle"
+        "anchor": "start"
       }
     ],
     "title": [
       {
         "text": "Title",
-        "x": 237,
+        "x": 92,
         "baseline": 70.59375,
         "size": 32,
         "weight": 700,
         "secondary": false,
-        "anchor": "middle"
+        "anchor": "start"
       }
     ],
     "headerBlockHeight": 70.1875,
@@ -251,12 +251,12 @@
     "footerLines": [
       {
         "text": "Footer",
-        "x": 233,
+        "x": 16,
         "baseline": 179.5625,
         "size": 24,
         "weight": 700,
         "secondary": false,
-        "anchor": "middle"
+        "anchor": "start"
       }
     ],
     "footerBottom": 188.75,
@@ -321,23 +321,23 @@
         "kicker": [
           {
             "text": "KICKER",
-            "x": 237,
+            "x": 92,
             "baseline": 32,
             "size": 22,
             "weight": 400,
             "secondary": true,
-            "anchor": "middle"
+            "anchor": "start"
           }
         ],
         "title": [
           {
             "text": "Zone",
-            "x": 237,
+            "x": 92,
             "baseline": 70.59375,
             "size": 32,
             "weight": 700,
             "secondary": false,
-            "anchor": "middle"
+            "anchor": "start"
           }
         ],
         "headerBlockHeight": 70.1875,
@@ -365,12 +365,12 @@
         "footerLines": [
           {
             "text": "Footer",
-            "x": 233,
+            "x": 16,
             "baseline": 179.5625,
             "size": 24,
             "weight": 700,
             "secondary": false,
-            "anchor": "middle"
+            "anchor": "start"
           }
         ],
         "footerBottom": 188.75,
@@ -433,35 +433,35 @@
         "kicker": [
           {
             "text": "KICKER",
-            "x": 291,
+            "x": 68,
             "baseline": 34,
             "size": 22,
             "weight": 400,
             "secondary": true,
-            "anchor": "middle"
+            "anchor": "start"
           }
         ],
         "title": [
           {
             "text": "Zone",
-            "x": 291,
+            "x": 68,
             "baseline": 72.59375,
             "size": 32,
             "weight": 700,
             "secondary": false,
-            "anchor": "middle"
+            "anchor": "start"
           }
         ],
         "headerBlockHeight": 70.1875,
         "subtitle": [
           {
             "text": "Subtitle",
-            "x": 175,
+            "x": 12,
             "baseline": 110.1875,
             "size": 24,
             "weight": 400,
             "secondary": false,
-            "anchor": "middle"
+            "anchor": "start"
           }
         ],
         "subtitleWidth": 326,
@@ -476,12 +476,12 @@
         "footer": [
           {
             "text": "Footer",
-            "x": 300,
+            "x": 16,
             "baseline": 184.875,
             "size": 24,
             "weight": 700,
             "secondary": false,
-            "anchor": "middle"
+            "anchor": "start"
           }
         ],
         "footerRuleY": 157.875,
@@ -513,7 +513,7 @@
       "bodyFontSize": "var(--st-component-diagramCard-bodyFontSize)",
       "bodyFontWeight": "var(--st-component-diagramCard-bodyFontWeight)",
       "bodyLineHeight": "var(--st-component-diagramCard-bodyLineHeight)",
-      "bodyInsetFromBar": "var(--st-component-diagramCard-bodyInsetFromBar)",
+      "bodyInsetFromBar": "10px",
       "ruleHeight": "var(--st-component-diagramCard-ruleHeight)",
       "ruleMargin": "var(--st-component-diagramCard-ruleMargin)",
       "ruleInsetStart": "var(--st-component-diagramCard-ruleInsetStart)",

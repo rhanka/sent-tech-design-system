@@ -1,8 +1,8 @@
 {
   "componentId": "combobox",
   "contractSource": "derived",
-  "digest": "sha256:cc671a800d29a75a5e77d668eada2037b1c226f39b4a932034f02b259c02ec7e",
-  "entryDigest": "sha256:24c05fed5828c42f923177bafce60f5b13ee376013609bc41f422184577efa63",
+  "digest": "sha256:1896d3f7552b1bbce851d06f16b3ee7d1ba13b9abd906832f536f0d3dd339428",
+  "entryDigest": "sha256:9d5ebf0fff255ff96fe24552ea07e72ceb86d16fb42206b196ebdd092b9c828b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -589,7 +589,7 @@
         "declarationPath": "packages/components-vue/dist/Combobox.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ComboboxProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "complete",
       "unresolved": [],

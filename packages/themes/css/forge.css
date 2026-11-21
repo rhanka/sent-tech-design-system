@@ -805,7 +805,7 @@
   --st-component-diagramCardCompact-bodyFontSize: var(--st-component-diagramCard-bodyFontSize);
   --st-component-diagramCardCompact-bodyFontWeight: var(--st-component-diagramCard-bodyFontWeight);
   --st-component-diagramCardCompact-bodyLineHeight: var(--st-component-diagramCard-bodyLineHeight);
-  --st-component-diagramCardCompact-bodyInsetFromBar: var(--st-component-diagramCard-bodyInsetFromBar);
+  --st-component-diagramCardCompact-bodyInsetFromBar: 10px;
   --st-component-diagramCardCompact-ruleHeight: var(--st-component-diagramCard-ruleHeight);
   --st-component-diagramCardCompact-ruleMargin: var(--st-component-diagramCard-ruleMargin);
   --st-component-diagramCardCompact-ruleInsetStart: var(--st-component-diagramCard-ruleInsetStart);
@@ -1754,7 +1754,7 @@
   --st-component-diagramCardCompact-bodyFontSize: var(--st-component-diagramCard-bodyFontSize);
   --st-component-diagramCardCompact-bodyFontWeight: var(--st-component-diagramCard-bodyFontWeight);
   --st-component-diagramCardCompact-bodyLineHeight: var(--st-component-diagramCard-bodyLineHeight);
-  --st-component-diagramCardCompact-bodyInsetFromBar: var(--st-component-diagramCard-bodyInsetFromBar);
+  --st-component-diagramCardCompact-bodyInsetFromBar: 10px;
   --st-component-diagramCardCompact-ruleHeight: var(--st-component-diagramCard-ruleHeight);
   --st-component-diagramCardCompact-ruleMargin: var(--st-component-diagramCard-ruleMargin);
   --st-component-diagramCardCompact-ruleInsetStart: var(--st-component-diagramCard-ruleInsetStart);
@@ -2703,7 +2703,7 @@
   --st-component-diagramCardCompact-bodyFontSize: var(--st-component-diagramCard-bodyFontSize);
   --st-component-diagramCardCompact-bodyFontWeight: var(--st-component-diagramCard-bodyFontWeight);
   --st-component-diagramCardCompact-bodyLineHeight: var(--st-component-diagramCard-bodyLineHeight);
-  --st-component-diagramCardCompact-bodyInsetFromBar: var(--st-component-diagramCard-bodyInsetFromBar);
+  --st-component-diagramCardCompact-bodyInsetFromBar: 10px;
   --st-component-diagramCardCompact-ruleHeight: var(--st-component-diagramCard-ruleHeight);
   --st-component-diagramCardCompact-ruleMargin: var(--st-component-diagramCard-ruleMargin);
   --st-component-diagramCardCompact-ruleInsetStart: var(--st-component-diagramCard-ruleInsetStart);
