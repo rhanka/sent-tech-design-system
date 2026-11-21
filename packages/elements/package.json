@@ -19,6 +19,7 @@
     "envelope.json",
     "fixtures",
     "schemas",
+    "skill",
     "!dist/**/*.map",
     "!dist/.srchash"
   ],
@@ -31,6 +32,7 @@
     "./envelope.json": "./envelope.json",
     "./fixtures/*": "./fixtures/*",
     "./schemas/*": "./schemas/*",
+    "./skill/SKILL.md": "./skill/SKILL.md",
     "./shells/manifest.json": "./dist/shells/manifest.json",
     "./bpmn": {
       "types": "./dist/element/bpmn.d.ts",
