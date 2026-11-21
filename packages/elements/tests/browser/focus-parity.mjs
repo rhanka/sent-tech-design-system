@@ -45,6 +45,11 @@ export async function compareFocusMount(doc, ownerHtml) {
   for (const [index, card] of [...expected.querySelectorAll(".focus-option")].entries()) {
     const option = options[index];
     markDefinition(card, option.id);
+    if (option.annotation !== "none") {
+      const disposition = expected.ownerDocument.createElement("span");
+      disposition.textContent = option.annotation;
+      card.querySelector(":scope > .focus-consequence").after(disposition);
+    }
     appendCalls(card, option.citationRefs);
     if (disabled.has(option.id)) {
       card.setAttribute("aria-disabled", "true");
