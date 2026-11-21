@@ -560,12 +560,16 @@
   function refitForFonts(): void {
     const ready = document.fonts?.ready;
     const useBrowserMeasure = measureLines === undefined && measure === defaultCardMeasure;
-    if (frameEl === undefined || scene === undefined || (ready === fittedFonts && (!useBrowserMeasure || browserMeasure !== undefined))) return;
+    if (frameEl === undefined || scene === undefined) return;
+    const fontsChanged = ready !== fittedFonts;
+    if (!fontsChanged && (!useBrowserMeasure || browserMeasure !== undefined)) return;
     fittedFonts = ready;
+    // A later scene can supply a card to measure within the same font load.
     if (useBrowserMeasure) {
       browserMeasure = measureRenderedSceneFont(frameEl, scene, effectiveMeasure);
     }
-    resetToFit();
+    if (fontsChanged) resetToFit();
+    else if (browserMeasure === undefined) return;
     void tick().then(readRenderedBounds);
   }
 

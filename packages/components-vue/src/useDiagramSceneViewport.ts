@@ -170,12 +170,16 @@ export function useDiagramSceneViewport(
         const frame = frameEl.value;
         const current = scene.value;
         const useBrowserMeasure = props.measureLines === undefined && (props.measure === undefined || props.measure === defaultCardMeasure);
-        if (frame === undefined || current === undefined || (ready === fittedFonts && (!useBrowserMeasure || browserMeasure.value !== undefined))) return;
+        if (frame === undefined || current === undefined) return;
+        const fontsChanged = ready !== fittedFonts;
+        if (!fontsChanged && (!useBrowserMeasure || browserMeasure.value !== undefined)) return;
         fittedFonts = ready;
+        // A later scene can supply a card to measure within the same font load.
         if (useBrowserMeasure) {
             browserMeasure.value = measureRenderedSceneFont(frame, current, measure.value);
         }
-        resetToFit();
+        if (fontsChanged) resetToFit();
+        else if (browserMeasure.value === undefined) return;
         void nextTick(readRenderedBounds);
     }
     function onWheel(event: WheelEvent) {
