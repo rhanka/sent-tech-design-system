@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Alert.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Info/success/warning/error banner.",
     "fr": "Bandeau d’information info/success/warning/error."
   },
-  "digest": "sha256:0d233cf589e6eaa27da4ed5ec9990dc1aea809b2b2b7146d5612b736fc5204bb",
+  "digest": "sha256:52ffc8e08cd32989d8385275ee2efb081b8fb79faec8b7617a3b9708d7937e82",
   "displayName": "Alert",
   "format": "component-entry/v1",
   "frameworks": [

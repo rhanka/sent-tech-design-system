@@ -132,7 +132,7 @@
     expand: (title: string) => string;
     collapse: (title: string) => string;
     /** Localized fallback label for containment relations without an explicit edge label (DE-1b). */
-    contains: string;
+    contains?: string;
     /** Heading for the automatic link-style legend strip (DE-2). */
     legend?: string;
   }
@@ -671,6 +671,29 @@
     cameraDocument = id;
   });
 
+  // Refit the camera and reset pan on every fold or unfold (uncontrolled toggle
+  // or controlled `collapsed` change) so unfolding never leaves the diagram
+  // overflowing the frame. Explicit user zoom/pan is kept until the next fold.
+  const foldKey = $derived([...collapsedNow].sort().join("\0"));
+  let cameraFoldKey: string | undefined;
+  $effect.pre(() => {
+    const key = foldKey;
+    untrack(() => {
+      if (cameraFoldKey !== undefined && cameraFoldKey !== key) {
+        atFit = true;
+        requestedZoom = undefined;
+        const element = viewportEl;
+        if (element !== undefined) {
+          void tick().then(() => {
+            if (element.scrollLeft !== 0) element.scrollLeft = 0;
+            if (element.scrollTop !== 0) element.scrollTop = 0;
+          });
+        }
+      }
+      cameraFoldKey = key;
+    });
+  });
+
   // Z-7: clamp a user-selected zoom. Until an interaction, keep the camera
   // at fit through token, font and painted-bounds updates during mounting.
   $effect(() => {
@@ -905,8 +928,6 @@
   const entering = (node: SceneNodeModel): boolean => origin !== undefined && !origin.has(node.occurrence);
 
   function toggleFold(node: SceneNodeModel): void {
-    requestedZoom = zoom;
-    atFit = false;
     const next = node.collapsed
       ? collapsedNow.filter((id) => id !== node.occurrence)
       : [...collapsedNow, node.occurrence];

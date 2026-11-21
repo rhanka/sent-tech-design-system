@@ -33,12 +33,13 @@ const strings = computed(() => ({ ...DEFAULT_LABELS, ...props.labels }));
 const flowOptions = computed(() => ({ ...props.flows, countTemplate: strings.value.count }));
 const tokens = shallowRef<FlowTokens>(DEFAULT_FLOW_TOKENS);
 const { frameEl: frame, viewportEl: viewport, measure, measureLines, effectiveMetrics,
-  fit, zoom, readout, placement, viewportStyle, holdZoom,
+  fit, zoom, readout, placement, viewportStyle, refitOnFold,
   setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
     props, () => scene.value, camera => props.onCameraChange?.(camera), readFlowTokens);
 defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 const foldState = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? foldState.value);
+watch(() => [...collapsedNow.value].sort().join('\0'), () => refitOnFold(), { flush: 'pre' });
 let previousOrientation: SceneOrientations | undefined, orientationDocument: string | undefined;
 const orientationSeedByFold = new Map<string, SceneOrientations | undefined>();
 const layout = computed(() => {
@@ -149,7 +150,6 @@ function click(event: MouseEvent): void {
   else if (!element.closest("button")) dispatch({ type: "escape" });
 }
 function toggle(node: SceneNodeModel): void {
-  holdZoom();
   const next = node.collapsed ? collapsedNow.value.filter((id) => id !== node.occurrence) : [...collapsedNow.value, node.occurrence];
   if (props.collapsed === undefined) foldState.value = next;
   props.onFoldChange?.(next, { occurrence: node.occurrence, collapsed: !node.collapsed });

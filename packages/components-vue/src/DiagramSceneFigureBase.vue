@@ -44,13 +44,14 @@ const arrowId = 'diagram-arrow-' + hostId;
 const markerIds = connectorMarkerIds(arrowId);
 const maskId = 'diagram-connector-mask-' + hostId;
 const { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
-    fit, zoom, readout, placement, viewportStyle, holdZoom,
+    fit, zoom, readout, placement, viewportStyle, refitOnFold,
     setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
         props, () => scene.value, camera => emit('cameraChange', camera), undefined,
         { animating: () => animating.value, settle: () => settle() });
 defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 const folds = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? folds.value);
+watch(() => [...collapsedNow.value].sort().join('\0'), () => refitOnFold(), { flush: 'pre' });
 let previousOrientation: SceneOrientations | undefined;
 let orientationDocument: string | undefined;
 const orientationSeedByFold = new Map<string, SceneOrientations | undefined>();
@@ -216,7 +217,6 @@ function nodeStyle(node: SceneNodeModel) {
     return `left:${rect.x}px;top:${rect.y}px;width:${rect.width}px;height:${rect.height}px${origin.value !== undefined && !origin.value.has(node.occurrence) ? `;opacity:${eased.value}` : ''}`;
 }
 function toggleFold(node: SceneNodeModel) {
-    holdZoom();
     pendingFocus = { occurrence: node.occurrence, collapsed: !node.collapsed };
     const next = node.collapsed ? collapsedNow.value.filter(id => id !== node.occurrence) : [...collapsedNow.value, node.occurrence];
     if (props.collapsed === undefined)

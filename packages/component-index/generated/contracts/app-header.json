@@ -1,8 +1,8 @@
 {
   "componentId": "app-header",
   "contractSource": "derived",
-  "digest": "sha256:cab14bfd8be2f02ade84a13f49b11d39c2cf0a1bedf200e63833761aee0637d3",
-  "entryDigest": "sha256:236293602584dbbda71509cb777d5d150fb2ac62e6fc16d69b222679010d0198",
+  "digest": "sha256:e1a2af6292ccf01cbcce01a6e6c29eb26b8dadac40f613af3e14b3c08806bdf4",
+  "entryDigest": "sha256:e1e0ef2e9422062dc8a07d6af151b39cdaccc2cd9dc4bd781dbfbade03173ff4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -360,7 +360,7 @@
         "declarationPath": "packages/components-vue/dist/AppHeader.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AppHeaderProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "complete",
       "unresolved": [],

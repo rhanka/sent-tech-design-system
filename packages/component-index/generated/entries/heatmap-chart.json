@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/HeatmapChart.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Colored matrix for crossing two categorical dimensions.",
     "fr": "Matrice colorée pour croiser deux dimensions catégorielles."
   },
-  "digest": "sha256:f3a29007350b547a2dfeddb772b50459045ca6eaae14ae89b44527331e0dad4a",
+  "digest": "sha256:f5df8e32f272432f075810f3da9d24d984b81f88cd03a9c325fa7823ae0705fb",
   "displayName": "HeatmapChart",
   "format": "component-entry/v1",
   "frameworks": [

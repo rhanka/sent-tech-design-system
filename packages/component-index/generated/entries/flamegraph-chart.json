@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/FlamegraphChart.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Stacked icicle call stack: width ∝ value, recursive hierarchy laid out level by level.",
     "fr": "Pile d'appels « icicle » empilée : largeur ∝ valeur, hiérarchie récursive posée niveau par niveau."
   },
-  "digest": "sha256:94fb7b8d60187a5d723e9c7f65b17438e11d4591dbee5bd103650d21538e0cf0",
+  "digest": "sha256:9e546e538db958d47bca3d9eb5df146f6d4f7e801dd670a9c1998bf242af025d",
   "displayName": "FlamegraphChart",
   "format": "component-entry/v1",
   "frameworks": [

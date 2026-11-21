@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:e396626cee5b3a2dc287c5ae5d462d7446a726b3ec8ca40bf4549d99e396f30b",
-  "entryDigest": "sha256:0371b24a553de5e6a9f807ecb8d110075a44071c4ba21dde82b24a915e4c70e4",
+  "digest": "sha256:226b4ff05433c2f2ed51bd6c183b599354f64a3c348aa37b10a57f081d555348",
+  "entryDigest": "sha256:a7495a7f6e7137d6646f84e28d5c12263b1a258db837d2b0628515f5c340396c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1879,7 +1879,7 @@
             "additionalProperties": false,
             "properties": {
               "anatomy": {
-                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). New views default to `\"v2\"`.",
+                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). Absent means legacy `\"v1\"`; `\"v2\"` is opt-in.",
                 "enum": [
                   "v1",
                   "v2"
@@ -4473,7 +4473,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:4d1689a4a0cfd537739c0ca8140a3d52b408bb91c15800eb1e301673acc5820e",
+        "declarationDigest": "sha256:8d80bfe1dc64a76692275fcb64b6322ae7b27d1d198371332a809b239a32a194",
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
@@ -6888,7 +6888,7 @@
             "additionalProperties": false,
             "properties": {
               "anatomy": {
-                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). New views default to `\"v2\"`.",
+                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). Absent means legacy `\"v1\"`; `\"v2\"` is opt-in.",
                 "enum": [
                   "v1",
                   "v2"
@@ -9541,7 +9541,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "partial",
       "unresolved": [

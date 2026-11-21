@@ -1,8 +1,8 @@
 {
   "componentId": "filter-bar",
   "contractSource": "derived",
-  "digest": "sha256:194ec876c8661d337612d3bea369726d67118286fb5d27c81d0dfcb808273e89",
-  "entryDigest": "sha256:c8767309a0189f9dd3566086d7e50b430b8289c0349fc25be9c8fdb5d1bb6f3e",
+  "digest": "sha256:2c40038becb23587aab147f6c7f58461b1dcc17258a8def8cb0a87a8895387c0",
+  "entryDigest": "sha256:c6b83600ad2b2464106fc1d93e856a933ec4ef55a25c43362f528e8d73ddd4ee",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -196,7 +196,7 @@
         "declarationPath": "packages/components-vue/dist/FilterBar.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FilterBarProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "partial",
       "unresolved": [],

@@ -3,7 +3,8 @@ import SceneFigure from './DiagramSceneFigure.vue';
 import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svelte';
 import type { DiagramSceneFigureProps } from './DiagramSceneFigure.types.js';
 import type { SceneDocument, ScenePresentation, SceneOccurrenceRef } from './diagramSceneModel.js';
-import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '../../diagram-canvas/tests/scene-host-fixtures.js';
+import { CURRENT_SCHEMA_VERSION, DEFAULT_PRESENTATION, DIAGRAM_PRESENTATION_CONTRACT_PIN, createView, entityRef, m3ProfileRegistry, occurrenceRef, shippedExecutorBindings, viewRef } from '../../diagram-canvas/tests/scene-host-fixtures.js';
+import { hCondInput } from '../../diagram-canvas/tests/layout/dc2a/h-cond.js';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
@@ -13,12 +14,16 @@ import { render, cleanup } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import DiagramCard from './DiagramCard.vue';
+import DiagramCardHeader from './DiagramCardHeader.vue';
 import DiagramZone from './DiagramZone.vue';
+import DiagramZoneHeader from './DiagramZoneHeader.vue';
 import DiagramIcon from './diagram-icons/DiagramIcon.vue';
 import GraphLegend from './GraphLegend.vue';
 import ForceGraph from './ForceGraph.vue';
 import SvelteCard from '../../components-svelte/src/lib/DiagramCard.svelte';
+import SvelteCardHeader from '../../components-svelte/src/lib/DiagramCardHeader.svelte';
 import SvelteZone from '../../components-svelte/src/lib/DiagramZone.svelte';
+import SvelteZoneHeader from '../../components-svelte/src/lib/DiagramZoneHeader.svelte';
 import SvelteIcon from '../../components-svelte/src/lib/diagram-icons/DiagramIcon.svelte';
 import SvelteLegend from '../../components-svelte/src/lib/GraphLegend.svelte';
 import SvelteForce from '../../components-svelte/src/lib/ForceGraph.svelte';
@@ -142,19 +147,28 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
     { entityId: 'overflow', title: 'X'.repeat(200), body: ['body'] },
     { entityId: 'unknown', title: 'Unknown', body: ['body'], icon: 'unmapped' },
     { entityId: 'proposed', title: 'Proposal', body: ['body'], proposed: true, align: 'center', toggle: { collapsed: true, label: 'Expand' } },
+    { entityId: 'v1-pinned-center', kicker: 'KICKER', title: 'Pinned v1', body: ['Body', 'Detail'], detailCount: 1, footer: 'Footer', anatomy: 'v1', align: 'center' },
     { entityId: 'v2-default', title: 'Compact', body: ['Line'], anatomy: 'v2' },
+    { entityId: 'v2-center', title: 'Compact center', body: ['Line'], anatomy: 'v2', align: 'center' },
     { entityId: 'v2-left', title: 'Compact left', body: ['Line'], anatomy: 'v2', align: 'left' },
     { entityId: 'v2-fallback', kicker: 'KICKER', title: 'Title', body: ['Body', 'Detail'], detailCount: 1, footer: 'Footer', anatomy: 'v2' },
+    { entityId: 'v2-fallback-center', kicker: 'KICKER', title: 'Title', body: ['Body', 'Detail'], detailCount: 1, footer: 'Footer', anatomy: 'v2', align: 'center' },
   ] satisfies DiagramCardProps[]) {
     it(`should preserve ${props.entityId} state and diagnostics`, async () => {
       const vue = mount(DiagramCard, { props }); const svelte = render(SvelteCard, { props });
       await nextTick(); await tick(); expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
       expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderCardSvg(props).diagnostics);
-      if (props.anatomy === 'v2' && props.entityId !== 'v2-fallback') {
+      if (props.anatomy === 'v2' && !props.entityId.startsWith('v2-fallback')) {
         expect(vue.element.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap: var(--st-component-diagramCardCompact-iconTextGap, 4px)');
-      } else if (props.entityId === 'v2-fallback') {
+        expect(vue.element.classList.contains('st-diagramCard--center')).toBe(props.align === 'center');
+      } else if (props.entityId.startsWith('v2-fallback') || props.entityId === 'v1-pinned-center') {
         expect(vue.element.getAttribute('style') ?? '').not.toContain('--st-component-diagramCard-iconTextGap');
         expect(vue.element.getAttribute('style') ?? '').toContain('height: 200px');
+        expect(vue.element.classList.contains('st-diagramCard--center')).toBe(false);
+        expect(vue.element.classList.contains('st-diagramCard--v2')).toBe(false);
+        // W1-19 / W1-40 / W1-52: clean fallback-v1 without truncation never sets data-card-overflow.
+        expect(vue.element.getAttribute('data-card-overflow')).toBeNull();
+        expect(svelte.container.querySelector('.st-diagramCard')?.getAttribute('data-card-overflow')).toBeNull();
       }
       await vue.trigger('click'); expect(vue.emitted('select')).toEqual([[{ entityId: props.entityId }]]);
       vue.unmount(); svelte.unmount();
@@ -169,12 +183,16 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
       expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderZoneSvg(props).diagnostics);
       const frame = vue.element.querySelector('.st-diagramZone') ?? vue.element.querySelector('.st-diagramCard');
       const style = frame?.getAttribute('style') ?? '';
-      expect(style).toContain('--st-component-diagramCard-iconTextGap');
       if (collapsed) {
+        expect(style).toContain('--st-component-diagramCard-iconTextGap');
         expect(style).toContain('height: 154px');
       } else {
-        expect(style).toContain('--st-component-diagramZone-headerInset');
+        // v2 header vars are scoped to .st-diagramZone-header so they never leak into nested v1 children.
+        expect(style).not.toContain('--st-component-diagramZone-headerInset');
+        expect(style).not.toContain('--st-component-diagramCard-iconTextGap');
         const header = vue.element.querySelector<HTMLElement>('.st-diagramZone-header');
+        expect(header?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-headerInset');
+        expect(header?.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap');
         expect(header?.style.right).toBe(header?.style.left);
         const toggle = vue.element.querySelector<HTMLElement>('.st-diagramCard-toggle');
         expect(toggle?.style.top).toBe(toggle?.style.right);
@@ -182,6 +200,142 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
       vue.unmount(); svelte.unmount();
     });
   }
+  it('should pin v1 expanded zone header inset and toggle geometry to 0.41.5 / next.7 on both hosts without v2 leakage', async () => {
+    for (const anatomy of [undefined, 'v1'] as const) {
+      const props = {
+        entityId: 'v1-zone-padded',
+        kicker: 'KICKER',
+        title: 'Zone',
+        subtitle: 'Sub',
+        footer: 'Footer',
+        collapsed: false,
+        toggleLabel: 'Collapse',
+        ...(anatomy === undefined ? {} : { anatomy }),
+        containerPadding: 24,
+        width: 492,
+        height: 400,
+      };
+      const vue = mount(DiagramZone, { props });
+      const svelte = render(SvelteZone, { props });
+      await nextTick(); await tick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      for (const root of [vue.element, svelte.container]) {
+        const frame = root.querySelector<HTMLElement>('.st-diagramZone')!;
+        const header = root.querySelector<HTMLElement>('.st-diagramZone-header')!;
+        const toggle = root.querySelector<HTMLElement>('.st-diagramCard-toggle')!;
+        const button = toggle.querySelector<HTMLButtonElement>('button')!;
+        expect(frame.getAttribute('style') ?? '').not.toContain('--st-component-diagramZone-headerInset');
+        expect(header.getAttribute('style') ?? '').not.toContain('--st-component-diagramZone-headerInset');
+        expect(header.style.top).toBe('calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+        expect(header.style.left).toBe('calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+        expect(header.style.right).toBe('calc(24px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+        expect(toggle.style.top).toBe(
+          'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))',
+        );
+        expect(toggle.style.right).toBe(toggle.style.top);
+        expect(button.classList.contains('st-iconButton--sm')).toBe(true);
+      }
+      vue.unmount(); svelte.unmount();
+    }
+    // Collapsed fallback-v1 zone matches 0.41.5 / next.7 card toggle placement and size on both hosts.
+    const fbProps = {
+      entityId: 'v2-zone-fallback-toggle',
+      kicker: 'KICKER',
+      title: 'Zone',
+      subtitle: 'Sub',
+      footer: 'Footer',
+      collapsed: true,
+      toggleLabel: 'Expand',
+      anatomy: 'v2' as const,
+    };
+    const vueFb = mount(DiagramZone, { props: fbProps });
+    const svelteFb = render(SvelteZone, { props: fbProps });
+    await nextTick(); await tick();
+    expect(dom(vueFb.element)).toEqual(dom(withControlIconTokens(svelteFb.container.firstElementChild!)));
+    for (const root of [vueFb.element, svelteFb.container]) {
+      const toggle = root.querySelector<HTMLElement>('.st-diagramCard-toggle')!;
+      expect(toggle.style.top).toBe(
+        'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))',
+      );
+      expect(toggle.style.right).toBe(toggle.style.top);
+      expect(toggle.querySelector('button')?.classList.contains('st-iconButton--sm')).toBe(true);
+    }
+    vueFb.unmount(); svelteFb.unmount();
+  });
+  it('should keep v1/surface1 +/- toggle hover byte-identical to 0.41.5 and apply W1-12 secondaryHoverBackground only on surface2 zones on both hosts', async () => {
+    const vueHeader = readFileSync(resolve(import.meta.dirname, 'DiagramCardHeader.vue'), 'utf8');
+    const svelteHeader = readFileSync(resolve(import.meta.dirname, '../../components-svelte/src/lib/DiagramCardHeader.svelte'), 'utf8');
+    // Neither host's DiagramCardHeader <style> overrides :hover globally, preserving 0.41.5 / next.7 byte-for-byte.
+    expect(vueHeader).not.toContain('--st-component-button-secondaryHoverBackground');
+    expect(vueHeader).not.toMatch(/\.st-diagramCard-toggle[\s\S]*:hover/);
+    expect(svelteHeader).not.toContain('--st-component-button-secondaryHoverBackground');
+    expect(svelteHeader).not.toMatch(/\.st-diagramCard-toggle[\s\S]*:hover/);
+
+    // Unnested v1 and surface1 (depth 0) zones (expanded & collapsed) emit zero hover overrides on both hosts.
+    for (const variant of [
+      { entityId: 'v1-exp', title: 'Zone', subtitle: 'Sub', collapsed: false, toggleLabel: 'Collapse', width: 492, height: 320 },
+      { entityId: 's1-exp', title: 'Zone', subtitle: 'Sub', collapsed: false, toggleLabel: 'Collapse', depth: 0, width: 492, height: 320 },
+      { entityId: 'v1-col', title: 'Zone', subtitle: 'Sub', collapsed: true, toggleLabel: 'Expand' },
+      { entityId: 's1-col', title: 'Zone', subtitle: 'Sub', collapsed: true, toggleLabel: 'Expand', depth: 0 },
+    ]) {
+      const vue = mount(DiagramZone, { props: variant });
+      const svelte = render(SvelteZone, { props: variant });
+      await nextTick(); await tick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      for (const root of [vue.element, svelte.container]) {
+        const target = (root.querySelector('.st-diagramZone-header') ?? root.querySelector('.st-diagramCard')) as HTMLElement;
+        const style = target.getAttribute('style') ?? '';
+        expect(style).not.toContain('--st-component-control-hoverBackground');
+        expect(style).not.toContain('--st-component-iconButton-hoverBackground');
+      }
+      vue.unmount(); svelte.unmount();
+    }
+
+    // Surface2 zones (expanded & collapsed) apply W1-12 secondaryHoverBackground scoped to the zone header / folded card on both hosts.
+    for (const variant of [
+      { entityId: 's2-exp', title: 'Zone', subtitle: 'Sub', collapsed: false, toggleLabel: 'Collapse', depth: 1, width: 492, height: 320 },
+      { entityId: 's2-exp-flip', title: 'Zone', subtitle: 'Sub', collapsed: false, toggleLabel: 'Collapse', depth: 0, depthParityStart: 1 as const, width: 492, height: 320 },
+      { entityId: 's2-col', title: 'Zone', subtitle: 'Sub', collapsed: true, toggleLabel: 'Expand', depth: 1 },
+      { entityId: 's2-col-flip', title: 'Zone', subtitle: 'Sub', collapsed: true, toggleLabel: 'Expand', depth: 0, depthParityStart: 1 as const },
+    ]) {
+      const vue = mount(DiagramZone, { props: variant });
+      const svelte = render(SvelteZone, { props: variant });
+      await nextTick(); await tick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      for (const root of [vue.element, svelte.container]) {
+        if (!variant.collapsed) {
+          const frameStyle = root.querySelector('.st-diagramZone')?.getAttribute('style') ?? '';
+          expect(frameStyle).not.toContain('--st-component-control-hoverBackground');
+          expect(frameStyle).not.toContain('--st-component-iconButton-hoverBackground');
+        }
+        const target = (root.querySelector('.st-diagramZone-header') ?? root.querySelector('.st-diagramCard')) as HTMLElement;
+        const style = target.getAttribute('style') ?? '';
+        expect(style).toMatch(/--st-component-control-hoverBackground:\s*var\(--st-component-button-secondaryHoverBackground/);
+        expect(style).toMatch(/--st-component-iconButton-hoverBackground:\s*var\(--st-component-button-secondaryHoverBackground/);
+      }
+      vue.unmount(); svelte.unmount();
+    }
+
+    for (const theme of ['sent-tech', 'forge', 'entropic'] as const) {
+      const css = readFileSync(resolve(import.meta.dirname, `../../themes/css/${theme}.css`), 'utf8');
+      const tokenMatches = (name: string) =>
+        [...css.matchAll(new RegExp(`${name}:\\s*([^;]+);`, 'g'))].map((m) => m[1]!.trim());
+      const s1 = tokenMatches('--st-component-diagramZone-surface1');
+      const s2 = tokenMatches('--st-component-diagramZone-surface2');
+      const v1Hover = tokenMatches('--st-component-control-hoverBackground');
+      const s2Hover = tokenMatches('--st-component-button-secondaryHoverBackground');
+      expect(s1.length, theme).toBe(3);
+      expect(s2.length, theme).toBe(3);
+      expect(v1Hover.length, theme).toBe(3);
+      expect(s2Hover.length, theme).toBe(3);
+      for (let mode = 0; mode < 3; mode += 1) {
+        expect(v1Hover[mode], `${theme} mode ${mode} v1 hover vs surface1`).not.toBe(s1[mode]);
+        expect(v1Hover[mode], `${theme} mode ${mode} v1 hover collision on surface2`).toBe(s2[mode]);
+        expect(s2Hover[mode], `${theme} mode ${mode} surface2 hover vs surface1`).not.toBe(s1[mode]);
+        expect(s2Hover[mode], `${theme} mode ${mode} surface2 hover vs surface2`).not.toBe(s2[mode]);
+      }
+    }
+  });
   it('should anchor expanded v2 zone header right to headerInset (12px) when containerPadding is 16px on both hosts', async () => {
     const props = {
       entityId: 'v2-zone-padded',
@@ -207,6 +361,102 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
       expect(toggle.style.top).toBe(toggle.style.right);
     }
     vue.unmount(); svelte.unmount();
+  });
+  it('should isolate expanded zone depth surface and v2 header vars from nested v1 children on both hosts (W1-45, W1-56)', async () => {
+    const outerProps = {
+      entityId: 'outer-v2-depth1',
+      title: 'Outer',
+      subtitle: 'Sub',
+      collapsed: false,
+      toggleLabel: 'Collapse',
+      anatomy: 'v2' as const,
+      depth: 1,
+      width: 600,
+      height: 500,
+    };
+    const vueOuter = mount(DiagramZone, { props: outerProps });
+    const svelteOuter = render(SvelteZone, { props: outerProps });
+    await nextTick(); await tick();
+    expect(dom(vueOuter.element)).toEqual(dom(withControlIconTokens(svelteOuter.container.firstElementChild!)));
+    for (const root of [vueOuter.element, svelteOuter.container]) {
+      const frame = root.querySelector<HTMLElement>('.st-diagramZone')!;
+      const frameStyle = frame.getAttribute('style') ?? '';
+      expect(frameStyle).toContain('background:');
+      expect(frameStyle).toContain('--st-component-diagramZone-surface2');
+      // Never set inherited custom properties on .st-diagramZone (ancestor of slot/children).
+      expect(frameStyle).not.toContain('--st-component-diagramZone-surface:');
+      expect(frameStyle).not.toContain('--st-component-diagramZone-headerInset');
+      expect(frameStyle).not.toContain('--st-component-diagramCard-iconSize');
+      expect(frameStyle).not.toContain('--st-component-diagramCard-iconTextGap');
+      expect(frameStyle).not.toContain('--st-component-control-hoverBackground');
+      expect(frameStyle).not.toContain('--st-component-iconButton-hoverBackground');
+    }
+    // Vue slot composition: a nested v1 child DiagramZone inside a depth-1 v2 parent receives zero inherited surface/v2/hover vars.
+    const Wrapper = defineComponent({
+      components: { DiagramZone, DiagramCard },
+      template: `<DiagramZone entityId="p" title="Parent" :collapsed="false" anatomy="v2" :depth="1" toggleLabel="Collapse" :width="600" :height="500">
+        <DiagramZone entityId="c" title="Child" :collapsed="false" toggleLabel="Collapse" :containerPadding="24" :width="492" :height="240" />
+        <DiagramCard entityId="leaf" title="Leaf" :body="['Line']" />
+      </DiagramZone>`,
+    });
+    const nested = mount(Wrapper);
+    await nextTick();
+    const zones = nested.element.querySelectorAll<HTMLElement>('.st-diagramZone');
+    expect(zones).toHaveLength(2);
+    expect(zones[0]!.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+    expect(zones[0]!.getAttribute('style') ?? '').not.toContain('--st-component-diagramZone-surface:');
+    expect(zones[0]!.querySelector<HTMLElement>('.st-diagramZone-header')!.getAttribute('style') ?? '').toMatch(/--st-component-control-hoverBackground:\s*var\(--st-component-button-secondaryHoverBackground/);
+    expect(zones[1]!.getAttribute('style') ?? '').not.toContain('surface2');
+    const childHeader = zones[1]!.querySelector<HTMLElement>('.st-diagramZone-header')!;
+    expect(childHeader.style.right).toBe('calc(24px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+    expect(childHeader.getAttribute('style') ?? '').not.toContain('--st-component-control-hoverBackground');
+    expect(childHeader.getAttribute('style') ?? '').not.toContain('--st-component-iconButton-hoverBackground');
+    expect(nested.element.querySelector<HTMLElement>('.st-diagramCard')?.getAttribute('style') ?? '').not.toContain('--st-component-control-hoverBackground');
+    expect(nested.element.querySelector<SVGSVGElement>('.st-diagramCard .st-diagramCardHeader-icon')?.getAttribute('width')).toBe('70');
+    nested.unmount();
+    vueOuter.unmount(); svelteOuter.unmount();
+  });
+  it('should compute toggle offset from headerInset/toggleTopOffset without CSS var cascade identically on Svelte and Vue (W1-46, W1-58)', async () => {
+    const zhProps = {
+      kicker: [],
+      title: [{ text: 'Zone', x: 0, baseline: 30, size: 32, weight: 700, secondary: false, anchor: 'start' as const }],
+      subtitle: [],
+      headerInset: 12,
+      headerTextWidth: 300,
+      headerBlockHeight: 52,
+      subtitleWidth: 300,
+      toggle: { collapsed: false, label: 'Collapse' },
+      toggleTopInset: 8,
+    };
+    const vueZh = mount(DiagramZoneHeader, { props: zhProps });
+    const svelteZh = render(SvelteZoneHeader, { props: zhProps });
+    await nextTick(); await tick();
+    expect(dom(vueZh.element)).toEqual(dom(withControlIconTokens(svelteZh.container.firstElementChild!)));
+    for (const root of [vueZh.element, svelteZh.container]) {
+      const toggle = root.querySelector<HTMLElement>('.st-diagramCard-toggle')!;
+      expect(toggle.style.top).toBe('calc(var(--st-component-diagramZone-toggleInset, 8px) - 12px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+      expect(toggle.style.right).toBe(toggle.style.top);
+    }
+    vueZh.unmount(); svelteZh.unmount();
+
+    const chProps = {
+      kicker: [],
+      title: [{ text: 'Card', x: 0, baseline: 30, size: 32, weight: 700, secondary: false, anchor: 'start' as const }],
+      headerTextWidth: 300,
+      headerBlockHeight: 70,
+      toggle: { collapsed: false, label: 'Collapse' },
+      toggleTopOffset: -6,
+    };
+    const vueCh = mount(DiagramCardHeader, { props: chProps });
+    const svelteCh = render(SvelteCardHeader, { props: chProps });
+    await nextTick(); await tick();
+    expect(dom(vueCh.element)).toEqual(dom(withControlIconTokens(svelteCh.container.firstElementChild!)));
+    for (const root of [vueCh.element, svelteCh.container]) {
+      const toggle = root.querySelector<HTMLElement>('.st-diagramCard-toggle')!;
+      expect(toggle.style.top).toBe('calc(-6px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+      expect(toggle.style.right).toBe(toggle.style.top);
+    }
+    vueCh.unmount(); svelteCh.unmount();
   });
   for (const name of DIAGRAM_GLYPH_NAMES) it(`should match icon ${name}`, () => {
     const vue = mount(DiagramIcon, { props: { name } }); const svelte = render(SvelteIcon, { props: { name } });
@@ -547,9 +797,10 @@ describe('scene host DOM and camera/fold behavior', () => {
     const outerHeader = vue.element.querySelector<HTMLElement>(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone-header`)!;
     expect(outerHeader.style.left).toBe('calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))');
     expect(outerHeader.style.right).toBe(outerHeader.style.left);
-    // Compact v2 cards and expanded v2 zones both apply host iconTextGap override.
+    // Compact v2 cards and expanded v2 zone headers apply host iconTextGap override without leaking onto outer zone frames.
     expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('a1')}"] .st-diagramCard`)?.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap');
-    expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap');
+    expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').not.toContain('--st-component-diagramCard-iconTextGap');
+    expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone-header`)?.getAttribute('style') ?? '').toContain('--st-component-diagramCard-iconTextGap');
     const initialOuterB = rectOf(vue.element, 'outerB');
     const initialExt = rectOf(vue.element, 'ext');
 
@@ -712,5 +963,294 @@ describe('scene host DOM and camera/fold behavior', () => {
     }
     vue.unmount(); svelte.unmount();
     vi.unstubAllGlobals();
+  });
+
+  it('should pin v1 figure max size and zoom bounds (maxDisplayScale 0.62, minReadableScale 0.45, fit) to 0.41.5 / next.7 on Svelte and Vue', async () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: true }));
+    vi.stubGlobal('innerHeight', 720);
+    // Single v1 complete card and fallback-v1 card both cap at 0.62 (readout 100%, viewport height 126px).
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1280);
+    const completeSingle = sceneOf('v1-zoom-single', [{ id: 'solo' }]);
+    const completePres = (anatomy?: 'v1' | 'v2') => ({
+      ...completeSingle.presentation,
+      entities: {
+        [occurrence('solo')]: {
+          form: 'card',
+          text: { kicker: 'KICKER', title: 'Complete card', body: 'Primary', detail: 'Detail', footer: 'Footer' },
+          ...(anatomy === undefined ? {} : { anatomy }),
+        },
+      },
+    }) as unknown as ScenePresentation;
+    for (const anatomy of [undefined, 'v1', 'v2'] as const) {
+      const props = { ...host, ...completeSingle, presentation: completePres(anatomy), title: 'Zoom bounds' };
+      const vue = mount(SceneFigure, { props });
+      const svelte = render(SvelteScene, { props });
+      await nextTick(); await tick(); await nextTick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      expect(vue.vm.getCamera()).toEqual({
+        zoom: 0.62,
+        readout: 100,
+        minZoom: 0.62,
+        maxZoom: 0.62,
+        fitZoom: 0.62,
+        pans: false,
+      });
+      const vpVue = vue.element.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!;
+      const vpSvelte = svelte.container.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!;
+      expect(vpVue.style.height).toBe('126px');
+      expect(vpSvelte.style.height).toBe('126px');
+      // Complete/fallback-v1 card keeps 0.41.5 alignment (no --center) and toggle-free 460x200 box.
+      expect(vue.element.querySelector('.st-diagramCard')?.classList.contains('st-diagramCard--center')).toBe(false);
+      expect(svelte.container.querySelector('.st-diagramCard')?.classList.contains('st-diagramCard--center')).toBe(false);
+      vue.unmount(); svelte.unmount();
+    }
+
+    // W1-02 + W1-13: createView() without explicit anatomy keeps v1 (460x200, 126px fitHeight, 0.62 zoom) even for a compact-eligible card on both Svelte and Vue.
+    expect(DEFAULT_PRESENTATION).toEqual({ camera: { x: 0, y: 0, zoom: 1 } });
+    const defaultView = {
+      ...createView({ viewId: viewRef('default-v1-parity'), semanticDocumentId: completeSingle.document.documentId, revision: 1 }),
+      entityOccurrences: {
+        [occurrence('solo')]: { id: occurrenceRef('e.solo'), entity: entityRef('solo'), geometry: { x: 0, y: 0, width: 460, height: 200 } },
+      },
+    } as unknown as NonNullable<DiagramSceneFigureProps['view']>;
+    expect(defaultView.presentation.anatomy).toBeUndefined();
+    const compactEligiblePres = {
+      ...completeSingle.presentation,
+      entities: { [occurrence('solo')]: { form: 'card', text: { title: 'Short', body: 'Line' } } },
+    } as unknown as ScenePresentation;
+    const defaultViewProps = { ...host, ...completeSingle, view: defaultView, presentation: compactEligiblePres, title: 'Default createView' };
+    const vueDef = mount(SceneFigure, { props: defaultViewProps });
+    const svelteDef = render(SvelteScene, { props: defaultViewProps });
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vueDef.element)).toEqual(dom(withControlIconTokens(svelteDef.container.firstElementChild!)));
+    expect(vueDef.vm.getCamera()).toEqual({ zoom: 0.62, readout: 100, minZoom: 0.62, maxZoom: 0.62, fitZoom: 0.62, pans: false });
+    expect(vueDef.element.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!.style.height).toBe('126px');
+    expect(vueDef.element.querySelector('.st-diagramCard')?.classList.contains('st-diagramCard--v2')).toBe(false);
+    expect(svelteDef.container.querySelector('.st-diagramCard')?.classList.contains('st-diagramCard--v2')).toBe(false);
+    vueDef.unmount(); svelteDef.unmount();
+
+    // Wide v1 scene at phone width floors at 0.45 and caps at 0.62 identically on Svelte and Vue.
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(390);
+    vi.stubGlobal('innerHeight', 844);
+    const wideProps = { ...host, ...WIDE, title: 'Wide zoom bounds' };
+    const vueWide = mount(SceneFigure, { props: wideProps });
+    const svelteWide = render(SvelteScene, { props: wideProps });
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vueWide.element)).toEqual(dom(withControlIconTokens(svelteWide.container.firstElementChild!)));
+    expect(vueWide.vm.getCamera()).toMatchObject({ zoom: 0.45, minZoom: 0.45, maxZoom: 0.62, fitZoom: 0.45, pans: true, readout: 73 });
+    vueWide.vm.setZoom(10);
+    await nextTick();
+    expect(vueWide.vm.getCamera().zoom).toBe(0.62);
+    vueWide.vm.setZoom(0.1);
+    await nextTick();
+    expect(vueWide.vm.getCamera().zoom).toBe(0.45);
+    vueWide.vm.fitToFrame();
+    await nextTick();
+    expect(vueWide.vm.getCamera().zoom).toBe(0.45);
+    vueWide.unmount(); svelteWide.unmount();
+    vi.unstubAllGlobals();
+  });
+  it('should refit camera and frame height without overflow when unfolding the largest zone of a reference scene and refit back on folding (Svelte and Vue)', async () => {
+    const snap = (px: number): number => Math.round(px * 64) / 64;
+    const originalRect = Element.prototype.getBoundingClientRect;
+    const sheet = document.createElement('style');
+    sheet.textContent = '.st-diagramSceneFigure-edge { fill: none; stroke: rgb(100, 116, 139); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }';
+    document.head.append(sheet);
+    const transitionTokens: Record<string, string> = {
+      '--st-component-diagramScene-transitionDuration': '240ms',
+      '--st-foundation-motion-easing': 'cubic-bezier(0.25, 0.25, 0.75, 0.75)',
+    };
+    const originalComputedStyle = window.getComputedStyle.bind(window);
+    const computedStyleSpy = vi.spyOn(window, 'getComputedStyle').mockImplementation((element, pseudo) => {
+      const style = originalComputedStyle(element, pseudo);
+      return new Proxy(style, {
+        get(target, key) {
+          if (key === 'getPropertyValue') {
+            return (name: string): string => transitionTokens[name] ?? target.getPropertyValue(name);
+          }
+          const value = Reflect.get(target, key) as unknown;
+          return typeof value === 'function' ? (value as (...args: unknown[]) => unknown).bind(target) : value;
+        },
+      });
+    });
+    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+      const world = this.closest<HTMLElement>('.st-diagramSceneFigure-world');
+      if (world === null) return originalRect.call(this);
+      const match = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/.exec(world.style.transform);
+      if (match === null) return new DOMRect();
+      const [tx, ty, scale] = match.slice(1).map(Number) as [number, number, number];
+      if (this === world) return new DOMRect(snap(tx), snap(ty), 0, 0);
+      if (this.matches('[data-scene-edge]')) {
+        const pts = (this.getAttribute('points') ?? '').trim().split(/\s+/).filter(Boolean).map(p => p.split(',').map(Number) as [number, number]);
+        if (pts.length === 0) return new DOMRect();
+        const xs = pts.map(([x]) => x), ys = pts.map(([, y]) => y);
+        const left = snap(tx + Math.min(...xs) * scale), top = snap(ty + Math.min(...ys) * scale);
+        return new DOMRect(left, top, snap(tx + Math.max(...xs) * scale) - left, snap(ty + Math.max(...ys) * scale) - top);
+      }
+      if (!(this instanceof HTMLElement) || !this.matches('[data-scene-occurrence],[data-scene-label]')) return new DOMRect();
+      const x = parseFloat(this.style.left), y = parseFloat(this.style.top);
+      const w = parseFloat(this.style.width), h = parseFloat(this.style.height);
+      const left = snap(tx + x * scale), top = snap(ty + y * scale);
+      return new DOMRect(left, top, snap(tx + (x + w) * scale) - left, snap(ty + (y + h) * scale) - top);
+    });
+
+    const assertNoOverflow = (root: Element, frameW: number, maxFrameH: number) => {
+      const figure = (root.matches('figure') ? root : root.querySelector('figure')) as HTMLElement;
+      const viewport = root.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!;
+      const extent = root.querySelector<HTMLElement>('.st-diagramSceneFigure-extent')!;
+      const world = root.querySelector<HTMLElement>('.st-diagramSceneFigure-world')!;
+      const zoom = Number(figure.dataset['zoom']);
+      const height = parseFloat(viewport.style.height);
+      const [tx, ty, scale] = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/.exec(world.style.transform)!.slice(1).map(Number) as [number, number, number];
+      expect(scale).toBe(zoom);
+      expect(zoom).toBeGreaterThanOrEqual(0.45);
+      expect(zoom).toBeLessThanOrEqual(0.62);
+      expect(height).toBeLessThanOrEqual(maxFrameH + 1 / 64);
+      expect(viewport.dataset['pans']).toBe('false');
+      expect(viewport.style.overflowX).toBe('hidden');
+      expect(viewport.style.overflowY).toBe('hidden');
+      expect(parseFloat(extent.style.width)).toBeLessThanOrEqual(frameW + 0.5);
+      expect(parseFloat(extent.style.height)).toBeLessThanOrEqual(height + 0.5);
+      for (const node of root.querySelectorAll<HTMLElement>('[data-scene-occurrence],[data-scene-label]')) {
+        const x = parseFloat(node.style.left), y = parseFloat(node.style.top);
+        const w = parseFloat(node.style.width), h = parseFloat(node.style.height);
+        expect(tx + x * zoom).toBeGreaterThanOrEqual(-0.5);
+        expect(ty + y * zoom).toBeGreaterThanOrEqual(-0.5);
+        expect(tx + (x + w) * zoom).toBeLessThanOrEqual(frameW + 0.5);
+        expect(ty + (y + h) * zoom).toBeLessThanOrEqual(height + 0.5);
+      }
+      for (const edge of root.querySelectorAll('[data-scene-edge]')) {
+        for (const pt of (edge.getAttribute('points') ?? '').trim().split(/\s+/).filter(Boolean)) {
+          const [px, py] = pt.split(',').map(Number) as [number, number];
+          expect(tx + px * zoom).toBeGreaterThanOrEqual(-0.5);
+          expect(ty + py * zoom).toBeGreaterThanOrEqual(-0.5);
+          expect(tx + px * zoom).toBeLessThanOrEqual(frameW + 0.5);
+          expect(ty + py * zoom).toBeLessThanOrEqual(height + 0.5);
+        }
+      }
+      return { height, zoom, transform: world.style.transform, viewport };
+    };
+
+    try {
+      for (const [sceneName, width, winH, largestZone, extra, animated] of [
+        ['architecture', 1280, 720, 'occurrence:zone-engram', {}, true],
+        ['architecture', 1280, 720, 'occurrence:zone-engram', { flows: {} }, false],
+        ['ontology', 1440, 900, 'occurrence:zone-normative', {}, false],
+      ] as const) {
+        if (animated) vi.useFakeTimers();
+        else vi.useRealTimers();
+        vi.stubGlobal('matchMedia', () => ({ matches: !animated, addEventListener() {}, removeEventListener() {} }));
+        vi.stubGlobal('innerHeight', winH);
+        vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(width);
+        const maxFrameH = Math.min((width * 9) / 16, 0.85 * winH);
+        const { collapsed: allFolds, ...source } = hCondInput(sceneName, true);
+        const props = { ...source, measureLines: undefined, defaultFolds: allFolds, ...extra };
+        const vue = mount(SceneFigure, { props, attachTo: document.body });
+        const svelte = render(SvelteScene, { props });
+        await nextTick(); await tick(); await nextTick(); await tick();
+
+        const vueFolded = assertNoOverflow(vue.element, width, maxFrameH);
+        const svelteFolded = assertNoOverflow(svelte.container, width, maxFrameH);
+        expect(vueFolded.zoom).toBe(0.62);
+        expect(svelteFolded.zoom).toBe(0.62);
+        expect(vueFolded.height).toBe(svelteFolded.height);
+
+        const toggleIn = (root: Element) =>
+          [...root.querySelectorAll<HTMLElement>('[data-scene-occurrence]')]
+            .find(el => el.dataset['sceneOccurrence'] === largestZone)!
+            .querySelector<HTMLButtonElement>('button[aria-expanded]')!;
+
+        // Unfold the largest zone on both Vue and Svelte: both refit with zero overflow (exercising Vue's 240 ms animated transition -> settle() -> readRenderedBounds() path when animated is true).
+        toggleIn(vue.element).click();
+        toggleIn(svelte.container).click();
+        await nextTick(); await tick();
+        if (animated) {
+          expect(vue.element.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('true');
+          expect(svelte.container.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('true');
+          await vi.advanceTimersByTimeAsync(300);
+          await nextTick(); await tick();
+          expect(vue.element.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('false');
+          expect(svelte.container.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('false');
+        }
+        await nextTick(); await tick();
+
+        const vueUnfolded = assertNoOverflow(vue.element, width, maxFrameH);
+        const svelteUnfolded = assertNoOverflow(svelte.container, width, maxFrameH);
+        expect(vueUnfolded.zoom).toBeLessThan(0.62);
+        expect(vueUnfolded.zoom).toBe(vue.vm.getCamera().fitZoom);
+        expect(vueUnfolded.zoom).toBe(svelteUnfolded.zoom);
+        expect(vueUnfolded.height).toBeGreaterThan(vueFolded.height);
+        expect(Math.abs(vueUnfolded.height - svelteUnfolded.height)).toBeLessThanOrEqual(0.5);
+
+        // Explicit user zoom and pan are preserved before the next fold toggle, then refitted on fold.
+        vue.vm.setZoom(0.62);
+        svelte.component.setZoom(0.62);
+        await nextTick(); await tick();
+        vueUnfolded.viewport.scrollLeft = 60;
+        vueUnfolded.viewport.scrollTop = 30;
+        svelteUnfolded.viewport.scrollLeft = 60;
+        svelteUnfolded.viewport.scrollTop = 30;
+        expect(vue.vm.getCamera().zoom).toBe(0.62);
+        expect(vueUnfolded.viewport.dataset['pans']).toBe('true');
+        expect(svelteUnfolded.viewport.dataset['pans']).toBe('true');
+
+        // Fold the largest zone back: drops user zoom/pan and refits back to the folded scene.
+        toggleIn(vue.element).click();
+        toggleIn(svelte.container).click();
+        await nextTick(); await tick();
+        if (animated) {
+          expect(vue.element.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('true');
+          expect(svelte.container.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('true');
+          await vi.advanceTimersByTimeAsync(300);
+          await nextTick(); await tick();
+          expect(vue.element.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('false');
+          expect(svelte.container.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('false');
+        }
+        await nextTick(); await tick();
+
+        const vueRefolded = assertNoOverflow(vue.element, width, maxFrameH);
+        const svelteRefolded = assertNoOverflow(svelte.container, width, maxFrameH);
+        expect(vueRefolded.zoom).toBe(0.62);
+        expect(svelteRefolded.zoom).toBe(0.62);
+        expect(Math.abs(vueRefolded.height - vueFolded.height)).toBeLessThanOrEqual(0.5);
+        expect(Math.abs(svelteRefolded.height - svelteFolded.height)).toBeLessThanOrEqual(0.5);
+        expect(vueRefolded.viewport.scrollLeft).toBe(0);
+        expect(vueRefolded.viewport.scrollTop).toBe(0);
+        expect(svelteRefolded.viewport.scrollLeft).toBe(0);
+        expect(svelteRefolded.viewport.scrollTop).toBe(0);
+
+        vue.unmount(); svelte.unmount();
+      }
+
+      // Controlled `collapsed` prop change on Vue also refits on unfold and fold.
+      vi.useRealTimers();
+      vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+      vi.stubGlobal('innerHeight', 720);
+      vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1280);
+      const maxFrameH = Math.min((1280 * 9) / 16, 0.85 * 720);
+      const { collapsed: allFolds, ...source } = hCondInput('architecture', true);
+      const vueCtrl = mount(SceneFigure, {
+        props: { ...source, measureLines: undefined, collapsed: allFolds },
+        attachTo: document.body,
+      });
+      await nextTick(); await nextTick();
+      const ctrlFolded = assertNoOverflow(vueCtrl.element, 1280, maxFrameH);
+      await vueCtrl.setProps({ collapsed: allFolds.filter(id => id !== 'occurrence:zone-engram') });
+      await nextTick(); await nextTick();
+      const ctrlUnfolded = assertNoOverflow(vueCtrl.element, 1280, maxFrameH);
+      expect(ctrlUnfolded.zoom).toBeLessThan(ctrlFolded.zoom);
+      expect(ctrlUnfolded.height).toBeGreaterThan(ctrlFolded.height);
+      await vueCtrl.setProps({ collapsed: allFolds });
+      await nextTick(); await nextTick();
+      const ctrlRefolded = assertNoOverflow(vueCtrl.element, 1280, maxFrameH);
+      expect(ctrlRefolded.zoom).toBe(ctrlFolded.zoom);
+      expect(Math.abs(ctrlRefolded.height - ctrlFolded.height)).toBeLessThanOrEqual(0.5);
+      vueCtrl.unmount();
+    } finally {
+      computedStyleSpy.mockRestore();
+      vi.useRealTimers();
+      sheet.remove();
+      vi.unstubAllGlobals();
+    }
   });
 });

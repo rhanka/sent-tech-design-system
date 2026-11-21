@@ -146,17 +146,23 @@ export function fixture(name) {
       entities: Object.fromEntries(ids.map(id => [`entity:${id}`, { id: `entity:${id}`,
         profile: 'generic@2', type: 'node', attributes: { name: { kind: 'text', value: id } } }])),
       relations: {} };
-    // New view via createView defaults to anatomy "v2" (352 × 154, compact-face centred).
+    // Compact v2 anatomy (352 × 154) is explicit opt-in on createView; compact
+    // centring is opt-in via explicit align: "center" on diagram-presentation@2.
     const view = {
-      ...createView({ viewId: viewRef('compact'), semanticDocumentId: document.documentId, revision: 1 }),
+      ...createView({
+        viewId: viewRef('compact'),
+        semanticDocumentId: document.documentId,
+        revision: 1,
+        presentation: { camera: { x: 0, y: 0, zoom: 1 }, anatomy: 'v2' },
+      }),
       entityOccurrences: Object.fromEntries(ids.map((id, index) => [`occurrence:e.${id}`, {
         id: occurrenceRef(`e.${id}`), entity: entityRef(id),
         geometry: { x: index * 400, y: 0, width: 352, height: 154 },
       }])),
     };
     return { ...common, document, view,
-      presentation: { contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN }, legends: {}, categoryTokens: [],
-        entities: Object.fromEntries(ids.map(id => [`occurrence:e.${id}`, { form: 'card', text: { title: `Card ${id}`, body: 'First paint' } }])) } };
+      presentation: { contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN }, legends: {}, categoryTokens: [],
+        entities: Object.fromEntries(ids.map(id => [`occurrence:e.${id}`, { form: 'card', text: { title: `Card ${id}`, body: 'First paint' }, align: 'center' }])) } };
   }
   if (name !== 'three-cards') {
     const document = name.startsWith('architecture') ? architecture : ontology;

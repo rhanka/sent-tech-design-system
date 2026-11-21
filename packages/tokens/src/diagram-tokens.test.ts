@@ -71,6 +71,7 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     headerInset: "12px",
     iconSize: "52px",
     iconTextGap: "4px",
+    bodyInsetFromBar: "10px",
     foldedHeaderTextWidth: "210px",
   },
   diagramZone: {
