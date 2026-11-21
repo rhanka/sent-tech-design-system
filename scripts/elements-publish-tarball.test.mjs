@@ -82,6 +82,7 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -354,6 +355,24 @@ test("AC-L7a: the tarball carries the publishable shape and no source, test, scr
   assert.deepStrictEqual(forbidden, [], `published tarball ships source/test/script paths: ${forbidden.join(", ")}`);
   const maps = files.filter((file) => file.endsWith(".map"));
   assert.deepStrictEqual(maps, [], `published tarball ships source maps: ${maps.join(", ")}`);
+});
+
+test("EZ-1: the packed temporal fixtures are publicly resolvable and match their recorded hashes", (t) => {
+  if (skipWhenUnbuilt(t)) return;
+  const { files, manifest, packageDir } = packedTarballContext();
+  const resolve = createRequire(join(packageDir, "package.json")).resolve;
+  const expectedHashes = {
+    "time-series-single.json": "9c2d8a2933d1635978687bc897324610f4bfef9e58f4adfa07939c589e317f58",
+    "time-series-multi.json": "8e3224ec6a1a8ad81666aab1f366fee80e24e82dc383ab7c19e9a0d5f63e4c08",
+    "time-series-thresholds.json": "ada7571fae5ab8682293d86e585f0eb064cdeb7d397de90bb7c264f73c3a337b",
+  };
+  for (const [name, sha256] of Object.entries(expectedHashes)) {
+    const path = `fixtures/${name}`;
+    assert.ok(files.includes(path), `${path} is missing from the tarball`);
+    const resolved = resolve(`${manifest.name}/${path}`);
+    assert.equal(resolved, join(packageDir, path));
+    assert.equal(createHash("sha256").update(readFileSync(resolved)).digest("hex"), sha256, path);
+  }
 });
 
 test("AC-L7a: sri.json pins the tarball bytes (every entry recomputed from the extracted files)", (t) => {

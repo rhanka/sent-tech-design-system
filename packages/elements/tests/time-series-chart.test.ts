@@ -6,9 +6,9 @@ import { a2uiCommonTypes as commonTypes } from "../src/generated/a2ui-common-typ
 import { createInterpreterStructure } from "../src/structure/interpreter.js";
 import { formatTimeSeriesMarkdown, TIME_SERIES_FALLBACK_LIMIT_BYTES } from "../src/index.js";
 import { createEnvelopeValidator } from "../src/validate/index.js";
-import single from "./fixtures/time-series-single.json";
-import multi from "./fixtures/time-series-multi.json";
-import thresholds from "./fixtures/time-series-thresholds.json";
+import single from "../fixtures/time-series-single.json";
+import multi from "../fixtures/time-series-multi.json";
+import thresholds from "../fixtures/time-series-thresholds.json";
 import categories from "./fixtures/bar-chart-pdata-1.json";
 
 const options = { catalog, envelopeSchema, commonTypes };

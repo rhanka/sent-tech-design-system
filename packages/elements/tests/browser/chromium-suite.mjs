@@ -261,7 +261,8 @@ const MIME = {
 };
 
 function readFixture(name) {
-  return readFileSync(join(FIXTURES, name), "utf8");
+  const dir = TIME_SERIES_FIXTURES.includes(name) ? join(PACKAGE_DIR, "fixtures") : FIXTURES;
+  return readFileSync(join(dir, name), "utf8");
 }
 
 function islandScript(jsonText) {

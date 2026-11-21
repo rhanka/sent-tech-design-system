@@ -100,9 +100,10 @@ call `formatTimeSeriesMarkdown(envelope.root)` with the validated props.
 It formats the same rows, escapes Markdown delimiters and fails with a
 `RangeError` if the complete table exceeds 4096 UTF-8 bytes.
 
-The three temporal fixtures cover [one series](tests/fixtures/time-series-single.json),
-[sparse aligned series](tests/fixtures/time-series-multi.json) and
-[thresholds and bands](tests/fixtures/time-series-thresholds.json).
+The package ships three temporal fixtures under `@sentropic/design-system-elements/fixtures/`.
+They cover [one series](fixtures/time-series-single.json),
+[sparse aligned series](fixtures/time-series-multi.json) and
+[thresholds and bands](fixtures/time-series-thresholds.json).
 
 ### `st-decision-dossier` (`DecisionDossier`)
 

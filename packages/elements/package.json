@@ -17,6 +17,7 @@
     "dist",
     "catalog.json",
     "envelope.json",
+    "fixtures",
     "schemas",
     "!dist/**/*.map",
     "!dist/.srchash"
@@ -28,6 +29,7 @@
     },
     "./catalog.json": "./catalog.json",
     "./envelope.json": "./envelope.json",
+    "./fixtures/*": "./fixtures/*",
     "./schemas/*": "./schemas/*",
     "./shells/manifest.json": "./dist/shells/manifest.json",
     "./bpmn": {

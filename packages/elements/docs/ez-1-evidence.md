@@ -78,9 +78,9 @@ sha512-5sZxa0ULD1kF3EHJbzSSGFdVokmlDAVRiPKg4CTqZuLRFvHa//ibykNwgPc46q83cczGJnKX8
 | `schemas/TimeSeriesChart.v1.json` | `98b9d246237a6533630fd6c8f50bb3b038f9db6190613572cedf07f12a0645fd` |
 | `dist/browser/sri.json` | `5f427637eddd7f9552ddd15490bc97cfaf137b0fafa83808ce6c7ae8f9d2d1a9` |
 | `dist/shells/manifest.json` | `818ba1938207456c736a996f5b09fb5efbdc4e90a630f66c3f4b275645750bef` |
-| `tests/fixtures/time-series-single.json` | `9c2d8a2933d1635978687bc897324610f4bfef9e58f4adfa07939c589e317f58` |
-| `tests/fixtures/time-series-multi.json` | `8e3224ec6a1a8ad81666aab1f366fee80e24e82dc383ab7c19e9a0d5f63e4c08` |
-| `tests/fixtures/time-series-thresholds.json` | `ada7571fae5ab8682293d86e585f0eb064cdeb7d397de90bb7c264f73c3a337b` |
+| `fixtures/time-series-single.json` | `9c2d8a2933d1635978687bc897324610f4bfef9e58f4adfa07939c589e317f58` |
+| `fixtures/time-series-multi.json` | `8e3224ec6a1a8ad81666aab1f366fee80e24e82dc383ab7c19e9a0d5f63e4c08` |
+| `fixtures/time-series-thresholds.json` | `ada7571fae5ab8682293d86e585f0eb064cdeb7d397de90bb7c264f73c3a337b` |
 | `tests/fixtures/bar-chart-pdata-1.json` | `8aee0a43fc9c51cd933fa6f41f52fcc2b31727140230328b39b4a86e50574d82` |
 | `tests/fixtures/decision-dossier.json` | `a49497891df2948341a7a8d7858470261f312ff430134f0327578a84365f8b43` |
 
