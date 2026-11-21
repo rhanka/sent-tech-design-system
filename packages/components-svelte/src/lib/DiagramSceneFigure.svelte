@@ -8,7 +8,6 @@
     createLayoutCache,
     FIT_ASPECT,
     isR7ConnectorPresentation,
-    overviewStrokeScale,
     zoomReadout,
     type LayoutHints,
     type LayoutMetrics,
@@ -371,6 +370,22 @@
     return result;
   });
 
+  let viewWidth = $state<number>();
+  let windowHeight = $state<number>();
+  let scrollbarHeight = $state(0);
+  let maxDisplayScale = $state<number>();
+  let minReadableScale = $state<number>();
+  const fitInput = $derived({
+    // Before the frame is measured (server render, hidden mount) the fit
+    // box is the nominal 16:9 box of the layout target width.
+    viewWidth: viewWidth ?? targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
+    windowHeight: windowHeight ?? Number.POSITIVE_INFINITY,
+    scrollbarHeight,
+    ...(maxDisplayScale === undefined ? {} : { maxDisplayScale }),
+    ...(minReadableScale === undefined ? {} : { minReadableScale }),
+    ...(fitToWindow ? { fitToWindow: true } : {}),
+  });
+
   const scene = $derived<SceneModel | undefined>(
     layoutResult.status === "laid-out"
       ? resolveScene(layoutResult, {
@@ -387,7 +402,7 @@
           measureLines: lineMeasurer,
           flows: flowOptions,
           metrics: effectiveMetrics,
-        })
+        }, fitToWindow ? fitInput : undefined)
       : undefined,
   );
   const sceneRects = $derived<ReadonlyMap<string, Rect>>(scene === undefined ? new Map() : rectsOf(scene));
@@ -573,11 +588,6 @@
       if (select !== undefined && select !== null) select.value = filter === undefined ? "all" : `scenario:${filter}`;
     }
   });
-  let viewWidth = $state<number>();
-  let windowHeight = $state<number>();
-  let scrollbarHeight = $state(0);
-  let maxDisplayScale = $state<number>();
-  let minReadableScale = $state<number>();
   let renderedBounds = $state.raw<{ scene: SceneModel; bounds: Rect }>();
   const cameraBounds = $derived(renderedBounds?.scene === scene ? renderedBounds?.bounds : scene?.bounds);
   // `zoom` is the scale the world is painted at: the fit is quantised once,
@@ -725,21 +735,8 @@
   /* ── camera (Z-1–Z-8) ──────────────────────────────────────────── */
 
   const measured = $derived(viewWidth !== undefined && windowHeight !== undefined);
-  const fit = $derived(
-    sceneFit({
-      ...(cameraBounds === undefined ? {} : { bounds: cameraBounds }),
-      // Before the frame is measured (server render, hidden mount) the fit
-      // box is the nominal 16:9 box of the layout target width.
-      viewWidth: viewWidth ?? targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
-      windowHeight: windowHeight ?? Number.POSITIVE_INFINITY,
-      scrollbarHeight,
-      ...(maxDisplayScale === undefined ? {} : { maxDisplayScale }),
-      ...(minReadableScale === undefined ? {} : { minReadableScale }),
-      ...(fitToWindow ? { fitToWindow: true } : {}),
-    }),
-  );
+  const fit = $derived(sceneFit({ ...fitInput, ...(cameraBounds === undefined ? {} : { bounds: cameraBounds }) }));
   const zoom = $derived(resolveZoom(requestedZoom, fit));
-  const strokeScale = $derived(overviewStrokeScale(fitToWindow, zoom));
   const readout = $derived(zoomReadout(zoom, fit.maxZoom));
   const placement = $derived(scenePlacement(cameraBounds, zoom, fit));
   const canZoomIn = $derived(zoom < fit.maxZoom);
@@ -1072,8 +1069,14 @@
     (metrics?.linkRelatedStrokeWidth !== undefined ? `;--st-diagram-link-related-stroke-width:${metrics.linkRelatedStrokeWidth}px` : "") +
     (metrics?.linkEmphasisStrokeWidth !== undefined ? `;--st-diagram-link-emphasis-stroke-width:${metrics.linkEmphasisStrokeWidth}px` : ""),
   );
+  const overviewLabelPaintVars = $derived.by(() => {
+    const size = scene?.overviewEdgeLabelSize;
+    if (size === undefined) return "";
+    const lineHeight = edgeLabelLineHeight * size / (effectiveMetrics.edgeLabelSize ?? DEFAULT_EDGE_LABEL_SIZE);
+    return `;--st-diagram-overview-edge-label-size:${size}px;--st-diagram-overview-edge-label-line-height:${lineHeight}px`;
+  });
   const viewportStyle = $derived(
-    `height:${fit.fitHeight + scrollbarHeight}px;${fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${metricPaintVars}${strokeScale < 1 ? `;--st-diagram-overview-stroke-scale:${strokeScale}` : ""}${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
+    `height:${fit.fitHeight + scrollbarHeight}px;${fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${metricPaintVars}${overviewLabelPaintVars}${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );
   const worldStyle = $derived(
     `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,
@@ -1283,7 +1286,7 @@
                           d={swatch.linePath}
                           fill="none"
                           stroke={swatch.stroke}
-                          stroke-width={swatch.strokeWidth * strokeScale}
+                          stroke-width={swatch.strokeWidth}
                           stroke-dasharray={swatch.dashArray}
                           style={connectorDashPaint(entry.strokeStyle)}
                           vector-effect="non-scaling-stroke"
@@ -1440,14 +1443,14 @@
     vector-effect: non-scaling-stroke;
   }
   .st-diagramSceneFigure-edge[data-connector-mode="r7"] {
-    stroke-width: calc(var(--st-diagram-link-stroke-width, var(--st-component-diagramScene-linkStrokeWidth, 2.5px)) * var(--st-diagram-overview-stroke-scale, 1));
+    stroke-width: var(--st-diagram-link-stroke-width, var(--st-component-diagramScene-linkStrokeWidth, 2.5px));
   }
   .st-diagramSceneFigure-edge[data-connector-mode="r7"][data-edge-arrowhead="none"] {
-    stroke-width: calc(var(--st-diagram-link-related-stroke-width, var(--st-component-diagramScene-linkRelatedStrokeWidth, 3px)) * var(--st-diagram-overview-stroke-scale, 1));
+    stroke-width: var(--st-diagram-link-related-stroke-width, var(--st-component-diagramScene-linkRelatedStrokeWidth, 3px));
   }
   .st-diagramSceneFigure-edge[data-connector-mode="r7"][data-edge-emphasis="emphasis"] {
     stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
-    stroke-width: calc(var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px)) * var(--st-diagram-overview-stroke-scale, 1));
+    stroke-width: var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px));
   }
   .st-diagramSceneFigure-edgeLabel {
     box-sizing: border-box;
@@ -1466,9 +1469,11 @@
     white-space: nowrap;
   }
   .st-diagramSceneFigure-edgeLabel[data-connector-mode="r7"] {
-    font-size: var(--st-diagram-edge-label-size, var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px)));
+    font-size: var(--st-diagram-overview-edge-label-size, var(--st-diagram-edge-label-size, var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px))));
+    --st-diagram-edge-label-line-height: var(--st-diagram-overview-edge-label-line-height, var(--st-diagram-label-line-height, 22px));
+    line-height: var(--st-diagram-edge-label-line-height);
   }
-  .st-diagramSceneFigure-edgeLabel > span { display: block; flex: none; height: var(--st-diagram-label-line-height, 22px); }
+  .st-diagramSceneFigure-edgeLabel > span { display: block; flex: none; height: var(--st-diagram-edge-label-line-height, var(--st-diagram-label-line-height, 22px)); }
   .st-diagramSceneFigure-bundleHeader { display: block; padding: var(--st-component-diagramScene-labelPadding, 4px); font-weight: 400; }
   .st-diagramSceneFigure-bundleRelation { display: flex; align-self: stretch; gap: var(--st-component-diagramScene-bundleMarkerGap, 6px); padding: var(--st-component-diagramScene-labelPadding, 4px); box-shadow: inset 0 var(--st-component-diagramScene-labelBorderWidth, 1px) 0 var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle)); }
   .st-diagramSceneFigure-bundleRelation div { display: flex; flex-direction: column; }

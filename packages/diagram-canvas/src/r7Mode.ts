@@ -6,12 +6,14 @@ import {
   type SemanticDocument,
   type ViewDocument,
 } from "@sentropic/diagram-core";
+import { relationVerdict } from "./visibility.js";
 
 export type R7PresentationLike = Pick<DiagramPresentation, "contractPin" | "entities"> & {
   readonly relations?: Readonly<Record<string, RelationPresentation>>;
 };
 
-export type R7DocumentLike = Pick<SemanticDocument, "profileRefs" | "relations">;
+export type R7DocumentLike = Pick<SemanticDocument, "profileRefs" | "relations">
+  & Partial<Pick<SemanticDocument, "typeDefinitions">>;
 
 export function diagramAnatomyOf(
   presentation: R7PresentationLike,
@@ -36,7 +38,11 @@ export function isR7ConnectorPresentation(
   document?: R7DocumentLike,
 ): boolean {
   if (document?.profileRefs?.length === 1 && document.profileRefs[0] === "erd@1") return false;
-  const occurrences = Object.values(view?.relationOccurrences ?? {}).filter((occ) => occ != null);
+  const occurrences = view === undefined ? [] : Object.values(view.relationOccurrences).filter((occ) => {
+    if (occ == null) return false;
+    const relation = document?.relations?.[occ.relation];
+    return relation === undefined || relationVerdict(view, relation, document).visible;
+  });
   if (document != null) {
     const relations = view == null
       ? Object.values(document.relations ?? {})

@@ -18,6 +18,7 @@ import {
 import { cardLineMeasurer, defaultCardMeasure, sceneCardMeasure } from "../../src/presentation/diagramCardModel.js";
 import { sceneFit, scenePlacement, type ScenePresentation } from "../../src/presentation/diagramSceneModel.js";
 import { renderSceneSvg } from "../../src/presentation/renderSceneSvg.js";
+import { r7ConnectorsFixture } from "../../test-support/r7ConnectorsFixture.js";
 
 describe("fit-to-window host framing (DE-2 ask 9)", () => {
   it("preserves the Z-3 / AC-23 default fit box (0.85 × windowH capped at 16:9) when fitToWindow is omitted or false", () => {
@@ -113,5 +114,22 @@ describe("fit-to-window host framing (DE-2 ask 9)", () => {
     expect(scaleOf(windowed.svg)).toBeGreaterThanOrEqual(scaleOf(normal.svg));
     const expectedWindowFit = sceneFit({ bounds: windowed.scene.bounds!, viewWidth: 1440, windowHeight: 900, fitToWindow: true });
     expect(scaleOf(windowed.svg)).toBeCloseTo(expectedWindowFit.zoom, 6);
+  });
+
+  it("fits r7-connectors at 390 × 844 with token-width strokes and readable edge labels (REQ-R7-11 / REQ-R7-18)", () => {
+    const { document, presentation } = r7ConnectorsFixture();
+    const { svg, scene } = renderSceneSvg({
+      document, presentation, registry: m3ProfileRegistry, bindings: shippedExecutorBindings,
+      measureLines: cardLineMeasurer(sceneCardMeasure(defaultCardMeasure)), collapsed: [], targetWidth: 390,
+    }, { fitToWindow: true, windowHeight: 844 });
+    const fit = sceneFit({ bounds: scene.bounds!, viewWidth: 390, windowHeight: 844, fitToWindow: true });
+    const zoom = Number(svg.match(/data-display-scale="([^"]+)"/)?.[1]);
+    expect(zoom).toBeCloseTo(fit.zoom);
+    expect(zoom).toBeLessThan(0.45);
+    expect(fit.pans).toBe(false);
+    const shaft = svg.match(/<path data-scene-edge="occurrence:r.r-solid"[^>]+>/)?.[0];
+    const label = svg.match(/<g data-scene-label="occurrence:r.r-solid"[^>]+>/)?.[0];
+    expect.soft(Number(shaft?.match(/stroke-width="([^"]+)"/)?.[1])).toBe(2.5);
+    expect.soft(Number(label?.match(/font-size="([^"]+)"/)?.[1]) * zoom).toBeGreaterThanOrEqual(8);
   });
 });

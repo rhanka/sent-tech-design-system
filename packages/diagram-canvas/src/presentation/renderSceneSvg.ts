@@ -1,5 +1,4 @@
 import { renderErdCardSvg } from './erd.js';
-import { overviewStrokeScale } from '../camera.js';
 /** Standalone server-side SVG, consuming exactly the scene model used by the framework hosts. */
 import {
   connectorStrokeWidth,
@@ -30,7 +29,7 @@ import { renderCardSvg } from './renderCardSvg.js';
 import { renderZoneSvg } from './renderZoneSvg.js';
 import { getDiagramGlyph } from './registry.js';
 const escape = (text:string) => text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
-export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: CardLineMeasure; title?: string; fitToWindow?: boolean } = {}) {
+export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: CardLineMeasure; title?: string; fitToWindow?: boolean; windowHeight?: number } = {}) {
   const fallback=sceneCardMeasure(defaultCardMeasure);
   const measureFor=(folded:boolean):CardLineMeasure=>options.measure??(input.measureLines===undefined?fallback:(text,role,availableWidth,allocatedLines)=>{
     const measured=input.measureLines!({text,role,availableWidth,allocatedLines,folded});
@@ -40,13 +39,13 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
   const measuredInput={...input,measureLines:options.measure===undefined?input.measureLines??cardLineMeasurer(measure):cardLineMeasurer(measure)};
   const result=layoutScene(measuredInput);
   if(result.status!=='laid-out') throw new Error('Scene refused: '+JSON.stringify(result.refusals));
-  const scene=resolveScene(result,measuredInput),box=scene.bounds??{x:0,y:0,width:1,height:1};
   const viewportWidth=input.targetWidth??1440;
-  const fit=sceneFit({bounds:box,viewWidth:viewportWidth,windowHeight:900,...(options.fitToWindow===undefined?{}:{fitToWindow:options.fitToWindow})});
-  const strokeScale=overviewStrokeScale(options.fitToWindow,fit.zoom);
+  const viewport={viewWidth:viewportWidth,windowHeight:options.windowHeight??900,fitToWindow:options.fitToWindow??false};
+  const scene=resolveScene(result,measuredInput,viewport),box=scene.bounds??{x:0,y:0,width:1,height:1};
+  const fit=sceneFit({bounds:box,...viewport});
   const cornerRadius=input.metrics?.edgeCornerRadius??DEFAULT_EDGE_CORNER_RADIUS;
   const linkStrokeWidth=input.metrics?.linkStrokeWidth??DEFAULT_LINK_STROKE_WIDTH;
-  const edgeLabelSize=(scene.r7Connectors ? input.metrics?.edgeLabelSize : undefined)??DEFAULT_EDGE_LABEL_SIZE;
+  const edgeLabelSize=scene.overviewEdgeLabelSize??(scene.r7Connectors ? input.metrics?.edgeLabelSize : undefined)??DEFAULT_EDGE_LABEL_SIZE;
   const markerIds=connectorMarkerIds('scene-arrow');
   const extraMarkers=extraConnectorMarkers(scene.edges,markerIds);
   const extraMarkerDefs=extraMarkers.map(marker=>{
@@ -60,7 +59,7 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
     }
     const emphasized=edge.emphasis==='emphasis';
     const stroke=emphasized?LINK_EMPHASIS_STROKE:'var(--st-component-diagramScene-edgeStroke, #64748b)';
-    const strokeWidth=connectorStrokeWidth(edge,input.metrics)*strokeScale;
+    const strokeWidth=connectorStrokeWidth(edge,input.metrics);
     const dash=connectorDashArray(edge.strokeStyle);
     const markerRef=connectorMarkerRef(edge,markerIds);
     const attrs=[
@@ -111,7 +110,7 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
       });
     }else label.lines.forEach((line,i)=>{text+=`<text x="${b.width/2}" y="${firstBaseline+i*labelLineHeight}" text-anchor="middle">${escape(line)}</text>`;});
     const leader=label.leader===undefined?'':(scene.r7Connectors&&!label.erd
-      ?`<path data-scene-leader="${escape(label.occurrence)}" data-connector-mode="r7" d="${connectorPath(label.leader,cornerRadius)}" fill="none" stroke="var(--st-component-diagramScene-edgeStroke, #64748b)" stroke-width="${linkStrokeWidth*strokeScale}" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>`
+      ?`<path data-scene-leader="${escape(label.occurrence)}" data-connector-mode="r7" d="${connectorPath(label.leader,cornerRadius)}" fill="none" stroke="var(--st-component-diagramScene-edgeStroke, #64748b)" stroke-width="${linkStrokeWidth}" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>`
       :`<polyline points="${label.leader.map(p=>p.x+','+p.y).join(' ')}" fill="none" stroke="var(--st-component-diagramScene-edgeStroke, #64748b)"/>`);
     return leader+`<g data-scene-label="${escape(label.occurrence)}" transform="translate(${b.x} ${b.y})" font-size="${edgeLabelSize}" fill="var(--st-component-diagramScene-labelText, #172033)"><rect width="${b.width}" height="${b.height}" fill="var(--st-component-diagramScene-labelSurface, #ffffff)" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)"/>${text}</g>`;
   }).join('');
@@ -132,7 +131,7 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
         `d="${swatch.linePath}"`,
         'fill="none"',
         `stroke="${escape(swatch.stroke)}"`,
-        `stroke-width="${swatch.strokeWidth*strokeScale}"`,
+        `stroke-width="${swatch.strokeWidth}"`,
         'vector-effect="non-scaling-stroke"',
         ...(swatch.dashArray===undefined?[]:[`stroke-dasharray="${escape(swatch.dashArray)}"`,`style="${connectorDashPaint(entry.strokeStyle)}"`]),
       ].join(' ');

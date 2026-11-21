@@ -201,6 +201,44 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     expect(pinned.svg).toBe(legacy.svg);
   });
 
+  it("keeps all three compact flow badges fixed when a retained link is excluded by the view filter (REQ-R7-28)", () => {
+    const source = flowFixture(3, { labels: true, folded: true, reverse: true });
+    const input = {
+      document: source.document,
+      registry: source.options.registry,
+      bindings: source.options.bindings,
+      presentation: { ...source.presentation, contractPin: DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+      measureLines,
+      collapsed: [],
+      flows: { fanOutMax: 4 },
+    };
+    const initial = renderSceneSvg(input);
+    const compact = {
+      ...initial.result.view,
+      presentation: { ...initial.result.view.presentation, anatomy: "v2" as const },
+      filters: [{ id: "only-flow", kind: "relation-type", mode: "include", types: ["flow-step"] }] as const,
+    };
+    const baseline = renderSceneSvg({ ...input, view: compact });
+    const link = relationRef("filtered-link");
+    const occurrence = occurrenceRef("r.filtered-link");
+    const filtered = renderSceneSvg({
+      ...input,
+      document: { ...source.document, relations: { ...source.document.relations, [link]: {
+        id: link, type: "link", profile: "generic@2", attributes: {},
+        endpoints: [{ role: "source", target: entityRef("a") }, { role: "target", target: entityRef("b") }],
+      } } },
+      view: { ...compact, relationOccurrences: { ...compact.relationOccurrences, [occurrence]: {
+        id: occurrence, relation: link, endpoints: [
+          { role: "source", occurrence: occurrenceRef("e.a") }, { role: "target", occurrence: occurrenceRef("e.b") },
+        ],
+      } } },
+    });
+    expect(baseline.scene.badges.map(badge => badge.box.y)).toEqual([73, 147, 137]);
+    expect(filtered.scene.edges).toHaveLength(3);
+    expect(filtered.scene.badges).toEqual(baseline.scene.badges);
+    expect(filtered.svg).toBe(baseline.svg);
+  });
+
   it("reopens a mixed-anatomy @1 scene with the same cards and rounded connectors (REQ-R7-05 / REQ-R7-11)", () => {
     const input = nestedZoneFixture({ outside: true });
     const compact = input.cards[0]!;
@@ -341,5 +379,15 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     expect(rendered.scene.r7Connectors).toBe(true);
     expect(rendered.svg).toContain('stroke-dasharray="8 6"');
     expect(rendered.scene.linkLegend?.entries.map((e) => e.key)).toEqual(["solid:arrow:default", "dashed:arrow:default"]);
+
+    const saved = JSON.parse(JSON.stringify(rendered.result.view)) as typeof rendered.result.view;
+    expect(saved.presentation.diagram?.contractPin).toEqual(DIAGRAM_PRESENTATION_V2_CONTRACT_PIN);
+    expect(validateView(saved, base.document, { registry: base.registry, bindings: base.bindings })).toEqual([]);
+    const reopened = renderSceneSvg({
+      ...base, view: saved, presentation: saved.presentation.diagram!, measureLines, collapsed: [],
+    });
+    const shaft = reopened.svg.match(new RegExp(`<path data-scene-edge="${r0}"[^>]+>`))?.[0];
+    expect.soft(shaft ?? "").toContain('stroke-dasharray="8 6"');
+    expect.soft(reopened.scene.linkLegend?.entries.map((e) => e.key)).toEqual(["solid:arrow:default", "dashed:arrow:default"]);
   });
 });

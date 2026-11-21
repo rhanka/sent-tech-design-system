@@ -46,6 +46,22 @@ it("counts coincident straight routes even when both endpoints share ports (REQ-
   expect(result.conflicts).toContainEqual(expect.objectContaining({ kind: "segment-overlap", routes: ["left", "right"] }));
 });
 
+it("reports 12-unit approaches and arrow tips entering the same named port (REQ-R7-13)", () => {
+  const routes: CheckedRoute[] = [
+    {
+      id: "upper", source: "a", target: "b", targetPort: "in", arrowhead: "arrow",
+      points: [{ x: 267, y: -50 }, { x: 267, y: 0 }, { x: 300, y: 0 }],
+    },
+    {
+      id: "lower", source: "c", target: "b", targetPort: "in", arrowhead: "arrow",
+      points: [{ x: 293, y: 62 }, { x: 293, y: 12 }, { x: 300, y: 12 }],
+    },
+  ];
+  const result = checkRouteSpacing({ routes, rects: new Map(), routeSpacing: 24, borderClearance: 15 });
+  expect.soft(result.conflicts).toContainEqual(expect.objectContaining({ kind: "parallel-segment-spacing", actual: 12, required: 24 }));
+  expect.soft(result.conflicts).toContainEqual(expect.objectContaining({ kind: "arrowhead-spacing", actual: 12, required: 24 }));
+});
+
 describe("channelCapacity and subdivideChannelTracks", () => {
   it("computes finite channel capacity from gap, routeSpacing and borderClearance", () => {
     // gap 72 with 15 clearance each side => 42 usable => floor(42/24)+1 = 2 tracks.

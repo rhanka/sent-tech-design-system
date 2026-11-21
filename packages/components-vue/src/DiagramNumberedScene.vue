@@ -10,7 +10,7 @@ import {
   type FlowState, type FlowAction, type Visible,
 } from "@sentropic/diagram-canvas/flowModel";
 import {
-  collapsedOccurrencesOf, connectorDashArray, connectorMarkerIds, connectorMarkerRef, connectorPath, DEFAULT_EDGE_CORNER_RADIUS, DEFAULT_SCENE_LABELS, extraConnectorMarkers, sceneContentSize, layoutScene, linkLegendBoxStyle, linkLegendSwatchGeometry, resolveScene,
+  collapsedOccurrencesOf, connectorDashArray, connectorDashPaint, connectorMarkerIds, connectorMarkerRef, connectorPath, DEFAULT_EDGE_CORNER_RADIUS, DEFAULT_SCENE_LABELS, extraConnectorMarkers, sceneContentSize, layoutScene, linkLegendBoxStyle, linkLegendSwatchGeometry, resolveScene,
   parseScale, sceneConnectorMask, sceneNodesOnPlane,
   type SceneModel, type SceneNodeModel, type SceneOrientations, type SceneOccurrenceRef,
 } from "@sentropic/diagram-canvas/diagramSceneModel";
@@ -33,7 +33,7 @@ const strings = computed(() => ({ ...DEFAULT_LABELS, ...props.labels }));
 const flowOptions = computed(() => ({ ...props.flows, countTemplate: strings.value.count }));
 const tokens = shallowRef<FlowTokens>(DEFAULT_FLOW_TOKENS);
 const { frameEl: frame, viewportEl: viewport, measure, measureLines, effectiveMetrics, r7Mode,
-  fit, zoom, readout, placement, viewportStyle, refitOnFold,
+  fit, zoom, readout, placement, viewportStyle, fitInput, refitOnFold,
   setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
     props, () => scene.value, camera => props.onCameraChange?.(camera), readFlowTokens,
     undefined, () => ownedCache.clear());
@@ -109,7 +109,7 @@ const scene = computed<SceneModel | undefined>(() => layout.value.status !== "la
   ...(strings.value.legend === undefined ? {} : { legendTitle: strings.value.legend }),
   ...(props.legendLabels === undefined ? {} : { legendLabels: props.legendLabels }),
   resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
-}));
+}, props.fitToWindow ? fitInput.value : undefined));
 // Paint order (diagram-canvas `scenePaintPlane`): expanded zone frames, the
 // connectors, then every box. A zone frame is opaque: painted after the
 // connectors it would hide every route that runs inside it.
@@ -318,7 +318,7 @@ const scenarioId = useId();
                 <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" :markerUnits="scene.r7Connectors ? 'userSpaceOnUse' : undefined" :markerWidth="scene.r7Connectors ? '10.5' : '7'" :markerHeight="scene.r7Connectors ? '10.5' : '7'" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker><marker v-for="marker in extraMarkers" :key="marker.id" :id="marker.id" :data-arrowhead-kind="marker.kind" :data-arrowhead-emphasis="marker.emphasis" :viewBox="marker.viewBox" :refX="marker.refX" :refY="marker.refY" :markerUnits="marker.markerUnits" :markerWidth="marker.markerWidth" :markerHeight="marker.markerHeight" :orient="marker.orient"><path :d="marker.path" :fill="marker.fill" :stroke="marker.stroke" :stroke-width="marker.strokeWidth" /></marker><mask v-if="connectorMask !== undefined" :id="maskId" maskUnits="userSpaceOnUse" :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height"><rect :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height" fill="#fff" /><rect v-for="(cutout, index) in connectorMask.cutouts" :key="index" :data-scene-cutout="index" :x="cutout.x" :y="cutout.y" :width="cutout.width" :height="cutout.height" fill="#000" /></mask></defs>
                 <g data-scene-connectors="" :mask="connectorMask === undefined ? undefined : `url(#${maskId})`">
                 <template v-for="edge in scene.edges" :key="edge.occurrence">
-                  <path v-if="edge.r7" :marker-end="connectorMarkerRef(edge, markerIds)" :stroke-dasharray="connectorDashArray(edge.strokeStyle)" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" data-connector-mode="r7" :data-edge-stroke="edge.strokeStyle" :data-edge-arrowhead="edge.arrowhead" :data-edge-emphasis="edge.emphasis" :data-flow-step="edge.flow?.relation" :data-flow-bundle="edge.bundle?.id" :data-flow-state="stateOf(edge.occurrence)" :d="pathOf(edge.points)" />
+                  <path v-if="edge.r7" :marker-end="connectorMarkerRef(edge, markerIds)" :stroke-dasharray="connectorDashArray(edge.strokeStyle)" :style="connectorDashPaint(edge.strokeStyle)" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" data-connector-mode="r7" :data-edge-stroke="edge.strokeStyle" :data-edge-arrowhead="edge.arrowhead" :data-edge-emphasis="edge.emphasis" :data-flow-step="edge.flow?.relation" :data-flow-bundle="edge.bundle?.id" :data-flow-state="stateOf(edge.occurrence)" :d="pathOf(edge.points)" />
                   <polyline v-else :marker-end="edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :data-flow-step="edge.flow?.relation" :data-flow-bundle="edge.bundle?.id" :data-flow-state="stateOf(edge.occurrence)" :points="pointsOf(edge.points)" />
                   <template v-if="edge.directed">
                     <polyline class="st-diagramSceneFigure-flowHit" :data-flow-hit="edge.occurrence" :points="pointsOf(edge.points)" />
@@ -359,7 +359,7 @@ const scenarioId = useId();
                 <ul class="st-diagramSceneFigure-legendList">
                   <li v-for="{ entry, swatch } in legendEntries" :key="entry.key" class="st-diagramSceneFigure-legendItem" :data-legend-style="entry.key" :data-edge-stroke="entry.strokeStyle" :data-edge-arrowhead="entry.arrowhead" :data-edge-emphasis="entry.emphasis">
                     <svg class="st-diagramSceneFigure-legendSwatch" :viewBox="swatch.viewBox" aria-hidden="true">
-                      <path :data-legend-swatch="entry.key" :d="swatch.linePath" fill="none" :stroke="swatch.stroke" :stroke-width="swatch.strokeWidth" :stroke-dasharray="swatch.dashArray" vector-effect="non-scaling-stroke" />
+                      <path :data-legend-swatch="entry.key" :d="swatch.linePath" fill="none" :stroke="swatch.stroke" :stroke-width="swatch.strokeWidth" :stroke-dasharray="swatch.dashArray" :style="connectorDashPaint(entry.strokeStyle)" vector-effect="non-scaling-stroke" />
                       <path v-if="swatch.arrowPath !== undefined" :d="swatch.arrowPath" :fill="swatch.arrowFill" :stroke="swatch.arrowStroke" :stroke-width="swatch.arrowStrokeWidth" />
                     </svg>
                     <span class="st-diagramSceneFigure-legendLabel">{{ entry.label }}</span>

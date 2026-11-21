@@ -166,6 +166,10 @@ export function segmentToPassableBorderDistance(a: Vec2, b: Vec2, rect: Rect): n
   return Number.POSITIVE_INFINITY;
 }
 
+function samePoint(left: Vec2, right: Vec2): boolean {
+  return Math.hypot(left.x - right.x, left.y - right.y) <= EPS;
+}
+
 function sharedPortStub(
   left: CheckedRoute,
   leftSegIndex: number,
@@ -179,7 +183,8 @@ function sharedPortStub(
     rightSegIndex === 0 &&
     left.source === right.source &&
     left.sourcePort !== undefined &&
-    left.sourcePort === right.sourcePort
+    left.sourcePort === right.sourcePort &&
+    samePoint(left.points[0]!, right.points[0]!)
   ) {
     return true;
   }
@@ -188,7 +193,8 @@ function sharedPortStub(
     rightSegIndex === rightLastIndex &&
     left.target === right.target &&
     left.targetPort !== undefined &&
-    left.targetPort === right.targetPort
+    left.targetPort === right.targetPort &&
+    samePoint(left.points.at(-1)!, right.points.at(-1)!)
   ) {
     return true;
   }
@@ -197,7 +203,8 @@ function sharedPortStub(
     rightSegIndex === rightLastIndex &&
     left.source === right.target &&
     left.sourcePort !== undefined &&
-    left.sourcePort === right.targetPort
+    left.sourcePort === right.targetPort &&
+    samePoint(left.points[0]!, right.points.at(-1)!)
   ) {
     return true;
   }
@@ -206,7 +213,8 @@ function sharedPortStub(
     rightSegIndex === 0 &&
     left.target === right.source &&
     left.targetPort !== undefined &&
-    left.targetPort === right.sourcePort
+    left.targetPort === right.sourcePort &&
+    samePoint(left.points.at(-1)!, right.points[0]!)
   ) {
     return true;
   }
@@ -370,7 +378,7 @@ export function checkRouteSpacing(input: CheckRouteSpacingInput): RouteSpacingRe
       const a = docks[i]!;
       for (let j = i + 1; j < docks.length; j += 1) {
         const b = docks[j]!;
-        if (a.port !== undefined && a.port === b.port) continue;
+        if (a.port !== undefined && a.port === b.port && samePoint(a.point, b.point)) continue;
         // Pairs of arrowhead tips on the same entity are counted once below as `arrowhead-spacing`.
         if (a.isArrowhead && b.isArrowhead) continue;
         const dist = Math.hypot(a.point.x - b.point.x, a.point.y - b.point.y);
@@ -393,7 +401,7 @@ export function checkRouteSpacing(input: CheckRouteSpacingInput): RouteSpacingRe
     const a = arrowheads[i]!;
     for (let j = i + 1; j < arrowheads.length; j += 1) {
       const b = arrowheads[j]!;
-      if (a.entity === b.entity && a.port !== undefined && a.port === b.port) continue;
+      if (a.entity === b.entity && a.port !== undefined && a.port === b.port && samePoint(a.point, b.point)) continue;
       const dist = Math.hypot(a.point.x - b.point.x, a.point.y - b.point.y);
       if (dist < routeSpacing - EPS) {
         conflicts.push({

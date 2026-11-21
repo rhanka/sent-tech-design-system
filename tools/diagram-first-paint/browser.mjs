@@ -178,6 +178,8 @@ function measure() {
       }];
     }),
     connectorLabels: [...figure.querySelectorAll('[data-scene-label]')].map(element => element.dataset.sceneLabel),
+    r7LabelSizes: [...figure.querySelectorAll('[data-scene-label][data-connector-mode="r7"]')]
+      .map(element => parseFloat(getComputedStyle(element).fontSize) * scale),
     legend: (() => {
       const el = figure.querySelector('[data-scene-legend]');
       if (!el) return null;
@@ -324,8 +326,11 @@ function check(state, scene) {
     occluders: state.occluders, relations: state.relations ?? undefined, tolerance: 1 }), [], 'connectors');
   if (scene.startsWith('r7-')) {
     assert.deepEqual(roundedElbowFindings({ paths: state.paths, maxRadius: 12 }), [], 'r7 rounded elbow radius cap');
-    const strokeScale = state.fitToWindow ? Math.min(1, state.scale / 0.45) : 1;
-    assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths, strokeScale }), [], 'r7 link stroke widths');
+    assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths }), [], 'r7 link stroke widths');
+    assert.ok(state.r7LabelSizes.length > 0, 'r7 edge labels must render');
+    for (const size of state.r7LabelSizes) {
+      assert.ok(size + epsilon >= 8, `r7 edge label renders at ${size} CSS px (< 8)`);
+    }
     const expectedStyles = expectedLegendStyles(scene);
     assert.deepEqual(legendFindings({ legend: state.legend, nodes: state.nodes, expectedAnchor: 'right',
       ...(expectedStyles === null ? {} : { expectedStyles }) }), [], 'r7 link legend order and anchor');
@@ -431,11 +436,12 @@ try {
               const figure = document.querySelector('.st-diagramSceneFigure');
               const styleOf = selector => getComputedStyle(figure.querySelector(selector));
               return [
-                styleOf('[data-scene-label][data-connector-mode="r7"]').fontSize,
+                styleOf('.st-diagramSceneFigure-viewport').getPropertyValue('--st-diagram-edge-label-size').trim(),
                 styleOf('[data-scene-edge][data-edge-stroke="dashed"]').strokeDasharray,
                 styleOf('[data-edge-stroke="dashed"] [data-legend-swatch]').strokeDasharray,
               ];
             }), ['24px', '11px, 7px', '11px, 7px'], 'resolved label size and shared dash theme override');
+            check(await page.evaluate(measure), scene);
           }
           completed++;
           console.log(`PASS ${name}`);

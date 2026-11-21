@@ -169,10 +169,11 @@ export function entityVerdict(view: ViewDocument, entity: Entity): Verdict {
   ]);
 }
 
-export function relationVerdict(view: ViewDocument, relation: Relation, document?: SemanticDocument): Verdict {
+export function relationVerdict(view: ViewDocument, relation: Relation, document?: Partial<Pick<SemanticDocument, "typeDefinitions">>): Verdict {
+  const definition = document?.typeDefinitions?.[relation.type];
   return combine([
     verdictFor(filtersOfKind(view, "relation-type"), (filter) =>
-      filter.kind === "relation-type" ? filter.types.includes(relation.type) || (document?.typeDefinitions[relation.type]?.profile === relation.profile && filter.types.includes(document.typeDefinitions[relation.type]!.baseType)) : false,
+      filter.kind === "relation-type" ? filter.types.includes(relation.type) || (definition?.profile === relation.profile && filter.types.includes(definition.baseType)) : false,
     ),
     verdictFor(filtersOfKind(view, "attribute-equals"), (filter) =>
       filter.kind === "attribute-equals"

@@ -43,6 +43,7 @@ import {
   DEFAULT_LINK_EMPHASIS_STROKE_WIDTH,
   DEFAULT_MIN_READABLE_SCALE,
   FIT_PAINT_INSET,
+  MIN_EDGE_LABEL_CSS_PX,
   diagramAnatomyOf, isR7ConnectorPresentation,
   layoutFolded,
   layoutMeasured,
@@ -467,6 +468,8 @@ export interface SceneLabelModel {
 
 export interface SceneBadgeModel { readonly id: string; readonly occurrence: SceneOccurrenceRef; readonly kind: "step" | "count"; readonly text: string; readonly box: Rect; readonly target: Visible }
 export interface SceneModel {
+  /** World font size for an edge label in a fitted overview, when enlarged for readability. */
+  readonly overviewEdgeLabelSize?: number;
   readonly badges: readonly SceneBadgeModel[];
   readonly flows: FlowIndex;
   readonly flowTargets: Readonly<Record<string, FlowVisibleTarget>>;
@@ -517,6 +520,8 @@ function edgeLabelOf(document: SceneDocument, relation: string): string | undefi
     : undefined;
 }
 
+type SceneResolveInput = Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics" | "iconBindings" | "strictIcons" | "view" | "resolveGlyph" | "flows" | "depthParityStart" | "legend" | "legendTitle" | "legendLabels">;
+
 /**
  * The drawable scene of one laid-out result: nodes at emitted geometry,
  * routes, and the emitted edge-label boxes and measured lines. Older results
@@ -527,7 +532,29 @@ function edgeLabelOf(document: SceneDocument, relation: string): string | undefi
  */
 export function resolveScene(
   result: SceneLaidOut,
-  input: Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics" | "iconBindings" | "strictIcons" | "view" | "resolveGlyph" | "flows" | "depthParityStart" | "legend" | "legendTitle" | "legendLabels">,
+  input: SceneResolveInput,
+  viewport?: Omit<SceneCameraInput, "bounds">,
+): SceneModel {
+  let scene = resolveSceneAtZoom(result, input);
+  if (!viewport?.fitToWindow || !scene.r7Connectors) return scene;
+
+  const labelSize = input.metrics?.edgeLabelSize ?? DEFAULT_EDGE_LABEL_SIZE;
+  let paintZoom = Math.max(DEFAULT_MIN_READABLE_SCALE, MIN_EDGE_LABEL_CSS_PX / labelSize);
+  // Enlarging labels can extend the bounds. Repeat only when the resulting
+  // fit needs more clearance, with a bound for extremely small viewports.
+  for (let pass = 0; pass < 4 && scene.bounds !== undefined; pass += 1) {
+    const { zoom } = sceneFit({ ...viewport, bounds: scene.bounds });
+    if (!(zoom > 0 && zoom < paintZoom)) break;
+    paintZoom = zoom;
+    scene = resolveSceneAtZoom(result, input, paintZoom);
+  }
+  return scene;
+}
+
+function resolveSceneAtZoom(
+  result: SceneLaidOut,
+  input: SceneResolveInput,
+  paintZoom?: number,
 ): SceneModel {
   const view = result.view;
   const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, view, input.resolveGlyph,
@@ -579,15 +606,18 @@ export function resolveScene(
   const erd = input.document.profileRefs.length === 1 && input.document.profileRefs[0] === 'erd@1';
   const r7Connectors = !erd && (result.routeSpacing !== undefined || isR7ConnectorPresentation(input.presentation, input.view ?? view, input.document));
   const edgeLabelMeasure = scaleEdgeLabelMeasurer(input.measureLines, r7Connectors ? input.metrics?.edgeLabelSize : undefined, DEFAULT_EDGE_LABEL_SIZE);
-  // Non-scaling connector paint is widest in world units at the readability
-  // floor. Existing v1, ERD, and numbered-flow scenes keep the 1.5 px main
-  // clearance (`REQ-R7-28`); r7 scenes use `linkStrokeWidth` (2.5 px, REQ-R7-11)
-  // and add emphasis half-stroke only on emphasized edges (REQ-R7-17).
+  const baseLabelSize = input.metrics?.edgeLabelSize ?? DEFAULT_EDGE_LABEL_SIZE;
+  const overviewEdgeLabelSize = r7Connectors && paintZoom !== undefined && baseLabelSize * paintZoom < MIN_EDGE_LABEL_CSS_PX
+    ? Math.ceil(MIN_EDGE_LABEL_CSS_PX / paintZoom * 64) / 64
+    : undefined;
+  const labelScale = overviewEdgeLabelSize === undefined ? 1 : overviewEdgeLabelSize / baseLabelSize;
+  const clearanceZoom = Math.min(DEFAULT_MIN_READABLE_SCALE, paintZoom ?? DEFAULT_MIN_READABLE_SCALE);
+  // Non-scaling connector paint occupies more world units at a smaller zoom.
   const relationPresentation = input.presentation.relations;
   const baseLinkStrokeWidth = r7Connectors
     ? (input.metrics?.linkStrokeWidth ?? DEFAULT_LINK_STROKE_WIDTH)
     : 1.5;
-  const paintClearance = margin + baseLinkStrokeWidth / (2 * DEFAULT_MIN_READABLE_SCALE);
+  const paintClearance = margin + baseLinkStrokeWidth / (2 * clearanceZoom);
   const zoneInset = input.metrics?.containerPadding ?? ZONE_GEOMETRY.contentInsetInline;
   const pendingCutouts: { readonly node: SceneNodeModel; readonly inner: number; readonly lineHeight: number; readonly bottom: number }[] = [];
   for (const node of nodes) {
@@ -598,7 +628,7 @@ export function resolveScene(
     const height = headerHeights.get(node.occurrence);
     if (height === undefined) continue;
     const zoneGeo = anatomyZoneGeometry(node.presentation?.anatomy);
-    const ruleClearance = (zoneGeo.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
+    const ruleClearance = (zoneGeo.ruleHeight / 2 + 1) / clearanceZoom;
     blockers.push({
       x: node.rect.x,
       y: node.rect.y,
@@ -712,9 +742,21 @@ export function resolveScene(
   const labelled = new Set(entries.map((entry) => entry.id));
   for (const [id, placement] of placements) {
     if (placement === undefined || !labelled.has(id)) continue;
-    labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box, ...(erd ? { erd: true } : {}), ...("leader" in placement ? { leader: placement.leader as readonly Vec2[] } : {}),
+    const { box } = placement;
+    const scaledBox = labelScale === 1 ? box : {
+      x: box.x - box.width * (labelScale - 1) / 2,
+      y: box.y - box.height * (labelScale - 1) / 2,
+      width: box.width * labelScale,
+      height: box.height * labelScale,
+    };
+    const bundle = result.edgeBundles?.[id];
+    const chip = bundle?.relations === undefined ? undefined
+      : bundle.chip ?? measureBundleLabel(bundle.relations, edgeLabelMeasure, input.metrics?.bundleLabelMaxWidth);
+    labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: scaledBox, ...(erd ? { erd: true } : {}), ...("leader" in placement ? { leader: placement.leader as readonly Vec2[] } : {}),
       ...(result.edgeBundles?.[id] === undefined ? {} : { title: result.edgeBundles[id]!.title }),
-      ...(result.edgeBundles?.[id]?.relations === undefined ? {} : { bundle: result.edgeBundles[id]!.chip ?? measureBundleLabel(result.edgeBundles[id]!.relations!, edgeLabelMeasure, input.metrics?.bundleLabelMaxWidth) }) });
+      ...(chip === undefined ? {} : { bundle: labelScale === 1 ? chip : {
+        ...chip, groups: chip.groups.map(group => ({ ...group, top: group.top * labelScale, height: group.height * labelScale })),
+      } }) });
   }
 
   const badges: SceneBadgeModel[] = [];
@@ -743,15 +785,15 @@ export function resolveScene(
     }
     const basePad = Math.max(
       paintClearance + CONNECTOR_CUTOUT_SLACK,
-      margin + baseLinkStrokeWidth / DEFAULT_MIN_READABLE_SCALE + 1.15,
+      margin + baseLinkStrokeWidth / clearanceZoom + 1.15,
     );
     let pad = basePad;
     for (const edge of edges) {
       if (!edge.r7) continue;
       const width = connectorStrokeWidth(edge, input.metrics);
       const edgePad = Math.max(
-        margin + width / (2 * DEFAULT_MIN_READABLE_SCALE) + CONNECTOR_CUTOUT_SLACK,
-        margin + width / DEFAULT_MIN_READABLE_SCALE + 1.15,
+        margin + width / (2 * clearanceZoom) + CONNECTOR_CUTOUT_SLACK,
+        margin + width / clearanceZoom + 1.15,
       );
       if (edgePad <= pad) continue;
       const cutoutLeft = node.rect.x + zoneInset - edgePad;
@@ -778,7 +820,7 @@ export function resolveScene(
       [...blockers, ...badges.map(badge => badge.box), ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box))],
       paintClearance, cornerRadius,
       edges.map(edge => edge.r7
-        ? Math.max(0, connectorStrokeWidth(edge, input.metrics) - baseLinkStrokeWidth) / (2 * DEFAULT_MIN_READABLE_SCALE)
+        ? Math.max(0, connectorStrokeWidth(edge, input.metrics) - baseLinkStrokeWidth) / (2 * clearanceZoom)
         : 0))
     : clearSceneLabels(labels, edges.map(edge => edge.points),
       [...blockers, ...badges.map(badge => badge.box), ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box))],
@@ -811,6 +853,7 @@ export function resolveScene(
     nodes,
     edges,
     labels: clearedLabels,
+    ...(overviewEdgeLabelSize === undefined ? {} : { overviewEdgeLabelSize }),
     r7Connectors,
     connectorCutouts,
     ...(linkLegend === undefined ? {} : { linkLegend }),
