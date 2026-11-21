@@ -2,10 +2,8 @@
  * AC-L2 Chromium suite (§15, json-render standard): the built browser bundle
  * under test — real Chromium via puppeteer-core, offline, local HTTP server.
  *
- * RED state: the suite fails before the elements browser build exists,
- * because `npm run build:browser -w @sentropic/design-system-elements` is
- * the script that produces it (spec §6.2; the artifacts guard in
- * scripts/elements-browser-artifacts.test.mjs pins the same RED). Run with:
+ * The suite builds the elements package when its browser or Focus kit
+ * entry points are missing. Run with:
  *
  *   node packages/elements/tests/browser/chromium-suite.mjs
  *
@@ -75,6 +73,8 @@ const THEMES_CSS = path.resolve(WORKTREE_ROOT, "packages", "themes", "css");
 const BAR_CHART_SOURCE = path.resolve(WORKTREE_ROOT, "packages", "components-svelte", "src", "lib", "BarChart.svelte");
 const ELEMENTS_ENTRY = join(BROWSER_DIST, "elements.js");
 const DOSSIER_MOUNT_ENTRY = fileURLToPath(import.meta.resolve("@sentropic/design-system-elements/dossier-mount"));
+const FOCUS_KIT_MODULE = "@sentropic/design-system-elements/focus-kit";
+const kitManifestUrl = new URL(import.meta.resolve("@sentropic/design-system-elements/focus-kit/manifest.json"));
 const PDATA_FIXTURES = [1, 2, 3, 4, 5].map((n) => `bar-chart-pdata-${n}.json`);
 
 /**
@@ -165,28 +165,26 @@ function record(label, value) {
 }
 
 // ---------------------------------------------------------------------------
-// Step 1 — the bundle under test. Produced by the elements browser build;
-// RED until that build exists.
+// Step 1 — the browser bundles and Node assembler under test.
 // ---------------------------------------------------------------------------
 
-if (!existsSync(ELEMENTS_ENTRY)) {
+const builtEntries = [ELEMENTS_ENTRY, DOSSIER_MOUNT_ENTRY, new URL(import.meta.resolve(FOCUS_KIT_MODULE)), kitManifestUrl];
+if (builtEntries.some((entry) => !existsSync(entry))) {
   const build = spawnSync(
     "npm",
-    ["run", "build:browser", "-w", "@sentropic/design-system-elements"],
+    ["run", "build", "-w", "@sentropic/design-system-elements"],
     { cwd: WORKTREE_ROOT, encoding: "utf8" },
   );
   if (build.status !== 0) {
-    console.error(`RED: the elements browser bundle does not exist and its build failed (${build.status}).`);
+    console.error(`The elements package build failed (${build.status}).`);
     console.error((build.stdout ?? "") + (build.stderr ?? ""));
-    console.error("AC-L2 Chromium suite cannot run: produce dist/browser first (spec §6.2, §15).");
     process.exit(1);
   }
 }
 ok("bundle exists: dist/browser/elements.js");
 
-const { assembleStandaloneDossier } = await import("@sentropic/design-system-elements/focus-kit");
-const kitManifestUrl = import.meta.resolve("@sentropic/design-system-elements/focus-kit/manifest.json");
-const kitManifestBytes = readFileSync(new URL(kitManifestUrl), "utf8");
+const { assembleStandaloneDossier } = await import(FOCUS_KIT_MODULE);
+const kitManifestBytes = readFileSync(kitManifestUrl, "utf8");
 const kitManifest = JSON.parse(kitManifestBytes);
 const { canonicalJson } = await import("@sentropic/focus/editing");
 assert(kitManifestBytes === canonicalJson(kitManifest), "Focus kit manifest is canonical RFC 8785", "serialized bytes differ");

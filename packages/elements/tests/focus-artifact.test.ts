@@ -100,21 +100,35 @@ it("accepts the B5 fixture at the Focus presentation gate", () => {
 it("announces one completed light DOM root per render", () => {
   const node = host();
   const dossier = mount(node);
-  const events: DossierReadyDetail[] = [];
-  node.addEventListener("st-dossier-ready", (event) => {
-    events.push((event as CustomEvent<DossierReadyDetail>).detail);
+  const roots: HTMLElement[] = [];
+  const ready = vi.fn((event: Event) => {
+    const { reviewRoot } = (event as CustomEvent<DossierReadyDetail>).detail;
+    roots.push(reviewRoot);
+    const sectionB = reviewRoot.querySelector('[data-anchor-id="B"]');
+    return {
+      connected: reviewRoot.isConnected && reviewRoot.getRootNode() === document && reviewRoot.parentElement === node,
+      current: dossier.reviewRoot === reviewRoot && node.childElementCount === 1,
+      title: reviewRoot.querySelector("header h1")?.textContent,
+      anchors: Array.from(reviewRoot.querySelectorAll<HTMLElement>("[data-anchor-id][data-commentable]"), (element) =>
+        element.dataset.anchorId),
+      descendants: ["p strong", "li strong", "table td strong"].map((selector) => sectionB?.querySelector(selector)?.textContent),
+    };
   });
+  node.addEventListener("st-dossier-ready", ready);
   expect(dossier.reviewRoot).toBeNull();
   dossier.render(b5);
   const first = dossier.reviewRoot;
-  expect(events).toEqual([{ reviewRoot: first }]);
-  expect(first?.getRootNode()).toBe(document);
-  expect(first?.parentElement).toBe(node);
-  dossier.render({ ...b5, title: "Revised review fixture", sections: [...b5.sections].reverse() });
-  expect(events).toEqual([{ reviewRoot: first }, { reviewRoot: dossier.reviewRoot }]);
+  expect(ready).toHaveBeenCalledOnce();
+  dossier.render({ ...b5, title: "Revised review fixture", sections: [b5.sections[0], b5.sections[2], b5.sections[1]] });
+  const complete = { connected: true, current: true, descendants: ["inner text", "inner text", "Builds"] };
+  expect(ready.mock.results.map((result) => result.value)).toEqual([
+    { ...complete, title: b5.title, anchors: [b5.ref, "A", "B", "C"] },
+    { ...complete, title: "Revised review fixture", anchors: [b5.ref, "A", "C", "B"] },
+  ]);
+  expect(roots[0]).toBe(first);
+  expect(roots[1]).toBe(dossier.reviewRoot);
   expect(dossier.reviewRoot).not.toBe(first);
   expect(first?.isConnected).toBe(false);
-  expect(events[1]?.reviewRoot.querySelector("h1")?.textContent).toBe("Revised review fixture");
   dossier.destroy();
   expect(dossier.reviewRoot).toBeNull();
 });

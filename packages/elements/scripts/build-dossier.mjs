@@ -75,6 +75,10 @@ const renderedModules = Object.entries(entry.modules).filter(([, module]) => mod
 if (renderedModules.some(([id]) => /[\\/]dom[\\/]browser-entry\.ts$|[\\/]dom[\\/].+-element\.svelte$/.test(id))) {
   throw new Error("The dossier kit includes a Shadow DOM element");
 }
+const svelteComponents = renderedModules.filter(([id]) => id.endsWith(".svelte"));
+if (svelteComponents.length > 0) {
+  throw new Error(`The dossier kit includes unexpected Svelte components: ${svelteComponents.map(([id]) => id).join(", ")}`);
+}
 
 // The package import exposes mounting without running the static page bootstrap.
 await buildDossier("dossier-mount.ts", join(packageDir, "dist", "dossier"), "dossier-mount.js");
@@ -110,4 +114,4 @@ writeFileSync(join(packageDir, "dist", "focus-kit-manifest.json"), manifestBytes
 const kitBytes = files.reduce((sum, file) => sum + file.size, 0);
 console.log(`Focus kit K: ${kitBytes} bytes (${files.map(({ path, size }) => `${path}: ${size}`).join(", ")})`);
 console.log(`Focus kit digest: sha256:${createHash("sha256").update(manifestBytes).digest("hex")}`);
-console.log(`Focus kit graph: ${renderedModules.length} rendered modules, ${renderedModules.filter(([id]) => /\.svelte$/.test(id)).length} Svelte components`);
+console.log(`Focus kit graph: ${renderedModules.length} rendered modules, ${svelteComponents.length} Svelte components`);
