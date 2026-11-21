@@ -1,3 +1,5 @@
+import type { ChartBand, ChartGoalLine, ChartReferenceLine } from "./bar-chart.js";
+
 /** A UTC instant as whole milliseconds since 1970-01-01T00:00:00Z. */
 export type EpochMilliseconds = number;
 
@@ -39,4 +41,10 @@ export interface TimeSeriesChartProps {
    * @minItems 1
    */
   series: TimeSeries[];
+  /** Reference lines. An x-axis value is in whole UTC epoch milliseconds. */
+  referenceLines?: ChartReferenceLine[];
+  /** Bands in value-axis units, applied to each series. */
+  bands?: ChartBand[];
+  /** Goal in value-axis units, applied to each series. */
+  goalLine?: ChartGoalLine;
 }
