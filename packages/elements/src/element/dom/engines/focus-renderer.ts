@@ -410,6 +410,18 @@ export function renderDossier(
   document_: unknown,
   dispatch: DossierDispatch,
 ): () => void {
+  const root = node.getRootNode();
+  adoptDossierSheet(root instanceof ShadowRoot || root instanceof Document ? root : document);
+  return renderDossierContent(node, document_, dispatch, "h2").destroy;
+}
+
+/** Shared DOM renderer. Its light DOM caller supplies the external stylesheet. */
+export function renderDossierContent(
+  node: HTMLElement,
+  document_: unknown,
+  dispatch: DossierDispatch,
+  titleTag: "h1" | "h2",
+): { reviewRoot: HTMLElement; destroy: () => void } {
   const doc = (document_ ?? {}) as Record<string, unknown>;
   const sections = Array.isArray(doc.sections) ? doc.sections : [];
   const interactions = Array.isArray(doc.interactions) ? doc.interactions : [];
@@ -417,9 +429,6 @@ export function renderDossier(
   const knownOptions = optionIdsOf(sections);
   const selected = new Map<string, string>();
   const expanded = new Set<string>();
-
-  const root = node.getRootNode();
-  adoptDossierSheet(root instanceof ShadowRoot || root instanceof Document ? root : document);
 
   const article = document.createElement("article");
   article.className = "st-dossier";
@@ -429,7 +438,7 @@ export function renderDossier(
   header.className = "st-dossier__header";
   const subject = field(doc.subject);
   if (subject !== undefined) header.append(text("p", "st-dossier__subject", subject));
-  header.append(text("h2", "st-dossier__title", field(doc.title) ?? ""));
+  header.append(text(titleTag, "st-dossier__title", field(doc.title) ?? ""));
   header.setAttribute("data-st-dossier-title", "");
   article.append(header);
 
@@ -568,10 +577,11 @@ export function renderDossier(
   node.addEventListener("click", onFold);
   node.replaceChildren(article);
 
-  return () => {
+  function destroy(): void {
     node.removeEventListener("click", onClick);
     node.removeEventListener("keydown", onKeyDown);
     node.removeEventListener("click", onFold);
-    node.replaceChildren();
-  };
+    article.remove();
+  }
+  return { reviewRoot: article, destroy };
 }

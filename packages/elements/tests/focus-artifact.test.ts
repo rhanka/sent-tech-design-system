@@ -1,32 +1,20 @@
 // @vitest-environment jsdom
-/// <reference types="vite/client" />
-
 import { afterEach, expect, it, vi } from "vitest";
-import { renderDossier } from "../src/element/dom/engines/focus-renderer.js";
+import { mountDossier, type DossierReadyDetail } from "../src/element/dom/dossier-mount.js";
 import b5 from "./fixtures/focus-artifact/b5.json";
 import decisionV1 from "./fixtures/focus-artifact/decision-v1.json";
 import decisionV2 from "./fixtures/focus-artifact/decision-v2.json";
 import report from "./fixtures/focus-artifact/report.json";
 
 const cleanups: (() => void)[] = [];
-const mounts = import.meta.glob<{
-  mountDossier(host: HTMLElement): {
-    readonly reviewRoot: HTMLElement | null;
-    render(document: unknown): void;
-    destroy(): void;
-  };
-}>("../src/element/dom/dossier-mount.ts");
-
 function host(): HTMLElement {
   const node = document.createElement("div");
   document.body.append(node);
   return node;
 }
 
-async function mount(node: HTMLElement) {
-  const load = mounts["../src/element/dom/dossier-mount.ts"];
-  expect(load, "the light DOM mount must be available").toBeDefined();
-  const dossier = (await load!()).mountDossier(node);
+function mount(node: HTMLElement) {
+  const dossier = mountDossier(node);
   cleanups.push(() => dossier.destroy());
   return dossier;
 }
@@ -57,7 +45,8 @@ it.each([
 ])("renders $doc.title with one commentable anchor per definition", ({ doc, ids, calls, actions }) => {
   const node = host();
   const selected = vi.fn();
-  cleanups.push(renderDossier(node, doc, selected));
+  node.addEventListener("st-intent", selected);
+  mount(node).render(doc);
   expect.soft(node.querySelector("header h1")?.textContent).toBe(doc.title);
   expect.soft(Array.from(node.querySelectorAll("[data-anchor-id]"), (element) => element.getAttribute("data-anchor-id")).sort())
     .toEqual([doc.ref, ...ids].sort());
@@ -84,43 +73,50 @@ it.each([
     expect(node.textContent).toContain("ecosystem:overview");
     controls[0]?.click();
     expect(selected).toHaveBeenCalledOnce();
-    expect(selected).toHaveBeenCalledWith("opt-a");
+    expect(selected.mock.calls[0]?.[0].detail).toEqual({
+      event: "intent", name: "choose-option", target: "opt-a", context: {},
+    });
   }
 });
 
-it("announces one completed light DOM root per render with the B5 descendants", async () => {
+it("announces one completed light DOM root per render", () => {
   const node = host();
-  const dossier = await mount(node);
-  const roots: HTMLElement[] = [];
+  const dossier = mount(node);
+  const events: DossierReadyDetail[] = [];
   node.addEventListener("st-dossier-ready", (event) => {
-    const { reviewRoot } = (event as CustomEvent<{ reviewRoot: HTMLElement }>).detail;
-    expect(reviewRoot).toBe(dossier.reviewRoot);
-    expect(reviewRoot.getRootNode()).toBe(document);
-    expect(reviewRoot.parentElement).toBe(node);
-    expect(reviewRoot.querySelector("h1")?.closest("[data-anchor-id][data-commentable]")?.getAttribute("data-anchor-id"))
-      .toBe("focus-test");
-    for (const selector of ["p strong", "li strong", "table td strong"]) {
-      const child = reviewRoot.querySelector(`[data-anchor-id="B"] ${selector}`);
-      expect(child?.closest("[data-anchor-id][data-commentable]")?.getAttribute("data-anchor-id")).toBe("B");
-    }
-    roots.push(reviewRoot);
+    events.push((event as CustomEvent<DossierReadyDetail>).detail);
   });
   expect(dossier.reviewRoot).toBeNull();
   dossier.render(b5);
   const first = dossier.reviewRoot;
-  dossier.render({ ...b5, title: "Revised review fixture", sections: [b5.sections[0], b5.sections[2], b5.sections[1]] });
-  expect(roots).toHaveLength(2);
+  expect(events).toEqual([{ reviewRoot: first }]);
+  expect(first?.getRootNode()).toBe(document);
+  expect(first?.parentElement).toBe(node);
+  dossier.render({ ...b5, title: "Revised review fixture", sections: [...b5.sections].reverse() });
+  expect(events).toEqual([{ reviewRoot: first }, { reviewRoot: dossier.reviewRoot }]);
   expect(dossier.reviewRoot).not.toBe(first);
   expect(first?.isConnected).toBe(false);
-  expect(roots[1]?.querySelector("h1")?.textContent).toBe("Revised review fixture");
+  expect(events[1]?.reviewRoot.querySelector("h1")?.textContent).toBe("Revised review fixture");
   dossier.destroy();
   expect(dossier.reviewRoot).toBeNull();
+});
+
+it("marks the B5 header and section containers around h1, p, li and table", () => {
+  const dossier = mount(host());
+  dossier.render(b5);
+  const root = dossier.reviewRoot;
+  expect(root?.querySelector("h1")?.closest("[data-anchor-id][data-commentable]")?.getAttribute("data-anchor-id"))
+    .toBe("focus-test");
+  for (const selector of ["p strong", "li strong", "table td strong"]) {
+    const child = root?.querySelector(`[data-anchor-id="B"] ${selector}`);
+    expect(child?.closest("[data-anchor-id][data-commentable]")?.getAttribute("data-anchor-id")).toBe("B");
+  }
 });
 
 it("resolves a fragment set before an asynchronous render and handles subsequent hash changes", async () => {
   history.replaceState(null, "", "#annex%3Ameasurements");
   const node = host();
-  const dossier = await mount(node);
+  const dossier = mount(node);
   expect(dossier.reviewRoot).toBeNull();
   await Promise.resolve().then(() => dossier.render(report));
   const annex = node.querySelector<HTMLDetailsElement>('[data-anchor-id="annex:measurements"]');
