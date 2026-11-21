@@ -65,16 +65,26 @@ export function useDiagramSceneViewport(
         maxDisplayScale.value = parseScale(token('--st-component-diagramScene-maxDisplayScale'));
         minReadableScale.value = parseScale(token('--st-component-diagramScene-minReadableScale'));
     }
+    let previousFrameHeight: number | undefined;
+    let previousViewportHeight = 0;
+
     function measureFrame(resize = false) {
         if (frameEl.value === undefined) return;
         const width = frameEl.value.clientWidth || undefined;
-        // Zoom can resize the viewport through its scrollbars. Keep the
-        // user zoom unless the frame width or the window actually resizes.
+        const frameHeight = frameEl.value.clientHeight;
+        const viewportOuterHeight = viewportEl.value?.offsetHeight ?? 0;
+        // The frame can grow with its viewport when a scrollbar appears.
+        // Refit when the frame height changes independently of that growth.
+        const frameHeightChanged = previousFrameHeight !== undefined
+            && frameHeight !== previousFrameHeight
+            && frameHeight - previousFrameHeight !== viewportOuterHeight - previousViewportHeight;
+        previousFrameHeight = frameHeight;
+        previousViewportHeight = viewportOuterHeight;
         const height = window.innerHeight > 0 ? window.innerHeight : undefined;
-        const refit = resize || width !== frameWidth.value || height !== windowHeight.value;
+        const refit = resize || width !== frameWidth.value || frameHeightChanged || height !== windowHeight.value;
         frameWidth.value = width;
         viewWidth.value = viewportEl.value?.clientWidth || width;
-        scrollbarHeight.value = viewportEl.value === undefined ? 0 : viewportEl.value.offsetHeight - viewportEl.value.clientHeight;
+        scrollbarHeight.value = viewportOuterHeight - (viewportEl.value?.clientHeight ?? 0);
         windowHeight.value = height;
         readCameraTokens();
         if (refit) {
