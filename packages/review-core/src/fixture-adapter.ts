@@ -68,8 +68,8 @@ export interface FixtureCommentsAdapterHandle {
   readonly store: FixtureCommentStore;
   /** Switch the authenticated caller for subsequent calls in tests/demos. */
   setCaller(caller: FixtureCallerContext): void;
-  /** Register or replace a host-side live session mapping `toolCallId -> agent + runId`. */
-  registerLiveSession(toolCallId: string, session: ResolvedAgentSession): void;
+  /** Register or replace a host-side live session for this tenant and workspace. */
+  registerLiveSession(tenant: TenantContext, toolCallId: string, session: ResolvedAgentSession): void;
   /** Drop host-side live session metadata (simulates reload / expired session fallback). */
   clearLiveSessions(): void;
   /** Read a snapshot of raw stored rows (for test assertions). */
@@ -110,6 +110,10 @@ interface FixtureCommentStore {
 
 function tenantMatches(rowTenant: TenantContext, tenant: TenantContext): boolean {
   return rowTenant.workspaceId === tenant.workspaceId && rowTenant.tenantId === tenant.tenantId;
+}
+
+function liveSessionKey(tenant: TenantContext, toolCallId: string): string {
+  return JSON.stringify([tenant.tenantId, tenant.workspaceId, toolCallId.trim()]);
 }
 
 function targetMatches(rowTarget: CommentTarget, queryTarget: CommentTarget): boolean {
@@ -277,9 +281,10 @@ export function createFixtureCommentsAdapter(
       return options.authorshipResolver?.resolveHumanActor?.(userId);
     },
     resolveAgentFromProvenance(provenance, comment) {
-      const toolCallId = provenance.toolCallId?.trim();
-      if (toolCallId && liveSessions.has(toolCallId)) {
-        return liveSessions.get(toolCallId);
+      const { toolCallId } = provenance;
+      if (toolCallId !== undefined) {
+        const session = liveSessions.get(liveSessionKey(comment.tenant, toolCallId));
+        if (session !== undefined) return session;
       }
       return options.authorshipResolver?.resolveAgentFromProvenance?.(provenance, comment);
     },
@@ -334,6 +339,7 @@ export function createFixtureCommentsAdapter(
   }
 
   function normalizeAndValidateWriteProvenance(
+    tenant: TenantContext,
     provenance: CommentProvenance | undefined,
   ): CommentProvenance | undefined {
     const actorKind = currentCaller.actorKind ?? "human";
@@ -364,7 +370,7 @@ export function createFixtureCommentsAdapter(
       if (liveRunId !== undefined && liveRunId.length > 0) {
         session.runId = liveRunId;
       }
-      liveSessions.set(toolCallId, session);
+      liveSessions.set(liveSessionKey(tenant, toolCallId), session);
     }
 
     // Persisted provenance carries toolCallId only; runId is dropped at write (§1.3).
@@ -435,7 +441,7 @@ export function createFixtureCommentsAdapter(
       }
       validateSectionKey(target.sectionKey);
       if (input.assignedTo !== undefined) validateAssignee(tenant, input.assignedTo);
-      const storedProvenance = normalizeAndValidateWriteProvenance(input.provenance);
+      const storedProvenance = normalizeAndValidateWriteProvenance(tenant, input.provenance);
       if (threadId === undefined) {
         do {
           threadId = `t-${nextThreadSeq++}`;
@@ -675,8 +681,8 @@ export function createFixtureCommentsAdapter(
     setCaller(caller: FixtureCallerContext): void {
       currentCaller = { ...caller };
     },
-    registerLiveSession(toolCallId: string, session: ResolvedAgentSession): void {
-      liveSessions.set(toolCallId.trim(), session);
+    registerLiveSession(tenant: TenantContext, toolCallId: string, session: ResolvedAgentSession): void {
+      liveSessions.set(liveSessionKey(tenant, toolCallId), session);
     },
     clearLiveSessions(): void {
       liveSessions.clear();
