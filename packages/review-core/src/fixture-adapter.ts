@@ -70,6 +70,8 @@ export interface FixtureCommentsAdapterHandle {
   setCaller(caller: FixtureCallerContext): void;
   /** Register or replace a host-side live session for this tenant and workspace. */
   registerLiveSession(tenant: TenantContext, toolCallId: string, session: ResolvedAgentSession): void;
+  /** Register in the tool call's sole known scope, or bind to its first comment when it is added. */
+  registerLiveSession(toolCallId: string, session: ResolvedAgentSession): void;
   /** Drop host-side live session metadata (simulates reload / expired session fallback). */
   clearLiveSessions(): void;
   /** Read a snapshot of raw stored rows (for test assertions). */
@@ -228,6 +230,7 @@ export function createFixtureCommentsAdapter(
     ? new Set(options.workspaceMembers)
     : undefined;
   const liveSessions = new Map<string, ResolvedAgentSession>();
+  const pendingLiveSessions = new Map<string, ResolvedAgentSession>();
   const rows: Comment[] = [];
 
   let nextCommentSeq = 1;
@@ -441,6 +444,11 @@ export function createFixtureCommentsAdapter(
         if (thread.length === 0) {
           throw new ReviewAdapterError("NOT_FOUND", 404, `Thread '${threadId}' was not found for the target.`);
         }
+        const rootRecordType = thread[0]!.target.recordType;
+        if (matching === "adapter" && target.kind === "record" &&
+          target.recordType === undefined && rootRecordType !== undefined) {
+          target.recordType = rootRecordType;
+        }
         const inherited = firstAnchoredRow(thread)?.target.sectionKey;
         if (sectionKey === undefined && inherited !== undefined) target.sectionKey = inherited;
       }
@@ -469,6 +477,15 @@ export function createFixtureCommentsAdapter(
         ...(storedProvenance !== undefined ? { provenance: storedProvenance } : {}),
       };
       rows.push(row);
+      const toolCallId = storedProvenance?.toolCallId;
+      if (toolCallId !== undefined) {
+        const pending = pendingLiveSessions.get(toolCallId);
+        if (pending !== undefined) {
+          pendingLiveSessions.delete(toolCallId);
+          const key = liveSessionKey(tenant, toolCallId);
+          if (!liveSessions.has(key)) liveSessions.set(key, pending);
+        }
+      }
       return cloneRawComment(row);
     },
 
@@ -590,12 +607,11 @@ export function createFixtureCommentsAdapter(
       const tenant = workspaceTenant(workspaceId);
       const summaries = await store.listThreadSummaries(tenant, target, "adapter");
       return Promise.all(summaries.map(async (summary): Promise<CommentThreadSummary> => {
-        const matching = (await store.listThread(tenant, summary.threadId)).filter((row) =>
-          targetMatches(row.target, target, "adapter"),
-        );
+        const thread = await store.listThread(tenant, summary.threadId);
+        const matching = thread.filter((row) => targetMatches(row.target, target, "adapter"));
         const last = matching.at(-1);
         const updatedAt = last?.updatedAt ?? summary.lastMessageAt;
-        const assignedTo = matching[0]?.assignedTo ?? undefined;
+        const assignedTo = thread[0]?.assignedTo ?? undefined;
         return {
           threadId: summary.threadId,
           target: summary.target,
@@ -689,11 +705,30 @@ export function createFixtureCommentsAdapter(
     setCaller(caller: FixtureCallerContext): void {
       currentCaller = { ...caller };
     },
-    registerLiveSession(tenant: TenantContext, toolCallId: string, session: ResolvedAgentSession): void {
-      liveSessions.set(liveSessionKey(tenant, toolCallId), session);
+    registerLiveSession(...args: [TenantContext, string, ResolvedAgentSession] | [string, ResolvedAgentSession]): void {
+      if (args.length === 3) {
+        const [tenant, toolCallId, session] = args;
+        liveSessions.set(liveSessionKey(tenant, toolCallId), session);
+        return;
+      }
+
+      const [toolCallId, session] = args;
+      const id = toolCallId.trim();
+      let scopeKey: string | undefined;
+      for (const row of rows) {
+        if (row.provenance?.toolCallId !== id) continue;
+        const key = liveSessionKey(row.tenant, id);
+        if (scopeKey !== undefined && scopeKey !== key) {
+          throw new Error("Specify the tenant and workspace to register a live session for a shared tool call ID.");
+        }
+        scopeKey = key;
+      }
+      if (scopeKey === undefined) pendingLiveSessions.set(id, session);
+      else liveSessions.set(scopeKey, session);
     },
     clearLiveSessions(): void {
       liveSessions.clear();
+      pendingLiveSessions.clear();
     },
     snapshotRaw(): Comment[] {
       return rows.map(cloneRawComment);
