@@ -1159,4 +1159,54 @@ describe('scene host DOM and camera/fold behavior', () => {
       vi.unstubAllGlobals();
     }
   });
+
+  it('should match Svelte and Vue DOM and camera across resting, « Tout voir », fullscreen fallback, and exit states', async () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+    vi.stubGlobal('innerHeight', 844);
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(390);
+    const props = {
+      ...host,
+      ...WIDE,
+      title: 'Wide parity',
+      labels: { fit: 'Ajuster', viewAll: 'Tout voir', fullscreen: 'Plein écran' },
+    };
+    const vue = mount(SceneFigure, { props });
+    const svelte = render(SvelteScene, { props });
+    try {
+      await nextTick(); await tick(); await nextTick();
+      // 1. Resting default state (0.30 floor).
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      expect(vue.vm.getCamera().zoom).toBe(0.30);
+      expect(svelte.component.getCamera().zoom).toBe(0.30);
+
+      // 2. Activate « Tout voir » on both hosts.
+      await vue.find('.st-diagramSceneFigure-viewAll').trigger('click');
+      svelte.container.querySelector<HTMLButtonElement>('.st-diagramSceneFigure-viewAll')!.click();
+      await nextTick(); await tick(); await nextTick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      expect(vue.vm.getCamera().zoom).toBeLessThan(0.30);
+      expect(vue.vm.getCamera()).toEqual(svelte.component.getCamera());
+      expect(vue.vm.getCamera().pans).toBe(false);
+
+      // 3. Toggle fullscreen fallback on both hosts.
+      await vue.find('.st-diagramSceneFigure-fullscreen').trigger('click');
+      svelte.container.querySelector<HTMLButtonElement>('.st-diagramSceneFigure-fullscreen')!.click();
+      await nextTick(); await tick(); await nextTick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      expect(vue.element.getAttribute('data-fullscreen')).toBe('fallback');
+      expect(svelte.container.firstElementChild?.getAttribute('data-fullscreen')).toBe('fallback');
+
+      // 4. Exit « Tout voir » on both hosts -> restores default 0.30 floor identically.
+      await vue.find('.st-diagramSceneFigure-viewAll').trigger('click');
+      svelte.container.querySelector<HTMLButtonElement>('.st-diagramSceneFigure-viewAll')!.click();
+      await nextTick(); await tick(); await nextTick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      expect(vue.vm.getCamera().zoom).toBe(0.30);
+      expect(vue.vm.getCamera()).toEqual(svelte.component.getCamera());
+    } finally {
+      vue.unmount();
+      svelte.unmount();
+      vi.unstubAllGlobals();
+    }
+  });
 });

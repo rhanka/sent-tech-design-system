@@ -620,4 +620,136 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
     }
     view.dispose();
   });
+
+  // Owner 21/11: « Diag - je veux pour voir dit total sans limit pour vraiment tout voir sans scroll » (Track 01M7ZN6TME8E8V6BPKXXSA6SNS).
+  for (const sceneName of ['ontology/unfolded', 'ontology through the flow host'] as const) {
+    it(`should fit ${sceneName} in « Tout voir » mode with no floor, no scroll, pinch/zoom, fullscreen fallback/native and default restore`, async () => {
+      vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(390);
+      vi.stubGlobal('innerHeight', 844);
+      vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+      const view = await host.mount({
+        ...cases.find(scene => scene.name === sceneName)!.input(),
+        labels: { fit: 'Ajuster', viewAll: 'Tout voir', fullscreen: 'Plein écran' },
+      });
+      try {
+        const figure = (view.element.matches('figure') ? view.element : view.element.querySelector('figure')) as HTMLElement;
+        const button = (name: string) =>
+          [...view.element.querySelectorAll('button')].find(el => el.getAttribute('aria-label') === name || el.textContent?.trim() === name) as HTMLButtonElement;
+        const viewAllBtn = button('Tout voir');
+        const fullscreenBtn = button('Plein écran');
+        const fitBtn = button('Ajuster');
+        const zoomInBtn = button('Zoom in');
+        const zoomOutBtn = button('Zoom out');
+
+        // Default behaviour stays floored at 0.30 with scrolling (REQ-R7-28).
+        const initial = geometry(view.element);
+        expect(initial.zoom).toBe(0.30);
+        expect(initial.viewport.dataset.pans).toBe('true');
+        expect(initial.viewport.style.overflowX).toBe('auto');
+        expect(viewAllBtn.getAttribute('aria-pressed')).toBe('false');
+        expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('false');
+
+        // Enter « Tout voir »: fits the whole scene below 0.30 with overflow hidden and zero scroll.
+        viewAllBtn.click();
+        await view.flush();
+        const whole = geometry(view.element);
+        expect(viewAllBtn.getAttribute('aria-pressed')).toBe('true');
+        expect(figure.dataset.viewAll).toBe('true');
+        expect(whole.zoom).toBeLessThan(0.30);
+        expect(whole.zoom).toBeGreaterThan(0);
+        expect(whole.viewport.dataset.pans).toBe('false');
+        expect(whole.viewport.style.overflowX).toBe('hidden');
+        expect(whole.viewport.style.overflowY).toBe('hidden');
+        expect(whole.viewport.scrollLeft).toBe(0);
+        expect(whole.viewport.scrollTop).toBe(0);
+        expect(whole.tx + whole.left * whole.zoom).toBeGreaterThanOrEqual(-0.5);
+        expect(whole.ty + whole.top * whole.zoom).toBeGreaterThanOrEqual(-0.5);
+        expect(whole.tx + whole.right * whole.zoom).toBeLessThanOrEqual(390 + 0.5);
+        expect(whole.ty + whole.bottom * whole.zoom).toBeLessThanOrEqual(whole.height + 0.5);
+
+        // Zoom buttons and two-finger pinch zoom keep working for detail.
+        expect(zoomOutBtn.disabled).toBe(true);
+        zoomInBtn.click();
+        await view.flush();
+        expect(geometry(view.element).zoom).toBeGreaterThan(whole.zoom);
+        expect(zoomOutBtn.disabled).toBe(false);
+        zoomOutBtn.click();
+        await view.flush();
+        expect(geometry(view.element).zoom).toBeCloseTo(whole.zoom, 10);
+
+        const touch = (type: string, pointerId: number, clientX: number) =>
+          Object.assign(new Event(type, { bubbles: true, cancelable: true }), { pointerId, pointerType: 'touch', clientX, clientY: 0 });
+        whole.viewport.dispatchEvent(touch('pointerdown', 1, 0));
+        whole.viewport.dispatchEvent(touch('pointerdown', 2, 100));
+        whole.viewport.dispatchEvent(touch('pointermove', 2, 240));
+        await view.flush();
+        expect(geometry(view.element).zoom).toBeGreaterThan(whole.zoom);
+        whole.viewport.dispatchEvent(touch('pointerup', 2, 240));
+        whole.viewport.dispatchEvent(touch('pointerup', 1, 0));
+
+        fitBtn.click();
+        await view.flush();
+        expect(geometry(view.element).zoom).toBe(whole.zoom);
+        expect(geometry(view.element).viewport.dataset.pans).toBe('false');
+
+        // Fullscreen toggle (fallback overlay when Fullscreen API is unavailable in jsdom).
+        fullscreenBtn.click();
+        await view.flush();
+        await view.flush();
+        expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('true');
+        expect(figure.dataset.fullscreen).toBe('fallback');
+        expect(figure.classList.contains('st-diagramSceneFigure--fullscreenFallback')).toBe(true);
+        const fsGeo = geometry(view.element);
+        expect(fsGeo.height).toBeGreaterThan(whole.height);
+        expect(fsGeo.viewport.dataset.pans).toBe('false');
+        expect(fsGeo.viewport.style.overflowX).toBe('hidden');
+        expect(fsGeo.viewport.style.overflowY).toBe('hidden');
+
+        // Escape exits fallback fullscreen while keeping « Tout voir ».
+        figure.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        await view.flush();
+        await view.flush();
+        expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('false');
+        expect(figure.dataset.fullscreen).toBeUndefined();
+        expect(viewAllBtn.getAttribute('aria-pressed')).toBe('true');
+
+        // Native Fullscreen API path when available.
+        let activeFs: Element | null = null;
+        Object.defineProperty(document, 'fullscreenEnabled', { configurable: true, get: () => true });
+        Object.defineProperty(document, 'fullscreenElement', { configurable: true, get: () => activeFs });
+        const reqFs = vi.fn(async () => { activeFs = figure; document.dispatchEvent(new Event('fullscreenchange')); });
+        const exitFs = vi.fn(async () => { activeFs = null; document.dispatchEvent(new Event('fullscreenchange')); });
+        Object.defineProperty(figure, 'requestFullscreen', { configurable: true, value: reqFs });
+        Object.defineProperty(document, 'exitFullscreen', { configurable: true, value: exitFs });
+        fullscreenBtn.click();
+        await Promise.resolve();
+        await view.flush();
+        await view.flush();
+        expect(reqFs).toHaveBeenCalledTimes(1);
+        expect(figure.dataset.fullscreen).toBe('native');
+        expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('true');
+
+        // Leaving « Tout voir » exits fullscreen and restores default 0.30 fit identically.
+        viewAllBtn.click();
+        await Promise.resolve();
+        await view.flush();
+        await view.flush();
+        expect(exitFs).toHaveBeenCalledTimes(1);
+        expect(viewAllBtn.getAttribute('aria-pressed')).toBe('false');
+        expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('false');
+        expect(figure.dataset.viewAll).toBeUndefined();
+        expect(figure.dataset.fullscreen).toBeUndefined();
+        const restored = geometry(view.element);
+        expect(restored.zoom).toBe(initial.zoom);
+        expect(restored.height).toBe(initial.height);
+        expect(restored.viewport.dataset.pans).toBe('true');
+        expect(restored.viewport.style.overflowX).toBe('auto');
+      } finally {
+        delete (document as { fullscreenEnabled?: boolean }).fullscreenEnabled;
+        delete (document as { fullscreenElement?: Element | null }).fullscreenElement;
+        delete (document as { exitFullscreen?: () => Promise<void> }).exitFullscreen;
+        view.dispose();
+      }
+    });
+  }
 });
