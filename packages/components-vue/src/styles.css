@@ -18568,19 +18568,10 @@
   .st-diagramSceneFigure--compact {
     gap: var(--st-spacing-1, 0.25rem);
   }
-  .st-diagramSceneFigure--fitToWindow {
-    margin-inline: auto;
-    max-width: 100%;
-  }
-  .st-diagramSceneFigure--fitToWindow .st-diagramSceneFigure-viewport {
-    margin-inline: auto;
-    max-height: calc(100vh - var(--st-spacing-6, 1.5rem));
-    max-width: 100%;
-  }
   .st-diagramSceneFigure-title {
     color: var(--st-semantic-text-primary);
     grid-column: 1;
-    font-weight: var(--st-component-button-anatomy-typography-weight);
+    font-weight: 600;
   }
   .st-diagramSceneFigure--compact .st-diagramSceneFigure-title {
     font-size: var(--st-component-button-anatomy-density-sm-fontSize, 0.875rem);
@@ -18595,7 +18586,7 @@
     color: var(--st-semantic-text-secondary);
     font-size: var(--st-component-button-anatomy-density-sm-fontSize, 0.875rem);
     font-variant-numeric: tabular-nums;
-    min-width: var(--st-component-diagramScene-readoutMinWidth);
+    min-width: 4ch;
     text-align: center;
   }
   .st-diagramSceneFigure-frame {
@@ -18613,7 +18604,7 @@
     width: 100%;
   }
   .st-diagramSceneFigure-viewport:focus-visible {
-    box-shadow: inset 0 0 0 var(--st-component-diagramCard-borderWidth) var(--st-component-iconButton-focusRing, var(--st-semantic-border-interactive));
+    box-shadow: inset 0 0 0 2px var(--st-component-iconButton-focusRing, var(--st-semantic-border-interactive));
     outline: none;
   }
   .st-diagramSceneFigure-extent {
@@ -18635,112 +18626,41 @@
     box-sizing: border-box;
     color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
     display: flex;
-    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
+    font-family: var(--st-component-diagramCard-fontFamily, inherit);
     font-size: var(--st-component-diagramCard-bodyFontSize, 24px);
     height: 100%;
     line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
     width: 100%;
   }
   .st-diagramSceneFigure-edges {
-    height: var(--st-component-diagramCard-ruleHeight);
+    height: 1px;
     left: 0;
     overflow: visible;
     pointer-events: none;
     position: absolute;
     top: 0;
-    width: var(--st-component-diagramCard-ruleHeight);
+    width: 1px;
   }
   .st-diagramSceneFigure-edge {
     fill: none;
-    stroke: var(--st-component-diagramScene-edgeStroke, var(--st-semantic-border-strong));
+    stroke: var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
     stroke-linejoin: round;
     stroke-width: var(--st-component-diagramZone-borderWidth, 1.5px);
     vector-effect: non-scaling-stroke;
   }
-  .st-diagramSceneFigure-edge[data-connector-mode="r7"] {
-    stroke-width: var(--st-diagram-link-stroke-width, var(--st-component-diagramScene-linkStrokeWidth, 2.5px));
-  }
-  .st-diagramSceneFigure-edge[data-edge-emphasis="emphasis"] {
-    stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
-    stroke-width: var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px));
-  }
-  .st-diagramSceneFigure-edge[data-edge-stroke="dashed"] {
-    stroke-dasharray: var(--st-component-diagramScene-linkDashDashed, 8 6);
-  }
-  .st-diagramSceneFigure-edge[data-edge-stroke="dotted"] {
-    stroke-dasharray: var(--st-component-diagramScene-linkDashDotted, 2 5);
-  }
   .st-diagramSceneFigure-edgeLabel {
-    box-sizing: border-box;
-    background: var(--st-component-diagramScene-labelSurface, var(--st-semantic-surface-raised));
-    box-shadow: inset 0 0 0 var(--st-component-diagramScene-labelBorderWidth, 1px) var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
     align-items: center;
-    color: var(--st-component-diagramScene-labelText, var(--st-semantic-text-primary));
+    color: var(--st-semantic-text-secondary);
     display: flex;
     flex-direction: column;
-    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
-    font-size: var(--st-diagram-edge-label-size, var(--st-component-diagramScene-edgeLabelFontSize, 18px));
+    font-family: var(--st-component-diagramCard-fontFamily, inherit);
+    font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
     justify-content: center;
-    line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
+    line-height: var(--st-component-diagramScene-edgeLabelLineHeight, 22px);
     pointer-events: none;
     position: absolute;
     white-space: nowrap;
   }
-  .st-diagramSceneFigure-edgeLabel[data-connector-mode="r7"] {
-    font-size: var(--st-diagram-edge-label-size, var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px)));
-  }
-  .st-diagramSceneFigure-edgeLabel > span { display: block; flex: none; height: var(--st-diagram-label-line-height, 22px); }
-  .st-diagramSceneFigure-bundleHeader { display: block; padding: var(--st-component-diagramScene-labelPadding, 4px); font-weight: 400; }
-  .st-diagramSceneFigure-bundleRelation { display: flex; align-self: stretch; gap: var(--st-component-diagramScene-bundleMarkerGap, 6px); padding: var(--st-component-diagramScene-labelPadding, 4px); box-shadow: inset 0 var(--st-component-diagramScene-labelBorderWidth, 1px) 0 var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle)); }
-  .st-diagramSceneFigure-bundleRelation div { display: flex; flex-direction: column; }
-  .st-diagramSceneFigure-legend {
-    background: var(--st-component-diagramScene-labelSurface, var(--st-semantic-surface-raised));
-    box-shadow: inset 0 0 0 var(--st-component-diagramScene-labelBorderWidth, 1px) var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
-    box-sizing: border-box;
-    color: var(--st-component-diagramScene-labelText, var(--st-semantic-text-primary));
-    display: flex;
-    flex-direction: column;
-    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
-    font-size: var(--st-diagram-legend-font-size, var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px)));
-    gap: var(--st-diagram-legend-header-gap);
-    line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
-    padding: var(--st-diagram-legend-padding);
-    position: absolute;
-  }
-  .st-diagramSceneFigure-legendTitle {
-    align-items: center;
-    border-bottom: var(--st-component-diagramScene-labelBorderWidth, 1px) solid var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
-    box-sizing: border-box;
-    display: flex;
-    flex: none;
-    font-weight: var(--st-component-diagramCard-titleFontWeight, 700);
-    height: var(--st-diagram-legend-header-height);
-    white-space: nowrap;
-  }
-  .st-diagramSceneFigure-legendList {
-    display: flex;
-    flex-direction: column;
-    gap: var(--st-diagram-legend-row-gap);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .st-diagramSceneFigure-legendItem {
-    align-items: center;
-    box-sizing: border-box;
-    display: flex;
-    flex: none;
-    gap: var(--st-diagram-legend-swatch-gap);
-    height: var(--st-diagram-legend-row-height);
-    white-space: nowrap;
-  }
-  .st-diagramSceneFigure-legendSwatch {
-    flex: none;
-    height: var(--st-diagram-legend-swatch-height);
-    overflow: visible;
-    width: var(--st-diagram-legend-swatch-width);
-  }
-  .st-diagramSceneFigure-legendLabel { white-space: nowrap; }
 
 
   .st-diagramCard {

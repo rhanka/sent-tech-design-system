@@ -13,12 +13,14 @@ export type R7PresentationLike = Pick<DiagramPresentation, "contractPin" | "enti
 export type R7DocumentLike = Pick<SemanticDocument, "profileRefs" | "relations">;
 
 function isNumberedFlowOnlyDocument(document: R7DocumentLike | undefined): boolean {
-  if (document === undefined) return false;
+  if (document == null || document.relations == null || typeof document.relations !== "object") {
+    return false;
+  }
   let hasFlowStep = false;
   let hasNonFlowLink = false;
   for (const relation of Object.values(document.relations)) {
-    if (relation.type === "flow-step") hasFlowStep = true;
-    else if (relation.type !== "contains") hasNonFlowLink = true;
+    if (relation?.type === "flow-step") hasFlowStep = true;
+    else if (relation?.type !== "contains") hasNonFlowLink = true;
   }
   return hasFlowStep && !hasNonFlowLink;
 }
@@ -45,8 +47,8 @@ export function isR7ConnectorPresentation(
   view?: ViewDocument,
   document?: R7DocumentLike,
 ): boolean {
-  if (document !== undefined) {
-    if (document.profileRefs.length === 1 && document.profileRefs[0] === "erd@1") {
+  if (document != null) {
+    if (Array.isArray(document.profileRefs) && document.profileRefs.length === 1 && document.profileRefs[0] === "erd@1") {
       return false;
     }
     if (isNumberedFlowOnlyDocument(document)) {
@@ -65,29 +67,32 @@ export function isR7ConnectorPresentation(
   if (presV2Pin || viewV2Pin) {
     return true;
   }
-  if (presentation !== undefined) {
+  if (presentation != null) {
     if (
-      presentation.relations !== undefined &&
+      presentation.relations != null &&
+      typeof presentation.relations === "object" &&
       Object.keys(presentation.relations).length > 0
     ) {
       return true;
     }
-    for (const entry of Object.values(presentation.entities)) {
-      if ((entry as { readonly anatomy?: string } | undefined)?.anatomy === "v2") {
-        return true;
+    if (presentation.entities != null && typeof presentation.entities === "object") {
+      for (const entry of Object.values(presentation.entities)) {
+        if ((entry as { readonly anatomy?: string } | undefined)?.anatomy === "v2") {
+          return true;
+        }
       }
     }
   }
   const frozenV1Pin =
     (presentation?.contractPin !== undefined && !presV2Pin) ||
     (viewDiagramPin !== undefined && !viewV2Pin);
-  if (view !== undefined) {
+  if (view?.relationOccurrences != null && typeof view.relationOccurrences === "object") {
     for (const occ of Object.values(view.relationOccurrences)) {
       if (
-        occ.strokeStyle === "dotted" ||
-        (occ.strokeStyle === "dashed" && !frozenV1Pin) ||
-        occ.arrowhead !== undefined ||
-        occ.emphasis !== undefined
+        occ?.strokeStyle === "dotted" ||
+        (occ?.strokeStyle === "dashed" && !frozenV1Pin) ||
+        occ?.arrowhead !== undefined ||
+        occ?.emphasis !== undefined
       ) {
         return true;
       }

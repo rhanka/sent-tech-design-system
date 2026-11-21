@@ -228,7 +228,7 @@ export function useDiagramSceneViewport(
         (props.metrics?.linkEmphasisStrokeWidth !== undefined ? `;--st-diagram-link-emphasis-stroke-width:${props.metrics.linkEmphasisStrokeWidth}px` : ''),
     );
     const viewportStyle = computed(() => `height:${fit.value.fitHeight + scrollbarHeight.value}px;${props.fitToWindow ? 'max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;' : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px${metricPaintVars.value}`);
-    return { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
+    return { frameEl, viewportEl, measure, measureLines, effectiveMetrics, r7Mode, token,
         fit, zoom, readout, placement, viewportStyle, refitOnFold,
         setZoom, zoomIn, zoomOut, fitToFrame, getCamera };
 }

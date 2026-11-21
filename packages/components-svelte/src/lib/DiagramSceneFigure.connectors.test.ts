@@ -320,4 +320,61 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     expect(explicitViewport.style.getPropertyValue("--st-diagram-link-stroke-width")).toBe("4px");
     expect(explicitViewport.style.getPropertyValue("--st-diagram-link-emphasis-stroke-width")).toBe("5px");
   });
+
+  it("resets orientation seed history on non-fold input changes with the same documentId and keeps main O-4 on legacy scenes (REQ-R7-28)", async () => {
+    const fixture = nestedZoneFixture({ outside: true });
+    const seenSeeds: (Record<string, string> | undefined)[] = [];
+    const spyingCache = {
+      layout: (_doc: unknown, options: { previousOrientation?: Record<string, string> }, _view?: unknown) => {
+        seenSeeds.push(options.previousOrientation);
+        return { status: "refused" as const, refusals: [{ code: "document-invalid" as const, path: "probe", message: "probe" }], diagnostics: [] };
+      },
+      layoutFolded: (_doc: unknown, _view: unknown, options: { previousOrientation?: Record<string, string> }) => {
+        seenSeeds.push(options.previousOrientation);
+        return {
+          status: "laid-out" as const,
+          view: fixture.view,
+          fit: { direction: "top-to-bottom" as const, width: 100, height: 100, zoom: 1, pans: false, phone: false },
+          warnings: [],
+          orientations: { root: seenSeeds.length === 1 ? ("columns" as const) : ("rows" as const) },
+        };
+      },
+      has: () => false,
+      clear: () => {},
+      dispose: () => {},
+      stats: () => ({ entries: 0, bytes: 0, hits: 0, misses: 0, evictions: 0 }),
+    };
+
+    // Legacy @1 scene: fold mask revisits feed previousOrientation directly (main O-4, no stale seed replay).
+    const baseProps = { ...propsOf(fixture), layoutCache: spyingCache as never, collapsed: [] };
+    const view = render(DiagramSceneFigure, baseProps as DiagramSceneFigureProps);
+    await tick();
+    expect(seenSeeds.at(-1)).toBeUndefined();
+    // Changing revision with the same documentId keeps feeding previousOrientation ("columns"), NOT the stale initial undefined seed.
+    await view.rerender({
+      ...baseProps,
+      document: { ...fixture.document, revision: fixture.document.revision + 1 },
+    } as DiagramSceneFigureProps);
+    await tick();
+    expect(seenSeeds.at(-1)).toEqual({ root: "columns" });
+    view.unmount();
+
+    // r7 @2 scene: changing revision or hints with the same documentId clears orientationSeedByFold instead of replaying initial seed.
+    seenSeeds.length = 0;
+    const r7Props = {
+      ...propsOf(fixture),
+      presentation: { ...fixture.presentation, contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } },
+      layoutCache: spyingCache as never,
+      collapsed: [],
+    };
+    const r7View = render(DiagramSceneFigure, r7Props as DiagramSceneFigureProps);
+    await tick();
+    expect(seenSeeds.at(-1)).toBeUndefined();
+    await r7View.rerender({
+      ...r7Props,
+      hints: { cardGapX: 120 },
+    } as DiagramSceneFigureProps);
+    await tick();
+    expect(seenSeeds.at(-1)).toEqual({ root: "columns" });
+  });
 });

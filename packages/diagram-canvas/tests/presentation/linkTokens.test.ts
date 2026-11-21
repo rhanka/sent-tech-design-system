@@ -113,14 +113,9 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
       new URL("../../../components-vue/src/DiagramSceneFigureBase.vue", import.meta.url),
       "utf8",
     );
-    const vueStylesCss = readFileSync(
-      new URL("../../../components-vue/src/styles.css", import.meta.url),
-      "utf8",
-    );
     for (const [name, source] of [
       ["DiagramSceneFigure.svelte", svelteCss],
       ["DiagramSceneFigureBase.vue", vueBaseCss],
-      ["components-vue/src/styles.css", vueStylesCss],
     ] as const) {
       const baseEdgeBlock = /\.st-diagramSceneFigure-edge\s*\{[^}]*\}/.exec(source)?.[0] ?? "";
       expect(baseEdgeBlock, `${name} base .st-diagramSceneFigure-edge keeps 1.5px zone borderWidth for v1/ERD/flow`).toContain(

@@ -266,6 +266,59 @@ for (const host of ["base", "numbered-flow"] as const) {
       expect(explicitViewport.style.getPropertyValue("--st-diagram-link-stroke-width")).toBe("4px");
       expect(explicitViewport.style.getPropertyValue("--st-diagram-link-emphasis-stroke-width")).toBe("5px");
     });
+
+    it("resets orientation seed history on non-fold input changes with the same documentId and keeps main O-4 on legacy scenes (REQ-R7-28)", async () => {
+      const fixture = nestedZoneFixture({ outside: true });
+      const seenSeeds: (Record<string, string> | undefined)[] = [];
+      const spyingCache = {
+        layout: (_doc: unknown, options: { previousOrientation?: Record<string, string> }) => {
+          seenSeeds.push(options.previousOrientation);
+          return { status: "refused" as const, refusals: [{ code: "document-invalid" as const, path: "probe", message: "probe" }], diagnostics: [] };
+        },
+        layoutFolded: (_doc: unknown, _view: unknown, options: { previousOrientation?: Record<string, string> }) => {
+          seenSeeds.push(options.previousOrientation);
+          return {
+            status: "laid-out" as const,
+            view: fixture.view,
+            fit: { direction: "top-to-bottom" as const, width: 100, height: 100, zoom: 1, pans: false, phone: false },
+            warnings: [],
+            orientations: { root: seenSeeds.length === 1 ? ("columns" as const) : ("rows" as const) },
+          };
+        },
+        has: () => false,
+        clear: () => {},
+        dispose: () => {},
+        stats: () => ({ entries: 0, bytes: 0, hits: 0, misses: 0, evictions: 0 }),
+      };
+
+      const container = document.createElement("div");
+      document.body.append(container);
+      const v1Props = hostProps({ ...propsOf(fixture), layoutCache: spyingCache as never, collapsed: [] } as DiagramSceneFigureProps);
+      const v1Wrapper = mount(DiagramSceneFigure, { props: v1Props, attachTo: container });
+      mounted.push({ unmount: () => v1Wrapper.unmount(), container });
+      await tick();
+      expect(seenSeeds.at(-1)).toBeUndefined();
+      await v1Wrapper.setProps({ document: { ...fixture.document, revision: fixture.document.revision + 1 } });
+      await tick();
+      expect(seenSeeds.at(-1)).toEqual({ root: "columns" });
+
+      seenSeeds.length = 0;
+      const r7Container = document.createElement("div");
+      document.body.append(r7Container);
+      const r7Props = hostProps({
+        ...propsOf(fixture),
+        presentation: { ...fixture.presentation, contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } },
+        layoutCache: spyingCache as never,
+        collapsed: [],
+      } as DiagramSceneFigureProps);
+      const r7Wrapper = mount(DiagramSceneFigure, { props: r7Props, attachTo: r7Container });
+      mounted.push({ unmount: () => r7Wrapper.unmount(), container: r7Container });
+      await tick();
+      expect(seenSeeds.at(-1)).toBeUndefined();
+      await r7Wrapper.setProps({ hints: { cardGapX: 120 } });
+      await tick();
+      expect(seenSeeds.at(-1)).toEqual({ root: "columns" });
+    });
   });
 }
 
@@ -282,22 +335,20 @@ describe("DiagramSceneFigure numbered flow connectors — Vue", () => {
     expect(view.container.querySelectorAll("[data-scene-edge]").length).toBeGreaterThan(0);
   });
 
-  it("keeps one single source for Vue src/dist styles.css edge stroke matching Svelte and arrowheads", () => {
+  it("keeps Vue SFC and built dist/styles.css edge stroke aligned with Svelte and arrowheads without mutating src/styles.css (REQ-R7-28)", () => {
     const here = dirname(fileURLToPath(import.meta.url));
-    const srcCss = readFileSync(resolve(here, "styles.css"), "utf8");
     const vueBase = readFileSync(resolve(here, "DiagramSceneFigureBase.vue"), "utf8");
     const vueNumbered = readFileSync(resolve(here, "DiagramNumberedScene.vue"), "utf8");
     const svelte = readFileSync(resolve(here, "../../components-svelte/src/lib/DiagramSceneFigure.svelte"), "utf8");
     const baseStyle = vueBase.split("<style>")[1]!.split("</style>")[0]!.trim();
 
-    expect(srcCss).toContain(baseStyle);
     const edgeRules = (css: string) => [...css.matchAll(/\.st-diagramSceneFigure-edge\s*\{[^}]*\}/g)].map((m) => m[0]);
-    const srcEdgeRules = edgeRules(srcCss);
-    expect(srcEdgeRules).toHaveLength(1);
+    const vueEdgeRules = edgeRules(baseStyle);
+    expect(vueEdgeRules).toHaveLength(1);
     const svelteEdgeRules = edgeRules(svelte.split("<style>")[1]!.split("</style>")[0]!);
     expect(svelteEdgeRules).toHaveLength(1);
-    expect(srcEdgeRules[0]).toBe(svelteEdgeRules[0]);
-    expect(srcEdgeRules[0]).toContain("stroke: var(--st-component-diagramScene-edgeStroke, var(--st-semantic-border-strong));");
+    expect(vueEdgeRules[0]).toBe(svelteEdgeRules[0]);
+    expect(vueEdgeRules[0]).toContain("stroke: var(--st-component-diagramScene-edgeStroke, var(--st-semantic-border-strong));");
     expect(vueBase).toContain('fill="var(--st-component-diagramScene-edgeStroke, #64748b)"');
     expect(vueNumbered).toContain('fill="var(--st-component-diagramScene-edgeStroke, #64748b)"');
 
@@ -305,8 +356,9 @@ describe("DiagramSceneFigure numbered flow connectors — Vue", () => {
     if (existsSync(distPath)) {
       const distCss = readFileSync(distPath, "utf8");
       const distEdgeRules = edgeRules(distCss);
-      expect(distEdgeRules).toHaveLength(1);
-      expect(distEdgeRules[0]).toBe(srcEdgeRules[0]);
+      // Built dist/styles.css appends DiagramSceneFigureBase.vue <style> last, supplying edgeStroke + DE-2 rules just like main.
+      expect(distEdgeRules.at(-1)).toBe(vueEdgeRules[0]);
+      expect(distCss).toContain('.st-diagramSceneFigure-edge[data-connector-mode="r7"]');
     }
   });
 });

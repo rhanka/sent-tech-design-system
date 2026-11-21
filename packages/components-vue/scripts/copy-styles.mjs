@@ -13,9 +13,7 @@ function sfcStyles(dir) {
     return [...readFileSync(path, 'utf8').matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(match => match[1]);
   });
 }
-const baseCss = readFileSync(source, 'utf8');
-const extraStyles = sfcStyles(resolve('src')).filter(block => !baseCss.includes(block.trim()));
-writeFileSync(target, [baseCss, ...extraStyles].join('\n'));
+writeFileSync(target, [readFileSync(source, 'utf8'), ...sfcStyles(resolve('src'))].join('\n'));
 
 mkdirSync(resolve("dist/rich-text-editor"), { recursive: true });
 copyFileSync(resolve("src/rich-text-editor/rich-text-editor.css"), resolve("dist/rich-text-editor/rich-text-editor.css"));
