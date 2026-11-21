@@ -89,6 +89,8 @@ export function renderFocusSnapshot(
       const id = ids.get(link.getAttribute("href") ?? "");
       if (id !== undefined) link.setAttribute("href", `#${encodeURIComponent(id)}`);
     }
+    // The kit supplies the same annex content in its anchored disclosures.
+    for (const annex of article.querySelectorAll(":scope > .focus-annex")) annex.remove();
     appendDossierEvidence(article, doc, dossierCitations(doc), true);
   }
   return article;

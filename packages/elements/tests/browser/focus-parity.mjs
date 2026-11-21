@@ -1,17 +1,30 @@
 /** Compare the whole packaged review root with the complete owner render. */
 export async function compareFocusMount(doc, ownerHtml) {
   const { mountDossier } = await import("/focus-mount.js");
+  const { createAnchorFromElement } = await import("/focus-review-core/index.js");
   const host = document.querySelector("[data-st-dossier-page]");
   const dossier = mountDossier(host);
   const expected = new DOMParser().parseFromString(ownerHtml, "text/html").querySelector("article");
+  function markDefinition(element, id) {
+    element.setAttribute("data-anchor-id", id);
+    element.setAttribute("data-commentable", "");
+  }
+  markDefinition(expected.querySelector("header"), doc.ref);
+  const sections = doc.sections.filter(({ kind }) => kind !== "optionSet").flatMap((section) =>
+    section.kind === "question"
+      ? [section, ...doc.sections.filter(({ kind, questionId }) => kind === "optionSet" && questionId === section.id)]
+      : [section]);
+  const blocks = [...expected.querySelectorAll(
+    ":scope > :is(.focus-prose, .focus-question, .focus-optionset, .focus-outcome, .focus-diagram, .focus-amendment-trace)",
+  )];
+  for (const [index, { id }] of sections.entries()) markDefinition(blocks[index], id);
 
   // The mount provides real selection buttons on the read-only option list.
   const disabled = new Set(doc.interactions.filter((action) => action.name === "choose-option" && !action.enabled)
     .map((action) => action.targetRef));
-  const optionIds = doc.sections.filter(({ kind }) => kind === "question")
-    .flatMap(({ id }) => doc.sections.filter((section) => section.kind === "optionSet" && section.questionId === id))
-    .flatMap(({ options }) => options.map(({ id }) => id));
+  const optionIds = sections.flatMap(({ options }) => options?.map(({ id }) => id) ?? []);
   for (const [index, option] of [...expected.querySelectorAll(".focus-option")].entries()) {
+    markDefinition(option, optionIds[index]);
     if (disabled.has(optionIds[index])) {
       option.setAttribute("aria-disabled", "true");
     } else {
@@ -22,12 +35,19 @@ export async function compareFocusMount(doc, ownerHtml) {
     }
   }
 
+  for (const [index, row] of [...expected.querySelectorAll(":scope > .focus-sources > ol > li")].entries()) {
+    markDefinition(row, doc.citations[index].id);
+  }
+  // The report's annex contents appear once, in the kit's anchored disclosure.
+  for (const annex of expected.querySelectorAll(":scope > .focus-annex")) annex.remove();
+
   // Focus's owner HTML lists the evidence. Only the mount opens the original
   // bytes and provides the commentable source, group and annex definitions.
   const supplemental = () => {
     if (!(doc.sources?.length || doc.evidenceGroups?.length || doc.annexes?.length)) return "";
     const escape = (value) => String(value).replace(/[&<>"']/g, (char) =>
       ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+    const definition = (id) => `data-anchor-id="${escape(id)}" data-commentable`;
     const sourceTitle = (id) => escape(doc.sources.find((source) => source.id === id).title);
     const calls = (refs) => refs.length ? `<span>${refs.map((ref) =>
       `<a>[${doc.citations.findIndex((citation) => citation.id === ref) + 1}]</a>`).join("")}</span>` : "";
@@ -38,9 +58,9 @@ export async function compareFocusMount(doc, ownerHtml) {
       const preview = source.mediaType.startsWith("image/")
         ? `<img alt="${escape(source.alt ?? source.title)}">`
         : `<pre>${escape(new TextDecoder().decode(Uint8Array.from(atob(source.data), (char) => char.charCodeAt(0))))}</pre>`;
-      return `<details><summary>${escape(source.title)}</summary><p>${escape(location)} · ${escape(source.mediaType)} · ${source.size} bytes · SHA-256 ${escape(source.sha256)}</p>${download}${preview}</details>`;
+      return `<details ${definition(source.id)}><summary>${escape(source.title)}</summary><p>${escape(location)} · ${escape(source.mediaType)} · ${source.size} bytes · SHA-256 ${escape(source.sha256)}</p>${download}${preview}</details>`;
     }).join("");
-    const groups = doc.evidenceGroups.map((group) => `<p>${escape(group.summary)}${calls(group.citationRefs)}${group.sourceRefs
+    const groups = doc.evidenceGroups.map((group) => `<p ${definition(group.id)}>${escape(group.summary)}${calls(group.citationRefs)}${group.sourceRefs
       .map((id) => ` · <a>${sourceTitle(id)}</a>`).join("")}</p>`).join("");
     const annexes = doc.annexes.map((annex) => {
       const blocks = annex.blocks.map((block) => {
@@ -53,7 +73,7 @@ export async function compareFocusMount(doc, ownerHtml) {
         }
       }).join("");
       const backlinks = annex.backRefs.length ? `<p>Related blocks${annex.backRefs.map((id) => ` · <a>${escape(id)}</a>`).join("")}</p>` : "";
-      return `<details><summary>${escape(annex.title)}</summary><p>${escape(annex.summary)}</p>${blocks}${backlinks}</details>`;
+      return `<details ${definition(annex.id)}><summary>${escape(annex.title)}</summary><p>${escape(annex.summary)}</p>${blocks}${backlinks}</details>`;
     }).join("");
     return `<section><h2>Embedded evidence</h2>${sources}${groups}${annexes}</section>`;
   };
@@ -61,15 +81,13 @@ export async function compareFocusMount(doc, ownerHtml) {
 
   // A stylesheet has no rendered tree. Traverse every content node, including
   // closed disclosures, and also compare the visible text in the live page.
-  // Attribute-only host wiring (class, anchor and selection IDs) is exercised
-  // by the interaction and fragment tests.
-  const attributes = ["alt", "aria-disabled", "hidden", "open"];
-  function tree(node) {
+  const attributes = ["alt", "aria-disabled", "data-anchor-id", "data-commentable", "hidden", "open"];
+  function tree(node, captureAid) {
     if (node.nodeType === Node.TEXT_NODE) return node.data;
     if (node.nodeType !== Node.ELEMENT_NODE || node.localName === "style") return null;
     const children = [];
     for (const childNode of node.childNodes) {
-      const child = tree(childNode);
+      const child = tree(childNode, captureAid);
       if (child === null) continue;
       // DOM construction can split text that the HTML parser reads as one node.
       if (typeof child === "string" && typeof children.at(-1) === "string") {
@@ -80,6 +98,7 @@ export async function compareFocusMount(doc, ownerHtml) {
     }
     return {
       tag: node.localName,
+      aid: captureAid(node),
       attributes: attributes.map((name) => node.getAttribute(name)),
       children,
     };
@@ -90,6 +109,9 @@ export async function compareFocusMount(doc, ownerHtml) {
   function compare(actual, reference, path) {
     if (actual === reference) return;
     if (actual?.tag && actual.tag === reference?.tag) {
+      if (actual.aid !== reference.aid) {
+        differences.push(`${path}/aid: mounted ${preview(actual.aid)}, Focus ${preview(reference.aid)}`);
+      }
       for (const [index, name] of attributes.entries()) {
         if (actual.attributes[index] !== reference.attributes[index]) {
           differences.push(`${path}/@${name}: mounted ${preview(actual.attributes[index])}, Focus ${preview(reference.attributes[index])}`);
@@ -111,7 +133,10 @@ export async function compareFocusMount(doc, ownerHtml) {
   try {
     frame.contentDocument.body.append(expected);
     dossier.render(doc);
-    compare(tree(dossier.reviewRoot), tree(expected), "article");
+    const root = dossier.reviewRoot;
+    const captureAid = (node) => createAnchorFromElement(root, node, doc.hash)?.aid;
+    const expectedAid = (node) => node.closest("[data-anchor-id]")?.getAttribute("data-anchor-id");
+    compare(tree(root, captureAid), tree(expected, expectedAid), "article");
     const visible = dossier.reviewRoot.innerText;
     const ownerVisible = expected.innerText;
     if (visible !== ownerVisible) {
