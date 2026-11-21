@@ -375,6 +375,18 @@ test("EZ-1: the packed temporal fixtures are publicly resolvable and match their
   }
 });
 
+test("EZ-1: the packed rendering skill routes temporal MCP measurements to TimeSeriesChart", (t) => {
+  if (skipWhenUnbuilt(t)) return;
+  const { files, manifest, packageDir } = packedTarballContext();
+  const path = "skill/SKILL.md";
+  assert.ok(files.includes(path), `${path} is missing from the tarball`);
+  const resolve = createRequire(join(packageDir, "package.json")).resolve;
+  const skill = readFileSync(resolve(`${manifest.name}/${path}`), "utf8");
+  assert.match(skill, /^name: sentropic-render$/m);
+  assert.match(skill, /MCP result reports numeric measurements over time, select `TimeSeriesChart`/);
+  assert.match(skill, /measurements grouped by category, select `BarChart`/);
+});
+
 test("AC-L7a: sri.json pins the tarball bytes (every entry recomputed from the extracted files)", (t) => {
   if (skipWhenUnbuilt(t)) return;
   const { packageDir, sri } = packedTarballContext();

@@ -81,6 +81,7 @@ interface IntentDetail {
 Select `TimeSeriesChart` when an MCP result reports numeric measurements over
 time. Use `BarChart` for categorical measurements. Pass the data envelope
 to the design-system element, which draws each series with `LineChart`.
+The packaged [rendering skill](skill/SKILL.md) guides MCP tool selection.
 
 Send a chart label and at least one series with a unique `id`, a label and
 its `data` array. Each point carries `x` as whole UTC Unix epoch
