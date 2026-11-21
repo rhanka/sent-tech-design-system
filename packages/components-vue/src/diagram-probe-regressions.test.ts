@@ -58,7 +58,7 @@ for (const host of hosts) describe(`${host.name} h-cond probe regressions`, () =
   it.each([{ width: 1440, height: 900, pans: false }, { width: 390, height: 844, pans: true }])(
     'should frame the folded ontology label and edge points left of the origin at $width px',
     async ({ width, height, pans }) => {
-      vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(width);
+      const frameWidth = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(width);
       vi.stubGlobal('innerHeight', height);
       const view = await host.mount(probeInput('ontology', true));
       const viewport = view.element.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!;
@@ -83,6 +83,16 @@ for (const host of hosts) describe(`${host.name} h-cond probe regressions`, () =
       expect(translateX + xOfLeftmostPoint * zoom).toBeGreaterThan(1);
       expect(viewport.dataset.pans).toBe(String(pans));
       expect(viewport.scrollLeft).toBe(0);
+
+      const labelBoxes = () => Array.from(world.querySelectorAll<HTMLElement>('[data-scene-label]'),
+        label => [label.dataset.sceneLabel, rect(label)]);
+      const initialBoxes = labelBoxes();
+      frameWidth.mockReturnValue(pans ? 1440 : 390);
+      vi.stubGlobal('innerHeight', pans ? 900 : 844);
+      window.dispatchEvent(new Event('resize'));
+      await view.flush();
+      expect(viewport.dataset.pans).toBe(String(!pans));
+      expect(labelBoxes()).toEqual(initialBoxes);
       view.dispose();
     },
   );
