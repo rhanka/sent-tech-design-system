@@ -74,8 +74,7 @@ export async function compareFocusMount(doc, ownerHtml) {
     link.textContent = title.data;
     title.replaceWith(link);
   }
-  // The report's annex contents appear once, in the kit's anchored disclosure.
-  for (const annex of expected.querySelectorAll(":scope > .focus-annex")) annex.remove();
+  const reportAnnexes = [...expected.querySelectorAll(":scope > .focus-annex")];
 
   // Focus's owner HTML lists the evidence. Only the mount opens the original
   // bytes and provides the commentable source, group and annex definitions.
@@ -100,8 +99,8 @@ export async function compareFocusMount(doc, ownerHtml) {
     }).join("");
     const groups = doc.evidenceGroups.map((group) => `<p ${definition(group.id)}>${escape(group.summary)}${calls(group.citationRefs)}${group.sourceRefs
       .map((id) => ` · <a href="${fragment(id)}">${sourceTitle(id)}</a>`).join("")}</p>`).join("");
-    const annexes = doc.annexes.map((annex) => {
-      const blocks = annex.blocks.map((block) => {
+    const annexes = doc.annexes.map((annex, index) => {
+      const blocks = reportAnnexes[index] ? "" : annex.blocks.map((block) => {
         switch (block.kind) {
           case "code": return `<pre><code>${escape(block.text)}</code></pre>`;
           case "references": return `<p>${calls(block.citationRefs)}</p>`;
@@ -112,11 +111,37 @@ export async function compareFocusMount(doc, ownerHtml) {
       }).join("");
       const backlinks = annex.backRefs.length ? `<p>Related blocks${annex.backRefs
         .map((id) => ` · <a href="${fragment(id)}">${escape(id)}</a>`).join("")}</p>` : "";
-      return `<details ${definition(annex.id)}><summary>${escape(annex.title)}</summary><p>${escape(annex.summary)}</p>${blocks}${backlinks}</details>`;
+      const content = reportAnnexes[index] ? "" : `<summary>${escape(annex.title)}</summary><p>${escape(annex.summary)}</p>${blocks}`;
+      return `<details ${definition(annex.id)}>${content}${backlinks}</details>`;
     }).join("");
     return `<section><h2>Embedded evidence</h2>${sources}${groups}${annexes}</section>`;
   };
   expected.insertAdjacentHTML("beforeend", supplemental());
+  for (const [index, rendered] of reportAnnexes.entries()) {
+    // Keep the owner's heading and content when adding the disclosure and
+    // navigation controls. The comparison must detect changes in that text.
+    const { id, blocks } = doc.annexes[index];
+    const details = expected.lastElementChild.querySelector(`details[data-anchor-id="${CSS.escape(id)}"]`);
+    const [heading, description, ...contents] = rendered.children;
+    const summary = expected.ownerDocument.createElement("summary");
+    summary.append(heading);
+    let offset = 0;
+    for (const block of blocks) {
+      if (block.kind === "references") {
+        for (const ref of block.citationRefs) {
+          const paragraph = contents[offset++];
+          const link = expected.ownerDocument.createElement("a");
+          link.setAttribute("href", fragment(ref));
+          link.append(...paragraph.childNodes);
+          paragraph.append(link);
+        }
+      } else {
+        offset++;
+      }
+    }
+    details.prepend(summary, description, ...contents);
+    rendered.remove();
+  }
 
   // A stylesheet has no rendered tree. Traverse every content node, including
   // closed disclosures, and also compare the visible text in the live page.

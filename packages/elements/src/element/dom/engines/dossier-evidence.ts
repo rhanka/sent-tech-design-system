@@ -1,4 +1,4 @@
-import type { AnnexBlock, DecisionDossierDocumentV2, EvidenceSource } from "@sentropic/focus";
+import { isReportDocument, type AnnexBlock, type DecisionDossierDocumentV2, type EvidenceSource } from "@sentropic/focus";
 
 export function markDossierAnchor(container: HTMLElement, id: string): void {
   container.dataset.anchorId = id;
@@ -135,11 +135,26 @@ export function appendDossierEvidence(
     evidence.append(block);
   }
   const anchors = new Set(Array.from(root.querySelectorAll<HTMLElement>("[data-anchor-id]"), (node) => node.dataset.anchorId));
+  const report = snapshot && isReportDocument(doc);
+  const citationLabels = new Map((report ? doc.citations : []).map(({ id, label }) => [id, label]));
   for (const annex of doc.annexes) {
     const block = document.createElement("details");
     markDossierAnchor(block, annex.id);
-    block.append(label("summary", annex.title), label("p", annex.summary));
-    for (const item of annex.blocks) block.append(annexBlock(item, calls));
+    const summary = document.createElement("summary");
+    if (report) summary.append(label("h2", annex.title));
+    else summary.textContent = annex.title;
+    block.append(summary, label("p", annex.summary));
+    for (const item of annex.blocks) {
+      if (report && item.kind === "references") {
+        for (const id of item.citationRefs) {
+          const paragraph = document.createElement("p");
+          paragraph.append(dossierReference(id, citationLabels.get(id)!));
+          block.append(paragraph);
+        }
+      } else {
+        block.append(annexBlock(item, calls));
+      }
+    }
     if (annex.backRefs.length > 0) {
       const back = label("p", "Related blocks");
       for (const id of annex.backRefs) back.append(" · ", anchors.has(id) ? dossierReference(id, id) : id);

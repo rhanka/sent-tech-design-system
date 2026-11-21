@@ -1842,8 +1842,24 @@ for (const [label, url, offline] of [
     assert(Buffer.from(state.embedded ?? "", "base64").toString("utf8") === offlineDocument,
       "Focus standalone preserves canonical JSON bytes", "embedded bytes differ");
   }
-  await page.evaluate(() => document.querySelector('[href="#shared-input"]').click());
-  await page.waitForFunction(() => document.activeElement?.dataset.anchorId === "shared-input", { timeout: 2000 });
+  const annex = await page.$('[data-anchor-id="annex:measurements"]');
+  await annex.evaluate((details) => { details.open = false; });
+  const outline = await page.accessibility.snapshot({ root: annex, interestingOnly: false });
+  const hasHeading = (node) => (node?.role === "heading" && node.name === "Measurements" && node.level === 2) ||
+    node?.children?.some(hasHeading);
+  const headingLabel = `${label}: collapsed annex exposes its level-two heading`;
+  if (assert(hasHeading(outline), headingLabel, JSON.stringify(outline))) ok(headingLabel);
+  const annexReference = await annex.evaluate((details) => {
+    details.open = true;
+    const link = details.querySelector('a[href="#shared-input"]');
+    link?.click();
+    return link?.textContent;
+  });
+  const referenceLabel = `${label}: annex reference preserves its label and citation link`;
+  if (assert(annexReference === "Shared input", referenceLabel, JSON.stringify(annexReference))) {
+    await page.waitForFunction(() => document.activeElement?.dataset.anchorId === "shared-input", { timeout: 2000 });
+    ok(referenceLabel);
+  }
   const hasSourceLink = await page.evaluate(() => {
     const link = document.querySelector('[data-anchor-id="single-build"] a[href="#build-log"]');
     link?.click();

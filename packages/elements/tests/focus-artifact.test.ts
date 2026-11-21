@@ -41,7 +41,7 @@ it.each([
     doc: report,
     ids: ["p1", "shared-input", "single-build", "preview-citation", "build-log", "preview", "build-evidence",
       "annex:measurements"],
-    calls: 5,
+    calls: 4,
     actions: 0,
   },
 ])("renders $doc.title with one commentable anchor per definition", ({ doc, ids, calls, actions }) => {
