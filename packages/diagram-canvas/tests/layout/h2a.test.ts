@@ -31,7 +31,7 @@ const measure: TextMeasurer = (text) => ({ width: text.length * 7, height: 16 })
 
 const directory = new URL(".", import.meta.url);
 const ecosystem = JSON.parse(
-  readFileSync(new URL("../../../elements/src/dossier/ecosystem.json", directory), "utf8"),
+  readFileSync(new URL("../../../elements/src/focus-diagrams/ecosystem.json", directory), "utf8"),
 ) as { scenes: Record<string, { document: SemanticDocument }> };
 const fixtureFile = JSON.parse(readFileSync(new URL("./h2a-fixture.json", directory), "utf8")) as SemanticDocument & {
   document?: SemanticDocument;

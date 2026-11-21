@@ -1,7 +1,7 @@
 import { assertFocusDocument } from "@sentropic/focus/validate";
 import { renderMarkdown } from "../markdown/minimal-markdown.js";
 import { createDossierDiagram } from "./engines/dossier-diagrams.js";
-import { validateDossierViews } from "../../dossier/dossier-views.js";
+import { validateDossierViews } from "../../focus-diagrams/dossier-views.js";
 import { connectDossier, renderDossierContent, renderMarkdownToSafeHtml } from "./engines/focus-renderer.js";
 import { renderFocusSnapshot } from "./engines/focus-snapshot.js";
 import { dispatchIntent } from "./intents.js";

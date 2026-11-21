@@ -1,8 +1,8 @@
 import "../../../../themes/css/sent-tech.css";
 import "./dossier-page.css";
 import { canonicalJson } from "@sentropic/focus/editing";
-import { dossierManifestViews } from "../../dossier/dossier-views.js";
-import { isRecord } from "../../dossier/diagram-source.js";
+import { dossierManifestViews } from "../../focus-diagrams/dossier-views.js";
+import { isRecord } from "../../focus-diagrams/diagram-source.js";
 import { mountDossier } from "./dossier-mount.js";
 
 function readEmbedded(host: HTMLElement, name: "document" | "manifest" | "views"): string | undefined {

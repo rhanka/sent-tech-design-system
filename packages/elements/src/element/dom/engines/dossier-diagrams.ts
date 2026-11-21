@@ -1,7 +1,7 @@
 import type { DiagramNode } from "@sentropic/focus";
 import { canonicalJson } from "@sentropic/focus/editing";
-import { drawDossierDiagram, prepareDossierDiagram } from "../../../dossier/diagram-layout.js";
-import { DossierDiagramError, readDossierScene } from "../../../dossier/diagram-source.js";
+import { drawDossierDiagram, prepareDossierDiagram } from "../../../focus-diagrams/diagram-layout.js";
+import { DossierDiagramError, readDossierScene } from "../../../focus-diagrams/diagram-source.js";
 
 let nextScene = 0;
 
