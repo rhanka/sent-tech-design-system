@@ -12,6 +12,7 @@ import {
   collectLinkLegendStyles,
   defaultLinkStyleLabel,
   LINK_LEGEND_GAP,
+  LINK_LEGEND_MIN_WIDTH,
   linkLegendSwatchGeometry,
   linkStyleKey,
   rectsIntersect,
@@ -371,5 +372,30 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
     expect(largeScene.linkLegend!.headerHeight).toBeGreaterThan(defaultScene.linkLegend!.headerHeight);
     expect(largeScene.linkLegend!.headerGap).toBeGreaterThan(defaultScene.linkLegend!.headerGap);
     expect(largeScene.linkLegend!.entries[0]!.rowHeight).toBeGreaterThan(defaultScene.linkLegend!.entries[0]!.rowHeight);
+  });
+
+  it("keeps legend width bounded when a supported CardLineMeasure omits optional lineWidths (REQ-R7-12)", () => {
+    const { document, presentation } = multiStyleFixture();
+    // Supported CardLineMeasure returning lines + tooWide without optional lineWidths.
+    const measureWithoutLineWidths = (text: string, role: "kicker" | "title" | "body" | "footer", availableWidth: number) => {
+      const base = defaultCardMeasure(text, role, availableWidth);
+      return { lines: base.lines, tooWide: base.tooWide };
+    };
+    const rendered = renderSceneSvg(
+      {
+        document,
+        presentation,
+        registry: m3ProfileRegistry,
+        bindings: shippedExecutorBindings,
+        measureLines: cardLineMeasurer(measureWithoutLineWidths),
+        collapsed: [],
+      },
+      { measure: measureWithoutLineWidths },
+    );
+    const legend = rendered.scene.linkLegend;
+    expect(legend).toBeDefined();
+    expect(legend!.rect.width).toBeGreaterThanOrEqual(LINK_LEGEND_MIN_WIDTH);
+    expect(legend!.rect.width).toBeLessThan(1000);
+    expect(rendered.scene.bounds!.width).toBeLessThan(5000);
   });
 });

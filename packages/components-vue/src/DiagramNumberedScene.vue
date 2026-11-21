@@ -309,7 +309,7 @@ const scenarioId = useId();
                 <button type="button" class="st-diagramSceneFigure-flowNode" :data-flow-node="target.occurrence" :data-flow-state="stateOf(target.occurrence)" :aria-label="description(boxTarget(target.occurrence))" :aria-pressed="selected?.kind === 'box' && selected.occurrence === target.occurrence" :aria-describedby="descriptionId('node', target.occurrence)" :tabindex="nodeTab === target.occurrence ? 0 : -1" :style="`left:${target.anchor.x}px;top:${target.anchor.y}px`">{{ strings.node }}</button>
                 <span class="st-diagramSceneFigure-flowDescription" :id="descriptionId('node', target.occurrence)">{{ description(boxTarget(target.occurrence)) }}</span>
               </template>
-              <div v-for="label in scene.labels" :key="label.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="label.occurrence" :title="label.title" :data-erd-label="label.erd || undefined" :style="boxStyle(label.box)">
+              <div v-for="label in scene.labels" :key="label.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="label.occurrence" :data-connector-mode="scene.r7Connectors && !label.erd ? 'r7' : undefined" :title="label.title" :data-erd-label="label.erd || undefined" :style="boxStyle(label.box)">
                 <template v-if="label.bundle !== undefined">
                   <strong class="st-diagramSceneFigure-bundleHeader">{{ label.bundle.header }}</strong>{{ ' ' }}<div v-for="(group, index) in label.bundle.groups" :key="index" class="st-diagramSceneFigure-bundleRelation" :data-bundle-relation="index">
                     <span aria-hidden="true">•</span><div><span v-for="(line, i) in group.lines" :key="i">{{ line }}</span></div>

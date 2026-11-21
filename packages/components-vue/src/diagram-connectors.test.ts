@@ -208,6 +208,64 @@ for (const host of ["base", "numbered-flow"] as const) {
         expect(contentHeight).toBe(parseFloat(legend.style.height));
       }
     });
+
+    it("honors consumer edgeLabelFontSize overrides in core themes, resolves 1.5rem to 24px, and propagates explicit metrics.edgeLabelSize / linkStrokeWidth to host CSS vars (REQ-R7-11 / REQ-R7-28)", async () => {
+      const fixture = nestedZoneFixture({ outside: true });
+      const realGetComputedStyle = window.getComputedStyle.bind(window);
+      vi.spyOn(window, "getComputedStyle").mockImplementation((el) => {
+        const style = realGetComputedStyle(el);
+        return new Proxy(style, {
+          get(target, prop) {
+            if (prop === "getPropertyValue") {
+              return (name: string) => {
+                if (name === "--st-component-diagramScene-edgeLabelSize") return "18px";
+                if (name === "--st-component-diagramScene-edgeLabelFontSize") return "14px";
+                return target.getPropertyValue(name);
+              };
+            }
+            const value = Reflect.get(target, prop);
+            return typeof value === "function" ? value.bind(target) : value;
+          },
+        });
+      });
+
+      const v1Override = render(hostProps(propsOf(fixture)));
+      await tick();
+      await tick();
+      const v1Viewport = v1Override.container.querySelector<HTMLElement>(".st-diagramSceneFigure-viewport")!;
+      expect(v1Viewport.style.getPropertyValue("--st-diagram-edge-label-size")).toBe("14px");
+
+      vi.restoreAllMocks();
+      vi.spyOn(window, "getComputedStyle").mockImplementation((el) => {
+        const style = realGetComputedStyle(el);
+        return new Proxy(style, {
+          get(target, prop) {
+            if (prop === "getPropertyValue") {
+              return (name: string) => (name === "--st-component-diagramScene-edgeLabelSize" ? "1.5rem" : target.getPropertyValue(name));
+            }
+            const value = Reflect.get(target, prop);
+            return typeof value === "function" ? value.bind(target) : value;
+          },
+        });
+      });
+      const remView = render(hostProps(propsOf(fixture)));
+      await tick();
+      await tick();
+      const remViewport = remView.container.querySelector<HTMLElement>(".st-diagramSceneFigure-viewport")!;
+      expect(remViewport.style.getPropertyValue("--st-diagram-edge-label-size")).toBe("24px");
+      vi.restoreAllMocks();
+
+      const explicitView = render(hostProps({
+        ...propsOf(fixture),
+        presentation: { ...fixture.presentation, contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } },
+        metrics: { edgeLabelSize: 24, linkStrokeWidth: 4, linkEmphasisStrokeWidth: 5 },
+      } as DiagramSceneFigureProps));
+      await tick();
+      const explicitViewport = explicitView.container.querySelector<HTMLElement>(".st-diagramSceneFigure-viewport")!;
+      expect(explicitViewport.style.getPropertyValue("--st-diagram-edge-label-size")).toBe("24px");
+      expect(explicitViewport.style.getPropertyValue("--st-diagram-link-stroke-width")).toBe("4px");
+      expect(explicitViewport.style.getPropertyValue("--st-diagram-link-emphasis-stroke-width")).toBe("5px");
+    });
   });
 }
 

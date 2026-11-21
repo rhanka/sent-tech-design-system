@@ -953,6 +953,77 @@ export function parseScale(value: string | undefined): number | undefined {
   return Number.isFinite(amount) && amount > 0 ? amount : undefined;
 }
 
+/**
+ * Parse a CSS length token (`px`, unitless, `rem`, `em`, `pt`, `pc`, `in`, `cm`, `mm`, `q`)
+ * into CSS px / world units. Resolves `rem` against `rootFontSize` (default 16) and `em`
+ * against `elementFontSize` (default `rootFontSize`, 16).
+ */
+export function parseCssLengthPx(
+  value: string | undefined,
+  context: { readonly rootFontSize?: number; readonly elementFontSize?: number } = {},
+): number | undefined {
+  if (value === undefined) return undefined;
+  const trimmed = value.trim();
+  if (trimmed === "") return undefined;
+  const match = /^([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)\s*([a-z%]*)$/i.exec(trimmed);
+  if (match === null) return undefined;
+  const amount = Number(match[1]);
+  if (!Number.isFinite(amount)) return undefined;
+  const unit = match[2]!.toLowerCase();
+  const rootPx =
+    context.rootFontSize !== undefined && Number.isFinite(context.rootFontSize) && context.rootFontSize > 0
+      ? context.rootFontSize
+      : 16;
+  const elementPx =
+    context.elementFontSize !== undefined && Number.isFinite(context.elementFontSize) && context.elementFontSize > 0
+      ? context.elementFontSize
+      : rootPx;
+  switch (unit) {
+    case "":
+    case "px":
+      return amount;
+    case "rem":
+      return amount * rootPx;
+    case "em":
+      return amount * elementPx;
+    case "pt":
+      return amount * (96 / 72);
+    case "pc":
+      return amount * 16;
+    case "in":
+      return amount * 96;
+    case "cm":
+      return amount * (96 / 2.54);
+    case "mm":
+      return amount * (96 / 25.4);
+    case "q":
+      return amount * (96 / 101.6);
+    default:
+      return undefined;
+  }
+}
+
+/**
+ * Resolve the effective edge-label font size from both the DE-2 `edgeLabelSize`
+ * token and the legacy `edgeLabelFontSize` token. Core themes define both at
+ * `18px`, so a consumer override on `edgeLabelFontSize` still takes effect on
+ * v1, ERD, and r7 scenes unless `edgeLabelSize` itself was overridden.
+ */
+export function resolveEdgeLabelSizeToken(
+  edgeLabelSize: number | undefined,
+  edgeLabelFontSize: number | undefined,
+): number | undefined {
+  if (edgeLabelSize !== undefined && edgeLabelSize > 0 && edgeLabelSize !== DEFAULT_EDGE_LABEL_SIZE) {
+    return edgeLabelSize;
+  }
+  if (edgeLabelFontSize !== undefined && edgeLabelFontSize > 0 && edgeLabelFontSize !== DEFAULT_EDGE_LABEL_SIZE) {
+    return edgeLabelFontSize;
+  }
+  if (edgeLabelSize !== undefined && edgeLabelSize > 0) return edgeLabelSize;
+  if (edgeLabelFontSize !== undefined && edgeLabelFontSize > 0) return edgeLabelFontSize;
+  return undefined;
+}
+
 export type Easing = (progress: number) => number;
 
 const linear: Easing = (progress) => progress;
