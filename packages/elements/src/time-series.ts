@@ -11,3 +11,10 @@ export function timeSeriesRows({ series }: TimeSeriesChartProps) {
 export function formatTimeSeriesInstant(x: number): string {
   return new Date(x).toISOString();
 }
+
+/** Show invisible ID characters without colliding with a literal escape. */
+export function formatTimeSeriesId(id: string): string {
+  return id.replace(/\\(?=u)|[\s\p{Cc}\p{Cf}\p{Cs}]/gu, (character) =>
+    character.split("").map((unit) => "\\u" + unit.charCodeAt(0).toString(16).padStart(4, "0")).join(""),
+  );
+}
