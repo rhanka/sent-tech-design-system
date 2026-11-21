@@ -945,7 +945,7 @@ describe("DiagramSceneFigure camera", () => {
     expect(view.readout()).toBe("100 %");
   });
 
-  it("pins v1 and fallback-v1 figure max size and zoom bounds (maxDisplayScale, minReadableScale, fit) to 0.41.5 values", async () => {
+  it("pins v1 and fallback-v1 figure max size, cap and R7 zoom floor", async () => {
     // 1. Explicit v1 view and unpinned v1 scene produce identical 0.41.5 camera bounds and figure fit height.
     const completeSingle = sceneOf("complete-single", [{ id: "solo" }]);
     const completeEntity = {
@@ -1012,7 +1012,7 @@ describe("DiagramSceneFigure camera", () => {
     expect(defaultCreateViewMounted.component.getCamera()).toMatchObject({ zoom: 0.62, maxZoom: 0.62, readout: 100 });
     defaultCreateViewMounted.unmount();
 
-    // 2. Wide v1 scene at narrow viewport floors at 0.45 and caps at 0.62, with nested fold hiding descendants cleanly.
+    // 2. Wide v1 scene at narrow viewport floors at 0.30 and caps at 0.62, with nested fold hiding descendants cleanly.
     reducedMotion = true;
     const nested = sceneOf("nested-v1-zoom", [
       { id: "outer", container: true },
@@ -1025,8 +1025,8 @@ describe("DiagramSceneFigure camera", () => {
     await tick();
     const initialCam = view.component.getCamera();
     expect(initialCam.maxZoom).toBe(0.62);
-    expect(initialCam.minZoom).toBe(0.45);
-    expect(initialCam.zoom).toBe(0.45);
+    expect(initialCam.minZoom).toBe(0.30);
+    expect(initialCam.zoom).toBe(0.30);
     expect(initialCam.pans).toBe(true);
     expect(view.drawn()).toContain(occurrence("inner1"));
     // DE-1 nested fold fix stays intact: folding outer hides inner AND all 6 grandchildren,
@@ -1037,7 +1037,7 @@ describe("DiagramSceneFigure camera", () => {
     await fireEvent.click(view.button("Fit"));
     await tick();
     expect(view.component.getCamera().maxZoom).toBe(0.62);
-    expect(view.component.getCamera().minZoom).toBeGreaterThanOrEqual(0.45);
+    expect(view.component.getCamera().minZoom).toBeGreaterThanOrEqual(0.30);
     expect(view.zoom()).toBeLessThanOrEqual(0.62);
     view.unmount();
   });

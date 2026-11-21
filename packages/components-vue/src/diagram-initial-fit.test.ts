@@ -137,7 +137,7 @@ function paintOnLayoutGrid() {
     // of the document only; the Vue host renders detached from it.
     restyle() { document.head.append(sheet); } };
 }
-/** A frame width whose painted fit is neither capped at 0.62 nor floored at 0.45, for both scenes below. */
+/** A frame width whose painted fit is neither capped at 0.62 nor floored at 0.30, for both scenes below. */
 const UNCAPPED_WIDTH = 550;
 
 function snapshot(element: Element) {
@@ -247,14 +247,14 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
       const initial = geometry(view.element);
       const rawFit = Math.min(.62, (width - 2) / (initial.right - initial.left),
         (Math.min(width * 9 / 16, 900 * .85) - 2) / (initial.bottom - initial.top));
-      expect(initial.zoom).toBeGreaterThanOrEqual(.45);
+      expect(initial.zoom).toBeGreaterThanOrEqual(.30);
       expect(initial.zoom).toBeLessThanOrEqual(.62);
       const overX = (initial.right - initial.left) * initial.zoom > width + .5;
       const overY = (initial.bottom - initial.top) * initial.zoom > initial.height + .5;
-      if (rawFit >= .45) {
+      if (rawFit >= .30) {
         expect([overX, overY]).toEqual([false, false]);
         expect(initial.viewport.dataset.pans).toBe('false');
-      } else expect(initial.zoom).toBe(.45);
+      } else expect(initial.zoom).toBe(.30);
       expect(initial.viewport.style.overflowX).toBe(overX ? 'auto' : 'hidden');
       expect(initial.viewport.style.overflowY).toBe(overY ? 'auto' : 'hidden');
       expect(initial.height - (initial.bottom - initial.top) * initial.zoom).toBeLessThanOrEqual(2.1 + 8 * initial.zoom);
@@ -290,7 +290,7 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
   });
   // Both Vue hosts: `three cards` renders through the base scene host,
   // `numbered flows` through the numbered one. 1206 px caps the fit at 0.62;
-  // the narrower frame lands between the 0.45 floor and the cap.
+  // the narrower frame lands between the 0.30 floor and the cap.
   for (const [name, width, capped] of [['three cards', 1206, true], ['three cards', UNCAPPED_WIDTH, false],
     ['numbered flows', 1206, true], ['numbered flows', UNCAPPED_WIDTH, false]] as const) {
     it(`should keep one scale and a single fixed point across repeated Ajuster on ${name} at ${width}`, async () => {
@@ -315,7 +315,7 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
       expect(painted.reads()).toBeGreaterThan(0);
       if (capped) expect(settled.zoom).toBe(.62);
       else {
-        expect(settled.zoom).toBeGreaterThan(.45);
+        expect(settled.zoom).toBeGreaterThan(.30);
         expect(settled.zoom).toBeLessThan(.62);
       }
       for (let repeat = 0; repeat < 5; repeat++) {
@@ -373,7 +373,7 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
   it('should retain the reclamped numbered-flow zoom when a resize restores the old range', async () => {
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(340);
     vi.stubGlobal('innerHeight', 900);
-    let floor = '.45';
+    let floor = '.30';
     const computedStyle = getComputedStyle;
     vi.spyOn(globalThis, 'getComputedStyle').mockImplementation(element => {
       const style = computedStyle(element);
@@ -383,11 +383,11 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
     const view = await host.mount(cases.find(scene => scene.name === 'numbered flows')!.input());
     geometry(view.element).viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
     await view.flush();
-    expect(geometry(view.element).zoom).toBeGreaterThan(.45);
+    expect(geometry(view.element).zoom).toBeGreaterThan(.30);
     expect(geometry(view.element).zoom).toBeLessThan(.6);
     floor = '.6'; window.dispatchEvent(new Event('resize')); await view.flush();
     expect(geometry(view.element).zoom).toBe(.6);
-    floor = '.45'; window.dispatchEvent(new Event('resize')); await view.flush();
+    floor = '.30'; window.dispatchEvent(new Event('resize')); await view.flush();
     expect(geometry(view.element).zoom).toBe(.6);
     view.dispose();
   });

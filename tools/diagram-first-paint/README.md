@@ -15,8 +15,8 @@ before the initial snapshot. The only interaction afterwards is the actual Ajust
 Assertions read DOM scroll dimensions, text ranges, label rectangles,
 transformed connector segments (including stroke), and the numeric world
 transform. The clearance is the computed `diagramScene.labelPadding` token scaled into screen
-pixels. Display scale must reach 0.45. The unclamped fit is derived from the DOM
-extent and world scale; when feasible at 0.45, the viewport must have no scroll
+pixels. Display scale must reach 0.30. The unclamped fit is derived from the DOM
+extent and world scale; when feasible at 0.30, the viewport must have no scroll
 overflow. Otherwise, only overflowing axes may scroll, starting at the origin,
 and all drawing content must remain reachable within the usable viewport,
 excluding scrollbar thickness. Chrome's default `--hide-scrollbars` is removed;

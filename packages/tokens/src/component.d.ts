@@ -716,7 +716,7 @@ export declare function createComponent(semantic: SemanticInput, foundation: Fou
     };
     readonly diagramScene: {
         readonly maxDisplayScale: "0.62";
-        readonly minReadableScale: "0.45";
+        readonly minReadableScale: "0.30";
         readonly transitionDuration: "240ms";
         readonly edgeLabelFontSize: "18px";
         readonly edgeLabelLineHeight: "22px";
@@ -1147,7 +1147,7 @@ export declare const component: {
     };
     readonly diagramScene: {
         readonly maxDisplayScale: "0.62";
-        readonly minReadableScale: "0.45";
+        readonly minReadableScale: "0.30";
         readonly transitionDuration: "240ms";
         readonly edgeLabelFontSize: "18px";
         readonly edgeLabelLineHeight: "22px";
