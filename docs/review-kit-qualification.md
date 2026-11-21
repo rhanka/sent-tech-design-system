@@ -58,6 +58,7 @@ Round 2 passed all 71 review-core tests, including nine parity cases, the review
 | Regression | Red run | Green run |
 | --- | --- | --- |
 | Thread summary assignee | The direct parity assertion failed when C2 returned Bob for an unassigned root followed by a reply assigned to Bob. | The raw store selects the first assigned row in chronological order. The adapter projects the root row's assignment. The direct comparison passes with both assigned and unassigned roots. |
+| Typed adapter targets | A folder subscription received an initiative comment with the same ID. A reply specifying the initiative type joined the folder thread. | Adapter reads, notifications and replies honor an explicit record type. Raw port queries still match by kind and ID with the C2 section and status filters. |
 
 ## To execute in the integration lots
 

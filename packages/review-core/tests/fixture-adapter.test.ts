@@ -132,6 +132,39 @@ describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
     expect(await adapter.list(TENANT, TARGET)).toEqual([root]);
   });
 
+  it("filters typed record subscriptions and reads when two record types share an ID", async () => {
+    const { adapter } = makeFixture();
+    const record = { kind: "record", id: "shared" } as const;
+    const folder = { ...record, recordType: "folder" };
+    const initiative = { ...record, recordType: "initiative" };
+    const folderListener = vi.fn();
+    const recordListener = vi.fn();
+    adapter.subscribe?.(TENANT, folder, folderListener);
+    adapter.subscribe?.(TENANT, record, recordListener);
+
+    const initiativeRoot = await adapter.create({ tenant: TENANT, target: initiative, body: "Initiative" });
+    expect(folderListener).not.toHaveBeenCalled();
+    const folderRoot = await adapter.create({ tenant: TENANT, target: folder, body: "Folder" });
+
+    expect(folderListener).toHaveBeenCalledExactlyOnceWith([folderRoot]);
+    expect(recordListener).toHaveBeenLastCalledWith([initiativeRoot, folderRoot]);
+    expect(await adapter.list(TENANT, folder)).toEqual([folderRoot]);
+    expect(await adapter.threadSummaries?.(TENANT, folder)).toMatchObject([{ threadId: folderRoot.threadId }]);
+  });
+
+  it("rejects a reply specifying another record type with the same ID", async () => {
+    const { adapter, store } = makeFixture();
+    const folder = { kind: "record", id: "shared", recordType: "folder" } as const;
+    const target = { ...folder, sectionKey: "description" };
+    const root = await adapter.create({ tenant: TENANT, target, body: "Folder" });
+    const reply = { tenant: TENANT, threadId: root.threadId, body: "Reply" };
+
+    await expect(adapter.reply({ ...reply, target: { ...folder, recordType: "initiative" } }))
+      .rejects.toMatchObject({ code: "NOT_FOUND", status: 404 });
+    expect(await store.listThread({ workspaceId: TENANT }, root.threadId)).toHaveLength(1);
+    expect(await adapter.reply({ ...reply, target: folder })).toMatchObject({ target });
+  });
+
   it("uses store thread verbs and keeps store-only helpers off the adapter", async () => {
     const fixture = makeFixture();
     const { adapter, store } = fixture;
