@@ -15,6 +15,40 @@ export interface DossierReadyDetail {
 export function mountDossier(host: HTMLElement): DossierMount {
   let rendered: ReturnType<typeof renderDossierContent> | undefined;
   let destroyed = false;
+  const view = host.ownerDocument.defaultView;
+
+  function followFragment(): void {
+    const root = rendered?.reviewRoot;
+    const hash = view?.location.hash;
+    if (root === undefined || hash === undefined || hash.length < 2) return;
+    let id: string;
+    try {
+      id = decodeURIComponent(hash.slice(1));
+    } catch {
+      return;
+    }
+    const target = Array.from(root.querySelectorAll<HTMLElement>("[data-anchor-id]"))
+      .find((element) => element.dataset.anchorId === id);
+    if (target === undefined) return;
+
+    for (let element: HTMLElement | null = target; element !== null && element !== root; element = element.parentElement) {
+      if (element instanceof HTMLDetailsElement) element.open = true;
+    }
+    if (!target.hasAttribute("tabindex")) target.tabIndex = -1;
+    target.scrollIntoView?.({ block: "start" });
+    target.focus({ preventScroll: true });
+  }
+
+  function followCurrentLink(event: MouseEvent): void {
+    if (event.defaultPrevented || event.button !== 0 || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    const link = event.target instanceof Element ? event.target.closest("a[href^='#']") : null;
+    if (link !== null && rendered?.reviewRoot.contains(link) && link.getAttribute("href") === view?.location.hash) {
+      followFragment();
+    }
+  }
+
+  view?.addEventListener("hashchange", followFragment);
+  host.addEventListener("click", followCurrentLink);
 
   function clear(): void {
     const previous = rendered;
@@ -29,14 +63,18 @@ export function mountDossier(host: HTMLElement): DossierMount {
     render(document) {
       if (destroyed) throw new Error("The dossier mount has been destroyed");
       clear();
-      rendered = renderDossierContent(host, document, (id) => dispatchIntent(host, "choose-option", id), "light");
+      const current = renderDossierContent(host, document, (id) => dispatchIntent(host, "choose-option", id), "light");
+      rendered = current;
       host.dispatchEvent(new CustomEvent<DossierReadyDetail>("st-dossier-ready", {
-        detail: { reviewRoot: rendered.reviewRoot },
+        detail: { reviewRoot: current.reviewRoot },
         bubbles: true,
       }));
+      if (rendered === current) followFragment();
     },
     destroy() {
       destroyed = true;
+      view?.removeEventListener("hashchange", followFragment);
+      host.removeEventListener("click", followCurrentLink);
       clear();
     },
   };
