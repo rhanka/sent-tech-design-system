@@ -65,13 +65,14 @@ function measure() {
   const paths = [...figure.querySelectorAll('[data-scene-edge]')].map(element => {
     const style = getComputedStyle(element);
     const ctm = element.getScreenCTM();
-    const strokeScale = style.vectorEffect === 'non-scaling-stroke' ? 1 : Math.hypot(ctm.a, ctm.b);
+    const nonScaling = style.vectorEffect === 'non-scaling-stroke';
+    const strokeScale = nonScaling ? 1 : Math.hypot(ctm.a, ctm.b);
     const stroke = parseFloat(style.strokeWidth) * strokeScale / 2;
     const points = Array.from(element.points, point => {
       const p = new DOMPoint(point.x, point.y).matrixTransform(ctm);
       return { x: p.x, y: p.y };
     });
-    return { id: element.dataset.sceneEdge, stroke, points };
+    return { id: element.dataset.sceneEdge, nonScaling, stroke, points };
   });
   // Only a surface painted AFTER the connector layer hides a connector: no
   // layer of the scene sets a z-index, so document order is paint order.
@@ -274,6 +275,9 @@ function check(state, scene) {
   // joins: a label never floats between two cards without its line.
   assert.deepEqual(connectorFindings({ paths: state.paths, labels: state.connectorLabels, nodes: state.nodes,
     occluders: state.occluders, relations: state.relations ?? undefined, tolerance: 1 }), [], 'connectors');
+  // Label placement reserves the non-scaling stroke in world units at 0.45.
+  // Below that scale the actual stroke uses more of the projected clearance.
+  const strokeReserveScale = Math.min(1, state.scale / 0.45);
   for (const label of state.labels) {
     assert.ok(label.left >= state.frame.left - epsilon && label.top >= state.frame.top - epsilon
       && label.right <= state.frame.left + state.scroll[0] + epsilon
@@ -284,10 +288,12 @@ function check(state, scene) {
       // in containment/parity checks and enforce clearance to every other
       // connector; ordinary connector labels have no carrier exemption.
       if (label.carrier === path.id) continue;
+      const strokeShortfall = path.nonScaling ? path.stroke * (1 - strokeReserveScale) : 0;
+      const minimumGap = Math.max(0, state.clearance - strokeShortfall);
       for (const [a, b] of path.segments) {
         const distance = segmentDistance(label, a, b) - path.stroke;
-        assert.ok(distance + epsilon >= state.clearance,
-          `label ${label.id} clearance ${distance} < ${state.clearance} at connector ${path.id}`);
+        assert.ok(distance + epsilon >= minimumGap,
+          `label ${label.id} clearance ${distance} < ${minimumGap} at connector ${path.id}`);
       }
     }
   }

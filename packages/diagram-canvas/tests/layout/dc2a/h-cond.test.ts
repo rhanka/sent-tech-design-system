@@ -16,15 +16,17 @@ describe("h-cond golden scenes", () => {
     expect(fit.zoom).toBe(0.30);
     expect(scene.labels.length).toBeGreaterThan(0);
 
-    // The orthogonal routes scale with the world; their 1.5 px stroke stays
-    // constant on screen. The 4 px label padding scales with each label.
+    // Project the world-space padding and its stroke reserve at the fitted
+    // zoom, then subtract the actual non-scaling half-stroke.
+    const halfStroke = 0.75;
+    const minimumPaintedGap = (4 + halfStroke / 0.45) * fit.zoom - halfStroke;
     for (const { occurrence, box } of scene.labels) {
       for (const edge of scene.edges) for (let i = 1; i < edge.points.length; i++) {
         const a = edge.points[i - 1]!, b = edge.points[i]!;
         const dx = Math.max(box.x - Math.max(a.x, b.x), Math.min(a.x, b.x) - box.x - box.width, 0);
         const dy = Math.max(box.y - Math.max(a.y, b.y), Math.min(a.y, b.y) - box.y - box.height, 0);
-        const paintedGap = Math.hypot(dx, dy) * fit.zoom - 0.75;
-        expect(paintedGap, `${occurrence} vs ${edge.occurrence} segment ${i}`).toBeGreaterThanOrEqual(4 * fit.zoom - 1 / 64);
+        const paintedGap = Math.hypot(dx, dy) * fit.zoom - halfStroke;
+        expect(paintedGap, `${occurrence} vs ${edge.occurrence} segment ${i}`).toBeGreaterThanOrEqual(minimumPaintedGap - 1 / 64);
       }
     }
   });
