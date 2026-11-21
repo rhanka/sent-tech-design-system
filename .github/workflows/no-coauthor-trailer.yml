@@ -1,0 +1,72 @@
+name: Reject AI attribution trailers
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  scan-commits:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - name: Scan commit messages and PR metadata
+        run: |
+          node - <<'NODE'
+          const { execFileSync } = require('node:child_process');
+          const { readFileSync } = require('node:fs');
+
+          const rules = [
+            ['co-authored-by', /^[ \t]*co-authored-by[ \t]*:/im],
+            ['claude-session', /^[ \t]*claude-session[ \t]*:/im],
+            ['generated-by', /^[ \t]*generated-by[ \t]*:/im],
+            ['generated-with', /^[ \t]*generated[ \t]+with\b/im],
+            ['generated-with-or-by-ai', /generated[ \t]+(?:with|by)[ \t]+\[?(?:claude|codex|openai|gemini|antigravity|mistral[ \t]+vibe|vibe|muse|copilot|cursor|ai)\b/i],
+            ['claude-code-url', /claude\.com\/claude-code/i],
+            ['claude-session-url', /claude\.ai\/code\/session_/i],
+            ['robot-marker', /🤖/u],
+          ];
+
+          let failed = false;
+          function scan(label, message) {
+            const hits = rules.filter(([, pattern]) => pattern.test(message));
+            if (hits.length === 0) return;
+
+            failed = true;
+            console.error(`::error::${label} contains forbidden AI attribution (${hits.map(([id]) => id).join(', ')})`);
+          }
+
+          const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
+          const pr = event.pull_request;
+          const base = pr ? pr.base.sha : event.before;
+          const head = pr ? pr.head.sha : event.after;
+          const range = !pr && /^0+$/.test(base) ? head : `${base}..${head}`;
+          const fields = execFileSync('git', ['log', '-z', '--format=%H%x00%B', range, '--'], {
+            encoding: 'utf8',
+            maxBuffer: 64 * 1024 * 1024,
+          }).split('\0');
+          fields.pop();
+
+          for (let i = 0; i < fields.length; i += 2) {
+            scan(`Commit ${fields[i]}`, fields[i + 1]);
+          }
+          if (pr) {
+            scan('PR title', pr.title);
+            scan('PR body', pr.body ?? '');
+          }
+
+          if (failed) process.exitCode = 1;
+          else console.log(`Scanned ${fields.length / 2} commit(s) for forbidden AI attribution.`);
+          NODE
