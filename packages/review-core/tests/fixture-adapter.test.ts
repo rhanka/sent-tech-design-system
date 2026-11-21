@@ -8,6 +8,7 @@ import {
   type CollaborationActor,
   type CommentTarget,
   type CommentsAdapter,
+  type ReplyCommentInput,
   type ReviewComment,
 } from "../src/index.js";
 
@@ -149,6 +150,22 @@ describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
     expect(await store.listByTarget(tenant, { ...TARGET, status: "open" })).toMatchObject([
       { id: reply.id }, { id: open.id },
     ]);
+  });
+
+  it("creates a root even when the caller supplies a threadId", async () => {
+    const { adapter } = makeFixture();
+    const input = { tenant: TENANT, target: TARGET, body: "Original" };
+    const root = await adapter.create(input);
+    const created = await adapter.create({ ...input, body: "Another root", threadId: root.threadId } as ReplyCommentInput);
+    expect(created.threadId).not.toBe(root.threadId);
+    expect(await adapter.list(TENANT, TARGET)).toEqual([root, created]);
+  });
+
+  it("rejects a reply without a threadId and leaves the store untouched", async () => {
+    const { adapter } = makeFixture();
+    const input = { tenant: TENANT, target: TARGET, body: "Reply" };
+    await expect(adapter.reply(input as ReplyCommentInput)).rejects.toMatchObject({ code: "NOT_FOUND", status: 404 });
+    expect(await adapter.list(TENANT, TARGET)).toEqual([]);
   });
 
   it("should mint distinct threadId !== comment.id and enforce threadId vs commentId verb keys", async () => {
