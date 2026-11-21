@@ -60,6 +60,17 @@ Round 2 passed all 71 review-core tests, including nine parity cases, the review
 | Thread summary assignee | The direct parity assertion failed when C2 returned Bob for an unassigned root followed by a reply assigned to Bob. | The raw store selects the first assigned row in chronological order. The adapter projects the root row's assignment. The direct comparison passes with both assigned and unassigned roots. |
 | Typed adapter targets | A folder subscription received an initiative comment with the same ID. A reply specifying the initiative type joined the folder thread. | Adapter reads, notifications and replies honor an explicit record type. Raw port queries still match by kind and ID with the C2 section and status filters. |
 
+## Round 4 corrections
+
+| Regression | Red run | Green run |
+| --- | --- | --- |
+| Public live-session registration | Both two-argument calls threw when the adapter treated the session object as the tool-call ID. | The call restores the session in its sole known scope or binds to the first matching comment. Reused IDs across scopes require the scoped overload. |
+| Reply to a typed record | A reply without `recordType` returned success and sent no notification to the folder subscriber. | The reply inherits the root's folder type and anchor. The typed list and subscription include both rows. |
+| Assignee on a section query | The query reported Bob for both an Alice-assigned root and an unassigned root. | The adapter reports the thread root's assignment. Both raw store queries still match C2. |
+| C2 row projection | Changing the tenant ID returned by the reference store made the direct comparison fail. | The test compares both returned scope IDs and checks that the UI row omits `userId`. |
+
+The five behavioral assertions failed before the fixture corrections on the merge of `04cff540e` and `25779c94e`. The tenant comparison was checked separately by changing and then restoring the installed reference output. Round 4 passed all 76 review-core tests against `@sentropic/comments@0.3.2`, the review-core type check, and all 23 workflow invariant tests. The isolated consumer passed against the same published archives, including all eight public props checks and client and SSR graph checks.
+
 ## To execute in the integration lots
 
 FA-D3 owns the dossier kit build, mounting from `reviewRoot` on `st-dossier-ready`, root replacement, and the no-adapter path. H1 owns the Focus Web graph, and H5/FA-H5 own the persistent C2 path. The DS-7 adapter tests exercise an in-memory fixture. The accessibility and client-bundle checks use jsdom.

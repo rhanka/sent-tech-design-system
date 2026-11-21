@@ -44,10 +44,11 @@ describe("fixture parity with the C2 store at sentropic 13490b16b", () => {
       tenant, target: artifact, author, body: "Root",
       ...(assigned ? { assignedTo: "alice" } : {}),
     };
+    const replyTarget = { ...artifact, sectionKey: "a1:reply" };
     for (const backend of [store, reference]) {
       const { threadId } = await backend.add(tenant, root);
       await backend.add(tenant, {
-        tenant, threadId, target: { ...artifact, sectionKey: "a1:reply" },
+        tenant, threadId, target: replyTarget,
         author: { id: "bob" }, body: "Reply", assignedTo: "bob",
       });
     }
@@ -60,6 +61,13 @@ describe("fixture parity with the C2 store at sentropic 13490b16b", () => {
     expect(summaries).toHaveLength(1);
     expect(summaries?.[0]?.target).toEqual(artifact);
     expect(summaries?.[0]?.assignedTo).toBe(root.assignedTo);
+
+    expect(await store.listThreadSummaries(tenant, replyTarget)).toEqual(
+      await reference.listThreadSummaries(tenant, replyTarget),
+    );
+    const sectionSummaries = await adapter.threadSummaries?.(tenant.workspaceId, replyTarget);
+    expect(sectionSummaries).toHaveLength(1);
+    expect(sectionSummaries?.[0]?.assignedTo).toBe(root.assignedTo);
   });
 
   it.each(["listByTarget", "listThreadSummaries"] as const)("%s matches records by kind and id", async (verb) => {
@@ -199,9 +207,14 @@ describe("fixture parity with the C2 store at sentropic 13490b16b", () => {
     async function expectProjectedRows() {
       const listed = await adapter.list(tenant.workspaceId, artifact);
       const expected = await reference.listByTarget(tenant, artifact);
-      expect(listed.map(({ authorship, ...row }) => row)).toEqual(
-        expected.map((row) => ({ ...row, tenant: { tenantId: tenant.tenantId, workspaceId: tenant.workspaceId } })),
-      );
+      expect(listed).toHaveLength(expected.length);
+      expected.forEach(({ tenant: expectedTenant, ...expectedRow }, index) => {
+        const { authorship, tenant: actualTenant, ...actualRow } = listed[index]!;
+        expect(actualRow).toEqual(expectedRow);
+        expect(actualTenant.tenantId).toBe(expectedTenant.tenantId);
+        expect(actualTenant.workspaceId).toBe(expectedTenant.workspaceId);
+        expect(actualTenant).not.toHaveProperty("userId");
+      });
     }
 
     await expectProjectedRows();

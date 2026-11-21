@@ -116,6 +116,42 @@ describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
     expect(await adapter.list(TENANT, TARGET)).toMatchObject([{ authorship: { author: CLAUDE, runId: "run-reloaded" } }]);
   });
 
+  it("restores a live session with the two-argument registration in one scope", async () => {
+    const { adapter, clearLiveSessions, registerLiveSession } = makeFixture();
+    const toolCallId = "legacy-tool-call";
+    const input = { tenant: TENANT, target: TARGET, body: "Agent comment", provenance: { toolCallId } };
+    await adapter.create(input);
+
+    registerLiveSession(" legacy-tool-call ", { actor: CLAUDE, runId: "run-reloaded" });
+    expect(await adapter.list(TENANT, TARGET)).toMatchObject([
+      { authorship: { author: CLAUDE, runId: "run-reloaded" } },
+    ]);
+    const other = await adapter.create({ ...input, tenant: "ws-other" });
+    expect(other.authorship.runId).toBeUndefined();
+    expect(other.authorship.author.displayLabel).toBe("Agent");
+    expect(() => registerLiveSession(toolCallId, { actor: CLAUDE })).toThrow(/workspace/);
+    expect(await adapter.list(TENANT, TARGET)).toMatchObject([{ authorship: { runId: "run-reloaded" } }]);
+
+    clearLiveSessions();
+    expect((await adapter.list(TENANT, TARGET))[0]?.authorship.runId).toBeUndefined();
+  });
+
+  it("binds a two-argument registration made before the first comment to that comment's scope", async () => {
+    const { adapter, store, registerLiveSession } = makeFixture();
+    const toolCallId = "pending-tool-call";
+    const session = { actor: CLAUDE, runId: "run-pending" };
+    const tenant = { workspaceId: TENANT };
+    const author = { id: ALICE.actorId };
+    registerLiveSession(toolCallId, session);
+    await store.add(tenant, { tenant, author, target: TARGET, body: "First", provenance: { toolCallId } });
+
+    const other = await adapter.create({
+      tenant: "ws-other", target: TARGET, body: "Second", provenance: { toolCallId },
+    });
+    expect(other.authorship.runId).toBeUndefined();
+    expect(await adapter.list(TENANT, TARGET)).toMatchObject([{ authorship: { author: CLAUDE, runId: session.runId } }]);
+  });
+
   it("rejects replies against a different target and edits by an author without comment rights", async () => {
     const { adapter, setCaller } = makeFixture();
     const root = await adapter.create({ tenant: TENANT, target: TARGET, body: "Original" });
@@ -163,6 +199,22 @@ describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
       .rejects.toMatchObject({ code: "NOT_FOUND", status: 404 });
     expect(await store.listThread({ workspaceId: TENANT }, root.threadId)).toHaveLength(1);
     expect(await adapter.reply({ ...reply, target: folder })).toMatchObject({ target });
+  });
+
+  it("keeps an untyped reply in the folder thread and notifies its subscribers", async () => {
+    const { adapter } = makeFixture();
+    const record = { kind: "record", id: "shared" } as const;
+    const folder = { ...record, recordType: "folder" };
+    const target = { ...folder, sectionKey: "description" };
+    const root = await adapter.create({ tenant: TENANT, target, body: "Folder" });
+    const notify = vi.fn();
+    adapter.subscribe?.(TENANT, target, notify);
+
+    const reply = await adapter.reply({ tenant: TENANT, target: record, threadId: root.threadId, body: "Reply" });
+
+    expect(notify).toHaveBeenCalledExactlyOnceWith([root, reply]);
+    expect(await adapter.list(TENANT, folder)).toEqual([root, reply]);
+    expect(reply.target).toEqual(target);
   });
 
   it("uses store thread verbs and keeps store-only helpers off the adapter", async () => {
