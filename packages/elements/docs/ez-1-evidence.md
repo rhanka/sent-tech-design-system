@@ -1,11 +1,38 @@
 # EZ-1 build evidence
 
+## Round 3 build receipt
+
+The local candidate was rebuilt with Node 22.22.1, npm 11.21.1,
+Vite 8.3.4 and Svelte 5.55.7 after the Markdown and heading fixes.
+Shell sizes are complete HTML measured with fflate 0.8.3 at level 6
+and mtime 0, including the unpublished BPMN candidate.
+
+| Component | Raw bytes | Gzip bytes | Status | Complete HTML SHA-256 |
+| --- | ---: | ---: | --- | --- |
+| BarChart | 590661 | 99149 | qualified | `bdb10a46bc5158b5c75ec32e1bd94f09ae3543eccbad3b15237f8869d018e826` |
+| BpmnCanvas | 1430206 | 384892 | partial | `b0486bf7d067a15b96b2cf1fbe3e3ec7e5bd0d7186f9034db9ab2092835bc6de` |
+| DecisionDossier | 621069 | 111621 | qualified | `2921d0e9c12f5bc550d3164e5472df22372b31d850e7b0bffb86e8bed8f646b7` |
+| TimeSeriesChart | 589537 | 99585 | qualified | `c5e2161805fe320dcd9bd6450c2b19db6433f397ffe0c9aff4930f1d7b081bca` |
+
+| Artifact | Digest |
+| --- | --- |
+| `dist/browser/sri.json` | `0bff778be5e15e038146a4eb2cb6281114133613b4b95e01a7f98cad081353eb` |
+| `dist/shells/manifest.json` | `06707cf5914887b76facd407033bfd1e64ae6868f0c79e4eb7150263f7670ec1` |
+| Local npm pack integrity | `sha512-vU1/FgSu8BYua1h2Tc+qfHLMWGebF5KjdrIU8d0L/n2fT9o8yYJlOylw1IfctFSpXGgc5kOEES3uZnyDEm9UkQ==` |
+
+With those build tools, rebuild the Elements package and run
+`EZ1_VERIFY_BUILD_RECEIPT=1 node --test scripts/elements-publish-tarball.test.mjs` to
+compare the receipt with the packed candidate. The release archive
+provides the integrity pin for FA-H9 and CK-H1a.
+
+## Round 1 history
+
 Round 1 source `bde97d7a4bc176df3be7c6dfc07cf38007b37f74` from the PR head
 `9e75cad2cf143a26b912eb469916d34547deff42`. Built in the isolated worktree
 with Node 22.22.1, npm 11.21.1, Vite 8.3.4, Svelte 5.55.7 and Puppeteer
 25.1.0 with Chrome Headless Shell 158.0.8127.36.
 
-## Baseline
+### Baseline
 
 On the test-only tree recorded in `d175851f6`, the two validator seams reported
 36 failures on the missing component and passed both categorical cases.
@@ -17,7 +44,7 @@ Recompressing its checked-in `BpmnCanvas.js` with fflate 0.8.3, level 6,
 mtime 0, yielded 308,064 bytes from 1,222,509 raw bytes. The JS fingerprint
 was `c3c5519e966032466a2fce65b1c7fffb753e60e8c851f2f3f410c4158e5133d8`.
 
-## Scoped verification
+### Scoped verification
 
 The worktree supplied explicit temporary, runtime, browser profile and npm
 cache directories. These commands ran from the DS worktree.
@@ -48,7 +75,7 @@ and missing fixtures and skill in the tarball. A temporary render that put
 every point at the same x passed the original Chromium checks and failed the
 new coordinate check. The rebuilt renderer and package passed those tests.
 
-## Complete HTML shell budgets
+### Complete HTML shell budgets
 
 Complete shells include the module and HTML template. The limit is under
 983,040 raw bytes and at most 153,600 gzip bytes, measured with fflate
@@ -68,7 +95,7 @@ load the BPMN semantic engine and canvas view on demand. The generated
 manifest records the BPMN candidate measurement. The package ships the
 qualified HTML and modules.
 
-## Package handoff
+### Package handoff
 
 Local `npm pack --workspace @sentropic/design-system-elements --json`
 reported version `0.2.0`, filename `sentropic-design-system-elements-0.2.0.tgz`,
