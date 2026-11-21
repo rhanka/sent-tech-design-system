@@ -594,16 +594,26 @@
     minReadableScale = parseScale(tokenValue(TOKEN_MIN_READABLE_SCALE));
   }
 
+  let previousFrameHeight: number | undefined;
+  let previousViewportHeight = 0;
+
   function measureFrame(resize = false): void {
     if (frameEl === undefined) return;
     const width = frameEl.clientWidth || undefined;
-    // Viewport dimensions also change when zoom adds a scrollbar. Only a
-    // new frame width or a window resize should discard the user zoom.
+    const frameHeight = frameEl.clientHeight;
+    const viewportOuterHeight = viewportEl?.offsetHeight ?? 0;
+    // The frame can grow with its viewport when a scrollbar appears.
+    // Refit when the frame height changes independently of that growth.
+    const frameHeightChanged = previousFrameHeight !== undefined
+      && frameHeight !== previousFrameHeight
+      && frameHeight - previousFrameHeight !== viewportOuterHeight - previousViewportHeight;
+    previousFrameHeight = frameHeight;
+    previousViewportHeight = viewportOuterHeight;
     const height = window.innerHeight > 0 ? window.innerHeight : undefined;
-    const refit = resize || width !== frameWidth || height !== windowHeight;
+    const refit = resize || width !== frameWidth || frameHeightChanged || height !== windowHeight;
     frameWidth = width;
     viewWidth = viewportEl?.clientWidth || width;
-    scrollbarHeight = viewportEl === undefined ? 0 : viewportEl.offsetHeight - viewportEl.clientHeight;
+    scrollbarHeight = viewportOuterHeight - (viewportEl?.clientHeight ?? 0);
     windowHeight = height;
     readCameraTokens();
     if (refit) {
