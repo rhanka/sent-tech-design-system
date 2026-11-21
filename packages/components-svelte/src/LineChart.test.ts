@@ -14,6 +14,19 @@ const listItems = (container: HTMLElement) =>
   Array.from(container.querySelectorAll(".st-chartDataList li")).map((n) => n.textContent?.trim());
 
 describe("LineChart analytical overlays", () => {
+  it("preserves distinct plot positions across the finite numeric range", () => {
+    const { container } = render(LineChart, {
+      props: {
+        label: "Wide range",
+        data: [{ x: 0, y: -Number.MAX_VALUE }, { x: 1, y: 0 }, { x: 2, y: Number.MAX_VALUE }],
+      },
+    });
+    const positions = [...container.querySelectorAll("circle[data-chart-index]")].map((point) =>
+      Number(point.getAttribute("cy")),
+    );
+    expect(positions).toEqual([208, 110, 12]);
+  });
+
   it("renders no overlays by default (additive — zero regression)", () => {
     const { container } = render(LineChart, { props: { label: "Plain", data } });
     expect(container.querySelector(".st-lineChart__band")).toBeNull();
