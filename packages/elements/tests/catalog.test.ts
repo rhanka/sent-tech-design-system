@@ -60,7 +60,7 @@ function validate(root: Record<string, unknown>, ports?: Parameters<typeof creat
   return validator.validate(envelopeOf(root));
 }
 
-describe("AC-L1: catalog.json has $id equal to catalogId and three components", () => {
+describe("AC-L1: catalogue identity and component inventory", () => {
   it("$schema is draft 2020-12", () => {
     expect(catalog.$schema).toBe("https://json-schema.org/draft/2020-12/schema");
   });
@@ -71,8 +71,12 @@ describe("AC-L1: catalog.json has $id equal to catalogId and three components", 
     expect(CATALOG_ID).toBe("https://design-system.sent-tech.ca/catalogs/elements/v1/catalog.json");
   });
 
-  it("has exactly the three components of §5.4", () => {
-    expect(Object.keys(catalog.components).sort()).toEqual(["BarChart", "BpmnCanvas", "DecisionDossier"]);
+  it("has the four supported components", () => {
+    expect(Object.keys(catalog.components).sort()).toEqual(["BarChart", "BpmnCanvas", "DecisionDossier", "TimeSeriesChart"]);
+  });
+
+  it("advertises a text fallback for categorical charts", () => {
+    expect(catalog.components.BarChart).toMatchObject({ "x-sentropic": { fallback: "text" } });
   });
 
   it("functions is empty and $defs carries anyComponent and theme (§5.2)", () => {
@@ -89,6 +93,7 @@ describe("AC-L1: catalog.json has $id equal to catalogId and three components", 
       "#/components/BarChart",
       "#/components/BpmnCanvas",
       "#/components/DecisionDossier",
+      "#/components/TimeSeriesChart",
     ]);
   });
 
