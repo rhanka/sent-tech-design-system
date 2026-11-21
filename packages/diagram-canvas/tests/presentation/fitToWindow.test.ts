@@ -56,9 +56,17 @@ describe("fit-to-window host framing (DE-2 ask 9)", () => {
   it("keeps default 0.85x framing on existing first-paint scenes while enabling fitToWindow on r7 comparison scenes", () => {
     const html = readFileSync(new URL("../../../../tools/diagram-first-paint/index.html", import.meta.url), "utf8");
     const main = readFileSync(new URL("../../../../tools/diagram-first-paint/main.js", import.meta.url), "utf8");
+    const browser = readFileSync(new URL("../../../../tools/diagram-first-paint/browser.mjs", import.meta.url), "utf8");
     expect(html).not.toContain("max-height: calc(100vh - 24px)");
     expect(main).toContain("fitToWindow");
     expect(main).toContain("r7-");
+    // REQ-R7-18 / REQ-R7-30: unfold refit check must execute BEFORE any Ajuster click.
+    const unfoldCheckIdx = browser.indexOf("check(unfolded, scene);");
+    const unfoldParityIdx = browser.indexOf("equalGeometry(parityGeometry(unfolded), current");
+    const refitClickIdx = browser.indexOf("await refit.click();");
+    expect(unfoldCheckIdx).toBeGreaterThan(-1);
+    expect(unfoldParityIdx).toBeGreaterThan(unfoldCheckIdx);
+    expect(refitClickIdx).toBeGreaterThan(unfoldParityIdx);
   });
 
   it("forwards fitToWindow to sceneFit in renderSceneSvg", () => {
