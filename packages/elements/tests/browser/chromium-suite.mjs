@@ -1792,6 +1792,12 @@ async function shadowSvg(page, elementSelector) {
   const fixtures = new Map(readdirSync(fixtureDir).filter((file) => file.endsWith(".json"))
     .map((file) => [file, JSON.parse(readFileSync(join(fixtureDir, file), "utf8"))]));
   fixtures.set("dossier-annotated.json", JSON.parse(readFixture("dossier-annotated.json")).root.document);
+  const report = fixtures.get("report.json");
+  fixtures.set("report with an unanchored backRef", {
+    ...report,
+    sections: report.sections.map((section) => ({ ...section, targetRef: "shared-target" })),
+    annexes: report.annexes.map((annex) => ({ ...annex, backRefs: [...annex.backRefs, "shared-target"] })),
+  });
   const decision = fixtures.get("decision-v2.json");
   fixtures.set("decision-v2 with glossary and amendments", {
     ...decision,
