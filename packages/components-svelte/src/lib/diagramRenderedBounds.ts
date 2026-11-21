@@ -71,11 +71,11 @@ function isTransparent(color: string): boolean {
 
 /**
  * What the scene hosts fade during a fold transition: the connector layer,
- * the edge labels and the entering nodes. A zero opacity on one of these is
- * a frame of that fade, not a hidden element: it is painted once the
- * transition settles, and the fit has to frame it.
+ * the edge labels, the entering nodes and the automatic link legend. A zero
+ * opacity on one of these is a frame of that fade, not a hidden element: it
+ * is painted once the transition settles, and the fit has to frame it.
  */
-const TRANSITION_FADED = '.st-diagramSceneFigure-edges,.st-diagramSceneFigure-edgeLabel,.st-diagramSceneFigure-node';
+const TRANSITION_FADED = '.st-diagramSceneFigure-edges,.st-diagramSceneFigure-edgeLabel,.st-diagramSceneFigure-node,.st-diagramSceneFigure-legend';
 
 /** Whether an element removes itself and its subtree from the paint for
  * good: not rendered, fully transparent at rest, or clipped to nothing (the

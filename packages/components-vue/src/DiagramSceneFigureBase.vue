@@ -11,7 +11,7 @@ import DiagramCard from './DiagramCard.vue';
 import DiagramZone from './DiagramZone.vue';
 import DiagramControlGlyph from './DiagramControlGlyph.vue';
 import { projectCardProps, projectZoneProps } from './diagramCardModel.js';
-import { collapsedOccurrencesOf, connectorDashArray, connectorMarkerIds, connectorMarkerRef, connectorPath, DEFAULT_EDGE_CORNER_RADIUS, DEFAULT_SCENE_LABELS, displayedRects, extraConnectorMarkers, layoutScene, linkLegendSwatchGeometry, parseDurationMs, parseEasing, rectsOf, resolveScene, sameRects, sceneConnectorMask, scenePaintPlane, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
+import { collapsedOccurrencesOf, connectorDashArray, connectorMarkerIds, connectorMarkerRef, connectorPath, DEFAULT_EDGE_CORNER_RADIUS, DEFAULT_SCENE_LABELS, displayedRects, extraConnectorMarkers, layoutScene, linkLegendBoxStyle, linkLegendSwatchGeometry, parseDurationMs, parseEasing, rectsOf, resolveScene, sameRects, sceneConnectorMask, scenePaintPlane, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
 import type { DiagramSceneFigureProps as SceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
 export type DiagramSceneFigureProps = SceneFigureProps;
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { strictIcons: true });
@@ -334,7 +334,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
                 <template v-else><span v-for="(line, index) in edgeLabel.lines" :key="index">{{ line }}</span></template>
               </div>
               <aside v-if="scene.linkLegend !== undefined" class="st-diagramSceneFigure-legend" role="region" :aria-label="scene.linkLegend.title" data-scene-legend="" :data-legend-anchor="scene.linkLegend.anchor"
-                :style="`left:${scene.linkLegend.rect.x}px;top:${scene.linkLegend.rect.y}px;width:${scene.linkLegend.rect.width}px;height:${scene.linkLegend.rect.height}px${animating ? `;opacity:${eased}` : ''}`">
+                :style="linkLegendBoxStyle(scene.linkLegend, animating ? eased : undefined)">
                 <div class="st-diagramSceneFigure-legendTitle">{{ scene.linkLegend.title }}</div>
                 <ul class="st-diagramSceneFigure-legendList">
                   <li v-for="{ entry, swatch } in legendEntries" :key="entry.key" class="st-diagramSceneFigure-legendItem" :data-legend-style="entry.key" :data-edge-stroke="entry.strokeStyle" :data-edge-arrowhead="entry.arrowhead" :data-edge-emphasis="entry.emphasis">
@@ -495,38 +495,44 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     display: flex;
     flex-direction: column;
     font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
-    font-size: var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px));
-    gap: var(--st-component-diagramCard-padding, 8px);
+    font-size: var(--st-diagram-legend-font-size, var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px)));
+    gap: var(--st-diagram-legend-header-gap);
     line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
-    padding: var(--st-component-diagramScene-containerPadding, 16px);
+    padding: var(--st-diagram-legend-padding);
     position: absolute;
   }
   .st-diagramSceneFigure-legendTitle {
+    align-items: center;
     border-bottom: var(--st-component-diagramScene-labelBorderWidth, 1px) solid var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
+    box-sizing: border-box;
+    display: flex;
+    flex: none;
     font-weight: var(--st-component-diagramCard-titleFontWeight, 700);
-    padding-bottom: var(--st-component-diagramScene-labelPadding, 4px);
+    height: var(--st-diagram-legend-header-height);
     white-space: nowrap;
   }
   .st-diagramSceneFigure-legendList {
     display: flex;
     flex-direction: column;
-    gap: var(--st-component-diagramCard-padding, 8px);
+    gap: var(--st-diagram-legend-row-gap);
     list-style: none;
     margin: 0;
     padding: 0;
   }
   .st-diagramSceneFigure-legendItem {
     align-items: center;
+    box-sizing: border-box;
     display: flex;
-    gap: var(--st-component-diagramCard-bodyInsetFromBar, 14px);
-    min-height: calc(var(--st-component-diagramCard-bodyInsetFromBar, 14px) * 2);
+    flex: none;
+    gap: var(--st-diagram-legend-swatch-gap);
+    height: var(--st-diagram-legend-row-height);
     white-space: nowrap;
   }
   .st-diagramSceneFigure-legendSwatch {
     flex: none;
-    height: var(--st-component-diagramScene-containerPadding, 16px);
+    height: var(--st-diagram-legend-swatch-height);
     overflow: visible;
-    width: calc(var(--st-component-diagramCard-bodyInsetFromBar, 14px) * 4);
+    width: var(--st-diagram-legend-swatch-width);
   }
   .st-diagramSceneFigure-legendLabel { white-space: nowrap; }
 </style>

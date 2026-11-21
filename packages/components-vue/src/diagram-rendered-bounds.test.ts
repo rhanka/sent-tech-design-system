@@ -351,6 +351,7 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
       ['edge label', '<div class="probe st-diagramSceneFigure-edgeLabel" data-scene-label="l" style="opacity:0"><span>label</span></div>', false],
       ['entering node', '<div class="probe st-diagramSceneFigure-node" data-scene-occurrence="entering" style="opacity:0"></div>', false],
       ['card of an entering node', '<div class="st-diagramSceneFigure-node" data-scene-occurrence="entering" style="opacity:0"><div class="probe st-diagramCard"></div></div>', false],
+      ['link legend', '<aside class="probe st-diagramSceneFigure-legend" data-scene-legend="" style="opacity:0"><span>Legend</span></aside>', false],
     ] as const) {
       const bounds = read(markup);
       expect(bounds, name).not.toBe(model);

@@ -48,7 +48,9 @@ export const LINK_LEGEND_ARROWHEAD_ORDER: readonly CanonicalArrowheadKind[] = Ob
 export const LINK_LEGEND_GAP = 48;
 export const LINK_LEGEND_PADDING = 16;
 export const LINK_LEGEND_HEADER_HEIGHT = 30;
+export const LINK_LEGEND_HEADER_GAP = 8;
 export const LINK_LEGEND_SWATCH_WIDTH = 56;
+export const LINK_LEGEND_SWATCH_HEIGHT = 16;
 export const LINK_LEGEND_SWATCH_GAP = 14;
 export const LINK_LEGEND_ROW_HEIGHT = 28;
 export const LINK_LEGEND_ROW_GAP = 8;
@@ -91,7 +93,11 @@ export interface SceneLinkLegend {
   readonly entries: readonly LinkLegendEntry[];
   readonly padding: number;
   readonly headerHeight: number;
+  readonly headerGap: number;
+  readonly rowHeight: number;
+  readonly rowGap: number;
   readonly swatchWidth: number;
+  readonly swatchHeight: number;
   readonly swatchGap: number;
   readonly fontSize: number;
 }
@@ -206,7 +212,11 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
   const fontSize = input.fontSize ?? LINK_LEGEND_FONT_SIZE;
   const scale = fontSize > 0 && Number.isFinite(fontSize) ? fontSize / LINK_LEGEND_FONT_SIZE : 1;
   const headerHeight = scale === 1 ? LINK_LEGEND_HEADER_HEIGHT : Math.ceil(LINK_LEGEND_HEADER_HEIGHT * scale);
-  const rowHeight = scale === 1 ? LINK_LEGEND_ROW_HEIGHT : Math.ceil(LINK_LEGEND_ROW_HEIGHT * scale);
+  const headerGap = scale === 1 ? LINK_LEGEND_HEADER_GAP : Math.ceil(LINK_LEGEND_HEADER_GAP * scale);
+  const rowHeight = Math.max(
+    LINK_LEGEND_SWATCH_HEIGHT,
+    scale === 1 ? LINK_LEGEND_ROW_HEIGHT : Math.ceil(LINK_LEGEND_ROW_HEIGHT * scale),
+  );
   const rowGap = scale === 1 ? LINK_LEGEND_ROW_GAP : Math.ceil(LINK_LEGEND_ROW_GAP * scale);
   const titleLayout = input.measureLines({
     text: title,
@@ -232,6 +242,7 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
     const rowY =
       LINK_LEGEND_PADDING +
       headerHeight +
+      headerGap +
       index * (rowHeight + rowGap);
     return {
       ...item,
@@ -249,6 +260,7 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
   const height =
     2 * LINK_LEGEND_PADDING +
     headerHeight +
+    headerGap +
     entries.length * rowHeight +
     Math.max(0, entries.length - 1) * rowGap;
 
@@ -274,10 +286,35 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
     entries,
     padding: LINK_LEGEND_PADDING,
     headerHeight,
+    headerGap,
+    rowHeight,
+    rowGap,
     swatchWidth: LINK_LEGEND_SWATCH_WIDTH,
+    swatchHeight: LINK_LEGEND_SWATCH_HEIGHT,
     swatchGap: LINK_LEGEND_SWATCH_GAP,
     fontSize,
   };
+}
+
+/**
+ * Shared inline CSS positioning and geometry custom properties for HTML legend
+ * hosts (Svelte and Vue), keeping every box, header, gap, row and swatch pixel
+ * identical to `buildSceneLinkLegend` and `renderSceneSvg` at every `edgeLabelSize`.
+ */
+export function linkLegendBoxStyle(legend: SceneLinkLegend, opacity?: number): string {
+  return (
+    `left:${legend.rect.x}px;top:${legend.rect.y}px;width:${legend.rect.width}px;height:${legend.rect.height}px;` +
+    `--st-diagram-legend-padding:${legend.padding}px;` +
+    `--st-diagram-legend-header-height:${legend.headerHeight}px;` +
+    `--st-diagram-legend-header-gap:${legend.headerGap}px;` +
+    `--st-diagram-legend-row-height:${legend.rowHeight}px;` +
+    `--st-diagram-legend-row-gap:${legend.rowGap}px;` +
+    `--st-diagram-legend-swatch-width:${legend.swatchWidth}px;` +
+    `--st-diagram-legend-swatch-height:${legend.swatchHeight}px;` +
+    `--st-diagram-legend-swatch-gap:${legend.swatchGap}px;` +
+    `--st-diagram-legend-font-size:${legend.fontSize}px` +
+    (opacity === undefined ? "" : `;opacity:${opacity}`)
+  );
 }
 
 /**
@@ -300,9 +337,9 @@ export function linkLegendSwatchGeometry(
 
   if (style.arrowhead === "none") {
     return {
-      viewBox: `0 0 ${LINK_LEGEND_SWATCH_WIDTH} 16`,
+      viewBox: `0 0 ${LINK_LEGEND_SWATCH_WIDTH} ${LINK_LEGEND_SWATCH_HEIGHT}`,
       width: LINK_LEGEND_SWATCH_WIDTH,
-      height: 16,
+      height: LINK_LEGEND_SWATCH_HEIGHT,
       linePath,
       stroke,
       strokeWidth,
@@ -310,9 +347,9 @@ export function linkLegendSwatchGeometry(
     };
   }
   return {
-    viewBox: `0 0 ${LINK_LEGEND_SWATCH_WIDTH} 16`,
+    viewBox: `0 0 ${LINK_LEGEND_SWATCH_WIDTH} ${LINK_LEGEND_SWATCH_HEIGHT}`,
     width: LINK_LEGEND_SWATCH_WIDTH,
-    height: 16,
+    height: LINK_LEGEND_SWATCH_HEIGHT,
     linePath,
     arrowPath: "M44 3L54 8L44 13Z",
     stroke,
