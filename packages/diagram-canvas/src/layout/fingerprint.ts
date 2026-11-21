@@ -15,6 +15,7 @@
  * the engine as numbers (§6.2), so a token change changes the fingerprint in
  * the call that observes it, with no token-version export.
  */
+import { DEFAULT_EDGE_LABEL_SIZE } from "../camera.js";
 import { isLayoutGroup, resolveRowGaps, type LayoutGroup, type LayoutHints } from "./hints.js";
 import type { LayoutMeasurements } from "./measure.js";
 import { channelMetrics } from "./channels.js";
@@ -74,6 +75,10 @@ export function layoutFingerprintInputs(input: LayoutFingerprintInput): Readonly
   const hints: LayoutHints = options.hints ?? {};
   const gaps = resolveRowGaps(hints, metrics);
   const tokens = input.tokens ?? {};
+  const edgeLabelSize =
+    metrics.edgeLabelSize !== undefined && Number.isFinite(metrics.edgeLabelSize) && metrics.edgeLabelSize > 0
+      ? metrics.edgeLabelSize
+      : DEFAULT_EDGE_LABEL_SIZE;
   return {
     engine: LAYOUT_ENGINE_VERSION,
     flows: options.flows,
@@ -89,6 +94,7 @@ export function layoutFingerprintInputs(input: LayoutFingerprintInput): Readonly
       routeBorderClearance: metrics.routeBorderClearance ?? 15,
       slotSpacing: options.metrics?.slotSpacing ?? Math.max(metrics.routeSpacing ?? 24, options.metrics?.trackSpacing ?? 14),
       nodeGap: metrics.nodeGap,
+      edgeLabelSize,
     },
     previousOrientation: Object.entries(options.previousOrientation ?? {}).sort(([left], [right]) => byString(left, right)),
     hints: {

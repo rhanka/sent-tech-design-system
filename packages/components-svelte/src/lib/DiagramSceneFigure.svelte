@@ -596,7 +596,10 @@
     }
     const labelMargin = parseFloat(tokenValue('--st-component-diagramScene-labelPadding') ?? '');
     if (Number.isFinite(labelMargin)) values.labelMargin = labelMargin;
-    if (JSON.stringify(values) !== JSON.stringify(tokenMetrics)) tokenMetrics = values;
+    if (JSON.stringify(values) !== JSON.stringify(tokenMetrics)) {
+      ownedCache.clear();
+      tokenMetrics = values;
+    }
     const nextTokens = { ...DEFAULT_FLOW_TOKENS };
     for (const name of Object.keys(nextTokens) as (keyof FlowTokens)[]) {
       const value = tokenValue(`--st-component-diagramScene-${name}`);

@@ -193,4 +193,35 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     await tick();
     expect(fittedView.container.querySelectorAll("path[data-scene-edge]")).toHaveLength(fixture.relations.length);
   });
+
+  it("should recompute scaled edge label boxes when CSS overrides --st-component-diagramScene-edgeLabelSize on mount (REQ-R7-11)", async () => {
+    const fixture = nestedZoneFixture({ outside: true });
+    const baseView = render(DiagramSceneFigure, propsOf(fixture));
+    await tick();
+    const baseLabel = baseView.container.querySelector<HTMLElement>("[data-scene-label]")!;
+    const baseWidth = parseFloat(baseLabel.style.width);
+    const baseHeight = parseFloat(baseLabel.style.height);
+    baseView.unmount();
+
+    const realGetComputedStyle = window.getComputedStyle.bind(window);
+    vi.spyOn(window, "getComputedStyle").mockImplementation((el) => {
+      const style = realGetComputedStyle(el);
+      return new Proxy(style, {
+        get(target, prop) {
+          if (prop === "getPropertyValue") {
+            return (name: string) => name === "--st-component-diagramScene-edgeLabelSize" ? "27px" : target.getPropertyValue(name);
+          }
+          const value = Reflect.get(target, prop);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      });
+    });
+
+    const scaledView = render(DiagramSceneFigure, propsOf(fixture));
+    await tick();
+    await tick();
+    const scaledLabel = scaledView.container.querySelector<HTMLElement>("[data-scene-label]")!;
+    expect(parseFloat(scaledLabel.style.width)).toBeGreaterThan(baseWidth);
+    expect(parseFloat(scaledLabel.style.height)).toBeGreaterThan(baseHeight);
+  });
 });

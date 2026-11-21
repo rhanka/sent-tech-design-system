@@ -21,7 +21,7 @@ describe("DC-2a layout fingerprint (§6.6)", () => {
   it("resolves defaults in one place: absent options and the explicit DS defaults give one fingerprint", () => {
     const explicit: LayoutFingerprintInput["options"] = {
       rowPack: { targetAspect: 1.78, tallBias: 1.6, emptyPenaltyWeight: 0.4, orientationHysteresis: 0.08 },
-      metrics: { rowGapInline: 96, rowGapBlock: 72, zoneGutter: 96, gapInlineMax: 240, gapBlockMax: 240 },
+      metrics: { rowGapInline: 96, rowGapBlock: 72, zoneGutter: 96, gapInlineMax: 240, gapBlockMax: 240, edgeLabelSize: 18 },
       collapsed: [],
       previousOrientation: {},
       hints: {},
@@ -47,6 +47,8 @@ describe("DC-2a layout fingerprint (§6.6)", () => {
       { rowPack: { orientationHysteresis: 0.04 } },
       { metrics: { rowGapInline: 16 } },
       { metrics: { zoneGutter: 120 } },
+      { metrics: { edgeLabelSize: 27 } },
+      { metrics: { edgeLabelSize: 12 } },
       { metrics: { gapBlockMax: 28 } },
       { hints: { cardGapY: 20 } },
       { previousOrientation: { root: "columns" } },

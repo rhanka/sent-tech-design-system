@@ -43,11 +43,13 @@ const hostId = useId();
 const arrowId = 'diagram-arrow-' + hostId;
 const markerIds = connectorMarkerIds(arrowId);
 const maskId = 'diagram-connector-mask-' + hostId;
+const ownedCache = createLayoutCache();
 const { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
     fit, zoom, readout, placement, viewportStyle, refitOnFold,
     setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
         props, () => scene.value, camera => emit('cameraChange', camera), undefined,
-        { animating: () => animating.value, settle: () => settle() });
+        { animating: () => animating.value, settle: () => settle() },
+        () => ownedCache.clear());
 defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 const folds = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? folds.value);
@@ -55,7 +57,6 @@ watch(() => [...collapsedNow.value].sort().join('\0'), () => refitOnFold(), { fl
 let previousOrientation: SceneOrientations | undefined;
 let orientationDocument: string | undefined;
 const orientationSeedByFold = new Map<string, SceneOrientations | undefined>();
-const ownedCache = createLayoutCache();
 const layoutResult = computed(() => {
     if (orientationDocument !== props.document.documentId) {
         orientationDocument = props.document.documentId;

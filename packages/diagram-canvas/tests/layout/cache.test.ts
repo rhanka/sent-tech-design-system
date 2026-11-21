@@ -58,7 +58,7 @@ describe("layout cache", () => {
     const first = cache.layout(document, options);
     expect(cache.layout(document, {
       ...options, rowPack: { targetAspect: 1.78, tallBias: 1.6, emptyPenaltyWeight: 0.4, orientationHysteresis: 0.08 },
-      metrics: { rowGapInline: 96, rowGapBlock: 72, zoneGutter: 96, gapInlineMax: 240, gapBlockMax: 240 },
+      metrics: { rowGapInline: 96, rowGapBlock: 72, zoneGutter: 96, gapInlineMax: 240, gapBlockMax: 240, edgeLabelSize: 18 },
     })).toBe(first);
     expect(run).toHaveBeenCalledTimes(1);
   });
@@ -74,7 +74,7 @@ describe("layout cache", () => {
       { ...options, rowPack: { targetAspect: 2 } },
       { ...options, rowPack: { orientationHysteresis: 0.2 } },
       { ...options, viewId: viewRef("other") },
-      ...(["nodePaddingX", "nodePaddingY", "nodeMinWidth", "nodeMinHeight", "containerPadding", "titlePaddingY", "rankGap", "clearance", "slotSpacing", "labelMargin", "zoneGutter", "rowGapInline", "rowGapBlock", "gapInlineMax", "gapBlockMax"] as const)
+      ...(["nodePaddingX", "nodePaddingY", "nodeMinWidth", "nodeMinHeight", "containerPadding", "titlePaddingY", "rankGap", "clearance", "slotSpacing", "labelMargin", "zoneGutter", "edgeLabelSize", "rowGapInline", "rowGapBlock", "gapInlineMax", "gapBlockMax"] as const)
         .map((metric) => ({ ...options, metrics: { [metric]: 99 } })),
       { ...options, bindings: { schemaVersion: "1", rows: [] } },
       { ...options, registry: createProfileRegistry(defaultProfileRegistry.list().map((id) => ({ ...defaultProfileRegistry.get(id)!, version: 42 }))) },
