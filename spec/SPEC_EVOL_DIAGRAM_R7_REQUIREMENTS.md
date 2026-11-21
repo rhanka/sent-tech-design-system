@@ -2,7 +2,7 @@
 
 > **Purpose.** Source unique et tracée des exigences de l'owner pour l'évolution diagrammes r7 du design system (DS). Chaque exigence est un élément `REQ-R7-NN` avec son verbatim daté, un critère d'acceptation observable, son lot et sa vague, son statut factuel et ses écarts connus. Une demande owner sans id ici n'est pas encore une exigence : elle entre ici avant tout plan, brief ou PR.
 >
-> **Snapshot.** 2026-11-20, 14:16 EST (révision r2, voir « Revisions » ; r1 : 11:50 EST ; r3, 14:38 EST : ajout de REQ-R7-30 seul, sur des lectures faites à cette heure). Dépôt DS lu en lecture seule (`origin/main` `d2312d6f5`, branches et tags distants, `.track/events.jsonl` de la copie de travail locale, lu par `track item show`) ; PR et CI lues via `gh`. Le `.track/events.jsonl` d'`origin/main` s'arrête au 07/11 (UTC) : les items track cités ici (12/11 à 20/11, dates UTC) n'existent que dans la copie locale, non committée.
+> **Snapshot.** 2026-11-20, 19:13 EST (révision r4, voir « Revisions » ; r1 : 11:50 EST ; r2 : 14:16 EST ; r3 : 14:38 EST). Dépôt DS lu en lecture seule (`origin/main` `4e02910aa` (fusion PR #319), branches et tags distants, `.track/events.jsonl` de la copie de travail locale, lu par `track item show`) ; PR et CI lues via `gh`. Le `.track/events.jsonl` d'`origin/main` s'arrête au 07/11 (UTC) : les items track cités ici (12/11 à 20/11, dates UTC) n'existent que dans la copie locale, non committée.
 
 ## Conventions
 
@@ -24,37 +24,41 @@
 | Révision | Date | Changements |
 |---|---|---|
 | r1 | 20/11, 11:50 EST | création : REQ-R7-01 à REQ-R7-28, scénarios S1 à S3, décisions D-1 à D-9 |
-| r2 | 20/11, 14:16 EST | intégration de la revue `REQ-SPEC-carbon.md` (`ACCEPT WITH CHANGES`, 6 constats). (1) PR #314 : la revue mesurait le head `90aa6dd81` (8 commits, CI 33/36, bumps manquants, corps obsolète) ; au snapshot r2, head `570093c3a` (9 commits, CI 36/36, corps réécrit, bumps toujours manquants) : état du dépôt, REQ-R7-01, REQ-R7-04, REQ-R7-06 à REQ-R7-10, REQ-R7-28, « Cross-cutting known gaps » §1. (2) REQ-R7-29 créée (DE-1b) ; REQ-R7-01, REQ-R7-02, REQ-R7-06, REQ-R7-11, REQ-R7-20 et REQ-R7-21 complétées depuis `PLAN-r3.md`. (3) items track diagrammes recensés (état du dépôt, REQ-R7-06, REQ-R7-21, REQ-R7-26, §4) ; date de REQ-R7-26 ramenée à `missing source`. (4) critères observables de REQ-R7-15, REQ-R7-24 et REQ-R7-25 ; portée réelle des tests CI dans REQ-R7-05, REQ-R7-13 et REQ-R7-26. (5) colonnes « À regarder » et « Item track » dans les 4 tableaux de scénarios. (6) dépendance de N2 à H2 dans S2 (nouvelle décision D-10), budget de V2 et coûts jusqu'à fin V3 et fin V4 par scénario. Aucune exigence supprimée. |
+| r2 | 20/11, 14:16 EST | intégration d'une revue indépendante (`ACCEPT WITH CHANGES`, 6 constats). (1) PR #314 : la revue mesurait le head `90aa6dd81` (8 commits, CI 33/36, bumps manquants, corps obsolète) ; au snapshot r2, head `570093c3a` (9 commits, CI 36/36, corps réécrit, bumps toujours manquants) : état du dépôt, REQ-R7-01, REQ-R7-04, REQ-R7-06 à REQ-R7-10, REQ-R7-28, « Cross-cutting known gaps » §1. (2) REQ-R7-29 créée (DE-1b) ; REQ-R7-01, REQ-R7-02, REQ-R7-06, REQ-R7-11, REQ-R7-20 et REQ-R7-21 complétées depuis `PLAN-r3.md`. (3) items track diagrammes recensés (état du dépôt, REQ-R7-06, REQ-R7-21, REQ-R7-26, §4) ; date de REQ-R7-26 ramenée à `missing source`. (4) critères observables de REQ-R7-15, REQ-R7-24 et REQ-R7-25 ; portée réelle des tests CI dans REQ-R7-05, REQ-R7-13 et REQ-R7-26. (5) colonnes « À regarder » et « Item track » dans les 4 tableaux de scénarios. (6) dépendance de N2 à H2 dans S2 (nouvelle décision D-10), budget de V2 et coûts jusqu'à fin V3 et fin V4 par scénario. Aucune exigence supprimée. |
 | r3 | 20/11, 14:38 EST | ajout de REQ-R7-30 (verbatim owner du 20/11, 14:10, `OWNER-ADDENDA.md:36-38` ; item track `01M7X6P2X37V4HK1ZPQ7HJZZA9`) dans « Index » et « Wave 1 » ; définition du statut `régression à corriger (PR #314)` étendue à une régression signalée par l'owner hors audit ; « Sources » : `refit-unfold.md` et dossier h-cond antérieur à v7 (svelte 0.41.5 publié). Faits de REQ-R7-30 lus à 14:38 EST (PR #314 toujours au head `570093c3a`). « Repository state at snapshot », « Cross-cutting known gaps », « Open owner decisions » et « Scénarios » restent au snapshot r2 : ils ne citent ni REQ-R7-30 ni son item track. Aucune exigence supprimée. |
+| r4 | 20/11, 19:13 EST | deux revues indépendantes (`NOT MERGEABLE`) : intégration complète des constats. (1) Attribution agent retirée ; « revue indépendante » partout ; ancres explicites `<a id="req-r7-nn">` pour les 30 exigences. (2) Snapshot rafraîchi : PR #314 (tournée de correctifs 4, head `2a60db8ee`, 12 commits, CI 36/36) avec `d84dc6c8e` (REQ-R7-30), `0363185c5` (bumps diagram-core 0.4.1 et tokens / themes 0.15.1, cascade refaite) et `2a60db8ee` (survol `v1` identique à 0.41.5, `W1-12` limité à `surface2`) ; PR #315 (tournée de correctifs, head `a64d48116`, 17 commits) avec `d937fb1cd` (0 conflit sur tous les états de pli), `8c23d804c` (pointes `@4` réduites à `arrow | none`, scènes first-paint r7), `60a892b3d` (parité Vapor au runtime), `a64d48116` (retour des effets de bord non demandés) ; PR #317 (E2, `61c02984b`) et PR #318 (E1, `20e3cd129`) ouvertes : REQ-R7-19 et REQ-R7-20 passent « en construction » ; PR #319 fusionnée, `origin/main` `4e02910aa`, review-core 0.1.1 non encore publié. (3) `main` : svelte 0.43.0 publié (tag `svelte-v0.43.0`), review-core 0.1.0 publié. (4) REQ-R7-30 réalignée sur le code : réajustement à chaque pli / dépli (zoom explicite remis à zéro), D-5 close, D-11 (Z-7 et plancher 0,45) ; `main`, cross-cutting, scénarios et track mis à jour (5 items r7, 30 items par exigence). Aucune exigence supprimée. |
 
 ## Sources
 
 | Source | Content used |
 |---|---|
-| `scratchpad/diagram-evo/OWNER-ADDENDA.md` | verbatims owner 18/11 et 20/11, décisions 19/11, 9 demandes génériques d2d (18/11), relais engram (4 frameworks, emphase G6), items track du 20/11 |
-| `scratchpad/diagram-evo/PLAN-r3.md` | lots DE-1 (dont DE-1b), DE-2, E1, E2, H2, N2 ; vagues ; ordre des tags et cascade du workspace ; heures ; risques |
-| `scratchpad/diagram-evo/PLAN.md` | plan r1 (18/11) : DE-1b, mode « sans pli » (`foldable: false`, réserve `66 px`), `compared_panels { sync_headers, sync_rows }`, aides `bracePath` / `rulerPath` (REQ-R7-24, REQ-R7-25, REQ-R7-29) |
-| `scratchpad/diagram-evo/D2D-PIPELINE-DS-ANSWER.md` | état des cibles au 18/11 ; limites de la chaîne v10 |
-| `~/src/h2a/tmp/h-cond/simple-diagrams/ds-position-engine.md` | demandes du kit r7 (note DS du 15/11) |
-| `scratchpad/dossier-iso-r7/DOSSIER.md` | analyse ISO r7 v10 : options A/B/C, coûts, retour arrière, question ouverte |
-| `scratchpad/diagram-evo/REGRESSION-AUDIT-wave1.md` | audit V1 : 60 lignes `W1-01` à `W1-60` |
-| `scratchpad/diagram-evo/WAVE1-TUPLE.md`, `regress-fix.md`, `regress-fix2.md`, `regress-fix3.md` (et `.out`), `refit-unfold.md` | tuple publié V1 ; consignes des correctifs PR #314 (correctifs, extension, reprise de la CI, réajustement au dépli de REQ-R7-30) |
-| `scratchpad/diagram-evo/REQ-SPEC-carbon.md` | revue de la révision r1 (`ACCEPT WITH CHANGES`, 6 constats), intégrée en r2 |
-| `~/src/h2a/tmp/h-cond/simple-diagrams/V7-REPORT.md` | re-rendu h-cond sur le tuple V1 (taux de repli, 38 états de pli) |
-| `~/src/h2a/tmp/h-cond/simple-diagrams/dossier/scenekit/` | dossier h-cond antérieur à v7 : `@sentropic/design-system-svelte 0.41.5` et `@sentropic/diagram-canvas 0.2.5` publiés (`node_modules`, `dist/DiagramSceneFigure.svelte`) ; `src/themes.js` (échelle forcée `0,474`) ; REQ-R7-30 |
-| `scratchpad/framework-decision/framework.decision-dossier.v4.json` | verbatims owner du 12/11 sur les frameworks (contexte de REQ-R7-26) |
-| Dépôt DS (lecture seule) | `origin/main`, `origin/fix/r7-v1-regressions` (PR #314), `origin/feat/diagram-de2` (PR #315), CI des deux PR (`gh pr checks`), tags distants, `.track/events.jsonl` (copie de travail locale) |
+| `OWNER-ADDENDA.md` (notes de vague, dépôt de travail) | verbatims owner 18/11 et 20/11, décisions 19/11, 9 demandes génériques d2d (18/11), relais engram (4 frameworks, emphase G6), items track du 20/11 |
+| `PLAN-r3.md` (notes de vague, dépôt de travail) | lots DE-1 (dont DE-1b), DE-2, E1, E2, H2, N2 ; vagues ; ordre des tags et cascade du workspace ; heures ; risques |
+| `PLAN.md` (notes de vague, dépôt de travail) | plan r1 (18/11) : DE-1b, mode « sans pli » (`foldable: false`, réserve `66 px`), `compared_panels { sync_headers, sync_rows }`, aides `bracePath` / `rulerPath` (REQ-R7-24, REQ-R7-25, REQ-R7-29) |
+| `D2D-PIPELINE-DS-ANSWER.md` (notes de vague, dépôt de travail) | état des cibles au 18/11 ; limites de la chaîne v10 |
+| `ds-position-engine.md` (note DS du 15/11, dossier kits r7) | demandes du kit r7 (note DS du 15/11) |
+| `DOSSIER.md` (notes de vague, dépôt de travail) | analyse ISO r7 v10 : options A/B/C, coûts, retour arrière, question ouverte |
+| `REGRESSION-AUDIT-wave1.md` (notes de vague, dépôt de travail) | audit V1 : 60 lignes `W1-01` à `W1-60` |
+| `WAVE1-TUPLE.md`, `regress-fix.md`, `regress-fix2.md`, `regress-fix3.md` (et `.out`), `refit-unfold.md` (notes de vague, dépôt de travail) | tuple publié V1 ; consignes des correctifs PR #314 (correctifs, extension, reprise de la CI, réajustement au dépli de REQ-R7-30) |
+| Revue indépendante (révision r1, `ACCEPT WITH CHANGES`, 6 constats), intégrée en r2 | revue r1 de cette spécification, deux revues indépendantes (`NOT MERGEABLE`), intégrées en r4 |
+| `V7-REPORT.md` (re-rendu h-cond, dossier kits r7) | re-rendu h-cond sur le tuple V1 (taux de repli, 38 états de pli) |
+| dossier h-cond antérieur à v7 (dossier kits r7) | dossier antérieur à v7 : `@sentropic/design-system-svelte 0.41.5` et `@sentropic/diagram-canvas 0.2.5` publiés (`node_modules`, `dist/DiagramSceneFigure.svelte`) ; `src/themes.js` (échelle forcée `0,474`) ; REQ-R7-30 |
+| `framework.decision-dossier.v4.json` (notes de vague, dépôt de travail) | verbatims owner du 12/11 sur les frameworks (contexte de REQ-R7-26) |
+| Dépôt DS (lecture seule) | `origin/main`, `origin/fix/r7-v1-regressions` (PR #314), `origin/feat/diagram-de2` (PR #315), `origin/feat/diagram-codecs` (PR #317), `origin/feat/diagram-e1` (PR #318), CI des PR (`gh pr checks`), tags distants, `.track/events.jsonl` (copie de travail locale) |
 
 ## Repository state at snapshot
 
 | Item | Fact |
 |---|---|
 | V1 (DE-1) | publiée (tuple ci-dessus) ; PR #308 fusionnée (20/11 02:59 UTC) ; re-rendu h-cond (`V7-REPORT.md`) : 6 figures, 38 états de pli, 130 bascules, PASS |
-| PR #314 `fix/r7-v1-regressions` | ouverte ; head `570093c3a` ; 9 commits : `67a04a3a4` alignement, `4f0d6f792` bouton `+/-` et variables d'en-tête `v2`, `7ddbee6af` tests de zoom, `8d0d72966` versions, puis l'extension demandée le 20/11 (`regress-fix2.md`) : `218145e50` (`W1-02`), `a749e2483` (`W1-12`), `0f8354fd2` (`W1-45`, `W1-56` : surface de zone non héritée), `90aa6dd81` (groupe 5 : `W1-10`, `W1-14`, `W1-19`, `W1-23`, `W1-28`, `W1-31`, `W1-35`, `W1-40`, `W1-46`, `W1-52`, `W1-58`), puis la reprise (`regress-fix3.md`) : `570093c3a` (champs `anchor` des tests d'en-tête, `component-index` régénéré). **CI** : rouge au head `90aa6dd81` (33/36 ; échecs `licensing` sur le `component-index` committé périmé, `verify (check / shard 9)`, `verify (test / shard 2)`), **verte au head `570093c3a` (36/36)**. Vise diagram-canvas 0.3.1, svelte 0.43.1, vue 0.41.0-next.9. **Versions non incrémentées** : diagram-core reste 0.4.0 alors que `view.ts` change ; tokens et themes restent 0.15.0 alors que `component.ts` et les 3 CSS cœur changent (« Cross-cutting known gaps » §1). Corps de PR réécrit le 20/11 (tableau des 26 lignes de l'audit, « Encore différent volontairement », commits par groupe), sans mention de ces bumps |
-| PR #315 `feat/diagram-de2` | ouverte ; head `46463f01c` ; 12 commits (étapes DE-2 1 à 8, cascade, correctifs CI) ; CI 36/36 verte ; vise diagram-core 0.5.0, diagram-canvas 0.4.0, tokens + themes 0.16.0, svelte 0.44.0, vue 0.41.0-next.9 ; ne contient pas les commits de PR #314 |
-| E1, E2, H2, N2 | aucune branche ; aucun tag `diagram-codecs-v*` |
-| `main` | `design-system-svelte` en 0.43.0 (kit de revue, PR #312), sans tag `svelte-v0.43.0` |
-| Track | Items diagrammes recensés (date de création UTC, état de réalisation). **r7 (20/11, `to-do`)** : `01M7WJN7NM6DXX9GSMPCXGZTAR` (centrage `v1`), `01M7WJN7TP4WTKTSK3M0H064EQ` (taille du `+/-`), `01M7WJN7ZTQRQZ441VF9J35599` (zoom et taille maximale), `01M7WJN8595HFTM982VRNHJVYB` (ISO r7 v10). **Antérieurs, liés aux exigences r7** : `01M7H1MQK9CZKY6Z1G2JV3XF45` (16/11, centrage du corps sous le titre, `done`, REQ-R7-06) ; `01M7EGPAJE9KZKJ9E91DKC0F3E` (15/11, publication de `ds-layout-hints@1` par diagram-core, `to-do`, REQ-R7-21) ; `01M77RSBEGJX68Y8P7VMK626GJ` (12/11, bibliothèque diagrammes Vue Vapor P1, `in-progress`, REQ-R7-26) ; `01M77RSBKPZ9458JS0K13D69S7` (12/11, bibliothèque diagrammes Preact+Signals P2, `to-do`, REQ-R7-26). **Autres items diagrammes, hors parcours r7 (12-13/11, `to-do`)** : `01M780VAJXF6KGTM1CPDRMNKGR` (notation `erd@1`), `01M78MWRF2YJXW2NWWWN9X5PFD` et `01M78T94C2Z6NXDBKWD2PRNX9N` (DC-2c), `01M7966970267AAR2ZEX4628TM` (DC-2d), `01M79668YAG5J230DCQCVY7XT3` (inventaire JointJS + GoJS). Aucun item par lot DE-2, E1, E2, H2, N2 ; aucun item Angular diagramme |
+| PR #314 `fix/r7-v1-regressions` | ouverte, tournée de correctifs 4 ; head `2a60db8ee` ; 12 commits : `67a04a3a4` alignement, `4f0d6f792` bouton `+/-` et variables d'en-tête `v2`, `7ddbee6af` tests de zoom, `8d0d72966` versions, puis l'extension demandée le 20/11 (`regress-fix2.md`) : `218145e50` (`W1-02`), `a749e2483` (`W1-12`), `0f8354fd2` (`W1-45`, `W1-56` : surface de zone non héritée), `90aa6dd81` (groupe 5 : `W1-10`, `W1-14`, `W1-19`, `W1-23`, `W1-28`, `W1-31`, `W1-35`, `W1-40`, `W1-46`, `W1-52`, `W1-58`), la reprise (`regress-fix3.md`) : `570093c3a` (champs `anchor` des tests d'en-tête, `component-index` régénéré), puis `d84dc6c8e` (réajustement caméra et hauteur de cadre au pli / dépli sans débordement, REQ-R7-30, tests Svelte et Vue), `0363185c5` (diagram-core 0.4.1 et tokens / themes 0.15.1, cascade du workspace refaite), `2a60db8ee` (survol `+/-` `v1` / `surface1` identique à 0.41.5, `W1-12` limité à `surface2`). **CI** : **verte au head `2a60db8ee` (36/36)**. Vise diagram-canvas 0.3.1, svelte 0.43.1, vue 0.41.0-next.9. Corps de PR réécrit le 20/11 (tableau des 26 lignes de l'audit, « Encore différent volontairement », commits par groupe), qui documente les bumps et REQ-R7-30 |
+| PR #315 `feat/diagram-de2` | ouverte, tournée de correctifs ; head `a64d48116` ; 17 commits (étapes DE-2 1 à 8, cascade, correctifs CI, puis `d937fb1cd` 0 conflit sur tous les états de pli, `36b20c5f1` styles de connecteurs et géométrie au dépli, `8c23d804c` pointes `@4` `arrow | none` et scènes first-paint r7, `60a892b3d` parité Vapor au runtime, `a64d48116` retour des effets de bord non demandés) ; CI en cours à la lecture (anatomy, golden-webgl, plan verts ; design-quality, diagram first paint, vue-matrix, licensing en attente) ; vise diagram-core 0.5.0, diagram-canvas 0.4.0, tokens + themes 0.16.0, svelte 0.44.0, vue 0.41.0-next.9 ; ne contient pas les commits de PR #314 |
+| PR #317 `feat/diagram-codecs` | ouverte (E2) ; head `61c02984b` ; 4 commits propres au-dessus de l'historique DE-2 partagé (`2fc59bee6` paquet neuf, `c3cfe66e1` plomberie publish, `c1fcbfec5` README, `61c02984b` vérifieur smoke) ; CI à la lecture : `licensing` en échec, reste vert ; aucun tag `diagram-codecs-v*` |
+| PR #318 `feat/diagram-e1` | ouverte (E1) ; head `20e3cd129` ; 3 commits propres au-dessus de l'historique DE-2 partagé (`0c5b6ebf4` fixture et doc chaîne, `4f4c9615a` parité 3 cibles, `20e3cd129` pli / dépli vivant canvas, Svelte et Vue) ; CI à la lecture : `verify (test / shard 1)` en échec, reste vert |
+| PR #319 `fix/review-b5-element-anchors` | fusionnée ; merge `4e02910aa` sur `origin/main` ; head de branche `3fe9abc7a` (review-core bumpé 0.1.1, non encore publié) ; `origin/main` au snapshot |
+| H2, N2 | aucune branche ; aucun tag `diagram-codecs-v*` |
+| `main` | `design-system-svelte` 0.43.0 **publié** (tag distant `svelte-v0.43.0`, publish vert) ; `review-core` 0.1.0 **publié** (tag distant `review-core-v0.1.0`) ; review-core 0.1.1 bumpé par la PR #319 fusionnée, **non encore publié** |
+| Track | Items diagrammes recensés (date de création UTC, état de réalisation). **r7 (20/11, `to-do`)** : `01M7WJN7NM6DXX9GSMPCXGZTAR` (centrage `v1`), `01M7WJN7TP4WTKTSK3M0H064EQ` (taille du `+/-`), `01M7WJN7ZTQRQZ441VF9J35599` (zoom et taille maximale), `01M7WJN8595HFTM982VRNHJVYB` (ISO r7 v10), `01M7X6P2X37V4HK1ZPQ7HJZZA9` (REQ-R7-30, débordement au dépliage). **Par exigence (20/11, `to-do`, table « Track trace »)** : 30 items `01M7X7G*` et `01M7WJN*`, un par `REQ-R7-01` à `REQ-R7-30`. **Antérieurs, liés aux exigences r7** : `01M7H1MQK9CZKY6Z1G2JV3XF45` (16/11, centrage du corps sous le titre, `done`, REQ-R7-06) ; `01M7EGPAJE9KZKJ9E91DKC0F3E` (15/11, publication de `ds-layout-hints@1` par diagram-core, `to-do`, REQ-R7-21) ; `01M77RSBEGJX68Y8P7VMK626GJ` (12/11, bibliothèque diagrammes Vue Vapor P1, `in-progress`, REQ-R7-26) ; `01M77RSBKPZ9458JS0K13D69S7` (12/11, bibliothèque diagrammes Preact+Signals P2, `to-do`, REQ-R7-26). **Autres items diagrammes, hors parcours r7 (12-13/11, `to-do`)** : `01M780VAJXF6KGTM1CPDRMNKGR` (notation `erd@1`), `01M78MWRF2YJXW2NWWWN9X5PFD` et `01M78T94C2Z6NXDBKWD2PRNX9N` (DC-2c), `01M7966970267AAR2ZEX4628TM` (DC-2d), `01M79668YAG5J230DCQCVY7XT3` (inventaire JointJS + GoJS). Aucun item par lot DE-2, H2, N2 (E1 et E2 couverts par les PR #318 et #317) ; aucun item Angular diagramme |
 
 ## Index
 
@@ -78,8 +82,8 @@
 | REQ-R7-16 | Pas d'acronyme opaque comme étiquette de zone | DE-2 · V2 | en construction (PR #315) |
 | REQ-R7-17 | Emphase de lien : ensemble fermé, aucune couleur libre | DE-2 · V2 | en construction (PR #315) |
 | REQ-R7-18 | Ajustement à la fenêtre | DE-2 · V2 | en construction (PR #315) |
-| REQ-R7-19 | Chaîne E1 : modèle engram → Svelte / Vue / SVG | E1 · V2 | planifié |
-| REQ-R7-20 | E2 : `@sentropic/diagram-codecs`, export draw.io statique | E2 · V2 | planifié |
+| REQ-R7-19 | Chaîne E1 : modèle engram → Svelte / Vue / SVG | E1 · V2 | en construction (PR #318) |
+| REQ-R7-20 | E2 : `@sentropic/diagram-codecs`, export draw.io statique | E2 · V2 | en construction (PR #317) |
 | REQ-R7-21 | Préférences de placement `ds-layout-hints@2` | H2 · V3 | planifié |
 | REQ-R7-22 | Option de ratio cible 16:9 | H2 · V3 | planifié |
 | REQ-R7-23 | ISO r7 v10 : placement et flèches, en restant repliable | exact : NON PRÉVU · préférences H2 V3 · style des flèches DE-2 V2 | non prévu (exact) ; planifié (préférences) |
@@ -95,15 +99,19 @@
 
 ### Frame
 
+<a id="req-r7-01"></a>
+
 #### REQ-R7-01 — Lancer l'évolution diagrammes r7 au plus vite (temps 1)
 
 - **Owner verbatim (18/11)** : « on en est où du dossier diagramme r7 ; j'aimerais lancer au plus vite l'évolution pour les diagrammes, quitte à faire un complément pour la partie ARD/HLDD ArchiMate dans un temps 2 »
 - **Acceptance criterion** : le temps 1 est livré en trois vagues publiées l'une après l'autre, chacune après un GO owner séparé, sans attendre ArchiMate : V1 (DE-1), V2 (DE-2 + E1 + E2), V3 (H2). Une vague (V1-patch compris) n'est taguée qu'après la cascade du workspace, porte de chaque vague : `spacing.generated.ts` (`scripts/sync-diagram-spacing.mjs`), pins des `~160` consommateurs du workspace, `package-lock.json`, `component-index`, `destinationSha256` de `m1-provenance.json`, artefacts `.graphify` ; ordre des tags `diagram-core-v*` → `diagram-canvas-v*` → `core-v*` (`tokens` + `themes` en lockstep) → `svelte-v*` / `vue-v*-next.*` → `diagram-codecs-v*`, jamais de tag nu `v*` pour Svelte. Après chaque vague, le dossier h-cond est re-rendu sur les versions publiées, contournements retirés (pas de jeton d'échelle, pas d'abus de bordure de zone, pas de légende de page, pas d'états SVG statiques). Un écart restant devient un blocage exact, jamais un correctif de page.
   - *Owner looks at* : le dossier re-rendu de la vague et la note de changement visuel (avant / après) ; la conformité aux exigences de la vague (REQ-R7-04 à REQ-R7-23, REQ-R7-29).
 - **Covering lot / wave** : DE-1 (V1) ; DE-2 + E1 + E2 (V2) ; H2 (V3).
-- **Status** : en construction — V1 fait-publié (tuple V1) ; V1-patch en construction (PR #314, head `570093c3a`) ; V2 en construction (PR #315 pour DE-2 ; E1 et E2 sans code) ; V3 planifié.
-- **Known gaps** : V1 rejetée par l'owner le 20/11 (REQ-R7-07, -08, -09, -23) ; aucun item track par lot ; recouvrement de versions entre PR #314 et PR #315 ; V1-patch non taggable au snapshot : diagram-core, tokens et themes non incrémentés, cascade du workspace à refaire après ces bumps (« Cross-cutting known gaps » §1).
+- **Status** : en construction — V1 fait-publié (tuple V1) ; V1-patch en construction (PR #314, head `2a60db8ee`, CI 36/36) ; V2 en construction (PR #315 pour DE-2, PR #318 pour E1, PR #317 pour E2) ; V3 planifié.
+- **Known gaps** : V1 rejetée par l'owner le 20/11 (REQ-R7-07, -08, -09, -23) ; aucun item track par lot DE-2, H2, N2 ; recouvrement de versions entre PR #314 et PR #315 (`vue 0.41.0-next.9`) ; V1-patch taggable après fusion de PR #314 (bumps diagram-core 0.4.1, tokens et themes 0.15.1 portés par `0363185c5`, cascade refaite) ; PR #317 et #318 branchées sur l'historique DE-2 partagé, à remettre à jour sur `main` après PR #314 et PR #315.
 - **Trace** : `OWNER-ADDENDA.md:2` ; `PLAN-r3.md:71-84` (cascade et tags : `PLAN-r3.md:80-81`).
+
+<a id="req-r7-02"></a>
 
 #### REQ-R7-02 — Complément ArchiMate (ARD/HLDD) en temps 2
 
@@ -117,8 +125,10 @@
   - *Owner looks at* : les vues ArchiMate de référence sur les quatre cibles ; le symbole de chaque relation ; replier une couche.
 - **Covering lot / wave** : N2, V4 (temps 2) ; dépend de DE-2, H2 et E2.
 - **Status** : planifié (60–95 h, à affiner au lancement du temps 2).
-- **Known gaps** : aucun symbole ArchiMate avant N2 (`D2D-PIPELINE-DS-ANSWER.md` (e)) ; icônes limitées aux 8 glyphes génériques gelés, sans icônes éditeur ; PR #315 ajoute déjà `open-triangle` et `filled-triangle` au registre de la vue `@4`, alors que `PLAN-r3.md` réserve les triangles creux à N2 (D-5) ; liste des vues de référence ARD/HLDD : `missing source`.
+- **Known gaps** : aucun symbole ArchiMate avant N2 (`D2D-PIPELINE-DS-ANSWER.md` (e)) ; icônes limitées aux 8 glyphes génériques gelés, sans icônes éditeur ; PR #315 avait ajouté `open-triangle` et `filled-triangle` au registre de la vue `@4` ; la tournée de correctifs les retire (`8c23d804c` : `arrow | none`), les triangles creux restent réservés à N2 (D-5 close) ; liste des vues de référence ARD/HLDD : `missing source`.
 - **Trace** : `PLAN-r3.md:66-69` ; `packages/diagram-core/src/profiles/archimate2.ts:3-4,21-33` ; `packages/diagram-core/src/notation.ts:19`.
+
+<a id="req-r7-03"></a>
 
 #### REQ-R7-03 — Cadrage : parcours diagrammes r7 du DS, d2d utilisateur parmi d'autres
 
@@ -131,6 +141,8 @@
 - **Trace** : `PLAN-r3.md:7` ; `DOSSIER.md` annexe 4.
 
 ### Wave 1 — cards, zones, folding (DE-1 and V1-patch)
+
+<a id="req-r7-04"></a>
 
 #### REQ-R7-04 — Gris alternés un niveau d'imbrication sur deux
 
@@ -146,8 +158,10 @@
   - *Owner looks at* : une figure à 3 niveaux, en clair puis en sombre : blanc / gris clair / blanc ; la même figure après repli d'une zone intermédiaire ; le survol du `+/-` sur une zone grise (REQ-R7-08).
 - **Covering lot / wave** : DE-1, V1 ; effets de bord : V1-patch.
 - **Status** : fait-publié (tokens + themes 0.15.0, diagram-canvas 0.3.0, svelte 0.42.0, vue 0.41.0-next.8) ; effets de bord : régression à corriger (PR #314).
-- **Known gaps** (codés sur PR #314, ni fusionnés ni publiés ; CI : « Repository state at snapshot ») : `W1-12` : `surface2` a exactement la couleur du fond de survol du bouton `+/-`, le survol devient invisible (REQ-R7-08) ; codé au commit `a749e2483` ; `W1-35` : le SVG autonome déclare des valeurs claires en dur qui écrasent un thème sombre hôte ; codé au commit `90aa6dd81` (valeurs limitées à `svg:root`) ; `W1-14` : les 150 thèmes de marque ne publient pas les nouveaux tokens (repli sur les fallbacks) ; `90aa6dd81` ajoute seulement un test de compilation d'un thème de marque (`packages/themes/src/compile.test.ts`), aucun CSS de `packages/theme-*` n'est régénéré. Hors PR : l'écart de luminance entre `#ffffff` et `#f8fafc` en clair est faible : lisibilité de l'alternance à valider à l'œil par l'owner.
+- **Known gaps** (codés sur PR #314, ni fusionnés ni publiés ; CI : « Repository state at snapshot ») : `W1-12` : `surface2` a exactement la couleur du fond de survol du bouton `+/-`, le survol devient invisible (REQ-R7-08) ; codé au commit `a749e2483`, puis `2a60db8ee` restaure le survol `v1` / `surface1` identique à 0.41.5 (`diagram-anatomy.v1.json` 0 diff) et limite `W1-12` à `surface2` ; `W1-35` : le SVG autonome déclare des valeurs claires en dur qui écrasent un thème sombre hôte ; codé au commit `90aa6dd81` (valeurs limitées à `svg:root`) ; `W1-14` : les 150 thèmes de marque ne publient pas les nouveaux tokens (repli sur les fallbacks) ; `90aa6dd81` ajoute seulement un test de compilation d'un thème de marque (`packages/themes/src/compile.test.ts`), aucun CSS de `packages/theme-*` n'est régénéré. Hors PR : l'écart de luminance entre `#ffffff` et `#f8fafc` en clair est faible : lisibilité de l'alternance à valider à l'œil par l'owner.
 - **Trace** : audit `W1-11`, `W1-24`, `W1-25`, `W1-32`, `W1-34` (progrès), `W1-12`, `W1-14`, `W1-35` ; tests `diagramDepthStamping.test.ts:186`, `diagram-parity.test.ts:131`.
+
+<a id="req-r7-05"></a>
 
 #### REQ-R7-05 — Garder le pli/dépli sur le chemin de rendu r7
 
@@ -163,8 +177,10 @@
   - *Owner looks at* : dans le dossier re-rendu, replier puis déplier un conteneur externe d'une figure imbriquée ; mêmes gestes en Svelte et en Vue, à la souris et au clavier (Entrée, Espace).
 - **Covering lot / wave** : chaque lot (DE-1 V1, DE-2 V2, H2 V3, N2 V4).
 - **Status** : fait-publié pour V1 (correctif du pli imbriqué `W1-36` : diagram-canvas 0.3.0, svelte 0.42.0, vue 0.41.0-next.8) ; en construction pour V2 (PR #315).
-- **Known gaps** : la CI DS de PR #315 n'énumère pas les 38 états : elle exige 0 conflit sur 2 états tout-repliés seulement, un par scène h-cond (`architecture`, `ontology`), où `hCondInput(name, true)` replie tous les groupes (`routeSpacing.test.ts:401-405`), sans sous-état ni état partiel, et tolère des conflits `info` à l'état déplié (`routeSpacing.test.ts:407-415`) ; les 38 états ne sont vérifiés que côté h-cond, sur le tuple V1 (`V7-REPORT.md` §3) ; `toDrawio` est statique par conception ; Preact et Angular n'ont aucun composant diagramme (REQ-R7-26).
+- **Known gaps** : la CI DS de PR #315 énumère désormais tous les états de pli visibles des scènes de référence (84 états, déplié compris : `d937fb1cd` exige 0 conflit partout, dont l'état déplié qui tolérait des `info`) ; les 38 états de l'ensemble h-cond de référence restent vérifiés côté h-cond, sur le tuple V1 (`V7-REPORT.md` §3) ; `toDrawio` est statique par conception ; Preact et Angular n'ont aucun composant diagramme (REQ-R7-26).
 - **Trace** : `PLAN-r3.md:8,19,38` ; tests `DiagramSceneFigure.test.ts:823` (Svelte), `diagram-parity.test.ts:493` (Svelte et Vue), `diagramAnatomyV2.test.ts:433` (canvas), `linkLegend.test.ts` (PR #315).
+
+<a id="req-r7-06"></a>
 
 #### REQ-R7-06 — Carte compacte et corps centré sous le titre
 
@@ -181,11 +197,13 @@
 - **Covering lot / wave** : DE-1, V1 ; défaut de création de vue : V1-patch.
 - **Status** : fait-publié (diagram-core 0.4.0 pour `diagram-presentation@2`, diagram-canvas 0.3.0, svelte 0.42.0, vue 0.41.0-next.8) ; défaut `createView()` : régression à corriger (PR #314).
 - **Known gaps** :
-  - `W1-02` : en 0.4.0, `DEFAULT_PRESENTATION` porte `anatomy: "v2"`, donc toute vue créée par `createView()` sans `presentation` (y compris `erd.ts`) passe en compact. Codé sur PR #314 au commit `218145e50` (`DEFAULT_PRESENTATION` = `{ camera }` sans `anatomy`, `v2` en opt-in explicite), ni fusionné ni publié ; diagram-core reste 0.4.0 alors que `view.ts` change (patch 0.4.1 requis, « Cross-cutting known gaps » §1) ; le correctif retient l'option « opt-in explicite » de D-2, à valider par l'owner.
+  - `W1-02` : en 0.4.0, `DEFAULT_PRESENTATION` porte `anatomy: "v2"`, donc toute vue créée par `createView()` sans `presentation` (y compris `erd.ts`) passe en compact. Codé sur PR #314 au commit `218145e50` (`DEFAULT_PRESENTATION` = `{ camera }` sans `anatomy`, `v2` en opt-in explicite), ni fusionné ni publié ; diagram-core 0.4.1 porté par `0363185c5` (cascade refaite) ; le correctif retient l'option « opt-in explicite » de D-2, à valider par l'owner.
   - Taux de repli non nul : 26 cartes sur 39 basculent en `460 × 200` sur les six figures h-cond (`V7-REPORT.md` §2). Cause : `v2` garde les polices de `v1` (22 / 32 / 24 px) et il manque `0,5625 px` pour deux lignes de corps sous un sur-titre. Aucun lot ne le traite (à ajouter, décision D-9).
   - Centrage du titre en `v2` : `PLAN-r3.md` DE-1 fixe `align` par défaut à `center` en `v2` ; PR #314 le rend opt-in (`align: "center"` explicite). Décision D-1.
   - `W1-09` : taille relative du `+/-` en `v2` (REQ-R7-08) ; `W1-10` : retrait corps / icône inversé en `v2`, codé au commit `90aa6dd81` (token `diagramCardCompact.bodyInsetFromBar` à `10px` dans `component.ts` et les 3 CSS cœur, tokens et themes non incrémentés).
 - **Trace** : track `01M7H1MQK9CZKY6Z1G2JV3XF45` ; audit `W1-01`, `W1-04`, `W1-05`, `W1-08`, `W1-15`, `W1-18`, `W1-20`, `W1-22`, `W1-29`, `W1-30`, `W1-33` (progrès), `W1-02`, `W1-09`, `W1-10` ; `PLAN-r3.md:17-19`.
+
+<a id="req-r7-07"></a>
 
 #### REQ-R7-07 — Pas de centrage sur les cartes complètes
 
@@ -197,9 +215,11 @@
   4. `diagram-anatomy.v1.json` : 0 diff face au tag `diagram-canvas-v0.2.5` ; golden `v2` régénéré avec `anchor: "start"` sur `fallback-v1`.
   - *Owner looks at* : dans une figure compacte, une carte longue (sur-titre et corps sur 2 lignes) qui passe en `460 × 200` : titre à gauche comme avant ; la même carte en Svelte et en Vue.
 - **Covering lot / wave** : V1-patch (PR #314), hors `PLAN-r3.md`.
-- **Status** : régression à corriger (PR #314) — corrigé au commit `67a04a3a4` (`W1-16`, `W1-17`, `W1-37`, `W1-39`, `W1-43`, `W1-51`, `W1-54`) ; ni fusionné ni publié (PR au head `570093c3a`, CI : « Repository state at snapshot » ; cible diagram-canvas 0.3.1, svelte 0.43.1, vue 0.41.0-next.9).
+- **Status** : régression à corriger (PR #314) — corrigé au commit `67a04a3a4` (`W1-16`, `W1-17`, `W1-37`, `W1-39`, `W1-43`, `W1-51`, `W1-54`) ; ni fusionné ni publié (PR au head `2a60db8ee`, CI 36/36 : « Repository state at snapshot » ; cible diagram-canvas 0.3.1, svelte 0.43.1, vue 0.41.0-next.9).
 - **Known gaps** : PR #315 ne contient pas ce correctif : la fusionner avant PR #314 republierait la régression ; collision sur `vue 0.41.0-next.9`.
 - **Trace** : track `01M7WJN7NM6DXX9GSMPCXGZTAR` ; tests `DiagramCard.test.ts` (« never applies st-diagramCard--center on v1, fallback-v1, or unaligned v2 cards … »), `DiagramZone.test.ts`, `diagramAlign.test.ts`, `diagramAnatomyV2.test.ts` (« fall back per box to frozen v1 keeping the full body and 0.41.5 alignment … »).
+
+<a id="req-r7-08"></a>
 
 #### REQ-R7-08 — Bouton `+/-` inchangé, y compris son survol « bouton classique »
 
@@ -211,9 +231,11 @@
   4. sur les cartes compactes `v2`, taille apparente du `+/-` validée par l'owner (D-3).
   - *Owner looks at* : survoler le `+/-` d'une zone grise puis d'une zone blanche, en clair puis en sombre ; comparer la taille du `+/-` avec une capture 0.41.5 de la même figure.
 - **Covering lot / wave** : V1-patch (PR #314).
-- **Status** : régression à corriger (PR #314) — taille et placement `v1` (`W1-44`, `W1-55`) et isolation des variables d'en-tête `v2` (`W1-45`, `W1-56`, partie en-tête) corrigés au commit `4f0d6f792` ; la surface `--st-component-diagramZone-surface` restait posée en variable héritée sur la racine de zone, donc héritée par les enfants, jusqu'au commit `0f8354fd2` (`W1-45`, `W1-56`, partie surface : fond non hérité) ; survol (`W1-12`) codé au commit `a749e2483` ; position verticale (`W1-46`, `W1-58`) codée au commit `90aa6dd81` ; ni fusionné ni publié.
-- **Known gaps** : `W1-12` : survol invisible en 0.42.0 (`#f8fafc` sur `#f8fafc` en clair, `oklch(19% 0.014 250)` sur lui-même en sombre) ; `a749e2483` passe le survol du `+/-` sur `--st-component-button-secondaryHoverBackground` (`#e2e8f0` en clair, `oklch(28% 0.014 250)` en sombre) avec la bordure `--st-component-control-border` : rendu à valider par l'owner face au « bouton classique » de 0.41.5 ; `W1-09` : en `v2`, le `+/-` garde 32 px sur une carte réduite d'environ 23 % et le zoom de fit monte jusqu'à +30 %, il paraît donc plus grand ; la consigne actuelle est de le garder et de le faire valider par l'owner ; `W1-46` / `W1-58` : la position verticale ne dépend plus d'une variable CSS héritée (calcul depuis `headerInset` / `toggleTopOffset`, `90aa6dd81`).
+- **Status** : régression à corriger (PR #314) — taille et placement `v1` (`W1-44`, `W1-55`) et isolation des variables d'en-tête `v2` (`W1-45`, `W1-56`, partie en-tête) corrigés au commit `4f0d6f792` ; la surface `--st-component-diagramZone-surface` restait posée en variable héritée sur la racine de zone, donc héritée par les enfants, jusqu'au commit `0f8354fd2` (`W1-45`, `W1-56`, partie surface : fond non hérité) ; survol (`W1-12`) codé au commit `a749e2483`, puis `2a60db8ee` restaure le survol `v1` / `surface1` identique à 0.41.5 ; position verticale (`W1-46`, `W1-58`) codée au commit `90aa6dd81` ; ni fusionné ni publié.
+- **Known gaps** : `W1-12` : survol invisible en 0.42.0 (`#f8fafc` sur `#f8fafc` en clair, `oklch(19% 0.014 250)` sur lui-même en sombre) ; `a749e2483` passe le survol du `+/-` sur `--st-component-button-secondaryHoverBackground` (`#e2e8f0` en clair, `oklch(28% 0.014 250)` en sombre) avec la bordure `--st-component-control-border`, puis `2a60db8ee` restaure le survol `v1` / `surface1` identique à 0.41.5 (`diagram-anatomy.v1.json` 0 diff) et limite le nouveau survol à `surface2` : rendu `surface2` à valider par l'owner face au « bouton classique » de 0.41.5 ; `W1-09` : en `v2`, le `+/-` garde 32 px sur une carte réduite d'environ 23 % et le zoom de fit monte jusqu'à +30 %, il paraît donc plus grand ; la consigne actuelle est de le garder et de le faire valider par l'owner ; `W1-46` / `W1-58` : la position verticale ne dépend plus d'une variable CSS héritée (calcul depuis `headerInset` / `toggleTopOffset`, `90aa6dd81`).
 - **Trace** : track `01M7WJN7TP4WTKTSK3M0H064EQ` ; tests `DiagramZone.test.ts` (« pins v1 card and zone fold toggle placement and size to 0.41.5 … »), `diagram-parity.test.ts` (« pin v1 expanded zone header inset and toggle geometry to 0.41.5 / next.7 … »), `diagramAnatomyV2.test.ts` (« pin v1 and fallback-v1 fold toggle size and placement … ») ; tests ajoutés par `a749e2483` (survol, 3 thèmes, clair et sombre, Svelte et Vue) et `0f8354fd2` (composition imbriquée sans fuite de surface ni de variable d'en-tête, Svelte et Vue).
+
+<a id="req-r7-09"></a>
 
 #### REQ-R7-09 — Taille maximale de la figure et zoom inchangés
 
@@ -226,9 +248,11 @@
   5. valeurs identiques à svelte 0.41.5 et vue 0.41.0-next.7, épinglées par test.
   - *Owner looks at* : la même figure en 0.41.5 et après correctif, à `1440 × 900` : même hauteur de cadre, même taille de carte au zoom maximal.
 - **Covering lot / wave** : V1-patch (PR #314).
-- **Status** : régression à corriger (PR #314) — tests d'épinglage ajoutés au commit `7ddbee6af` (Svelte, Vue, canvas) ; cause racine `W1-02` codée au commit `218145e50` (`createView()` revient en `v1`, tests d'épinglage en diagram-core, canvas, Svelte et Vue) ; ni fusionné ni publié ; diagram-core non incrémenté (0.4.0, patch 0.4.1 requis).
+- **Status** : régression à corriger (PR #314) — tests d'épinglage ajoutés au commit `7ddbee6af` (Svelte, Vue, canvas) ; cause racine `W1-02` codée au commit `218145e50` (`createView()` revient en `v1`, tests d'épinglage en diagram-core, canvas, Svelte et Vue) ; ni fusionné ni publié ; diagram-core 0.4.1 porté par `0363185c5` (cascade refaite).
 - **Known gaps** : `W1-02` (REQ-R7-06) ; pour les vues compactes voulues, `0.62`, calibré pour `460 × 200`, plafonne la carte compacte à `218 × 95 px` CSS : calibrage `v2` à décider (D-3, `W1-13`) ; échelles relevées par h-cond sur le tuple V1 : 0,568 à 0,62 à 1440 px, 0,45 à 390 px.
 - **Trace** : track `01M7WJN7ZTQRQZ441VF9J35599` ; tests « pin v1 figure max size and zoom bounds … to 0.41.5 values » dans `DiagramSceneFigure.test.ts`, `diagram-parity.test.ts`, `diagramSceneModel.test.ts` ; audit `W1-02`, `W1-13`.
+
+<a id="req-r7-10"></a>
 
 #### REQ-R7-10 — Titre sur une ligne, icône optionnelle sans perte de texte, débordement signalé
 
@@ -241,8 +265,10 @@
   - *Owner looks at* : une carte à titre long, avec puis sans icône : titre entier, ou débordement signalé ; une carte repliée proprement en `460 × 200` : aucune marque de débordement.
 - **Covering lot / wave** : DE-1, V1 ; effets de bord : V1-patch.
 - **Status** : fait-publié (diagram-canvas 0.3.0, svelte 0.42.0, vue 0.41.0-next.8 ; h-cond : 0 texte coupé, 45 icônes visibles sur les 6 figures) ; effets de bord : régression à corriger (PR #314).
-- **Known gaps** : `W1-19` / `W1-40` / `W1-52` : `data-card-overflow` posé sur une carte `fallback-v1` sans troncature ; `W1-23` : sous-titre de zone repliée `v2` plus étroit (288 px), donc plus de replis ; `W1-31` : clés de légende figées à 428 px en `v2`. Toutes ces lignes sont codées sur PR #314 au commit `90aa6dd81` (diagnostic `info` `fallback-v1` conservé sans attribut `data-card-overflow` / `data-zone-overflow` ; sous-titre de zone repliée `v2` porté à 304 px ; clés de légende dimensionnées par `cardWidthOf`), ni fusionnées ni publiées.
+- **Known gaps** : `W1-19` / `W1-40` / `W1-52` : `data-card-overflow` posé sur une carte `fallback-v1` sans troncature ; `W1-23` : sous-titre de zone repliée `v2` plus étroit (288 px), donc plus de replis ; `W1-31` : clés de légende figées à 428 px en `v2`. Toutes ces lignes sont codées sur PR #314 au commit `90aa6dd81` (diagnostic `info` `fallback-v1` conservé sans attribut `data-card-overflow` / `data-zone-overflow` ; sous-titre de zone repliée `v2` porté à 304 px ; clés de légende dimensionnées par `cardWidthOf`), incluses dans le head `2a60db8ee`, ni fusionnées ni publiées.
 - **Trace** : audit `W1-15`, `W1-18`, `W1-25` (a), `W1-41`, `W1-53` (progrès) ; `PLAN-r3.md:17`.
+
+<a id="req-r7-29"></a>
 
 #### REQ-R7-29 — Libellé d'inclusion localisable dans le texte de repli (DE-1b)
 
@@ -258,11 +284,13 @@
 - **Known gaps** : `W1-28` publié en V1 : rupture TypeScript pour un `DiagramSceneFigureLabels` typé sans `contains`, et une relation raffinée (`owns`) affichée sous le libellé générique ; le critère 3 n'est atteint que sur PR #314.
 - **Trace** : `PLAN.md:47-49` ; `PLAN-r3.md:17-18,20,97` ; audit `W1-47`, `W1-59` (progrès), `W1-28` (effet de bord) ; tests `DiagramSceneFigure.test.ts:809` (Svelte), `diagram-parity.test.ts:610` (Vue), `diagramAnatomyV2.test.ts:678,742` (canvas) ; test `W1-28` ajouté par `90aa6dd81` dans `diagramAnatomyV2.test.ts` (« refined subtype "owns" keeps its own type name »).
 
+<a id="req-r7-30"></a>
+
 #### REQ-R7-30 — Aucun débordement au dépliage : la figure se réajuste
 
 - **Owner verbatim (20/11, 14:10, `OWNER-ADDENDA.md:37`)** : « j'espère que tu auras pas oublié les contraintes de type : je veux pas d'overflow (faut resizer le diag quand on déplie ... régression supplémentaire) »
 - **Relayed (note DS, 20/11, `OWNER-ADDENDA.md:38`)** : *"Requirement: unfolding a zone never leaves part of the figure outside the frame; the figure refits (resizes) to show the whole unfolded diagram, folding refits back."*
-- **Acceptance criterion** : sur toute figure r7 (`DiagramSceneFigure`, Svelte et Vue) dont la caméra est au fit avant la bascule (aucun zoom explicite depuis le montage ou le dernier `0`), après chaque pli ou dépli, une fois la transition terminée (240 ms ; immédiatement sous reduced-motion) :
+- **Acceptance criterion** : sur toute figure r7 (`DiagramSceneFigure`, Svelte et Vue), après **chaque** pli ou dépli, une fois la transition terminée (240 ms ; immédiatement sous reduced-motion) — sans condition de caméra au fit avant la bascule : un zoom explicite posé avant la bascule est remis à zéro (« may be kept only until the next fold toggle », `refit-unfold.md`) :
   1. aucune partie hors du cadre : la boîte englobante peinte (cartes, zones, ports, liens et libellés ; légende à partir de V2, REQ-R7-12), mesurée dans le DOM, tient dans la zone visible du cadre à 0,5 px CSS près (tolérance de `scenePlacement`) ; aucune barre de défilement ; `data-pans="false"` ;
   2. réajustement dans les deux sens : le zoom appliqué (`data-zoom`) est le fit de cette boîte, soit le plus grand zoom, au plus `0,62` et au quantum `0,001`, qui la fait tenir dans le cadre maximal ; la hauteur du cadre est celle de la boîte à ce zoom, encart de 1 px de chaque côté compris, plafonnée au cadre maximal, à 1/64 px près (`cameraFit`) ; au repli : ni bande vide, ni zoom resté à celui de l'état déplié ;
   3. bornes de 0.41.5 inchangées (REQ-R7-09) : zoom de `0,45` à `0,62`, cadre maximal `min(largeur × 9/16, 0,85 × hauteur de fenêtre)` ; seule exception au critère 1 : un état dont le fit tomberait sous `0,45` reste à `0,45` et défile depuis son début (`cameraFit`), l'étendue de défilement couvrant toute la boîte peinte, sans partie inaccessible ;
@@ -270,18 +298,20 @@
   5. au re-rendu h-cond du correctif, à `1440 × 900` : 0 partie hors du cadre dans les 38 états de pli des six figures de référence, hors états dont le fit tombe sous `0,45` (listés dans le rapport).
   - *Owner looks at* : à `1440 × 900`, en Svelte puis en Vue, une figure imbriquée de référence au fit : déplier sa plus grande zone : toute la figure reste visible dans le cadre, sans carte ni lien coupé au bord et sans barre de défilement ; la replier : la figure se resserre sur le contenu replié, sans bande vide ; à `390 × 844`, la figure défile (plancher `0,45`) sans partie inaccessible.
 - **Covering lot / wave** : correctif 0.42.1 (PR #314), vague V1-patch, hors `PLAN-r3.md`.
-- **Status** : régression à corriger (PR #314) — régression signalée par l'owner le 20/11 à 14:10, absente des 60 lignes de `REGRESSION-AUDIT-wave1.md` ; aucun commit de correctif ni test sur PR #314 au head `570093c3a` (branche locale et `origin/fix/r7-v1-regressions`, lues à 14:38 EST ; modifications non committées dans le worktree de la PR à cette heure) ; consigne de correctif : `refit-unfold.md` (20/11).
+- **Status** : régression à corriger (PR #314) — régression signalée par l'owner le 20/11 à 14:10, absente des 60 lignes de `REGRESSION-AUDIT-wave1.md` ; correctif codé au commit `d84dc6c8e` (« refit camera and frame height on fold/unfold without overflow »), avec tests Svelte et Vue épinglés par hôte, inclus dans le head `2a60db8ee`, ni fusionné ni publié ; consigne de correctif : `refit-unfold.md` (20/11).
 - **Known gaps** :
-  - Règle Z-7, antérieure à V1 : à chaque bascule de pli, l'hôte fige le zoom courant (Svelte `toggleFold` : `requestedZoom = zoom`, `atFit = false` ; Vue : `holdZoom`, `useDiagramSceneViewport.ts`, lu sur la branche de PR #315) ; ce zoom reste tant qu'il est dans la nouvelle plage, et la figure dépliée défile jusqu'au bouton `0`. Sur la branche de PR #315, le test Svelte « Z-7 a fold relayout reclamps the zoom into the new range; a zoom inside the range is preserved » l'épingle (« The cap is inside the unfolded range: preserved, the drawing now pans. »). svelte 0.41.5 publié a la même règle (`dist/DiagramSceneFigure.svelte:873-875`, aucun autre retour au fit que le changement de document et le bouton `0`) et `camera.ts` est inchangé de diagram-canvas 0.2.5 à 0.3.0 (`W1-13`) : le correctif change la règle Z-7, il ne rétablit pas un comportement de 0.41.5, contrairement à la prémisse de `refit-unfold.md` ; il est à classer « progrès demandé (REQ-R7-30) » dans l'audit de V1-patch (REQ-R7-28), test Z-7 modifié compris ; vue 0.41.0-next.7 non lu (`unverified`).
+  - Règle Z-7, antérieure à V1 : à chaque bascule de pli, l'hôte fige le zoom courant (Svelte `toggleFold` : `requestedZoom = zoom`, `atFit = false` ; Vue : `holdZoom`, `useDiagramSceneViewport.ts`, lu sur la branche de PR #315) ; ce zoom reste tant qu'il est dans la nouvelle plage, et la figure dépliée défile jusqu'au bouton `0`. Sur la branche de PR #315, le test Svelte « Z-7 a fold relayout reclamps the zoom into the new range; a zoom inside the range is preserved » l'épingle (« The cap is inside the unfolded range: preserved, the drawing now pans. »). svelte 0.41.5 publié a la même règle (`dist/DiagramSceneFigure.svelte:873-875`, aucun autre retour au fit que le changement de document et le bouton `0`) et `camera.ts` est inchangé de diagram-canvas 0.2.5 à 0.3.0 (`W1-13`) : le correctif (`d84dc6c8e`) change la règle Z-7, il ne rétablit pas un comportement de 0.41.5, contrairement à la prémisse de `refit-unfold.md` ; il est à classer « progrès demandé (REQ-R7-30) » dans l'audit de V1-patch (REQ-R7-28), test Z-7 modifié compris ; vue 0.41.0-next.7 non lu (`unverified`). Décision D-11.
   - Écart perçu par l'owner (« régression supplémentaire ») : cause `unverified`. Faits : le dossier h-cond antérieur à v7 (svelte 0.41.5) fixait `maxDisplayScale` et `minReadableScale` à `0,474` (`dossier/scenekit/src/themes.js:9,14`), plage de zoom réduite à un point ; v7 retire ce forçage (`V7-REPORT.md` §1) ; à `1440` px, 4 des 6 figures y sont au plafond `0,62` dans leur état par défaut (§2), zoom que la règle Z-7 garde au dépli.
-  - Zoom explicite avant la bascule : règle à valider par l'owner : réajuster à chaque bascule (`refit-unfold.md` : *"may be kept only until the next fold toggle"*) ou garder la règle Z-7.
+  - Zoom explicite avant la bascule : la règle retenue est le réajustement à chaque bascule (`refit-unfold.md` : *"may be kept only until the next fold toggle"*), codé par `d84dc6c8e` ; garder la règle Z-7 reste l'option alternative (D-11), à valider par l'owner.
   - Plancher `0,45` : à `390 × 844`, les six figures de référence sont déjà à `0,45` dans leur état par défaut (`V7-REPORT.md` §2) : le critère 1 n'y est pas atteignable dans les bornes de REQ-R7-09 ; défilement sans partie inaccessible, à valider par l'owner face à « je veux pas d'overflow ».
   - La CI DS ne couvrira que la plus grande zone d'une scène de référence (consigne `refit-unfold.md`) ; les 38 états ne sont vérifiés qu'au re-rendu h-cond (critère 5, comme REQ-R7-05).
   - PR #315 ne contient pas les commits de PR #314 (« Cross-cutting known gaps » §1) : critère à re-vérifier en V2 après sa remise à jour sur `main`, légende (REQ-R7-12) et `fitToWindow` (REQ-R7-18) compris.
-  - Lot : « correctif 0.42.1 » est le nom du patch V1 dans l'audit (`REGRESSION-AUDIT-wave1.md:25-26`) ; PR #314 vise svelte 0.43.1 (« Cross-cutting known gaps » §2).
+  - Lot : « correctif 0.42.1 » est le nom du patch V1 dans l'audit (`REGRESSION-AUDIT-wave1.md:25-26`) ; PR #314 vise svelte 0.43.1 ; le correctif change la règle Z-7 en « progrès demandé (REQ-R7-30) », à classer au GO de V1-patch (REQ-R7-28).
 - **Trace** : `OWNER-ADDENDA.md:36-38` ; track `01M7X6P2X37V4HK1ZPQ7HJZZA9` (créé le 20/11 à 19:24 UTC, `bug`, *"r7 regression: unfolding must never overflow — the figure refits (resizes) to show the whole unfolded diagram"*, `to-do` : aucune transition dans `.track/events.jsonl`) ; `refit-unfold.md` ; `packages/diagram-canvas/src/camera.ts` (`fitBox`, `cameraFit`) ; `scenePlacement` (`packages/diagram-canvas/src/presentation/diagramSceneModel.ts`) ; attributs `data-zoom`, `data-zoom-readout` et `data-pans` des deux hôtes ; test Z-7 de `DiagramSceneFigure.test.ts` (Svelte) ; exigences liées : REQ-R7-05, REQ-R7-09, REQ-R7-12, REQ-R7-18.
 
 ### Wave 2 — links, chain, export (DE-2, E1, E2)
+
+<a id="req-r7-11"></a>
 
 #### REQ-R7-11 — Coudes arrondis et flèches plus épaisses
 
@@ -296,8 +326,10 @@
   - *Owner looks at* : la même figure avant / après : coudes arrondis, traits plus épais, flèches au contact des cartes, pliée et dépliée.
 - **Covering lot / wave** : DE-2, V2.
 - **Status** : en construction (PR #315, étapes 1 à 3 ; CI verte ; non publiée).
-- **Known gaps** : le registre est livré avec 4 pointes (`arrow | filled-triangle | open-triangle | none`) au lieu des 2 du plan (`arrow | none`) : écart au plan (D-5) ; PR #315 ne modifie pas `tools/diagram-first-paint/fixtures.js` : les 3 scènes r7 manquent (critère 6 non atteint) ; les chemins sont routés : tracé identique à la référence r7 v10 non garanti (REQ-R7-23) ; changement visible sur toutes les figures existantes (progrès demandé, à présenter selon REQ-R7-27) ; aucun audit de régression V2 (REQ-R7-28).
+- **Known gaps** : le registre est réduit aux 2 pointes du plan (`arrow | none`, `8c23d804c`) : D-5 close ; les 3 scènes first-paint r7 sont ajoutées (`8c23d804c` :critère 6 atteint sur PR #315, CI en cours) ; les chemins sont routés : tracé identique à la référence r7 v10 non garanti (REQ-R7-23) ; changement visible sur toutes les figures existantes (progrès demandé, à présenter selon REQ-R7-27) ; aucun audit de régression V2 (REQ-R7-28).
 - **Trace** : `PLAN-r3.md:28-31,38-39` ; sur PR #315 : `packages/diagram-core/src/connector-registry.ts:13` (`STROKE_STYLES` = `solid | dashed | dotted`), `packages/tokens/src/component.ts:1978` (`edgeLabelSize: "18px"`), `packages/diagram-core/schemas/diagram-view-schema-3.{json,sha256}` sans diff face à `origin/main` ; test `connectorPath.test.ts:79`.
+
+<a id="req-r7-12"></a>
 
 #### REQ-R7-12 — Légende automatique ancrée à droite
 
@@ -308,6 +340,8 @@
 - **Status** : en construction (PR #315, étape 4).
 - **Known gaps** : suivi de la légende sur les 38 états de référence non vérifié en CI DS ; la légende de page du dossier h-cond reste à retirer au re-rendu V2.
 - **Trace** : `PLAN-r3.md:32` ; tests `linkLegend.test.ts`, `DiagramSceneFigure.connectors.test.ts:146` (PR #315).
+
+<a id="req-r7-13"></a>
 
 #### REQ-R7-13 — Espacement minimal entre routes et contrôle géométrique intégré
 
@@ -320,8 +354,10 @@
   - *Owner looks at* : sur les figures de référence, aucune paire de liens collés ou superposés, dans chaque état de pli ; le compteur de conflits à 0 dans le rapport de vague.
 - **Covering lot / wave** : DE-2, V2.
 - **Status** : en construction (PR #315, étape 5).
-- **Known gaps** : la porte à 0 conflit ne couvre que 2 états tout-repliés, un par scène h-cond, tous groupes repliés (`routeSpacing.test.ts:401-405`), ni sous-états ni les 38 états ; à l'état déplié, les conflits sont tolérés en `info` (`routeSpacing.test.ts:407-415`) : le critère 3 n'est pas atteint ; la capacité d'un canal est finie (2 à 3 voies dans 72–96 px, risque 1 de `PLAN-r3.md`).
+- **Known gaps** : la porte à 0 conflit couvre désormais tous les états de pli visibles des scènes de référence (84 états, déplié compris : `d937fb1cd`) : critère 3 atteint sur PR #315, CI en cours ; la capacité d'un canal est finie (2 à 3 voies dans 72–96 px, risque 1 de `PLAN-r3.md`).
 - **Trace** : `PLAN-r3.md:33,39,89`.
+
+<a id="req-r7-14"></a>
 
 #### REQ-R7-14 — Une seule gouttière entre zones sœurs
 
@@ -332,6 +368,8 @@
 - **Status** : en construction (PR #315, étape 6).
 - **Known gaps** : la géométrie des figures existantes change visiblement (les canaux s'élargissent aujourd'hui jusqu'à 240 px) ; oracles `dc2a` et `m1d` régénérés : changements à présenter (REQ-R7-27).
 - **Trace** : `PLAN-r3.md:34` ; test `routeSpacing.test.ts:419`.
+
+<a id="req-r7-15"></a>
 
 #### REQ-R7-15 — Sens des flèches : la source est l'initiateur de l'action
 
@@ -347,6 +385,8 @@
 - **Known gaps** : indécidable sans marqueur sémantique : sans métadonnée d'initiateur (déclaration par engram `unverified`), aucun contrôle ; le sens des flèches de la référence r7 v10 n'est pas vérifié automatiquement.
 - **Trace** : `PLAN-r3.md:35` ; sur PR #315 : `packages/diagram-canvas/README.md:441-450`, `packages/diagram-canvas/src/layout/conventions.ts:44-53,177-211`, `conventions.test.ts:151`.
 
+<a id="req-r7-16"></a>
+
 #### REQ-R7-16 — Pas d'acronyme opaque comme étiquette de zone
 
 - **Relayed (d2d-cond, 18/11, demande 6)** : *"No opaque acronym as zone tag; acronym only with its label."*
@@ -356,6 +396,8 @@
 - **Status** : en construction (PR #315, étape 7).
 - **Known gaps** : opt-in et non bloquant : sans activation par la page ou par la chaîne E1, rien n'empêche un sigle opaque.
 - **Trace** : `PLAN-r3.md:36`.
+
+<a id="req-r7-17"></a>
 
 #### REQ-R7-17 — Emphase de lien : ensemble fermé, aucune couleur libre
 
@@ -371,6 +413,8 @@
 - **Known gaps** : un seul niveau d'emphase ; décision portée par le conducteur engram, sans verbatim owner.
 - **Trace** : `OWNER-ADDENDA.md:28-29`.
 
+<a id="req-r7-18"></a>
+
 #### REQ-R7-18 — Ajustement à la fenêtre (pages hôtes et pages de comparaison)
 
 - **Relayed (d2d-cond, 18/11, demande 9)** : *"Host/comparison pages: fit to window by default (max-height calc(100vh - 24px), max-width 100%, centred)."*
@@ -383,6 +427,8 @@
 - **Known gaps** : la demande dit « by default » ; seul le défaut des pages hôtes DS change, chaque page consommatrice doit activer la prop.
 - **Trace** : `PLAN-r3.md:37`.
 
+<a id="req-r7-19"></a>
+
 #### REQ-R7-19 — Chaîne E1 : modèle projeté engram → placement → Svelte / Vue / SVG
 
 - **Owner decision (19/11, consignée en anglais, `OWNER-ADDENDA.md:22`)** : *"Publication: E1 (engram model -> Svelte/Vue/SVG) and E2 (draw.io export) ship WITH the DE-2 wave."*
@@ -393,9 +439,11 @@
   4. aucun script local de placement ou de rendu ; aucune dépendance à `engram`, ni au runtime ni en test.
   - *Owner looks at* : la même scène côte à côte en Svelte, Vue et SVG : mêmes positions, mêmes liens ; replier une zone en Svelte puis en Vue.
 - **Covering lot / wave** : E1, V2 (avec DE-2).
-- **Status** : planifié (12–18 h ; aucune branche ni commit au snapshot).
+- **Status** : en construction (PR #318, head `20e3cd129` ; CI à la lecture : `verify (test / shard 1)` en échec, reste vert ; non publiée).
 - **Known gaps** : sous `@1`, seul `auto-pack` s'exécute sur une vue projetée typée : placement en rangées, pas ISO (REQ-R7-23) ; Vue reste sur le tag `next` ; la qualification du rendu SVG statique (5e lot de la note DS du 15/11) n'a pas de critère propre et est rattachée ici.
 - **Trace** : `PLAN-r3.md:44-48` ; `D2D-PIPELINE-DS-ANSWER.md` (e).
+
+<a id="req-r7-20"></a>
 
 #### REQ-R7-20 — E2 : paquet `@sentropic/diagram-codecs`, export draw.io statique
 
@@ -407,11 +455,13 @@
   4. l'export d'un état replié et celui d'un état déplié sont tous deux valides ; l'export est statique : un seul état de vue, ni pli vivant, ni relayout.
   - *Owner looks at* : ouvrir l'export de la fixture E1 dans draw.io : formes éditables, imbrication correcte, liens connectés.
 - **Covering lot / wave** : E2, V2 (avec DE-2).
-- **Status** : planifié (20–30 h, `unverified` ; aucune branche, aucun tag `diagram-codecs-v*`).
+- **Status** : en construction (PR #317, head `61c02984b` ; CI à la lecture : `licensing` en échec, reste vert ; aucun tag `diagram-codecs-v*` ; heures 20–30 h, `unverified`).
 - **Known gaps** : premier publish : jeton npm temporaire fourni par l'owner, puis déclaration 2FA du trusted publisher sur le paquet créé, puis publish OIDC `0.1.1` sous 48 h ; `PLAN-r3.md:82` prévoit de publier le reste de V2 sans E2 si le jeton manque au GO, ce qui s'écarte de la décision « with the DE-2 wave » (D-6) ; arête `["diagram-codecs", "diagram-canvas"]` à ajouter au DAG d'architecture ; E2 ne s'arrête pas à V2 : le pin exact sur `@sentropic/diagram-canvas` (`verify-deps-published.test.mjs:57-62,107`) impose en V3 un patch obligatoire `diagram-codecs 0.1.1 → 0.1.2` re-épinglé sur `diagram-canvas 0.5.0`, avec son tag `diagram-codecs-v*` (REQ-R7-21) ; draw.io ne garde pas le pli vivant (par conception).
 - **Trace** : `PLAN-r3.md:50-58,64,82`.
 
 ### Wave 3 — placement (H2)
+
+<a id="req-r7-21"></a>
 
 #### REQ-R7-21 — Préférences de placement `ds-layout-hints@2` : bandes, colonnes périphériques, piles
 
@@ -428,6 +478,8 @@
 - **Known gaps** : des préférences ne sont pas des positions exactes (REQ-R7-23) ; « stacks without folding » est interprété par `PLAN-r3.md` comme « piles sans retour en étagères, pli actif » (voir REQ-R7-25) ; la « bus spine » de la note du 15/11 n'est pas nommée dans `PLAN-r3.md` (couverture par `fanIn: "comb"` `unverified`) ; dépend du gel du vocabulaire par engram (risque 3).
 - **Trace** : `PLAN-r3.md:10,60-64` (patch `diagram-codecs` : `PLAN-r3.md:64,93`) ; `ds-position-engine.md:15-22` ; item track `01M7EGPAJE9KZKJ9E91DKC0F3E` (`ds-layout-hints@1`, base de `@2`).
 
+<a id="req-r7-22"></a>
+
 #### REQ-R7-22 — Option de ratio cible 16:9
 
 - **Relayed (d2d-cond, 18/11, demande 7)** : *"Target aspect ratio option (e.g. 16:9 for slides): peripheral groups move to vertical columns."*
@@ -437,6 +489,8 @@
 - **Status** : planifié.
 - **Known gaps** : 16:9 garanti seulement à l'état déplié ; l'actuel `FIT_ASPECT = 16/9` de la caméra est un cadre d'affichage, pas une cible de placement.
 - **Trace** : `PLAN-r3.md:62-63`.
+
+<a id="req-r7-23"></a>
 
 #### REQ-R7-23 — ISO r7 v10 : placement et flèches identiques à la référence, en restant repliable
 
@@ -450,10 +504,12 @@
   - **Les épingles (positions de boîtes écrites à la main) relèvent d'une décision owner** (options A ou C de `DOSSIER.md`) ; elles ne figurent dans aucun lot.
 - **Covering lot / wave** : placement exact : NON PRÉVU ; épingles : NON PRÉVU (décision owner, D-4) ; préférences : H2, V3 ; style des flèches : DE-2, V2.
 - **Status** : non prévu (placement exact) ; planifié (préférences) ; en construction (style des flèches, PR #315).
-- **Known gaps** : question ouverte de `DOSSIER.md` : échéance impérative avant la fin de V3, oui (avec date) ou non ; dossier ISO incomplet (étape 0, revues Codex et Opus, rendu Focus manquants) ; le titre de l'item track `01M7WJN8595HFTM982VRNHJVYB` (« … pinned geometry input + DE-2 arrows ») préjuge A ou C et sera réaligné sur la décision ; la part de la référence exprimable en contraintes `@2` est `unknown` avant l'étape 0.
+- **Known gaps** : question ouverte de `DOSSIER.md` : échéance impérative avant la fin de V3, oui (avec date) ou non ; dossier ISO incomplet (étape 0, revues indépendantes et rendu Focus manquants) ; le titre de l'item track `01M7WJN8595HFTM982VRNHJVYB` (« … pinned geometry input + DE-2 arrows ») préjuge A ou C et sera réaligné sur la décision ; la part de la référence exprimable en contraintes `@2` est `unknown` avant l'étape 0.
 - **Trace** : `DOSSIER.md` (question, options, annexes 1, 3, 5 et 6) ; `OWNER-ADDENDA.md:32,34`.
 
 ### Wave 4 and beyond
+
+<a id="req-r7-24"></a>
 
 #### REQ-R7-24 — Panneaux comparés et annotations (accolades, curseur gradué)
 
@@ -469,6 +525,8 @@
 - **Known gaps** : exclu de H2 (`PLAN-r3.md:62`) ; aucun critère d'acceptation propre dans `PLAN-r3.md` : la tolérance, les 4 cibles et la tenue au pli sont fixées ici, à reporter au plan N2 ; vue avant / après de référence : `missing source`.
 - **Trace** : `PLAN-r3.md:62,68` ; `PLAN.md:42-43`.
 
+<a id="req-r7-25"></a>
+
 #### REQ-R7-25 — Mode de rendu « sans pli » pour les dossiers
 
 - **Relayed (note DS, kit r7, 15/11, `ds-position-engine.md:21`)** : *"a « no folding » rendering mode for dossiers."* Verbatim owner direct : `missing source`.
@@ -482,6 +540,8 @@
 - **Known gaps** : `PLAN-r3.md` interprète « stacks without folding » (19/11) comme « piles sans retour en étagères, pli actif » et n'a pas de lot pour ce mode ; `PLAN.md:43` (18/11) le prévoyait comme un drapeau dans DE-1 si le dossier en avait besoin, sinon en temps 2 avec le solveur, et `PLAN-r3.md` ne l'a pas repris ; à clarifier (D-7).
 - **Trace** : `ds-position-engine.md:21` ; `PLAN.md:43` ; `PLAN-r3.md:62`.
 
+<a id="req-r7-26"></a>
+
 #### REQ-R7-26 — Quatre cibles framework : Svelte, Vue+Vapor, Preact+Signals, Angular
 
 - **Owner verbatim (relayé par engram, commentaire 9 de simple-diagrams ; date : `missing source`)** : « … et ça doit se faire en svelte, vue+vapor, preact+signal, et angular. »
@@ -490,10 +550,12 @@
   - *Owner looks at* : la même figure dans les 4 frameworks, pliée et dépliée.
 - **Covering lot / wave** : Svelte et Vue : V1 à V4 ; Preact+Signals et Angular : à ajouter (aucun lot dans `PLAN-r3.md`).
 - **Status** : Svelte : fait-publié (design-system-svelte 0.42.0) ; Vue+Vapor : fait-publié sur `next` (design-system-vue 0.41.0-next.8, dont l'entrée `/vapor` exporte `DiagramSceneFigure`) ; Preact+Signals : non prévu (`design-system-preact` 0.0.0-p0.0, non publié, `@preact/signals` 2.11.4, aucun composant diagramme) ; Angular : non prévu (`design-system-angular` sans composant diagramme).
-- **Known gaps** : Vapor : la base `v1` est testée au runtime (`vapor-runtime.test.ts:116,156,175` monte `DiagramCard`, `DiagramZone` et `DiagramSceneFigure` depuis `dist/vapor/index.js`, sans `anatomy`, profondeur ni pli imbriqué) ; les apports r7 (`v2`, profondeur, pli imbriqué) ne sont testés en Vapor qu'à la compilation (`diagram-parity.test.ts:263`, `compiler.parse` de chaque SFC), pas au runtime : parité runtime `unverified` ; items track hors du parcours r7 : `01M77RSBEGJX68Y8P7VMK626GJ` « Diagram library in Vue (Vapor-ready template SFCs, WebGL via Vue+signals pattern) — P1 ASAP » (12/11, `in-progress`), `01M77RSBKPZ9458JS0K13D69S7` « Diagram library in Preact+Signals — P2 » (12/11, `to-do`), programme `01M77Q9MZ87FBF0C60Q7YPMFN1` « Programme Preact+Signals baseline + Vue Vapor … (owner 12/11) » (`in-progress`) ; aucun item Angular diagramme ; contexte owner du 12/11 : « priorité à vue+vapor dans l'ensemble des chantiers » et « on prendra preact+signal comme baseline dorénavant » (`scratchpad/framework-decision/framework.decision-dossier.v4.json`).
+- **Known gaps** : Vapor : la base `v1` est testée au runtime (`vapor-runtime.test.ts:116,156,175` monte `DiagramCard`, `DiagramZone` et `DiagramSceneFigure` depuis `dist/vapor/index.js`, sans `anatomy`, profondeur ni pli imbriqué) ; les apports r7 (`v2`, profondeur, pli imbriqué) ne sont testés en Vapor qu'à la compilation (`diagram-parity.test.ts:263`, `compiler.parse` de chaque SFC) sur `main` ; PR #315 ajoute des tests de parité Vapor au runtime (`60a892b3d`) : parité runtime en cours de vérification ; items track hors du parcours r7 : `01M77RSBEGJX68Y8P7VMK626GJ` « Diagram library in Vue (Vapor-ready template SFCs, WebGL via Vue+signals pattern) — P1 ASAP » (12/11, `in-progress`), `01M77RSBKPZ9458JS0K13D69S7` « Diagram library in Preact+Signals — P2 » (12/11, `to-do`), programme `01M77Q9MZ87FBF0C60Q7YPMFN1` « Programme Preact+Signals baseline + Vue Vapor … (owner 12/11) » (`in-progress`) ; aucun item Angular diagramme ; contexte owner du 12/11 : « priorité à vue+vapor dans l'ensemble des chantiers » et « on prendra preact+signal comme baseline dorénavant » (`framework.decision-dossier.v4.json`).
 - **Trace** : `OWNER-ADDENDA.md:25-27` ; `DOSSIER.md` annexe 4.
 
 ### Process (every wave)
+
+<a id="req-r7-27"></a>
 
 #### REQ-R7-27 — Règle de présentation et de validation de chaque étape
 
@@ -508,9 +570,11 @@
   Aucune publication sans GO owner explicite, vague par vague, jamais groupé.
   - *Owner looks at* : les 5 rubriques dans chaque présentation ; un item track existant pour chaque ligne de la rubrique 3.
 - **Covering lot / wave** : transverse, toutes les vagues ; à ajouter à `PLAN-r3.md` (antérieur au 20/11).
-- **Status** : en construction — PR #314 : corps réécrit le 20/11 (tableau « ID audit | ce que l'owner regarde | avant → après | test qui l'épingle » pour les 26 lignes de l'audit, section « Encore différent volontairement », commits par groupe) : rubriques 1 à 4 présentes ; rubrique 5 partielle : `W1-09` et `W1-13` tracés par `01M7WJN7TP4WTKTSK3M0H064EQ` et `01M7WJN7ZTQRQZ441VF9J35599`, écarts ISO par `01M7WJN8595HFTM982VRNHJVYB`, lots Preact+Signals et Angular sans item ; le corps ne mentionne pas les bumps manquants (« Cross-cutting known gaps » §1) ; PR #315 : aucune des 5 rubriques ; `DOSSIER.md` annexe 1 l'applique aux phases ISO ; les tableaux « Scénarios » de ce document portent les 5 rubriques depuis r2.
+- **Status** : en construction — PR #314 : corps réécrit le 20/11 (tableau « ID audit | ce que l'owner regarde | avant → après | test qui l'épingle » pour les 26 lignes de l'audit, section « Encore différent volontairement », commits par groupe) : rubriques 1 à 4 présentes ; rubrique 5 partielle : `W1-09` et `W1-13` tracés par `01M7WJN7TP4WTKTSK3M0H064EQ` et `01M7WJN7ZTQRQZ441VF9J35599`, écarts ISO par `01M7WJN8595HFTM982VRNHJVYB`, lots Preact+Signals et Angular sans item ; le corps documente désormais les bumps et REQ-R7-30 (head `2a60db8ee`) ; PR #315 : aucune des 5 rubriques ; PR #317 et #318 : corps sans rubriques ; `DOSSIER.md` annexe 1 l'applique aux phases ISO ; les tableaux « Scénarios » de ce document portent les 5 rubriques depuis r2.
 - **Known gaps** : aucun gabarit de PR n'impose les 5 rubriques ; pas d'item track par écart (les Scénarios marquent « à créer avant GO » chaque écart sans item).
 - **Trace** : `OWNER-ADDENDA.md:32-33` ; `PLAN-r3.md:71` (GO par vague).
+
+<a id="req-r7-28"></a>
 
 #### REQ-R7-28 — Tout changement qui n'est pas exactement un progrès demandé sans effet de bord est une régression
 
@@ -521,20 +585,20 @@
   3. chaque correctif est épinglé par un test sur les valeurs de la version précédente, en Svelte et en Vue.
   - *Owner looks at* : le tableau d'audit de la vague et la liste des écarts restants, chacun avec sa phase.
 - **Covering lot / wave** : transverse ; à ajouter à `PLAN-r3.md` comme porte de chaque vague.
-- **Status** : V1 : régression à corriger (PR #314) — audit fait (60 lignes : 34 progrès, 14 RÉGRESSIONS, 12 effets de bord) ; V2 : non prévu (aucun audit de PR #315).
+- **Status** : V1 : régression à corriger (PR #314, head `2a60db8ee`, CI 36/36, ni fusionné ni publié) — audit fait (60 lignes : 34 progrès, 14 RÉGRESSIONS, 12 effets de bord) ; V2 : non prévu (aucun audit de PR #315).
 - **Known gaps** :
-  - codés sur PR #314 (head `570093c3a`), ni fusionnés ni publiés : RÉGRESSIONS `W1-16`, `W1-17`, `W1-37`, `W1-39`, `W1-43`, `W1-51`, `W1-54` (`67a04a3a4`), `W1-44`, `W1-55` et la partie en-tête de `W1-45`, `W1-56` (`4f0d6f792`), `W1-02` (`218145e50`), `W1-12` (`a749e2483`), la partie surface de `W1-45`, `W1-56` (`0f8354fd2`) ; effets de bord `W1-10`, `W1-14` (test de compilation seul, aucun CSS de thème de marque régénéré), `W1-19`, `W1-23`, `W1-28`, `W1-31`, `W1-35`, `W1-40`, `W1-46`, `W1-52`, `W1-58` (`90aa6dd81`) ; `W1-13` épinglé par tests (`7ddbee6af`, `218145e50`) ;
-  - restant : RÉGRESSION `W1-09` (taille du `+/-` en `v2`, conservée, à valider par l'owner, D-3) ; la consigne d'extension (`regress-fix2.md`) cite « 16 RÉGRESSION, 14 effet de bord » alors que l'audit en compte 14 et 12 ;
-  - avant GO de V1-patch : bumps de diagram-core et de tokens / themes, cascade du workspace refaite après ces bumps, CI verte sur ce commit, corps de PR complété par ces bumps (« Cross-cutting known gaps » §1) ;
-  - PR #315 contient au moins un changement hors de la liste DE-2 (plafond de la contribution des badges de flux numérotés à `labelLimit`, commit `e04cbe8ca`) : à classer dans l'audit V2.
+  - codés sur PR #314 (head `2a60db8ee`), ni fusionnés ni publiés : RÉGRESSIONS `W1-16`, `W1-17`, `W1-37`, `W1-39`, `W1-43`, `W1-51`, `W1-54` (`67a04a3a4`), `W1-44`, `W1-55` et la partie en-tête de `W1-45`, `W1-56` (`4f0d6f792`), `W1-02` (`218145e50`), `W1-12` (`a749e2483`, restauré sur `v1` / `surface1` par `2a60db8ee`), la partie surface de `W1-45`, `W1-56` (`0f8354fd2`) ; effets de bord `W1-10`, `W1-14` (test de compilation seul, aucun CSS de thème de marque régénéré), `W1-19`, `W1-23`, `W1-28`, `W1-31`, `W1-35`, `W1-40`, `W1-46`, `W1-52`, `W1-58` (`90aa6dd81`) ; `W1-13` épinglé par tests (`7ddbee6af`, `218145e50`) ; bumps diagram-core 0.4.1 et tokens / themes 0.15.1 avec cascade refaite (`0363185c5`).
+  - restant : RÉGRESSION `W1-09` (taille du `+/-` en `v2`, conservée, à valider par l'owner, D-3) ; la consigne d'extension (`regress-fix2.md`) cite « 16 RÉGRESSION, 14 effet de bord » alors que l'audit en compte 14 et 12 ; « W1-14 » sans CSS de thème régénéré.
+  - avant GO de V1-patch : fusion de PR #314 puis cascade et CI vertes sur `main` ; le corps de PR documente déjà les bumps et REQ-R7-30.
+  - PR #315 contenait un changement hors de la liste DE-2 (plafond de la contribution des badges de flux numérotés à `labelLimit`, commit `e04cbe8ca`) : réverti par `a64d48116` sur la tournée de correctifs ; audit V2 toujours à faire.
 - **Trace** : `REGRESSION-AUDIT-wave1.md` ; `regress-fix.md` ; `regress-fix2.md`.
 
 ## Cross-cutting known gaps
 
-1. **Ordre de fusion et versions.** PR #314 et PR #315 visent toutes deux `@sentropic/design-system-vue 0.41.0-next.9` ; PR #315 ne contient pas les commits de PR #314. Depuis `218145e50` et `90aa6dd81`, PR #314 modifie `diagram-core` (`view.ts`, `W1-02`) sans le passer de 0.4.0 à 0.4.1, et `tokens` / `themes` (`component.ts` et les 3 CSS cœur, `W1-10`) sans les passer de 0.15.0 à 0.15.1 en lockstep ; c'est encore le cas au head `570093c3a`. Avant le GO de V1-patch, PR #314 doit porter : ces bumps ; la cascade du workspace refaite après eux (`PLAN-r3.md:81` : pins des consommateurs, `package-lock.json`, `component-index`, `destinationSha256` de `m1-provenance.json`, `.graphify`) ; `570093c3a` a régénéré le `component-index` périmé, cause de l'échec `licensing` au head `90aa6dd81`, mais sur les versions actuelles ; une CI verte sur le commit de bump ; un corps de PR qui mentionne ces bumps (le corps réécrit le 20/11 n'en parle pas). Ordre à tenir : PR #314 d'abord, puis PR #315 remise à jour sur `main` et re-versionnée ; sinon V2 republie les régressions V1.
-2. **Svelte 0.43.0.** `main` porte `design-system-svelte 0.43.0` (kit de revue, PR #312) sans tag `svelte-v0.43.0` au snapshot ; PR #314 vise 0.43.1 et PR #315 vise 0.44.0, et non 0.42.1 et 0.43.0 comme dans `PLAN-r3.md`.
+1. **Ordre de fusion et versions.** PR #314 et PR #315 visent toutes deux `@sentropic/design-system-vue 0.41.0-next.9` ; PR #315 ne contient pas les commits de PR #314. Les bumps bloquants sont portés par `0363185c5` (diagram-core 0.4.1, tokens / themes 0.15.1, cascade du workspace refaite, CI 36/36 au head `2a60db8ee`, corps qui documente les bumps et REQ-R7-30). Reste : PR #314 d'abord, puis PR #315 remise à jour sur `main` et re-versionnée ; sinon V2 republie les régressions V1. PR #317 et #318 partagent l'historique DE-2 partagé (jusqu'à `46463f01c`) et ne contiennent pas les correctifs de PR #314 ni la tournée de correctifs de PR #315 : même remise à jour après fusion de PR #314 et PR #315.
+2. **Svelte 0.43.0 et review-core.** `design-system-svelte` 0.43.0 est **publié** (tag distant `svelte-v0.43.0`, publish vert) ; `review-core` 0.1.0 est **publié** (tag distant `review-core-v0.1.0`), et 0.1.1 est bumpé par la PR #319 fusionnée (merge `4e02910aa`) mais **non encore publié**. PR #314 vise svelte 0.43.1 et PR #315 vise 0.44.0, et non 0.42.1 et 0.43.0 comme dans `PLAN-r3.md`.
 3. **Plan antérieur au 20/11.** `PLAN-r3.md` (19/11) n'a ni lot pour REQ-R7-07 à REQ-R7-09 (V1-patch), ni porte pour REQ-R7-27 et REQ-R7-28, ni lot Preact+Signals ou Angular (REQ-R7-26).
-4. **Track.** Items diagrammes recensés dans « Repository state at snapshot » : 4 items r7 du 20/11 (`to-do`), 4 items antérieurs rattachés à REQ-R7-06, REQ-R7-21 et REQ-R7-26, 5 items diagrammes hors parcours r7 ; aucun item par lot (DE-2, E1, E2, H2, N2) ni par exigence ; aucun agrégat `decision` pour l'ISO (`DOSSIER.md` annexe 6) ; `01M7EGPAJE9KZKJ9E91DKC0F3E` reste `to-do` alors que `ds-layout-hints@1` est publié dans diagram-core 0.3.0 (`ds-position-engine.md:16`) ; ces items n'existent que dans la copie locale de `.track/events.jsonl`, celle d'`origin/main` s'arrêtant au 07/11 (UTC).
+4. **Track.** Items diagrammes recensés dans « Repository state at snapshot » : 5 items r7 du 20/11 (`to-do`, dont `01M7X6P2X37V4HK1ZPQ7HJZZA9` pour REQ-R7-30), 30 items par exigence (`REQ-R7-01` à `REQ-R7-30`, table « Track trace »), 4 items antérieurs rattachés à REQ-R7-06, REQ-R7-21 et REQ-R7-26, 5 items diagrammes hors parcours r7 ; aucun item par lot DE-2, H2, N2 (E1 et E2 couverts par les PR #318 et #317) ; aucun agrégat `decision` pour l'ISO (`DOSSIER.md` annexe 6) ; `01M7EGPAJE9KZKJ9E91DKC0F3E` reste `to-do` alors que `ds-layout-hints@1` est publié dans diagram-core 0.3.0 (`ds-position-engine.md:16`) ; ces items n'existent que dans la copie locale de `.track/events.jsonl`, celle d'`origin/main` s'arrêtant au 07/11 (UTC).
 
 ## Open owner decisions
 
@@ -544,12 +608,13 @@
 | D-2 | Mode d'entrée de l'anatomie compacte | REQ-R7-06, REQ-R7-09 | opt-in explicite `anatomy: "v2"`, `createView()` reste en `v1` (correctif `W1-02`, codé sur PR #314 au commit `218145e50`) ; `v2` par défaut pour toute nouvelle vue (état 0.42.0) |
 | D-3 | Taille du `+/-` et zoom maximal en `v2` | REQ-R7-08, REQ-R7-09 | garder 32 px et `0.62` ; calibrer pour `352 × 154` |
 | D-4 | Placement ISO r7 v10 | REQ-R7-23, Scénarios | A épingles ; B contraintes (orientation provisoire du dossier) ; C épingles privées puis contraintes ; échéance avant la fin de V3 : oui (date) ou non |
-| D-5 | Pointes `filled-triangle` et `open-triangle` livrées en DE-2 | REQ-R7-11, REQ-R7-02 | les garder en V2 ; les retirer et les réserver à N2 |
+| D-5 | Pointes `filled-triangle` et `open-triangle` livrées en DE-2 | REQ-R7-11, REQ-R7-02 | **close** : retirées par `8c23d804c` (registre `@4` réduit à `arrow | none`), triangles creux réservés à N2 ; les deux options ci-dessous restent consignées comme historique : les garder en V2 ; les retirer et les réserver à N2 |
 | D-6 | E2 si le jeton npm manque au GO de V2 | REQ-R7-20 | bloquer V2 jusqu'au jeton ; publier V2 sans E2 (`PLAN-r3.md:82`) |
 | D-7 | Mode « sans pli » pour les dossiers | REQ-R7-25 | voulu comme option ; abandonné |
 | D-8 | Lots Preact+Signals et Angular | REQ-R7-26 | les créer après V4 (séquence convenue) ; autre ordre |
 | D-9 | Taux de repli `v2` (polices et marges) | REQ-R7-06 | ajouter un correctif DE-1 (changement visible, à valider) ; accepter le repli |
 | D-10 | N2 dans S2, où H2 n'est pas engagé (N2 dépend de H2 : `PLAN-r3.md:68-69`) | REQ-R7-02, REQ-R7-24, Scénarios (S2) | livrer H2 avant N2 (+64–98 h) ; étendre les épingles aux bandes de couches ArchiMate et aux panneaux comparés (hors plan, heures `unknown`) |
+| D-11 | Réajustement au pli / dépli (règle Z-7) et plancher de zoom `0,45` | REQ-R7-05, REQ-R7-09, REQ-R7-30, Scénarios | réajuster à chaque bascule, zoom explicite remis à zéro (code : `d84dc6c8e`) ; garder la règle Z-7 (zoom figé tant qu'il reste dans la plage). Plancher `0,45` de REQ-R7-09 conservé : au fit sous `0,45`, défilement sans partie inaccessible |
 
 ## Scénarios
 
@@ -559,11 +624,11 @@ Trois scénarios de feuille de route à valider. V1-patch et V2 sont communs aux
 
 | Vague | À regarder | Ce que l'owner obtient | Sciemment différent après test DS | Rétabli en | Item track |
 |---|---|---|---|---|---|
-| V1-patch (PR #314 et son extension ; heures `unknown` ; GO après bumps, cascade et CI verte, « Cross-cutting known gaps » §1) | à `1440 × 900`, en clair puis en sombre, en Svelte et en Vue : une carte longue d'une figure compacte qui passe en `460 × 200` (titre à gauche) ; le survol du `+/-` sur une zone grise puis sur une zone blanche ; la taille du `+/-` et la hauteur du cadre au zoom maximal d'une vue existante, face à une capture 0.41.5 de la même figure | REQ-R7-07, -08 et -09 : cartes complètes alignées à gauche, `+/-` et survol comme en 0.41.5, taille maximale et zoom de 0.41.5 sur les vues existantes ; effets de bord V1 corrigés (REQ-R7-04, REQ-R7-06, REQ-R7-10, REQ-R7-29) | taille du `+/-` et zoom maximal des cartes compactes non recalibrés (D-3) ; taux de repli `v2` inchangé (D-9) | V1-patch si D-3 et D-9 sont tranchées avant ; sinon phase à fixer et à tracer | correctifs : `01M7WJN7NM6DXX9GSMPCXGZTAR` (REQ-R7-07), `01M7WJN7TP4WTKTSK3M0H064EQ` (REQ-R7-08), `01M7WJN7ZTQRQZ441VF9J35599` (REQ-R7-09) ; écart D-3 : les deux derniers, comme dans le corps de PR #314 (`W1-09`, `W1-13`), à garder ouverts jusqu'à la décision ; écart D-9 : à créer avant GO |
-| V2 : DE-2 + E1 + E2 (heures sous le tableau) | la même figure avant / après, dépliée puis pliée, à `1440 × 900` et à `390 × 844` : coudes arrondis au contact des cartes, épaisseurs, emphase, légende à droite qui suit le pli, gouttières égales ; la même scène côte à côte en Svelte, Vue et SVG ; l'export de la fixture E1 ouvert dans draw.io | REQ-R7-11 à REQ-R7-20 : coudes arrondis, traits de 2,5 à 3,5 px, emphase, tirets et pointes, légende à droite, espacement des routes, gouttière fixe, conventions, ajustement à la fenêtre ; même scène en Svelte, Vue et SVG ; export draw.io statique | placement automatique en rangées (`auto-pack @1`), non ISO ; chemins de flèches calculés par le routeur ; conflits `info` à l'état déplié des scènes h-cond s'ils ne sont pas résolus | placement : selon le scénario ; chemins exacts : `unverified` dans les trois scénarios ; conflits dépliés : phase à fixer | placement et flèches : `01M7WJN8595HFTM982VRNHJVYB` ; conflits dépliés : à créer avant GO |
+| V1-patch (PR #314, head `2a60db8ee`, CI 36/36 ; heures `unknown` ; bumps portés, ordre de fusion « Cross-cutting known gaps » §1) | à `1440 × 900`, en clair puis en sombre, en Svelte et en Vue : une carte longue d'une figure compacte qui passe en `460 × 200` (titre à gauche) ; le survol du `+/-` sur une zone grise puis sur une zone blanche ; la taille du `+/-` et la hauteur du cadre au zoom maximal d'une vue existante, face à une capture 0.41.5 de la même figure ; la plus grande zone d'une figure imbriquée dépliée : toute la figure reste dans le cadre (REQ-R7-30), puis repliée | REQ-R7-07, -08 et -09 : cartes complètes alignées à gauche, `+/-` et survol comme en 0.41.5, taille maximale et zoom de 0.41.5 sur les vues existantes ; REQ-R7-30 : réajustement à chaque pli / dépli, sans partie hors du cadre (plancher `0,45`) ; effets de bord V1 corrigés (REQ-R7-04, REQ-R7-06, REQ-R7-10, REQ-R7-29) | taille du `+/-` et zoom maximal des cartes compactes non recalibrés (D-3) ; taux de repli `v2` inchangé (D-9) ; règle Z-7 remplacée par le réajustement (D-11, « progrès demandé ») et plancher `0,45` au petit écran : défilement sans partie inaccessible | V1-patch si D-3 et D-9 sont tranchées avant ; sinon phase à fixer et à tracer | correctifs : `01M7WJN7NM6DXX9GSMPCXGZTAR` (REQ-R7-07), `01M7WJN7TP4WTKTSK3M0H064EQ` (REQ-R7-08), `01M7WJN7ZTQRQZ441VF9J35599` (REQ-R7-09), `01M7X6P2X37V4HK1ZPQ7HJZZA9` (REQ-R7-30) ; écart D-3 : les deux derniers, comme dans le corps de PR #314 (`W1-09`, `W1-13`), à garder ouverts jusqu'à la décision ; écart D-9 : à créer avant GO |
+| V2 : DE-2 (PR #315) + E1 (PR #318) + E2 (PR #317, heures sous le tableau) | la même figure avant / après, dépliée puis pliée, à `1440 × 900` et à `390 × 844` : coudes arrondis au contact des cartes, épaisseurs, emphase, légende à droite qui suit le pli, gouttières égales ; la même scène côte à côte en Svelte, Vue et SVG ; l'export de la fixture E1 ouvert dans draw.io | REQ-R7-11 à REQ-R7-20 : coudes arrondis, traits de 2,5 à 3,5 px, emphase, tirets et pointes, légende à droite, espacement des routes, gouttière fixe, conventions, ajustement à la fenêtre ; même scène en Svelte, Vue et SVG ; export draw.io statique | placement automatique en rangées (`auto-pack @1`), non ISO ; chemins de flèches calculés par le routeur | placement : selon le scénario ; chemins exacts : `unverified` dans les trois scénarios | placement et flèches : `01M7WJN8595HFTM982VRNHJVYB` ; E1 et E2 : aucun item (couverts par PR #318 et #317) |
 
 - Budget initial de V2 : 108–166 h [FACT] (DE-2 76–118 h, E1 12–18 h, E2 20–30 h), dont E2 `unverified` (`PLAN-r3.md:89`).
-- Reste à livrer pour V2 : E1 et E2, 32–48 h (E2 `unverified`), plus la part non codée de DE-2, `unknown`. Les étapes 1 à 8 de DE-2 sont déjà codées sur PR #315 (CI verte, non publiée) ; restent au moins la porte sur les 38 états de pli (REQ-R7-05, REQ-R7-13), les 3 scènes first-paint (REQ-R7-11) et l'audit V2 (REQ-R7-28).
+- Reste à livrer pour V2 : E1 (PR #318) et E2 (PR #317), 32–48 h (E2 `unverified`), en construction ; les étapes 1 à 8 de DE-2 sont codées sur PR #315 (CI en cours, non publiée), porte sur tous les états de pli (`d937fb1cd`) et 3 scènes first-paint (`8c23d804c`) compris ; reste au moins l'audit V2 (REQ-R7-28), puis fusion de PR #314, remise à jour des trois branches sur `main` et publication.
 
 ### S1 — Tel quel, avec préférences (orientation B du dossier ISO)
 
@@ -608,7 +673,7 @@ Trois scénarios de feuille de route à valider. V1-patch et V2 sont communs aux
 - Risque : le provisoire reste ; si les épingles devenaient publiques, S3 porterait le même gel que S2.
 - Adapté si (renversement prévu par le dossier) : échéance avant la fin de V3, ou écarts inexprimables révélés à l'étape 0.
 
-**Ce que l'owner valide :** (1) S1, S2 ou S3 ; (2) l'échéance avant la fin de V3 : oui (avec date) ou non ; (3) les décisions D-1 à D-10, au fil des vagues. Rien n'est publié sans GO de vague (REQ-R7-27).
+**Ce que l'owner valide :** (1) S1, S2 ou S3 ; (2) l'échéance avant la fin de V3 : oui (avec date) ou non ; (3) les décisions D-1 à D-11 (D-5 close), au fil des vagues. Rien n'est publié sans GO de vague (REQ-R7-27).
 
 ## Track trace
 
