@@ -3,6 +3,8 @@ import { cleanup, render } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { readFileSync } from 'node:fs';
+import { convertEngramErdScene, m3ProfileRegistry, shippedExecutorBindings, type EngramErdScene } from '@sentropic/diagram-core';
 import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svelte';
 import VueScene from './DiagramSceneFigure.vue';
 import { hCondInput } from '../../diagram-canvas/tests/layout/dc2a/h-cond.js';
@@ -47,6 +49,18 @@ const cases = [
     name: `${name}/${folded ? 'folded' : 'unfolded'}`, input: () => ({ ...hCondInput(name, folded), measureLines: undefined }),
   }))),
   { name: 'ontology through the flow host', input: () => ({ ...hCondInput('ontology', false), measureLines: undefined, flows: {} }) },
+];
+const erdFixture = (JSON.parse(readFileSync('../diagram-core/tests/fixtures/erd/ERD-SCENES.json', 'utf8')).ontologies as EngramErdScene[])[0]!;
+const erdInput = () => ({ ...convertEngramErdScene(erdFixture), registry: m3ProfileRegistry, bindings: shippedExecutorBindings });
+const cardlessCases = [
+  { name: 'ERD', input: erdInput, selector: '[data-scene-kind="erd"]' },
+  { name: 'ERD with explicit flows', input: () => ({ ...erdInput(), flows: {} }), selector: '[data-scene-kind="erd"]' },
+  { name: 'label-only numbered flow', input: () => {
+    const input = cases.find(scene => scene.name === 'numbered flows')!.input();
+    const entities = Object.fromEntries(Object.entries(input.presentation.entities).map(([id, entry]) =>
+      [id, { ...entry, text: { body: entry.text.title } }]));
+    return { ...input, presentation: { ...input.presentation, entities } };
+  }, selector: '[data-scene-kind="label"]' },
 ];
 const rect = (el: HTMLElement) => ({ x: parseFloat(el.style.left), y: parseFloat(el.style.top), width: parseFloat(el.style.width), height: parseFloat(el.style.height) });
 function geometry(element: Element) {
@@ -501,6 +515,45 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
     expect(cameras.at(-1)!.zoom).toBe(cameras.at(-1)!.fitZoom);
     view.dispose();
   });
+  for (const { name, input, selector } of cardlessCases) {
+    it(`should preserve manual zoom and pan on ${name} until a new font load`, async () => {
+      vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(200);
+      vi.stubGlobal('innerHeight', 900);
+      const fonts = Object.assign(new EventTarget(), { ready: Promise.resolve() });
+      Object.defineProperty(document, 'fonts', { configurable: true, value: fonts });
+      const props = input();
+      const view = await host.mount(props);
+      try {
+        await view.flush(); await view.flush();
+        expect(view.element.querySelector(selector)).not.toBeNull();
+        expect(view.element.querySelector('.st-diagramCard, .st-diagramZone--expanded')).toBeNull();
+        const initial = geometry(view.element);
+        const { viewport } = initial;
+        viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
+        await view.flush();
+        const manual = geometry(view.element).zoom;
+        expect(manual).toBeGreaterThan(initial.zoom);
+        viewport.scrollLeft = 40;
+        viewport.scrollTop = 20;
+        const camera = () => [geometry(view.element).zoom, viewport.scrollLeft, viewport.scrollTop];
+
+        await view.update({ metrics: { labelMargin: 7 } });
+        await view.flush(); await view.flush();
+        expect.soft(camera()).toEqual([manual, 40, 20]);
+
+        fonts.dispatchEvent(new Event('loadingdone'));
+        await view.flush(); await view.flush();
+        expect.soft(camera()).toEqual([manual, 40, 20]);
+
+        fonts.ready = Promise.resolve();
+        fonts.dispatchEvent(new Event('loadingdone'));
+        await view.flush(); await view.flush();
+        expect(camera()).toEqual([initial.zoom, 0, 0]);
+      } finally {
+        view.dispose();
+      }
+    });
+  }
   for (const scene of cases) it(`should initially clear every connector from every ${scene.name} label`, async () => {
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1440);
     const view = await host.mount(scene.input());
