@@ -456,7 +456,7 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
     expect(spacingWarnings.every((w) => w.severity === "info")).toBe(true);
   });
 
-  it("enforces zero route-spacing conflicts on ALL visible fold states of the h-cond reference scenes (unfolded included, REQ-R7-13)", () => {
+  it("enforces zero route-spacing conflicts on ALL 84 visible fold states of the h-cond reference scenes under diagram-presentation@2 opt-in (unfolded included, REQ-R7-13)", () => {
     let totalStates = 0;
     for (const name of ["architecture", "ontology"] as const) {
       const base = hCondInput(name, false);
@@ -701,5 +701,18 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
     if (hCondV1.status !== "laid-out") return;
     expect(hCondV1.routeSpacing).toBeUndefined();
     expect(hCondV1.channels?.some((c) => c.gap > 96)).toBe(true);
+
+    // Compact v2 (anatomy: "v2" under @1 with default links) opts into DE-2 route spacing and fixed zone gutters across fold states (REQ-R7-05 / REQ-R7-11 / REQ-R7-13 / REQ-R7-14).
+    const hCondV2Base = hCondInput("ontology", false);
+    const v2View = {
+      ...hCondV2Base.view,
+      presentation: { ...hCondV2Base.view.presentation, anatomy: "v2" as const },
+    };
+    const v2Res = layoutScene({ ...hCondV2Base, view: v2View, collapsed: [] });
+    expect(v2Res.status).toBe("laid-out");
+    if (v2Res.status !== "laid-out") return;
+    expect(v2Res.routeSpacing).toBeDefined();
+    expect(v2Res.routeSpacing!.conflictCount).toBe(0);
+    expect(v2Res.channels?.filter((c) => c.zone).every((c) => c.gap === DEFAULT_ZONE_GUTTER)).toBe(true);
   });
 });

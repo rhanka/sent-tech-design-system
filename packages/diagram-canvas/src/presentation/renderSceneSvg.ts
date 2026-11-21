@@ -53,7 +53,7 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
   }).join('');
   const edges=scene.edges.map(edge=>{
     if(!edge.r7){
-      const markerAttr=edge.markers===undefined&&!edge.directed?' marker-end="url(#scene-arrow)"':'';
+      const markerAttr=edge.markers===undefined?' marker-end="url(#scene-arrow)"':'';
       return `<polyline data-scene-edge="${escape(edge.occurrence)}" points="${edge.points.map(p=>p.x+','+p.y).join(' ')}" fill="none" stroke="var(--st-component-diagramScene-edgeStroke, #64748b)" stroke-width="1.5" stroke-linejoin="round"${markerAttr}/>${edge.markers??''}`;
     }
     const emphasized=edge.emphasis==='emphasis';

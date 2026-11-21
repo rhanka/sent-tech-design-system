@@ -588,7 +588,7 @@
   let requestedZoom = $state<number>();
   let atFit = true;
 
-  const r7Mode = $derived(isR7ConnectorPresentation(presentation, view));
+  const r7Mode = $derived(isR7ConnectorPresentation(presentation, view, semanticDocument));
 
   // m3: camera tokens are re-read on every measure and before every camera
   // input, so a post-mount theme change applies without waiting for a resize.
