@@ -77,15 +77,15 @@ const paintLayers = computed(() => [
 const connectorMask = computed(() => scene.value === undefined ? undefined : sceneConnectorMask(scene.value));
 onMounted(() => {
   watch(layout, (result) => props.onLayout?.(result), { immediate: true });
+  let publishedSize: DiagramSceneSize | undefined;
+  watch(layout, (result) => {
+    const size = sceneContentSize(result);
+    if (publishedSize?.width === size.width && publishedSize?.height === size.height) return;
+    publishedSize = size;
+    props.onSizeChange?.(size);
+    emit("update:contentSize", size);
+  }, { immediate: true });
 });
-let publishedSize: DiagramSceneSize | undefined;
-watch(layout, (result) => {
-  const size = sceneContentSize(result);
-  if (publishedSize?.width === size.width && publishedSize?.height === size.height) return;
-  publishedSize = size;
-  props.onSizeChange?.(size);
-  emit("update:contentSize", size);
-}, { immediate: true });
 
 const local = shallowRef<FlowState>({ ...INITIAL_FLOW_STATE, selection: props.defaultActiveStep === undefined ? null : { kind: "step", relation: props.defaultActiveStep }, ...(props.defaultScenario === undefined ? {} : { scenario: props.defaultScenario }) });
 const state = computed<FlowState>(() => {

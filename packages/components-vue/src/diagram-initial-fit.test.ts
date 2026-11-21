@@ -87,9 +87,14 @@ it('should publish numbered-flow content size once per change in world dimension
   const width = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(900);
   vi.stubGlobal('innerHeight', 900);
   const input = cases.find(scene => scene.name === 'numbered flows/container')!.input();
-  const view = mount(VueScene, { props: input });
+  const notifications: string[] = [];
+  const view = mount(VueScene, { props: { ...input,
+    onLayout: () => notifications.push('layout'),
+    onSizeChange: () => notifications.push('sizeChange'),
+  } });
   try {
     await nextTick();
+    expect(notifications).toEqual(['layout', 'sizeChange']);
     const emitted = () => view.emitted('sizeChange');
     const initial = emitted()?.[0];
     expect(initial?.[0]).toMatchObject({ width: expect.any(Number), height: expect.any(Number) });
@@ -107,6 +112,7 @@ it('should publish numbered-flow content size once per change in world dimension
     expect(folded).not.toEqual(initial);
     expect(emitted()).toEqual([initial, folded]);
     expect(view.emitted('update:contentSize')).toEqual([initial, folded]);
+    expect(notifications).toEqual(['layout', 'sizeChange', 'layout', 'sizeChange']);
   } finally {
     view.unmount();
   }
