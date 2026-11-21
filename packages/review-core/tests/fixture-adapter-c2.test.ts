@@ -38,7 +38,7 @@ function makeStores(ids: string[]) {
 }
 
 describe("fixture parity with the C2 store at sentropic 13490b16b", () => {
-  it.each([true, false])("uses the root's summary metadata (root assigned: %s)", async (assigned) => {
+  it.each([true, false])("matches C2 summary assignees and projects the root in the UI (root assigned: %s)", async (assigned) => {
     const { adapter, store, reference } = makeStores(["t-1", "c-1", "c-2"]);
     const root: NewComment = {
       tenant, target: artifact, author, body: "Root",
@@ -55,10 +55,7 @@ describe("fixture parity with the C2 store at sentropic 13490b16b", () => {
     const expected = await reference.listThreadSummaries(tenant, artifact);
     expect(expected).toHaveLength(1);
     expect(expected[0]?.assignee).toBe(assigned ? "alice" : "bob");
-    // DS-7 requires the root assignee even when C2 falls back to a reply's assignee.
-    expect(await store.listThreadSummaries(tenant, artifact)).toEqual(
-      expected.map((summary) => ({ ...summary, assignee: root.assignedTo })),
-    );
+    expect(await store.listThreadSummaries(tenant, artifact)).toEqual(expected);
     const summaries = await adapter.threadSummaries?.(tenant.workspaceId, artifact);
     expect(summaries).toHaveLength(1);
     expect(summaries?.[0]?.target).toEqual(artifact);

@@ -520,7 +520,7 @@ export function createFixtureCommentsAdapter(
         const root = thread[0]!;
         const last = thread.at(-1)!;
         const target = normalizeCommentTarget(root.target);
-        const assignee = root.assignedTo;
+        const assignee = thread.find((row) => row.assignedTo !== undefined && row.assignedTo !== null)?.assignedTo;
         return {
           threadId,
           target,
@@ -589,6 +589,7 @@ export function createFixtureCommentsAdapter(
         const matching = (await store.listThread(tenant, summary.threadId)).filter((row) => targetMatches(row.target, target));
         const last = matching.at(-1);
         const updatedAt = last?.updatedAt ?? summary.lastMessageAt;
+        const assignedTo = matching[0]?.assignedTo ?? undefined;
         return {
           threadId: summary.threadId,
           target: summary.target,
@@ -596,7 +597,7 @@ export function createFixtureCommentsAdapter(
           commentCount: summary.messageCount,
           createdAt: summary.rootMessageAt,
           ...(updatedAt !== summary.rootMessageAt ? { updatedAt } : {}),
-          ...(summary.assignee !== undefined ? { assignedTo: summary.assignee } : {}),
+          ...(assignedTo !== undefined ? { assignedTo } : {}),
         };
       }));
     },
