@@ -57,17 +57,19 @@
  */
 
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { existsSync, mkdtempSync, mkdirSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import http from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const { join } = path;
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PACKAGE_DIR = path.resolve(HERE, "..", "..");
 const WORKTREE_ROOT = path.resolve(PACKAGE_DIR, "..", "..");
 const BROWSER_DIST = join(PACKAGE_DIR, "dist", "browser");
+const FOCUS_DIST = join(PACKAGE_DIR, "dist", "focus-kit");
 const FIXTURES = join(PACKAGE_DIR, "tests", "fixtures");
 const THEMES_CSS = path.resolve(WORKTREE_ROOT, "packages", "themes", "css");
 const BAR_CHART_SOURCE = path.resolve(WORKTREE_ROOT, "packages", "components-svelte", "src", "lib", "BarChart.svelte");
@@ -95,6 +97,7 @@ const PILOT_CSP = [
 ].join("; ");
 /** §6.4 strict row: no 'unsafe-inline' anywhere. */
 const STRICT_CSP = "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'";
+const FOCUS_STRICT_CSP = "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'none'";
 /** §6.4 artifact row, offline simulation: only jsDelivr /npm/ scripts. */
 const ARTIFACT_CSP = "default-src 'none'; script-src https://cdn.jsdelivr.net/npm/; style-src https://cdn.jsdelivr.net/npm/ 'unsafe-inline'; img-src 'self' data:; font-src https://cdn.jsdelivr.net/npm/; connect-src 'none'";
 
@@ -168,6 +171,27 @@ if (!existsSync(ELEMENTS_ENTRY)) {
 }
 ok("bundle exists: dist/browser/elements.js");
 
+const { assembleStandaloneDossier } = await import("@sentropic/design-system-elements/focus-kit");
+const kitManifestUrl = import.meta.resolve("@sentropic/design-system-elements/focus-kit/manifest.json");
+const kitManifestBytes = readFileSync(new URL(kitManifestUrl), "utf8");
+const kitManifest = JSON.parse(kitManifestBytes);
+const { canonicalJson } = await import("@sentropic/focus/editing");
+assert(kitManifestBytes === canonicalJson(kitManifest), "Focus kit manifest is canonical RFC 8785", "serialized bytes differ");
+const kitFiles = new Map(kitManifest.files.map((file) => [file.path, file]));
+const emittedPaths = readdirSync(FOCUS_DIST, { recursive: true, withFileTypes: true })
+  .filter((entry) => entry.isFile()).map((entry) => path.relative(FOCUS_DIST, join(entry.parentPath, entry.name))).sort();
+assert(kitFiles.size === kitManifest.files.length &&
+  JSON.stringify([...kitFiles.keys()].sort()) === JSON.stringify(emittedPaths),
+  "Focus kit covers all emitted payload files", JSON.stringify(emittedPaths));
+let kitBytes = 0;
+for (const [name, file] of kitFiles) {
+  const bytes = readFileSync(new URL(import.meta.resolve(`@sentropic/design-system-elements/focus-kit/${name}`)));
+  const hash = `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
+  assert(bytes.length === file.size && hash === file.sha256, `Focus kit pins ${name}`, `${bytes.length} bytes, ${hash}`);
+  kitBytes += bytes.length;
+}
+record("Focus kit K", `${kitBytes} bytes across ${kitFiles.size} files`);
+
 // ---------------------------------------------------------------------------
 // Step 2 — the reference harness: the Svelte BarChart mounted in the LIGHT
 // DOM of the pilot page, one mount per P-DATA fixture. Built with the
@@ -185,6 +209,10 @@ const referenceProps = PDATA_FIXTURES.map((name) => {
 });
 
 const work = mkdtempSync(join(tmpdir(), "st-elements-suite-"));
+const focusReport = readFileSync(join(FIXTURES, "focus-artifact", "report.json"), "utf8");
+const offlineDocument = canonicalJson({ ...JSON.parse(focusReport), subject: "Source contains </script> · 漢字" });
+const standalone = join(work, "focus-standalone.html");
+writeFileSync(standalone, assembleStandaloneDossier({ document: offlineDocument }));
 try {
   mkdirSync(join(work, "src"), { recursive: true });
   writeFileSync(join(work, "package.json"), JSON.stringify({ name: "st-elements-ref-harness", private: true, type: "module" }));
@@ -499,7 +527,20 @@ const server = http.createServer((req, res) => {
     return;
   }
   let file = null;
-  if (url.pathname.startsWith("/bundle/")) file = join(BROWSER_DIST, url.pathname.slice("/bundle/".length));
+  if (url.pathname.startsWith("/focus-kit/")) {
+    const name = url.pathname.slice("/focus-kit/".length) || kitManifest.entrypoint;
+    const entry = kitFiles.get(name);
+    if (name === "dossier.json" || entry !== undefined) {
+      const mime = entry?.mimeType ?? "application/json";
+      res.writeHead(200, {
+        "content-type": mime,
+        "x-content-type-options": "nosniff",
+        ...(mime === "text/html" ? { "content-security-policy": FOCUS_STRICT_CSP } : {}),
+      });
+      res.end(name === "dossier.json" ? focusReport : readFileSync(join(FOCUS_DIST, name)));
+      return;
+    }
+  } else if (url.pathname.startsWith("/bundle/")) file = join(BROWSER_DIST, url.pathname.slice("/bundle/".length));
   else if (url.pathname.startsWith("/ref/")) file = join(work, "dist", url.pathname.slice("/ref/".length));
   else if (url.pathname.startsWith("/themes/")) file = join(THEMES_CSS, url.pathname.slice("/themes/".length));
   else if (url.pathname.startsWith("/fixtures/")) file = join(FIXTURES, url.pathname.slice("/fixtures/".length));
@@ -519,19 +560,15 @@ const server = http.createServer((req, res) => {
   res.end("no such file");
 });
 
-const PORT = 4817;
-await new Promise((resolve) => server.listen(PORT, "127.0.0.1", resolve));
-const BASE = `http://127.0.0.1:${PORT}`;
+await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+const BASE = `http://127.0.0.1:${server.address().port}`;
 
 // ---------------------------------------------------------------------------
 // Step 4 — Chromium.
 // ---------------------------------------------------------------------------
 
 const puppeteer = await import("puppeteer-core");
-// Snap-confined Chromium cannot create its SingletonLock under $TMPDIR
-// (Permission denied, measured); /tmp is writable to it, so the throwaway
-// browser profile lives there, never in the session tmp root.
-const chromiumProfile = mkdtempSync("/tmp/st-elements-chromium-");
+const chromiumProfile = mkdtempSync(join(tmpdir(), "st-elements-chromium-"));
 const browser = await puppeteer.default.launch({
   executablePath: findChrome(),
   headless: "new",
@@ -550,7 +587,7 @@ try {
  * jsDelivr requests are aborted (nothing leaves the machine) and their
  * console failures are recorded as the EXPECTED degradation, not failures.
  */
-async function openPage(name) {
+async function openPage(name, { offline = false } = {}) {
   const page = await browser.newPage();
   await page.setCacheEnabled(false);
   const consoleErrors = [];
@@ -571,6 +608,8 @@ async function openPage(name) {
   page.on("pageerror", (error) => consoleErrors.push(String(error && error.message ? error.message : error)));
   await page.evaluateOnNewDocument(() => {
     window.__stViolations = [];
+    window.__focusReady = [];
+    document.addEventListener("st-dossier-ready", ({ detail }) => window.__focusReady.push(detail.reviewRoot));
     document.addEventListener("securitypolicyviolation", (event) => {
       window.__stViolations.push({
         directive: event.violatedDirective,
@@ -581,7 +620,8 @@ async function openPage(name) {
   });
   await page.setRequestInterception(true);
   page.on("request", (request) => {
-    if (request.url().startsWith("https://cdn.jsdelivr.net/")) {
+    const url = new URL(request.url());
+    if (["http:", "https:"].includes(url.protocol) && (offline || url.origin !== BASE)) {
       request.abort("blockedbyclient");
       return;
     }
@@ -592,7 +632,7 @@ async function openPage(name) {
   page.on("requestfailed", (request) => {
     if (request.url().includes("cdn.jsdelivr.net")) failedAssets.push(request.url());
   });
-  await page.goto(`${BASE}${name}`, { waitUntil: "load", timeout: 60000 });
+  await page.goto(offline ? name : `${BASE}${name}`, { waitUntil: "load", timeout: 60000 });
   return {
     page,
     consoleErrors,
@@ -1672,8 +1712,47 @@ async function shadowSvg(page, elementSelector) {
 }
 
 // ---------------------------------------------------------------------------
-// End.
+// Focus kit payload and standalone assembler.
 // ---------------------------------------------------------------------------
+
+for (const [label, url, offline] of [
+  ["Focus strict", "/focus-kit/#annex%3Ameasurements", false],
+  ["Focus standalone", `${pathToFileURL(standalone).href}#annex%3Ameasurements`, true],
+]) {
+  const observed = await openPage(url, { offline });
+  const page = observed.page;
+  await page.waitForFunction(() => window.__focusReady.length > 0, { timeout: 2000 });
+  const state = await page.evaluate(() => {
+    const root = document.querySelector("[data-st-dossier]");
+    const annex = root.querySelector('[data-anchor-id="annex:measurements"]');
+    return {
+      title: root.querySelector("header h1").textContent,
+      ready: window.__focusReady.length === 1 && window.__focusReady[0] === root && root.getRootNode() === document,
+      open: annex.open,
+      focused: document.activeElement === annex,
+      styled: getComputedStyle(annex.querySelector("td")).borderTopWidth === "1px",
+      styles: document.querySelectorAll("style").length,
+      imageWidth: root.querySelector('img[alt="Rendered preview"]').naturalWidth,
+      embedded: document.querySelector("script[data-st-dossier-document]")?.textContent,
+    };
+  });
+  assert(state.title === "Build report" && state.ready && state.open && state.focused && state.styled &&
+    state.styles === Number(offline) && state.imageWidth === 1, label, JSON.stringify({ ...state, embedded: Boolean(state.embedded) }));
+  if (offline) {
+    assert(Buffer.from(state.embedded ?? "", "base64").toString("utf8") === offlineDocument,
+      "Focus standalone preserves canonical JSON bytes", "embedded bytes differ");
+  }
+  await page.evaluate(() => document.querySelector('[href="#shared-input"]').click());
+  await page.waitForFunction(() => document.activeElement?.dataset.anchorId === "shared-input", { timeout: 2000 });
+  const network = observed.requests.filter((request) => /^https?:/.test(request));
+  const external = network.filter((request) => offline || new URL(request).origin !== BASE);
+  const violations = await observed.violations();
+  assert(external.length === 0 && violations.length === 0 && observed.consoleErrors.length === 0,
+    `${label}: no external requests, CSP violations or console errors`,
+    JSON.stringify({ external, violations, errors: observed.consoleErrors }));
+  record(label, `${external.length} external requests, ${violations.length} CSP violations`);
+  await observed.close();
+}
 
 console.log("");
 console.log("MEASUREMENTS");

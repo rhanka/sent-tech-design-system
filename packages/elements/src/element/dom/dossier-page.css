@@ -1,0 +1,43 @@
+@import "./engines/dossier.css";
+
+[data-st-dossier-page] {
+  max-width: 72ch;
+  margin: auto;
+  padding: var(--st-spacing-6);
+  background-color: var(--st-semantic-surface-default);
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+.st-dossier :where(pre, code) {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.st-dossier__evidence img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.st-dossier :where(details, summary) {
+  margin-block: var(--st-spacing-2);
+}
+
+.st-dossier summary {
+  cursor: pointer;
+}
+
+.st-dossier table {
+  border-collapse: collapse;
+}
+
+.st-dossier :where(th, td) {
+  padding: var(--st-spacing-1) var(--st-spacing-2);
+  border: var(--st-borderWidth-thin) var(--st-borderStyle-solid) var(--st-semantic-border-subtle);
+  text-align: start;
+}
+
+.st-dossier__citations a {
+  margin-inline-start: var(--st-spacing-1);
+}
