@@ -83,6 +83,8 @@ export async function compareFocusMount(doc, ownerHtml) {
     const escape = (value) => String(value).replace(/[&<>"']/g, (char) =>
       ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
     const definition = (id) => `data-anchor-id="${escape(id)}" data-commentable`;
+    const renderedIds = new Set(Array.from(expected.querySelectorAll("[data-anchor-id]"),
+      (node) => node.getAttribute("data-anchor-id")));
     const sourceTitle = (id) => escape(doc.sources.find((source) => source.id === id).title);
     const calls = (refs) => refs.length ? `<span>${refs.map((ref) =>
       `<a href="${fragment(ref)}">[${citationNumbers.get(ref)}]</a>`).join("")}</span>` : "";
@@ -110,7 +112,8 @@ export async function compareFocusMount(doc, ownerHtml) {
         }
       }).join("");
       const backlinks = annex.backRefs.length ? `<p>Related blocks${annex.backRefs
-        .map((id) => ` · <a href="${fragment(id)}">${escape(id)}</a>`).join("")}</p>` : "";
+        .map((id) => renderedIds.has(id) ? ` · <a href="${fragment(id)}">${escape(id)}</a>` : ` · ${escape(id)}`)
+        .join("")}</p>` : "";
       const content = reportAnnexes[index] ? "" : `<summary>${escape(annex.title)}</summary><p>${escape(annex.summary)}</p>${blocks}`;
       return `<details ${definition(annex.id)}>${content}${backlinks}</details>`;
     }).join("");
