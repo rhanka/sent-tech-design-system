@@ -74,6 +74,7 @@ const THEMES_CSS = path.resolve(WORKTREE_ROOT, "packages", "themes", "css");
 const BAR_CHART_SOURCE = path.resolve(WORKTREE_ROOT, "packages", "components-svelte", "src", "lib", "BarChart.svelte");
 const ELEMENTS_ENTRY = join(BROWSER_DIST, "elements.js");
 const DOSSIER_MOUNT_ENTRY = fileURLToPath(import.meta.resolve("@sentropic/design-system-elements/dossier-mount"));
+const REVIEW_CORE_ENTRY = new URL(import.meta.resolve("@sentropic/design-system-review-core"));
 const MARKDOWN_MODULE = new URL("../../dist/element/markdown/minimal-markdown.js", import.meta.url);
 const FOCUS_KIT_MODULE = "@sentropic/design-system-elements/focus-kit";
 const kitManifestUrl = new URL(import.meta.resolve("@sentropic/design-system-elements/focus-kit/manifest.json"));
@@ -204,6 +205,8 @@ for (const [name, file] of kitFiles) {
   kitBytes += bytes.length;
 }
 record("Focus kit K", `${kitBytes} bytes across ${kitFiles.size} files`);
+const { version: reviewCoreVersion } = JSON.parse(readFileSync(new URL("../package.json", REVIEW_CORE_ENTRY), "utf8"));
+assert(reviewCoreVersion === "0.1.1", "Focus parity uses review-core 0.1.1", reviewCoreVersion);
 
 // ---------------------------------------------------------------------------
 // Step 2 — the reference harness: the Svelte BarChart mounted in the LIGHT
@@ -545,6 +548,7 @@ const server = http.createServer((req, res) => {
   }
   let file = null;
   const focusRoute = url.pathname.match(/^\/focus-kit\/(safe|application|strict)\/(.*)$/);
+  const reviewCoreModule = url.pathname.match(/^\/focus-review-core\/([\w-]+\.js)$/);
   if (focusRoute !== null) {
     const [, mode, asset] = focusRoute;
     const name = asset || kitManifest.entrypoint;
@@ -567,7 +571,8 @@ const server = http.createServer((req, res) => {
       res.end(body);
       return;
     }
-  } else if (url.pathname === "/focus-mount.js") file = DOSSIER_MOUNT_ENTRY;
+  } else if (reviewCoreModule !== null) file = fileURLToPath(new URL(reviewCoreModule[1], REVIEW_CORE_ENTRY));
+  else if (url.pathname === "/focus-mount.js") file = DOSSIER_MOUNT_ENTRY;
   else if (url.pathname.startsWith("/bundle/")) file = join(BROWSER_DIST, url.pathname.slice("/bundle/".length));
   else if (url.pathname.startsWith("/ref/")) file = join(work, "dist", url.pathname.slice("/ref/".length));
   else if (url.pathname.startsWith("/themes/")) file = join(THEMES_CSS, url.pathname.slice("/themes/".length));
