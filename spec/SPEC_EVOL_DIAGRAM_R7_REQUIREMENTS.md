@@ -4,6 +4,14 @@
 >
 > **Snapshot.** 2026-11-20, 21:00 EST (révision r5, voir « Revisions » ; r1 : 11:50 EST ; r2 : 14:16 EST ; r3 : 14:38 EST ; r4 : 19:13 EST). Dépôt DS lu en lecture seule (`origin/main` après fusion des PR #314 (`b303096b9`) et #319, branches et tags distants, `.track/events.jsonl` de la copie de travail locale, lu par `track item show`) ; PR lues via `gh`. Le `.track/events.jsonl` d'`origin/main` s'arrête au 07/11 (UTC) : les items track cités ici (12/11 à 20/11, dates UTC) n'existent que dans la copie locale, non committée. État au 20/11 21:00 EST : PR #314 fusionnée et wave 1.1 en cours de publication sous GO owner (diagram-core 0.4.1, diagram-canvas 0.3.1, tokens / themes 0.15.1, svelte 0.43.1, vue 0.41.0-next.9) ; PR #315 ouverte en tournée de correctifs 2 ; PR #317 et #318 ouvertes ; `design-system-svelte` 0.43.0 publié ; `review-core` 0.1.0 et 0.1.1 publiés.
 
+## Décision du 21/11 sur le zoom et l’ajustement
+
+> « L'utilisateur a les boutons de zoom et autolayout. Par défaut quand on redimensionne on autolayout zoom intégral + plancher à 30 % ».
+
+- [REQ-R7-09](#req-r7-09) retient `minReadableScale = 0.30` et `maxDisplayScale = 0.62`. L’indicateur affiche le zoom relatif au plafond.
+- [REQ-R7-30](#req-r7-30) demande de cadrer toute la figure au premier rendu, au pli et au dépli, au redimensionnement de la fenêtre ou du conteneur et au chargement des polices. Le défilement repart de l’origine. Le zoom manuel reste actif jusqu’au prochain réajustement. Si la figure exige une échelle inférieure à 0,30, elle défile à 0,30 sur les axes qui débordent et tout son contenu reste accessible.
+- Cette décision clôt D-11 pour le correctif V1-patch dans les deux hôtes, Svelte et Vue. Le snapshot du 20/11 ci-dessous conserve le comportement de référence de la vague 1.1. Item Track `01M7Z0EP2JGX2D4BF0NJP1WEDY`.
+
 ## Conventions
 
 - **Quotes.** « … » = verbatim owner. *Relayed* = texte consigné par un tiers (d2d-cond, conducteur engram, note DS, plan DS, item track), cité tel qu'enregistré, en anglais quand la source est en anglais. Verbatim owner direct absent des sources = `missing source`.
