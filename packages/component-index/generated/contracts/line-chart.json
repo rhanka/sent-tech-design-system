@@ -1,7 +1,7 @@
 {
   "componentId": "line-chart",
   "contractSource": "derived",
-  "digest": "sha256:4aa067f23d278753f41d3eef53e4d38c772da9f9595df14a8b3e184d16ae16d8",
+  "digest": "sha256:8496f41d4e0f68605936cd496db0ad22fb45ecc5caba9e031155bf6f03dda525",
   "entryDigest": "sha256:d6c331f6721f6f5b0a381fbc920be10aeaaaa68cb80d949aee69e23832fd927e",
   "format": "component-contract/v1",
   "frameworks": {
@@ -922,6 +922,12 @@
           "name": "dataLabels.format",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "(value: number) => string"
+        },
+        {
+          "kind": "function",
+          "name": "formatX",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(x: string | number) => string"
         }
       ],
       "events": [
@@ -1331,6 +1337,10 @@
               "log"
             ]
           },
+          "showDataList": {
+            "description": "A composed chart can provide a shared accessible data table.",
+            "type": "boolean"
+          },
           "showLegend": {
             "description": "Toggles the legend if the chart has one. LineChart is single-series and has\nno legend surface, so this prop is accepted for parity and otherwise ignored.",
             "type": "boolean"
@@ -1356,6 +1366,19 @@
           },
           "width": {
             "type": "number"
+          },
+          "xDomain": {
+            "description": "Fixed numeric x domain shared by aligned LineCharts.",
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
           }
         },
         "required": [
@@ -1367,7 +1390,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:ff7ca2461e92faa1a1a738b173922c1ad36b46aeb1e3ace3fa66bcc192a88f80",
+        "declarationDigest": "sha256:66583bfc41af7af854be11184cb6fced40b366d7453ba3bc0d13fbd015ddf853",
         "declarationPath": "packages/components-svelte/dist/LineChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LineChartProps",
