@@ -1,4 +1,6 @@
 {
+  "kind": "report",
+  "schemaVersion": 2,
   "ref": "focus-test",
   "subject": "Review fixture",
   "title": "Review fixture",
@@ -16,18 +18,22 @@
     "readingBudgetMinutes": 3
   },
   "amendmentTrace": [],
+  "sources": [],
+  "citations": [],
+  "evidenceGroups": [],
+  "annexes": [],
   "sections": [
     {
       "kind": "prose",
       "id": "A",
       "targetRef": "focus-test",
-      "markdown": "First section."
+      "markdown": "In short: The fixture exercises anchors around nested content."
     },
     {
       "kind": "prose",
       "id": "B",
       "targetRef": "focus-test",
-      "markdown": "Paragraph with **inner text**.\n\n- List item with **inner text**.\n\n| Metric | Count |\n| --- | --- |\n| **Builds** | 1 |"
+      "markdown": "Paragraph with **inner text**.\n\n- List item with **inner text**.\n\n| Metric | Count |\n| --- | --- |\n| **Builds** | One |"
     },
     {
       "kind": "prose",

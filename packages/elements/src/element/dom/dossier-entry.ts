@@ -2,8 +2,6 @@ import "../../../../themes/css/sent-tech.css";
 import "./dossier-page.css";
 import { mountDossier } from "./dossier-mount.js";
 
-export { mountDossier };
-
 async function readDocument(host: HTMLElement): Promise<unknown> {
   const embedded = host.ownerDocument.querySelector<HTMLScriptElement>("script[data-st-dossier-document]");
   if (embedded !== null) {
