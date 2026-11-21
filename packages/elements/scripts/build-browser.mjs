@@ -17,8 +17,7 @@
 // ENTRY loads statically is "core" (it is page weight no matter which
 // element mounts); everything the engine facades pull in at load time
 // belongs to the engine's group, and the two non-default themes to theirs.
-// Anything unclassified falls back to "core" — the budget stays honest to
-// the pessimistic side.
+// Anything unclassified falls back to "core" and counts against the budget.
 //
 // 0 Python. Node only. Wired as `npm run build:browser` in package.json.
 
@@ -72,7 +71,7 @@ const result = await build({
     modulePreload: false,
     // The wrapper modules only DEFINE their custom element at import time —
     // an effect the bundler cannot see through the package manifest's
-    // `sideEffects: false` (right for the NODE half, whose library modules
+    // side-effect-free JS declaration (right for the NODE half, whose library modules
     // are pure). Rolldown honors that flag over `moduleSideEffects`, so the
     // browser build keeps the whole module graph and splits ONLY along the
     // DYNAMIC import boundaries (the lazy engines and themes, §6.6).
@@ -214,3 +213,5 @@ console.log(lines.join("\n"));
 console.log(`sri.json pins ${Object.keys(files).length} files under ${relative(packageDir, browserDir)}`);
 const stats = statSync(join(browserDir, "sri.json"));
 console.log(`sri.json itself: ${stats.size} raw bytes (not listed in its own manifest)`);
+
+await import("./build-dossier.mjs");

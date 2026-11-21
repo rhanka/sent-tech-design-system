@@ -12,7 +12,7 @@
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
     "directory": "packages/elements"
   },
-  "sideEffects": false,
+  "sideEffects": ["**/*.css"],
   "files": [
     "dist",
     "catalog.json",
@@ -36,13 +36,23 @@
     "./bpmn-mount": {
       "types": "./dist/element/bpmn-mount.d.ts",
       "import": "./dist/element/bpmn-mount.js"
-    }
+    },
+    "./dossier-mount": {
+      "types": "./dist/element/dom/dossier-mount.d.ts",
+      "import": "./dist/focus-kit/renderer/dossier.js"
+    },
+    "./focus-kit": {
+      "types": "./dist/focus-kit.d.ts",
+      "import": "./dist/focus-kit.js"
+    },
+    "./focus-kit/manifest.json": "./dist/focus-kit-manifest.json",
+    "./focus-kit/*": "./dist/focus-kit/*"
   },
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "scripts": {
     "build": "npm run build:node && npm run build:browser",
-    "build:node": "tsc -p tsconfig.json",
+    "build:node": "tsc -p tsconfig.json && tsc -p tsconfig.dossier.json",
     "build:browser": "node scripts/build-browser.mjs",
     "check": "tsc -p tsconfig.check.json && tsc -p tsconfig.dom.json",
     "test": "vitest run",
