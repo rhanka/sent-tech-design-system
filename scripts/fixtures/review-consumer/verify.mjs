@@ -79,7 +79,10 @@ for (const name of ["window", "document", "Node", "Element", "HTMLElement", "Tex
   globalThis[name] = window[name];
 }
 
-const { CommentLayer, createFixtureCommentsAdapter, decodeAnchor, resolveAnchor, flushSync, mount, tick, unmount } = await import("./dist/review.js");
+const { CommentLayer, reviewComponents, createFixtureCommentsAdapter, decodeAnchor, resolveAnchor, flushSync, mount, tick, unmount } = await import("./dist/review.js");
+for (const [name, component] of Object.entries(reviewComponents)) {
+  assert.equal(typeof component, "function", `${name} must be a public Svelte component`);
+}
 const root = document.querySelector("main");
 const block = root.querySelector('[data-anchor-id="B"]');
 const lastBlock = root.querySelector('[data-anchor-id="C"]');

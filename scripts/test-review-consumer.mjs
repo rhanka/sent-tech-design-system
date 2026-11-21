@@ -38,7 +38,7 @@ console.log(`Review consumer host: ${host}`);
 const checkout = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, env, encoding: "utf8" }).trim();
 console.log(`DS checkout: ${checkout}`);
 const lock = readJson(join(root, "package-lock.json"));
-const tools = ["svelte", "vite", "@sveltejs/vite-plugin-svelte", "jsdom"];
+const tools = ["svelte", "vite", "@sveltejs/vite-plugin-svelte", "jsdom", "typescript"];
 const dependencies = Object.fromEntries(tools.map((name) => [name, lock.packages[`node_modules/${name}`].version]));
 for (const [name, expected] of Object.entries(packages)) {
   const spec = `${name}@${expected.version}`;
@@ -66,4 +66,5 @@ assert.equal(installed[`node_modules/${components}/node_modules/${core}`]?.versi
 
 const fixture = fileURLToPath(new URL("./fixtures/review-consumer/", import.meta.url));
 cpSync(fixture, host, { recursive: true });
+run(process.execPath, ["check-exports.mjs"]);
 run(process.execPath, ["verify.mjs"]);

@@ -18,9 +18,9 @@
 //   `@sveltejs/vite-plugin-svelte`) and then through the real
 //   `svelte/compiler` `compile()`. A file a bundler cannot parse - the
 //   defect class that prompted this rewrite - fails here, by filename, with
-//   the compiler's own error. This is deliberately a direct compile, not a
-//   full Vite/bundler build: faster, deterministic, and it covers every
-//   shipped component instead of only the handful a demo app would import.
+//   the compiler's own error. The direct compile covers every shipped component.
+//   A separate Vite entry bundles the public review components and TypeScript
+//   checks their props using the installed declarations.
 // - @sentropic/design-system-react / -vue / -angular: the packed tarball's
 //   main entry is `await import()`-ed for real, with peer runtimes
 //   (react/react-dom, vue, @angular/core) installed fresh in the throwaway
@@ -40,7 +40,6 @@
 //   force Node's JIT fallback path instead. That proves the module graph and
 //   export shapes are real and resolvable, but does not exercise the actual
 //   linker step a consumer's build performs.
-// - No bundler build (Vite/webpack/Rollup) is run against any package.
 // - Only the 18 packages listed below are covered by the tarball-shape and
 //   deep-import checks. The other 5 publishable packages - theme-dsfr,
 //   theme-canada, theme-quebec, theme-latex, codemirror - and apps/* are
@@ -419,6 +418,7 @@ const deepVerify = {
       ["svelte", rootManifest.devDependencies.svelte],
       ["vite", rootManifest.devDependencies.vite],
       ["@sveltejs/vite-plugin-svelte", rootManifest.devDependencies["@sveltejs/vite-plugin-svelte"]],
+      ["typescript", ts.version],
     ],
   },
   // RT-1: the neutral rich-text package. No local closure (its only runtime
@@ -804,6 +804,14 @@ try {
       deepTargets.map((pkg) => pkg.name),
     );
     run("node", [verifyPath], { cwd: installDir });
+
+    if (deepTargets.some((pkg) => pkg.name === "@sentropic/design-system-svelte")) {
+      const reviewFixture = join(root, "scripts", "fixtures", "review-consumer");
+      for (const file of ["check-exports.mjs", "review-exports.ts"]) {
+        cpSync(join(reviewFixture, file), join(installDir, file));
+      }
+      run(process.execPath, ["check-exports.mjs", "--bundle"], { cwd: installDir });
+    }
 
     // The primary Vue surface must install with its pinned prerelease peer and
     // type-check the packed declarations, without workspace resolution or casts.
