@@ -247,7 +247,7 @@ const packages = [
   },
   {
     name: "@sentropic/design-system-elements",
-    // L7a: the published tarball carries the catalogue trio and the schemas
+    // L7a/EZ-1: the published tarball carries the catalogue and schemas
     // at the package root next to dist/ (register AMB-1). The hashed lazy
     // chunks are owned by scripts/elements-publish-tarball.test.mjs through
     // sri.json and are never enumerated here.
@@ -259,8 +259,10 @@ const packages = [
       "schemas/BarChart.v1.json",
       "schemas/BpmnCanvas.v1.json",
       "schemas/DecisionDossier.v1.json",
+      "schemas/TimeSeriesChart.v1.json",
       "dist/browser/elements.js",
       "dist/browser/sri.json",
+      "dist/shells/manifest.json",
     ],
     // The tarball-shape half of the no-map assertion (the guard owns it).
     absentPatterns: ["\\.map$"],
