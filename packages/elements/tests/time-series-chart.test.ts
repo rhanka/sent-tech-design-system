@@ -4,6 +4,7 @@ import catalog from "../catalog.json";
 import envelopeSchema from "../envelope.json";
 import { a2uiCommonTypes as commonTypes } from "../src/generated/a2ui-common-types.js";
 import { createInterpreterStructure } from "../src/structure/interpreter.js";
+import { formatTimeSeriesMarkdown, TIME_SERIES_FALLBACK_LIMIT_BYTES } from "../src/index.js";
 import { createEnvelopeValidator } from "../src/validate/index.js";
 import single from "./fixtures/time-series-single.json";
 import multi from "./fixtures/time-series-multi.json";
@@ -41,5 +42,44 @@ describe.each([
     expect(validator.validate(fixture)).toEqual(expect.arrayContaining([
       expect.objectContaining({ path, severity: "error" }),
     ]));
+  });
+});
+
+describe("TimeSeriesChart Markdown fallback", () => {
+  it("should use UTC milliseconds and break timestamp ties by series order", () => {
+    expect(formatTimeSeriesMarkdown(single.root)).toContain("| 2026-01-01T00:00:00.123Z | Jobs | 4 |");
+    expect(formatTimeSeriesMarkdown(multi.root).split("\n").slice(2)).toEqual([
+      "| 2026-01-01T00:00:00.000Z | East | 10 |",
+      "| 2026-01-01T01:00:00.000Z | East | 21 |",
+      "| 2026-01-01T01:00:00.000Z | West | 14 |",
+      "| 2026-01-01T02:00:00.000Z | West | 8 |",
+      "| 2026-01-01T03:00:00.000Z | East | 15 |",
+      "| 2026-01-01T03:00:00.000Z | West | 20 |",
+    ]);
+    for (const fixture of [single, multi, thresholds]) {
+      expect(Buffer.byteLength(formatTimeSeriesMarkdown(fixture.root))).toBeLessThanOrEqual(4096);
+    }
+  });
+
+  it("should escape labels while retaining one row per observation", () => {
+    const props = {
+      ...single.root,
+      series: [{ id: "series", label: "🧪 | <em>\nNext", data: [{ x: 1, y: 2 }] }],
+    };
+    expect(formatTimeSeriesMarkdown(props).split("\n").at(-1)).toBe(
+      "| 1970-01-01T00:00:00.001Z | 🧪 &#124; &#60;em&#62;&#10;Next | 2 |",
+    );
+  });
+
+  it("should accept 4096 UTF-8 bytes and refuse an overflow without dropping rows", () => {
+    const format = (label: string) => formatTimeSeriesMarkdown({
+      label: "Bounded",
+      series: [{ id: "series", label, data: [{ x: 1, y: 2 }] }],
+    });
+    const prefix = "🧪\uD800";
+    const filler = TIME_SERIES_FALLBACK_LIMIT_BYTES - Buffer.byteLength(format(prefix));
+    const label = prefix + "a".repeat(filler);
+    expect(Buffer.byteLength(format(label))).toBe(4096);
+    expect(() => format(label + "a")).toThrow(RangeError);
   });
 });
