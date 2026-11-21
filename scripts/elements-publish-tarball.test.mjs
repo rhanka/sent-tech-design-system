@@ -85,6 +85,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, 
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { gzipSync } from "fflate";
 
 import { namesChannelOnly, W4_PLACEHOLDERS, watermarkFindings } from "./elements-watermark-w4.test.mjs";
 
@@ -149,6 +150,7 @@ export const TARBALL_REQUIRED_FILES = [
   "dist/index.d.ts",
   "dist/browser/elements.js",
   "dist/browser/sri.json",
+  "dist/shells/manifest.json",
 ];
 
 /** Source, test and scratch trees that must never ship (register AMB-1). */
@@ -362,6 +364,41 @@ test("AC-L7a: sri.json pins the tarball bytes (every entry recomputed from the e
   assert.deepStrictEqual(drift, [], `sri.json does not match the TARBALL bytes:\n${drift.join("\n")}`);
   const unlisted = tarballUnlistedFiles(extractedBrowserDir, sri);
   assert.deepStrictEqual(unlisted, [], `tarball dist/browser holds files absent from sri.json: ${unlisted.join(", ")}`);
+});
+
+test("EZ-1: the packed shell manifest pins qualified HTML, modules and input schemas", (t) => {
+  if (skipWhenUnbuilt(t)) return;
+  const { packageDir, manifest: pkg, files } = packedTarballContext();
+  const read = (path) => readFileSync(join(packageDir, path));
+  const manifest = JSON.parse(read("dist/shells/manifest.json"));
+  const catalog = JSON.parse(read("catalog.json"));
+  const fingerprint = (bytes) => ({ bytes: bytes.length, sha256: createHash("sha256").update(bytes).digest("hex") });
+  assert.strictEqual(manifest.version, pkg.version);
+  assert.deepStrictEqual(manifest.budgets, { rawExclusive: 983040, gzipInclusive: 153600 });
+  assert.deepStrictEqual(manifest.compression, { engine: "fflate@0.8.3", level: 6, mtime: 0 });
+  assert.deepStrictEqual(Object.keys(manifest.components).sort(), Object.keys(catalog.components).sort());
+  for (const [path, digest] of Object.entries(manifest.inputs)) {
+    assert.deepStrictEqual(fingerprint(read(path)), digest, path);
+  }
+  for (const [name, entry] of Object.entries(manifest.components)) {
+    assert.strictEqual(entry.element, catalog.components[name]["x-sentropic"].element);
+    assert.ok(manifest.inputs[entry.schema], `${name}: missing schema fingerprint`);
+    if (entry.status === "partial") {
+      assert.strictEqual(name, "BpmnCanvas");
+      assert.strictEqual(entry.fallback, "text");
+      assert.strictEqual(entry.url, "host");
+      assert.ok(entry.complete.bytes >= 983040 || entry.complete.gzip > 153600);
+      assert.ok(!files.includes(`dist/shells/${name}.html`) && !files.includes(`dist/shells/${name}.js`));
+      continue;
+    }
+    assert.strictEqual(entry.status, "qualified");
+    const html = read(`dist/shells/${entry.shell}`);
+    const { path, ...moduleFingerprint } = entry.module;
+    assert.deepStrictEqual(fingerprint(read(`dist/shells/${path}`)), moduleFingerprint, name);
+    const gzip = gzipSync(html, { level: 6, mtime: 0 }).length;
+    assert.deepStrictEqual({ ...fingerprint(html), gzip }, entry.complete, name);
+    assert.ok(html.length < 983040 && gzip <= 153600, `${name}: shell exceeds budgets`);
+  }
 });
 
 test("AC-L7a: no watermark license value ships in the tarball", (t) => {

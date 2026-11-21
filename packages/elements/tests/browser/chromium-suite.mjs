@@ -68,12 +68,18 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PACKAGE_DIR = path.resolve(HERE, "..", "..");
 const WORKTREE_ROOT = path.resolve(PACKAGE_DIR, "..", "..");
 const BROWSER_DIST = join(PACKAGE_DIR, "dist", "browser");
+const SHELL_DIST = join(PACKAGE_DIR, "dist", "shells");
 const FIXTURES = join(PACKAGE_DIR, "tests", "fixtures");
 const THEMES_CSS = path.resolve(WORKTREE_ROOT, "packages", "themes", "css");
 const BAR_CHART_SOURCE = path.resolve(WORKTREE_ROOT, "packages", "components-svelte", "src", "lib", "BarChart.svelte");
 const ELEMENTS_ENTRY = join(BROWSER_DIST, "elements.js");
 const PDATA_FIXTURES = [1, 2, 3, 4, 5].map((n) => `bar-chart-pdata-${n}.json`);
 const TIME_SERIES_FIXTURES = ["single", "multi", "thresholds"].map((name) => `time-series-${name}.json`);
+const SHELL_FIXTURES = [
+  ["BarChart", "st-bar-chart", "bar-chart-pdata-1.json", "svg"],
+  ["DecisionDossier", "st-decision-dossier", "decision-dossier.json", "[data-st-dossier]"],
+  ...TIME_SERIES_FIXTURES.map((name) => ["TimeSeriesChart", "st-time-series-chart", name, "table tbody tr"]),
+];
 
 /**
  * §6.4 pilot CSP: the MCP Apps default (MCPA:276-285 — a `ui://` document
@@ -424,6 +430,11 @@ const PAGES = {
   `,
   ),
 };
+
+for (const [component, , fixture] of SHELL_FIXTURES) {
+  const html = readFileSync(join(SHELL_DIST, `${component}.html`), "utf8");
+  PAGES[`/shell/${fixture}`] = html.replace("<!-- st-envelope -->", () => islandScript(readFixture(fixture)));
+}
 
 // The strict and theme pages mount ONE reference each (into their own
 // element ids), so they get their own built entries; the harness's emitted
@@ -954,10 +965,15 @@ async function shadowSvg(page, elementSelector) {
         state: element.state ?? null,
         rows: [...(root?.querySelectorAll("table tbody tr") ?? [])].map((row) =>
           [...row.cells].map((cell) => cell.textContent.trim())),
-        series: [...(root?.querySelectorAll('[role="img"]') ?? [])].map((chart) => ({
-          label: chart.getAttribute("aria-label"),
-          x: [...chart.querySelectorAll("circle[data-chart-index]")].map((point) => Number(point.getAttribute("cx"))),
-        })),
+        series: [...(root?.querySelectorAll('[role="img"]') ?? [])].map((chart) => {
+          const line = chart.querySelector("path.st-lineChart__line");
+          return {
+            label: chart.getAttribute("aria-label"),
+            points: [...chart.querySelectorAll("circle[data-chart-index]")].map((point) =>
+              [Number(point.getAttribute("cx")), Number(point.getAttribute("cy"))]),
+            stroke: line && getComputedStyle(line).stroke,
+          };
+        }),
         overlays: [...(root?.querySelectorAll("svg text") ?? [])].map((label) => label.textContent.trim()),
       };
     }));
@@ -971,11 +987,15 @@ async function shadowSvg(page, elementSelector) {
     assert(mount.state === "rendered", name, `expected rendered, got ${mount.state}`);
     assert(JSON.stringify(mount.rows) === JSON.stringify(expectedRows), name, `table differs: ${JSON.stringify(mount.rows)}`);
     assert(mount.series.length === root.series.length && mount.series.every((series, i) =>
-      series.label === root.series[i].label && series.x.length === root.series[i].data.length && series.x.every(Number.isFinite)),
+      series.label === root.series[i].label && series.points.length === root.series[i].data.length &&
+      series.points.flat().every(Number.isFinite) && series.stroke && series.stroke !== "none" &&
+      series.points.every(([, cy], pointIndex) => series.points.every(([, otherY], otherIndex) =>
+        Math.sign(otherY - cy) === Math.sign(root.series[i].data[pointIndex].y - root.series[i].data[otherIndex].y)))),
     name, `plot differs: ${JSON.stringify(mount.series)}`);
   }
   const [east, west] = mounts[1].series;
-  assert(east?.x[1] !== undefined && east.x[1] === west?.x[0] && east.x[2] === west.x[2],
+  assert(east?.points[1]?.[0] !== undefined && east.points[1][0] === west?.points[0]?.[0] &&
+    east.points[2][0] === west.points[2][0],
     "time-series: shared domain", `timestamps do not align: ${JSON.stringify(mounts[1].series)}`);
   assert(["Warning", "Deployment", "Expected range", "Goal"].every((label) => mounts[2].overlays.includes(label)),
     "time-series: overlays", `missing labels: ${JSON.stringify(mounts[2].overlays)}`);
@@ -985,6 +1005,21 @@ async function shadowSvg(page, elementSelector) {
   const violations = await observed.violations();
   assert(violations.every((violation) => violation.directive.startsWith("style-src")),
     "time-series: strict CSP", JSON.stringify(violations));
+  await observed.close();
+}
+
+// Each qualified shell renders its fixture with one document request.
+for (const [component, tag, fixture, selector] of SHELL_FIXTURES) {
+  const pathname = `/shell/${fixture}`;
+  const observed = await openPage(pathname);
+  const label = `${component} shell, ${fixture}`;
+  await waitFor(observed.page, `() => document.querySelector(${JSON.stringify(tag)})?.shadowRoot?.querySelector(${JSON.stringify(selector)})`,
+    20000, label);
+  assert(observed.requests.every((url) => url === BASE + pathname), label, `unexpected requests: ${observed.requests.join(", ")}`);
+  assert(observed.consoleErrors.length === 0, label, observed.consoleErrors.join(" | "));
+  const violations = await observed.violations();
+  assert(violations.length === 0, label, JSON.stringify(violations));
+  ok(label);
   await observed.close();
 }
 
