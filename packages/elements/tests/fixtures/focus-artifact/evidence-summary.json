@@ -1,0 +1,48 @@
+{
+  "kind": "report",
+  "schemaVersion": 2,
+  "ref": "focus-test",
+  "subject": "Review fixture",
+  "title": "Report with an uncited source",
+  "hash": "b5-v1",
+  "cursor": "2026-11-02T00:00:00Z",
+  "interactions": [],
+  "provenance": {
+    "source": "track",
+    "readAt": "2026-11-02T00:00:00Z"
+  },
+  "readability": {
+    "ownerRequestQuote": "Pick one shared way to render interface pieces from plain data.",
+    "stakes": "The choice decides how much effort the team spends keeping every screen consistent.",
+    "stakesLevel": "medium",
+    "readingBudgetMinutes": 3
+  },
+  "amendmentTrace": [],
+  "sources": [
+    {
+      "id": "build-log",
+      "title": "Build log",
+      "origin": {
+        "repo": "example/project",
+        "revision": "a1b2c3d",
+        "path": "logs/build.txt"
+      },
+      "mediaType": "text/plain",
+      "encoding": "base64",
+      "data": "VHdvIHJlbmRlcmluZyBwYXRocyBzaGFyZSBhbiBpbnB1dC4KVGhlIGJ1aWxkIHJ1bnMgb25jZS4K",
+      "sha256": "82c6a0fd415d798391c24cd66cb7da5a4172c4fd689bed2d987d9c652a00f15d",
+      "size": 57
+    }
+  ],
+  "citations": [],
+  "evidenceGroups": [],
+  "annexes": [],
+  "sections": [
+    {
+      "kind": "prose",
+      "id": "A",
+      "targetRef": "focus-test",
+      "markdown": "In short: The fixture exercises anchors around nested content."
+    }
+  ]
+}

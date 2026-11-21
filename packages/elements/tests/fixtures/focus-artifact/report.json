@@ -1,0 +1,147 @@
+{
+  "ref": "build-report",
+  "subject": "Shared rendering contract",
+  "title": "Build report",
+  "hash": "l6short2",
+  "cursor": "2026-11-02T00:00:00Z",
+  "sections": [
+    {
+      "kind": "prose",
+      "id": "p1",
+      "targetRef": "build-report",
+      "markdown": "In short: The measured build used one input.",
+      "citationRefs": [
+        "shared-input"
+      ]
+    }
+  ],
+  "interactions": [],
+  "provenance": {
+    "source": "track",
+    "readAt": "2026-11-02T00:00:00Z"
+  },
+  "readability": {
+    "ownerRequestQuote": "Pick one shared way to render interface pieces from plain data.",
+    "stakes": "The choice decides how much effort the team spends keeping every screen consistent.",
+    "stakesLevel": "medium",
+    "readingBudgetMinutes": 3
+  },
+  "amendmentTrace": [],
+  "schemaVersion": 2,
+  "sources": [
+    {
+      "id": "build-log",
+      "title": "Build log",
+      "origin": {
+        "uri": "https://example.test/build-log"
+      },
+      "mediaType": "text/plain",
+      "encoding": "base64",
+      "data": "VHdvIHJlbmRlcmluZyBwYXRocyBzaGFyZSBhbiBpbnB1dC4KVGhlIGJ1aWxkIHJ1bnMgb25jZS4K",
+      "sha256": "82c6a0fd415d798391c24cd66cb7da5a4172c4fd689bed2d987d9c652a00f15d",
+      "size": 57
+    },
+    {
+      "id": "preview",
+      "title": "Preview screenshot",
+      "origin": {
+        "uri": "https://example.test/preview"
+      },
+      "mediaType": "image/png",
+      "encoding": "base64",
+      "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a7uUAAAAASUVORK5CYII=",
+      "sha256": "e8fbb193456cbf99a0cea276de7483aa72447cd4e0ab25d11c0f3a89aac00439",
+      "size": 68,
+      "width": 1,
+      "height": 1,
+      "alt": "Rendered preview"
+    }
+  ],
+  "citations": [
+    {
+      "id": "shared-input",
+      "sourceId": "build-log",
+      "label": "Shared input",
+      "locator": {
+        "kind": "lines",
+        "start": 1,
+        "end": 1
+      }
+    },
+    {
+      "id": "single-build",
+      "sourceId": "build-log",
+      "label": "Single build",
+      "locator": {
+        "kind": "lines",
+        "start": 2,
+        "end": 2
+      }
+    },
+    {
+      "id": "preview-citation",
+      "sourceId": "preview",
+      "label": "Preview",
+      "locator": {
+        "kind": "image",
+        "caption": "Successful render"
+      }
+    }
+  ],
+  "evidenceGroups": [
+    {
+      "id": "build-evidence",
+      "summary": "Build evidence",
+      "citationRefs": [
+        "shared-input",
+        "single-build",
+        "preview-citation"
+      ],
+      "sourceRefs": [
+        "build-log",
+        "preview"
+      ]
+    }
+  ],
+  "annexes": [
+    {
+      "id": "annex:measurements",
+      "title": "Measurements",
+      "summary": "Full run details.",
+      "backRefs": [
+        "p1"
+      ],
+      "blocks": [
+        {
+          "kind": "text",
+          "text": "Measured on the same runner."
+        },
+        {
+          "kind": "code",
+          "language": "text",
+          "text": "run: render"
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Metric",
+            "Count"
+          ],
+          "rows": [
+            [
+              "Builds",
+              "One"
+            ]
+          ]
+        },
+        {
+          "kind": "references",
+          "citationRefs": [
+            "shared-input"
+          ]
+        }
+      ]
+    }
+  ],
+  "kind": "report"
+}

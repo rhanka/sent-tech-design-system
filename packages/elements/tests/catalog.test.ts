@@ -341,9 +341,9 @@ describe("AC-L1: no implicit any in the generated schemas, or an inventory of ea
     // The urn identity and the sha256 pin are recorded in x-sentropic.semantic
     // and verified by the generator against the installed package file.
     const xSentropic = (dd["x-sentropic"] as { semantic?: { schemaId?: string } }).semantic;
-    expect(xSentropic?.schemaId).toBe("urn:sentropic:focus:DecisionDossierDocument:1.0.0");
+    expect(xSentropic?.schemaId).toBe("urn:sentropic:focus:DecisionDossierDocument:1.1.0");
     const pinned = contracts.find((contract) => contract.component === "DecisionDossier");
-    expect(pinned?.semantic?.sha256).toBe("725bc07e7c6b6ad51a1f720cc9fb02649d8f31bc54e71c61c350fd20058c8852");
+    expect(pinned?.semantic?.sha256).toBe("f4b5247f025e99081c20fd9a8b0ed98b32a061c4a98597010be0264e5e564c6c");
   });
 });
 

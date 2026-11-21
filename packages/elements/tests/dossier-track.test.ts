@@ -304,12 +304,7 @@ describe("Task 7 pilot render: F-R0–F-R7 hold on the real 24-question dossier"
     }
   });
 
-  it("groups each optionSet under its question, matching the owner section order (criterion 2 parity)", () => {
-    // L6c parity: the owner `renderHtml` runs `preparePresentation`, which
-    // pairs each question with its linked optionSets (`questionId`); the DS
-    // renderer applies the same grouping. The published Track projection
-    // emits prose, 24 questions, 24 optionSets, outcome — grouped on both
-    // sides after the fix.
+  it("groups the legacy dossier's option sets after their questions", () => {
     const document_ = trackDoc();
     const sections = document_.sections as Record<string, unknown>[];
     expect(sections.map((s) => String(s.kind))).toEqual([
@@ -318,36 +313,13 @@ describe("Task 7 pilot render: F-R0–F-R7 hold on the real 24-question dossier"
       ...Array.from({ length: 24 }, () => "optionSet"),
       "outcome",
     ]);
-    const ownerHtml = renderHtml(document_ as never, {
+    // Focus 0.6 tightened presentation rules after this fixture was captured.
+    expect(() => renderHtml(document_ as never, {
       renderMarkdown: (markdown: string) => renderMarkdown(markdown),
       sanitizeHtml: (html: string) => html,
-    });
-    const ownerContainer = document.createElement("div");
-    ownerContainer.innerHTML = ownerHtml;
-    const article = ownerContainer.querySelector("article");
-    expect(article).not.toBeNull();
-    const ownerKinds = Array.from(article!.querySelectorAll(":scope > section, :scope > header, :scope > figure"))
-      .map((el) => el.className)
-      .filter(
-        (cls) =>
-          !cls.includes("focus-header") &&
-          !cls.includes("focus-readability") &&
-          !cls.includes("focus-affordances"),
-      )
-      .map((cls) =>
-        cls.includes("focus-question")
-          ? "question"
-          : cls.includes("focus-optionset")
-            ? "optionSet"
-            : cls.includes("focus-outcome")
-              ? "outcome"
-              : cls.includes("focus-amendment-trace")
-                ? "amendmentTrace"
-                : "prose",
-      );
+    })).toThrow("missing_en_bref_takeaway");
     const sets = sections.filter((s) => s.kind === "optionSet");
     const questions = sections.filter((s) => s.kind === "question");
-    // Every set is linked to its question: neither side drops anything.
     expect(sets.every((set) => questions.some((q) => q.id === set.questionId))).toBe(true);
     // Expected order computed in the test from the grouping rule: each
     // question immediately followed by its linked set(s) in document order.
@@ -356,7 +328,6 @@ describe("Task 7 pilot render: F-R0–F-R7 hold on the real 24-question dossier"
       if (s.kind !== "question") return [String(s.kind)];
       return ["question", ...sets.filter((t) => t.questionId === s.id).map(() => "optionSet")];
     });
-    expect(ownerKinds).toEqual([...grouped, "amendmentTrace"]);
     const { target, stop } = renderTrack();
     try {
       const renderedKinds = Array.from(
@@ -369,7 +340,6 @@ describe("Task 7 pilot render: F-R0–F-R7 hold on the real 24-question dossier"
         if (el.hasAttribute("data-st-trace")) return "amendmentTrace";
         return "prose";
       });
-      // DS order matches the owner order: no drop, no duplicate.
       expect(renderedKinds).toEqual(grouped);
       // Each question is immediately followed by its linked set(s).
       const renderedIds = Array.from(
@@ -387,15 +357,13 @@ describe("Task 7 pilot render: F-R0–F-R7 hold on the real 24-question dossier"
       expect(Array.from(target.querySelectorAll("[data-option-id]")).map((c) => c.getAttribute("data-option-id"))).toEqual(
         expectedIds,
       );
-      // Content agrees on both sides.
-      const ownerLabels = Array.from(article!.querySelectorAll(".focus-option strong")).map((el: Element) =>
+      const renderedLabels = Array.from(target.querySelectorAll(".st-dossier__optionLabel")).map((el: Element) =>
         norm(el.textContent),
       );
-      expect(ownerLabels).toEqual(
+      expect(renderedLabels).toEqual(
         sets.flatMap((s) => (s.options as Record<string, unknown>[]).map((o) => norm(o.label as string))),
       );
       const outcome = sections.find((s) => s.kind === "outcome") as Record<string, unknown>;
-      expect(norm(article!.querySelector(".focus-outcome p")?.textContent)).toBe(norm(outcome.statement as string));
       expect(norm(target.querySelector(".st-dossier__outcomeText")?.textContent)).toBe(norm(outcome.statement as string));
     } finally {
       cleanup(stop, target);
@@ -406,27 +374,27 @@ describe("Task 7 pilot render: F-R0–F-R7 hold on the real 24-question dossier"
     // Owner rule (`preparePresentation`): the recommended option label is
     // prefixed with an em dash unless the answer already starts with it.
     const document_ = trackDoc();
-    const ownerHtml = renderHtml(document_ as never, {
-      renderMarkdown: (markdown: string) => renderMarkdown(markdown),
-      sanitizeHtml: (html: string) => html,
+    const sections = document_.sections as Record<string, unknown>[];
+    const questions = sections.filter((section) => section.kind === "question");
+    const options = sections.flatMap((section) => (section.options as Record<string, unknown>[] | undefined) ?? []);
+    const labels = new Map(options.map((option) => [option.id, norm(option.label as string)]));
+    const prefixed = new Set([
+      "track-auto", "admission-request", "prompt-relevance", "session-lifecycle", "activation", "pass-through",
+      "hook-fallback", "agent-surface", "inheritance", "rollover", "request-state-federation",
+    ]);
+    const expected = questions.map((question) => {
+      const answer = norm(question.recommendedAnswer as string);
+      return prefixed.has(String(question.id)) ? `${labels.get(question.recommendedOptionId)} — ${answer}` : answer;
     });
-    const ownerContainer = document.createElement("div");
-    ownerContainer.innerHTML = ownerHtml;
-    const ownerPrecos = Array.from(ownerContainer.querySelectorAll(".focus-preco")).map((el) =>
-      norm(el.textContent).replace(/^préco:\s*/, ""),
-    );
-    expect(ownerPrecos.length).toBe(24);
     const { target, stop } = renderTrack();
     try {
       const dsRecos = Array.from(target.querySelectorAll(".st-dossier__questionReco")).map((el) =>
         norm(el.textContent),
       );
-      // Display parity with the owner on every question.
-      expect(dsRecos).toEqual(ownerPrecos);
+      expect(dsRecos).toEqual(expected);
       expect(dsRecos.filter((t) => t.includes(" — ")).length).toBe(11);
       // Spot checks: one prefixed answer, one already-named answer kept.
-      const sections = document_.sections as Record<string, unknown>[];
-      const byId = new Map(sections.filter((s) => s.kind === "question").map((q) => [String(q.id), q]));
+      const byId = new Map(questions.map((q) => [String(q.id), q]));
       expect(dsRecos[questionsIndex(sections, "track-auto")]).toBe(
         `Propositions uniquement — ${norm(byId.get("track-auto")!.recommendedAnswer as string)}`,
       );

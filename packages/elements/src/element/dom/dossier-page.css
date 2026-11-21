@@ -1,0 +1,92 @@
+@import "./engines/dossier.css";
+
+[data-st-dossier-page] {
+  max-width: 72ch;
+  margin: auto;
+  padding: var(--st-spacing-6);
+  background-color: var(--st-semantic-surface-default);
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+.st-dossier :where(pre, code) {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.st-dossier__readability {
+  margin-block-end: var(--st-spacing-4);
+}
+
+.st-dossier__readability blockquote {
+  white-space: pre-line;
+}
+
+.st-dossier__evidence img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.st-dossier :where(details, summary) {
+  margin-block: var(--st-spacing-2);
+}
+
+.st-dossier summary {
+  cursor: pointer;
+}
+
+.st-dossier table {
+  border-collapse: collapse;
+}
+
+.st-dossier :where(th, td) {
+  padding: var(--st-spacing-1) var(--st-spacing-2);
+  border: var(--st-borderWidth-thin) var(--st-borderStyle-solid) var(--st-semantic-border-subtle);
+  text-align: start;
+}
+
+.st-dossier__citations a {
+  margin-inline-start: var(--st-spacing-1);
+}
+
+.focus-option {
+  margin-block: var(--st-spacing-2);
+  padding: var(--st-spacing-2);
+  border: var(--st-borderWidth-thin) var(--st-borderStyle-solid) var(--st-semantic-border-subtle);
+  border-radius: var(--st-radius-md);
+}
+
+.focus-option[data-option-card],
+.focus-option [data-option-id] {
+  cursor: pointer;
+}
+
+.focus-option [data-option-id] {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+.focus-option:has([data-st-selected]) {
+  border-color: var(--st-semantic-border-interactive);
+  background: var(--st-semantic-surface-subtle);
+}
+
+.focus-option[data-st-recommended] > :is(strong, button) {
+  color: var(--st-semantic-action-primary);
+}
+
+@media print {
+  .focus-glossary {
+    color: #000;
+    background: #fff;
+  }
+
+  .focus-glossary::details-content {
+    display: block;
+    content-visibility: visible;
+  }
+}
