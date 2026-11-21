@@ -78,6 +78,7 @@ const DOSSIER_MOUNT_ENTRY = fileURLToPath(import.meta.resolve("@sentropic/design
 const REVIEW_CORE_ENTRY = new URL(import.meta.resolve("@sentropic/design-system-review-core"));
 const MARKDOWN_MODULE = new URL("../../dist/element/markdown/minimal-markdown.js", import.meta.url);
 const FOCUS_KIT_MODULE = "@sentropic/design-system-elements/focus-kit";
+const DOSSIER_VIEWS_MODULE = "@sentropic/design-system-elements/dossier-views";
 const kitManifestUrl = new URL(import.meta.resolve("@sentropic/design-system-elements/focus-kit/manifest.json"));
 const PDATA_FIXTURES = [1, 2, 3, 4, 5].map((n) => `bar-chart-pdata-${n}.json`);
 const TIME_SERIES_FIXTURES = ["single", "multi", "thresholds"].map((name) => `time-series-${name}.json`);
@@ -178,7 +179,8 @@ function record(label, value) {
 // Step 1 — the browser bundles and Node assembler under test.
 // ---------------------------------------------------------------------------
 
-const builtEntries = [ELEMENTS_ENTRY, DOSSIER_MOUNT_ENTRY, MARKDOWN_MODULE, new URL(import.meta.resolve(FOCUS_KIT_MODULE)), kitManifestUrl];
+const builtEntries = [ELEMENTS_ENTRY, DOSSIER_MOUNT_ENTRY, MARKDOWN_MODULE, new URL(import.meta.resolve(FOCUS_KIT_MODULE)),
+  new URL(import.meta.resolve(DOSSIER_VIEWS_MODULE)), kitManifestUrl];
 if (builtEntries.some((entry) => !existsSync(entry))) {
   const build = spawnSync(
     "npm",
@@ -196,7 +198,8 @@ ok("bundle exists: dist/browser/elements.js");
 const { assembleStandaloneDossier } = await import(FOCUS_KIT_MODULE);
 const kitManifestBytes = readFileSync(kitManifestUrl, "utf8");
 const kitManifest = JSON.parse(kitManifestBytes);
-const { canonicalJson } = await import("@sentropic/focus/editing");
+const { baseDigest, canonicalJson } = await import("@sentropic/focus/editing");
+const { buildDossierViews } = await import(DOSSIER_VIEWS_MODULE);
 assert(kitManifestBytes === canonicalJson(kitManifest), "Focus kit manifest is canonical RFC 8785", "serialized bytes differ");
 const kitFiles = new Map(kitManifest.files.map((file) => [file.path, file]));
 const emittedPaths = readdirSync(FOCUS_DIST, { recursive: true, withFileTypes: true })
@@ -236,9 +239,66 @@ mkdirSync(tempRoot, { recursive: true });
 const work = mkdtempSync(join(tempRoot, "st-elements-suite-"));
 const focusReport = readFileSync(join(FIXTURES, "focus-artifact", "report.json"), "utf8");
 const focusB5 = readFileSync(join(FIXTURES, "focus-artifact", "b5.json"), "utf8");
+function diagramOptions(doc) {
+  const views = buildDossierViews(doc, kitManifest);
+  if (views === undefined) return undefined;
+  return {
+    views,
+    manifest: {
+      contract: "focus-dossier/1", document: { digest: views.documentDigest }, renderer: { digest: views.rendererDigest },
+      derived: [{ path: "views.json", digest: baseDigest(views),
+        bytes: Buffer.byteLength(canonicalJson(views)), mimeType: "application/json" }],
+    },
+  };
+}
+
+const diagramSection = {
+  id: "fold-diagram", kind: "diagram", targetRef: "focus-test", alt: "Foldable review process",
+  syntax: "mermaid", source: "The embedded scene is authoritative.",
+  scene: {
+    documentId: "document:review-process", schemaVersion: { major: 1, minor: 1 }, revision: 0,
+    profileRefs: ["generic@1"], typeDefinitions: {}, ports: {}, resources: {}, extensions: [],
+    entities: Object.fromEntries([["group", "Review team", "container"], ["child", "Editor", "node"], ["outside", "Reader", "node"]]
+      .map(([id, value, type]) => [`entity:${id}`, { id: `entity:${id}`, profile: "generic@1", type,
+        attributes: { name: { kind: "text", value } } }])),
+    relations: Object.fromEntries([
+      ["membership", "contains", "parent", "group", "child", "child", {}],
+      ["delivery", "link", "source", "child", "target", "outside", { label: { kind: "text", value: "shares draft" } }],
+    ].map(([id, type, fromRole, from, toRole, to, attributes]) => [`relation:${id}`, {
+      id: `relation:${id}`, profile: "generic@1", type, attributes,
+      endpoints: [{ role: fromRole, target: `entity:${from}` }, { role: toRole, target: `entity:${to}` }],
+    }])),
+  },
+};
+const foldDoc = JSON.parse(focusB5);
+foldDoc.sections.push(diagramSection);
+const foldPayload = diagramOptions(foldDoc);
+const diagramPages = new Map(["safe", "application", "strict"].map((mode) => [`diagram-${mode}`, {
+  mode, doc: foldDoc, ...foldPayload, fold: true,
+}]));
+diagramPages.set("diagram-refusal", {
+  mode: "strict", doc: foldDoc, ...foldPayload, refuse: true,
+  manifest: { ...foldPayload.manifest, renderer: { digest: baseDigest("different renderer") } },
+});
+const referencePaths = process.env.ST_FOCUS_REFERENCE_DOSSIERS?.split(path.delimiter) ?? [];
+if (referencePaths.length !== 0 && referencePaths.length !== 2) throw new Error("Expected both Focus reference dossiers");
+for (const [index, reference] of referencePaths.entries()) {
+  const original = readFileSync(reference);
+  const doc = JSON.parse(original);
+  const payload = diagramOptions(doc);
+  const first = canonicalJson(payload.views);
+  const second = canonicalJson(diagramOptions(JSON.parse(original)).views);
+  assert(first === second && readFileSync(reference).equals(original), "Reference build is reproducible", reference);
+  record(`Focus reference ${index + 1}`, `source SHA-256 ${createHash("sha256").update(original).digest("hex")}, views SHA-256 ${createHash("sha256").update(first).digest("hex")}, ${Buffer.byteLength(first)} bytes`);
+  diagramPages.set(`diagram-reference-${index + 1}`, { mode: "strict", doc, ...payload });
+}
 const offlineDocument = canonicalJson({ ...JSON.parse(focusReport), subject: "Source contains </script> · 漢字" });
 const standalone = join(work, "focus-standalone.html");
 writeFileSync(standalone, assembleStandaloneDossier({ document: offlineDocument }));
+const standaloneDiagrams = join(work, "focus-diagrams-standalone.html");
+writeFileSync(standaloneDiagrams, assembleStandaloneDossier({
+  document: canonicalJson(foldDoc), manifest: canonicalJson(foldPayload.manifest), views: canonicalJson(foldPayload.views),
+}));
 try {
   mkdirSync(join(work, "src"), { recursive: true });
   writeFileSync(join(work, "package.json"), JSON.stringify({ name: "st-elements-ref-harness", private: true, type: "module" }));
@@ -575,15 +635,21 @@ const server = http.createServer((req, res) => {
     return;
   }
   let file = null;
-  const focusRoute = url.pathname.match(/^\/focus-kit\/(safe|application|strict)\/(.*)$/);
+  const focusRoute = url.pathname.match(/^\/focus-kit\/(safe|application|strict|diagram-[a-z0-9-]+)\/(.*)$/);
   const reviewCoreModule = url.pathname.match(/^\/focus-review-core\/([\w-]+\.js)$/);
   if (focusRoute !== null) {
-    const [, mode, asset] = focusRoute;
+    const [, page, asset] = focusRoute;
+    const diagramPage = diagramPages.get(page);
+    const mode = diagramPage?.mode ?? page;
     const name = asset || kitManifest.entrypoint;
     const entry = kitFiles.get(name);
-    if (name === "dossier.json" || entry !== undefined) {
+    const payload = diagramPage === undefined ? undefined : {
+      "dossier.json": diagramPage.doc, "focus.manifest.json": diagramPage.manifest, "views.json": diagramPage.views,
+    }[name];
+    if (name === "dossier.json" || entry !== undefined || payload !== undefined) {
       const mime = entry?.mimeType ?? "application/json";
-      const body = name === "dossier.json" ? (mode === "strict" ? focusReport : focusB5) : readFileSync(join(FOCUS_DIST, name));
+      const body = payload !== undefined ? canonicalJson(payload)
+        : name === "dossier.json" ? (mode === "strict" ? focusReport : focusB5) : readFileSync(join(FOCUS_DIST, name));
       const csp = mode === "application" ? FOCUS_APPLICATION_CSP
         : mime !== "text/html" ? undefined : mode === "safe" ? FOCUS_SAFE_CSP : FOCUS_STRICT_CSP;
       res.writeHead(200, {
@@ -1883,7 +1949,8 @@ for (const [component, tag, fixture, selector] of SHELL_FIXTURES) {
 
 {
   const observed = await openPage("/focus-mount-host.html");
-  const state = await observed.page.evaluate(async (hostDocument, shellDocument) => {
+  const doc = JSON.parse(readFileSync(join(FIXTURES, "focus-artifact", "decision-v2.json"), "utf8"));
+  const state = await observed.page.evaluate(async (hostDocument, shellDocument, options) => {
     const host = document.querySelector("[data-st-dossier-page]");
     let reads = 0;
     let release;
@@ -1894,7 +1961,7 @@ for (const [component, tag, fixture, selector] of SHELL_FIXTURES) {
     };
     const { mountDossier } = await import("/focus-mount.js");
     const dossier = mountDossier(host);
-    dossier.render(hostDocument);
+    dossier.render(hostDocument, options);
     const root = dossier.reviewRoot;
     release({ ok: true, json: async () => shellDocument });
     await new Promise((resolve) => setTimeout(resolve, 0));
@@ -1904,7 +1971,7 @@ for (const [component, tag, fixture, selector] of SHELL_FIXTURES) {
       connected: root.parentElement === host,
       title: host.querySelector("h1")?.textContent,
     };
-  }, JSON.parse(readFileSync(join(FIXTURES, "focus-artifact", "decision-v2.json"), "utf8")), JSON.parse(focusB5));
+  }, doc, JSON.parse(focusB5), diagramOptions(doc));
   const label = "Public Focus mount leaves bootstrap to the host";
   if (assert(state.reads === 0 && state.ready === 1 && state.connected && state.title === "Decision with embedded evidence",
     label, JSON.stringify(state))) ok(label);
@@ -1938,7 +2005,7 @@ for (const [component, tag, fixture, selector] of SHELL_FIXTURES) {
     const label = `Packaged Focus mount content matches Focus 0.6 for ${name}`;
     try {
       const ownerHtml = renderHtml(doc, { renderMarkdown: (source) => renderMarkdown(source, true), sanitizeHtml: (html) => html });
-      const differences = await observed.page.evaluate(compareFocusMount, doc, ownerHtml);
+      const differences = await observed.page.evaluate(compareFocusMount, doc, ownerHtml, diagramOptions(doc));
       if (assert(differences.length === 0, label, differences.join("\n"))) ok(label);
     } catch (error) {
       assert(false, label, String(error));
@@ -2042,6 +2109,60 @@ for (const [mode, policy] of [["safe", FOCUS_SAFE_CSP], ["application", FOCUS_AP
     blobs.length === 0 && observed.workers.length === 0, `Focus ${mode}: clean B5 load`,
     JSON.stringify({ external, violations, errors: observed.consoleErrors, blobs, workers: observed.workers }));
   record(`Focus ${mode} B5`, `${external.length} external requests, ${violations.length} CSP violations, ${observed.workers.length} workers`);
+  await observed.close();
+}
+
+for (const [url, fixture, offline] of [
+  ...[...diagramPages].map(([name, fixture]) => [`/focus-kit/${name}/`, fixture, false]),
+  [pathToFileURL(standaloneDiagrams).href, { mode: "standalone", views: foldPayload.views, fold: true }, true],
+]) {
+  const observed = await openPage(url, { offline });
+  const { page } = observed;
+  await page.waitForSelector(fixture.refuse ? '[role="alert"]' : "[data-st-diagram] svg", { timeout: 2000 });
+  if (fixture.refuse) {
+    assert(await page.evaluate(() => window.__focusReady.length === 0 && !document.querySelector("[data-st-diagram]")),
+      "Focus diagram refusal", "mismatched companion became visible");
+  } else {
+    const snapshot = () => page.evaluate(() => Array.from(document.querySelectorAll("[data-st-diagram]"), (figure) => {
+      const svg = figure.querySelector(".st-dossier__diagramViewport > svg");
+      return {
+        id: figure.dataset.stDiagram,
+        nodes: svg.querySelectorAll("[data-scene-occurrence]").length,
+        edges: svg.querySelectorAll("[data-scene-edge]").length,
+        labels: svg.querySelectorAll("[data-scene-label]").length,
+        text: Array.from(svg.querySelectorAll("text"), (node) => node.textContent).join(" "),
+        source: figure.querySelector("pre") !== null,
+        overflow: svg.querySelector("[data-card-overflow], [data-zone-overflow]") !== null,
+        painted: svg.getBoundingClientRect().width > 0 && svg.getBoundingClientRect().height > 0,
+      };
+    }));
+    const expected = Object.entries(fixture.views.diagrams).map(([id, { scene }]) => ({
+      id, nodes: Object.keys(scene.entities).length,
+      edges: Object.values(scene.relations).filter(({ type }) => type === "link").length,
+      labels: Object.values(scene.relations).filter(({ attributes }) => Boolean(attributes.label?.value.trim())).length,
+    }));
+    const expanded = await snapshot();
+    assert(expanded.length === expected.length && expanded.every((drawing, index) => {
+      const { id, nodes, edges, labels } = expected[index];
+      return drawing.id === id && drawing.nodes === nodes && drawing.edges === edges && drawing.labels === labels &&
+        drawing.painted && !drawing.source && !drawing.overflow;
+    }), `Focus diagram expanded ${url}`, JSON.stringify(expanded));
+    if (fixture.fold) {
+      const button = await page.$('[data-st-diagram] button[aria-expanded="true"]');
+      await button.click();
+      const [folded] = await snapshot();
+      assert(folded.nodes === 2 && folded.edges === 1 && folded.labels === 1 && folded.painted && !folded.overflow &&
+        !folded.text.includes("Editor") && folded.text.includes("shares draft"),
+      `Focus diagram folded ${url}`, JSON.stringify(folded));
+      await button.click();
+      assert(JSON.stringify(await snapshot()) === JSON.stringify(expanded), `Focus diagram expands again ${url}`, "the expanded scene changed");
+    }
+  }
+  const external = observed.requests.filter((request) => /^https?:/.test(request) && (offline || new URL(request).origin !== BASE));
+  const violations = await observed.violations();
+  assert(external.length === 0 && observed.workers.length === 0 && violations.length === 0 && observed.consoleErrors.length === 0,
+    `Focus diagram CSP ${url}`, JSON.stringify({ external, workers: observed.workers, violations, errors: observed.consoleErrors }));
+  record(offline ? "Focus diagram standalone" : url, `${external.length} external requests, ${observed.workers.length} workers, ${violations.length} CSP violations`);
   await observed.close();
 }
 
