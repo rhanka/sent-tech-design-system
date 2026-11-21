@@ -1,3 +1,5 @@
+import { JSDOM } from "jsdom";
+import { marked } from "marked";
 import { describe, expect, it } from "vitest";
 
 import catalog from "../catalog.json";
@@ -86,6 +88,26 @@ describe("TimeSeriesChart Markdown fallback", () => {
       "| 2026-01-01T01:00:00.000Z | Sensor (east) | third | 30 |",
     ]);
     expect(markdown).toContain("| Time (UTC) | Series | Series ID | Value |");
+  });
+
+  it("should display distinct valid IDs after GFM parses the table cells", () => {
+    const ids = ["east", "east ", "probe\ra", "probe\na", "east\\u0020", "probe\r\na", "\0", "\uFFFD", "\u{E0020}", "\u{E0021}"];
+    const fixture = {
+      ...single,
+      root: {
+        ...single.root,
+        series: ids.map((id) => ({ id, label: "Sensor", data: [{ x: 1, y: 2 }] })),
+      },
+    };
+    expect(createEnvelopeValidator(options).validate(fixture)).toEqual([]);
+    expect(createEnvelopeValidator({ ...options, structure: createInterpreterStructure(options) }).validate(fixture)).toEqual([]);
+
+    const html = marked.parse(formatTimeSeriesMarkdown(fixture.root), { gfm: true, async: false });
+    const cells = JSDOM.fragment(html).querySelectorAll("tbody td:nth-child(3)");
+    expect(Array.from(cells, (cell) => cell.textContent)).toEqual([
+      "east", "east\\u0020", "probe\\u000da", "probe\\u000aa", "east\\u005cu0020", "probe\\u000d\\u000aa",
+      "\\u0000", "\uFFFD", "\\udb40\\udc20", "\\udb40\\udc21",
+    ]);
   });
 
   it("should accept 4096 UTF-8 bytes and refuse an overflow without dropping rows", () => {
