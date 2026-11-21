@@ -870,6 +870,7 @@ describe('scene host DOM and camera/fold behavior', () => {
     }
     vi.unstubAllGlobals();
   });
+  // Décision du 21/11. « L'utilisateur a les boutons de zoom et autolayout. Par défaut quand on redimensionne on autolayout zoom intégral + plancher à 30 % ».
   it('should pin v1 figure max size, cap and R7 zoom floor on Svelte and Vue', async () => {
     vi.stubGlobal('matchMedia', () => ({ matches: true }));
     vi.stubGlobal('innerHeight', 720);

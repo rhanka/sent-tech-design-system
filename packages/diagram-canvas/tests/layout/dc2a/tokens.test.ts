@@ -106,6 +106,7 @@ describe("DC-2a §5.3 display-scale calibration", () => {
     expect([460 * DEFAULT_MAX_DISPLAY_SCALE, 200 * DEFAULT_MAX_DISPLAY_SCALE].map(round)).toEqual([285.2, 124]);
   });
 
+  // Décision du 21/11. « L'utilisateur a les boutons de zoom et autolayout. Par défaut quand on redimensionne on autolayout zoom intégral + plancher à 30 % ».
   it("fit: the R7 floor is 0.30", () => {
     expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.30);
   });

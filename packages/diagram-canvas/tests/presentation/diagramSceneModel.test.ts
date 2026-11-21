@@ -99,6 +99,29 @@ describe("shared scene presentation (DC-2b)", () => {
     expect(placement.translateX + bounds.x * narrow.zoom).toBe(1);
     expect(placement.contentWidth - bounds.width * narrow.zoom).toBe(2);
   });
+  it("fits a wider-than-viewport scene in full when the fit clears 0.30", () => {
+    const bounds = { x: 0, y: 0, width: 1000, height: 200 };
+    const fit = sceneFit({ bounds, viewWidth: 390, windowHeight: 844 });
+    const placement = scenePlacement(bounds, fit.zoom, fit);
+
+    expect(fit.zoom).toBe(0.388);
+    expect(fit.pans).toBe(false);
+    expect(placement).toMatchObject({ overflowX: false, overflowY: false });
+    expect(placement.translateX + bounds.width * fit.zoom).toBeLessThanOrEqual(389);
+    expect(placement.translateY + bounds.height * fit.zoom).toBeLessThan(fit.fitHeight);
+  });
+
+  it("pans at 0.30 only when the whole-scene fit falls below 0.30", () => {
+    const bounds = { x: 0, y: 0, width: 1000, height: 200 };
+    const atFloor = sceneFit({ bounds, viewWidth: 302, windowHeight: 844 });
+    const belowFloor = sceneFit({ bounds, viewWidth: 301, windowHeight: 844 });
+
+    expect(atFloor).toMatchObject({ zoomFit: 0.30, zoom: 0.30, pans: false });
+    expect(belowFloor).toMatchObject({ zoomFit: 0.299, zoom: 0.30, pans: true });
+    expect(scenePlacement(bounds, belowFloor.zoom, belowFloor))
+      .toMatchObject({ overflowX: true, overflowY: false, contentWidth: 302 });
+  });
+
   it("should use either cache entry point and preserve the uncached result", () => {
     const cache = createLayoutCache();
     const layout = vi.spyOn(cache, "layout");
@@ -233,6 +256,7 @@ describe("shared scene presentation (DC-2b)", () => {
     expect(worst).toBeLessThan(1800);
   });
 
+  // Décision du 21/11. « L'utilisateur a les boutons de zoom et autolayout. Par défaut quand on redimensionne on autolayout zoom intégral + plancher à 30 % ».
   it("should pin the R7 floor, v1 figure max size, cap and fit box", () => {
     // R7 floor with the original cap and frame dimensions.
     expect(DEFAULT_MAX_DISPLAY_SCALE).toBe(0.62);

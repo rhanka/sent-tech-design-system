@@ -153,7 +153,7 @@ describe("DC-2a L2 row-pack gates", () => {
     const layout = layouts.get("case-skills-r9/folded")!;
     // A small entity bbox is capped, but a far label or route can make the
     // whole scene frame-limited. Just below the cap still rounds to 0.620.
-    for (const scale of [MAX_DISPLAY_SCALE - 0.0001, 0.3]) {
+    for (const scale of [MAX_DISPLAY_SCALE - 0.0001, DEFAULT_MIN_READABLE_SCALE - 0.01]) {
       for (const extent of ["label", "route"]) {
         const right = 100 + 1438 / scale;
         const frame = sceneFrame({
