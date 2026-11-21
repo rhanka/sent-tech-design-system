@@ -7,6 +7,7 @@
     clampZoom,
     createLayoutCache,
     FIT_ASPECT,
+    isR7ConnectorPresentation,
     zoomReadout,
     type LayoutHints,
     type LayoutMetrics,
@@ -587,11 +588,15 @@
   let requestedZoom = $state<number>();
   let atFit = true;
 
+  const r7Mode = $derived(isR7ConnectorPresentation(presentation, view));
+
   // m3: camera tokens are re-read on every measure and before every camera
   // input, so a post-mount theme change applies without waiting for a resize.
   function readCameraTokens(): void {
     const values: Record<string, number> = {};
-    for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","zoneGutter","routeSpacing","routeBorderClearance","labelBand","gapMax","bundleLabelMaxWidth","containerPadding","edgeCornerRadius","linkStrokeWidth","linkEmphasisStrokeWidth","edgeLabelSize"]) {
+    const baseKeys = ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding","edgeLabelSize"];
+    const r7Keys = ["zoneGutter","routeSpacing","routeBorderClearance","edgeCornerRadius","linkStrokeWidth","linkEmphasisStrokeWidth"];
+    for (const key of r7Mode ? [...baseKeys, ...r7Keys] : baseKeys) {
       const value = parseFloat(tokenValue('--st-component-diagramScene-' + key) ?? '');
       if (Number.isFinite(value)) values[key] = value;
     }
@@ -611,6 +616,11 @@
     maxDisplayScale = parseScale(tokenValue(TOKEN_MAX_DISPLAY_SCALE));
     minReadableScale = parseScale(tokenValue(TOKEN_MIN_READABLE_SCALE));
   }
+
+  $effect(() => {
+    void r7Mode;
+    untrack(readCameraTokens);
+  });
 
   function measureFrame(): void {
     if (frameEl === undefined) return;
@@ -975,6 +985,8 @@
   const edgeCornerRadius = $derived(effectiveMetrics.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS);
   const pathOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
     connectorPath(points, edgeCornerRadius);
+  const pointsOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
+    points.map((point) => `${point.x},${point.y}`).join(" ");
 
   const edgeLabelLineHeight = $derived(scaleEdgeLabelMeasurer(lineMeasurer, effectiveMetrics.edgeLabelSize)({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
   const viewportStyle = $derived(
@@ -1103,12 +1115,16 @@
               aria-hidden="true"
               style={animating ? `opacity:${eased}` : undefined}
             >
-              <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="10.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker>{#each extraMarkers as marker (marker.id)}<marker id={marker.id} data-arrowhead-kind={marker.kind} data-arrowhead-emphasis={marker.emphasis} viewBox={marker.viewBox} refX={marker.refX} refY={marker.refY} markerUnits={marker.markerUnits} markerWidth={marker.markerWidth} markerHeight={marker.markerHeight} orient={marker.orient}><path d={marker.path} fill={marker.fill} stroke={marker.stroke} stroke-width={marker.strokeWidth} /></marker>{/each}{#if connectorMask !== undefined}<mask id={maskId} maskUnits="userSpaceOnUse" x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height}><rect x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height} fill="#fff" />{#each connectorMask.cutouts as cutout, index (index)}<rect data-scene-cutout={index} x={cutout.x} y={cutout.y} width={cutout.width} height={cutout.height} fill="#000" />{/each}</mask>{/if}</defs>
+              <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerUnits={scene.r7Connectors ? "userSpaceOnUse" : undefined} markerWidth={scene.r7Connectors ? "10.5" : "7"} markerHeight={scene.r7Connectors ? "10.5" : "7"} orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker>{#each extraMarkers as marker (marker.id)}<marker id={marker.id} data-arrowhead-kind={marker.kind} data-arrowhead-emphasis={marker.emphasis} viewBox={marker.viewBox} refX={marker.refX} refY={marker.refY} markerUnits={marker.markerUnits} markerWidth={marker.markerWidth} markerHeight={marker.markerHeight} orient={marker.orient}><path d={marker.path} fill={marker.fill} stroke={marker.stroke} stroke-width={marker.strokeWidth} /></marker>{/each}{#if connectorMask !== undefined}<mask id={maskId} maskUnits="userSpaceOnUse" x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height}><rect x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height} fill="#fff" />{#each connectorMask.cutouts as cutout, index (index)}<rect data-scene-cutout={index} x={cutout.x} y={cutout.y} width={cutout.width} height={cutout.height} fill="#000" />{/each}</mask>{/if}</defs>
               <g data-scene-connectors="" mask={connectorMask === undefined ? undefined : `url(#${maskId})`}>
               {#each scene.edges as edge (edge.occurrence)}
-                <path marker-end={connectorMarkerRef(edge, markerIds)} stroke-dasharray={connectorDashArray(edge.strokeStyle)} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-edge-stroke={edge.strokeStyle} data-edge-arrowhead={edge.arrowhead} data-edge-emphasis={edge.emphasis} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} d={pathOf(edge.points)} />
+                {#if edge.r7}
+                  <path marker-end={connectorMarkerRef(edge, markerIds)} stroke-dasharray={connectorDashArray(edge.strokeStyle)} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-connector-mode="r7" data-edge-stroke={edge.strokeStyle} data-edge-arrowhead={edge.arrowhead} data-edge-emphasis={edge.emphasis} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} d={pathOf(edge.points)} />
+                {:else}
+                  <polyline marker-end={edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} points={pointsOf(edge.points)} />
+                {/if}
                 {#if edge.directed}
-                  <path class="st-diagramSceneFigure-flowHit" data-flow-hit={edge.occurrence} d={pathOf(edge.points)} />
+                  <polyline class="st-diagramSceneFigure-flowHit" data-flow-hit={edge.occurrence} points={pointsOf(edge.points)} />
                   {#each edge.arrows as arrow, index (index)}
                     <path class="st-diagramSceneFigure-flowArrow" data-flow-arrow={edge.occurrence} data-flow-state={stateOf(edge.occurrence)} d={flowTokens.flowArrowPath} transform={`translate(${arrow.tip.x} ${arrow.tip.y}) rotate(${arrow.angle}) translate(${-flowTokens.flowArrowLength} ${-flowTokens.flowArrowWidth / 2})`} />
                   {/each}
@@ -1118,7 +1134,13 @@
                 {#if edge.markers}<g>{@html edge.markers}</g>{/if}
               {/each}
               {#each scene.labels as edgeLabel (edgeLabel.occurrence)}
-                {#if edgeLabel.leader}<path class="st-diagramSceneFigure-edge" d={pathOf(edgeLabel.leader)} />{/if}
+                {#if edgeLabel.leader}
+                  {#if scene.r7Connectors && !edgeLabel.erd}
+                    <path class="st-diagramSceneFigure-edge" data-connector-mode="r7" d={pathOf(edgeLabel.leader)} />
+                  {:else}
+                    <polyline class="st-diagramSceneFigure-edge" points={pointsOf(edgeLabel.leader)} />
+                  {/if}
+                {/if}
               {/each}
               </g>
             </svg>
@@ -1329,8 +1351,11 @@
     fill: none;
     stroke: var(--st-component-diagramScene-edgeStroke, var(--st-semantic-border-strong));
     stroke-linejoin: round;
-    stroke-width: var(--st-component-diagramScene-linkStrokeWidth, 2.5px);
+    stroke-width: var(--st-component-diagramZone-borderWidth, 1.5px);
     vector-effect: non-scaling-stroke;
+  }
+  .st-diagramSceneFigure-edge[data-connector-mode="r7"] {
+    stroke-width: var(--st-component-diagramScene-linkStrokeWidth, 2.5px);
   }
   .st-diagramSceneFigure-edge[data-edge-emphasis="emphasis"] {
     stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));

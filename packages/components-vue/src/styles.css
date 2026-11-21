@@ -18654,8 +18654,11 @@
     fill: none;
     stroke: var(--st-component-diagramScene-edgeStroke, var(--st-semantic-border-strong));
     stroke-linejoin: round;
-    stroke-width: var(--st-component-diagramScene-linkStrokeWidth, 2.5px);
+    stroke-width: var(--st-component-diagramZone-borderWidth, 1.5px);
     vector-effect: non-scaling-stroke;
+  }
+  .st-diagramSceneFigure-edge[data-connector-mode="r7"] {
+    stroke-width: var(--st-component-diagramScene-linkStrokeWidth, 2.5px);
   }
   .st-diagramSceneFigure-edge[data-edge-emphasis="emphasis"] {
     stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));

@@ -26,7 +26,7 @@ describe('Owner addendum A1–A13',()=>{
     const parameters=channelMetrics(spacing,c.axis==='horizontal');
     const boxes=measuredLabels.filter(box=>c.strips.some(strip=>hits(strip,box)));
     const floor=Math.max(0,...boxes.map(box=>(c.axis==='horizontal'?box.width:box.height)+8).filter(needed=>needed<=parameters.gapMax));
-    const expected=c.zone?spacing.zoneGutter:Math.min(parameters.gapMax,Math.max(channelGap(n,labelled,parameters),floor));
+    const expected=Math.min(parameters.gapMax,Math.max(channelGap(n,labelled,parameters),floor));
     expect(c.n).toBe(n);expect(c.labelled).toBe(labelled);expect(c.gap,c.id).toBeCloseTo(expected,0);
   }
  });
@@ -119,7 +119,7 @@ it('should comb three parallel routes at the channel pitch and centre them (A1)'
  const input={...seed,document:document as unknown as typeof seed.document,presentation:{...seed.presentation,entities:Object.fromEntries(ids.map(id=>[occurrence(id),seed.presentation.entities[occurrence(id)]!]))},collapsed:[],hints:{rootOrder:ids} as never};
  const result=layoutScene(input);if(result.status!=='laid-out')throw new Error('fixture refused');const scene=resolveScene(result,input);
  expect(scene.edges).toHaveLength(3);const lanes=scene.edges.map(edge=>edge.points[1]!.x).sort((a,b)=>a-b);
- expect(lanes[1]!-lanes[0]!).toBe(spacing.routeSpacing);expect(lanes[2]!-lanes[1]!).toBe(spacing.routeSpacing);
+ expect(lanes[1]!-lanes[0]!).toBe(14);expect(lanes[2]!-lanes[1]!).toBe(14);
  const cards=scene.nodes.map(node=>node.rect).sort((a,b)=>a.x-b.x);expect((lanes[0]!+lanes[2]!)/2).toBe((cards[0]!.x+cards[0]!.width+cards[1]!.x)/2);
 });
 

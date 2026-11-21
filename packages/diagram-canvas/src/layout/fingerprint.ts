@@ -16,20 +16,24 @@
  * the call that observes it, with no token-version export.
  */
 import { DEFAULT_EDGE_LABEL_SIZE } from "../camera.js";
+import { isR7ConnectorPresentation } from "../r7Mode.js";
 import { isLayoutGroup, resolveRowGaps, type LayoutGroup, type LayoutHints } from "./hints.js";
 import type { LayoutMeasurements } from "./measure.js";
 import { channelMetrics } from "./channels.js";
+import { DEFAULT_ROUTE_BORDER_CLEARANCE, DEFAULT_ROUTE_SPACING } from "./routeSpacing.js";
 import { DEFAULT_LAYOUT_METRICS, resolveRowPack, type LayoutMetrics, type LayoutOptions } from "./types.js";
 
 /** Bumped whenever measured placement changes for unchanged inputs. */
 export const LAYOUT_ENGINE_VERSION = "de2.gutter.1";
 
 export interface LayoutFingerprintInput {
-  readonly options: Pick<LayoutOptions, "collapsed" | "hints" | "metrics" | "rowPack" | "previousOrientation" | "viewId" | "flows" | "flowTokens">;
+  readonly options: Pick<LayoutOptions, "collapsed" | "hints" | "metrics" | "presentation" | "rowPack" | "previousOrientation" | "viewId" | "flows" | "flowTokens">;
   /** Measured sizes of a previous call on the same document and measurer, when a cache has them. */
   readonly measurements?: LayoutMeasurements;
   /** Resolved token numbers the host read (gaps, caps, target aspect, display scales, …), by token name. */
   readonly tokens?: Readonly<Record<string, number>>;
+  /** Explicit override when the caller also inspects a retained source view for r7 connector attributes. */
+  readonly r7Routing?: boolean;
 }
 
 const byString = (left: string, right: string): number => (left < right ? -1 : left > right ? 1 : 0);
@@ -71,10 +75,19 @@ const groupOf = (group: LayoutGroup): unknown => ({
 /** The resolved inputs behind the fingerprint, for a cache that wants to compare or log them. */
 export function layoutFingerprintInputs(input: LayoutFingerprintInput): Readonly<Record<string, unknown>> {
   const { options } = input;
+  const r7Routing = input.r7Routing ?? isR7ConnectorPresentation(options.presentation);
   const metrics: LayoutMetrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics };
   const hints: LayoutHints = options.hints ?? {};
-  const gaps = resolveRowGaps(hints, metrics);
+  const gaps = resolveRowGaps(hints, metrics, r7Routing);
   const tokens = input.tokens ?? {};
+  const routeSpacing = r7Routing ? (options.metrics?.routeSpacing ?? DEFAULT_ROUTE_SPACING) : 0;
+  const routeBorderClearance = r7Routing
+    ? (options.metrics?.routeBorderClearance ?? DEFAULT_ROUTE_BORDER_CLEARANCE)
+    : metrics.clearance;
+  const baseSlotSpacing = options.metrics?.trackSpacing ?? channelMetrics({}, true).trackSpacing;
+  const slotSpacing =
+    options.metrics?.slotSpacing ??
+    (r7Routing ? Math.max(routeSpacing, baseSlotSpacing) : baseSlotSpacing);
   const edgeLabelSize =
     metrics.edgeLabelSize !== undefined && Number.isFinite(metrics.edgeLabelSize) && metrics.edgeLabelSize > 0
       ? metrics.edgeLabelSize
@@ -90,9 +103,9 @@ export function layoutFingerprintInputs(input: LayoutFingerprintInput): Readonly
     metrics: {
       clearance: metrics.clearance,
       labelMargin: metrics.labelMargin,
-      routeSpacing: metrics.routeSpacing ?? 24,
-      routeBorderClearance: metrics.routeBorderClearance ?? 15,
-      slotSpacing: options.metrics?.slotSpacing ?? Math.max(metrics.routeSpacing ?? 24, options.metrics?.trackSpacing ?? 14),
+      routeSpacing,
+      routeBorderClearance,
+      slotSpacing,
       nodeGap: metrics.nodeGap,
       edgeLabelSize,
     },

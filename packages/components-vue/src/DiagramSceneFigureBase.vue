@@ -274,6 +274,7 @@ const legendEntries = computed(() => scene.value?.linkLegend?.entries.map(entry 
 })) ?? []);
 const edgeCornerRadius = computed(() => effectiveMetrics.value.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS);
 const pathOf = (items: readonly { readonly x: number; readonly y: number }[]) => connectorPath(items, edgeCornerRadius.value);
+const pointsOf = (items: readonly { readonly x: number; readonly y: number }[]) => items.map(point => `${point.x},${point.y}`).join(' ');
 const worldStyle = computed(() => `transform:translate(${placement.value.translateX}px,${placement.value.translateY}px) scale(${zoom.value})`);
 </script>
 
@@ -304,11 +305,17 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
             <template v-if="scene !== undefined">
               <template v-for="layer in paintLayers" :key="layer.plane">
               <svg v-if="layer.plane === 'connectors'" class="st-diagramSceneFigure-edges" aria-hidden="true" :style="animating ? `opacity:${eased}` : undefined">
-                <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="10.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker><marker v-for="marker in extraMarkers" :key="marker.id" :id="marker.id" :data-arrowhead-kind="marker.kind" :data-arrowhead-emphasis="marker.emphasis" :viewBox="marker.viewBox" :refX="marker.refX" :refY="marker.refY" :markerUnits="marker.markerUnits" :markerWidth="marker.markerWidth" :markerHeight="marker.markerHeight" :orient="marker.orient"><path :d="marker.path" :fill="marker.fill" :stroke="marker.stroke" :stroke-width="marker.strokeWidth" /></marker><mask v-if="connectorMask !== undefined" :id="maskId" maskUnits="userSpaceOnUse" :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height"><rect :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height" fill="#fff" /><rect v-for="(cutout, index) in connectorMask.cutouts" :key="index" :data-scene-cutout="index" :x="cutout.x" :y="cutout.y" :width="cutout.width" :height="cutout.height" fill="#000" /></mask></defs>
+                <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" :markerUnits="scene.r7Connectors ? 'userSpaceOnUse' : undefined" :markerWidth="scene.r7Connectors ? '10.5' : '7'" :markerHeight="scene.r7Connectors ? '10.5' : '7'" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker><marker v-for="marker in extraMarkers" :key="marker.id" :id="marker.id" :data-arrowhead-kind="marker.kind" :data-arrowhead-emphasis="marker.emphasis" :viewBox="marker.viewBox" :refX="marker.refX" :refY="marker.refY" :markerUnits="marker.markerUnits" :markerWidth="marker.markerWidth" :markerHeight="marker.markerHeight" :orient="marker.orient"><path :d="marker.path" :fill="marker.fill" :stroke="marker.stroke" :stroke-width="marker.strokeWidth" /></marker><mask v-if="connectorMask !== undefined" :id="maskId" maskUnits="userSpaceOnUse" :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height"><rect :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height" fill="#fff" /><rect v-for="(cutout, index) in connectorMask.cutouts" :key="index" :data-scene-cutout="index" :x="cutout.x" :y="cutout.y" :width="cutout.width" :height="cutout.height" fill="#000" /></mask></defs>
                 <g data-scene-connectors="" :mask="connectorMask === undefined ? undefined : `url(#${maskId})`">
-                <path :marker-end="connectorMarkerRef(edge, markerIds)" :stroke-dasharray="connectorDashArray(edge.strokeStyle)" v-for="edge in scene.edges" :key="edge.occurrence" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :data-edge-stroke="edge.strokeStyle" :data-edge-arrowhead="edge.arrowhead" :data-edge-emphasis="edge.emphasis" :d="pathOf(edge.points)" />
+                <template v-for="edge in scene.edges" :key="edge.occurrence">
+                  <path v-if="edge.r7" :marker-end="connectorMarkerRef(edge, markerIds)" :stroke-dasharray="connectorDashArray(edge.strokeStyle)" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" data-connector-mode="r7" :data-edge-stroke="edge.strokeStyle" :data-edge-arrowhead="edge.arrowhead" :data-edge-emphasis="edge.emphasis" :d="pathOf(edge.points)" />
+                  <polyline v-else :marker-end="edge.markers === undefined ? `url(#${arrowId})` : undefined" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :points="pointsOf(edge.points)" />
+                </template>
                 <g v-for="edge in scene.edges.filter(edge => edge.markers)" :key="edge.occurrence" v-html="edge.markers" />
-                <path v-for="edgeLabel in scene.labels.filter(label => label.leader)" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edge" :d="pathOf(edgeLabel.leader!)" />
+                <template v-for="edgeLabel in scene.labels.filter(label => label.leader)" :key="edgeLabel.occurrence">
+                  <path v-if="scene.r7Connectors && !edgeLabel.erd" class="st-diagramSceneFigure-edge" data-connector-mode="r7" :d="pathOf(edgeLabel.leader!)" />
+                  <polyline v-else class="st-diagramSceneFigure-edge" :points="pointsOf(edgeLabel.leader!)" />
+                </template>
                 </g>
               </svg>
               <template v-else>
@@ -454,8 +461,11 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     fill: none;
     stroke: var(--st-component-diagramScene-edgeStroke, var(--st-semantic-border-strong));
     stroke-linejoin: round;
-    stroke-width: var(--st-component-diagramScene-linkStrokeWidth, 2.5px);
+    stroke-width: var(--st-component-diagramZone-borderWidth, 1.5px);
     vector-effect: non-scaling-stroke;
+  }
+  .st-diagramSceneFigure-edge[data-connector-mode="r7"] {
+    stroke-width: var(--st-component-diagramScene-linkStrokeWidth, 2.5px);
   }
   .st-diagramSceneFigure-edge[data-edge-emphasis="emphasis"] {
     stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));

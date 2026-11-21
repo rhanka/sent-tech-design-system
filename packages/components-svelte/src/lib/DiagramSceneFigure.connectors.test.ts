@@ -43,14 +43,12 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     expect(folded.nodes.get(system)!).toBeLessThan(folded.connectors[0]!);
     expect(folded.nodes.get(ontology)!).toBeGreaterThan(folded.connectors[0]!);
     expect(folded.nodes.get(outsideCard)!).toBeGreaterThan(folded.connectors[0]!);
-    const foldedEdges = [...view.container.querySelectorAll("path[data-scene-edge]")];
+    const foldedEdges = [...view.container.querySelectorAll("polyline[data-scene-edge]")];
     expect(foldedEdges).toHaveLength(1);
-    expect(view.container.querySelectorAll("polyline")).toHaveLength(0);
-    expect(foldedEdges[0]!.getAttribute("d")).toMatch(/^M[\d.-]+ [\d.-]+ .*L[\d.-]+ [\d.-]+$/);
+    expect(view.container.querySelectorAll("path[data-scene-edge]")).toHaveLength(0);
     await fireEvent.click(toggle());
     await tick();
     expectConnectorPaint(view.container, { frames: fixture.zones, boxes: fixture.cards, relations: fixture.relations });
-    expect([...view.container.querySelectorAll("path[data-scene-edge]")].some((edge) => (edge.getAttribute("d") ?? "").includes("Q"))).toBe(true);
   });
 
   it("should paint numbered flow connectors above the expanded zone that holds their source", async () => {
@@ -188,10 +186,10 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     await fireEvent.click(toggle());
     await tick();
     expect(figure.getAttribute("data-fit-to-window")).toBe("true");
-    expect(fittedView.container.querySelectorAll("path[data-scene-edge]")).toHaveLength(1);
+    expect(fittedView.container.querySelectorAll("polyline[data-scene-edge]")).toHaveLength(1);
     await fireEvent.click(toggle());
     await tick();
-    expect(fittedView.container.querySelectorAll("path[data-scene-edge]")).toHaveLength(fixture.relations.length);
+    expect(fittedView.container.querySelectorAll("polyline[data-scene-edge]")).toHaveLength(fixture.relations.length);
   });
 
   it("should recompute scaled edge label boxes when CSS overrides --st-component-diagramScene-edgeLabelSize on mount (REQ-R7-11)", async () => {

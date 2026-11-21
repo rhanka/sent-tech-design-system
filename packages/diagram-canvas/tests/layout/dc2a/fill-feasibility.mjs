@@ -21,17 +21,17 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 
 const baseline = JSON.parse(readFileSync(new URL("./baseline.json", import.meta.url)));
-const GAP_X = spacing.gapMin, GAP_Y = spacing.gapMinBlock, ZONE_GUTTER = spacing.zoneGutter, GAP_CAP = spacing.gapMax, WIDTH = 460, HEIGHT = 200;
+const GAP_X = spacing.gapMin, GAP_Y = spacing.gapMinBlock, GAP_CAP = spacing.gapMax, WIDTH = 460, HEIGHT = 200;
 const INSET = spacing.containerPadding, TOGGLE = 66, RULE_GAP = 4, RULE_TO_CHILD = INSET, BOTTOM = INSET;
 const TARGET = 1.78, TALL_BIAS = 1.6, EMPTY_WEIGHT = 0.4, EPSILON = 1e-9;
 
 /** Independent exhaustive P-1 enumeration; no import of pack.ts. */
-function pack(boxes, chromeWidth, chromeHeight, gapX = GAP_X, gapY = GAP_Y) {
+function pack(boxes, chromeWidth, chromeHeight) {
   if (boxes.length === 0) return { width: 0, height: 0, rows: true, shelves: [], candidates: 0, score: 0 };
   const winners = [];
   let candidates = 0;
   for (const rows of [true, false]) {
-    const GAP = rows ? gapX : gapY, CROSS_GAP = rows ? gapY : gapX;
+    const GAP = rows ? GAP_X : GAP_Y, CROSS_GAP = rows ? GAP_Y : GAP_X;
     let limit = 0, winner;
     const seen = new Set();
     for (let prefix = 0; prefix < boxes.length; prefix += 1) {
@@ -111,8 +111,7 @@ function prove(view) {
   // A14: all component cards are fixed, irrespective of their text.
   const cardSize = () => ({ width: WIDTH, height: HEIGHT });
   const level = (id, children, chromeWidth, chromeHeight) => {
-    const zone = children.some((child) => child.container);
-    const choice = pack(children.map(size), chromeWidth, chromeHeight, zone ? ZONE_GUTTER : GAP_X, zone ? ZONE_GUTTER : GAP_Y);
+    const choice = pack(children.map(size), chromeWidth, chromeHeight);
     levels.push({ level: id, rows: choice.rows, shelves: choice.shelves.map((shelf) => shelf.map((i) => children[i].id)), candidates: choice.candidates, score: choice.score });
     return choice;
   };
@@ -126,15 +125,13 @@ function prove(view) {
     const headerHeight = Math.max(70,41.59375 + (card.kicker === null ? 0 : 28.59375)) + RULE_GAP + (subtitleLines ? 6 + subtitleLines * 31.1875 : 0);
     const chromeHeight = INSET + headerHeight + RULE_TO_CHILD + BOTTOM;
     const choice = level(card.id, children, 2 * INSET, chromeHeight);
-    const zone = children.some((child) => child.container);
-    const baseGap = choice.rows ? (zone ? ZONE_GUTTER : GAP_X) : (zone ? ZONE_GUTTER : GAP_Y);
     let headroom = 0;
     for (const edge of edges) {
       if (edge.source.parentId !== card.id || edge.target.parentId !== card.id) continue;
       const source = children.indexOf(edge.source), target = children.indexOf(edge.target);
       if (!choice.shelves.some((shelf) => shelf.includes(source) && shelf.includes(target))) continue;
       const label = labelSize(edge.label);
-      if ((choice.rows ? label.width : label.height) + 8 > baseGap) headroom += label.height + 8;
+      if ((choice.rows ? label.width : label.height) + 8 > (choice.rows ? GAP_X : GAP_Y)) headroom += label.height + 8;
     }
     const width = Math.max(floor, choice.width + (children.length ? 2 * INSET : 0));
     const footerLines = Math.min(1, wrap(card.footer, 13, width - 32));

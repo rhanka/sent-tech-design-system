@@ -1,3 +1,4 @@
+import { DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 import {
   connectorPath,
@@ -76,12 +77,23 @@ describe("connectorPath — DE-2 rounded elbows", () => {
     expect(d).toBe("M0 0 L88 0 Q100 0 100 12 L100 60");
   });
 
-  it("renders rounded <path> connectors (never <polyline>) in renderSceneSvg touching both docks across fold states", () => {
+  it("renders rounded <path> connectors (never <polyline>) on r7 scenes in renderSceneSvg touching both docks across fold states while keeping <polyline> on v1 (REQ-R7-11 / REQ-R7-28)", () => {
     for (const folded of [false, true]) {
-      const input = hCondInput("architecture", folded);
+      const v1Input = hCondInput("architecture", folded);
+      const v1Rendered = renderSceneSvg(v1Input);
+      expect(v1Rendered.svg).toContain("<polyline data-scene-edge=");
+      expect(v1Rendered.svg).not.toContain('data-connector-mode="r7"');
+
+      const input = {
+        ...v1Input,
+        presentation: {
+          ...v1Input.presentation,
+          contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+        },
+      };
       const { svg, scene, result } = renderSceneSvg(input);
       expect(svg).not.toContain("<polyline");
-      const matches = [...svg.matchAll(/<path data-scene-edge="([^"]+)" d="([^"]+)"/g)];
+      const matches = [...svg.matchAll(/<path data-scene-edge="([^"]+)" data-connector-mode="r7" d="([^"]+)"/g)];
       expect(matches).toHaveLength(scene.edges.length);
       const rects = new Map(scene.nodes.map((node) => [node.occurrence as string, node.rect]));
       let bentCount = 0;
@@ -106,14 +118,18 @@ describe("connectorPath — DE-2 rounded elbows", () => {
       expect(bentCount).toBeGreaterThan(0);
     }
 
-    // Fold / unfold round-trip on nested zones re-routes with rounded paths touching docks.
+    // Fold / unfold round-trip on r7 nested zones re-routes with rounded paths touching docks.
     const fixture = nestedZoneFixture({ outside: true });
-    const unfolded = renderSceneSvg({ ...fixture, measureLines, collapsed: [] });
-    const folded = renderSceneSvg({ ...fixture, measureLines, collapsed: [fixture.zones[1]!] });
+    const r7Presentation = {
+      ...fixture.presentation,
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+    };
+    const unfolded = renderSceneSvg({ ...fixture, presentation: r7Presentation, measureLines, collapsed: [] });
+    const folded = renderSceneSvg({ ...fixture, presentation: r7Presentation, measureLines, collapsed: [fixture.zones[1]!] });
     expect(unfolded.svg).not.toContain("<polyline");
     expect(folded.svg).not.toContain("<polyline");
     expect(folded.scene.edges).toHaveLength(1);
-    const foldedMatch = /<path data-scene-edge="([^"]+)" d="([^"]+)"/.exec(folded.svg)!;
+    const foldedMatch = /<path data-scene-edge="([^"]+)" data-connector-mode="r7" d="([^"]+)"/.exec(folded.svg)!;
     expect(foldedMatch).not.toBeNull();
     const foldedPoints = parseConnectorPath(foldedMatch[2]!);
     expect(foldedPoints[0]!.x).toBeCloseTo(folded.scene.edges[0]!.points[0]!.x, 6);

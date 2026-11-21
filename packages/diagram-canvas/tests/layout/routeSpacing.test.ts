@@ -5,6 +5,7 @@
 import {
   CURRENT_SCHEMA_VERSION,
   DIAGRAM_PRESENTATION_CONTRACT_PIN,
+  DIAGRAM_PRESENTATION_V2_CONTRACT_PIN,
   documentRef,
   entityRef,
   m3ProfileRegistry,
@@ -397,7 +398,7 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
       extensions: [],
     };
     const presentation = {
-      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
       entities: {
         [occurrenceRef("e.z1")]: { form: "container" as const, text: { title: "Zone Alpha" } },
         [occurrenceRef("e.z2")]: { form: "container" as const, text: { title: "Zone Beta" } },
@@ -495,7 +496,14 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
         seen.add(key);
         sceneStates += 1;
 
-        const res = layoutScene({ ...base, collapsed });
+        const res = layoutScene({
+          ...base,
+          presentation: {
+            ...base.presentation,
+            contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+          },
+          collapsed,
+        });
         expect(res.status, `${name} [${key || "unfolded"}]`).toBe("laid-out");
         if (res.status !== "laid-out") continue;
         expect(res.routeSpacing, `${name} [${key || "unfolded"}]`).toBeDefined();
@@ -587,7 +595,7 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
       extensions: [],
     };
     const presentation = {
-      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
       entities: presEntities,
       legends: {},
       categoryTokens: [],
@@ -630,5 +638,68 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
         expect(ch.gap, `custom ${ch.id} (${ch.axis})`).toBe(128);
       }
     }
+  });
+
+  it("keeps existing v1 scenes on main routing/port/gutter behaviour without r7 routeSpacing or corner-inset capacity loss (REQ-R7-28)", () => {
+    // Two 460x200 v1 cards side-by-side with 10 parallel links: main slotSpacing=14 & cornerInset=0 fit 15 ports on 200px (zero docking-overflow).
+    const entities: Record<string, Entity> = {
+      [entityRef("a")]: { id: entityRef("a"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "A" } } },
+      [entityRef("b")]: { id: entityRef("b"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "B" } } },
+    };
+    const relations: Record<string, Relation> = {};
+    for (let i = 0; i < 10; i += 1) {
+      const id = relationRef(`p${i}`);
+      relations[id] = {
+        id,
+        profile: "generic@2",
+        type: "link",
+        endpoints: [
+          { role: "source", target: entityRef("a") },
+          { role: "target", target: entityRef("b") },
+        ],
+        attributes: {},
+      };
+    }
+    const document: SemanticDocument = {
+      documentId: documentRef("v1-port-capacity"),
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities,
+      relations,
+      ports: {},
+      resources: {},
+      extensions: [],
+    };
+    const v1Presentation = {
+      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      entities: {
+        [occurrenceRef("e.a")]: { form: "card" as const, text: { title: "Card A" } },
+        [occurrenceRef("e.b")]: { form: "card" as const, text: { title: "Card B" } },
+      },
+      legends: {},
+      categoryTokens: [],
+    };
+    const v1Res = layoutDocument(document, {
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureText: measure,
+      measureLines: pinnedMeasurer,
+      presentation: v1Presentation,
+      targetWidth: 1440,
+    });
+    expect(v1Res.status).toBe("laid-out");
+    if (v1Res.status !== "laid-out") return;
+    expect(v1Res.routeSpacing).toBeUndefined();
+    expect(v1Res.warnings.filter((w) => w.code === "docking-overflow")).toEqual([]);
+    expect(v1Res.warnings.filter((w) => w.code === "route-spacing-conflict")).toEqual([]);
+
+    // Same architecture h-cond scene without r7 opt-in keeps dynamic widening and emits no routeSpacing report.
+    const hCondV1 = layoutScene(hCondInput("architecture", false));
+    expect(hCondV1.status).toBe("laid-out");
+    if (hCondV1.status !== "laid-out") return;
+    expect(hCondV1.routeSpacing).toBeUndefined();
+    expect(hCondV1.channels?.some((c) => c.gap > 96)).toBe(true);
   });
 });

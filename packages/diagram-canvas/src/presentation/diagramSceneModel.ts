@@ -43,6 +43,7 @@ import {
   DEFAULT_LINK_STROKE_WIDTH,
   DEFAULT_MIN_READABLE_SCALE,
   FIT_PAINT_INSET,
+  isR7ConnectorPresentation,
   layoutFolded,
   layoutMeasured,
   placeEdgeLabels,
@@ -120,6 +121,7 @@ export {
   DEFAULT_LINK_RELATED_STROKE_WIDTH,
   DEFAULT_LINK_PRIMARY_STROKE_WIDTH,
   DEFAULT_LINK_EMPHASIS_STROKE_WIDTH,
+  isR7ConnectorPresentation,
 };
 
 /** The semantic document the layout engine reads. */
@@ -441,6 +443,8 @@ export interface SceneEdgeModel {
   readonly occurrence: SceneOccurrenceRef;
   readonly points: readonly Vec2[];
   readonly markers?: string;
+  /** True when this edge uses the r7 rounded-elbow / dedicated link-token connector path (REQ-R7-11..17). */
+  readonly r7?: true;
   /** Closed dash-pattern word from the view/presentation (`solid | dashed | dotted`). */
   readonly strokeStyle?: StrokeStyle;
   /** Closed arrowhead word from the view/presentation (`arrow | none`). */
@@ -474,6 +478,8 @@ export interface SceneModel {
   readonly nodes: readonly SceneNodeModel[];
   readonly edges: readonly SceneEdgeModel[];
   readonly labels: readonly SceneLabelModel[];
+  /** True when the scene uses the r7 connector path (`REQ-R7-11..17`); false for existing v1, ERD, and flow scenes (`REQ-R7-28`). */
+  readonly r7Connectors: boolean;
   /**
    * Footer text box of every expanded zone, grown by the label clearance: the
    * one text a frame paints where routes run. A route may cross a zone footer
@@ -568,13 +574,19 @@ export function resolveScene(
     (result.measurements?.slots ?? []).filter((slot) => slot.role === "footer").map((slot) => [slot.occurrence as string, slot.layout.width] as const),
   );
   const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
+  const erd = input.document.profileRefs.length === 1 && input.document.profileRefs[0] === 'erd@1';
+  const r7Connectors = !erd && isR7ConnectorPresentation(input.presentation, view);
   // Non-scaling connector paint is widest in world units at the readability
-  // floor. Resting edges use `linkStrokeWidth` (2.5 px, REQ-R7-11); only an
-  // individual emphasized edge adds its extra half-stroke margin so one
-  // emphasized edge never inflates resting clearances or cutouts scene-wide.
+  // floor. Existing v1, ERD, and numbered-flow scenes keep the 1.5 px main
+  // clearance (`REQ-R7-28`); r7 scenes use `linkStrokeWidth` (2.5 px, REQ-R7-11)
+  // and add emphasis half-stroke only on emphasized edges (REQ-R7-17).
   const relationPresentation = input.presentation.relations;
-  const baseLinkStrokeWidth = input.metrics?.linkStrokeWidth ?? DEFAULT_LINK_STROKE_WIDTH;
-  const emphasisLinkStrokeWidth = input.metrics?.linkEmphasisStrokeWidth ?? DEFAULT_LINK_EMPHASIS_STROKE_WIDTH;
+  const baseLinkStrokeWidth = r7Connectors
+    ? (input.metrics?.linkStrokeWidth ?? DEFAULT_LINK_STROKE_WIDTH)
+    : 1.5;
+  const emphasisLinkStrokeWidth = r7Connectors
+    ? (input.metrics?.linkEmphasisStrokeWidth ?? DEFAULT_LINK_EMPHASIS_STROKE_WIDTH)
+    : 1.5;
   const paintClearance = margin + baseLinkStrokeWidth / (2 * DEFAULT_MIN_READABLE_SCALE);
   const emphasisExtraClearance = Math.max(0, emphasisLinkStrokeWidth - baseLinkStrokeWidth) / (2 * DEFAULT_MIN_READABLE_SCALE);
   const zoneInset = input.metrics?.containerPadding ?? ZONE_GEOMETRY.contentInsetInline;
@@ -657,17 +669,19 @@ export function resolveScene(
     const resolvedArrowhead = rawArrowhead === undefined ? undefined : resolveArrowhead(rawArrowhead)?.canonicalKind;
     const rawEmphasis = occurrence.emphasis ?? relStyle?.emphasis;
     const resolvedEmphasis = rawEmphasis === undefined ? undefined : resolveLinkEmphasis(rawEmphasis)?.emphasis;
+    const isR7Edge = r7Connectors && markers === undefined && flow === undefined;
     edges.push({
       ...(markers === undefined ? {} : { markers }),
+      ...(isR7Edge ? { r7: true as const } : {}),
       occurrence: occurrence.id,
       points,
       directed: flow !== undefined,
       arrows: result.arrowBoxes?.[occurrence.id] ?? [],
       ...(flow === undefined ? {} : { flow }),
       ...(bundle === undefined ? {} : { bundle }),
-      ...(resolvedStrokeStyle === undefined || resolvedStrokeStyle === "solid" ? {} : { strokeStyle: resolvedStrokeStyle }),
-      ...(resolvedArrowhead === undefined || resolvedArrowhead === "arrow" ? {} : { arrowhead: resolvedArrowhead }),
-      ...(resolvedEmphasis !== "emphasis" ? {} : { emphasis: resolvedEmphasis }),
+      ...(isR7Edge && resolvedStrokeStyle !== undefined && resolvedStrokeStyle !== "solid" ? { strokeStyle: resolvedStrokeStyle } : {}),
+      ...(isR7Edge && resolvedArrowhead !== undefined && resolvedArrowhead !== "arrow" ? { arrowhead: resolvedArrowhead } : {}),
+      ...(isR7Edge && resolvedEmphasis === "emphasis" ? { emphasis: resolvedEmphasis } : {}),
     });
     if (result.labelBoxes !== undefined && result.labelBoxes[id] === undefined) continue;
     const label = result.edgeBundles?.[id]?.label ?? (semantic?.profile === 'erd@1'
@@ -692,7 +706,6 @@ export function resolveScene(
     const box = item.kind === "edge" ? item.bounds : item.rect;
     bounds = bounds === undefined ? box : rectUnion(bounds, box);
   }
-  const erd = input.document.profileRefs.length === 1 && input.document.profileRefs[0] === 'erd@1';
   const placements = erd ? placeErdRoleLabels(entries, blockers, margin) : result.labelBoxes === undefined
     ? placeEdgeLabels(entries, blockers, margin)
     : new Map(Object.entries(result.labelBoxes).map(([id, box]) => [id, { box }]));
@@ -719,8 +732,18 @@ export function resolveScene(
     bounds = bounds === undefined ? box : rectUnion(bounds,box);
   }
   for (const arrows of Object.values(result.arrowBoxes ?? {})) for (const arrow of arrows) bounds = bounds === undefined ? arrow.box : rectUnion(bounds,arrow.box);
-  const cornerRadius = input.metrics?.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS;
+  const cornerRadius = r7Connectors ? (input.metrics?.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS) : 0;
   for (const { node, inner, lineHeight, bottom } of pendingCutouts) {
+    if (!r7Connectors) {
+      const pad = paintClearance + CONNECTOR_CUTOUT_SLACK;
+      connectorCutouts.push({
+        x: node.rect.x + zoneInset - pad,
+        y: bottom - lineHeight - pad,
+        width: Math.min(footerWidths.get(node.occurrence) ?? inner, inner) + 2 * pad,
+        height: lineHeight + 2 * pad,
+      });
+      continue;
+    }
     const basePad = Math.max(
       paintClearance + CONNECTOR_CUTOUT_SLACK,
       margin + baseLinkStrokeWidth / DEFAULT_MIN_READABLE_SCALE + 1.15,
@@ -735,7 +758,7 @@ export function resolveScene(
       width: Math.min(footerWidths.get(node.occurrence) ?? inner, inner) + 2 * emphasisPad,
       height: Math.min(node.rect.y + node.rect.height, bottom + emphasisPad) - (bottom - lineHeight - emphasisPad),
     };
-    const emphasizedCrosses = edges.some((edge) => edge.emphasis === "emphasis" && edge.points.slice(1).some((pt, i) => {
+    const emphasizedCrosses = edges.some((edge) => edge.r7 && edge.emphasis === "emphasis" && edge.points.slice(1).some((pt, i) => {
       const prev = edge.points[i]!;
       const seg: Rect = { x: Math.min(prev.x, pt.x), y: Math.min(prev.y, pt.y), width: Math.abs(pt.x - prev.x), height: Math.abs(pt.y - prev.y) };
       return seg.x <= baseBox.x + baseBox.width && baseBox.x <= seg.x + seg.width
@@ -751,10 +774,14 @@ export function resolveScene(
       height: cutoutBottom - cutoutTop,
     });
   }
-  const clearedLabels = clearSceneLabels(labels, edges.map(edge => edge.points),
-    [...blockers, ...badges.map(badge => badge.box), ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box))],
-    paintClearance, cornerRadius,
-    edges.map(edge => (edge.emphasis === "emphasis" ? emphasisExtraClearance : 0)));
+  const clearedLabels = r7Connectors
+    ? clearSceneLabels(labels, edges.map(edge => edge.points),
+      [...blockers, ...badges.map(badge => badge.box), ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box))],
+      paintClearance, cornerRadius,
+      edges.map(edge => (edge.r7 && edge.emphasis === "emphasis" ? emphasisExtraClearance : 0)))
+    : clearSceneLabels(labels, edges.map(edge => edge.points),
+      [...blockers, ...badges.map(badge => badge.box), ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box))],
+      paintClearance);
   for (const { box } of clearedLabels) {
     const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
     bounds = bounds === undefined ? padded : rectUnion(bounds, padded);
@@ -783,6 +810,7 @@ export function resolveScene(
     nodes,
     edges,
     labels: clearedLabels,
+    r7Connectors,
     connectorCutouts,
     ...(linkLegend === undefined ? {} : { linkLegend }),
     ...(bounds === undefined ? {} : { bounds }),

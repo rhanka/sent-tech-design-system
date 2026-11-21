@@ -9,6 +9,7 @@ import {
 } from "@sentropic/diagram-core";
 
 import { DEFAULT_EDGE_LABEL_SIZE } from "../camera.js";
+import { isR7ConnectorPresentation } from "../r7Mode.js";
 import { layoutDocument } from "./engine.js";
 import { digestOf, layoutFingerprint } from "./fingerprint.js";
 import { layoutFolded, layoutMeasured } from "./measured.js";
@@ -121,7 +122,8 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
     const collapsed = [...new Set(options.collapsed ?? (sourceView === undefined ? [] : [...collapsedOf(sourceView)] as OccurrenceRef[]))].sort();
     const tokens = Object.fromEntries(Object.entries(config.tokens ?? {}).filter(([name]) => !cameraTokens.has(name)));
     const { previousOrientation: _previous, ...baseOptions } = options;
-    const fingerprint = layoutFingerprint({ options: { ...baseOptions, collapsed }, tokens });
+    const r7Routing = isR7ConnectorPresentation(options.presentation, sourceView);
+    const fingerprint = layoutFingerprint({ options: { ...baseOptions, collapsed }, tokens, r7Routing });
     // Camera is host state; measured layout overwrites it rather than reading it.
     const source = (): unknown => sourceView === undefined ? undefined : {
       ...sourceView, presentation: { ...sourceView.presentation, camera: undefined },

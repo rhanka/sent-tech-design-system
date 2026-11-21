@@ -1,5 +1,5 @@
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
-import { clampZoom, FIT_ASPECT, zoomReadout, type Rect } from '@sentropic/diagram-canvas';
+import { clampZoom, FIT_ASPECT, isR7ConnectorPresentation, zoomReadout, type Rect } from '@sentropic/diagram-canvas';
 import { sceneCardMeasure, cardLineMeasurer, defaultCardMeasure, type CardLineMeasure } from './diagramCardModel.js';
 import { DEFAULT_SCENE_TARGET_WIDTH, parseScale, resolveZoom, scaleEdgeLabelMeasurer, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneModel } from './diagramSceneModel.js';
 import { measureRenderedBounds, shouldRefitRenderedBounds } from './diagramRenderedBounds.js';
@@ -53,9 +53,12 @@ export function useDiagramSceneViewport(
     function token(name: string) {
         return frameEl.value === undefined ? undefined : getComputedStyle(frameEl.value).getPropertyValue(name).trim();
     }
+    const r7Mode = computed(() => isR7ConnectorPresentation(props.presentation, props.view));
     function readCameraTokens() {
         const values: Record<string, number> = {};
-        for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","zoneGutter","routeSpacing","routeBorderClearance","labelBand","gapMax","bundleLabelMaxWidth","containerPadding","edgeCornerRadius","linkStrokeWidth","linkEmphasisStrokeWidth","edgeLabelSize"]) {
+        const baseKeys = ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding","edgeLabelSize"];
+        const r7Keys = ["zoneGutter","routeSpacing","routeBorderClearance","edgeCornerRadius","linkStrokeWidth","linkEmphasisStrokeWidth"];
+        for (const key of r7Mode.value ? [...baseKeys, ...r7Keys] : baseKeys) {
             const value = parseFloat(token('--st-component-diagramScene-' + key) ?? '');
             if (Number.isFinite(value)) values[key] = value;
         }
@@ -105,6 +108,7 @@ export function useDiagramSceneViewport(
             if (!atFit) requestedZoom.value = zoom.value;
         });
         watch(camera, onCameraChange, { immediate: true });
+        watch(r7Mode, () => readCameraTokens());
     });
     function setZoom(next: number) {
         if (!Number.isFinite(next))
