@@ -455,11 +455,20 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
       view.dispose();
     });
   }
-  it('should keep a manual zoom through scrollbar changes and refit when the container resizes', async () => {
+  it.each(['width', 'height'] as const)('should keep a manual zoom through scrollbar changes and refit when the container %s changes', async dimension => {
     let frameWidth = 500;
-    let scrollbarWidth = 0;
+    let frameHeight = 200;
+    let viewportOuterHeight = frameHeight;
+    let scrollbarSize = 0;
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(function (this: HTMLElement) {
-      return this.matches('.st-diagramSceneFigure-viewport') ? frameWidth - scrollbarWidth : frameWidth;
+      return this.matches('.st-diagramSceneFigure-viewport') ? frameWidth - scrollbarSize : frameWidth;
+    });
+    vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockImplementation(function (this: HTMLElement) {
+      if (this.matches('.st-diagramSceneFigure-viewport')) return viewportOuterHeight - scrollbarSize;
+      return this.matches('.st-diagramSceneFigure-frame') ? frameHeight : 0;
+    });
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.matches('.st-diagramSceneFigure-viewport') ? viewportOuterHeight : 0;
     });
     vi.stubGlobal('innerHeight', 900);
     let notifyResize = () => {};
@@ -477,22 +486,26 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
 
     initial.viewport.scrollLeft = 40;
     initial.viewport.scrollTop = 20;
-    scrollbarWidth = 15;
+    scrollbarSize = 15;
+    viewportOuterHeight += scrollbarSize;
+    frameHeight += scrollbarSize;
     notifyResize();
     await view.flush();
     expect(geometry(view.element).zoom).toBe(userZoom);
     expect(initial.viewport.scrollLeft).toBe(40);
     expect(initial.viewport.scrollTop).toBe(20);
 
-    frameWidth = 550;
+    if (dimension === 'height') frameHeight = 150;
+    else frameWidth = 550;
     notifyResize();
     await view.flush();
     const resized = geometry(view.element);
-    expect(resized.zoom).not.toBe(userZoom);
-    expect(resized.viewport.dataset.pans).toBe('false');
-    expect(resized.tx + resized.right * resized.zoom).toBeLessThanOrEqual(frameWidth);
-    expect(resized.viewport.scrollLeft).toBe(0);
-    expect(resized.viewport.scrollTop).toBe(0);
+    if (dimension === 'height') expect.soft(resized.zoom).toBe(initial.zoom);
+    else expect.soft(resized.zoom).not.toBe(userZoom);
+    expect.soft(resized.viewport.dataset.pans).toBe('false');
+    expect.soft(resized.tx + resized.right * resized.zoom).toBeLessThanOrEqual(frameWidth);
+    expect.soft(resized.viewport.scrollLeft).toBe(0);
+    expect.soft(resized.viewport.scrollTop).toBe(0);
     view.dispose();
   });
 
