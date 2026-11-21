@@ -68,7 +68,7 @@ const result = await build({
     modulePreload: false,
     // The wrapper modules only DEFINE their custom element at import time —
     // an effect the bundler cannot see through the package manifest's
-    // `sideEffects: false` (right for the NODE half, whose library modules
+    // side-effect-free JS declaration (right for the NODE half, whose library modules
     // are pure). Rolldown honors that flag over `moduleSideEffects`, so the
     // browser build keeps the whole module graph and splits ONLY along the
     // DYNAMIC import boundaries (the lazy engines and themes, §6.6).
@@ -211,3 +211,5 @@ console.log(`sri.json pins ${Object.keys(files).length} files under ${relative(p
 const stats = statSync(join(browserDir, "sri.json"));
 console.log(`sri.json itself: ${stats.size} raw bytes (not listed in its own manifest)`);
 await buildComponentShells(packageDir, compileSvelte);
+
+await import("./build-dossier.mjs");

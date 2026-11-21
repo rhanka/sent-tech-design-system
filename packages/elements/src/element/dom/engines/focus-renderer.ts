@@ -17,11 +17,13 @@
  */
 
 import DOMPurify from "dompurify";
+import type { AmendmentStep, DecisionDossierDocumentV2, DossierReadability } from "@sentropic/focus";
 import { validateDecisionDossierDocument } from "@sentropic/focus/validate";
 import { renderMarkdown } from "../../markdown/minimal-markdown.js";
 import { createFocusPort } from "../../../ports/focus.js";
 import type { SemanticPort } from "../../../ports/types.js";
 import { adoptDossierSheet, FOLD_THRESHOLD_CHARS } from "./dossier-styles.js";
+import { appendDossierEvidence, dossierCitations, markDossierAnchor } from "./dossier-evidence.js";
 
 /** The §4.3 semantic port: the pinned focus validator is the authority. */
 export const port: SemanticPort = createFocusPort(validateDecisionDossierDocument);
@@ -78,13 +80,14 @@ export function isLongOption(option: Record<string, unknown>): boolean {
  * so the invariant is on survivors, never on input shape.
  */
 const SANITIZER_ALLOWED_TAGS = ["p", "ul", "li", "code", "a", "strong", "em"];
+const TABLE_TAGS = ["table", "thead", "tbody", "tr", "th", "td"];
 const SANITIZER_ALLOWED_ATTR = ["href"];
 const SANITIZER_ALLOWED_URI = /^https:\/\/[^\s"'<>]+$/i;
 
 /** Sanitize one HTML string to the `renderMarkdown` subset (U-14). */
-export function renderMarkdownToSafeHtml(html: string): string {
+export function renderMarkdownToSafeHtml(html: string, tables = false): string {
   return DOMPurify.sanitize(html, {
-    ALLOWED_TAGS: SANITIZER_ALLOWED_TAGS,
+    ALLOWED_TAGS: tables ? [...SANITIZER_ALLOWED_TAGS, ...TABLE_TAGS] : SANITIZER_ALLOWED_TAGS,
     ALLOWED_ATTR: SANITIZER_ALLOWED_ATTR,
     ALLOW_DATA_ATTR: false,
     ALLOWED_URI_REGEXP: SANITIZER_ALLOWED_URI,
@@ -92,19 +95,54 @@ export function renderMarkdownToSafeHtml(html: string): string {
 }
 
 /** One sanitized markdown block (U-14): the only `innerHTML` path. */
-function markdownBlock(source: string): HTMLDivElement {
+function markdownBlock(source: string, tables: boolean): HTMLDivElement {
   const block = document.createElement("div");
   block.className = "st-dossier__prose";
-  block.innerHTML = renderMarkdownToSafeHtml(renderMarkdown(source));
+  block.innerHTML = renderMarkdownToSafeHtml(renderMarkdown(source, tables), tables);
   return block;
 }
 
+function appendSectionContext(node: HTMLElement, section: Record<string, unknown>): void {
+  if (Array.isArray(section.inputs) && section.inputs.length > 0) {
+    const inputs = document.createElement("ul");
+    for (const input of section.inputs) {
+      const ref = field(input.ref) ?? "";
+      const label = field(input.label) ?? ref;
+      inputs.append(text("li", "st-dossier__input", label === ref ? ref : `${label} (${ref})`));
+    }
+    node.append(inputs);
+  }
+  const criterion = field(section.completionCriterion);
+  if (criterion !== undefined) node.append(text("p", "st-dossier__criterion", criterion));
+}
+
 /** One plain text element. */
-function text(tag: string, className: string, text: string): HTMLElement {
+function text(tag: string, className: string | undefined, text: string): HTMLElement {
   const node = document.createElement(tag);
-  node.className = className;
+  if (className !== undefined) node.className = className;
   node.textContent = text;
   return node;
+}
+
+function appendAmendmentTrace(container: HTMLElement, steps: readonly AmendmentStep[]): void {
+  container.append(text("h3", undefined, "Amendment trace"));
+  if (steps.length === 0) {
+    const empty = document.createElement("p");
+    empty.append(text("em", undefined, "(none)"));
+    container.append(empty);
+    return;
+  }
+  const list = document.createElement("ol");
+  list.className = "st-dossier__trace";
+  for (const { at, author, summary } of steps) {
+    const entry = document.createElement("li");
+    entry.className = "st-dossier__traceStep";
+    entry.setAttribute("data-st-trace-step", `${at} ${author}`.trim());
+    entry.setAttribute("data-st-trace-at", at);
+    entry.append(text("code", undefined, at), " ", text("strong", undefined, author), ` — ${summary}`);
+    list.append(entry);
+  }
+  container.append(list);
 }
 
 /** True when the interactions disable choosing this option (L2 gate). */
@@ -194,8 +232,7 @@ function displayRecommendedAnswer(question: Record<string, unknown>, sections: r
 }
 
 /** One annotation marker: display state only, never a control (F-R6). */
-function annotationNode(option: Record<string, unknown>): HTMLElement | undefined {
-  const annotation = field(option.annotation);
+export function renderDossierOptionAnnotation(annotation: string | undefined): HTMLElement | undefined {
   if (annotation === undefined || annotation === "none") return undefined;
   const marker = text("span", "st-dossier__optionAnnotation", annotation);
   marker.setAttribute("data-annotation", annotation);
@@ -245,7 +282,7 @@ function optionCard(
       if (consequence !== undefined) card.append(text("span", "st-dossier__optionConsequence", consequence));
       if (bodyText !== undefined) card.append(text("span", "st-dossier__optionBody", bodyText));
     }
-    const marker = annotationNode(option);
+    const marker = renderDossierOptionAnnotation(field(option.annotation));
     if (marker !== undefined) card.append(marker);
     if (annotationComment !== undefined) card.append(text("span", "st-dossier__optionAnnotationComment", annotationComment));
     return card;
@@ -264,7 +301,7 @@ function optionCard(
   if (!(long && bodyText === undefined) && consequence !== undefined) {
     select.append(text("span", "st-dossier__optionConsequence", consequence));
   }
-  const marker = annotationNode(option);
+  const marker = renderDossierOptionAnnotation(field(option.annotation));
   if (marker !== undefined) select.append(marker);
   if (annotationComment !== undefined) select.append(text("span", "st-dossier__optionAnnotationComment", annotationComment));
   if (!long && bodyText !== undefined) {
@@ -299,11 +336,15 @@ function sectionNode(
     readonly selected: Map<string, string>;
     readonly expanded: Set<string>;
     readonly sections: readonly unknown[];
+    readonly light: boolean;
+    readonly citationCalls: ReturnType<typeof dossierCitations>;
   },
 ): HTMLElement {
   const kind = field(section.kind) ?? "";
   if (kind === "prose") {
-    return markdownBlock(field(section.markdown) ?? "");
+    const prose = markdownBlock(field(section.markdown) ?? "", face.light);
+    appendSectionContext(prose, section);
+    return prose;
   }
   if (kind === "question") {
     const wrap = document.createElement("div");
@@ -328,6 +369,7 @@ function sectionNode(
     if (recommendedAnswer !== undefined) {
       wrap.append(text("p", "st-dossier__questionReco", displayRecommendedAnswer(section, face.sections) ?? recommendedAnswer));
     }
+    appendSectionContext(wrap, section);
     return wrap;
   }
   if (kind === "optionSet") {
@@ -338,20 +380,26 @@ function sectionNode(
     const records = options.filter((option): option is Record<string, unknown> => typeof option === "object" && option !== null);
     wrap.setAttribute("data-st-layout", decideOptionSetLayout(records.length, records.some(isLongOption)));
     const title = field(section.title);
-    if (title !== undefined) wrap.append(text("h4", "st-dossier__optionsTitle", title));
+    if (face.light) {
+      const heading = typeof section.title === "string" ? `Options — ${section.title}` : "Options";
+      wrap.append(text("h3", "st-dossier__optionsTitle", heading));
+    } else if (title !== undefined) {
+      wrap.append(text("h4", "st-dossier__optionsTitle", title));
+    }
     const setId = field(section.id) ?? "";
     const recommendedKey = field(section.questionId) ?? field(section.targetRef);
     const recommendedId = recommendedKey !== undefined ? face.recommended.get(recommendedKey) : undefined;
     for (const record of records) {
       const optionId = field(record.id) ?? "";
-      wrap.append(
-        optionCard(record, {
-          disabled: optionDisabled(face.interactions, optionId),
-          recommended: recommendedId !== undefined && recommendedId === optionId,
-          selected: face.selected.get(setId) === optionId,
-          expanded: face.expanded.has(optionId),
-        }),
-      );
+      const card = optionCard(record, {
+        disabled: optionDisabled(face.interactions, optionId),
+        recommended: recommendedId !== undefined && recommendedId === optionId,
+        selected: face.selected.get(setId) === optionId,
+        expanded: face.expanded.has(optionId),
+      });
+      if (optionId !== "") markDossierAnchor(card, optionId);
+      face.citationCalls(record.citationRefs, card);
+      wrap.append(card);
     }
     return wrap;
   }
@@ -359,18 +407,25 @@ function sectionNode(
     const wrap = document.createElement("div");
     wrap.className = "st-dossier__outcome";
     wrap.setAttribute("data-st-outcome", field(section.id) ?? "");
+    const modality = field(section.modality);
+    if (face.light && modality !== undefined) wrap.append(text("h3", undefined, `Outcome (${modality})`));
     const statement = text("p", "st-dossier__outcomeText", field(section.statement) ?? "");
     statement.setAttribute("data-st-outcome-statement", "");
     wrap.append(statement);
-    const modality = field(section.modality);
-    if (modality !== undefined) wrap.append(text("span", "st-dossier__modality", modality));
+    if (!face.light && modality !== undefined) wrap.append(text("span", "st-dossier__modality", modality));
     return wrap;
   }
   if (kind === "amendmentTrace") {
+    const steps = Array.isArray(section.steps) ? section.steps : [];
+    if (face.light) {
+      const wrap = document.createElement("section");
+      wrap.setAttribute("data-st-trace", field(section.id) ?? "");
+      appendAmendmentTrace(wrap, steps);
+      return wrap;
+    }
     const wrap = document.createElement("ol");
     wrap.className = "st-dossier__trace";
     wrap.setAttribute("data-st-trace", field(section.id) ?? "");
-    const steps = Array.isArray(section.steps) ? section.steps : [];
     for (const step of steps) {
       if (typeof step === "object" && step !== null) {
         const record = step as Record<string, unknown>;
@@ -390,7 +445,8 @@ function sectionNode(
     wrap.setAttribute("data-st-diagram", field(section.id) ?? "");
     const alt = field(section.alt);
     if (alt !== undefined) wrap.append(text("figcaption", "st-dossier__diagramAlt", alt));
-    const pre = text("pre", "st-dossier__diagramSource", field(section.source) ?? "");
+    const reference = [field(section.renderComponent), field(section.sourceRef)].filter(Boolean).join(": ");
+    const pre = text("pre", "st-dossier__diagramSource", field(section.source) ?? reference);
     pre.setAttribute("data-st-diagram-source", "");
     wrap.append(pre);
     return wrap;
@@ -410,16 +466,27 @@ export function renderDossier(
   document_: unknown,
   dispatch: DossierDispatch,
 ): () => void {
+  const root = node.getRootNode();
+  adoptDossierSheet(root instanceof ShadowRoot || root instanceof Document ? root : document);
+  return renderDossierContent(node, document_, dispatch, "shadow").destroy;
+}
+
+/** Shared DOM renderer. Its light DOM caller supplies the external stylesheet. */
+export function renderDossierContent(
+  node: HTMLElement,
+  document_: unknown,
+  dispatch: DossierDispatch,
+  surface: "light" | "shadow",
+): { reviewRoot: HTMLElement; destroy: () => void } {
   const doc = (document_ ?? {}) as Record<string, unknown>;
   const sections = Array.isArray(doc.sections) ? doc.sections : [];
   const interactions = Array.isArray(doc.interactions) ? doc.interactions : [];
+  const evidence = doc.schemaVersion === 2 ? document_ as DecisionDossierDocumentV2 : undefined;
+  const citationCalls = dossierCitations(evidence);
   const recommended = recommendedByQuestion(sections);
   const knownOptions = optionIdsOf(sections);
   const selected = new Map<string, string>();
   const expanded = new Set<string>();
-
-  const root = node.getRootNode();
-  adoptDossierSheet(root instanceof ShadowRoot || root instanceof Document ? root : document);
 
   const article = document.createElement("article");
   article.className = "st-dossier";
@@ -427,13 +494,48 @@ export function renderDossier(
 
   const header = document.createElement("header");
   header.className = "st-dossier__header";
+  const ref = field(doc.ref);
+  if (ref !== undefined) markDossierAnchor(header, ref);
   const subject = field(doc.subject);
   if (subject !== undefined) header.append(text("p", "st-dossier__subject", subject));
-  header.append(text("h2", "st-dossier__title", field(doc.title) ?? ""));
+  header.append(text(surface === "light" ? "h1" : "h2", "st-dossier__title", field(doc.title) ?? ""));
   header.setAttribute("data-st-dossier-title", "");
   article.append(header);
 
-  const face = { interactions, recommended, knownOptions, selected, expanded, sections };
+  const readability = doc.readability as DossierReadability | undefined;
+  if (surface === "light" && readability !== undefined) {
+    const { ownerRequestQuote, stakes, readingBudgetMinutes, stakesLevel, glossary } = readability;
+    const context = document.createElement("section");
+    context.className = "st-dossier__readability";
+    if (ownerRequestQuote !== undefined) {
+      context.append(text("h2", undefined, "Owner request"), text("blockquote", undefined, ownerRequestQuote));
+    }
+    if (stakes !== undefined) {
+      context.append(text("h2", undefined, "Stakes"), text("p", undefined, stakes));
+    }
+    if (readingBudgetMinutes !== undefined && stakesLevel !== undefined) {
+      context.append(text("p", "st-dossier__readingTime", `Reading budget: ${readingBudgetMinutes} min (${stakesLevel} stakes)`));
+    }
+    if (glossary?.length) {
+      const details = document.createElement("details");
+      const definitions = document.createElement("dl");
+      for (const { term, definition } of glossary) {
+        definitions.append(text("dt", undefined, term), text("dd", undefined, definition));
+      }
+      details.append(text("summary", undefined, `Glossary (${glossary.length} ${glossary.length === 1 ? "term" : "terms"})`), definitions);
+      context.append(details);
+    }
+    if (context.hasChildNodes()) article.append(context);
+  }
+
+  const face = { interactions, recommended, knownOptions, selected, expanded, sections, light: surface === "light", citationCalls };
+  function renderSection(record: Record<string, unknown>): HTMLElement {
+    const rendered = sectionNode(record, face);
+    const id = field(record.id);
+    if (id !== undefined) markDossierAnchor(rendered, id);
+    citationCalls(record.citationRefs, rendered);
+    return rendered;
+  }
   const questionIds = new Set<string>();
   for (const section of sections) {
     if (typeof section !== "object" || section === null) continue;
@@ -451,19 +553,19 @@ export function renderDossier(
       // Deferred when linked to a question; an orphan renders at its position.
       const linkId = field(record.questionId);
       if (linkId !== undefined && questionIds.has(linkId)) continue;
-      const rendered = sectionNode(record, face);
+      const rendered = renderSection(record);
       setWraps.push(rendered);
       article.append(rendered);
       continue;
     }
-    article.append(sectionNode(record, face));
+    article.append(renderSection(record));
     if (record.kind === "question") {
       const questionId = field(record.id);
       if (questionId === undefined) continue;
       for (const linked of optionSetsForQuestion(sections, questionId)) {
         if (emittedSets.has(linked)) continue;
         emittedSets.add(linked);
-        const rendered = sectionNode(linked, face);
+        const rendered = renderSection(linked);
         setWraps.push(rendered);
         article.append(rendered);
       }
@@ -471,16 +573,20 @@ export function renderDossier(
   }
 
   const trace = Array.isArray(doc.amendmentTrace) ? doc.amendmentTrace : [];
-  if (trace.length > 0) {
+  if (face.light || trace.length > 0) {
     const footer = document.createElement("footer");
     footer.className = "st-dossier__traceFooter";
     footer.setAttribute("data-st-trace-footer", "");
-    for (const step of trace) {
-      if (typeof step === "object" && step !== null) {
-        const record = step as Record<string, unknown>;
-        const item = text("p", "st-dossier__traceEntry", field(record.summary) ?? "");
-        item.setAttribute("data-st-trace-at", field(record.at) ?? "");
-        footer.append(item);
+    if (face.light) {
+      appendAmendmentTrace(footer, trace);
+    } else {
+      for (const step of trace) {
+        if (typeof step === "object" && step !== null) {
+          const record = step as Record<string, unknown>;
+          const item = text("p", "st-dossier__traceEntry", field(record.summary) ?? "");
+          item.setAttribute("data-st-trace-at", field(record.at) ?? "");
+          footer.append(item);
+        }
       }
     }
     article.append(footer);
@@ -493,7 +599,18 @@ export function renderDossier(
     note.setAttribute("data-st-provenance", source);
     article.append(note);
   }
+  if (evidence !== undefined) appendDossierEvidence(article, evidence, citationCalls);
 
+  return connectDossier(node, article, dispatch, selected, expanded);
+}
+
+export function connectDossier(
+  node: HTMLElement,
+  article: HTMLElement,
+  dispatch: DossierDispatch,
+  selected: Map<string, string> = new Map(),
+  expanded: Set<string> = new Set(),
+): { reviewRoot: HTMLElement; destroy: () => void } {
   /** Apply one selection move inside its option set (F-R3 single rule). */
   const applySelection = (select: Element): void => {
     const optionId = select.getAttribute("data-option-id");
@@ -518,7 +635,7 @@ export function renderDossier(
   const onClick = (event: Event): void => {
     const target = event.target;
     if (!(target instanceof Element)) return;
-    if (target.closest("[data-option-fold]") !== null) return;
+    if (target.closest("[data-option-fold], a") !== null) return;
     const select = target.closest("[data-option-id]");
     if (select !== null && node.contains(select) && select.closest("[data-option-disabled]") === null) {
       applySelection(select);
@@ -568,10 +685,11 @@ export function renderDossier(
   node.addEventListener("click", onFold);
   node.replaceChildren(article);
 
-  return () => {
+  function destroy(): void {
     node.removeEventListener("click", onClick);
     node.removeEventListener("keydown", onKeyDown);
     node.removeEventListener("click", onFold);
-    node.replaceChildren();
-  };
+    article.remove();
+  }
+  return { reviewRoot: article, destroy };
 }
