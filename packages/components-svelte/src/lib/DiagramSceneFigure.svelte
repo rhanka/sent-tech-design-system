@@ -255,7 +255,6 @@
   const maskId = "diagram-connector-mask-" + arrowInstance;
   let browserMeasure = $state.raw<CardLineMeasure>();
   let frameWidth = $state<number>();
-  const layoutWidth = $derived(targetWidth ?? frameWidth ?? DEFAULT_SCENE_TARGET_WIDTH);
   const effectiveMeasure = $derived(sceneCardMeasure(measure === defaultCardMeasure ? browserMeasure ?? measure : measure));
   let tokenMetrics = $state.raw<Partial<LayoutMetrics>>({});
   const effectiveMetrics = $derived({ ...tokenMetrics, ...metrics });
@@ -290,7 +289,7 @@
       ...(hints === undefined ? {} : { hints }),
       metrics: effectiveMetrics,
       ...(rowPack === undefined ? {} : { rowPack }),
-      targetWidth: layoutWidth,
+      ...(targetWidth === undefined ? {} : { targetWidth }),
       ...(previousOrientation === undefined ? {} : { previousOrientation }),
     });
     if (result.status === "laid-out" && result.orientations !== undefined) {
@@ -638,7 +637,7 @@
     ...(cameraBounds === undefined ? {} : { bounds: cameraBounds }),
     // Before the frame is measured (server render, hidden mount) the fit
     // box is the nominal 16:9 box of the layout target width.
-    viewWidth: frameWidth ?? layoutWidth,
+    viewWidth: frameWidth ?? targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
     windowHeight: windowHeight ?? Number.POSITIVE_INFINITY,
     ...(maxDisplayScale === undefined ? {} : { maxDisplayScale }),
     ...(minReadableScale === undefined ? {} : { minReadableScale }),

@@ -42,7 +42,7 @@ const strings = computed(() => ({ ...defaults, ...props.labels }));
 const hostId = useId();
 const arrowId = 'diagram-arrow-' + hostId;
 const maskId = 'diagram-connector-mask-' + hostId;
-const { frameEl, viewportEl, layoutWidth, measure, measureLines, effectiveMetrics, token,
+const { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
     fit, zoom, readout, placement, viewportStyle, resetToFit,
     setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
         props, () => scene.value, camera => emit('cameraChange', camera), undefined,
@@ -72,7 +72,7 @@ const layoutResult = computed(() => {
         ...(props.hints === undefined ? {} : { hints: props.hints }),
         metrics: effectiveMetrics.value,
         ...(props.rowPack === undefined ? {} : { rowPack: props.rowPack }),
-        targetWidth: layoutWidth.value,
+        ...(props.targetWidth === undefined ? {} : { targetWidth: props.targetWidth }),
         ...(previousOrientation === undefined ? {} : { previousOrientation }),
     });
     if (result.status === 'laid-out' && result.orientations !== undefined)

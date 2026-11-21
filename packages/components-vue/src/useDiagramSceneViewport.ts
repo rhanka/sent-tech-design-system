@@ -23,7 +23,6 @@ export function useDiagramSceneViewport(
     const frameEl = shallowRef<HTMLElement>();
     const viewportEl = shallowRef<HTMLElement>();
     const frameWidth = shallowRef<number>();
-    const layoutWidth = computed(() => props.targetWidth ?? frameWidth.value ?? DEFAULT_SCENE_TARGET_WIDTH);
     const viewWidth = shallowRef<number>();
     const windowHeight = shallowRef<number>();
     const scrollbarHeight = shallowRef(0);
@@ -86,7 +85,7 @@ export function useDiagramSceneViewport(
     const measured = computed(() => frameWidth.value !== undefined && windowHeight.value !== undefined);
     const fitInput = computed(() => ({
         ...(cameraBounds.value === undefined ? {} : { bounds: cameraBounds.value }),
-        viewWidth: frameWidth.value ?? layoutWidth.value,
+        viewWidth: frameWidth.value ?? props.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
         windowHeight: windowHeight.value ?? Number.POSITIVE_INFINITY,
         ...(maxDisplayScale.value === undefined ? {} : { maxDisplayScale: maxDisplayScale.value }),
         ...(minReadableScale.value === undefined ? {} : { minReadableScale: minReadableScale.value }),
@@ -220,7 +219,7 @@ export function useDiagramSceneViewport(
 
     const edgeLabelLineHeight = computed(() => measureLines.value({ text: 'Mg', role: 'edge-label', availableWidth: 400, allocatedLines: 1, folded: false }).height);
     const viewportStyle = computed(() => `height:${viewportHeight.value}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px`);
-    return { frameEl, viewportEl, layoutWidth, measure, measureLines, effectiveMetrics, token,
+    return { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
         fit, zoom, readout, placement, viewportStyle, resetToFit,
         setZoom, zoomIn, zoomOut, fitToFrame, getCamera };
 }

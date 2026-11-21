@@ -74,8 +74,8 @@ export interface SceneLayoutCache {
 }
 
 /**
- * Default report width before the host can measure its frame (also used
- * for server rendering). The measured path never re-packs on it (D-3).
+ * Default layout report width. The measured path never re-packs on it (D-3).
+ * Hosts use the measured frame width for the camera fit (Z-8).
  */
 export const DEFAULT_SCENE_TARGET_WIDTH = 1440;
 /**
