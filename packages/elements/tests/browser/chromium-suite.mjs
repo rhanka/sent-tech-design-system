@@ -638,7 +638,7 @@ async function waitFor(page, fn, timeout, label) {
   for (;;) {
     let value;
     try {
-      value = await page.evaluate(fn);
+      value = await page.evaluate(`Boolean((${fn})())`);
     } catch {
       /* page navigated? keep waiting */
     }
