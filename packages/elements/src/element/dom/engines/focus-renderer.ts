@@ -602,6 +602,16 @@ export function renderDossierContent(
   }
   if (evidence !== undefined) appendDossierEvidence(article, evidence, citationCalls);
 
+  return connectDossier(node, article, dispatch, selected, expanded);
+}
+
+export function connectDossier(
+  node: HTMLElement,
+  article: HTMLElement,
+  dispatch: DossierDispatch,
+  selected: Map<string, string> = new Map(),
+  expanded: Set<string> = new Set(),
+): { reviewRoot: HTMLElement; destroy: () => void } {
   /** Apply one selection move inside its option set (F-R3 single rule). */
   const applySelection = (select: Element): void => {
     const optionId = select.getAttribute("data-option-id");

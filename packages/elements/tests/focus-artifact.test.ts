@@ -32,14 +32,14 @@ it.each([
   { doc: decisionV1, ids: ["p1", "q1", "os1", "opt-a", "opt-b", "o1", "diagram-1"], calls: 0, actions: 2 },
   {
     doc: decisionV2,
-    ids: ["p1", "q1", "os1", "opt-a", "opt-b", "o1", "diagram-1", "build-log", "preview", "shared-input",
-      "single-build", "preview-citation", "build-evidence", "annex:measurements"],
+    ids: ["p1", "q1", "os1", "opt-a", "opt-b", "o1", "diagram-1", "shared-input", "single-build",
+      "preview-citation", "build-log", "preview", "build-evidence", "annex:measurements"],
     calls: 8,
     actions: 2,
   },
   {
     doc: report,
-    ids: ["p1", "build-log", "preview", "shared-input", "single-build", "preview-citation", "build-evidence",
+    ids: ["p1", "shared-input", "single-build", "preview-citation", "build-log", "preview", "build-evidence",
       "annex:measurements"],
     calls: 5,
     actions: 0,
