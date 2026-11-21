@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent } from "@testing-library/dom";
 import { mount } from "@vue/test-utils";
 import { nextTick as tick } from "vue";
-import { DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } from "@sentropic/diagram-core";
+import { DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } from "../../diagram-canvas/tests/scene-host-fixtures.js";
 import { expectConnectorPaint, scenePaintOrder } from "../../diagram-canvas/tests/host-support/connectorHostContract.js";
 import { flowFixture, flowMeasure } from "../../diagram-canvas/test-support/flowFixture.js";
 import { nestedZoneFixture } from "../../diagram-canvas/test-support/nestedZoneFixture.js";
