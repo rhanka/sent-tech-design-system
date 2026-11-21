@@ -19,6 +19,7 @@ export interface ConnectorMarkerSpec {
   readonly viewBox: string;
   readonly refX: number;
   readonly refY: number;
+  readonly markerUnits: "userSpaceOnUse";
   readonly markerWidth: number;
   readonly markerHeight: number;
   readonly orient: "auto-start-reverse";
@@ -30,15 +31,18 @@ export interface ConnectorMarkerSpec {
 
 /**
  * Closed marker geometry table for the `@4` arrowhead registry (`arrow | none`, DE-2).
- * Additional heads (hollow triangles, diamonds) are reserved for N2.
+ * Uses `markerUnits="userSpaceOnUse"` at `10.5 × 10.5` world units so raising
+ * `linkStrokeWidth` (`1.5 → 2.5/3.5px`) preserves the pre-DE-2 arrowhead size
+ * (`7 × 1.5 = 10.5`). Additional heads (hollow triangles, diamonds) are reserved for N2.
  */
 export const ARROWHEAD_MARKER_GEOMETRY = Object.freeze({
   arrow: Object.freeze({
     viewBox: "0 0 10 10",
     refX: 9,
     refY: 5,
-    markerWidth: 7,
-    markerHeight: 7,
+    markerUnits: "userSpaceOnUse" as const,
+    markerWidth: 10.5,
+    markerHeight: 10.5,
     orient: "auto-start-reverse" as const,
     path: "M0 0L10 5L0 10Z",
   }),

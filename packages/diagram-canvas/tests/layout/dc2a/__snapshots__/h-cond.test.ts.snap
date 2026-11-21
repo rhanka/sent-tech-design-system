@@ -536,7 +536,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
 {
   "bounds": {
     "height": 2296,
-    "width": 4454.890625,
+    "width": 4464.890625,
     "x": 0,
     "y": 0,
   },
@@ -551,19 +551,19 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 1858.5625,
         },
         {
-          "x": 3621.8752,
+          "x": 3614.8752,
           "y": 1858.5625,
         },
         {
-          "x": 3621.8752,
+          "x": 3614.8752,
           "y": 564.125,
         },
         {
-          "x": 3875.8752,
+          "x": 3885.8752,
           "y": 564.125,
         },
         {
-          "x": 3875.8752,
+          "x": 3885.8752,
           "y": 549.125,
         },
       ],
@@ -609,11 +609,11 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 1973.5625,
         },
         {
-          "x": 3597.8752,
+          "x": 3590.8752,
           "y": 1973.5625,
         },
         {
-          "x": 3597.8752,
+          "x": 3590.8752,
           "y": 564.125,
         },
         {
@@ -640,11 +640,11 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
           "y": 2130.5625,
         },
         {
-          "x": 3875.8752,
+          "x": 3885.8752,
           "y": 2130.5625,
         },
         {
-          "x": 3875.8752,
+          "x": 3885.8752,
           "y": 821.125,
         },
       ],
@@ -655,7 +655,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "occurrence": "occurrence:rel-arch-05",
       "points": [
         {
-          "x": 3645.8752,
+          "x": 3655.8752,
           "y": 449.125,
         },
         {
@@ -747,11 +747,11 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "occurrence": "occurrence:rel-arch-08",
       "points": [
         {
-          "x": 3875.8752,
+          "x": 3885.8752,
           "y": 621.125,
         },
         {
-          "x": 3875.8752,
+          "x": 3885.8752,
           "y": 606.125,
         },
         {
@@ -991,7 +991,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "box": {
         "height": 22,
         "width": 302.6589504,
-        "x": 2175.6081248,
+        "x": 2172.1081248,
         "y": 1829.7847222222222,
       },
       "lines": [
@@ -1015,7 +1015,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "box": {
         "height": 22,
         "width": 325.24016639999996,
-        "x": 1914.8175168000002,
+        "x": 1911.3175168000002,
         "y": 1944.7847222222222,
       },
       "lines": [
@@ -1027,7 +1027,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "box": {
         "height": 22,
         "width": 355.854336,
-        "x": 2276.010432,
+        "x": 2281.010432,
         "y": 2101.784722222222,
       },
       "lines": [
@@ -1194,7 +1194,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "occurrence:zone-engram",
       {
         "height": 1488,
-        "width": 2437.8752,
+        "width": 2447.8752,
         "x": 1700,
         "y": 0,
       },
@@ -1221,7 +1221,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "occurrence:zone-extractors",
       {
         "height": 712,
-        "width": 1048,
+        "width": 1058,
         "x": 3073.8752,
         "y": 174.5625,
       },
@@ -1276,7 +1276,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       {
         "height": 200,
         "width": 460,
-        "x": 3645.8752,
+        "x": 3655.8752,
         "y": 349.125,
       },
     ],
@@ -1294,7 +1294,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       {
         "height": 200,
         "width": 460,
-        "x": 3645.8752,
+        "x": 3655.8752,
         "y": 621.125,
       },
     ],
@@ -1396,7 +1396,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
 {
   "bounds": {
     "height": 2296,
-    "width": 4454.890625,
+    "width": 4464.890625,
     "x": 0,
     "y": 0,
   },
@@ -1411,19 +1411,19 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 1858.5625,
         },
         {
-          "x": 3621.8752,
+          "x": 3614.8752,
           "y": 1858.5625,
         },
         {
-          "x": 3621.8752,
+          "x": 3614.8752,
           "y": 564.125,
         },
         {
-          "x": 3875.8752,
+          "x": 3885.8752,
           "y": 564.125,
         },
         {
-          "x": 3875.8752,
+          "x": 3885.8752,
           "y": 549.125,
         },
       ],
@@ -1469,11 +1469,11 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 1973.5625,
         },
         {
-          "x": 3597.8752,
+          "x": 3590.8752,
           "y": 1973.5625,
         },
         {
-          "x": 3597.8752,
+          "x": 3590.8752,
           "y": 564.125,
         },
         {
@@ -1500,11 +1500,11 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
           "y": 2130.5625,
         },
         {
-          "x": 3875.8752,
+          "x": 3885.8752,
           "y": 2130.5625,
         },
         {
-          "x": 3875.8752,
+          "x": 3885.8752,
           "y": 821.125,
         },
       ],
@@ -1515,7 +1515,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "occurrence": "occurrence:rel-arch-05",
       "points": [
         {
-          "x": 3645.8752,
+          "x": 3655.8752,
           "y": 449.125,
         },
         {
@@ -1607,11 +1607,11 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "occurrence": "occurrence:rel-arch-08",
       "points": [
         {
-          "x": 3875.8752,
+          "x": 3885.8752,
           "y": 621.125,
         },
         {
-          "x": 3875.8752,
+          "x": 3885.8752,
           "y": 606.125,
         },
         {
@@ -1851,7 +1851,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "box": {
         "height": 22,
         "width": 302.6589504,
-        "x": 2175.6081248,
+        "x": 2172.1081248,
         "y": 1829.7847222222222,
       },
       "lines": [
@@ -1875,7 +1875,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "box": {
         "height": 22,
         "width": 325.24016639999996,
-        "x": 1914.8175168000002,
+        "x": 1911.3175168000002,
         "y": 1944.7847222222222,
       },
       "lines": [
@@ -1887,7 +1887,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "box": {
         "height": 22,
         "width": 355.854336,
-        "x": 2276.010432,
+        "x": 2281.010432,
         "y": 2101.784722222222,
       },
       "lines": [
@@ -2054,7 +2054,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "occurrence:zone-engram",
       {
         "height": 1488,
-        "width": 2437.8752,
+        "width": 2447.8752,
         "x": 1700,
         "y": 0,
       },
@@ -2081,7 +2081,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "occurrence:zone-extractors",
       {
         "height": 712,
-        "width": 1048,
+        "width": 1058,
         "x": 3073.8752,
         "y": 174.5625,
       },
@@ -2136,7 +2136,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       {
         "height": 200,
         "width": 460,
-        "x": 3645.8752,
+        "x": 3655.8752,
         "y": 349.125,
       },
     ],
@@ -2154,7 +2154,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       {
         "height": 200,
         "width": 460,
-        "x": 3645.8752,
+        "x": 3655.8752,
         "y": 621.125,
       },
     ],
@@ -3037,8 +3037,8 @@ writes",
 exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and separated 1`] = `
 {
   "bounds": {
-    "height": 1717.5625,
-    "width": 3366,
+    "height": 1726.5625,
+    "width": 3406,
     "x": -15,
     "y": -47.78125,
   },
@@ -3049,20 +3049,20 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-01",
       "points": [
         {
-          "x": 802,
-          "y": 1212.5625,
+          "x": 842,
+          "y": 1220.5625,
         },
         {
-          "x": 802,
-          "y": 1260.5625,
-        },
-        {
-          "x": 246,
-          "y": 1260.5625,
+          "x": 842,
+          "y": 1268.5625,
         },
         {
           "x": 246,
-          "y": 1284.5625,
+          "y": 1268.5625,
+        },
+        {
+          "x": 246,
+          "y": 1293.5625,
         },
       ],
     },
@@ -3073,19 +3073,19 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "points": [
         {
           "x": 222,
-          "y": 1284.5625,
+          "y": 1293.5625,
         },
         {
           "x": 222,
-          "y": 1227.5625,
+          "y": 1235.5625,
         },
         {
           "x": 246,
-          "y": 1227.5625,
+          "y": 1235.5625,
         },
         {
           "x": 246,
-          "y": 1212.5625,
+          "y": 1220.5625,
         },
       ],
     },
@@ -3095,20 +3095,20 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-03",
       "points": [
         {
-          "x": 572,
-          "y": 1112.5625,
+          "x": 612,
+          "y": 1120.5625,
         },
         {
-          "x": 524,
-          "y": 1112.5625,
+          "x": 520,
+          "y": 1120.5625,
         },
         {
-          "x": 524,
-          "y": 1136.5625,
+          "x": 520,
+          "y": 1144.5625,
         },
         {
           "x": 476,
-          "y": 1136.5625,
+          "y": 1144.5625,
         },
       ],
     },
@@ -3118,28 +3118,28 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-04",
       "points": [
         {
-          "x": 1032,
-          "y": 1112.5625,
+          "x": 1072,
+          "y": 1144.5625,
         },
         {
-          "x": 1096,
-          "y": 1112.5625,
+          "x": 1169,
+          "y": 1144.5625,
         },
         {
-          "x": 1096,
-          "y": 1565,
+          "x": 1169,
+          "y": 1573,
         },
         {
-          "x": 2240,
-          "y": 1565,
+          "x": 2280,
+          "y": 1573,
         },
         {
-          "x": 2240,
-          "y": 546.5625,
+          "x": 2280,
+          "y": 554.5625,
         },
         {
-          "x": 2304,
-          "y": 546.5625,
+          "x": 2344,
+          "y": 554.5625,
         },
       ],
     },
@@ -3150,26 +3150,26 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "points": [
         {
           "x": 270,
-          "y": 1284.5625,
+          "y": 1293.5625,
         },
         {
           "x": 270,
-          "y": 1236.5625,
+          "y": 1244.5625,
         },
         {
-          "x": 524,
-          "y": 1236.5625,
+          "x": 520,
+          "y": 1244.5625,
         },
         {
-          "x": 524,
-          "y": 1637,
+          "x": 520,
+          "y": 1646,
         },
         {
-          "x": 3078,
-          "y": 1637,
+          "x": 3118,
+          "y": 1646,
         },
         {
-          "x": 3078,
+          "x": 3118,
           "y": 374.5625,
         },
       ],
@@ -3181,34 +3181,34 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "points": [
         {
           "x": 476,
-          "y": 1088.5625,
+          "y": 1096.5625,
         },
         {
-          "x": 557,
-          "y": 1088.5625,
+          "x": 597,
+          "y": 1096.5625,
         },
         {
-          "x": 557,
-          "y": 1613,
+          "x": 597,
+          "y": 1622,
         },
         {
-          "x": 2779,
-          "y": 1613,
+          "x": 2819,
+          "y": 1622,
         },
         {
-          "x": 2779,
+          "x": 2819,
           "y": 389.5625,
         },
         {
-          "x": 2240,
+          "x": 2280,
           "y": 389.5625,
         },
         {
-          "x": 2240,
+          "x": 2280,
           "y": 274.5625,
         },
         {
-          "x": 2304,
+          "x": 2344,
           "y": 274.5625,
         },
       ],
@@ -3220,11 +3220,11 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "points": [
         {
           "x": 16,
-          "y": 1112.5625,
+          "y": 1120.5625,
         },
         {
           "x": -15,
-          "y": 1112.5625,
+          "y": 1120.5625,
         },
         {
           "x": -15,
@@ -3242,19 +3242,19 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-08",
       "points": [
         {
-          "x": 1958,
+          "x": 1998,
           "y": 374.5625,
         },
         {
-          "x": 1958,
+          "x": 1998,
           "y": 422.5625,
         },
         {
-          "x": 1402,
+          "x": 1442,
           "y": 422.5625,
         },
         {
-          "x": 1402,
+          "x": 1442,
           "y": 446.5625,
         },
       ],
@@ -3265,32 +3265,32 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-09",
       "points": [
         {
-          "x": 1934,
+          "x": 1974,
           "y": 374.5625,
         },
         {
-          "x": 1934,
-          "y": 823,
+          "x": 1974,
+          "y": 831,
         },
         {
-          "x": 2264,
-          "y": 823,
+          "x": 2304,
+          "y": 831,
         },
         {
-          "x": 2264,
-          "y": 1589,
+          "x": 2304,
+          "y": 1598,
         },
         {
-          "x": 500,
-          "y": 1589,
+          "x": 496,
+          "y": 1598,
         },
         {
-          "x": 500,
-          "y": 1112.5625,
+          "x": 496,
+          "y": 1120.5625,
         },
         {
           "x": 476,
-          "y": 1112.5625,
+          "y": 1120.5625,
         },
       ],
     },
@@ -3300,24 +3300,24 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-10",
       "points": [
         {
-          "x": 1390,
+          "x": 1430,
           "y": 646.5625,
         },
         {
-          "x": 1390,
+          "x": 1430,
           "y": 661.5625,
         },
         {
-          "x": 1063,
+          "x": 1103,
           "y": 661.5625,
         },
         {
-          "x": 1063,
-          "y": 1136.5625,
+          "x": 1103,
+          "y": 1120.5625,
         },
         {
-          "x": 1032,
-          "y": 1136.5625,
+          "x": 1072,
+          "y": 1120.5625,
         },
       ],
     },
@@ -3327,20 +3327,20 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-11",
       "points": [
         {
-          "x": 1160,
+          "x": 1200,
           "y": 274.5625,
         },
         {
-          "x": 1096,
+          "x": 1136,
           "y": 274.5625,
         },
         {
-          "x": 1096,
-          "y": 1088.5625,
+          "x": 1136,
+          "y": 1096.5625,
         },
         {
-          "x": 1032,
-          "y": 1088.5625,
+          "x": 1072,
+          "y": 1096.5625,
         },
       ],
     },
@@ -3350,19 +3350,19 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-12",
       "points": [
         {
-          "x": 1390,
+          "x": 1430,
           "y": 374.5625,
         },
         {
-          "x": 1390,
+          "x": 1430,
           "y": 389.5625,
         },
         {
-          "x": 1378,
+          "x": 1418,
           "y": 389.5625,
         },
         {
-          "x": 1378,
+          "x": 1418,
           "y": 446.5625,
         },
       ],
@@ -3373,15 +3373,15 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-13",
       "points": [
         {
-          "x": 2764,
-          "y": 546.5625,
+          "x": 2804,
+          "y": 554.5625,
         },
         {
-          "x": 3102,
-          "y": 546.5625,
+          "x": 3142,
+          "y": 554.5625,
         },
         {
-          "x": 3102,
+          "x": 3142,
           "y": 374.5625,
         },
       ],
@@ -3392,23 +3392,23 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-14",
       "points": [
         {
-          "x": 3126,
+          "x": 3166,
           "y": 374.5625,
         },
         {
-          "x": 3126,
+          "x": 3166,
           "y": 398.5625,
         },
         {
-          "x": 2845,
+          "x": 2885,
           "y": 398.5625,
         },
         {
-          "x": 2845,
+          "x": 2885,
           "y": 274.5625,
         },
         {
-          "x": 2860,
+          "x": 2900,
           "y": 274.5625,
         },
       ],
@@ -3419,19 +3419,19 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-15",
       "points": [
         {
-          "x": 3054,
+          "x": 3094,
           "y": 374.5625,
         },
         {
-          "x": 3054,
+          "x": 3094,
           "y": 422.5625,
         },
         {
-          "x": 2534,
+          "x": 2574,
           "y": 422.5625,
         },
         {
-          "x": 2534,
+          "x": 2574,
           "y": 374.5625,
         },
       ],
@@ -3442,27 +3442,27 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-16",
       "points": [
         {
-          "x": 1620,
-          "y": 1112.5625,
+          "x": 1660,
+          "y": 1120.5625,
         },
         {
-          "x": 1701,
-          "y": 1112.5625,
+          "x": 1741,
+          "y": 1120.5625,
         },
         {
-          "x": 1701,
-          "y": 1227.5625,
+          "x": 1741,
+          "y": 1235.5625,
         },
         {
-          "x": 2207,
-          "y": 1227.5625,
+          "x": 2247,
+          "y": 1235.5625,
         },
         {
-          "x": 2207,
+          "x": 2247,
           "y": 298.5625,
         },
         {
-          "x": 2304,
+          "x": 2344,
           "y": 298.5625,
         },
       ],
@@ -3473,39 +3473,39 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-17",
       "points": [
         {
-          "x": 2764,
+          "x": 2804,
           "y": 274.5625,
         },
         {
-          "x": 2812,
+          "x": 2852,
           "y": 274.5625,
         },
         {
-          "x": 2812,
+          "x": 2852,
           "y": 455,
         },
         {
-          "x": 3351,
+          "x": 3391,
           "y": 455,
         },
         {
-          "x": 3351,
+          "x": 3391,
           "y": -15,
         },
         {
-          "x": 1063,
+          "x": 1103,
           "y": -15,
         },
         {
-          "x": 1063,
+          "x": 1103,
           "y": 455,
         },
         {
-          "x": 557,
+          "x": 597,
           "y": 455,
         },
         {
-          "x": 557,
+          "x": 597,
           "y": 250.5625,
         },
         {
@@ -3520,23 +3520,23 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-18",
       "points": [
         {
+          "x": 2344,
+          "y": 250.5625,
+        },
+        {
           "x": 2304,
           "y": 250.5625,
         },
         {
-          "x": 2264,
-          "y": 250.5625,
-        },
-        {
-          "x": 2264,
+          "x": 2304,
           "y": 727,
         },
         {
-          "x": 500,
+          "x": 496,
           "y": 727,
         },
         {
-          "x": 500,
+          "x": 496,
           "y": 274.5625,
         },
         {
@@ -3551,15 +3551,15 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-19",
       "points": [
         {
+          "x": 1200,
+          "y": 1120.5625,
+        },
+        {
           "x": 1160,
-          "y": 1112.5625,
+          "y": 1120.5625,
         },
         {
-          "x": 1120,
-          "y": 1112.5625,
-        },
-        {
-          "x": 1120,
+          "x": 1160,
           "y": 422.5625,
         },
         {
@@ -3582,15 +3582,15 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
           "y": 298.5625,
         },
         {
-          "x": 524,
+          "x": 520,
           "y": 298.5625,
         },
         {
-          "x": 524,
+          "x": 520,
           "y": 274.5625,
         },
         {
-          "x": 572,
+          "x": 612,
           "y": 274.5625,
         },
       ],
@@ -3601,11 +3601,11 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-21",
       "points": [
         {
-          "x": 802,
+          "x": 842,
           "y": 374.5625,
         },
         {
-          "x": 802,
+          "x": 842,
           "y": 389.5625,
         },
         {
@@ -3624,20 +3624,20 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-22",
       "points": [
         {
-          "x": 1390,
-          "y": 1212.5625,
+          "x": 1430,
+          "y": 1220.5625,
         },
         {
-          "x": 1390,
-          "y": 1227.5625,
+          "x": 1430,
+          "y": 1235.5625,
         },
         {
-          "x": 1378,
-          "y": 1227.5625,
+          "x": 1418,
+          "y": 1235.5625,
         },
         {
-          "x": 1378,
-          "y": 1284.5625,
+          "x": 1418,
+          "y": 1292.5625,
         },
       ],
     },
@@ -3647,20 +3647,20 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence": "occurrence:rel-ont-23",
       "points": [
         {
-          "x": 1402,
-          "y": 1284.5625,
+          "x": 1442,
+          "y": 1292.5625,
         },
         {
-          "x": 1402,
-          "y": 1260.5625,
+          "x": 1442,
+          "y": 1268.5625,
         },
         {
-          "x": 1946,
-          "y": 1260.5625,
+          "x": 1986,
+          "y": 1268.5625,
         },
         {
-          "x": 1946,
-          "y": 1212.5625,
+          "x": 1986,
+          "y": 1220.5625,
         },
       ],
     },
@@ -3670,8 +3670,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 76.37141760000002,
-        "x": 563.7777777777778,
-        "y": 1231.7847222222222,
+        "x": 505.8142912,
+        "y": 1215.7847222222222,
       },
       "lines": [
         "contains",
@@ -3683,7 +3683,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 80.40724800000001,
         "x": 134.81497422222222,
-        "y": 1245.0625,
+        "y": 1253.5625,
       },
       "lines": [
         "specifies",
@@ -3694,8 +3694,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 80.40724800000001,
-        "x": 484.8149742222222,
-        "y": 1059.7847222222222,
+        "x": 524.8149742222222,
+        "y": 1067.7847222222222,
       },
       "lines": [
         "specifies",
@@ -3706,8 +3706,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 69.95328,
-        "x": 1633.02336,
-        "y": 1466.951388888889,
+        "x": 1689.52336,
+        "y": 1474.951388888889,
       },
       "lines": [
         "governs",
@@ -3718,8 +3718,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 69.95328,
-        "x": 1766.02336,
-        "y": 1643.7777777777778,
+        "x": 1784.02336,
+        "y": 1652.7777777777778,
       },
       "lines": [
         "governs",
@@ -3730,8 +3730,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 69.95328,
-        "x": 1633.02336,
-        "y": 1643.7777777777778,
+        "x": 1673.02336,
+        "y": 1652.7777777777778,
       },
       "lines": [
         "governs",
@@ -3743,7 +3743,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 69.95328,
         "x": -8.222222222222221,
-        "y": 682.5625,
+        "y": 686.5625,
       },
       "lines": [
         "governs",
@@ -3754,7 +3754,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 141.24166080000003,
-        "x": 1609.3791696,
+        "x": 1649.3791696,
         "y": 393.78472222222223,
       },
       "lines": [
@@ -3766,8 +3766,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 131.5358304,
-        "x": 1316.2320848,
-        "y": 1643.7777777777778,
+        "x": 1334.2320848,
+        "y": 1652.7777777777778,
       },
       "lines": [
         "tracks · réalise",
@@ -3778,8 +3778,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 131.5358304,
-        "x": 924.6863918222222,
-        "y": 809.2222222222222,
+        "x": 964.6863918222222,
+        "y": 817.2222222222222,
       },
       "lines": [
         "tracks · réalise",
@@ -3790,8 +3790,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 69.93352320000001,
-        "x": 986.2886990222222,
-        "y": 670.5625,
+        "x": 1026.288699022222,
+        "y": 674.5625,
       },
       "lines": [
         "decides",
@@ -3802,7 +3802,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 69.93352320000001,
-        "x": 1301.288699022222,
+        "x": 1341.288699022222,
         "y": 407.0625,
       },
       "lines": [
@@ -3814,8 +3814,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 68.319312,
-        "x": 2898.840344,
-        "y": 517.7847222222222,
+        "x": 2938.840344,
+        "y": 525.7847222222222,
       },
       "lines": [
         "renders",
@@ -3826,7 +3826,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 44.18234880000001,
-        "x": 2963.4088256,
+        "x": 3003.4088256,
         "y": 461.77777777777777,
       },
       "lines": [
@@ -3838,7 +3838,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 165.35906880000007,
-        "x": 2785.777777777778,
+        "x": 2825.777777777778,
         "y": 461.77777777777777,
       },
       "lines": [
@@ -3850,8 +3850,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 71.13445440000001,
-        "x": 2129.0877678222223,
-        "y": 752.0625,
+        "x": 2169.0877678222223,
+        "y": 756.0625,
       },
       "lines": [
         "handles",
@@ -3862,7 +3862,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 51.013968000000006,
-        "x": 2181.493016,
+        "x": 2221.493016,
         "y": -43.77777777777778,
       },
       "lines": [
@@ -3874,7 +3874,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 53.829513600000006,
-        "x": 1355.0852432,
+        "x": 1373.0852432,
         "y": 733.7777777777778,
       },
       "lines": [
@@ -3886,7 +3886,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 120.25489919999998,
-        "x": 1102.7777777777778,
+        "x": 1142.7777777777778,
         "y": 393.78472222222223,
       },
       "lines": [
@@ -3898,7 +3898,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 81.2144544,
-        "x": 482.77777777777777,
+        "x": 524.0077678222221,
         "y": 221.78472222222223,
       },
       "lines": [
@@ -3910,7 +3910,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 133.95704640000002,
-        "x": 506.77777777777777,
+        "x": 502.77777777777777,
         "y": 476.77777777777777,
       },
       "lines": [
@@ -3922,8 +3922,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 92.4756288,
-        "x": 1278.746593422222,
-        "y": 1245.0625,
+        "x": 1318.746593422222,
+        "y": 1253.0625,
       },
       "lines": [
         "defined_in",
@@ -3934,8 +3934,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 93.71647679999998,
-        "x": 1627.1417616,
-        "y": 1267.3402777777778,
+        "x": 1667.1417616,
+        "y": 1275.3402777777778,
       },
       "lines": [
         "at_commit",
@@ -3948,7 +3948,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "occurrence:zone-data",
       {
         "height": 470,
-        "width": 1048,
+        "width": 1088,
         "x": 0,
         "y": 0,
       },
@@ -3958,26 +3958,26 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       {
         "height": 712,
         "width": 1048,
-        "x": 1144,
+        "x": 1184,
         "y": 0,
       },
     ],
     [
       "occurrence:zone-interface",
       {
-        "height": 742,
+        "height": 750,
         "width": 1048,
-        "x": 2288,
+        "x": 2328,
         "y": 0,
       },
     ],
     [
       "occurrence:zone-normative",
       {
-        "height": 712,
-        "width": 1048,
+        "height": 713,
+        "width": 1088,
         "x": 0,
-        "y": 838,
+        "y": 846,
       },
     ],
     [
@@ -3985,8 +3985,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       {
         "height": 712,
         "width": 1048,
-        "x": 1144,
-        "y": 838,
+        "x": 1184,
+        "y": 846,
       },
     ],
     [
@@ -3994,7 +3994,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       {
         "height": 200,
         "width": 460,
-        "x": 2304,
+        "x": 2344,
         "y": 174.5625,
       },
     ],
@@ -4003,8 +4003,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       {
         "height": 200,
         "width": 460,
-        "x": 1160,
-        "y": 1012.5625,
+        "x": 1200,
+        "y": 1020.5625,
       },
     ],
     [
@@ -4012,8 +4012,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       {
         "height": 200,
         "width": 460,
-        "x": 1716,
-        "y": 1012.5625,
+        "x": 1756,
+        "y": 1020.5625,
       },
     ],
     [
@@ -4021,7 +4021,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       {
         "height": 200,
         "width": 460,
-        "x": 2860,
+        "x": 2900,
         "y": 174.5625,
       },
     ],
@@ -4039,7 +4039,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       {
         "height": 200,
         "width": 460,
-        "x": 572,
+        "x": 612,
         "y": 174.5625,
       },
     ],
@@ -4048,8 +4048,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       {
         "height": 200,
         "width": 460,
-        "x": 1160,
-        "y": 1284.5625,
+        "x": 1200,
+        "y": 1292.5625,
       },
     ],
     [
@@ -4058,7 +4058,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 200,
         "width": 460,
         "x": 16,
-        "y": 1012.5625,
+        "y": 1020.5625,
       },
     ],
     [
@@ -4066,8 +4066,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       {
         "height": 200,
         "width": 460,
-        "x": 2304,
-        "y": 446.5625,
+        "x": 2344,
+        "y": 454.5625,
       },
     ],
     [
@@ -4075,8 +4075,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       {
         "height": 200,
         "width": 460,
-        "x": 572,
-        "y": 1012.5625,
+        "x": 612,
+        "y": 1020.5625,
       },
     ],
     [
@@ -4085,7 +4085,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 200,
         "width": 460,
         "x": 16,
-        "y": 1284.5625,
+        "y": 1293.5625,
       },
     ],
     [
@@ -4093,7 +4093,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       {
         "height": 200,
         "width": 460,
-        "x": 1160,
+        "x": 1200,
         "y": 174.5625,
       },
     ],
@@ -4102,7 +4102,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       {
         "height": 200,
         "width": 460,
-        "x": 1716,
+        "x": 1756,
         "y": 174.5625,
       },
     ],
@@ -4111,7 +4111,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       {
         "height": 200,
         "width": 460,
-        "x": 1160,
+        "x": 1200,
         "y": 446.5625,
       },
     ],
@@ -4122,8 +4122,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
 exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and separated 1`] = `
 {
   "bounds": {
-    "height": 1717.5625,
-    "width": 3366,
+    "height": 1726.5625,
+    "width": 3406,
     "x": -15,
     "y": -47.78125,
   },
@@ -4134,20 +4134,20 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-01",
       "points": [
         {
-          "x": 802,
-          "y": 1212.5625,
+          "x": 842,
+          "y": 1220.5625,
         },
         {
-          "x": 802,
-          "y": 1260.5625,
-        },
-        {
-          "x": 246,
-          "y": 1260.5625,
+          "x": 842,
+          "y": 1268.5625,
         },
         {
           "x": 246,
-          "y": 1284.5625,
+          "y": 1268.5625,
+        },
+        {
+          "x": 246,
+          "y": 1293.5625,
         },
       ],
     },
@@ -4158,19 +4158,19 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "points": [
         {
           "x": 222,
-          "y": 1284.5625,
+          "y": 1293.5625,
         },
         {
           "x": 222,
-          "y": 1227.5625,
+          "y": 1235.5625,
         },
         {
           "x": 246,
-          "y": 1227.5625,
+          "y": 1235.5625,
         },
         {
           "x": 246,
-          "y": 1212.5625,
+          "y": 1220.5625,
         },
       ],
     },
@@ -4180,20 +4180,20 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-03",
       "points": [
         {
-          "x": 572,
-          "y": 1112.5625,
+          "x": 612,
+          "y": 1120.5625,
         },
         {
-          "x": 524,
-          "y": 1112.5625,
+          "x": 520,
+          "y": 1120.5625,
         },
         {
-          "x": 524,
-          "y": 1136.5625,
+          "x": 520,
+          "y": 1144.5625,
         },
         {
           "x": 476,
-          "y": 1136.5625,
+          "y": 1144.5625,
         },
       ],
     },
@@ -4203,28 +4203,28 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-04",
       "points": [
         {
-          "x": 1032,
-          "y": 1112.5625,
+          "x": 1072,
+          "y": 1144.5625,
         },
         {
-          "x": 1096,
-          "y": 1112.5625,
+          "x": 1169,
+          "y": 1144.5625,
         },
         {
-          "x": 1096,
-          "y": 1565,
+          "x": 1169,
+          "y": 1573,
         },
         {
-          "x": 2240,
-          "y": 1565,
+          "x": 2280,
+          "y": 1573,
         },
         {
-          "x": 2240,
-          "y": 546.5625,
+          "x": 2280,
+          "y": 554.5625,
         },
         {
-          "x": 2304,
-          "y": 546.5625,
+          "x": 2344,
+          "y": 554.5625,
         },
       ],
     },
@@ -4235,26 +4235,26 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "points": [
         {
           "x": 270,
-          "y": 1284.5625,
+          "y": 1293.5625,
         },
         {
           "x": 270,
-          "y": 1236.5625,
+          "y": 1244.5625,
         },
         {
-          "x": 524,
-          "y": 1236.5625,
+          "x": 520,
+          "y": 1244.5625,
         },
         {
-          "x": 524,
-          "y": 1637,
+          "x": 520,
+          "y": 1646,
         },
         {
-          "x": 3078,
-          "y": 1637,
+          "x": 3118,
+          "y": 1646,
         },
         {
-          "x": 3078,
+          "x": 3118,
           "y": 374.5625,
         },
       ],
@@ -4266,34 +4266,34 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "points": [
         {
           "x": 476,
-          "y": 1088.5625,
+          "y": 1096.5625,
         },
         {
-          "x": 557,
-          "y": 1088.5625,
+          "x": 597,
+          "y": 1096.5625,
         },
         {
-          "x": 557,
-          "y": 1613,
+          "x": 597,
+          "y": 1622,
         },
         {
-          "x": 2779,
-          "y": 1613,
+          "x": 2819,
+          "y": 1622,
         },
         {
-          "x": 2779,
+          "x": 2819,
           "y": 389.5625,
         },
         {
-          "x": 2240,
+          "x": 2280,
           "y": 389.5625,
         },
         {
-          "x": 2240,
+          "x": 2280,
           "y": 274.5625,
         },
         {
-          "x": 2304,
+          "x": 2344,
           "y": 274.5625,
         },
       ],
@@ -4305,11 +4305,11 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "points": [
         {
           "x": 16,
-          "y": 1112.5625,
+          "y": 1120.5625,
         },
         {
           "x": -15,
-          "y": 1112.5625,
+          "y": 1120.5625,
         },
         {
           "x": -15,
@@ -4327,19 +4327,19 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-08",
       "points": [
         {
-          "x": 1958,
+          "x": 1998,
           "y": 374.5625,
         },
         {
-          "x": 1958,
+          "x": 1998,
           "y": 422.5625,
         },
         {
-          "x": 1402,
+          "x": 1442,
           "y": 422.5625,
         },
         {
-          "x": 1402,
+          "x": 1442,
           "y": 446.5625,
         },
       ],
@@ -4350,32 +4350,32 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-09",
       "points": [
         {
-          "x": 1934,
+          "x": 1974,
           "y": 374.5625,
         },
         {
-          "x": 1934,
-          "y": 823,
+          "x": 1974,
+          "y": 831,
         },
         {
-          "x": 2264,
-          "y": 823,
+          "x": 2304,
+          "y": 831,
         },
         {
-          "x": 2264,
-          "y": 1589,
+          "x": 2304,
+          "y": 1598,
         },
         {
-          "x": 500,
-          "y": 1589,
+          "x": 496,
+          "y": 1598,
         },
         {
-          "x": 500,
-          "y": 1112.5625,
+          "x": 496,
+          "y": 1120.5625,
         },
         {
           "x": 476,
-          "y": 1112.5625,
+          "y": 1120.5625,
         },
       ],
     },
@@ -4385,24 +4385,24 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-10",
       "points": [
         {
-          "x": 1390,
+          "x": 1430,
           "y": 646.5625,
         },
         {
-          "x": 1390,
+          "x": 1430,
           "y": 661.5625,
         },
         {
-          "x": 1063,
+          "x": 1103,
           "y": 661.5625,
         },
         {
-          "x": 1063,
-          "y": 1136.5625,
+          "x": 1103,
+          "y": 1120.5625,
         },
         {
-          "x": 1032,
-          "y": 1136.5625,
+          "x": 1072,
+          "y": 1120.5625,
         },
       ],
     },
@@ -4412,20 +4412,20 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-11",
       "points": [
         {
-          "x": 1160,
+          "x": 1200,
           "y": 274.5625,
         },
         {
-          "x": 1096,
+          "x": 1136,
           "y": 274.5625,
         },
         {
-          "x": 1096,
-          "y": 1088.5625,
+          "x": 1136,
+          "y": 1096.5625,
         },
         {
-          "x": 1032,
-          "y": 1088.5625,
+          "x": 1072,
+          "y": 1096.5625,
         },
       ],
     },
@@ -4435,19 +4435,19 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-12",
       "points": [
         {
-          "x": 1390,
+          "x": 1430,
           "y": 374.5625,
         },
         {
-          "x": 1390,
+          "x": 1430,
           "y": 389.5625,
         },
         {
-          "x": 1378,
+          "x": 1418,
           "y": 389.5625,
         },
         {
-          "x": 1378,
+          "x": 1418,
           "y": 446.5625,
         },
       ],
@@ -4458,15 +4458,15 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-13",
       "points": [
         {
-          "x": 2764,
-          "y": 546.5625,
+          "x": 2804,
+          "y": 554.5625,
         },
         {
-          "x": 3102,
-          "y": 546.5625,
+          "x": 3142,
+          "y": 554.5625,
         },
         {
-          "x": 3102,
+          "x": 3142,
           "y": 374.5625,
         },
       ],
@@ -4477,23 +4477,23 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-14",
       "points": [
         {
-          "x": 3126,
+          "x": 3166,
           "y": 374.5625,
         },
         {
-          "x": 3126,
+          "x": 3166,
           "y": 398.5625,
         },
         {
-          "x": 2845,
+          "x": 2885,
           "y": 398.5625,
         },
         {
-          "x": 2845,
+          "x": 2885,
           "y": 274.5625,
         },
         {
-          "x": 2860,
+          "x": 2900,
           "y": 274.5625,
         },
       ],
@@ -4504,19 +4504,19 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-15",
       "points": [
         {
-          "x": 3054,
+          "x": 3094,
           "y": 374.5625,
         },
         {
-          "x": 3054,
+          "x": 3094,
           "y": 422.5625,
         },
         {
-          "x": 2534,
+          "x": 2574,
           "y": 422.5625,
         },
         {
-          "x": 2534,
+          "x": 2574,
           "y": 374.5625,
         },
       ],
@@ -4527,27 +4527,27 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-16",
       "points": [
         {
-          "x": 1620,
-          "y": 1112.5625,
+          "x": 1660,
+          "y": 1120.5625,
         },
         {
-          "x": 1701,
-          "y": 1112.5625,
+          "x": 1741,
+          "y": 1120.5625,
         },
         {
-          "x": 1701,
-          "y": 1227.5625,
+          "x": 1741,
+          "y": 1235.5625,
         },
         {
-          "x": 2207,
-          "y": 1227.5625,
+          "x": 2247,
+          "y": 1235.5625,
         },
         {
-          "x": 2207,
+          "x": 2247,
           "y": 298.5625,
         },
         {
-          "x": 2304,
+          "x": 2344,
           "y": 298.5625,
         },
       ],
@@ -4558,39 +4558,39 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-17",
       "points": [
         {
-          "x": 2764,
+          "x": 2804,
           "y": 274.5625,
         },
         {
-          "x": 2812,
+          "x": 2852,
           "y": 274.5625,
         },
         {
-          "x": 2812,
+          "x": 2852,
           "y": 455,
         },
         {
-          "x": 3351,
+          "x": 3391,
           "y": 455,
         },
         {
-          "x": 3351,
+          "x": 3391,
           "y": -15,
         },
         {
-          "x": 1063,
+          "x": 1103,
           "y": -15,
         },
         {
-          "x": 1063,
+          "x": 1103,
           "y": 455,
         },
         {
-          "x": 557,
+          "x": 597,
           "y": 455,
         },
         {
-          "x": 557,
+          "x": 597,
           "y": 250.5625,
         },
         {
@@ -4605,23 +4605,23 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-18",
       "points": [
         {
+          "x": 2344,
+          "y": 250.5625,
+        },
+        {
           "x": 2304,
           "y": 250.5625,
         },
         {
-          "x": 2264,
-          "y": 250.5625,
-        },
-        {
-          "x": 2264,
+          "x": 2304,
           "y": 727,
         },
         {
-          "x": 500,
+          "x": 496,
           "y": 727,
         },
         {
-          "x": 500,
+          "x": 496,
           "y": 274.5625,
         },
         {
@@ -4636,15 +4636,15 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-19",
       "points": [
         {
+          "x": 1200,
+          "y": 1120.5625,
+        },
+        {
           "x": 1160,
-          "y": 1112.5625,
+          "y": 1120.5625,
         },
         {
-          "x": 1120,
-          "y": 1112.5625,
-        },
-        {
-          "x": 1120,
+          "x": 1160,
           "y": 422.5625,
         },
         {
@@ -4667,15 +4667,15 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
           "y": 298.5625,
         },
         {
-          "x": 524,
+          "x": 520,
           "y": 298.5625,
         },
         {
-          "x": 524,
+          "x": 520,
           "y": 274.5625,
         },
         {
-          "x": 572,
+          "x": 612,
           "y": 274.5625,
         },
       ],
@@ -4686,11 +4686,11 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-21",
       "points": [
         {
-          "x": 802,
+          "x": 842,
           "y": 374.5625,
         },
         {
-          "x": 802,
+          "x": 842,
           "y": 389.5625,
         },
         {
@@ -4709,20 +4709,20 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-22",
       "points": [
         {
-          "x": 1390,
-          "y": 1212.5625,
+          "x": 1430,
+          "y": 1220.5625,
         },
         {
-          "x": 1390,
-          "y": 1227.5625,
+          "x": 1430,
+          "y": 1235.5625,
         },
         {
-          "x": 1378,
-          "y": 1227.5625,
+          "x": 1418,
+          "y": 1235.5625,
         },
         {
-          "x": 1378,
-          "y": 1284.5625,
+          "x": 1418,
+          "y": 1292.5625,
         },
       ],
     },
@@ -4732,20 +4732,20 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence": "occurrence:rel-ont-23",
       "points": [
         {
-          "x": 1402,
-          "y": 1284.5625,
+          "x": 1442,
+          "y": 1292.5625,
         },
         {
-          "x": 1402,
-          "y": 1260.5625,
+          "x": 1442,
+          "y": 1268.5625,
         },
         {
-          "x": 1946,
-          "y": 1260.5625,
+          "x": 1986,
+          "y": 1268.5625,
         },
         {
-          "x": 1946,
-          "y": 1212.5625,
+          "x": 1986,
+          "y": 1220.5625,
         },
       ],
     },
@@ -4755,8 +4755,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 76.37141760000002,
-        "x": 563.7777777777778,
-        "y": 1231.7847222222222,
+        "x": 505.8142912,
+        "y": 1215.7847222222222,
       },
       "lines": [
         "contains",
@@ -4768,7 +4768,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 80.40724800000001,
         "x": 134.81497422222222,
-        "y": 1245.0625,
+        "y": 1253.5625,
       },
       "lines": [
         "specifies",
@@ -4779,8 +4779,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 80.40724800000001,
-        "x": 484.8149742222222,
-        "y": 1059.7847222222222,
+        "x": 524.8149742222222,
+        "y": 1067.7847222222222,
       },
       "lines": [
         "specifies",
@@ -4791,8 +4791,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 69.95328,
-        "x": 1633.02336,
-        "y": 1466.951388888889,
+        "x": 1689.52336,
+        "y": 1474.951388888889,
       },
       "lines": [
         "governs",
@@ -4803,8 +4803,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 69.95328,
-        "x": 1766.02336,
-        "y": 1643.7777777777778,
+        "x": 1784.02336,
+        "y": 1652.7777777777778,
       },
       "lines": [
         "governs",
@@ -4815,8 +4815,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 69.95328,
-        "x": 1633.02336,
-        "y": 1643.7777777777778,
+        "x": 1673.02336,
+        "y": 1652.7777777777778,
       },
       "lines": [
         "governs",
@@ -4828,7 +4828,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 69.95328,
         "x": -8.222222222222221,
-        "y": 682.5625,
+        "y": 686.5625,
       },
       "lines": [
         "governs",
@@ -4839,7 +4839,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 141.24166080000003,
-        "x": 1609.3791696,
+        "x": 1649.3791696,
         "y": 393.78472222222223,
       },
       "lines": [
@@ -4851,8 +4851,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 131.5358304,
-        "x": 1316.2320848,
-        "y": 1643.7777777777778,
+        "x": 1334.2320848,
+        "y": 1652.7777777777778,
       },
       "lines": [
         "tracks · réalise",
@@ -4863,8 +4863,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 131.5358304,
-        "x": 924.6863918222222,
-        "y": 809.2222222222222,
+        "x": 964.6863918222222,
+        "y": 817.2222222222222,
       },
       "lines": [
         "tracks · réalise",
@@ -4875,8 +4875,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 69.93352320000001,
-        "x": 986.2886990222222,
-        "y": 670.5625,
+        "x": 1026.288699022222,
+        "y": 674.5625,
       },
       "lines": [
         "decides",
@@ -4887,7 +4887,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 69.93352320000001,
-        "x": 1301.288699022222,
+        "x": 1341.288699022222,
         "y": 407.0625,
       },
       "lines": [
@@ -4899,8 +4899,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 68.319312,
-        "x": 2898.840344,
-        "y": 517.7847222222222,
+        "x": 2938.840344,
+        "y": 525.7847222222222,
       },
       "lines": [
         "renders",
@@ -4911,7 +4911,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 44.18234880000001,
-        "x": 2963.4088256,
+        "x": 3003.4088256,
         "y": 461.77777777777777,
       },
       "lines": [
@@ -4923,7 +4923,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 165.35906880000007,
-        "x": 2785.777777777778,
+        "x": 2825.777777777778,
         "y": 461.77777777777777,
       },
       "lines": [
@@ -4935,8 +4935,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 71.13445440000001,
-        "x": 2129.0877678222223,
-        "y": 752.0625,
+        "x": 2169.0877678222223,
+        "y": 756.0625,
       },
       "lines": [
         "handles",
@@ -4947,7 +4947,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 51.013968000000006,
-        "x": 2181.493016,
+        "x": 2221.493016,
         "y": -43.77777777777778,
       },
       "lines": [
@@ -4959,7 +4959,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 53.829513600000006,
-        "x": 1355.0852432,
+        "x": 1373.0852432,
         "y": 733.7777777777778,
       },
       "lines": [
@@ -4971,7 +4971,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 120.25489919999998,
-        "x": 1102.7777777777778,
+        "x": 1142.7777777777778,
         "y": 393.78472222222223,
       },
       "lines": [
@@ -4983,7 +4983,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 81.2144544,
-        "x": 482.77777777777777,
+        "x": 524.0077678222221,
         "y": 221.78472222222223,
       },
       "lines": [
@@ -4995,7 +4995,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 133.95704640000002,
-        "x": 506.77777777777777,
+        "x": 502.77777777777777,
         "y": 476.77777777777777,
       },
       "lines": [
@@ -5007,8 +5007,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 92.4756288,
-        "x": 1278.746593422222,
-        "y": 1245.0625,
+        "x": 1318.746593422222,
+        "y": 1253.0625,
       },
       "lines": [
         "defined_in",
@@ -5019,8 +5019,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 93.71647679999998,
-        "x": 1627.1417616,
-        "y": 1267.3402777777778,
+        "x": 1667.1417616,
+        "y": 1275.3402777777778,
       },
       "lines": [
         "at_commit",
@@ -5033,7 +5033,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "occurrence:zone-data",
       {
         "height": 470,
-        "width": 1048,
+        "width": 1088,
         "x": 0,
         "y": 0,
       },
@@ -5043,26 +5043,26 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       {
         "height": 712,
         "width": 1048,
-        "x": 1144,
+        "x": 1184,
         "y": 0,
       },
     ],
     [
       "occurrence:zone-interface",
       {
-        "height": 742,
+        "height": 750,
         "width": 1048,
-        "x": 2288,
+        "x": 2328,
         "y": 0,
       },
     ],
     [
       "occurrence:zone-normative",
       {
-        "height": 712,
-        "width": 1048,
+        "height": 713,
+        "width": 1088,
         "x": 0,
-        "y": 838,
+        "y": 846,
       },
     ],
     [
@@ -5070,8 +5070,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       {
         "height": 712,
         "width": 1048,
-        "x": 1144,
-        "y": 838,
+        "x": 1184,
+        "y": 846,
       },
     ],
     [
@@ -5079,7 +5079,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       {
         "height": 200,
         "width": 460,
-        "x": 2304,
+        "x": 2344,
         "y": 174.5625,
       },
     ],
@@ -5088,8 +5088,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       {
         "height": 200,
         "width": 460,
-        "x": 1160,
-        "y": 1012.5625,
+        "x": 1200,
+        "y": 1020.5625,
       },
     ],
     [
@@ -5097,8 +5097,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       {
         "height": 200,
         "width": 460,
-        "x": 1716,
-        "y": 1012.5625,
+        "x": 1756,
+        "y": 1020.5625,
       },
     ],
     [
@@ -5106,7 +5106,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       {
         "height": 200,
         "width": 460,
-        "x": 2860,
+        "x": 2900,
         "y": 174.5625,
       },
     ],
@@ -5124,7 +5124,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       {
         "height": 200,
         "width": 460,
-        "x": 572,
+        "x": 612,
         "y": 174.5625,
       },
     ],
@@ -5133,8 +5133,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       {
         "height": 200,
         "width": 460,
-        "x": 1160,
-        "y": 1284.5625,
+        "x": 1200,
+        "y": 1292.5625,
       },
     ],
     [
@@ -5143,7 +5143,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 200,
         "width": 460,
         "x": 16,
-        "y": 1012.5625,
+        "y": 1020.5625,
       },
     ],
     [
@@ -5151,8 +5151,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       {
         "height": 200,
         "width": 460,
-        "x": 2304,
-        "y": 446.5625,
+        "x": 2344,
+        "y": 454.5625,
       },
     ],
     [
@@ -5160,8 +5160,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       {
         "height": 200,
         "width": 460,
-        "x": 572,
-        "y": 1012.5625,
+        "x": 612,
+        "y": 1020.5625,
       },
     ],
     [
@@ -5170,7 +5170,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 200,
         "width": 460,
         "x": 16,
-        "y": 1284.5625,
+        "y": 1293.5625,
       },
     ],
     [
@@ -5178,7 +5178,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       {
         "height": 200,
         "width": 460,
-        "x": 1160,
+        "x": 1200,
         "y": 174.5625,
       },
     ],
@@ -5187,7 +5187,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       {
         "height": 200,
         "width": 460,
-        "x": 1716,
+        "x": 1756,
         "y": 174.5625,
       },
     ],
@@ -5196,7 +5196,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       {
         "height": 200,
         "width": 460,
-        "x": 1160,
+        "x": 1200,
         "y": 446.5625,
       },
     ],

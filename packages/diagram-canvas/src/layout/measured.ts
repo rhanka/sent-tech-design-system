@@ -1840,9 +1840,9 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     const outerLanes: number[] = [];
     const outerLanesX: number[] = [];
     let labelLimit: Rect | undefined;
-    // Cap flow-badge contributions to EDGE_LABEL_WIDTH so an unplaceably wide
-    // badge (measured with unbounded availableWidth) cannot inflate labelLimit
-    // to absorb itself instead of triggering badge-unplaced / flow repair.
+    // REQ-R7-13 / DC-2c A12: with 24 px route spacing, outer-comb legs reach 39 px;
+    // cap flow-badge contributions to EDGE_LABEL_WIDTH (220 px, no effect on real
+    // badges) so an unplaceably wide badge cannot inflate labelLimit to absorb itself.
     const markSizes = [...routeSizes.entries()].map(([id, size]) => {
       const label = labelSizes.get(id);
       return {
@@ -1851,14 +1851,14 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       };
     });
     const edgeClearance = Math.max(metrics.clearance, borderClearance);
-    if (rects.size > 0 && (markSizes.length > 0 || drawnEdges.length > 0)) {
+    if (markSizes.length > 0 && rects.size > 0) {
       const pitch = Math.max(
         routeSpacing,
-        ...(markSizes.length > 0 ? markSizes.map((size) => size.height + 2 * metrics.labelMargin) : [0]),
+        ...markSizes.map((size) => size.height + 2 * metrics.labelMargin),
       );
       const pitchX = Math.max(
         routeSpacing,
-        ...(markSizes.length > 0 ? markSizes.map((size) => size.width + 2 * metrics.labelMargin) : [0]),
+        ...markSizes.map((size) => size.width + 2 * metrics.labelMargin),
       );
       const left = Math.min(...[...rects.values()].map((rect) => rect.x));
       const right = Math.max(...[...rects.values()].map((rect) => rect.x + rect.width));
@@ -1866,17 +1866,14 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const height = drawingBottom - drawingTop;
       const spareX = Math.max(0, height * rowPack.targetAspect - width) / 2;
       const spareY = Math.max(0, width / rowPack.targetAspect - height) / 2;
-      if (markSizes.length > 0) {
-        const allowance = edgeClearance + pitch;
-        labelLimit = {
-          x: left - spareX - edgeClearance - pitchX,
-          y: drawingTop - spareY - allowance,
-          width: width + 2 * (spareX + edgeClearance + pitchX),
-          height: height + 2 * (spareY + allowance),
-        };
-      }
-      const demandCount = Math.max(markSizes.length, drawnEdges.length);
-      const lanes = Math.min(demandCount, OUTER_LANES, 1 + Math.floor(spareY / pitch));
+      const allowance = edgeClearance + pitch;
+      labelLimit = {
+        x: left - spareX - edgeClearance - pitchX,
+        y: drawingTop - spareY - allowance,
+        width: width + 2 * (spareX + edgeClearance + pitchX),
+        height: height + 2 * (spareY + allowance),
+      };
+      const lanes = Math.min(markSizes.length, OUTER_LANES, 1 + Math.floor(spareY / pitch));
       for (let lane = 1; lane <= lanes; lane += 1) {
         outerLanes.push(drawingTop - edgeClearance - lane * pitch, drawingBottom + edgeClearance + lane * pitch);
       }
@@ -1884,7 +1881,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       // the A* grid had no X lane outside the drawing, so a route that must go
       // round via the side fell back to an obstructed elbow. One X lane per
       // side mirrors the Y lanes above.
-      const lanesX = Math.min(demandCount, OUTER_LANES, 1 + Math.floor(spareX / pitchX));
+      const lanesX = Math.min(markSizes.length, OUTER_LANES, 1 + Math.floor(spareX / pitchX));
       for (let lane = 1; lane <= lanesX; lane += 1) {
         outerLanesX.push(left - edgeClearance - lane * pitchX, right + edgeClearance + lane * pitchX);
       }
@@ -2561,8 +2558,8 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       }
     }
     // Count each routed occurrence once in the physical channel, including lifted bundle traffic.
-    // DE-2 ask 3: gutters are fixed by their spacing token (one `zoneGutter` between sibling zones);
-    // routing subdivides the fixed gutter into tracks instead of widening it.
+    // REQ-R7-14 (DE-2 ask 3): sibling-zone gutters (`gutter.zone === true`) stay fixed at `zoneGutter`
+    // and never widen for traffic or labels; leaf-card channels (`!gutter.zone`) keep dynamic widening.
     const channels: LayoutChannel[] = gutters.map(gutter => {
       const edges = [...retryRoutes].filter(([, route]) => gutter.strips.some(strip => route.some((point, i) => {
         const next = route[i + 1];
@@ -2575,7 +2572,12 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const labelled = intersecting.length > 0;
       const axis = gutter.horizontal ? 'vertical' as const : 'horizontal' as const;
       const parameters = channelMetrics(metrics, axis === 'horizontal');
-      const fixedGap = gutter.base;
+      const expected = gutter.zone
+        ? gutter.base
+        : (() => {
+            const placedFloor = Math.max(0, ...intersecting.map(box => (gutter.horizontal ? box.height : box.width) + 2 * metrics.labelMargin).filter(needed => needed <= gutter.max));
+            return Math.min(gutter.max, Math.max(placedFloor, channelGap(n, labelled, { ...parameters, gapMin: gutter.authoredBase ? gutter.base : Math.max(parameters.gapMin, gutter.base) })));
+          })();
       return {
         id: gutter.id,
         axis,
@@ -2584,16 +2586,52 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         n,
         labelled,
         gap: gutter.gap,
-        expected: channelGap(n, labelled, { ...parameters, gapMin: fixedGap }),
+        expected,
         capacity: channelCapacity(gutter.gap, routeSpacing, borderClearance),
         zone: gutter.zone,
       };
     });
-    // DE-2 ask 3: fixed gutters never widen for traffic or labels; routing and
-    // exterior comb lanes adapt instead, and excess demand is reported as a
-    // non-blocking channel-capacity diagnostic.
+    // A widened leaf gutter that disappeared is dropped; sibling-zone gutters stay fixed (REQ-R7-14).
     const unused: string[] = [];
+    const gutterIds = new Set(gutters.map((gutter) => gutter.id));
+    for (const id of [...(plan?.widen.keys() ?? [])].sort(byString)) if (!gutterIds.has(id)) unused.push(id);
+
+    // A label with no room is probed with the free space of a base gap above
+    // and under it: where it then fits, leaf-card lanes it sits in are asked to
+    // widen to its thickness plus its two margins — never past the axis cap,
+    // and never on fixed sibling-zone gutters (`gutter.zone`).
     const requested = new Map<string, number>();
+    const probed: Rect[] = [...taken];
+    for (const entry of unplaced) {
+      const probe = probeMarginOf(entry.size.height);
+      if (probe < 0) continue;
+      const choice = placePackedLabel(entry, fixedShapes, probed, metrics.labelMargin, probe);
+      if (choice === undefined) continue;
+      probed.push(choice.box);
+      const edge = drawnEdges.find((candidate) => (candidate.occurrence as string) === entry.id)!;
+      const shared = sharedContainerOf(edge.source.entity, edge.target.entity);
+      const level = shared === undefined ? ROOT_LEVEL_KEY : representativeOf(shared);
+      for (const gutter of gutters) {
+        if (gutter.zone) continue;
+        // S-1: an outgoing edge may use a level's base gutter, but cannot
+        // change its geometry when a different level is folded.
+        if (!gutter.id.startsWith(`${level}|`)) continue;
+        if (!gutter.strips.some((strip) => rectsIntersect(strip, choice.box))) continue;
+        const needed = (gutter.horizontal ? entry.size.height : entry.size.width) + 2 * metrics.labelMargin;
+        if (needed > gutter.max || needed <= gutter.gap) continue;
+        requested.set(gutter.id, Math.max(requested.get(gutter.id) ?? 0, needed));
+      }
+    }
+
+    for (const channel of channels) {
+      if (channel.zone) {
+        requested.delete(channel.id);
+        continue;
+      }
+      const target = Math.max(requested.get(channel.id) ?? 0, channel.expected);
+      if (Math.abs(target - channel.gap) > 0.5) requested.set(channel.id, target);
+      else requested.delete(channel.id);
+    }
 
     // Built-in geometric check for minimum route spacing (DE-2 ask 2).
     const checkedRoutes: CheckedRoute[] = [];

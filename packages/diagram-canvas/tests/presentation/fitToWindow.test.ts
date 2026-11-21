@@ -15,6 +15,7 @@ import {
   FIT_WINDOW_MARGIN_PX,
   fitBox,
 } from "../../src/camera.js";
+import { cardLineMeasurer, defaultCardMeasure, sceneCardMeasure } from "../../src/presentation/diagramCardModel.js";
 import { sceneFit, scenePlacement, type ScenePresentation } from "../../src/presentation/diagramSceneModel.js";
 import { renderSceneSvg } from "../../src/presentation/renderSceneSvg.js";
 
@@ -52,13 +53,12 @@ describe("fit-to-window host framing (DE-2 ask 9)", () => {
     expect(withBar.fitHeight + 16).toBeLessThanOrEqual(900 - FIT_WINDOW_MARGIN_PX);
   });
 
-  it("enables fit-to-window by default on the diagram-first-paint figure/comparison host", () => {
+  it("keeps default 0.85x framing on existing first-paint scenes while enabling fitToWindow on r7 comparison scenes", () => {
     const html = readFileSync(new URL("../../../../tools/diagram-first-paint/index.html", import.meta.url), "utf8");
     const main = readFileSync(new URL("../../../../tools/diagram-first-paint/main.js", import.meta.url), "utf8");
-    expect(html).toContain("max-height: calc(100vh - 24px)");
-    expect(html).toContain("max-width: 100%");
-    expect(html).toContain("margin-inline: auto");
+    expect(html).not.toContain("max-height: calc(100vh - 24px)");
     expect(main).toContain("fitToWindow");
+    expect(main).toContain("r7-");
   });
 
   it("forwards fitToWindow to sceneFit in renderSceneSvg", () => {
@@ -81,7 +81,15 @@ describe("fit-to-window host framing (DE-2 ask 9)", () => {
       legends: {},
       categoryTokens: [],
     } as unknown as ScenePresentation;
-    const input = { document, presentation, registry: m3ProfileRegistry, bindings: shippedExecutorBindings, targetWidth: 1440 };
+    const input = {
+      document,
+      presentation,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines: cardLineMeasurer(sceneCardMeasure(defaultCardMeasure)),
+      collapsed: [] as never[],
+      targetWidth: 1440,
+    };
     const normal = renderSceneSvg(input);
     const windowed = renderSceneSvg(input, { fitToWindow: true });
     const scaleOf = (svg: string) => Number(svg.match(/data-display-scale="([^"]+)"/)?.[1]);

@@ -24,8 +24,9 @@ describe('Owner addendum A1–A13',()=>{
     const measuredLabels=Object.values(result.labelBoxes??{});
     const labelled=measuredLabels.some(box=>c.strips.some(strip=>hits(strip,box)));
     const parameters=channelMetrics(spacing,c.axis==='horizontal');
-    const fixedGap=c.zone?spacing.zoneGutter:parameters.gapMin;
-    const expected=channelGap(n,labelled,{...parameters,gapMin:fixedGap});
+    const boxes=measuredLabels.filter(box=>c.strips.some(strip=>hits(strip,box)));
+    const floor=Math.max(0,...boxes.map(box=>(c.axis==='horizontal'?box.width:box.height)+8).filter(needed=>needed<=parameters.gapMax));
+    const expected=c.zone?spacing.zoneGutter:Math.min(parameters.gapMax,Math.max(channelGap(n,labelled,parameters),floor));
     expect(c.n).toBe(n);expect(c.labelled).toBe(labelled);expect(c.gap,c.id).toBeCloseTo(expected,0);
   }
  });

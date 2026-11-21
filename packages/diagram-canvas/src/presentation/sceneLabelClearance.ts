@@ -6,16 +6,27 @@ import { connectorCornerBounds } from './connectorPath.js';
  * cover a connector. The same deterministic placement is used by both hosts. */
 export function clearSceneLabels<T extends { readonly box: Rect; readonly leader?: readonly Vec2[] }>(
   labels: readonly T[], routes: readonly (readonly Vec2[])[], shapes: readonly Rect[], clearance: number,
-  cornerRadius = 0,
+  cornerRadius = 0, routeExtraMargins?: readonly number[],
 ): T[] {
   const bounds = shapes.map(normaliseRect);
-  for (const route of routes) {
+  for (let r = 0; r < routes.length; r++) {
+    const route = routes[r]!;
+    const extra = Math.max(0, routeExtraMargins?.[r] ?? 0);
     for (let i = 1; i < route.length; i++) {
       const a = route[i - 1]!, b = route[i]!;
-      bounds.push({ x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), width: Math.abs(a.x - b.x), height: Math.abs(a.y - b.y) });
+      bounds.push({
+        x: Math.min(a.x, b.x) - extra,
+        y: Math.min(a.y, b.y) - extra,
+        width: Math.abs(a.x - b.x) + 2 * extra,
+        height: Math.abs(a.y - b.y) + 2 * extra,
+      });
     }
     if (cornerRadius > 0) {
-      for (const bend of connectorCornerBounds(route, cornerRadius)) bounds.push(bend);
+      for (const bend of connectorCornerBounds(route, cornerRadius)) {
+        bounds.push(extra > 0
+          ? { x: bend.x - extra, y: bend.y - extra, width: bend.width + 2 * extra, height: bend.height + 2 * extra }
+          : bend);
+      }
     }
   }
   // Normalise each obstacle once, rather than allocating two rectangles for

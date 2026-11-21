@@ -559,23 +559,16 @@ export function resolveScene(
   );
   const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
   // Non-scaling connector paint is widest in world units at the readability
-  // floor. Reserve the dedicated link stroke token (DE-2), expanding to the
-  // emphasis stroke width when any drawn connector carries emphasis.
+  // floor. Resting edges use `linkStrokeWidth` (2.5 px, REQ-R7-11); only an
+  // individual emphasized edge adds its extra half-stroke margin so one
+  // emphasized edge never inflates resting clearances or cutouts scene-wide.
   const relationPresentation = input.presentation.relations;
-  const hasEmphasizedEdge = [...visibleEdges].some((id) => {
-    const occurrence = view.relationOccurrences[id];
-    if (occurrence === undefined) return false;
-    const rawEmphasis =
-      occurrence.emphasis ??
-      relationPresentation?.[occurrence.id]?.emphasis ??
-      relationPresentation?.[occurrence.relation]?.emphasis;
-    return resolveLinkEmphasis(rawEmphasis)?.emphasis === "emphasis";
-  });
   const baseLinkStrokeWidth = input.metrics?.linkStrokeWidth ?? DEFAULT_LINK_STROKE_WIDTH;
   const emphasisLinkStrokeWidth = input.metrics?.linkEmphasisStrokeWidth ?? DEFAULT_LINK_EMPHASIS_STROKE_WIDTH;
-  const linkStrokeWidth = hasEmphasizedEdge ? Math.max(baseLinkStrokeWidth, emphasisLinkStrokeWidth) : baseLinkStrokeWidth;
-  const paintClearance = margin + linkStrokeWidth / (2 * DEFAULT_MIN_READABLE_SCALE);
+  const paintClearance = margin + baseLinkStrokeWidth / (2 * DEFAULT_MIN_READABLE_SCALE);
+  const emphasisExtraClearance = Math.max(0, emphasisLinkStrokeWidth - baseLinkStrokeWidth) / (2 * DEFAULT_MIN_READABLE_SCALE);
   const zoneInset = input.metrics?.containerPadding ?? ZONE_GEOMETRY.contentInsetInline;
+  const pendingCutouts: { readonly node: SceneNodeModel; readonly inner: number; readonly lineHeight: number; readonly bottom: number }[] = [];
   for (const node of nodes) {
     if (node.kind !== "zone" || node.collapsed) {
       blockers.push(node.rect);
@@ -598,26 +591,10 @@ export function resolveScene(
     if (reserve > 0) {
       blockers.push({ x: node.rect.x, y: node.rect.y + node.rect.height - reserve - zoneGeo.borderWidth - ruleClearance,
         width: node.rect.width, height: reserve + zoneGeo.borderWidth + ruleClearance });
-      // The footer line as `layoutZone` seats it: one line box pinned above
-      // the bottom border, from the content inset, as wide as its measured
-      // text (the whole inner width when the result carries no measurement).
       const inner = Math.max(0, node.rect.width - 2 * zoneInset);
       const lineHeight = lineBoxHeight(zoneGeo.footer.size);
       const bottom = node.rect.y + node.rect.height - zoneGeo.borderWidth - zoneGeo.footerBottomInset;
-      // Reserve both half-strokes (cutout edge exposure + painted stroke half-width)
-      // plus browser ink overhang beyond the measured footer line box.
-      const pad = Math.max(
-        paintClearance + CONNECTOR_CUTOUT_SLACK,
-        margin + linkStrokeWidth / DEFAULT_MIN_READABLE_SCALE + 1.15,
-      );
-      const cutoutTop = bottom - lineHeight - pad;
-      const cutoutBottom = Math.min(node.rect.y + node.rect.height, bottom + pad);
-      connectorCutouts.push({
-        x: node.rect.x + zoneInset - pad,
-        y: cutoutTop,
-        width: Math.min(footerWidths.get(node.occurrence) ?? inner, inner) + 2 * pad,
-        height: cutoutBottom - cutoutTop,
-      });
+      pendingCutouts.push({ node, inner, lineHeight, bottom });
     }
   }
 
@@ -733,9 +710,41 @@ export function resolveScene(
   }
   for (const arrows of Object.values(result.arrowBoxes ?? {})) for (const arrow of arrows) bounds = bounds === undefined ? arrow.box : rectUnion(bounds,arrow.box);
   const cornerRadius = input.metrics?.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS;
+  for (const { node, inner, lineHeight, bottom } of pendingCutouts) {
+    const basePad = Math.max(
+      paintClearance + CONNECTOR_CUTOUT_SLACK,
+      margin + baseLinkStrokeWidth / DEFAULT_MIN_READABLE_SCALE + 1.15,
+    );
+    const emphasisPad = Math.max(
+      margin + emphasisLinkStrokeWidth / (2 * DEFAULT_MIN_READABLE_SCALE) + CONNECTOR_CUTOUT_SLACK,
+      margin + emphasisLinkStrokeWidth / DEFAULT_MIN_READABLE_SCALE + 1.15,
+    );
+    const baseBox: Rect = {
+      x: node.rect.x + zoneInset - emphasisPad,
+      y: bottom - lineHeight - emphasisPad,
+      width: Math.min(footerWidths.get(node.occurrence) ?? inner, inner) + 2 * emphasisPad,
+      height: Math.min(node.rect.y + node.rect.height, bottom + emphasisPad) - (bottom - lineHeight - emphasisPad),
+    };
+    const emphasizedCrosses = edges.some((edge) => edge.emphasis === "emphasis" && edge.points.slice(1).some((pt, i) => {
+      const prev = edge.points[i]!;
+      const seg: Rect = { x: Math.min(prev.x, pt.x), y: Math.min(prev.y, pt.y), width: Math.abs(pt.x - prev.x), height: Math.abs(pt.y - prev.y) };
+      return seg.x <= baseBox.x + baseBox.width && baseBox.x <= seg.x + seg.width
+        && seg.y <= baseBox.y + baseBox.height && baseBox.y <= seg.y + seg.height;
+    }));
+    const pad = emphasizedCrosses ? Math.max(basePad, emphasisPad) : basePad;
+    const cutoutTop = bottom - lineHeight - pad;
+    const cutoutBottom = Math.min(node.rect.y + node.rect.height, bottom + pad);
+    connectorCutouts.push({
+      x: node.rect.x + zoneInset - pad,
+      y: cutoutTop,
+      width: Math.min(footerWidths.get(node.occurrence) ?? inner, inner) + 2 * pad,
+      height: cutoutBottom - cutoutTop,
+    });
+  }
   const clearedLabels = clearSceneLabels(labels, edges.map(edge => edge.points),
     [...blockers, ...badges.map(badge => badge.box), ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box))],
-    paintClearance, cornerRadius);
+    paintClearance, cornerRadius,
+    edges.map(edge => (edge.emphasis === "emphasis" ? emphasisExtraClearance : 0)));
   for (const { box } of clearedLabels) {
     const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
     bounds = bounds === undefined ? padded : rectUnion(bounds, padded);

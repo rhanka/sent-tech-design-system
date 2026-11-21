@@ -122,10 +122,12 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     expect(validateView(result.view, document, { registry: m3ProfileRegistry, bindings: shippedExecutorBindings })).toEqual([]);
     expect(scene.edges).toHaveLength(4);
 
-    // Default arrow marker stays FIRST in <defs>; emphasis marker follows.
+    // Default arrow marker stays FIRST in <defs>; emphasis marker follows; both lock userSpaceOnUse 10.5x10.5.
     const markerIdsInOrder = [...svg.matchAll(/<marker id="([^"]+)"/g)].map((m) => m[1]);
     expect(markerIdsInOrder[0]).toBe("scene-arrow");
     expect(markerIdsInOrder).toEqual(["scene-arrow", "scene-arrow-emphasis"]);
+    expect(svg).toContain('<marker id="scene-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="10.5"');
+    expect(svg).toContain('markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="10.5"');
 
     const edgeTag = (id: string) => {
       const match = svg.match(new RegExp(`<path data-scene-edge="${id}"[^>]*/>`));
