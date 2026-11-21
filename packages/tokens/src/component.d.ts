@@ -720,6 +720,14 @@ export declare function createComponent(semantic: SemanticInput, foundation: Fou
         readonly transitionDuration: "240ms";
         readonly edgeLabelFontSize: "18px";
         readonly edgeLabelLineHeight: "22px";
+        readonly controlIconSize: "var(--st-component-button-anatomy-density-sm-fontSize)";
+        readonly controlGap: "var(--st-spacing-1)";
+        readonly controlActiveBackground: string;
+        readonly controlActiveText: string;
+        readonly controlActiveBorder: string;
+        readonly fullscreenBackground: string;
+        readonly fullscreenPadding: "var(--st-spacing-4)";
+        readonly fullscreenZIndex: number;
     };
     readonly diagramIcon: {
         readonly viewBox: "0 0 64 64";
@@ -1151,6 +1159,14 @@ export declare const component: {
         readonly transitionDuration: "240ms";
         readonly edgeLabelFontSize: "18px";
         readonly edgeLabelLineHeight: "22px";
+        readonly controlIconSize: "var(--st-component-button-anatomy-density-sm-fontSize)";
+        readonly controlGap: "var(--st-spacing-1)";
+        readonly controlActiveBackground: string;
+        readonly controlActiveText: string;
+        readonly controlActiveBorder: string;
+        readonly fullscreenBackground: string;
+        readonly fullscreenPadding: "var(--st-spacing-4)";
+        readonly fullscreenZIndex: number;
     };
     readonly diagramIcon: {
         readonly viewBox: "0 0 64 64";

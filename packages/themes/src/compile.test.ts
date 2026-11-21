@@ -97,5 +97,8 @@ describe("compileThemeWithModes", () => {
     expect(css).toContain("--st-component-diagramZone-surface1: #ffffff;");
     expect(css).toContain("--st-component-diagramZone-surface2: #f6f6f6;");
     expect(css).toContain("--st-component-button-secondaryHoverBackground: #e5e7eb;");
+    expect(css).toContain("--st-component-diagramScene-controlIconSize: var(--st-component-button-anatomy-density-sm-fontSize);");
+    expect(css).toContain("--st-component-diagramScene-controlGap: var(--st-spacing-1);");
+    expect(css).toContain("--st-component-diagramScene-fullscreenPadding: var(--st-spacing-4);");
   });
 });
