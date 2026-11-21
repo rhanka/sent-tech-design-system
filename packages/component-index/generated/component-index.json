@@ -421,7 +421,7 @@
         "source",
         "element"
       ],
-      "digest": "sha256:be9d8e45c3fe09478d28d6021088deda4300ee3a18b18988b1f340fdd31f9cc2",
+      "digest": "sha256:5eb2961f2a6e428d492f4e2bf3b34d401a8a7012897c597ed18d4cad16ef2e6b",
       "frameworks": [
         "svelte",
         "react",
@@ -2888,7 +2888,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:58a830db6307f6b6462b1522239ece938484079cf06a00f3754dd79c5b10305d",
+      "digest": "sha256:daae0ddfbd9cc2317b95754f3f6948dd633ca8dfe62159510a36e1dbcd801c07",
       "frameworks": [
         "svelte",
         "react",
@@ -5868,6 +5868,6 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "registryRevision": "sha256:3364e3d032b4dc79963730dc88834615c762840c5fbe8f927bf3a17bad0c4dd6",
-  "sourceCommit": "09b6cba66e609f15e114e299fdca92f2d572f7e6"
+  "registryRevision": "sha256:8b7496b5910a9146b0550534bd9ba7a0011eb000e1f6b21851df978f2ad4ef6e",
+  "sourceCommit": "abd5f6d09ef53c16a7ddc3b480ec37af6a05c7c3"
 }

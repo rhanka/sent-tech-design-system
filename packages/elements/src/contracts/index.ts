@@ -9,6 +9,7 @@ import type { ContractModule } from "./types.js";
 import { barChartContract } from "./bar-chart.js";
 import { bpmnCanvasContract } from "./bpmn-canvas.js";
 import { decisionDossierContract } from "./decision-dossier.js";
+import { timeSeriesChartContract } from "./time-series-chart.js";
 
 export type { ContractModule } from "./types.js";
 export {
@@ -26,6 +27,7 @@ export {
 } from "./bar-chart.js";
 export { type BpmnCanvasDocument, type BpmnCanvasProps } from "./bpmn-canvas.js";
 export { type DecisionDossierDocumentRef, type DecisionDossierProps } from "./decision-dossier.js";
+export type { EpochMilliseconds, TimeSeries, TimeSeriesChartProps, TimeSeriesPoint } from "./time-series-chart.js";
 
 /** The catalogue identity (§5.2): `$id` = `catalogId`. */
 export const CATALOG_ID = "https://design-system.sent-tech.ca/catalogs/elements/v1/catalog.json";
@@ -54,4 +56,5 @@ export const contracts: readonly ContractModule[] = [
   barChartContract,
   bpmnCanvasContract,
   decisionDossierContract,
+  timeSeriesChartContract,
 ];
