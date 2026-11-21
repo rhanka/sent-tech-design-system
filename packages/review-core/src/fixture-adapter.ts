@@ -79,7 +79,7 @@ export interface FixtureCommentsAdapterHandle {
 type NewComment = Pick<Comment, "tenant" | "target" | "author" | "body" | "assignedTo" | "provenance"> & {
   threadId?: string;
 };
-type TargetQuery = CommentTarget & { status?: CommentState };
+type TargetQuery = Pick<CommentTarget, "kind" | "id" | "sectionKey"> & { status?: CommentState };
 type StoreThreadSummary = {
   threadId: string;
   contextType?: string;
@@ -120,9 +120,6 @@ function targetMatches(rowTarget: CommentTarget, queryTarget: CommentTarget): bo
   const normRow = normalizeCommentTarget(rowTarget);
   const normQuery = normalizeCommentTarget(queryTarget);
   if (normRow.kind !== normQuery.kind || normRow.id !== normQuery.id) {
-    return false;
-  }
-  if (normRow.recordType !== normQuery.recordType) {
     return false;
   }
   if (normQuery.sectionKey !== undefined && normRow.sectionKey !== normQuery.sectionKey) {

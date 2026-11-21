@@ -57,4 +57,31 @@ describe("fixture parity with the C2 store at sentropic 13490b16b", () => {
     expect(summaries?.[0]?.target).toEqual(artifact);
     expect(summaries?.[0]?.assignedTo).toBe(root.assignedTo);
   });
+
+  it.each(["listByTarget", "listThreadSummaries"] as const)("%s matches records by kind and id", async (verb) => {
+    const { store, reference } = makeStores(["t-1", "c-1", "t-2", "c-2", "t-3", "c-3"]);
+    const query = { kind: "record", id: "record-a" } as const;
+    for (const backend of [store, reference]) {
+      await backend.add(tenant, {
+        tenant, author, target: { ...query, recordType: "folder", sectionKey: "description" }, body: "Folder",
+      });
+      const initiative = await backend.add(tenant, {
+        tenant, author, target: { ...query, recordType: "initiative" }, body: "Initiative",
+      });
+      await backend.setState(tenant, initiative.threadId, "closed");
+      await backend.add(tenant, { tenant, author, target: { ...query, kind: "field" }, body: "Different kind" });
+    }
+
+    const all = await reference[verb](tenant, query);
+    expect(all).toHaveLength(2);
+    expect(await store[verb](tenant, query)).toEqual(all);
+    for (const filter of [
+      { ...query, sectionKey: "description" },
+      { ...query, status: "closed" },
+      { ...query, recordType: "folder" },
+      { ...query, id: "missing" },
+    ] as const) {
+      expect(await store[verb](tenant, filter)).toEqual(await reference[verb](tenant, filter));
+    }
+  });
 });
