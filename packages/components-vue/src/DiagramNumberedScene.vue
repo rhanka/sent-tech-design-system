@@ -12,7 +12,7 @@ import {
 import {
   collapsedOccurrencesOf, DEFAULT_SCENE_LABELS, sceneContentSize, layoutScene, resolveScene,
   parseScale, sceneConnectorMask, sceneNodesOnPlane,
-  type SceneModel, type SceneNodeModel, type SceneOrientations, type SceneOccurrenceRef,
+  type DiagramSceneSize, type SceneModel, type SceneNodeModel, type SceneOrientations, type SceneOccurrenceRef,
 } from "@sentropic/diagram-canvas/diagramSceneModel";
 import DiagramSceneFallback from "./DiagramSceneFallback.vue";
 import SceneNode from "./DiagramFlowNode.vue";
@@ -24,7 +24,7 @@ export type { DiagramSceneFigureLabels, DiagramSceneCamera } from "@sentropic/di
 const DEFAULT_LABELS: DiagramSceneFigureLabels = DEFAULT_SCENE_LABELS;
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { compact: false });
-const emit = defineEmits<{ "update:contentSize": [size: { width: number; height: number }] }>();
+const emit = defineEmits<{ "update:contentSize": [size: DiagramSceneSize] }>();
 const ownedCache = createLayoutCache(), hostId = useId();
 const arrowId = 'diagram-arrow-' + hostId;
 const maskId = 'diagram-connector-mask-' + hostId;
@@ -75,7 +75,14 @@ const paintLayers = computed(() => [
 // The connector layer is masked over the footer text a frame paints itself.
 const connectorMask = computed(() => scene.value === undefined ? undefined : sceneConnectorMask(scene.value));
 watch(layout, (result) => props.onLayout?.(result), { immediate: true });
-watch(() => sceneContentSize(layout.value), (size) => { props.onSizeChange?.(size); emit("update:contentSize", size); }, { immediate: true });
+let publishedSize: DiagramSceneSize | undefined;
+watch(layout, (result) => {
+  const size = sceneContentSize(result);
+  if (publishedSize?.width === size.width && publishedSize?.height === size.height) return;
+  publishedSize = size;
+  props.onSizeChange?.(size);
+  emit("update:contentSize", size);
+}, { immediate: true });
 
 const local = shallowRef<FlowState>({ ...INITIAL_FLOW_STATE, selection: props.defaultActiveStep === undefined ? null : { kind: "step", relation: props.defaultActiveStep }, ...(props.defaultScenario === undefined ? {} : { scenario: props.defaultScenario }) });
 const state = computed<FlowState>(() => {
