@@ -69,6 +69,21 @@ export {
   type SeatedShelves,
 } from "./pack.js";
 export {
+  distributeWholeExcess,
+  layoutGridScope,
+  layoutStackScope,
+  type ComposedCellPlacement,
+  type ComposedGridReport,
+  type ComposedGutter,
+  type ComposedPaintedGap,
+  type ComposedTrackLine,
+  type GridLayoutInput,
+  type GridLayoutResult,
+  type LayoutCompositionReport,
+  type StackLayoutInput,
+  type StackLayoutResult,
+} from "./compose.js";
+export {
   effectiveStretch,
   groupLeaves,
   isLayoutGroup,

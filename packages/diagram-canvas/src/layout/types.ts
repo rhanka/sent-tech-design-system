@@ -382,6 +382,8 @@ export type LayoutResult =
       readonly linkLegend?: import("../presentation/linkLegend.js").SceneLinkLegend;
       /** True when layout resolved the legend (including suppression) for a composed scene. */
       readonly legendResolved?: boolean;
+      /** Composition track lines, cell rects, plan digest and painted-gap report (H2.3+). */
+      readonly composition?: import("./compose.js").LayoutCompositionReport;
     }
   | {
       readonly status: "refused";
