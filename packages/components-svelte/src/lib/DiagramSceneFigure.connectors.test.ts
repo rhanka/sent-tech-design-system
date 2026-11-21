@@ -196,7 +196,8 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
   });
 
   it("should recompute scaled edge label boxes when CSS overrides --st-component-diagramScene-edgeLabelSize on mount (REQ-R7-11)", async () => {
-    const fixture = nestedZoneFixture({ outside: true });
+    const base = nestedZoneFixture({ outside: true });
+    const fixture = { ...base, view: { ...base.view, presentation: { ...base.view.presentation, anatomy: "v2" as const } } };
     const baseView = render(DiagramSceneFigure, propsOf(fixture));
     await tick();
     const baseLabel = baseView.container.querySelector<HTMLElement>("[data-scene-label]")!;
@@ -259,8 +260,9 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     }
   });
 
-  it("honors consumer edgeLabelFontSize overrides in core themes, resolves 1.5rem to 24px, and propagates explicit metrics.edgeLabelSize / linkStrokeWidth to host CSS vars (REQ-R7-11 / REQ-R7-28)", async () => {
+  it("preserves v1 token geometry and resolves r7 CSS lengths and explicit paint metrics (REQ-R7-11 / REQ-R7-28)", async () => {
     const fixture = nestedZoneFixture({ outside: true });
+    const compact = { ...fixture, view: { ...fixture.view, presentation: { ...fixture.view.presentation, anatomy: "v2" as const } } };
     const realGetComputedStyle = window.getComputedStyle.bind(window);
     vi.spyOn(window, "getComputedStyle").mockImplementation((el) => {
       const style = realGetComputedStyle(el);
@@ -270,6 +272,7 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
             return (name: string) => {
               if (name === "--st-component-diagramScene-edgeLabelSize") return "18px";
               if (name === "--st-component-diagramScene-edgeLabelFontSize") return "14px";
+              if (name === "--st-component-diagramScene-containerPadding") return "1.5rem";
               return target.getPropertyValue(name);
             };
           }
@@ -279,11 +282,20 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
       });
     });
 
-    const v1Override = render(DiagramSceneFigure, propsOf(fixture));
+    const v1Override = render(DiagramSceneFigure, { ...propsOf(fixture), presentation: { ...fixture.presentation, contractPin: DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } });
     await tick();
     await tick();
     const v1Viewport = v1Override.container.querySelector<HTMLElement>(".st-diagramSceneFigure-viewport")!;
-    expect(v1Viewport.style.getPropertyValue("--st-diagram-edge-label-size")).toBe("14px");
+    expect(v1Viewport.style.getPropertyValue("--st-diagram-edge-label-size")).toBe("");
+    expect(v1Viewport.style.getPropertyValue("--st-diagram-label-line-height")).toBe("24px");
+    expect(v1Override.container.querySelector('polyline[data-scene-edge]')).not.toBeNull();
+    const geometry = (container: HTMLElement) => Array.from(container.querySelectorAll("[data-scene-occurrence], [data-scene-label]"), (el) => el.getAttribute("style"));
+    const legacyGeometry = geometry(v1Override.container);
+    vi.restoreAllMocks();
+    const legacy = render(DiagramSceneFigure, { ...propsOf(fixture), metrics: { containerPadding: 1.5 } });
+    await tick();
+    expect(geometry(legacy.container)).toEqual(legacyGeometry);
+
     v1Override.unmount();
 
     // 1.5rem resolves to 24px (1.5 * 16px), never 1.5 world units.
@@ -300,7 +312,7 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
         },
       });
     });
-    const remView = render(DiagramSceneFigure, propsOf(fixture));
+    const remView = render(DiagramSceneFigure, propsOf(compact));
     await tick();
     await tick();
     const remViewport = remView.container.querySelector<HTMLElement>(".st-diagramSceneFigure-viewport")!;
@@ -310,7 +322,7 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
 
     // Explicit metrics.edgeLabelSize & linkStrokeWidth paint through host CSS custom properties.
     const explicitView = render(DiagramSceneFigure, {
-      ...propsOf(fixture),
+      ...propsOf(compact),
       presentation: { ...fixture.presentation, contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } },
       metrics: { edgeLabelSize: 24, linkStrokeWidth: 4, linkEmphasisStrokeWidth: 5 },
     } as DiagramSceneFigureProps);
@@ -363,6 +375,7 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     seenSeeds.length = 0;
     const r7Props = {
       ...propsOf(fixture),
+      view: { ...fixture.view, presentation: { ...fixture.view.presentation, anatomy: "v2" } },
       presentation: { ...fixture.presentation, contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } },
       layoutCache: spyingCache as never,
       collapsed: [],

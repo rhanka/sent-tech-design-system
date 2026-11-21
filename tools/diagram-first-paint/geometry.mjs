@@ -301,11 +301,11 @@ export function roundedElbowFindings({ paths, maxRadius = 12, tolerance = 0.5 })
  * DE-2 link-width gate: verifies that ordinary resting links paint at
  * `defaultWidth` (2.5 px) and emphasized links paint at `emphasisWidth` (3.5 px).
  */
-export function linkStrokeWidthFindings({ paths, defaultWidth = 2.5, emphasisWidth = 3.5, tolerance = 0.05 }) {
+export function linkStrokeWidthFindings({ paths, defaultWidth = 2.5, relatedWidth = 3, emphasisWidth = 3.5, strokeScale = 1, tolerance = 0.05 }) {
   const findings = [];
   for (const path of paths) {
     if (path.flow || path.erd) continue;
-    const expected = path.emphasis === 'emphasis' ? emphasisWidth : defaultWidth;
+    const expected = strokeScale * (path.emphasis === 'emphasis' ? emphasisWidth : path.arrowhead === 'none' ? relatedWidth : defaultWidth);
     if (!Number.isFinite(path.strokeWidthCss) || Math.abs(path.strokeWidthCss - expected) > tolerance) {
       findings.push(`connector ${path.id} stroke width ${path.strokeWidthCss} != ${expected}`);
     }

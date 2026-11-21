@@ -11,6 +11,7 @@ import {
   shippedExecutorBindings,
   viewRef,
   type SemanticDocument,
+  validateView,
 } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 import {
@@ -25,6 +26,7 @@ import {
 import { cardLineMeasurer, defaultCardMeasure, sceneCardMeasure } from "../../src/presentation/diagramCardModel.js";
 import { layoutScene, resolveScene } from "../../src/presentation/diagramSceneModel.js";
 import { renderSceneSvg } from "../../src/presentation/renderSceneSvg.js";
+import { hCondInput } from "../layout/dc2a/h-cond.js";
 import { flowFixture } from "../../test-support/flowFixture.js";
 import { nestedZoneFixture } from "../../test-support/nestedZoneFixture.js";
 
@@ -33,6 +35,7 @@ const r7NestedFixture = () => {
   const fixture = nestedZoneFixture({ outside: true });
   return {
     ...fixture,
+    view: { ...fixture.view, presentation: { ...fixture.view.presentation, anatomy: "v2" as const } },
     presentation: {
       ...fixture.presentation,
       contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
@@ -132,7 +135,7 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     }
   });
 
-  it("preserves numbered-flow SVG arrowheads and keeps numbered-flow geometry unchanged under diagram-presentation@2 (REQ-R7-28)", () => {
+  it("preserves SVG arrows and numbered-flow geometry with an undrawn link under diagram-presentation@2 (REQ-R7-28)", () => {
     const source = flowFixture(3, { labels: true, folded: true, reverse: true });
     const v1Svg = renderSceneSvg({
       document: source.document,
@@ -162,6 +165,61 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     expect(v2Svg.svg.match(/marker-end="url\(#scene-arrow\)"/g)).toHaveLength(3);
     expect(v2Svg.scene.bounds).toEqual(v1Svg.scene.bounds);
     expect(v2Svg.scene.edges.map((e) => e.points)).toEqual(v1Svg.scene.edges.map((e) => e.points));
+    const outside = relationRef("outside-view");
+    const withUndrawnLink = renderSceneSvg({
+      document: {
+        ...source.document,
+        relations: {
+          ...source.document.relations,
+          [outside]: {
+            id: outside, type: "link", profile: "generic@2", attributes: {},
+            endpoints: [{ role: "source", target: entityRef("a") }, { role: "target", target: entityRef("b") }],
+          },
+        },
+      },
+      view: v2Svg.result.view,
+      presentation: { ...source.presentation, contractPin: DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+      registry: source.options.registry,
+      bindings: source.options.bindings,
+      measureLines,
+      collapsed: [],
+      flows: { fanOutMax: 4 },
+    });
+    expect(withUndrawnLink.scene.badges).toEqual(v1Svg.scene.badges);
+    expect(withUndrawnLink.svg).toBe(v1Svg.svg);
+  });
+
+  it("keeps the full-size architecture SVG identical with the existing @2 pin (REQ-R7-28)", () => {
+    const input = hCondInput("architecture", false);
+    const legacy = renderSceneSvg(input);
+    const pinned = renderSceneSvg({
+      ...input,
+      view: { ...input.view, presentation: { ...input.view.presentation, diagram: { ...input.presentation, contractPin: DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } } },
+      presentation: { ...input.presentation, contractPin: DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+    });
+    expect(pinned.scene.r7Connectors).toBe(false);
+    expect(pinned.svg).toBe(legacy.svg);
+  });
+
+  it("reopens a mixed-anatomy @1 scene with the same cards and rounded connectors (REQ-R7-05 / REQ-R7-11)", () => {
+    const input = nestedZoneFixture({ outside: true });
+    const compact = input.cards[0]!;
+    const result = renderSceneSvg({
+      ...input, measureLines, collapsed: [],
+      presentation: {
+        ...input.presentation,
+        entities: {
+          ...input.presentation.entities,
+          [compact]: { ...input.presentation.entities[compact]!, anatomy: "v2" as const },
+        },
+      },
+    });
+    const saved = result.result.view;
+    expect(validateView(saved, input.document, { registry: input.registry, bindings: input.bindings })).toEqual([]);
+    expect(saved.presentation.entityAnatomy).toEqual({ [compact]: "v2" });
+    const reopened = renderSceneSvg({ ...input, view: saved, presentation: saved.presentation.diagram!, measureLines, collapsed: [] });
+    expect(reopened.scene.r7Connectors).toBe(true);
+    expect(reopened.svg).toBe(result.svg);
   });
 
   it("enables DE-2 rounded connectors and r7 routing on compact v2 scenes (view anatomy v2 or entity anatomy v2) under @1 (REQ-R7-05 / REQ-R7-11 / REQ-R7-13 / REQ-R7-14)", () => {

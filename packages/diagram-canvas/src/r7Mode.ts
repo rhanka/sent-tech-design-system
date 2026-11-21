@@ -1,5 +1,6 @@
 import {
   isPresentationContractV2Pin,
+  type DiagramAnatomyVersion,
   type DiagramPresentation,
   type RelationPresentation,
   type SemanticDocument,
@@ -12,91 +13,56 @@ export type R7PresentationLike = Pick<DiagramPresentation, "contractPin" | "enti
 
 export type R7DocumentLike = Pick<SemanticDocument, "profileRefs" | "relations">;
 
-function isNumberedFlowOnlyDocument(document: R7DocumentLike | undefined): boolean {
-  if (document == null || document.relations == null || typeof document.relations !== "object") {
-    return false;
-  }
-  let hasFlowStep = false;
-  let hasNonFlowLink = false;
-  for (const relation of Object.values(document.relations)) {
-    if (relation?.type === "flow-step") hasFlowStep = true;
-    else if (relation?.type !== "contains") hasNonFlowLink = true;
-  }
-  return hasFlowStep && !hasNonFlowLink;
+export function diagramAnatomyOf(
+  presentation: R7PresentationLike,
+  view: ViewDocument | undefined,
+  occurrence: string,
+): DiagramAnatomyVersion {
+  const entry = presentation.entities?.[occurrence] as { readonly anatomy?: DiagramAnatomyVersion } | undefined;
+  return entry?.anatomy
+    ?? view?.presentation?.entityAnatomy?.[occurrence]
+    ?? view?.presentation?.anatomy
+    ?? "v1";
 }
 
 /**
- * True when a scene opts into the r7 connector and routing path (`REQ-R7-11..17`):
- * - not ERD (`erd@1`) and not a pure numbered-flow (`flow-step`) scene (`REQ-R7-28`), AND:
- * - compact `v2` anatomy (`view.presentation.anatomy === "v2"` or any entity
- *   `anatomy: "v2"`, `REQ-R7-05 / REQ-R7-11 / REQ-R7-13 / REQ-R7-14`), OR
- * - `presentation.contractPin` (or `view.presentation.diagram.contractPin`) is
- *   `diagram-presentation@2`, OR
- * - `presentation.relations` declares one or more relation styles, OR
- * - `view.relationOccurrences` carries any `@4`-exclusive connector attribute
- *   (`strokeStyle === "dotted"`, `arrowhead`, `emphasis`), OR `strokeStyle === "dashed"`
- *   when not pinned to frozen `diagram-presentation@1`.
- *
- * Existing `v1` (`diagram-presentation@1` without `anatomy: "v2"` or relation styles),
- * ERD (`erd@1`), and numbered-flow scenes (including under `diagram-presentation@2`)
- * return `false`, preserving `main` geometry, port capacity, clearances, `<polyline>`
- * DOM, and `1.5 px` strokes (`REQ-R7-28`).
+ * Compact anatomy or an authored connector style opts into DE-2. The
+ * presentation pin alone leaves full-size scenes unchanged (REQ-R7-28).
+ * ERD and views containing only numbered flows keep their own routing.
  */
 export function isR7ConnectorPresentation(
   presentation: R7PresentationLike | undefined,
   view?: ViewDocument,
   document?: R7DocumentLike,
 ): boolean {
+  if (document?.profileRefs?.length === 1 && document.profileRefs[0] === "erd@1") return false;
+  const occurrences = Object.values(view?.relationOccurrences ?? {}).filter((occ) => occ != null);
   if (document != null) {
-    if (Array.isArray(document.profileRefs) && document.profileRefs.length === 1 && document.profileRefs[0] === "erd@1") {
-      return false;
-    }
-    if (isNumberedFlowOnlyDocument(document)) {
-      return false;
-    }
+    const relations = view == null
+      ? Object.values(document.relations ?? {})
+      : occurrences.map((occ) => document.relations?.[occ.relation]);
+    const types = relations.flatMap((relation) => relation == null ? [] : [relation.type]);
+    if (types.includes("flow-step") && types.every((type) => type === "flow-step" || type === "contains")) return false;
   }
-  if ((view?.presentation as { readonly anatomy?: string } | undefined)?.anatomy === "v2") {
-    return true;
+
+  const effectivePresentation = presentation ?? view?.presentation?.diagram;
+  if (effectivePresentation != null) {
+    const entities = view?.entityOccurrences ?? effectivePresentation.entities;
+    if (Object.keys(entities ?? {}).some((id) => diagramAnatomyOf(effectivePresentation, view, id) === "v2")) return true;
   }
-  const presV2Pin =
-    presentation?.contractPin !== undefined &&
-    isPresentationContractV2Pin(presentation.contractPin);
-  const viewDiagramPin = view?.presentation?.diagram?.contractPin;
-  const viewV2Pin =
-    viewDiagramPin !== undefined && isPresentationContractV2Pin(viewDiagramPin);
-  if (presV2Pin || viewV2Pin) {
-    return true;
-  }
-  if (presentation != null) {
-    if (
-      presentation.relations != null &&
-      typeof presentation.relations === "object" &&
-      Object.keys(presentation.relations).length > 0
-    ) {
-      return true;
-    }
-    if (presentation.entities != null && typeof presentation.entities === "object") {
-      for (const entry of Object.values(presentation.entities)) {
-        if ((entry as { readonly anatomy?: string } | undefined)?.anatomy === "v2") {
-          return true;
-        }
-      }
-    }
-  }
-  const frozenV1Pin =
-    (presentation?.contractPin !== undefined && !presV2Pin) ||
-    (viewDiagramPin !== undefined && !viewV2Pin);
-  if (view?.relationOccurrences != null && typeof view.relationOccurrences === "object") {
-    for (const occ of Object.values(view.relationOccurrences)) {
-      if (
-        occ?.strokeStyle === "dotted" ||
-        (occ?.strokeStyle === "dashed" && !frozenV1Pin) ||
-        occ?.arrowhead !== undefined ||
-        occ?.emphasis !== undefined
-      ) {
-        return true;
-      }
-    }
-  }
-  return false;
+  if (view?.presentation?.anatomy === "v2" && effectivePresentation == null) return true;
+
+  const styles = presentation?.relations;
+  if (view == null && Object.keys(styles ?? {}).length > 0) return true;
+  const authoredPin = view?.presentation?.diagram?.contractPin;
+  const suppliedPin = presentation?.contractPin;
+  const unpinnedDashes = authoredPin === undefined && (suppliedPin === undefined || isPresentationContractV2Pin(suppliedPin));
+  return occurrences.some((occ) =>
+    styles?.[occ.id] != null ||
+    styles?.[occ.relation] != null ||
+    occ.strokeStyle === "dotted" ||
+    (occ.strokeStyle === "dashed" && unpinnedDashes) ||
+    occ.arrowhead !== undefined ||
+    occ.emphasis !== undefined
+  );
 }

@@ -148,6 +148,7 @@ const PRIVATE_V4_SCHEMA: Record<string, unknown> = (() => {
   const rootProps = schema["properties"] as Record<string, Record<string, unknown>>;
   const presentationProps = rootProps["presentation"]!["properties"] as Record<string, Record<string, unknown>>;
   presentationProps["anatomy"] = { enum: ["v1", "v2"] };
+  presentationProps["entityAnatomy"] = { type: "object", additionalProperties: { enum: ["v1", "v2"] } };
   const diagramProps = presentationProps["diagram"]!["properties"] as Record<string, Record<string, unknown>>;
   const pinProps = diagramProps["contractPin"]!["properties"] as Record<string, Record<string, unknown>>;
   pinProps["version"] = { enum: ["1", "2"] };

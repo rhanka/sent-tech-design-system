@@ -15,14 +15,12 @@ import type {
   StrokeStyle,
 } from "@sentropic/diagram-core";
 
-import {
-  DEFAULT_EDGE_LABEL_SIZE,
-  DEFAULT_LINK_EMPHASIS_STROKE_WIDTH,
-  DEFAULT_LINK_STROKE_WIDTH,
-} from "../camera.js";
+import { DEFAULT_EDGE_LABEL_SIZE } from "../camera.js";
 import type { LineMeasurer } from "../layout/measure.js";
+import type { LayoutMetrics } from "../layout/types.js";
 import type { Rect } from "../transform.js";
-import { connectorDashArray, connectorMarkerKind, LINK_EMPHASIS_STROKE } from "./connectorStyle.js";
+import { connectorDashArray, connectorMarkerKind, connectorStrokeWidth, LINK_EMPHASIS_STROKE } from "./connectorStyle.js";
+import { cardLineMeasurer } from "./diagramCardModel.js";
 
 /** Where the automatic link-style legend strip sits relative to the functional drawing. */
 export type LinkLegendAnchor = "right" | "bottom" | "none";
@@ -118,6 +116,7 @@ export interface LinkLegendSwatchGeometry {
 
 const EDGE_STROKE = "var(--st-component-diagramScene-edgeStroke, #64748b)";
 const EMPHASIS_STROKE = LINK_EMPHASIS_STROKE;
+const measureLegendFallback = cardLineMeasurer();
 
 /** Stable canonical key for a connector style triple. */
 export function linkStyleKey(style: LinkLegendStyleKey): string {
@@ -218,26 +217,20 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
     scale === 1 ? LINK_LEGEND_ROW_HEIGHT : Math.ceil(LINK_LEGEND_ROW_HEIGHT * scale),
   );
   const rowGap = scale === 1 ? LINK_LEGEND_ROW_GAP : Math.ceil(LINK_LEGEND_ROW_GAP * scale);
-  const titleLayout = input.measureLines({
-    text: title,
-    role: "edge-label",
-    availableWidth: Number.MAX_SAFE_INTEGER,
-    allocatedLines: 1,
-    folded: false,
-  });
-  const scaledTitleWidth = titleLayout.width * scale;
+  const measureWidth = (text: string): number => {
+    const request = { text, role: "edge-label" as const, availableWidth: Number.MAX_SAFE_INTEGER, allocatedLines: 1, folded: false };
+    const layout = input.measureLines(request);
+    // CardLineMeasure without lineWidths reports the allocation as its width.
+    return (layout.width >= request.availableWidth || !Number.isFinite(layout.width)
+      ? measureLegendFallback(request).width
+      : layout.width) * scale;
+  };
+  const scaledTitleWidth = measureWidth(title);
 
   let maxLabelWidth = 0;
   const entries: LinkLegendEntry[] = collected.map((item, index) => {
     const label = input.labels?.[item.key] ?? defaultLinkStyleLabel(item);
-    const measured = input.measureLines({
-      text: label,
-      role: "edge-label",
-      availableWidth: Number.MAX_SAFE_INTEGER,
-      allocatedLines: 1,
-      folded: false,
-    });
-    const scaledWidth = measured.width * scale;
+    const scaledWidth = measureWidth(label);
     if (scaledWidth > maxLabelWidth) maxLabelWidth = scaledWidth;
     const rowY =
       LINK_LEGEND_PADDING +
@@ -324,13 +317,11 @@ export function linkLegendBoxStyle(legend: SceneLinkLegend, opacity?: number): s
  */
 export function linkLegendSwatchGeometry(
   style: LinkLegendStyleKey,
-  widths?: { readonly linkStrokeWidth?: number; readonly linkEmphasisStrokeWidth?: number },
+  widths?: Pick<LayoutMetrics, "linkStrokeWidth" | "linkRelatedStrokeWidth" | "linkEmphasisStrokeWidth">,
 ): LinkLegendSwatchGeometry {
   const emphasized = style.emphasis === "emphasis";
   const stroke = emphasized ? EMPHASIS_STROKE : EDGE_STROKE;
-  const strokeWidth = emphasized
-    ? (widths?.linkEmphasisStrokeWidth ?? DEFAULT_LINK_EMPHASIS_STROKE_WIDTH)
-    : (widths?.linkStrokeWidth ?? DEFAULT_LINK_STROKE_WIDTH);
+  const strokeWidth = connectorStrokeWidth(style, widths);
   const dashArray = connectorDashArray(style.strokeStyle);
   const lineEnd = style.arrowhead === "none" ? 54 : 46;
   const linePath = `M2 8H${lineEnd}`;

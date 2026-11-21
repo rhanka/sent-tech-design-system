@@ -197,6 +197,8 @@ export interface PresentationState {
   readonly theme?: string;
   /** Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). Absent means legacy `"v1"`; `"v2"` is opt-in. */
   readonly anatomy?: DiagramAnatomyVersion;
+  /** Per-occurrence anatomy overrides for mixed full-size and compact scenes. */
+  readonly entityAnatomy?: Readonly<Record<string, DiagramAnatomyVersion>>;
   /** Typed presentation fragment (M3 §3.2.2). Absent means no presentation contract. */
   readonly diagram?: DiagramPresentation;
 }

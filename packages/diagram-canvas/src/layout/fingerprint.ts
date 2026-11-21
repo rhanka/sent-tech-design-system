@@ -24,7 +24,7 @@ import { DEFAULT_ROUTE_BORDER_CLEARANCE, DEFAULT_ROUTE_SPACING } from "./routeSp
 import { DEFAULT_LAYOUT_METRICS, resolveRowPack, type LayoutMetrics, type LayoutOptions } from "./types.js";
 
 /** Bumped whenever measured placement changes for unchanged inputs. */
-export const LAYOUT_ENGINE_VERSION = "de2.gutter.1";
+export const LAYOUT_ENGINE_VERSION = "de2.gutter.2";
 
 export interface LayoutFingerprintInput {
   readonly options: Pick<LayoutOptions, "collapsed" | "hints" | "metrics" | "presentation" | "rowPack" | "previousOrientation" | "viewId" | "flows" | "flowTokens">;
@@ -78,7 +78,8 @@ export function layoutFingerprintInputs(input: LayoutFingerprintInput): Readonly
   const r7Routing = input.r7Routing ?? isR7ConnectorPresentation(options.presentation);
   const metrics: LayoutMetrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics };
   const hints: LayoutHints = options.hints ?? {};
-  const gaps = resolveRowGaps(hints, metrics, r7Routing);
+  const gaps = resolveRowGaps(hints, metrics);
+  const zoneGutter = r7Routing ? resolveRowGaps(hints, metrics, true).zoneX : undefined;
   const tokens = input.tokens ?? {};
   const routeSpacing = r7Routing ? (options.metrics?.routeSpacing ?? DEFAULT_ROUTE_SPACING) : 0;
   const routeBorderClearance = r7Routing
@@ -99,6 +100,7 @@ export function layoutFingerprintInputs(input: LayoutFingerprintInput): Readonly
     fold: [...(options.collapsed ?? [])].map(String).sort(byString),
     rowPack: resolveRowPack(options.rowPack),
     gaps,
+    zoneGutter,
     channels: { inline: channelMetrics(metrics, true), block: channelMetrics(metrics, false), bundleLabelMaxWidth: metrics.bundleLabelMaxWidth ?? 320 },
     metrics: {
       clearance: metrics.clearance,

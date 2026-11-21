@@ -161,6 +161,8 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     // dashed (proposed) + arrow + emphasis: dash and emphasis compose cleanly
     const crossTag = edgeTag("occurrence:r.proposed-cross");
     expect(crossTag).toContain('stroke-dasharray="8 6"');
+    expect(crossTag).toContain('style="stroke-dasharray:var(--st-component-diagramScene-linkDashDashed, 8 6)"');
+    expect(svg).toMatch(/data-legend-swatch="dashed:arrow:emphasis"[^>]+style="stroke-dasharray:var\(--st-component-diagramScene-linkDashDashed, 8 6\)"/);
     expect(crossTag).toContain('data-edge-stroke="dashed"');
     expect(crossTag).toContain('data-edge-emphasis="emphasis"');
     expect(crossTag).toContain('stroke="var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive, #001f33))"');
@@ -251,6 +253,22 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     ]);
   });
 
+  it("refuses a null style entry before routing (REQ-R7-11)", () => {
+    const { document, presentation } = connectorFixture();
+    const result = layoutMeasured(document, {
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureText: () => ({ width: 1, height: 1 }),
+      measureLines,
+      targetWidth: 1440,
+      presentation: { ...presentation, relations: { "relation:solid-default": null as never } },
+    });
+    expect(result).toMatchObject({
+      status: "refused",
+      refusals: [{ path: "presentation.relations.relation:solid-default", code: "document-invalid" }],
+    });
+  });
+
   it("refuses presentation.relations under frozen diagram-presentation@1 and unknown arrowheads in retained views without throwing TypeError (REQ-R7-11 / REQ-R7-17)", () => {
     const { document, presentation } = connectorFixture();
     // Frozen @1 + presentation.relations refuses cleanly instead of emitting a validateView-invalid view.
@@ -316,6 +334,7 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     const { document, presentation } = connectorFixture();
     const dashedOnlyPresentation = {
       ...presentation,
+      entities: Object.fromEntries(Object.entries(presentation.entities).map(([id, { anatomy: _anatomy, ...entry }]) => [id, entry])),
       relations: {
         "relation:proposed-cross": { strokeStyle: "dashed" as const },
       },

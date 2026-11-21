@@ -396,6 +396,6 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
     expect(legend).toBeDefined();
     expect(legend!.rect.width).toBeGreaterThanOrEqual(LINK_LEGEND_MIN_WIDTH);
     expect(legend!.rect.width).toBeLessThan(1000);
-    expect(rendered.scene.bounds!.width).toBeLessThan(5000);
+    expect(legend!.rect.x + legend!.rect.width).toBeCloseTo(rendered.scene.bounds!.x + rendered.scene.bounds!.width, 6);
   });
 });

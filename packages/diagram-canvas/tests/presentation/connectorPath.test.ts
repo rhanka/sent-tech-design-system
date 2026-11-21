@@ -86,6 +86,7 @@ describe("connectorPath — DE-2 rounded elbows", () => {
 
       const input = {
         ...v1Input,
+        view: { ...v1Input.view, presentation: { ...v1Input.view.presentation, anatomy: "v2" as const } },
         presentation: {
           ...v1Input.presentation,
           contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
@@ -120,12 +121,9 @@ describe("connectorPath — DE-2 rounded elbows", () => {
 
     // Fold / unfold round-trip on r7 nested zones re-routes with rounded paths touching docks.
     const fixture = nestedZoneFixture({ outside: true });
-    const r7Presentation = {
-      ...fixture.presentation,
-      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
-    };
-    const unfolded = renderSceneSvg({ ...fixture, presentation: r7Presentation, measureLines, collapsed: [] });
-    const folded = renderSceneSvg({ ...fixture, presentation: r7Presentation, measureLines, collapsed: [fixture.zones[1]!] });
+    const view = { ...fixture.view, presentation: { ...fixture.view.presentation, anatomy: "v2" as const } };
+    const unfolded = renderSceneSvg({ ...fixture, view, measureLines, collapsed: [] });
+    const folded = renderSceneSvg({ ...fixture, view, measureLines, collapsed: [fixture.zones[1]!] });
     expect(unfolded.svg).not.toContain("<polyline");
     expect(folded.svg).not.toContain("<polyline");
     expect(folded.scene.edges).toHaveLength(1);

@@ -4,7 +4,7 @@ import { relationVerdict } from "../visibility.js";
 import { DEFAULT_FLOW_TOKENS, planFlows, placeFlowMarks } from "./flows.js";
 import { layoutErd } from "./erd.js";
 import { DEFAULT_EDGE_LABEL_SIZE, DEFAULT_MIN_READABLE_SCALE } from "../camera.js";
-import { isR7ConnectorPresentation } from "../r7Mode.js";
+import { diagramAnatomyOf, isR7ConnectorPresentation } from "../r7Mode.js";
 /**
  * Measured diagram layout (M3 §4.6–§4.8, layout half of §5.6; placement by
  * SPEC_EVOL_DC2A §3–§4).
@@ -236,7 +236,9 @@ function validateRelationPresentations(
   const isV2 = contractPin !== undefined && isPresentationContractV2Pin(contractPin);
   const isFrozenV1 = contractPin !== undefined && !isV2;
 
-  if (relations !== undefined) {
+  if (relations !== undefined && (relations === null || typeof relations !== "object" || Array.isArray(relations))) {
+    refusals.push({ code: "document-invalid", path: "presentation.relations", message: "connector styles must be keyed by relation" });
+  } else if (relations !== undefined) {
     const keys = Object.keys(relations).sort(byString);
     if (isFrozenV1 && keys.length > 0) {
       for (const key of keys) {
@@ -250,6 +252,10 @@ function validateRelationPresentations(
     for (const key of keys) {
       const entry = relations[key] as unknown as Record<string, unknown> | undefined;
       if (entry === undefined) continue;
+      if (entry === null || typeof entry !== "object" || Array.isArray(entry)) {
+        refusals.push({ code: "document-invalid", path: `presentation.relations.${key}`, message: "connector style must be a record" });
+        continue;
+      }
       for (const field of Object.keys(entry).sort(byString)) {
         if (field !== "strokeStyle" && field !== "arrowhead" && field !== "emphasis") {
           refusals.push({
@@ -287,6 +293,10 @@ function validateRelationPresentations(
     for (const key of Object.keys(sourceView.relationOccurrences).sort(byString)) {
       const occurrence = sourceView.relationOccurrences[key] as unknown as Record<string, unknown> | undefined;
       if (occurrence === undefined) continue;
+      if (occurrence === null || typeof occurrence !== "object" || Array.isArray(occurrence)) {
+        refusals.push({ code: "document-invalid", path: `sourceView.relationOccurrences.${key}`, message: "relation occurrence must be a record" });
+        continue;
+      }
       for (const field of Object.keys(occurrence).sort(byString)) {
         if (!ALLOWED_RELATION_OCCURRENCE_FIELDS.has(field)) {
           refusals.push({
@@ -449,6 +459,14 @@ export function layoutMeasured(
   options: LayoutOptions,
   sourceView?: ViewDocument,
 ): LayoutResult {
+  const relationStyleRefusals = validateRelationPresentations(
+    options.presentation?.relations,
+    options.presentation?.contractPin ?? sourceView?.presentation.diagram?.contractPin,
+    sourceView,
+  );
+  if (relationStyleRefusals.length > 0) {
+    return { status: "refused", refusals: relationStyleRefusals, diagnostics: [] };
+  }
   if (document.profileRefs.length === 1 && document.profileRefs[0] === "erd@1") return layoutErd(document, options, sourceView);
   const first = layoutMeasuredPass(document, options, sourceView, new Set());
   if (first.status !== "laid-out" || first.flowTargets === undefined) return first;
@@ -486,23 +504,14 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       diagnostics: [],
     };
   }
-  const relationStyleRefusals = validateRelationPresentations(
-    presentation.relations,
-    presentation.contractPin,
-    sourceView,
-  );
-  if (relationStyleRefusals.length > 0) {
-    return { status: "refused", refusals: relationStyleRefusals, diagnostics: [] };
-  }
   /**
    * Per-occurrence pinned anatomy (DE-1): the presentation entry selects
    * `diagram-anatomy/v1 | v2`, falling back to `sourceView.presentation.anatomy`;
    * absent everywhere means `"v1"` so existing views keep the frozen `460 × 200`
    * footprint by construction.
    */
-  const viewAnatomy = (sourceView?.presentation as { readonly anatomy?: DiagramAnatomy } | undefined)?.anatomy;
   const occurrenceAnatomy = (occurrence: OccurrenceRef): DiagramAnatomy =>
-    (presentation.entities as Record<string, { readonly anatomy?: DiagramAnatomy }>)[occurrence]?.anatomy ?? viewAnatomy ?? "v1";
+    diagramAnatomyOf(presentation, sourceView, occurrence);
   const cardWidthOf = (occurrence: OccurrenceRef): number => anatomyCardGeometry(occurrenceAnatomy(occurrence)).width;
   if (options.measureLines === undefined) {
     return {
@@ -524,8 +533,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     let box = sceneBoxCache.get(key);
     if (box === undefined) {
       const rawEntry = presentation.entities[id];
-      const entry = rawEntry === undefined ? undefined
-        : rawEntry.anatomy === undefined && viewAnatomy !== undefined ? { ...rawEntry, anatomy: viewAnatomy } : rawEntry;
+      const entry = rawEntry === undefined ? undefined : { ...rawEntry, anatomy: occurrenceAnatomy(id) };
       const kind = kinds.get(projected.entityOccurrences[id]?.entity!);
       const expanded = kind === "container-expanded" || kind === "legend-expanded";
       box = measureSceneBox(expanded && entry?.form === "card" ? { ...entry, form: "container" } : entry,
@@ -570,7 +578,8 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
   // packed; `options.rowPack` only tunes the objective.
   const rowPack = resolveRowPack(options.rowPack);
   const contentInset = metrics.containerPadding;
-  const rowGaps = resolveRowGaps(hints, metrics, r7Routing);
+  const rowGaps = resolveRowGaps(hints, metrics);
+  const zoneGutter = resolveRowGaps(hints, metrics, r7Routing).zoneX;
   {
     const refusals: LayoutRefusal[] = [...validateRowPack(rowPack)];
     // §3.7: a sibling-gap override above the axis cap refuses; it is never silently capped.
@@ -745,6 +754,11 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       list.find((occurrence) => visibleOccurrences.has(occurrence)) ?? list[0] ?? occurrenceOf(entity)
     );
   };
+  const anatomyOverrides = Object.fromEntries(Object.keys(projected.entityOccurrences).flatMap((id) => {
+    const anatomy = presentation.entities[id]?.anatomy ?? sourceView?.presentation.entityAnatomy?.[id];
+    return anatomy === undefined || anatomy === (projected.presentation.anatomy ?? "v1") ? [] : [[id, anatomy]];
+  }));
+  const { entityAnatomy: _previousAnatomy, ...projectedPresentation } = projected.presentation;
   const foldMetadata: {
     groups: Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }>;
     filters: ViewDocument["filters"];
@@ -755,7 +769,11 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
   } = {
     groups: projected.groups as Record<string, { id: string; occurrence: OccurrenceRef; collapsed?: boolean }>,
     filters: [...projected.filters],
-    presentationState: { ...projected.presentation, diagram: persistableDiagramPresentation(presentation) },
+    presentationState: {
+      ...projectedPresentation,
+      ...(Object.keys(anatomyOverrides).length === 0 ? {} : { entityAnatomy: anatomyOverrides }),
+      diagram: persistableDiagramPresentation(presentation),
+    },
     summaryLabels: projected.summaryLabels,
     projected,
     representativeOf,
@@ -1018,7 +1036,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
   };
   // Edge labels, measured once: keyed by the projected relation occurrence id.
   // Scale measured boxes when `metrics.edgeLabelSize` overrides the default 18 px token.
-  const edgeLabelMeasure = scaleEdgeLabelMeasurer(measure, metrics.edgeLabelSize, DEFAULT_EDGE_LABEL_SIZE);
+  const edgeLabelMeasure = scaleEdgeLabelMeasurer(measure, r7Routing ? metrics.edgeLabelSize : undefined, DEFAULT_EDGE_LABEL_SIZE);
   const labelSizes = new Map<RelationRef, { width: number; height: number }>();
   const edgeLayouts = new Map<RelationRef, LineLayout>();
   for (const edge of drawnEdges) {
@@ -1191,8 +1209,9 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         });
       }
       const zone = runHasZone(run);
-      const baseX = zone ? rowGaps.zoneX : rowGaps.cardX;
-      const baseY = zone ? rowGaps.zoneY : rowGaps.cardY;
+      const hasSiblingZones = r7Routing && run.items.filter(itemHasZone).length > 1;
+      const baseX = hasSiblingZones ? zoneGutter : zone ? rowGaps.zoneX : rowGaps.cardX;
+      const baseY = hasSiblingZones ? zoneGutter : zone ? rowGaps.zoneY : rowGaps.cardY;
       const packOptions = {
         targetAspect: rowPack.targetAspect,
         gapX: baseX,
@@ -1239,8 +1258,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       // §3.5: a gutter keeps its base gap (or the authored `gapAfter` of the
       // group before it) unless the plan widens it for a label. One along gap
       // per slot index on every shelf: the grid keeps its column starts.
-      // REQ-R7-14: on r7 mixed runs, only gutters bordering a zone stay fixed
-      // at `zoneGutter` (>= 96); leaf-to-leaf gaps keep card base & widening.
+      // REQ-R7-14: only gutters between two zones use the fixed zone token.
       const gapAfterOf = (slot: number): number | undefined => {
         const item = run.items[slot]!;
         return "run" in item ? item.gapAfter : undefined;
@@ -1253,10 +1271,11 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
           const leftSlot = shelves[shelf]![slot]!;
           const rightSlot = shelves[shelf]![slot + 1]!;
           if (r7Routing) {
-            const isZoneGutter = itemHasZone(run.items[leftSlot]!) || itemHasZone(run.items[rightSlot]!);
-            if (isZoneGutter) return zoneAlongBase;
+            const leftZone = itemHasZone(run.items[leftSlot]!);
+            const rightZone = itemHasZone(run.items[rightSlot]!);
+            if (leftZone && rightZone) return zoneGutter;
             return Math.max(
-              gapAfterOf(leftSlot) ?? cardAlongBase,
+              gapAfterOf(leftSlot) ?? (leftZone || rightZone ? zoneAlongBase : cardAlongBase),
               plan?.widen.get(`${run.key}|along|${String(slot)}`) ?? 0,
               plan?.widen.get(`${run.key}|along|${String(slot)}|${String(shelf)}`) ?? 0,
             );
@@ -1271,9 +1290,11 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
           const last = shelves[shelf]![shelves[shelf]!.length - 1]!;
           if (r7Routing) {
             const nextShelf = shelves[shelf + 1]!;
-            const isZoneGutter = shelfHasZone(run, shelves[shelf]!) || shelfHasZone(run, nextShelf);
-            if (isZoneGutter) return zoneAcrossBase;
-            return Math.max(gapAfterOf(last) ?? cardAcrossBase, plan?.widen.get(`${run.key}|across|${String(shelf)}`) ?? 0);
+            const currentZone = shelfHasZone(run, shelves[shelf]!);
+            const nextZone = shelfHasZone(run, nextShelf);
+            if (currentZone && nextZone) return zoneGutter;
+            const base = currentZone || nextZone ? zoneAcrossBase : cardAcrossBase;
+            return Math.max(gapAfterOf(last) ?? base, plan?.widen.get(`${run.key}|across|${String(shelf)}`) ?? 0);
           }
           return Math.max(gapAfterOf(last) ?? acrossBase, plan?.widen.get(`${run.key}|across|${String(shelf)}`) ?? 0);
         },
@@ -2640,16 +2661,19 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         Math.min(...boxes.map((rect) => alongOf(rect)[0])),
         Math.max(...boxes.map((rect) => alongOf(rect)[1])),
       ];
-      const alongStrips = new Map<number, { readonly shelf: number; readonly slot: number; readonly strip: Rect; readonly zone: boolean }[]>();
+      const alongStrips = new Map<number, { readonly shelf: number; readonly slot: number; readonly strip: Rect; readonly zone: boolean; readonly bordersZone: boolean }[]>();
       packed.shelves.forEach((shelf, shelfIndex) => {
         const start = acrossOf(boxes[shelf[0]!]!)[0];
         const end = Math.max(...shelf.map((slot) => acrossOf(boxes[slot]!)[1]));
         const next = packed.shelves[shelfIndex + 1];
         if (next !== undefined) {
           const nextStart = acrossOf(boxes[next[0]!]!)[0];
-          const acrossZone = r7Routing ? shelfHasZone(packed.run, shelf) || shelfHasZone(packed.run, next) : zone;
+          const currentZone = shelfHasZone(packed.run, shelf);
+          const nextZone = shelfHasZone(packed.run, next);
+          const acrossZone = r7Routing ? currentZone && nextZone : zone;
+          const bordersZone = currentZone || nextZone;
           const base = r7Routing
-            ? (acrossZone ? zoneAcrossBase : (gapAfter(shelf.at(-1)!) ?? cardAcrossBase))
+            ? (acrossZone ? zoneGutter : (gapAfter(shelf.at(-1)!) ?? (bordersZone ? zoneAcrossBase : cardAcrossBase)))
             : (gapAfter(shelf.at(-1)!) ?? packed.acrossBase);
           gutters.push({
             id: `${key}|across|${String(shelfIndex)}`,
@@ -2657,7 +2681,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
             strips: [stripOf(extent, [end, nextStart])],
             gap: nextStart - end,
             base,
-            authoredBase: r7Routing && acrossZone ? false : gapAfter(shelf.at(-1)!) !== undefined || axisAuthored(!rows, acrossZone),
+            authoredBase: r7Routing && acrossZone ? false : gapAfter(shelf.at(-1)!) !== undefined || axisAuthored(!rows, r7Routing ? bordersZone : zone),
             max: rows ? rowGaps.maxY : rowGaps.maxX,
             zone: acrossZone,
           });
@@ -2666,8 +2690,12 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
           const following = shelf[index + 1];
           if (following === undefined) return;
           const strip = stripOf([alongOf(boxes[slot]!)[1], alongOf(boxes[following]!)[0]], [start, end]);
-          const pairZone = r7Routing ? itemHasZone(packed.run.items[slot]!) || itemHasZone(packed.run.items[following]!) : zone;
-          (alongStrips.get(index) ?? alongStrips.set(index, []).get(index)!).push({ shelf: shelfIndex, slot, strip, zone: pairZone });
+          const leftZone = itemHasZone(packed.run.items[slot]!);
+          const rightZone = itemHasZone(packed.run.items[following]!);
+          const pairZone = r7Routing ? leftZone && rightZone : zone;
+          (alongStrips.get(index) ?? alongStrips.set(index, []).get(index)!).push({
+            shelf: shelfIndex, slot, strip, zone: pairZone, bordersZone: r7Routing ? leftZone || rightZone : zone,
+          });
         });
       });
       for (const [index, strips] of [...alongStrips].sort(([left], [right]) => left - right)) {
@@ -2677,14 +2705,14 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         // lane of the level and widen together, so the grid keeps its column
         // starts. Where they do not line up — or where one shelf borders a zone
         // while another separates leaf cards on r7 — each shelf keeps its own gutter.
-        const lane = strips.every(({ strip, zone: stripZone }) =>
+        const lane = strips.every(({ strip, zone: stripZone, bordersZone }) =>
           Math.abs(startOf(strip) - startOf(strips[0]!.strip)) <= LANE_TOLERANCE &&
-          stripZone === strips[0]!.zone,
+          stripZone === strips[0]!.zone && bordersZone === strips[0]!.bordersZone,
         );
         const max = rows ? rowGaps.maxX : rowGaps.maxY;
-        const baseFor = (slot: number, stripZone: boolean): number =>
+        const baseFor = (slot: number, stripZone: boolean, bordersZone: boolean): number =>
           r7Routing
-            ? (stripZone ? zoneAlongBase : (gapAfter(slot) ?? cardAlongBase))
+            ? (stripZone ? zoneGutter : (gapAfter(slot) ?? (bordersZone ? zoneAlongBase : cardAlongBase)))
             : (gapAfter(slot) ?? packed.alongBase);
         if (lane) {
           const laneZone = strips[0]!.zone;
@@ -2693,20 +2721,20 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
             horizontal: !rows,
             strips: strips.map(({ strip }) => strip),
             gap: Math.max(...strips.map(({ strip }) => thickness(strip))),
-            base: Math.max(...strips.map(({ slot, zone: stripZone }) => baseFor(slot, stripZone))),
-            authoredBase: r7Routing && laneZone ? false : strips.some(({ slot }) => gapAfter(slot) !== undefined) || axisAuthored(rows, laneZone),
+            base: Math.max(...strips.map(({ slot, zone: stripZone, bordersZone }) => baseFor(slot, stripZone, bordersZone))),
+            authoredBase: r7Routing && laneZone ? false : strips.some(({ slot }) => gapAfter(slot) !== undefined) || axisAuthored(rows, strips[0]!.bordersZone),
             max,
             zone: laneZone,
           });
         } else {
-          for (const { shelf, slot, strip, zone: stripZone } of strips) {
+          for (const { shelf, slot, strip, zone: stripZone, bordersZone } of strips) {
             gutters.push({
               id: `${key}|along|${String(index)}|${String(shelf)}`,
               horizontal: !rows,
               strips: [strip],
               gap: thickness(strip),
-              base: baseFor(slot, stripZone),
-              authoredBase: r7Routing && stripZone ? false : gapAfter(slot) !== undefined || axisAuthored(rows, stripZone),
+              base: baseFor(slot, stripZone, bordersZone),
+              authoredBase: r7Routing && stripZone ? false : gapAfter(slot) !== undefined || axisAuthored(rows, bordersZone),
               max,
               zone: stripZone,
             });
@@ -2716,7 +2744,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     }
     // Count each routed occurrence once in the physical channel, including lifted bundle traffic.
     // REQ-R7-14 (DE-2 ask 3): sibling-zone gutters (`gutter.zone === true`) stay fixed at `zoneGutter`
-    // and never widen for traffic or labels; leaf-card channels (`!gutter.zone`) keep dynamic widening.
+    // and never widen for traffic or labels; all other channels keep dynamic widening.
     const channels: LayoutChannel[] = gutters.map(gutter => {
       const edges = [...retryRoutes].filter(([, route]) => gutter.strips.some(strip => route.some((point, i) => {
         const next = route[i + 1];
@@ -3117,10 +3145,13 @@ function buildMeasuredView(
     byString(left.id, right.id),
   )) {
     const style = relationPresentationFor(options.presentation?.relations, occurrence.id, occurrence.relation);
+    // A declared DE-2 stroke has an explicit default arrowhead when saved.
+    // Bare dashed occurrences already existed on pinned full-size views.
+    const arrowhead = style?.arrowhead ?? (style?.strokeStyle === undefined ? undefined : "arrow");
     const styledOccurrence: RelationOccurrence = {
       ...occurrence,
       ...(occurrence.strokeStyle === undefined && style?.strokeStyle !== undefined ? { strokeStyle: style.strokeStyle } : {}),
-      ...(occurrence.arrowhead === undefined && style?.arrowhead !== undefined ? { arrowhead: style.arrowhead } : {}),
+      ...(occurrence.arrowhead === undefined && arrowhead !== undefined ? { arrowhead } : {}),
       ...(occurrence.emphasis === undefined && style?.emphasis !== undefined ? { emphasis: style.emphasis } : {}),
     };
     const occurrenceId = occurrence.id as unknown as RelationRef;

@@ -37,7 +37,8 @@ describe("DC-2a layout fingerprint (§6.6)", () => {
       previousOrientation: [],
     });
     expect(layoutFingerprintInputs({ options: {}, r7Routing: true })).toMatchObject({
-      gaps: { cardX: 96, cardY: 72, zoneX: 96, zoneY: 96, maxX: 240, maxY: 240 },
+      gaps: { cardX: 96, cardY: 72, zoneX: 96, zoneY: 72, maxX: 240, maxY: 240 },
+      zoneGutter: 96,
       metrics: { routeSpacing: 24, routeBorderClearance: 15, slotSpacing: 24, edgeLabelSize: 18 },
     });
     expect(of({}, { r7Routing: true })).not.toBe(of({}));

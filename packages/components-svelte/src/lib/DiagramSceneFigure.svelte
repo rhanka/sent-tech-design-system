@@ -8,6 +8,7 @@
     createLayoutCache,
     FIT_ASPECT,
     isR7ConnectorPresentation,
+    overviewStrokeScale,
     zoomReadout,
     type LayoutHints,
     type LayoutMetrics,
@@ -37,7 +38,7 @@
   } from "./diagramCardModel.js";
   import {
     collapsedOccurrencesOf,
-    connectorDashArray,
+    connectorDashArray, connectorDashPaint,
     connectorMarkerIds,
     connectorMarkerRef,
     connectorPath,
@@ -629,10 +630,19 @@
     const docEl = frameEl.ownerDocument?.documentElement;
     const rootFontSize = docEl ? parseFloat(getComputedStyle(docEl).fontSize) : Number.NaN;
     const elementFontSize = parseFloat(getComputedStyle(frameEl).fontSize);
-    return parseCssLengthPx(raw, {
-      ...(Number.isFinite(rootFontSize) && rootFontSize > 0 ? { rootFontSize } : {}),
-      ...(Number.isFinite(elementFontSize) && elementFontSize > 0 ? { elementFontSize } : {}),
-    });
+    const context = { rootFontSize, elementFontSize };
+    const parsed = parseCssLengthPx(raw, context);
+    if (parsed !== undefined || !/^(calc|min|max|clamp)\(/i.test(raw)) return parsed;
+    const probe = frameEl.ownerDocument.createElement("span");
+    probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none";
+    probe.style.fontSize = raw;
+    if (probe.style.fontSize === "") return undefined;
+    frameEl.appendChild(probe);
+    try {
+      return parseCssLengthPx(getComputedStyle(probe).fontSize, context);
+    } finally {
+      probe.remove();
+    }
   }
 
   // The camera sits at the fit until an input moves it; a resize keeps a
@@ -645,18 +655,25 @@
   function readCameraTokens(): void {
     const values: Record<string, number> = {};
     const baseKeys = ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding"];
-    const r7Keys = ["zoneGutter","routeSpacing","routeBorderClearance","edgeCornerRadius","linkStrokeWidth","linkEmphasisStrokeWidth"];
-    for (const key of r7Mode ? [...baseKeys, ...r7Keys] : baseKeys) {
-      const value = lengthTokenValue('--st-component-diagramScene-' + key);
-      if (value !== undefined && Number.isFinite(value)) values[key] = value;
+    const r7Keys = ["zoneGutter","routeSpacing","routeBorderClearance","edgeCornerRadius","linkStrokeWidth","linkRelatedStrokeWidth","linkEmphasisStrokeWidth"];
+    for (const key of baseKeys) {
+      const value = parseFloat(tokenValue("--st-component-diagramScene-" + key) ?? "");
+      if (Number.isFinite(value)) values[key] = value;
     }
-    const edgeLabelSize = resolveEdgeLabelSizeToken(
-      lengthTokenValue('--st-component-diagramScene-edgeLabelSize'),
-      lengthTokenValue('--st-component-diagramScene-edgeLabelFontSize'),
-    );
-    if (edgeLabelSize !== undefined) values.edgeLabelSize = edgeLabelSize;
-    const labelMargin = lengthTokenValue('--st-component-diagramScene-labelPadding');
-    if (labelMargin !== undefined && Number.isFinite(labelMargin)) values.labelMargin = labelMargin;
+    const labelMargin = parseFloat(tokenValue("--st-component-diagramScene-labelPadding") ?? "");
+    if (Number.isFinite(labelMargin)) values.labelMargin = labelMargin;
+    if (r7Mode) {
+      for (const key of r7Keys) {
+        const value = lengthTokenValue("--st-component-diagramScene-" + key);
+        if (value !== undefined && Number.isFinite(value)) values[key] = value;
+      }
+      const edgeLabelSize = resolveEdgeLabelSizeToken(
+        lengthTokenValue("--st-component-diagramScene-edgeLabelSize"),
+        lengthTokenValue("--st-component-diagramScene-edgeLabelFontSize"),
+      );
+      if (edgeLabelSize !== undefined) values.edgeLabelSize = edgeLabelSize;
+    }
+
     if (JSON.stringify(values) !== JSON.stringify(tokenMetrics)) {
       ownedCache.clear();
       tokenMetrics = values;
@@ -722,6 +739,7 @@
     }),
   );
   const zoom = $derived(resolveZoom(requestedZoom, fit));
+  const strokeScale = $derived(overviewStrokeScale(fitToWindow, zoom));
   const readout = $derived(zoomReadout(zoom, fit.maxZoom));
   const placement = $derived(scenePlacement(cameraBounds, zoom, fit));
   const canZoomIn = $derived(zoom < fit.maxZoom);
@@ -1043,17 +1061,19 @@
   const pointsOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
     points.map((point) => `${point.x},${point.y}`).join(" ");
 
-  const edgeLabelLineHeight = $derived(scaleEdgeLabelMeasurer(lineMeasurer, effectiveMetrics.edgeLabelSize)({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
+  const edgeLabelLineHeight = $derived(scaleEdgeLabelMeasurer(lineMeasurer, r7Mode ? effectiveMetrics.edgeLabelSize : undefined)({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
   const metricPaintVars = $derived(
+    !r7Mode ? "" :
     (metrics?.edgeLabelSize !== undefined ||
       (effectiveMetrics.edgeLabelSize !== undefined && effectiveMetrics.edgeLabelSize !== DEFAULT_EDGE_LABEL_SIZE)
       ? `;--st-diagram-edge-label-size:${effectiveMetrics.edgeLabelSize}px`
       : "") +
     (metrics?.linkStrokeWidth !== undefined ? `;--st-diagram-link-stroke-width:${metrics.linkStrokeWidth}px` : "") +
+    (metrics?.linkRelatedStrokeWidth !== undefined ? `;--st-diagram-link-related-stroke-width:${metrics.linkRelatedStrokeWidth}px` : "") +
     (metrics?.linkEmphasisStrokeWidth !== undefined ? `;--st-diagram-link-emphasis-stroke-width:${metrics.linkEmphasisStrokeWidth}px` : ""),
   );
   const viewportStyle = $derived(
-    `height:${fit.fitHeight + scrollbarHeight}px;${fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${metricPaintVars}${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
+    `height:${fit.fitHeight + scrollbarHeight}px;${fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${metricPaintVars}${strokeScale < 1 ? `;--st-diagram-overview-stroke-scale:${strokeScale}` : ""}${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );
   const worldStyle = $derived(
     `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,
@@ -1182,7 +1202,7 @@
               <g data-scene-connectors="" mask={connectorMask === undefined ? undefined : `url(#${maskId})`}>
               {#each scene.edges as edge (edge.occurrence)}
                 {#if edge.r7}
-                  <path marker-end={connectorMarkerRef(edge, markerIds)} stroke-dasharray={connectorDashArray(edge.strokeStyle)} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-connector-mode="r7" data-edge-stroke={edge.strokeStyle} data-edge-arrowhead={edge.arrowhead} data-edge-emphasis={edge.emphasis} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} d={pathOf(edge.points)} />
+                  <path marker-end={connectorMarkerRef(edge, markerIds)} stroke-dasharray={connectorDashArray(edge.strokeStyle)} style={connectorDashPaint(edge.strokeStyle)} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-connector-mode="r7" data-edge-stroke={edge.strokeStyle} data-edge-arrowhead={edge.arrowhead} data-edge-emphasis={edge.emphasis} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} d={pathOf(edge.points)} />
                 {:else}
                   <polyline marker-end={edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} points={pointsOf(edge.points)} />
                 {/if}
@@ -1263,8 +1283,9 @@
                           d={swatch.linePath}
                           fill="none"
                           stroke={swatch.stroke}
-                          stroke-width={swatch.strokeWidth}
+                          stroke-width={swatch.strokeWidth * strokeScale}
                           stroke-dasharray={swatch.dashArray}
+                          style={connectorDashPaint(entry.strokeStyle)}
                           vector-effect="non-scaling-stroke"
                         />
                         {#if swatch.arrowPath !== undefined}
@@ -1419,17 +1440,14 @@
     vector-effect: non-scaling-stroke;
   }
   .st-diagramSceneFigure-edge[data-connector-mode="r7"] {
-    stroke-width: var(--st-diagram-link-stroke-width, var(--st-component-diagramScene-linkStrokeWidth, 2.5px));
+    stroke-width: calc(var(--st-diagram-link-stroke-width, var(--st-component-diagramScene-linkStrokeWidth, 2.5px)) * var(--st-diagram-overview-stroke-scale, 1));
   }
-  .st-diagramSceneFigure-edge[data-edge-emphasis="emphasis"] {
+  .st-diagramSceneFigure-edge[data-connector-mode="r7"][data-edge-arrowhead="none"] {
+    stroke-width: calc(var(--st-diagram-link-related-stroke-width, var(--st-component-diagramScene-linkRelatedStrokeWidth, 3px)) * var(--st-diagram-overview-stroke-scale, 1));
+  }
+  .st-diagramSceneFigure-edge[data-connector-mode="r7"][data-edge-emphasis="emphasis"] {
     stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
-    stroke-width: var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px));
-  }
-  .st-diagramSceneFigure-edge[data-edge-stroke="dashed"] {
-    stroke-dasharray: var(--st-component-diagramScene-linkDashDashed, 8 6);
-  }
-  .st-diagramSceneFigure-edge[data-edge-stroke="dotted"] {
-    stroke-dasharray: var(--st-component-diagramScene-linkDashDotted, 2 5);
+    stroke-width: calc(var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px)) * var(--st-diagram-overview-stroke-scale, 1));
   }
   .st-diagramSceneFigure-edgeLabel {
     box-sizing: border-box;
@@ -1440,7 +1458,7 @@
     display: flex;
     flex-direction: column;
     font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
-    font-size: var(--st-diagram-edge-label-size, var(--st-component-diagramScene-edgeLabelFontSize, 18px));
+    font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
     justify-content: center;
     line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
     pointer-events: none;

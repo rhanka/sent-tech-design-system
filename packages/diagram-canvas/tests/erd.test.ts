@@ -8,6 +8,18 @@ import { renderSceneSvg } from '../src/presentation/renderSceneSvg.js';
 const scenes = JSON.parse(readFileSync(new URL('../../diagram-core/tests/fixtures/erd/ERD-SCENES.json', import.meta.url), 'utf8')).ontologies as EngramErdScene[];
 const options = { registry: m3ProfileRegistry, bindings: shippedExecutorBindings, measureText: () => ({ width: 1, height: 1 }), measureLines: cardLineMeasurer(), targetWidth: 1440, rowPack: {} };
 describe('ERD measured layout and SVG', () => {
+  it('should refuse retained ERD occurrences with invalid connector fields (REQ-R7-11 / REQ-R7-17)', () => {
+    const { document, view, presentation } = convertEngramErdScene(scenes[0]!);
+    const [id, occurrence] = Object.entries(view.relationOccurrences)[0]!;
+    const invalid = { ...view, relationOccurrences: { ...view.relationOccurrences, [id]: { ...occurrence, color: 'red', arrowhead: 'unknown' as never } } };
+    expect(layoutMeasured(document, { ...options, presentation }, invalid)).toMatchObject({
+      status: 'refused',
+      refusals: [
+        expect.objectContaining({ path: `sourceView.relationOccurrences.${id}.color` }),
+        expect.objectContaining({ path: `sourceView.relationOccurrences.${id}.arrowhead` }),
+      ],
+    });
+  });
   it('should attach leaders to the final label borders after connector clearance in engram-spec', () => {
     const source = scenes.find(scene => scene.id === 'engram:engram-spec@1')!;
     const data = convertEngramErdScene(source);

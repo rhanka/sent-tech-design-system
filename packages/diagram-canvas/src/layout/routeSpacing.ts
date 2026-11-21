@@ -270,10 +270,16 @@ export function checkRouteSpacing(input: CheckRouteSpacingInput): RouteSpacingRe
       for (const segA of left.segments) {
         for (const segB of right.segments) {
           if (segA.horizontal !== segB.horizontal) continue;
-          if (sharedPortStub(left.route, segA.index, leftLast, right.route, segB.index, rightLast)) continue;
           const overlap = Math.min(segA.hi, segB.hi) - Math.max(segA.lo, segB.lo);
           if (overlap <= EPS) continue;
           const sep = Math.abs(segA.coord - segB.coord);
+          // A shared port can have a short escape stub. Long overlaps and
+          // coincident straight routes remain conflicts.
+          if (
+            overlap <= routeSpacing + borderClearance + EPS &&
+            (leftLast > 0 || rightLast > 0) &&
+            sharedPortStub(left.route, segA.index, leftLast, right.route, segB.index, rightLast)
+          ) continue;
           if (sep <= EPS) {
             reportedOverlap = true;
           } else if (sep < routeSpacing - EPS && sep < minParallelGap) {

@@ -2588,6 +2588,24 @@ export function validateView(
     );
   }
 
+  const entityAnatomy = view.presentation.entityAnatomy;
+  if (entityAnatomy !== undefined && (entityAnatomy === null || typeof entityAnatomy !== "object" || Array.isArray(entityAnatomy))) {
+    diagnostics.push(diagnostic({
+      code: "occurrence-endpoint-mismatch",
+      path: "presentation.entityAnatomy",
+      message: "entity anatomy overrides must be keyed by occurrence",
+    }));
+  } else {
+    for (const [id, anatomy] of Object.entries(entityAnatomy ?? {})) {
+      if (Object.hasOwn(view.entityOccurrences, id) && (anatomy === "v1" || anatomy === "v2")) continue;
+      diagnostics.push(diagnostic({
+        code: "occurrence-endpoint-mismatch",
+        path: `presentation.entityAnatomy.${id}`,
+        message: "anatomy must be v1 or v2 and reference an entity occurrence",
+      }));
+    }
+  }
+
   if (view.presentation.diagram !== undefined) {
     diagnostics.push(...validateDiagramPresentation(document, view, options));
   }

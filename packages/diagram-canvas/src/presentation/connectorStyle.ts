@@ -6,6 +6,8 @@ import {
   type LinkEmphasis,
   type StrokeStyle,
 } from "@sentropic/diagram-core";
+import { DEFAULT_LINK_EMPHASIS_STROKE_WIDTH, DEFAULT_LINK_RELATED_STROKE_WIDTH, DEFAULT_LINK_STROKE_WIDTH } from "../camera.js";
+import type { LayoutMetrics } from "../layout/types.js";
 
 export interface ConnectorMarkerIds {
   readonly filled: string;
@@ -70,6 +72,23 @@ export function connectorDashArray(strokeStyle: StrokeStyle | undefined): string
   const descriptor = resolveDashPattern(strokeStyle);
   if (descriptor === undefined || descriptor.dashArray.length === 0) return undefined;
   return descriptor.dashArray.join(" ");
+}
+
+/** Let themed shafts and swatches share the same dash token in every renderer. */
+export function connectorDashPaint(strokeStyle: StrokeStyle | undefined): string | undefined {
+  const fallback = connectorDashArray(strokeStyle);
+  if (fallback === undefined) return undefined;
+  const token = strokeStyle === "dashed" ? "linkDashDashed" : "linkDashDotted";
+  return `stroke-dasharray:var(--st-component-diagramScene-${token}, ${fallback})`;
+}
+
+export function connectorStrokeWidth(
+  edge: Pick<ConnectorMarkerEdgeInput, "emphasis" | "arrowhead">,
+  widths?: Pick<LayoutMetrics, "linkStrokeWidth" | "linkRelatedStrokeWidth" | "linkEmphasisStrokeWidth">,
+): number {
+  if (edge.emphasis === "emphasis") return widths?.linkEmphasisStrokeWidth ?? DEFAULT_LINK_EMPHASIS_STROKE_WIDTH;
+  if (edge.arrowhead === "none") return widths?.linkRelatedStrokeWidth ?? DEFAULT_LINK_RELATED_STROKE_WIDTH;
+  return widths?.linkStrokeWidth ?? DEFAULT_LINK_STROKE_WIDTH;
 }
 
 /** Normalize a closed `ArrowheadKind` word (`arrow | none`). */

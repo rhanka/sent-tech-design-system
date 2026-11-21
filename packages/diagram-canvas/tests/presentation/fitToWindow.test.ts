@@ -51,6 +51,15 @@ describe("fit-to-window host framing (DE-2 ask 9)", () => {
     // Horizontal scrollbar thickness stays inside windowHeight - 24 so CSS max-height never clips.
     const withBar = cameraFit({ bounds, viewWidth: 1440, windowHeight: 900, scrollbarHeight: 16, fitToWindow: true });
     expect(withBar.fitHeight + 16).toBeLessThanOrEqual(900 - FIT_WINDOW_MARGIN_PX);
+
+    const phone = { bounds, viewWidth: 390, windowHeight: 844 };
+    const legacyPhone = sceneFit(phone);
+    expect(legacyPhone.zoom).toBe(0.45);
+    expect(legacyPhone.pans).toBe(true);
+    const overview = sceneFit({ ...phone, fitToWindow: true });
+    expect(overview.zoom).toBeLessThan(0.45);
+    expect(overview.pans).toBe(false);
+    expect(scenePlacement(bounds, overview.zoom, overview)).toMatchObject({ overflowX: false, overflowY: false });
   });
 
   it("keeps default 0.85x framing on existing first-paint scenes while enabling fitToWindow on r7 comparison scenes", () => {

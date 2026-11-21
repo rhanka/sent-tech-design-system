@@ -135,9 +135,11 @@ export function cameraFit(input: CameraFitInput): CameraFit {
   // (transform, camera state, painted-bounds read) gets this single value,
   // and the fit height below is the one of the drawing at that same zoom.
   const applied = input.zoomQuantum === undefined || zoomFit >= maxZoom ? zoomFit : floorToQuantum(zoomFit, input.zoomQuantum);
-  // All hosts and camera inputs share this range. A small frame or a large
-  // unfolded scene reaches the floor, then scrolls instead of shrinking text.
-  const zoom = Math.max(readableFloor, applied);
+  // The window-fit opt-in can use a smaller overview. Default framing keeps
+  // the readability floor and scrolls oversized scenes.
+  const zoom = input.fitToWindow && zoomFit > 0
+    ? applied || zoomFit
+    : Math.max(readableFloor, applied);
   const fitHeight = Math.min(box.height, Math.ceil((bounds.height * zoom + 2 * FIT_PAINT_INSET) * 64) / 64);
   return { fitWidth: box.width, fitHeight, zoomFit, zoom, minZoom: zoom, maxZoom, pans: zoom > zoomFit };
 }
@@ -145,6 +147,11 @@ export function cameraFit(input: CameraFitInput): CameraFit {
 /** Z-1/Z-7: any requested zoom lands inside `[minZoom, maxZoom]` of the current fit. */
 export function clampZoom(zoom: number, fit: Pick<CameraFit, "minZoom" | "maxZoom">): number {
   return Math.min(fit.maxZoom, Math.max(fit.minZoom, zoom));
+}
+
+/** Preserve the layout's paint clearance when an opt-in overview goes below the floor. */
+export function overviewStrokeScale(fitToWindow: boolean | undefined, zoom: number): number {
+  return fitToWindow ? Math.min(1, zoom / DEFAULT_MIN_READABLE_SCALE) : 1;
 }
 
 /** §5.3: rendered edge-label font size at a zoom, CSS px. */

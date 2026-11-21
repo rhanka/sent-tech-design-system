@@ -37,6 +37,15 @@ import { measure } from "./fixtures.js";
 import { hCondInput } from "./dc2a/h-cond.js";
 import { pinnedMeasurer } from "./dc2a/scenes.js";
 
+it("counts coincident straight routes even when both endpoints share ports (REQ-R7-13)", () => {
+  const route = {
+    source: "source", target: "target", sourcePort: "source-out", targetPort: "target-in",
+    points: [{ x: 0, y: 0 }, { x: 500, y: 0 }],
+  };
+  const result = checkRouteSpacing({ routes: [{ ...route, id: "left" }, { ...route, id: "right" }], rects: new Map() });
+  expect(result.conflicts).toContainEqual(expect.objectContaining({ kind: "segment-overlap", routes: ["left", "right"] }));
+});
+
 describe("channelCapacity and subdivideChannelTracks", () => {
   it("computes finite channel capacity from gap, routeSpacing and borderClearance", () => {
     // gap 72 with 15 clearance each side => 42 usable => floor(42/24)+1 = 2 tracks.
@@ -400,6 +409,7 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
     };
     const presentation = {
       contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+      relations: { [relationRef("l1")]: { arrowhead: "arrow" as const } },
       entities: {
         [occurrenceRef("e.z1")]: { form: "container" as const, text: { title: "Zone Alpha" } },
         [occurrenceRef("e.z2")]: { form: "container" as const, text: { title: "Zone Beta" } },
@@ -457,7 +467,7 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
     expect(spacingWarnings.every((w) => w.severity === "info")).toBe(true);
   });
 
-  it("enforces zero route-spacing conflicts on ALL 84 visible fold states of the h-cond reference scenes under diagram-presentation@2 opt-in (unfolded included, REQ-R7-13)", () => {
+  it("enforces zero route-spacing conflicts on ALL 84 visible fold states of the compact h-cond reference scenes under @1 (unfolded included, REQ-R7-13)", () => {
     let totalStates = 0;
     for (const name of ["architecture", "ontology"] as const) {
       const base = hCondInput(name, false);
@@ -499,10 +509,7 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
 
         const res = layoutScene({
           ...base,
-          presentation: {
-            ...base.presentation,
-            contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
-          },
+          view: { ...base.view, presentation: { ...base.view.presentation, anatomy: "v2" } },
           collapsed,
         });
         expect(res.status, `${name} [${key || "unfolded"}]`).toBe("laid-out");
@@ -598,6 +605,7 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
     const presentation = {
       contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
       entities: presEntities,
+      relations: { [Object.keys(relations).find((id) => relations[id]!.type === "link")!]: { arrowhead: "arrow" as const } },
       legends: {},
       categoryTokens: [],
     };
@@ -717,7 +725,7 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
     expect(v2Res.channels?.filter((c) => c.zone).every((c) => c.gap === DEFAULT_ZONE_GUTTER)).toBe(true);
   });
 
-  it("keeps leaf-to-leaf gaps un-frozen in mixed runs and prevents zoneGapX/Y hints from shrinking r7 zone gutters below 96 (REQ-R7-14 / REQ-R7-28)", () => {
+  it("keeps leaf-to-leaf and zone-to-card gaps dynamic in mixed runs (REQ-R7-14 / REQ-R7-28)", () => {
     // Mixed root run mirroring r7-connectors: one container (`zone-core`) plus two leaf siblings (`audit`, `gateway`).
     const mixedDoc: SemanticDocument = {
       documentId: documentRef("mixed-run-leaf-gap"),
@@ -755,8 +763,6 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
       legends: {},
       categoryTokens: [],
     };
-    // Passing zoneGapX: 32, zoneGapY: 48 must NOT shrink any r7 zone gutter below DEFAULT_ZONE_GUTTER (96),
-    // while the leaf-to-leaf gutter between Audit and Gateway stays classified as a non-zone leaf channel (`zone: false`).
     const mixedRes = layoutDocument(mixedDoc, {
       registry: m3ProfileRegistry,
       bindings: shippedExecutorBindings,
@@ -770,14 +776,9 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
     if (mixedRes.status !== "laid-out") return;
     const rootPrefix = `${ROOT_LEVEL_KEY}|`;
     const rootChannels = (mixedRes.channels ?? []).filter((c) => c.id.startsWith(rootPrefix));
-    const rootZoneChannels = rootChannels.filter((c) => c.zone === true);
-    const rootLeafChannels = rootChannels.filter((c) => c.zone === false);
-    expect(rootZoneChannels.length).toBeGreaterThan(0);
-    for (const ch of rootZoneChannels) {
-      expect(ch.gap).toBeGreaterThanOrEqual(DEFAULT_ZONE_GUTTER);
-      expect(ch.gap).toBe(DEFAULT_ZONE_GUTTER);
-    }
-    expect(rootLeafChannels.length).toBeGreaterThan(0);
+    expect(rootChannels.length).toBeGreaterThan(1);
+    expect(rootChannels.every((c) => c.zone === false)).toBe(true);
+    expect(rootChannels.some((c) => c.gap === 32 || c.gap === 48)).toBe(true);
     // Leaf-to-leaf gap in a mixed run responds to cardGapX/Y overrides (not frozen at 96).
     const cardGapRes = layoutDocument(mixedDoc, {
       registry: m3ProfileRegistry,
@@ -794,9 +795,7 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
     expect(leafAfterCardHint.length).toBeGreaterThan(0);
     expect(leafAfterCardHint.some((c) => c.gap !== DEFAULT_ZONE_GUTTER)).toBe(true);
     const zoneAfterHint = (cardGapRes.channels ?? []).filter((c) => c.id.startsWith(rootPrefix) && c.zone === true);
-    expect(zoneAfterHint.length).toBeGreaterThan(0);
-    for (const ch of zoneAfterHint) {
-      expect(ch.gap).toBe(DEFAULT_ZONE_GUTTER);
-    }
+    expect(zoneAfterHint).toEqual([]);
+    expect(leafAfterCardHint.some((c) => c.gap === 56 || c.gap === 44)).toBe(true);
   });
 });

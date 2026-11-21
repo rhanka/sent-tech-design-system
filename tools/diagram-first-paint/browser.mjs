@@ -103,6 +103,7 @@ function measure() {
       stroke,
       strokeWidthCss,
       emphasis: element.dataset.edgeEmphasis ?? 'default',
+      arrowhead: element.dataset.edgeArrowhead ?? 'arrow',
       flow: Boolean(element.dataset.flowStep || element.dataset.flowBundle),
       erd: false,
       points,
@@ -149,7 +150,7 @@ function measure() {
   const occluders = [...surfaces, ...cutouts];
   const frameBox = box(frame);
   const scrollbars = [frame.offsetWidth - frame.clientWidth, frame.offsetHeight - frame.clientHeight];
-  return { camera: window.__camera, scale, transform, world: box(world), frame: frameBox, scrollbars,
+  return { camera: window.__camera, fitToWindow: figure.hasAttribute('data-fit-to-window'), scale, transform, world: box(world), frame: frameBox, scrollbars,
     viewport: { ...frameBox, right: frameBox.right - scrollbars[0], bottom: frameBox.bottom - scrollbars[1],
       width: frameBox.width - scrollbars[0], height: frameBox.height - scrollbars[1] },
     // The rendered extent includes all scene bounds and the two 1 px paint
@@ -259,7 +260,8 @@ function check(state, scene) {
   assert.ok(state.nodes.length >= 3, 'must render at least three cards');
   assert.ok(state.frame.width > 0 && state.frame.height > 0, 'nonempty frame');
   assert.ok(Number.isFinite(state.camera.fitZoom), 'finite fit');
-  assert.ok(state.scale >= 0.45, `display scale ${state.scale} < 0.45`);
+  assert.ok(state.scale > 0, 'positive display scale');
+  if (!state.fitToWindow) assert.ok(state.scale >= 0.45, `display scale ${state.scale} < 0.45`);
   assert.ok(Number.isFinite(state.clearance) && state.clearance > 0, 'clearance token must resolve');
   if (scene !== 'three-cards' && scene !== 'three-cards-compact') {
     assert.ok(state.paths.length > 0 && state.labels.length > 0, 'golden must have connectors and labels');
@@ -299,7 +301,7 @@ function check(state, scene) {
   }
   assert.ok(state.outerScroll[0] <= state.outerScroll[1] && state.outerScroll[2] <= state.outerScroll[3],
     `outer frame overflows: ${state.outerScroll}`);
-  if (unclampedFit >= 0.45) {
+  if (state.fitToWindow || unclampedFit >= 0.45) {
     assert.deepEqual(overflow, [false, false], `feasible fit ${unclampedFit} must not scroll`);
   } else {
     assert.equal(state.scale, 0.45, 'infeasible fit must stop at the readability floor');
@@ -322,7 +324,8 @@ function check(state, scene) {
     occluders: state.occluders, relations: state.relations ?? undefined, tolerance: 1 }), [], 'connectors');
   if (scene.startsWith('r7-')) {
     assert.deepEqual(roundedElbowFindings({ paths: state.paths, maxRadius: 12 }), [], 'r7 rounded elbow radius cap');
-    assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths, defaultWidth: 2.5, emphasisWidth: 3.5 }), [], 'r7 link stroke widths');
+    const strokeScale = state.fitToWindow ? Math.min(1, state.scale / 0.45) : 1;
+    assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths, strokeScale }), [], 'r7 link stroke widths');
     const expectedStyles = expectedLegendStyles(scene);
     assert.deepEqual(legendFindings({ legend: state.legend, nodes: state.nodes, expectedAnchor: 'right',
       ...(expectedStyles === null ? {} : { expectedStyles }) }), [], 'r7 link legend order and anchor');
@@ -419,6 +422,20 @@ try {
             const restored = await page.evaluate(measure);
             assert.deepEqual(restored.camera, unfolded.camera, `${name} unfold camera must equal state after Ajuster`);
             equalGeometry(restored, unfolded, `${name} unfold Ajuster idempotence`);
+          }
+          if (scene === 'r7-connectors') {
+            await page.addStyleTag({ content: 'html{font-size:16px}.st-diagramSceneFigure{--st-component-diagramScene-edgeLabelFontSize:calc(1rem + 8px);--st-component-diagramScene-linkDashDashed:11px 7px}' });
+            await page.evaluate(() => window.dispatchEvent(new Event('resize')));
+            await settle(page);
+            assert.deepEqual(await page.evaluate(() => {
+              const figure = document.querySelector('.st-diagramSceneFigure');
+              const styleOf = selector => getComputedStyle(figure.querySelector(selector));
+              return [
+                styleOf('[data-scene-label][data-connector-mode="r7"]').fontSize,
+                styleOf('[data-scene-edge][data-edge-stroke="dashed"]').strokeDasharray,
+                styleOf('[data-edge-stroke="dashed"] [data-legend-swatch]').strokeDasharray,
+              ];
+            }), ['24px', '11px, 7px', '11px, 7px'], 'resolved label size and shared dash theme override');
           }
           completed++;
           console.log(`PASS ${name}`);

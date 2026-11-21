@@ -37,13 +37,13 @@ import {
   DEFAULT_ALLOCATED_LINES,
   DEFAULT_EDGE_LABEL_SIZE,
   DEFAULT_LAYOUT_METRICS,
-  DEFAULT_LINK_EMPHASIS_STROKE_WIDTH,
   DEFAULT_LINK_PRIMARY_STROKE_WIDTH,
   DEFAULT_LINK_RELATED_STROKE_WIDTH,
   DEFAULT_LINK_STROKE_WIDTH,
+  DEFAULT_LINK_EMPHASIS_STROKE_WIDTH,
   DEFAULT_MIN_READABLE_SCALE,
   FIT_PAINT_INSET,
-  isR7ConnectorPresentation,
+  diagramAnatomyOf, isR7ConnectorPresentation,
   layoutFolded,
   layoutMeasured,
   placeEdgeLabels,
@@ -74,10 +74,12 @@ import type { EntityPresentation } from "@sentropic/diagram-core";
 import type { AlignPinned, AnatomyPinned, DepthPinned, DiagramAnatomy } from "./diagramCardModel.js";
 
 import { DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
+import { connectorStrokeWidth } from "./connectorStyle.js";
 export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
 export {
   ARROWHEAD_MARKER_GEOMETRY,
   connectorDashArray,
+  connectorDashPaint,
   connectorMarkerIds,
   connectorMarkerKind,
   connectorMarkerRef,
@@ -184,9 +186,9 @@ export function resolveScenePresentation(document: SceneDocument, presentation: 
    * and its boxes inherit the pin unless they carry their own. Absent
    * everywhere means `"v1"` — existing views do not move.
    */
-  const viewAnatomy = (view?.presentation as { readonly anatomy?: DiagramAnatomy } | undefined)?.anatomy;
-  const withViewAnatomy = <T extends { readonly anatomy?: DiagramAnatomy; readonly align?: "left" | "center" }>(entry: T): T => {
-    const resolved = entry.anatomy === undefined && viewAnatomy !== undefined ? { ...entry, anatomy: viewAnatomy } : entry;
+  const withViewAnatomy = <T extends { readonly anatomy?: DiagramAnatomy; readonly align?: "left" | "center" }>(id: string, entry: T): T => {
+    const anatomy = diagramAnatomyOf(presentation, view, id);
+    const resolved = entry.anatomy === undefined && anatomy === "v2" ? { ...entry, anatomy } : entry;
     // View-level centring applies only when explicitly requested on compact v2 anatomy.
     if (resolved.anatomy !== "v2" && resolved.align === "center") {
       const { align: _ignored, ...rest } = resolved;
@@ -195,20 +197,20 @@ export function resolveScenePresentation(document: SceneDocument, presentation: 
     return resolved;
   };
   const entities = Object.fromEntries(Object.entries(presentation.entities).map(([id, entry]) => {
-    if (entry.form !== "card" && entry.form !== "container" && entry.form !== "legend") return [id, withViewAnatomy(entry)];
+    if (entry.form !== "card" && entry.form !== "container" && entry.form !== "legend") return [id, withViewAnatomy(id, entry)];
     const entityId = view?.entityOccurrences[id]?.entity ?? id.replace(/^occurrence:e\./, "entity:");
     const entity = document.entities[entityId];
-    if (entity?.profile === "erd@1") return [id, withViewAnatomy(entry)];
+    if (entity?.profile === "erd@1") return [id, withViewAnatomy(id, entry)];
     const binding = bindings[entity === undefined ? "" : entity.profile + ":" + entity.type] ?? bindings[entity?.type ?? ""];
-    if (binding?.shape !== undefined && binding.shape !== "component") return [id, withViewAnatomy({ ...entry, icon: entry.icon ?? "none" })];
+    if (binding?.shape !== undefined && binding.shape !== "component") return [id, withViewAnatomy(id, { ...entry, icon: entry.icon ?? "none" })];
     const role = binding?.role ?? (entry.form === "card" ? "card" : "zone");
     const icon = entry.icon ?? binding?.icon ?? ROLE_ICONS[role];
-    if (icon === "none") return [id, withViewAnatomy({ ...entry, icon: "none" })];
+    if (icon === "none") return [id, withViewAnatomy(id, { ...entry, icon: "none" })];
     if (icon === undefined || resolveGlyph(icon) === undefined) {
       missing.push(id);
-      return [id, withViewAnatomy({ ...entry, icon: strict ? "unknown" : "none" })];
+      return [id, withViewAnatomy(id, { ...entry, icon: strict ? "unknown" : "none" })];
     }
-    return [id, withViewAnatomy({ ...entry, icon })];
+    return [id, withViewAnatomy(id, { ...entry, icon })];
   }));
   /**
    * Owner addendum 1 — stamp nesting depth from the view groups (or from
@@ -575,7 +577,8 @@ export function resolveScene(
   );
   const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
   const erd = input.document.profileRefs.length === 1 && input.document.profileRefs[0] === 'erd@1';
-  const r7Connectors = !erd && isR7ConnectorPresentation(input.presentation, view, input.document);
+  const r7Connectors = !erd && (result.routeSpacing !== undefined || isR7ConnectorPresentation(input.presentation, input.view ?? view, input.document));
+  const edgeLabelMeasure = scaleEdgeLabelMeasurer(input.measureLines, r7Connectors ? input.metrics?.edgeLabelSize : undefined, DEFAULT_EDGE_LABEL_SIZE);
   // Non-scaling connector paint is widest in world units at the readability
   // floor. Existing v1, ERD, and numbered-flow scenes keep the 1.5 px main
   // clearance (`REQ-R7-28`); r7 scenes use `linkStrokeWidth` (2.5 px, REQ-R7-11)
@@ -584,11 +587,7 @@ export function resolveScene(
   const baseLinkStrokeWidth = r7Connectors
     ? (input.metrics?.linkStrokeWidth ?? DEFAULT_LINK_STROKE_WIDTH)
     : 1.5;
-  const emphasisLinkStrokeWidth = r7Connectors
-    ? (input.metrics?.linkEmphasisStrokeWidth ?? DEFAULT_LINK_EMPHASIS_STROKE_WIDTH)
-    : 1.5;
   const paintClearance = margin + baseLinkStrokeWidth / (2 * DEFAULT_MIN_READABLE_SCALE);
-  const emphasisExtraClearance = Math.max(0, emphasisLinkStrokeWidth - baseLinkStrokeWidth) / (2 * DEFAULT_MIN_READABLE_SCALE);
   const zoneInset = input.metrics?.containerPadding ?? ZONE_GEOMETRY.contentInsetInline;
   const pendingCutouts: { readonly node: SceneNodeModel; readonly inner: number; readonly lineHeight: number; readonly bottom: number }[] = [];
   for (const node of nodes) {
@@ -688,8 +687,7 @@ export function resolveScene(
       ? ['fromRole','toRole'].map(role => erdText(semantic.attributes,role)).filter(Boolean).join(' / ') || edgeLabelOf(input.document, occurrence.relation)
       : edgeLabelOf(input.document, occurrence.relation));
     if (label === undefined) continue;
-    const edgeMeasureLines = scaleEdgeLabelMeasurer(input.measureLines, input.metrics?.edgeLabelSize, DEFAULT_EDGE_LABEL_SIZE);
-    const layout = measuredLabels.get(id) ?? edgeMeasureLines({
+    const layout = measuredLabels.get(id) ?? edgeLabelMeasure({
       text: label,
       role: "edge-label",
       availableWidth: EDGE_LABEL_ALLOCATION,
@@ -712,12 +710,11 @@ export function resolveScene(
   // A label is the label of a drawn connector: a placement whose relation has
   // no route in this scene is dropped, so a label never paints without a line.
   const labelled = new Set(entries.map((entry) => entry.id));
-  const bundleMeasureLines = scaleEdgeLabelMeasurer(input.measureLines, input.metrics?.edgeLabelSize, DEFAULT_EDGE_LABEL_SIZE);
   for (const [id, placement] of placements) {
     if (placement === undefined || !labelled.has(id)) continue;
     labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box, ...(erd ? { erd: true } : {}), ...("leader" in placement ? { leader: placement.leader as readonly Vec2[] } : {}),
       ...(result.edgeBundles?.[id] === undefined ? {} : { title: result.edgeBundles[id]!.title }),
-      ...(result.edgeBundles?.[id]?.relations === undefined ? {} : { bundle: result.edgeBundles[id]!.chip ?? measureBundleLabel(result.edgeBundles[id]!.relations!, bundleMeasureLines, input.metrics?.bundleLabelMaxWidth) }) });
+      ...(result.edgeBundles?.[id]?.relations === undefined ? {} : { bundle: result.edgeBundles[id]!.chip ?? measureBundleLabel(result.edgeBundles[id]!.relations!, edgeLabelMeasure, input.metrics?.bundleLabelMaxWidth) }) });
   }
 
   const badges: SceneBadgeModel[] = [];
@@ -748,23 +745,25 @@ export function resolveScene(
       paintClearance + CONNECTOR_CUTOUT_SLACK,
       margin + baseLinkStrokeWidth / DEFAULT_MIN_READABLE_SCALE + 1.15,
     );
-    const emphasisPad = Math.max(
-      margin + emphasisLinkStrokeWidth / (2 * DEFAULT_MIN_READABLE_SCALE) + CONNECTOR_CUTOUT_SLACK,
-      margin + emphasisLinkStrokeWidth / DEFAULT_MIN_READABLE_SCALE + 1.15,
-    );
-    const baseBox: Rect = {
-      x: node.rect.x + zoneInset - emphasisPad,
-      y: bottom - lineHeight - emphasisPad,
-      width: Math.min(footerWidths.get(node.occurrence) ?? inner, inner) + 2 * emphasisPad,
-      height: Math.min(node.rect.y + node.rect.height, bottom + emphasisPad) - (bottom - lineHeight - emphasisPad),
-    };
-    const emphasizedCrosses = edges.some((edge) => edge.r7 && edge.emphasis === "emphasis" && edge.points.slice(1).some((pt, i) => {
-      const prev = edge.points[i]!;
-      const seg: Rect = { x: Math.min(prev.x, pt.x), y: Math.min(prev.y, pt.y), width: Math.abs(pt.x - prev.x), height: Math.abs(pt.y - prev.y) };
-      return seg.x <= baseBox.x + baseBox.width && baseBox.x <= seg.x + seg.width
-        && seg.y <= baseBox.y + baseBox.height && baseBox.y <= seg.y + seg.height;
-    }));
-    const pad = emphasizedCrosses ? Math.max(basePad, emphasisPad) : basePad;
+    let pad = basePad;
+    for (const edge of edges) {
+      if (!edge.r7) continue;
+      const width = connectorStrokeWidth(edge, input.metrics);
+      const edgePad = Math.max(
+        margin + width / (2 * DEFAULT_MIN_READABLE_SCALE) + CONNECTOR_CUTOUT_SLACK,
+        margin + width / DEFAULT_MIN_READABLE_SCALE + 1.15,
+      );
+      if (edgePad <= pad) continue;
+      const cutoutLeft = node.rect.x + zoneInset - edgePad;
+      const cutoutRight = cutoutLeft + Math.min(footerWidths.get(node.occurrence) ?? inner, inner) + 2 * edgePad;
+      const cutoutTop = bottom - lineHeight - edgePad;
+      const cutoutBottom = Math.min(node.rect.y + node.rect.height, bottom + edgePad);
+      if (edge.points.slice(1).some((point, i) => {
+        const prev = edge.points[i]!;
+        return Math.min(prev.x, point.x) <= cutoutRight && cutoutLeft <= Math.max(prev.x, point.x)
+          && Math.min(prev.y, point.y) <= cutoutBottom && cutoutTop <= Math.max(prev.y, point.y);
+      })) pad = edgePad;
+    }
     const cutoutTop = bottom - lineHeight - pad;
     const cutoutBottom = Math.min(node.rect.y + node.rect.height, bottom + pad);
     connectorCutouts.push({
@@ -778,7 +777,9 @@ export function resolveScene(
     ? clearSceneLabels(labels, edges.map(edge => edge.points),
       [...blockers, ...badges.map(badge => badge.box), ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box))],
       paintClearance, cornerRadius,
-      edges.map(edge => (edge.r7 && edge.emphasis === "emphasis" ? emphasisExtraClearance : 0)))
+      edges.map(edge => edge.r7
+        ? Math.max(0, connectorStrokeWidth(edge, input.metrics) - baseLinkStrokeWidth) / (2 * DEFAULT_MIN_READABLE_SCALE)
+        : 0))
     : clearSceneLabels(labels, edges.map(edge => edge.points),
       [...blockers, ...badges.map(badge => badge.box), ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box))],
       paintClearance);
@@ -1006,8 +1007,8 @@ export function parseCssLengthPx(
 /**
  * Resolve the effective edge-label font size from both the DE-2 `edgeLabelSize`
  * token and the legacy `edgeLabelFontSize` token. Core themes define both at
- * `18px`, so a consumer override on `edgeLabelFontSize` still takes effect on
- * v1, ERD, and r7 scenes unless `edgeLabelSize` itself was overridden.
+ * `18px`, so r7 also honours consumer overrides on `edgeLabelFontSize`
+ * when `edgeLabelSize` has its default value.
  */
 export function resolveEdgeLabelSizeToken(
   edgeLabelSize: number | undefined,
