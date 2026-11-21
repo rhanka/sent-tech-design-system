@@ -372,6 +372,9 @@ const PAGES = {
       envelope.root.series[0].data = envelope.root.series[0].data.slice(0, values.length)
         .map((point, index) => ({ ...point, y: values[index] }));
     })}
+    ${mutatedIsland("st-time-series-chart", "repeated-series-labels", TIME_SERIES_FIXTURES[1], (envelope) => {
+      for (const series of envelope.root.series) series.label = "Sensor";
+    })}
     <script type="module" src="/bundle/elements.js"></script>
   `),
   "/dossier-l6.html": pageHtml(PILOT_CSP, dossierL6Body()),
@@ -967,6 +970,7 @@ async function shadowSvg(page, elementSelector) {
       await element.ready;
       const root = element.shadowRoot;
       return {
+        id: element.id,
         state: element.state ?? null,
         rows: [...(root?.querySelectorAll("table tbody tr") ?? [])].map((row) =>
           [...row.cells].map((cell) => cell.textContent.trim())),
@@ -1009,11 +1013,16 @@ async function shadowSvg(page, elementSelector) {
     points.length === expectedPoints[seriesIndex].length && points.every((point, pointIndex) =>
       point.every((coordinate, axis) => Math.abs(coordinate - expectedPoints[seriesIndex][pointIndex][axis]) < 0.01))),
   "time-series: proportional coordinates", `expected ${JSON.stringify(expectedPoints)}, got ${JSON.stringify(multiPoints)}`);
-  const nearEqual = mounts[TIME_SERIES_FIXTURES.length];
+  const nearEqual = mounts.find(({ id }) => id === "near-equal-values");
   const nearEqualPoints = nearEqual.series[0]?.points ?? [];
   assert(nearEqual.state === "rendered" && nearEqualPoints.length === 3 &&
     nearEqualPoints[0][1] > nearEqualPoints[1][1] && nearEqualPoints[1][1] > nearEqualPoints[2][1],
     "time-series: near-equal values", `plot differs: ${JSON.stringify(nearEqual)}`);
+  const repeatedLabels = mounts.find(({ id }) => id === "repeated-series-labels");
+  const repeatedSeries = repeatedLabels.rows.map(([, series]) => series);
+  assert(repeatedLabels.state === "rendered" && JSON.stringify(repeatedSeries) === JSON.stringify([
+    "Sensor (east)", "Sensor (east)", "Sensor (west)", "Sensor (west)", "Sensor (east)", "Sensor (west)",
+  ]), "time-series: repeated labels retain identity", `table differs: ${JSON.stringify(repeatedLabels.rows)}`);
   assert(["Warning", "Deployment", "Expected range", "Goal"].every((label) => mounts[2].overlays.includes(label)),
     "time-series: overlays", `missing labels: ${JSON.stringify(mounts[2].overlays)}`);
   assert(observed.requests.every((url) => !url.includes("/chunks/bpmn-")), "time-series: isolated", "requested a BPMN chunk");

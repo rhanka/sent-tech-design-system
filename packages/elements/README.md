@@ -94,6 +94,7 @@ for any reference line on the x axis.
 
 The element exposes the observations in an accessible time, series and value
 table. Rows sort by ascending time, with input series order breaking ties.
+When labels repeat, the table appends each matching series ID to its label.
 For the transcript, validate the envelope against the pinned catalogue, then
 call `formatTimeSeriesMarkdown(envelope.root)` with the validated props.
 It formats the same rows, escapes Markdown delimiters and fails with a

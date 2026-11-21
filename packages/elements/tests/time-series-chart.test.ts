@@ -71,6 +71,18 @@ describe("TimeSeriesChart Markdown fallback", () => {
     );
   });
 
+  it("should identify each series when labels repeat", () => {
+    const props = { ...multi.root, series: multi.root.series.map((series) => ({ ...series, label: "Sensor" })) };
+    expect(formatTimeSeriesMarkdown(props).split("\n").slice(2)).toEqual([
+      "| 2026-01-01T00:00:00.000Z | Sensor (east) | 10 |",
+      "| 2026-01-01T01:00:00.000Z | Sensor (east) | 21 |",
+      "| 2026-01-01T01:00:00.000Z | Sensor (west) | 14 |",
+      "| 2026-01-01T02:00:00.000Z | Sensor (west) | 8 |",
+      "| 2026-01-01T03:00:00.000Z | Sensor (east) | 15 |",
+      "| 2026-01-01T03:00:00.000Z | Sensor (west) | 20 |",
+    ]);
+  });
+
   it("should accept 4096 UTF-8 bytes and refuse an overflow without dropping rows", () => {
     const format = (label: string) => formatTimeSeriesMarkdown({
       label: "Bounded",
