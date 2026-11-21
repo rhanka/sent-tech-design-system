@@ -27,6 +27,7 @@ import {
   DEFAULT_ROUTE_SPACING,
   DEFAULT_ZONE_GUTTER,
   layoutDocument,
+  ROOT_LEVEL_KEY,
   subdivideChannelTracks,
   type CheckedRoute,
   type Rect,
@@ -714,5 +715,88 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
     expect(v2Res.routeSpacing).toBeDefined();
     expect(v2Res.routeSpacing!.conflictCount).toBe(0);
     expect(v2Res.channels?.filter((c) => c.zone).every((c) => c.gap === DEFAULT_ZONE_GUTTER)).toBe(true);
+  });
+
+  it("keeps leaf-to-leaf gaps un-frozen in mixed runs and prevents zoneGapX/Y hints from shrinking r7 zone gutters below 96 (REQ-R7-14 / REQ-R7-28)", () => {
+    // Mixed root run mirroring r7-connectors: one container (`zone-core`) plus two leaf siblings (`audit`, `gateway`).
+    const mixedDoc: SemanticDocument = {
+      documentId: documentRef("mixed-run-leaf-gap"),
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: {
+        [entityRef("zone-core")]: { id: entityRef("zone-core"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Core" } } },
+        [entityRef("alpha")]: { id: entityRef("alpha"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Alpha" } } },
+        [entityRef("beta")]: { id: entityRef("beta"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Beta" } } },
+        [entityRef("gateway")]: { id: entityRef("gateway"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Gateway" } } },
+        [entityRef("audit")]: { id: entityRef("audit"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Audit" } } },
+      },
+      relations: {
+        [relationRef("c.alpha")]: { id: relationRef("c.alpha"), profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: entityRef("zone-core") }, { role: "child", target: entityRef("alpha") }], attributes: {} },
+        [relationRef("c.beta")]: { id: relationRef("c.beta"), profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: entityRef("zone-core") }, { role: "child", target: entityRef("beta") }], attributes: {} },
+        [relationRef("l.ag")]: { id: relationRef("l.ag"), profile: "generic@2", type: "link", endpoints: [{ role: "source", target: entityRef("audit") }, { role: "target", target: entityRef("gateway") }], attributes: { label: { kind: "text", value: "long audit gateway replication channel" } } },
+        [relationRef("l.za")]: { id: relationRef("l.za"), profile: "generic@2", type: "link", endpoints: [{ role: "source", target: entityRef("alpha") }, { role: "target", target: entityRef("audit") }], attributes: { label: { kind: "text", value: "audit" } } },
+        [relationRef("l.zb")]: { id: relationRef("l.zb"), profile: "generic@2", type: "link", endpoints: [{ role: "source", target: entityRef("beta") }, { role: "target", target: entityRef("gateway") }], attributes: { label: { kind: "text", value: "gateway" } } },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    };
+    const mixedPres = {
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+      entities: {
+        [occurrenceRef("e.zone-core")]: { form: "container" as const, anatomy: "v2" as const, text: { title: "Core" } },
+        [occurrenceRef("e.alpha")]: { form: "card" as const, anatomy: "v2" as const, text: { title: "Alpha" } },
+        [occurrenceRef("e.beta")]: { form: "card" as const, anatomy: "v2" as const, text: { title: "Beta" } },
+        [occurrenceRef("e.gateway")]: { form: "card" as const, anatomy: "v2" as const, text: { title: "Gateway" } },
+        [occurrenceRef("e.audit")]: { form: "card" as const, anatomy: "v2" as const, text: { title: "Audit" } },
+      },
+      legends: {},
+      categoryTokens: [],
+    };
+    // Passing zoneGapX: 32, zoneGapY: 48 must NOT shrink any r7 zone gutter below DEFAULT_ZONE_GUTTER (96),
+    // while the leaf-to-leaf gutter between Audit and Gateway stays classified as a non-zone leaf channel (`zone: false`).
+    const mixedRes = layoutDocument(mixedDoc, {
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureText: measure,
+      measureLines: pinnedMeasurer,
+      presentation: mixedPres,
+      hints: { zoneGapX: 32, zoneGapY: 48 },
+      targetWidth: 1440,
+    });
+    expect(mixedRes.status).toBe("laid-out");
+    if (mixedRes.status !== "laid-out") return;
+    const rootPrefix = `${ROOT_LEVEL_KEY}|`;
+    const rootChannels = (mixedRes.channels ?? []).filter((c) => c.id.startsWith(rootPrefix));
+    const rootZoneChannels = rootChannels.filter((c) => c.zone === true);
+    const rootLeafChannels = rootChannels.filter((c) => c.zone === false);
+    expect(rootZoneChannels.length).toBeGreaterThan(0);
+    for (const ch of rootZoneChannels) {
+      expect(ch.gap).toBeGreaterThanOrEqual(DEFAULT_ZONE_GUTTER);
+      expect(ch.gap).toBe(DEFAULT_ZONE_GUTTER);
+    }
+    expect(rootLeafChannels.length).toBeGreaterThan(0);
+    // Leaf-to-leaf gap in a mixed run responds to cardGapX/Y overrides (not frozen at 96).
+    const cardGapRes = layoutDocument(mixedDoc, {
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureText: measure,
+      measureLines: pinnedMeasurer,
+      presentation: mixedPres,
+      hints: { cardGapX: 56, cardGapY: 44, zoneGapX: 32, zoneGapY: 48 },
+      targetWidth: 1440,
+    });
+    expect(cardGapRes.status).toBe("laid-out");
+    if (cardGapRes.status !== "laid-out") return;
+    const leafAfterCardHint = (cardGapRes.channels ?? []).filter((c) => c.id.startsWith(rootPrefix) && c.zone === false);
+    expect(leafAfterCardHint.length).toBeGreaterThan(0);
+    expect(leafAfterCardHint.some((c) => c.gap !== DEFAULT_ZONE_GUTTER)).toBe(true);
+    const zoneAfterHint = (cardGapRes.channels ?? []).filter((c) => c.id.startsWith(rootPrefix) && c.zone === true);
+    expect(zoneAfterHint.length).toBeGreaterThan(0);
+    for (const ch of zoneAfterHint) {
+      expect(ch.gap).toBe(DEFAULT_ZONE_GUTTER);
+    }
   });
 });

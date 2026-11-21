@@ -583,9 +583,9 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       });
     };
     refuseGap("hints.cardGapX", "cardGapX", rowGaps.cardX, rowGaps.maxX);
-    refuseGap("hints.zoneGapX", "zoneGapX", rowGaps.zoneX, rowGaps.maxX);
+    refuseGap("hints.zoneGapX", "zoneGapX", hints.zoneGapX ?? rowGaps.zoneX, rowGaps.maxX);
     refuseGap("hints.cardGapY", "cardGapY", rowGaps.cardY, rowGaps.maxY);
-    refuseGap("hints.zoneGapY", "zoneGapY", rowGaps.zoneY, rowGaps.maxY);
+    refuseGap("hints.zoneGapY", "zoneGapY", hints.zoneGapY ?? rowGaps.zoneY, rowGaps.maxY);
     // A group's `gapAfter` lands on whichever axis its level packs along: it is held to both caps.
     const visitGap = (group: LayoutGroup, path: string): void => {
       if (group.gapAfter !== undefined) {
@@ -911,8 +911,11 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     );
     return { key, mode: "auto", items, stretch: false };
   };
-  const runHasZone = (run: Run): boolean =>
-    run.items.some((item) => ("entity" in item ? kinds.get(item.entity) !== "leaf" : runHasZone(item.run)));
+  const itemHasZone = (item: RunItem): boolean =>
+    "entity" in item ? kinds.get(item.entity) !== "leaf" : runHasZone(item.run);
+  const runHasZone = (run: Run): boolean => run.items.some(itemHasZone);
+  const shelfHasZone = (run: Run, shelf: readonly number[]): boolean =>
+    shelf.some((slot) => itemHasZone(run.items[slot]!));
 
   // Drawn edges: the link occurrences the projected view draws. Internal
   // edges under a collapse are excluded by the same visibility; every
@@ -1229,9 +1232,15 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const rows = orientation === "rows";
       const alongBase = rows ? baseX : baseY;
       const acrossBase = rows ? baseY : baseX;
+      const cardAlongBase = rows ? rowGaps.cardX : rowGaps.cardY;
+      const cardAcrossBase = rows ? rowGaps.cardY : rowGaps.cardX;
+      const zoneAlongBase = rows ? rowGaps.zoneX : rowGaps.zoneY;
+      const zoneAcrossBase = rows ? rowGaps.zoneY : rowGaps.zoneX;
       // §3.5: a gutter keeps its base gap (or the authored `gapAfter` of the
       // group before it) unless the plan widens it for a label. One along gap
       // per slot index on every shelf: the grid keeps its column starts.
+      // REQ-R7-14: on r7 mixed runs, only gutters bordering a zone stay fixed
+      // at `zoneGutter` (>= 96); leaf-to-leaf gaps keep card base & widening.
       const gapAfterOf = (slot: number): number | undefined => {
         const item = run.items[slot]!;
         return "run" in item ? item.gapAfter : undefined;
@@ -1240,14 +1249,32 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         boxes,
         shelves,
         orientation,
-        (shelf, slot) =>
-          Math.max(
-            gapAfterOf(shelves[shelf]![slot]!) ?? alongBase,
+        (shelf, slot) => {
+          const leftSlot = shelves[shelf]![slot]!;
+          const rightSlot = shelves[shelf]![slot + 1]!;
+          if (r7Routing) {
+            const isZoneGutter = itemHasZone(run.items[leftSlot]!) || itemHasZone(run.items[rightSlot]!);
+            if (isZoneGutter) return zoneAlongBase;
+            return Math.max(
+              gapAfterOf(leftSlot) ?? cardAlongBase,
+              plan?.widen.get(`${run.key}|along|${String(slot)}`) ?? 0,
+              plan?.widen.get(`${run.key}|along|${String(slot)}|${String(shelf)}`) ?? 0,
+            );
+          }
+          return Math.max(
+            gapAfterOf(leftSlot) ?? alongBase,
             plan?.widen.get(`${run.key}|along|${String(slot)}`) ?? 0,
             plan?.widen.get(`${run.key}|along|${String(slot)}|${String(shelf)}`) ?? 0,
-          ),
+          );
+        },
         (shelf) => {
           const last = shelves[shelf]![shelves[shelf]!.length - 1]!;
+          if (r7Routing) {
+            const nextShelf = shelves[shelf + 1]!;
+            const isZoneGutter = shelfHasZone(run, shelves[shelf]!) || shelfHasZone(run, nextShelf);
+            if (isZoneGutter) return zoneAcrossBase;
+            return Math.max(gapAfterOf(last) ?? cardAcrossBase, plan?.widen.get(`${run.key}|across|${String(shelf)}`) ?? 0);
+          }
           return Math.max(gapAfterOf(last) ?? acrossBase, plan?.widen.get(`${run.key}|across|${String(shelf)}`) ?? 0);
         },
       );
@@ -2596,7 +2623,12 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       if (boxes === undefined || boxes.length < 2) continue;
       const rows = packed.rows;
       const zone = runHasZone(packed.run);
-      const axisAuthored = (horizontal: boolean) => (horizontal ? (zone ? hints?.zoneGapX : hints?.cardGapX) : (zone ? hints?.zoneGapY : hints?.cardGapY)) !== undefined;
+      const axisAuthored = (horizontal: boolean, isZone: boolean) =>
+        (horizontal ? (isZone ? hints?.zoneGapX : hints?.cardGapX) : (isZone ? hints?.zoneGapY : hints?.cardGapY)) !== undefined;
+      const cardAlongBase = rows ? rowGaps.cardX : rowGaps.cardY;
+      const cardAcrossBase = rows ? rowGaps.cardY : rowGaps.cardX;
+      const zoneAlongBase = rows ? rowGaps.zoneX : rowGaps.zoneY;
+      const zoneAcrossBase = rows ? rowGaps.zoneY : rowGaps.zoneX;
       const gapAfter = (slot: number) => { const item=packed.run.items[slot]!; return "run" in item ? item.gapAfter : undefined; };
       const alongOf = (rect: Rect): [number, number] => (rows ? [rect.x, rect.x + rect.width] : [rect.y, rect.y + rect.height]);
       const acrossOf = (rect: Rect): [number, number] => (rows ? [rect.y, rect.y + rect.height] : [rect.x, rect.x + rect.width]);
@@ -2608,29 +2640,34 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         Math.min(...boxes.map((rect) => alongOf(rect)[0])),
         Math.max(...boxes.map((rect) => alongOf(rect)[1])),
       ];
-      const alongStrips = new Map<number, { readonly shelf: number; readonly slot: number; readonly strip: Rect }[]>();
+      const alongStrips = new Map<number, { readonly shelf: number; readonly slot: number; readonly strip: Rect; readonly zone: boolean }[]>();
       packed.shelves.forEach((shelf, shelfIndex) => {
         const start = acrossOf(boxes[shelf[0]!]!)[0];
         const end = Math.max(...shelf.map((slot) => acrossOf(boxes[slot]!)[1]));
         const next = packed.shelves[shelfIndex + 1];
         if (next !== undefined) {
           const nextStart = acrossOf(boxes[next[0]!]!)[0];
+          const acrossZone = r7Routing ? shelfHasZone(packed.run, shelf) || shelfHasZone(packed.run, next) : zone;
+          const base = r7Routing
+            ? (acrossZone ? zoneAcrossBase : (gapAfter(shelf.at(-1)!) ?? cardAcrossBase))
+            : (gapAfter(shelf.at(-1)!) ?? packed.acrossBase);
           gutters.push({
             id: `${key}|across|${String(shelfIndex)}`,
             horizontal: rows,
             strips: [stripOf(extent, [end, nextStart])],
             gap: nextStart - end,
-            base: gapAfter(shelf.at(-1)!) ?? packed.acrossBase,
-            authoredBase: gapAfter(shelf.at(-1)!) !== undefined || axisAuthored(!rows),
+            base,
+            authoredBase: r7Routing && acrossZone ? false : gapAfter(shelf.at(-1)!) !== undefined || axisAuthored(!rows, acrossZone),
             max: rows ? rowGaps.maxY : rowGaps.maxX,
-            zone,
+            zone: acrossZone,
           });
         }
         shelf.forEach((slot, index) => {
           const following = shelf[index + 1];
           if (following === undefined) return;
           const strip = stripOf([alongOf(boxes[slot]!)[1], alongOf(boxes[following]!)[0]], [start, end]);
-          (alongStrips.get(index) ?? alongStrips.set(index, []).get(index)!).push({ shelf: shelfIndex, slot, strip });
+          const pairZone = r7Routing ? itemHasZone(packed.run.items[slot]!) || itemHasZone(packed.run.items[following]!) : zone;
+          (alongStrips.get(index) ?? alongStrips.set(index, []).get(index)!).push({ shelf: shelfIndex, slot, strip, zone: pairZone });
         });
       });
       for (const [index, strips] of [...alongStrips].sort(([left], [right]) => left - right)) {
@@ -2638,24 +2675,41 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         const startOf = (strip: Rect): number => (rows ? strip.x : strip.y);
         // Boxes of equal size line up: the gutters after slot `index` are one
         // lane of the level and widen together, so the grid keeps its column
-        // starts. Where they do not line up there is no lane to keep, and
-        // each shelf widens its own gutter.
-        const lane = strips.every(({ strip }) => Math.abs(startOf(strip) - startOf(strips[0]!.strip)) <= LANE_TOLERANCE);
+        // starts. Where they do not line up — or where one shelf borders a zone
+        // while another separates leaf cards on r7 — each shelf keeps its own gutter.
+        const lane = strips.every(({ strip, zone: stripZone }) =>
+          Math.abs(startOf(strip) - startOf(strips[0]!.strip)) <= LANE_TOLERANCE &&
+          stripZone === strips[0]!.zone,
+        );
         const max = rows ? rowGaps.maxX : rowGaps.maxY;
+        const baseFor = (slot: number, stripZone: boolean): number =>
+          r7Routing
+            ? (stripZone ? zoneAlongBase : (gapAfter(slot) ?? cardAlongBase))
+            : (gapAfter(slot) ?? packed.alongBase);
         if (lane) {
+          const laneZone = strips[0]!.zone;
           gutters.push({
             id: `${key}|along|${String(index)}`,
             horizontal: !rows,
             strips: strips.map(({ strip }) => strip),
             gap: Math.max(...strips.map(({ strip }) => thickness(strip))),
-            base: Math.max(...strips.map(({slot}) => gapAfter(slot) ?? packed.alongBase)),
-            authoredBase: strips.some(({slot}) => gapAfter(slot) !== undefined) || axisAuthored(rows),
+            base: Math.max(...strips.map(({ slot, zone: stripZone }) => baseFor(slot, stripZone))),
+            authoredBase: r7Routing && laneZone ? false : strips.some(({ slot }) => gapAfter(slot) !== undefined) || axisAuthored(rows, laneZone),
             max,
-            zone,
+            zone: laneZone,
           });
         } else {
-          for (const { shelf, slot, strip } of strips) {
-            gutters.push({ id: `${key}|along|${String(index)}|${String(shelf)}`, horizontal: !rows, strips: [strip], gap: thickness(strip), base: gapAfter(slot) ?? packed.alongBase, authoredBase: gapAfter(slot) !== undefined || axisAuthored(rows), max, zone });
+          for (const { shelf, slot, strip, zone: stripZone } of strips) {
+            gutters.push({
+              id: `${key}|along|${String(index)}|${String(shelf)}`,
+              horizontal: !rows,
+              strips: [strip],
+              gap: thickness(strip),
+              base: baseFor(slot, stripZone),
+              authoredBase: r7Routing && stripZone ? false : gapAfter(slot) !== undefined || axisAuthored(rows, stripZone),
+              max,
+              zone: stripZone,
+            });
           }
         }
       }
