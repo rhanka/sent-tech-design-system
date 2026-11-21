@@ -149,11 +149,6 @@ export function clampZoom(zoom: number, fit: Pick<CameraFit, "minZoom" | "maxZoo
   return Math.min(fit.maxZoom, Math.max(fit.minZoom, zoom));
 }
 
-/** Preserve the layout's paint clearance when an opt-in overview goes below the floor. */
-export function overviewStrokeScale(fitToWindow: boolean | undefined, zoom: number): number {
-  return fitToWindow ? Math.min(1, zoom / DEFAULT_MIN_READABLE_SCALE) : 1;
-}
-
 /** §5.3: rendered edge-label font size at a zoom, CSS px. */
 export function edgeLabelCssPx(zoom: number, fontSize: number = DEFAULT_EDGE_LABEL_FONT_SIZE): number {
   return fontSize * zoom;

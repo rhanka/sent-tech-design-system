@@ -1,5 +1,5 @@
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
-import { clampZoom, FIT_ASPECT, isR7ConnectorPresentation, overviewStrokeScale, zoomReadout, type Rect } from '@sentropic/diagram-canvas';
+import { clampZoom, FIT_ASPECT, isR7ConnectorPresentation, zoomReadout, type Rect } from '@sentropic/diagram-canvas';
 import { sceneCardMeasure, cardLineMeasurer, defaultCardMeasure, type CardLineMeasure } from './diagramCardModel.js';
 import { DEFAULT_EDGE_LABEL_SIZE, DEFAULT_SCENE_TARGET_WIDTH, parseCssLengthPx, parseScale, resolveEdgeLabelSizeToken, resolveZoom, scaleEdgeLabelMeasurer, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneModel } from './diagramSceneModel.js';
 import { measureRenderedBounds, shouldRefitRenderedBounds } from './diagramRenderedBounds.js';
@@ -117,8 +117,7 @@ export function useDiagramSceneViewport(
             requestedZoom.value = undefined;
     }
     const measured = computed(() => viewWidth.value !== undefined && windowHeight.value !== undefined);
-    const fit = computed(() => sceneFit({
-        ...(cameraBounds.value === undefined ? {} : { bounds: cameraBounds.value }),
+    const fitInput = computed(() => ({
         viewWidth: viewWidth.value ?? props.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
         windowHeight: windowHeight.value ?? Number.POSITIVE_INFINITY,
         scrollbarHeight: scrollbarHeight.value,
@@ -126,8 +125,8 @@ export function useDiagramSceneViewport(
         ...(minReadableScale.value === undefined ? {} : { minReadableScale: minReadableScale.value }),
         ...(props.fitToWindow ? { fitToWindow: true } : {}),
     }));
+    const fit = computed(() => sceneFit({ ...fitInput.value, ...(cameraBounds.value === undefined ? {} : { bounds: cameraBounds.value }) }));
     const zoom = computed(() => resolveZoom(requestedZoom.value, fit.value));
-    const strokeScale = computed(() => overviewStrokeScale(props.fitToWindow, zoom.value));
     const readout = computed(() => zoomReadout(zoom.value, fit.value.maxZoom));
     const placement = computed(() => scenePlacement(cameraBounds.value, zoom.value, fit.value));
     const camera = computed<DiagramSceneCamera>(() => ({
@@ -246,8 +245,14 @@ export function useDiagramSceneViewport(
         (props.metrics?.linkRelatedStrokeWidth !== undefined ? `;--st-diagram-link-related-stroke-width:${props.metrics.linkRelatedStrokeWidth}px` : "") +
         (props.metrics?.linkEmphasisStrokeWidth !== undefined ? `;--st-diagram-link-emphasis-stroke-width:${props.metrics.linkEmphasisStrokeWidth}px` : ''),
     );
-    const viewportStyle = computed(() => `height:${fit.value.fitHeight + scrollbarHeight.value}px;${props.fitToWindow ? 'max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;' : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px${metricPaintVars.value}${strokeScale.value < 1 ? `;--st-diagram-overview-stroke-scale:${strokeScale.value}` : ""}`);
+    const overviewLabelPaintVars = computed(() => {
+        const size = scene.value?.overviewEdgeLabelSize;
+        if (size === undefined) return "";
+        const lineHeight = edgeLabelLineHeight.value * size / (effectiveMetrics.value.edgeLabelSize ?? DEFAULT_EDGE_LABEL_SIZE);
+        return `;--st-diagram-overview-edge-label-size:${size}px;--st-diagram-overview-edge-label-line-height:${lineHeight}px`;
+    });
+    const viewportStyle = computed(() => `height:${fit.value.fitHeight + scrollbarHeight.value}px;${props.fitToWindow ? 'max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;' : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px${metricPaintVars.value}${overviewLabelPaintVars.value}`);
     return { frameEl, viewportEl, measure, measureLines, effectiveMetrics, r7Mode, token,
-        fit, zoom, readout, placement, viewportStyle, strokeScale, refitOnFold,
+        fit, zoom, readout, placement, viewportStyle, fitInput, refitOnFold,
         setZoom, zoomIn, zoomOut, fitToFrame, getCamera };
 }

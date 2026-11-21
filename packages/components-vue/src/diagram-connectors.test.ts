@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent } from "@testing-library/dom";
 import { mount } from "@vue/test-utils";
 import { nextTick as tick } from "vue";
+import { occurrenceRef, relationRef } from "@sentropic/diagram-core";
 import { DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } from "../../diagram-canvas/tests/scene-host-fixtures.js";
 import { expectConnectorPaint, scenePaintOrder } from "../../diagram-canvas/tests/host-support/connectorHostContract.js";
 import { flowFixture, flowMeasure } from "../../diagram-canvas/test-support/flowFixture.js";
@@ -335,6 +336,42 @@ for (const host of ["base", "numbered-flow"] as const) {
 }
 
 describe("DiagramSceneFigure numbered flow connectors — Vue", () => {
+  it("honors the dashed link theme override on a mixed scene's shaft and legend when flows selects the numbered host", async () => {
+    const source = flowFixture(3);
+    const fixture = nestedZoneFixture({ outside: true });
+    const dashed = fixture.relations[0]!;
+    const seed = fixture.view.relationOccurrences[dashed.occurrence]!;
+    const flow = relationRef("step");
+    const flowOccurrence = occurrenceRef("step");
+    const view = render({
+      ...propsOf(fixture),
+      document: {
+        ...fixture.document,
+        typeDefinitions: source.document.typeDefinitions,
+        relations: { ...fixture.document.relations, [flow]: {
+          ...source.document.relations["relation:z"]!, id: flow, endpoints: fixture.document.relations[seed.relation]!.endpoints,
+        } },
+      },
+      view: { ...fixture.view, relationOccurrences: { ...fixture.view.relationOccurrences, [flowOccurrence]: {
+        ...seed, id: flowOccurrence, relation: flow,
+      } } },
+      flows: source.options.flows,
+      presentation: {
+        ...fixture.presentation,
+        contractPin: DIAGRAM_PRESENTATION_V2_CONTRACT_PIN,
+        relations: { [dashed.occurrence]: { strokeStyle: "dashed" } },
+      },
+    } as DiagramSceneFigureProps);
+    view.container.style.setProperty("--st-component-diagramScene-linkDashDashed", "13 4");
+    await tick();
+    expect(view.container.querySelector("[data-flow-badge]")).not.toBeNull();
+    const shaft = view.container.querySelector<SVGPathElement>(`path[data-scene-edge="${dashed.occurrence}"]`)!;
+    const swatch = view.container.querySelector<SVGPathElement>('path[data-legend-swatch="dashed:arrow:default"]')!;
+    for (const path of [shaft, swatch]) {
+      expect.soft(path.style.strokeDasharray).toBe("var(--st-component-diagramScene-linkDashDashed, 8 6)");
+    }
+  });
+
   it("should paint numbered flow connectors above the expanded zone that holds their source", async () => {
     const source = flowFixture(3, { labels: true, folded: true, reverse: true });
     const view = render({ document: source.document, registry: source.options.registry, bindings: source.options.bindings,

@@ -45,7 +45,7 @@ const markerIds = connectorMarkerIds(arrowId);
 const maskId = 'diagram-connector-mask-' + hostId;
 const ownedCache = createLayoutCache();
 const { frameEl, viewportEl, measure, measureLines, effectiveMetrics, r7Mode, token,
-    fit, zoom, readout, placement, viewportStyle, strokeScale, refitOnFold,
+    fit, zoom, readout, placement, viewportStyle, fitInput, refitOnFold,
     setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
         props, () => scene.value, camera => emit('cameraChange', camera), undefined,
         { animating: () => animating.value, settle: () => settle() },
@@ -132,7 +132,7 @@ const scene = computed(() => layoutResult.value.status === 'laid-out'
         ...(props.legendLabels === undefined ? {} : { legendLabels: props.legendLabels }),
         resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
         metrics: effectiveMetrics.value,
-    }) : undefined);
+    }, props.fitToWindow ? fitInput.value : undefined) : undefined);
 const sceneRects = computed<ReadonlyMap<string, Rect>>(() => scene.value === undefined ? new Map() : rectsOf(scene.value));
 onMounted(() => {
     watch(layoutResult, result => emit('layout', result), { immediate: true });
@@ -377,7 +377,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
                 <ul class="st-diagramSceneFigure-legendList">
                   <li v-for="{ entry, swatch } in legendEntries" :key="entry.key" class="st-diagramSceneFigure-legendItem" :data-legend-style="entry.key" :data-edge-stroke="entry.strokeStyle" :data-edge-arrowhead="entry.arrowhead" :data-edge-emphasis="entry.emphasis">
                     <svg class="st-diagramSceneFigure-legendSwatch" :viewBox="swatch.viewBox" aria-hidden="true">
-                      <path :data-legend-swatch="entry.key" :d="swatch.linePath" fill="none" :stroke="swatch.stroke" :stroke-width="swatch.strokeWidth * strokeScale" :stroke-dasharray="swatch.dashArray" :style="connectorDashPaint(entry.strokeStyle)" vector-effect="non-scaling-stroke" />
+                      <path :data-legend-swatch="entry.key" :d="swatch.linePath" fill="none" :stroke="swatch.stroke" :stroke-width="swatch.strokeWidth" :stroke-dasharray="swatch.dashArray" :style="connectorDashPaint(entry.strokeStyle)" vector-effect="non-scaling-stroke" />
                       <path v-if="swatch.arrowPath !== undefined" :d="swatch.arrowPath" :fill="swatch.arrowFill" :stroke="swatch.arrowStroke" :stroke-width="swatch.arrowStrokeWidth" />
                     </svg>
                     <span class="st-diagramSceneFigure-legendLabel">{{ entry.label }}</span>
@@ -496,14 +496,14 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     vector-effect: non-scaling-stroke;
   }
   .st-diagramSceneFigure-edge[data-connector-mode="r7"] {
-    stroke-width: calc(var(--st-diagram-link-stroke-width, var(--st-component-diagramScene-linkStrokeWidth, 2.5px)) * var(--st-diagram-overview-stroke-scale, 1));
+    stroke-width: var(--st-diagram-link-stroke-width, var(--st-component-diagramScene-linkStrokeWidth, 2.5px));
   }
   .st-diagramSceneFigure-edge[data-connector-mode="r7"][data-edge-arrowhead="none"] {
-    stroke-width: calc(var(--st-diagram-link-related-stroke-width, var(--st-component-diagramScene-linkRelatedStrokeWidth, 3px)) * var(--st-diagram-overview-stroke-scale, 1));
+    stroke-width: var(--st-diagram-link-related-stroke-width, var(--st-component-diagramScene-linkRelatedStrokeWidth, 3px));
   }
   .st-diagramSceneFigure-edge[data-connector-mode="r7"][data-edge-emphasis="emphasis"] {
     stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
-    stroke-width: calc(var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px)) * var(--st-diagram-overview-stroke-scale, 1));
+    stroke-width: var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px));
   }
   .st-diagramSceneFigure-edgeLabel {
     box-sizing: border-box;
@@ -522,9 +522,11 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     white-space: nowrap;
   }
   .st-diagramSceneFigure-edgeLabel[data-connector-mode="r7"] {
-    font-size: var(--st-diagram-edge-label-size, var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px)));
+    font-size: var(--st-diagram-overview-edge-label-size, var(--st-diagram-edge-label-size, var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px))));
+    --st-diagram-edge-label-line-height: var(--st-diagram-overview-edge-label-line-height, var(--st-diagram-label-line-height, 22px));
+    line-height: var(--st-diagram-edge-label-line-height);
   }
-  .st-diagramSceneFigure-edgeLabel > span { display: block; flex: none; height: var(--st-diagram-label-line-height, 22px); }
+  .st-diagramSceneFigure-edgeLabel > span { display: block; flex: none; height: var(--st-diagram-edge-label-line-height, var(--st-diagram-label-line-height, 22px)); }
   .st-diagramSceneFigure-bundleHeader { display: block; padding: var(--st-component-diagramScene-labelPadding, 4px); font-weight: 400; }
   .st-diagramSceneFigure-bundleRelation { display: flex; align-self: stretch; gap: var(--st-component-diagramScene-bundleMarkerGap, 6px); padding: var(--st-component-diagramScene-labelPadding, 4px); box-shadow: inset 0 var(--st-component-diagramScene-labelBorderWidth, 1px) 0 var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle)); }
   .st-diagramSceneFigure-bundleRelation div { display: flex; flex-direction: column; }

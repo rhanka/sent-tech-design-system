@@ -2925,6 +2925,8 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       options,
       foldMetadata,
       drawnEdges,
+      r7Routing && sourceView !== undefined && sourceView.presentation.diagram?.contractPin === undefined
+        && isPresentationContractV2Pin(presentation.contractPin),
     );
     const bounds = unionOf(rects, retryRoutes, new Map([...labelBoxes, ...Object.entries(marks.badges).map(([id,box]) => [id as RelationRef,box] as const), ...Object.entries(marks.arrows).flatMap(([id,arrows]) => arrows.map((arrow,i) => [(id + String(i)) as RelationRef,arrow.box] as const))]));
     const width = bounds.width;
@@ -3112,6 +3114,7 @@ function buildMeasuredView(
   options: LayoutOptions,
   foldMetadata: MeasuredFoldMetadata,
   drawnEdges: readonly DrawnEdge[],
+  persistUnpinnedDashes: boolean,
 ): ViewDocument {
   const projected = foldMetadata.projected;
   const maxContainerDepth = Math.max(
@@ -3147,7 +3150,8 @@ function buildMeasuredView(
     const style = relationPresentationFor(options.presentation?.relations, occurrence.id, occurrence.relation);
     // A declared DE-2 stroke has an explicit default arrowhead when saved.
     // Bare dashed occurrences already existed on pinned full-size views.
-    const arrowhead = style?.arrowhead ?? (style?.strokeStyle === undefined ? undefined : "arrow");
+    const authoredStroke = style?.strokeStyle !== undefined || (persistUnpinnedDashes && occurrence.strokeStyle === "dashed");
+    const arrowhead = style?.arrowhead ?? (authoredStroke ? "arrow" : undefined);
     const styledOccurrence: RelationOccurrence = {
       ...occurrence,
       ...(occurrence.strokeStyle === undefined && style?.strokeStyle !== undefined ? { strokeStyle: style.strokeStyle } : {}),
