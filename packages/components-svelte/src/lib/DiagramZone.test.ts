@@ -1,8 +1,13 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { renderZoneSvg as ownerZoneSvg } from "./diagram-render/renderZoneSvg.js";
 import { render } from "@testing-library/svelte";
-import { createRawSnippet } from "svelte";
+import { createRawSnippet, mount as mountSvelte, unmount as unmountSvelte } from "svelte";
 import { describe, expect, it, vi } from "vitest";
+import DiagramCard from "./DiagramCard.svelte";
 import DiagramZone from "./DiagramZone.svelte";
+import DiagramZoneHeader from "./DiagramZoneHeader.svelte";
+import DiagramCardHeader from "./DiagramCardHeader.svelte";
 import { getDiagramGlyph } from "./diagram-icons/registry.js";
 import {
   COLLAPSED_SUBTITLE_MEASURE,
@@ -401,6 +406,33 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
     ).toBe(true);
   });
 
+  it("keeps v1, fallback-v1, and unaligned v2 zones left-aligned as in 0.41.5; centres v2 only with explicit align:center", () => {
+    for (const variant of [
+      baseProps({ collapsed: false, width: 492 }),
+      baseProps({ collapsed: false, width: 492, anatomy: "v1" }),
+      baseProps({ collapsed: false, width: 492, anatomy: "v1", align: "center" }),
+      baseProps({ collapsed: false, width: 492, anatomy: "v2" }),
+    ]) {
+      const { container, unmount } = render(DiagramZone, { props: { ...variant, measure: defaultCardMeasure } });
+      expect(container.querySelector(".st-diagramZone")?.classList.contains("st-diagramZone--center")).toBe(false);
+      unmount();
+    }
+    const v2Centred = render(DiagramZone, {
+      props: { ...baseProps({ collapsed: false, width: 492, anatomy: "v2", align: "center" }), measure: defaultCardMeasure },
+    });
+    expect(v2Centred.container.querySelector(".st-diagramZone")?.classList.contains("st-diagramZone--center")).toBe(true);
+    v2Centred.unmount();
+
+    // Collapsed complete zone under v2 falls back to v1 and never centres even with align:center.
+    const collapsedFallback = render(DiagramZone, {
+      props: { ...baseProps({ collapsed: true, anatomy: "v2", align: "center" }), measure: defaultCardMeasure },
+    });
+    const collapsedCard = collapsedFallback.container.querySelector(".st-diagramCard") as HTMLElement;
+    expect(collapsedCard.classList.contains("st-diagramCard--center")).toBe(false);
+    expect(collapsedCard.classList.contains("st-diagramCard--v2")).toBe(false);
+    collapsedFallback.unmount();
+  });
+
   it("depth alternates the frame and folded-card surface (addendum 1)", () => {
     const expanded = layoutZone(
       baseProps({ collapsed: false, width: 492, depth: 1 }),
@@ -413,9 +445,11 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
     const { container: expandedDom } = render(DiagramZone, {
       props: { ...baseProps({ collapsed: false, width: 492, depth: 1 }), measure: defaultCardMeasure },
     });
-    expect(
-      expandedDom.querySelector(".st-diagramZone")?.getAttribute("style") ?? "",
-    ).toContain("--st-component-diagramZone-surface2");
+    const expandedStyle = expandedDom.querySelector(".st-diagramZone")?.getAttribute("style") ?? "";
+    expect(expandedStyle).toContain("--st-component-diagramZone-surface2");
+    expect(expandedStyle).toContain("background:");
+    // W1-45: depth surface is painted via non-inherited `background`, never mutating `--st-component-diagramZone-surface` for nested children.
+    expect(expandedStyle).not.toContain("--st-component-diagramZone-surface:");
     const { container: foldedDom } = render(DiagramZone, {
       props: { ...baseProps({ depth: 1 }), measure: defaultCardMeasure },
     });
@@ -451,7 +485,251 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
       expect(toggle.style.top).toBe(toggle.style.right);
       expect(content.style.left).toBe(`calc(${containerPadding}px - var(--st-component-diagramZone-borderWidth, 1.5px))`);
       expect(content.style.right).toBe(`calc(${containerPadding}px - var(--st-component-diagramZone-borderWidth, 1.5px))`);
+      // v2 header CSS vars stay strictly on .st-diagramZone-header and never on .st-diagramZone (no leak into children).
+      const frame = container.querySelector<HTMLElement>(".st-diagramZone")!;
+      expect(frame.getAttribute("style") ?? "").not.toContain("--st-component-diagramZone-headerInset");
+      expect(frame.getAttribute("style") ?? "").not.toContain("--st-component-diagramCard-iconSize");
+      expect(frame.getAttribute("style") ?? "").not.toContain("--st-component-diagramCard-iconTextGap");
+      expect(header.getAttribute("style") ?? "").toContain("--st-component-diagramZone-headerInset");
     }
+  });
+
+  it("pins v1 card and zone fold toggle placement and size to 0.41.5 and isolates v1 from v2 headerInset overrides", () => {
+    // v1 expanded zone preserves 0.41.5 header right inset (containerPadding ?? 16) and toggle offsets.
+    for (const anatomy of [undefined, "v1"] as const) {
+      const { container, unmount } = render(DiagramZone, {
+        props: {
+          ...baseProps({ collapsed: false, width: 492, height: 400, x: 0, y: 0, containerPadding: 24, ...(anatomy === undefined ? {} : { anatomy }) }),
+          measure: defaultCardMeasure,
+        },
+      });
+      const frame = container.querySelector<HTMLElement>(".st-diagramZone")!;
+      const header = container.querySelector<HTMLElement>(".st-diagramZone-header")!;
+      const toggle = container.querySelector<HTMLElement>(".st-diagramCard-toggle")!;
+      const button = toggle.querySelector<HTMLButtonElement>("button")!;
+      expect(frame.getAttribute("style") ?? "").not.toContain("--st-component-diagramZone-headerInset");
+      expect(header.getAttribute("style") ?? "").not.toContain("--st-component-diagramZone-headerInset");
+      expect(header.style.top).toBe("calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+      expect(header.style.left).toBe("calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+      expect(header.style.right).toBe("calc(24px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+      expect(toggle.style.top).toBe(
+        "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))",
+      );
+      expect(toggle.style.right).toBe(toggle.style.top);
+      expect(button.classList.contains("st-iconButton--sm")).toBe(true);
+      unmount();
+    }
+
+    // Collapsed fallback-v1 zone keeps exact 0.41.5 card toggle placement and no compact CSS vars.
+    const fallback = render(DiagramZone, {
+      props: { ...baseProps({ collapsed: true, anatomy: "v2" }), measure: defaultCardMeasure },
+    });
+    const card = fallback.container.querySelector<HTMLElement>(".st-diagramCard")!;
+    const cardToggle = card.querySelector<HTMLElement>(".st-diagramCard-toggle")!;
+    const cardBtn = cardToggle.querySelector<HTMLButtonElement>("button")!;
+    expect(card.getAttribute("style") ?? "").not.toContain("--st-component-diagramCard-padding");
+    expect(card.getAttribute("style") ?? "").not.toContain("--st-component-diagramCard-iconSize");
+    expect(cardToggle.style.top).toBe(
+      "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))",
+    );
+    expect(cardToggle.style.right).toBe(cardToggle.style.top);
+    expect(cardBtn.classList.contains("st-iconButton--sm")).toBe(true);
+    fallback.unmount();
+  });
+
+  it("keeps v1/surface1 +/- toggle hover byte-identical to 0.41.5 and applies W1-12 secondaryHoverBackground only on surface2 zones", () => {
+    const headerSource = readFileSync(
+      resolve(import.meta.dirname, "DiagramCardHeader.svelte"),
+      "utf8",
+    );
+    // DiagramCardHeader <style> must carry no blanket :hover override so v1 matches svelte-v0.41.5 byte-for-byte.
+    expect(headerSource).not.toContain("--st-component-button-secondaryHoverBackground");
+    expect(headerSource).not.toMatch(/\.st-diagramCard-toggle[\s\S]*:hover/);
+
+    // Unnested v1 and surface1 (depth 0) zones (expanded & collapsed) emit zero hover overrides.
+    for (const variant of [
+      baseProps({ collapsed: false, width: 492 }),
+      baseProps({ collapsed: false, width: 492, depth: 0 }),
+      baseProps({ collapsed: true }),
+      baseProps({ collapsed: true, depth: 0 }),
+    ]) {
+      const { container, unmount } = render(DiagramZone, {
+        props: { ...variant, measure: defaultCardMeasure },
+      });
+      const target = (container.querySelector(".st-diagramZone-header") ?? container.querySelector(".st-diagramCard")) as HTMLElement;
+      const style = target.getAttribute("style") ?? "";
+      expect(style).not.toContain("--st-component-control-hoverBackground");
+      expect(style).not.toContain("--st-component-iconButton-hoverBackground");
+      unmount();
+    }
+
+    // Surface2 zones (depth 1, or depth 0 with depthParityStart 1) override toggle hover on header (expanded) and card (collapsed).
+    for (const depthProps of [{ depth: 1 }, { depth: 0, depthParityStart: 1 as const }]) {
+      const expanded = render(DiagramZone, {
+        props: { ...baseProps({ collapsed: false, width: 492, ...depthProps }), measure: defaultCardMeasure },
+      });
+      const frameStyle = expanded.container.querySelector(".st-diagramZone")?.getAttribute("style") ?? "";
+      const headerStyle = expanded.container.querySelector(".st-diagramZone-header")?.getAttribute("style") ?? "";
+      expect(frameStyle).not.toContain("--st-component-control-hoverBackground");
+      expect(frameStyle).not.toContain("--st-component-iconButton-hoverBackground");
+      expect(headerStyle).toMatch(/--st-component-control-hoverBackground:\s*var\(--st-component-button-secondaryHoverBackground/);
+      expect(headerStyle).toMatch(/--st-component-iconButton-hoverBackground:\s*var\(--st-component-button-secondaryHoverBackground/);
+      expanded.unmount();
+
+      const collapsed = render(DiagramZone, {
+        props: { ...baseProps({ collapsed: true, ...depthProps }), measure: defaultCardMeasure },
+      });
+      const cardStyle = collapsed.container.querySelector(".st-diagramCard")?.getAttribute("style") ?? "";
+      expect(cardStyle).toMatch(/--st-component-control-hoverBackground:\s*var\(--st-component-button-secondaryHoverBackground/);
+      expect(cardStyle).toMatch(/--st-component-iconButton-hoverBackground:\s*var\(--st-component-button-secondaryHoverBackground/);
+      collapsed.unmount();
+    }
+
+    for (const theme of ["sent-tech", "forge", "entropic"] as const) {
+      const css = readFileSync(
+        resolve(import.meta.dirname, `../../../themes/css/${theme}.css`),
+        "utf8",
+      );
+      const tokenMatches = (name: string) =>
+        [...css.matchAll(new RegExp(`${name}:\\s*([^;]+);`, "g"))].map((m) => m[1]!.trim());
+      const s1 = tokenMatches("--st-component-diagramZone-surface1");
+      const s2 = tokenMatches("--st-component-diagramZone-surface2");
+      const v1Hover = tokenMatches("--st-component-control-hoverBackground");
+      const s2Hover = tokenMatches("--st-component-button-secondaryHoverBackground");
+      expect(s1.length, theme).toBe(3);
+      expect(s2.length, theme).toBe(3);
+      expect(v1Hover.length, theme).toBe(3);
+      expect(s2Hover.length, theme).toBe(3);
+      for (let mode = 0; mode < 3; mode += 1) {
+        expect(v1Hover[mode], `${theme} mode ${mode} v1 hover vs surface1`).not.toBe(s1[mode]);
+        expect(v1Hover[mode], `${theme} mode ${mode} v1 hover collision on surface2`).toBe(s2[mode]);
+        expect(s2Hover[mode], `${theme} mode ${mode} surface2 hover vs surface1`).not.toBe(s1[mode]);
+        expect(s2Hover[mode], `${theme} mode ${mode} surface2 hover vs surface2`).not.toBe(s2[mode]);
+      }
+    }
+  });
+
+  it("isolates expanded v2 depth-1 zone surface, v2 header vars, and surface2 toggle hover from mounted nested v1 children (W1-45)", () => {
+    const nestedChildren = createRawSnippet(() => ({
+      render: () => `<div data-nested-children></div>`,
+      setup(host: Element) {
+        const childZone = mountSvelte(DiagramZone, {
+          target: host,
+          props: {
+            ...baseProps({
+              entityId: "child-v1",
+              title: "Child",
+              collapsed: false,
+              containerPadding: 24,
+              width: 492,
+              height: 240,
+            }),
+            measure: defaultCardMeasure,
+          },
+        });
+        const childCard = mountSvelte(DiagramCard, {
+          target: host,
+          props: {
+            entityId: "leaf-v1",
+            title: "Leaf",
+            body: ["Line"],
+            icon: "base",
+            iconGlyph: getDiagramGlyph("base"),
+            measure: defaultCardMeasure,
+          },
+        });
+        return () => {
+          void unmountSvelte(childZone);
+          void unmountSvelte(childCard);
+        };
+      },
+    }));
+
+    const { container, unmount } = render(DiagramZone, {
+      props: {
+        ...baseProps({
+          entityId: "parent-v2-depth1",
+          title: "Parent",
+          collapsed: false,
+          anatomy: "v2",
+          depth: 1,
+          width: 600,
+          height: 500,
+        }),
+        measure: defaultCardMeasure,
+        children: nestedChildren,
+      },
+    });
+    const zones = container.querySelectorAll<HTMLElement>(".st-diagramZone");
+    expect(zones).toHaveLength(2);
+    const parentStyle = zones[0]!.getAttribute("style") ?? "";
+    const parentHeaderStyle = zones[0]!.querySelector<HTMLElement>(".st-diagramZone-header")!.getAttribute("style") ?? "";
+    expect(parentStyle).toContain("background:");
+    expect(parentStyle).toContain("--st-component-diagramZone-surface2");
+    expect(parentStyle).not.toContain("--st-component-diagramZone-surface:");
+    expect(parentStyle).not.toContain("--st-component-diagramZone-headerInset");
+    expect(parentStyle).not.toContain("--st-component-diagramCard-iconSize");
+    expect(parentStyle).not.toContain("--st-component-diagramCard-iconTextGap");
+    expect(parentStyle).not.toContain("--st-component-control-hoverBackground");
+    expect(parentStyle).not.toContain("--st-component-iconButton-hoverBackground");
+    expect(parentHeaderStyle).toContain("--st-component-diagramZone-headerInset");
+    expect(parentHeaderStyle).toMatch(/--st-component-control-hoverBackground:\s*var\(--st-component-button-secondaryHoverBackground/);
+
+    const childStyle = zones[1]!.getAttribute("style") ?? "";
+    const childHeader = zones[1]!.querySelector<HTMLElement>(".st-diagramZone-header")!;
+    const childHeaderStyle = childHeader.getAttribute("style") ?? "";
+    expect(childStyle).not.toContain("surface2");
+    expect(childHeader.style.right).toBe("calc(24px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+    expect(childHeaderStyle).not.toContain("--st-component-diagramZone-headerInset");
+    expect(childHeaderStyle).not.toContain("--st-component-control-hoverBackground");
+    expect(childHeaderStyle).not.toContain("--st-component-iconButton-hoverBackground");
+
+    const leafCard = container.querySelector<HTMLElement>(".st-diagramCard")!;
+    expect(leafCard.getAttribute("style") ?? "").not.toContain("--st-component-control-hoverBackground");
+    expect(leafCard.querySelector<SVGSVGElement>(".st-diagramCardHeader-icon")?.getAttribute("width")).toBe("70");
+    unmount();
+  });
+
+  it("omits data-zone-overflow on non-truncated fallback-v1 zones and computes toggle offset from headerInset/toggleTopOffset without CSS var cascade (W1-19, W1-40, W1-46)", () => {
+    const fbZone = render(DiagramZone, {
+      props: { ...baseProps({ collapsed: true, anatomy: "v2" }), measure: defaultCardMeasure },
+    });
+    expect(fbZone.container.querySelector(".st-diagramZone-pos")?.getAttribute("data-zone-overflow")).toBeNull();
+    expect(fbZone.container.querySelector(".st-diagramCard")?.getAttribute("data-card-overflow")).toBeNull();
+    fbZone.unmount();
+
+    const zh = render(DiagramZoneHeader, {
+      props: {
+        kicker: [],
+        title: [{ text: "Zone", x: 0, baseline: 30, size: 32, weight: 700, secondary: false, anchor: "start" }],
+        subtitle: [],
+        headerInset: 12,
+        headerTextWidth: 300,
+        headerBlockHeight: 52,
+        subtitleWidth: 300,
+        toggle: { collapsed: false, label: "Collapse" },
+        toggleTopInset: 8,
+      },
+    });
+    const zhToggle = zh.container.querySelector<HTMLElement>(".st-diagramCard-toggle")!;
+    expect(zhToggle.style.top).toBe("calc(var(--st-component-diagramZone-toggleInset, 8px) - 12px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+    expect(zhToggle.style.right).toBe(zhToggle.style.top);
+    zh.unmount();
+
+    const ch = render(DiagramCardHeader, {
+      props: {
+        kicker: [],
+        title: [{ text: "Card", x: 0, baseline: 30, size: 32, weight: 700, secondary: false, anchor: "start" }],
+        headerTextWidth: 300,
+        headerBlockHeight: 70,
+        toggle: { collapsed: false, label: "Collapse" },
+        toggleTopOffset: -6,
+      },
+    });
+    const chToggle = ch.container.querySelector<HTMLElement>(".st-diagramCard-toggle")!;
+    expect(chToggle.style.top).toBe("calc(-6px - var(--st-component-diagramZone-borderWidth, 1.5px))");
+    expect(chToggle.style.right).toBe(chToggle.style.top);
+    ch.unmount();
   });
 });
 

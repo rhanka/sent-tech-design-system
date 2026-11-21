@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { anatomyCardGeometry, lineBoxHeight } from "./diagramCardModel.js";
+  import { anatomyCardGeometry, lineBoxHeight, resolveDiagramAlign } from "./diagramCardModel.js";
   const descriptionId = $props.id();
   import DiagramCardHeader from "./DiagramCardHeader.svelte";
   import { cardFullText, defaultCardMeasure, layoutCard } from "./diagramCardModel.js";
@@ -91,21 +91,31 @@
   );
 
   const effectiveAnatomy = $derived(layout.anatomyFallback ?? anatomy);
-  const effectiveAlign = $derived(align ?? (anatomy === "v2" ? "center" : "left"));
+  const effectiveAlign = $derived(resolveDiagramAlign(effectiveAnatomy, align));
   const cardGeometry = $derived(anatomyCardGeometry(effectiveAnatomy));
 
   /**
    * Owner addendum 1: a folded zone keeps its depth background. Only
    * zone-collapsed cards carry `surface`, so leaf cards never change.
+   * W1-12: when `surface === "surface2"` (where 0.41.5's surface-subtle hover
+   * collides with the zone background), switch the toggle hover token to
+   * secondaryHoverBackground; v1 leaf cards and surface1 zones keep exact
+   * 0.41.5 hover styling.
    */
   const surfaceStyle = $derived(
     surface === undefined
       ? ""
-      : `;--st-component-diagramCard-surface:var(--st-component-diagramZone-${surface}, var(--st-semantic-surface-${surface === "surface1" ? "raised" : "subtle"}))`,
+      : `;--st-component-diagramCard-surface:var(--st-component-diagramZone-${surface}, var(--st-semantic-surface-${surface === "surface1" ? "raised" : "subtle"}))${
+          surface === "surface2"
+            ? ";--st-component-control-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)));--st-component-iconButton-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)))"
+            : ""
+        }`,
   );
 
   const overflowSlot = $derived(
-    layout.diagnostics.find((diagnostic) => diagnostic.code === "card-overflow")?.slot,
+    layout.diagnostics.find(
+      (diagnostic) => diagnostic.code === "card-overflow" && diagnostic.reason !== "fallback-v1",
+    )?.slot,
   );
   const unknownIcon = $derived(
     layout.diagnostics.some((diagnostic) => diagnostic.code === "card-icon-unknown"),
