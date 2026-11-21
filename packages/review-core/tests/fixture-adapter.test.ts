@@ -185,6 +185,59 @@ describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
     expect(await adapter.list(TENANT, TARGET)).toMatchObject([{ authorship: { runId: "run-new" } }]);
   });
 
+  it("does not let a stale pending registration overwrite a newer scoped registration", async () => {
+    const { adapter, registerLiveSession } = makeFixture();
+    const toolCallId = "pending-then-scoped";
+    registerLiveSession(toolCallId, { actor: CLAUDE, runId: "old-pending" });
+    registerLiveSession({ workspaceId: "ws-a" }, toolCallId, { actor: CLAUDE, runId: "new-scoped" });
+
+    const created = await adapter.create({
+      tenant: "ws-a", target: TARGET, body: "Scoped comment", provenance: { toolCallId },
+    });
+    expect(created.authorship.runId).toBe("new-scoped");
+    expect(await adapter.list("ws-a", TARGET)).toMatchObject([{ authorship: { runId: "new-scoped" } }]);
+  });
+
+  it("applies the newest two-argument replacement after a pending registration and a scoped one", async () => {
+    const { adapter, registerLiveSession } = makeFixture();
+    const toolCallId = "pending-scoped-then-two-arg";
+    registerLiveSession(toolCallId, { actor: CLAUDE, runId: "run-old" });
+    registerLiveSession({ workspaceId: "ws-a" }, toolCallId, { actor: CLAUDE, runId: "run-scoped" });
+    registerLiveSession(toolCallId, { actor: CLAUDE, runId: "run-newer" });
+
+    const created = await adapter.create({
+      tenant: "ws-a", target: TARGET, body: "Replaced comment", provenance: { toolCallId },
+    });
+    expect(created.authorship.runId).toBe("run-newer");
+  });
+
+  it("does not bind a pending registration to a third workspace after scoped registrations", async () => {
+    const { adapter, registerLiveSession } = makeFixture();
+    const toolCallId = "pending-before-scopes";
+    registerLiveSession(toolCallId, { actor: CLAUDE, runId: "run-pending" });
+    registerLiveSession({ workspaceId: "ws-a" }, toolCallId, { actor: CLAUDE, runId: "run-a" });
+    registerLiveSession({ workspaceId: "ws-b" }, toolCallId, { actor: CLAUDE, runId: "run-b" });
+
+    const inC = await adapter.create({
+      tenant: "ws-c", target: TARGET, body: "C comment", provenance: { toolCallId },
+    });
+    expect(inC.authorship.runId).toBeUndefined();
+    expect((await adapter.list("ws-c", TARGET))[0]?.authorship.runId).toBeUndefined();
+  });
+
+  it("does not let a stale pending registration overwrite a newer live agent write", async () => {
+    const { adapter, setCaller, registerLiveSession } = makeFixture();
+    const toolCallId = "pending-before-live-write";
+    registerLiveSession(toolCallId, { actor: CLAUDE, runId: "run-stale" });
+    setCaller({ userId: ALICE.actorId, actorKind: "agent", agentActor: CLAUDE, runId: "run-live" });
+
+    const created = await adapter.create({
+      tenant: TENANT, target: TARGET, body: "Agent write", provenance: { toolCallId },
+    });
+    expect(created.authorship.runId).toBe("run-live");
+    expect(await adapter.list(TENANT, TARGET)).toMatchObject([{ authorship: { runId: "run-live" } }]);
+  });
+
   it("rejects replies against a different target and edits by an author without comment rights", async () => {
     const { adapter, setCaller } = makeFixture();
     const root = await adapter.create({ tenant: TENANT, target: TARGET, body: "Original" });
