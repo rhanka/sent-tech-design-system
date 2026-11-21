@@ -2,14 +2,15 @@
 
 JSON-render standard, lots L2/L6: thin Svelte custom-element wrappers over the
 catalogue components of the sentropic design system. One ESM browser bundle
-registers three elements (lot L6 imposes the Focus renderer defaults
+registers four elements (lot L6 imposes the Focus renderer defaults
 F-R0–F-R7 on the dossier engine chunk; see below):
 
 | Element | Catalogue component | Engine chunk (§6.6) |
 | --- | --- | --- |
 | `<st-bar-chart>` | `BarChart` | none — in the core chunk |
-| `<st-bpmn-canvas>` | `BpmnCanvas` | `chunks/bpmn-canvas-*.js` (lazy, first mount) |
+| `<st-bpmn-canvas>` | `BpmnCanvas` | `chunks/bpmn-canvas-*.js` validates F1, then `chunks/bpmn-mount-*.js` loads the view |
 | `<st-decision-dossier>` | `DecisionDossier` | `chunks/focus-renderer-*.js` (lazy, first mount) |
+| `<st-time-series-chart>` | `TimeSeriesChart` | none — in the core chunk |
 
 Each wrapper: shadow DOM `open`, envelope validation through the L1
 validator, the §4.5 error panel on refusal (never a blank element), props
@@ -75,6 +76,37 @@ interface IntentDetail {
 | `onSelectKey(key)` — keyboard activation | `st-intent` `select`, `target = key`; `null` key (no selected bar) dispatches nothing |
 | `onHoverKeyChange(key)` | local state only — no intent (hover is not an §4.6 intent) |
 
+### `st-time-series-chart` (`TimeSeriesChart`)
+
+Select `TimeSeriesChart` when an MCP result reports numeric measurements over
+time. Use `BarChart` for categorical measurements. Pass the data envelope
+to the design-system element, which draws each series with `LineChart`.
+The packaged [rendering skill](skill/SKILL.md) guides MCP tool selection.
+
+Send a chart label and at least one series with a unique `id`, a label and
+its `data` array. Each point carries `x` as whole UTC Unix epoch
+milliseconds and `y` as a finite number. Timestamps must increase strictly
+within each series. A timestamp may recur in different series. Normalize
+source dates with a known timezone to milliseconds before calling the
+renderer. The chart uses one time domain across all series and displays UTC
+ISO timestamps with millisecond precision. The common `referenceLines`,
+`bands` and `goalLine` use value units, with whole UTC epoch milliseconds
+for any reference line on the x axis.
+
+The element exposes the observations in an accessible table with columns for
+time, series label, series ID and value. Rows sort by ascending time, with
+input series order breaking ties. The series ID identifies each series even
+when labels collide.
+For the transcript, validate the envelope against the pinned catalogue, then
+call `formatTimeSeriesMarkdown(envelope.root)` with the validated props.
+It formats the same rows, escapes Markdown delimiters and fails with a
+`RangeError` if the complete table exceeds 4096 UTF-8 bytes.
+
+The package ships three temporal fixtures under `@sentropic/design-system-elements/fixtures/`.
+They cover [one series](fixtures/time-series-single.json),
+[sparse aligned series](fixtures/time-series-multi.json) and
+[thresholds and bands](fixtures/time-series-thresholds.json).
+
 ### `st-decision-dossier` (`DecisionDossier`)
 
 | Interaction | Element behaviour |
@@ -139,19 +171,32 @@ the wrappers define no font of their own (the content inherits the page's).
 ## Build, sizes, integrity
 
 `npm run build` runs the Node build and then the browser bundle, so
-`dist/browser/` and `dist/browser/sri.json` are produced together
-(`npm run build:browser` re-runs the bundle step alone). `sri.json` lists
-every file with raw / gzip / brotli sizes and a sha384 integrity hash
-(`sri.json` never lists itself). The §6.6 core budget — the entry closure
-that renders `<st-bar-chart>` — is 53,920 B gzip of the 153,600 B budget
-(53,919 B at L7a, +1 B rebuild variance; 23 files pinned by `sri.json`).
-The L6 `focus` chunk is 21,174 B gzip (19,073 B at L7a, +2,101 B for the
-stylesheet, fold/layout and selection logic); core + focus raw bytes stay
-far under the §8.3 2 MiB `ui://` resource budget.
+`dist/browser/`, its `sri.json` and `dist/shells/` are produced together.
+`npm run build:browser` re-runs those builds. The browser SRI manifest
+lists every payload file with raw, gzip and brotli sizes and a SHA-384
+integrity hash. The CDN entry closure still has a 153,600-byte gzip budget.
 The bundle is eval-free (§6.4: no `eval`, no `new Function` in any chunk —
 enforced by `scripts/elements-browser-artifacts.test.mjs`), works mounted
 under any subpath (no document-anchored preload hints), and needs no
 per-chunk CSS assets.
+
+The packaged `dist/shells/manifest.json` (exported as `./shells/manifest.json`)
+lists per-component capabilities, complete HTML sizes, and SHA-256
+fingerprints for the shell files, module entries and input schemas. The
+limits are strictly below 960 KiB raw and at most 150 KiB gzip (fflate
+level 6, mtime 0). Consumers can pin the standalone temporal schema for
+FA-H9 and read the qualified module and shell files relative to the
+manifest for CK-H1a. Provide the envelope through the element property
+or insert a child JSON island at
+`<!-- st-envelope -->` in the HTML template. Escape every `<` in the island
+JSON as `\u003c` when embedding it in HTML. Keep the inline module bytes
+for the shell's CSP hash, and measure the final HTML again if the host adds
+data or protocol code.
+
+A `partial` BPMN entry records the measured complete candidate and requests
+the text fallback with a URL supplied by the host when available. The
+chunked browser entry still supports the full canvas. See the
+[EZ-1 build evidence](docs/ez-1-evidence.md) for measurements and fixtures.
 
 ## CDN (§7)
 

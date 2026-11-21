@@ -1,0 +1,52 @@
+{
+  "contract": "1.0",
+  "root": {
+    "component": "TimeSeriesChart",
+    "id": "root",
+    "label": "Latency (ms)",
+    "series": [
+      {
+        "id": "median",
+        "label": "Median",
+        "data": [
+          {
+            "x": 1767225600000,
+            "y": 72
+          },
+          {
+            "x": 1767229200000,
+            "y": 94
+          },
+          {
+            "x": 1767232800000,
+            "y": 83
+          }
+        ]
+      }
+    ],
+    "referenceLines": [
+      {
+        "value": 90,
+        "label": "Warning",
+        "tone": "warning"
+      },
+      {
+        "axis": "x",
+        "value": 1767229200000,
+        "label": "Deployment"
+      }
+    ],
+    "bands": [
+      {
+        "from": 60,
+        "to": 80,
+        "label": "Expected range",
+        "tone": "info"
+      }
+    ],
+    "goalLine": {
+      "value": 85,
+      "label": "Goal"
+    }
+  }
+}

@@ -4,7 +4,7 @@
   "contract": {
     "contractId": "https://design-system.sent-tech.ca/catalogs/elements/v1/components/BarChart.json",
     "contractSource": "published",
-    "schemaDigest": "sha256:ad431b146f865f79afdf8fca6b0a82f94b5e193fe78715930dc6f2f07c8a59e3",
+    "schemaDigest": "sha256:44b1be9a089c52f23ffcf8b2f2b24030488329c144127388a3471e0f84952c44",
     "version": "1.0"
   },
   "dataClass": "public-safe",
@@ -43,7 +43,7 @@
     },
     {
       "channel": "element",
-      "digest": "sha256:ad431b146f865f79afdf8fca6b0a82f94b5e193fe78715930dc6f2f07c8a59e3",
+      "digest": "sha256:44b1be9a089c52f23ffcf8b2f2b24030488329c144127388a3471e0f84952c44",
       "element": "st-bar-chart",
       "package": "@sentropic/design-system-elements",
       "path": "packages/elements/schemas/BarChart.v1.json",
@@ -54,7 +54,7 @@
     "en": "Bar chart (vertical or horizontal) with categorical tones.",
     "fr": "Graphique en barres (vertical ou horizontal) avec tons catégoriels."
   },
-  "digest": "sha256:a6beba33795cdec2c08bb187816d680788f694d5ac9eabb71e339577a720625b",
+  "digest": "sha256:6eb3322b2b562243d86be43e720fb7a67f6c804206eb364a36950c22302451bb",
   "displayName": "BarChart",
   "format": "component-entry/v1",
   "frameworks": [

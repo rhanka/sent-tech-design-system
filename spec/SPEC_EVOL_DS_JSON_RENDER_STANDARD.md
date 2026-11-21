@@ -595,7 +595,7 @@ hoc installation. The carrying session on the cluster-mesh side is `s-conductor`
 The server advertises the `io.modelcontextprotocol/ui` extension (`MCPA:40,53`) and answers `resources/list` and
 `resources/read`. None of the existing h2a servers does today: they declare `capabilities: { tools: {} }` only, and the
 stdio one accepts only `initialize`, `tools/list` and `tools/call` (§3.5). When a client does not negotiate the
-extension, every tool still answers with a text (and, where cheap, SVG image) fallback in `content`.
+extension, every tool still answers with a text fallback in `content`. `BarChart` returns a bounded Markdown table.
 
 ### 8.2 Tools
 

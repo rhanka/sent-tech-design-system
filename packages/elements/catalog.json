@@ -482,6 +482,9 @@
         },
         {
           "$ref": "#/components/DecisionDossier"
+        },
+        {
+          "$ref": "#/components/TimeSeriesChart"
         }
       ]
     },
@@ -977,7 +980,7 @@
             }
           ]
         },
-        "fallback": "svg",
+        "fallback": "text",
         "parity": {
           "angular": {
             "comparedProps": 17,
@@ -1225,6 +1228,247 @@
           "sha256": "725bc07e7c6b6ad51a1f720cc9fb02649d8f31bc54e71c61c350fd20058c8852",
           "source": "focus"
         }
+      }
+    },
+    "TimeSeriesChart": {
+      "allOf": [
+        {
+          "$ref": "https://a2ui.org/specification/v0_9_1/common_types.json#/$defs/ComponentCommon"
+        },
+        {
+          "$ref": "#/$defs/CatalogComponentCommon"
+        },
+        {
+          "properties": {
+            "accessibility": {
+              "additionalProperties": false,
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "bands": {
+              "description": "Bands in value-axis units, applied to each series.",
+              "items": {
+                "additionalProperties": false,
+                "description": "A shaded band between two value-axis positions.",
+                "properties": {
+                  "from": {
+                    "description": "Band start in value-axis units.",
+                    "type": "number"
+                  },
+                  "label": {
+                    "description": "Human-readable band label.",
+                    "type": "string"
+                  },
+                  "to": {
+                    "description": "Band end in value-axis units.",
+                    "type": "number"
+                  },
+                  "tone": {
+                    "description": "Feedback-token tone for the band.",
+                    "enum": [
+                      "error",
+                      "info",
+                      "neutral",
+                      "success",
+                      "warning"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "from",
+                  "to"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "component": {
+              "const": "TimeSeriesChart"
+            },
+            "goalLine": {
+              "additionalProperties": false,
+              "description": "Goal in value-axis units, applied to each series.",
+              "properties": {
+                "label": {
+                  "description": "Human-readable goal label.",
+                  "type": "string"
+                },
+                "value": {
+                  "description": "Position of the goal line in value-axis units.",
+                  "type": "number"
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "type": "object"
+            },
+            "label": {
+              "description": "Human-readable chart name.",
+              "minLength": 1,
+              "type": "string"
+            },
+            "referenceLines": {
+              "description": "Reference lines. An x-axis value is in whole UTC epoch milliseconds.",
+              "items": {
+                "additionalProperties": false,
+                "description": "A reference line on one axis (default axis: \"y\").",
+                "properties": {
+                  "axis": {
+                    "description": "Which axis the line spans; \"y\" by default.",
+                    "enum": [
+                      "x",
+                      "y"
+                    ],
+                    "type": "string"
+                  },
+                  "label": {
+                    "description": "Human-readable line label.",
+                    "type": "string"
+                  },
+                  "tone": {
+                    "description": "Feedback-token tone for the line.",
+                    "enum": [
+                      "error",
+                      "info",
+                      "neutral",
+                      "success",
+                      "warning"
+                    ],
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Position of the line in value-axis units.",
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "value"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "series": {
+              "description": "Series in display order.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "data": {
+                    "description": "Observations in strictly increasing timestamp order.",
+                    "items": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "description": "Whole UTC Unix epoch milliseconds, in the ISO instant range.",
+                          "maximum": 8640000000000000,
+                          "minimum": -8640000000000000,
+                          "type": "integer"
+                        },
+                        "y": {
+                          "description": "Finite measured value.",
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "id": {
+                    "description": "Stable identifier, unique within the chart.",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "label": {
+                    "description": "Human-readable series name.",
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "data",
+                  "id",
+                  "label"
+                ],
+                "type": "object"
+              },
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          "required": [
+            "component",
+            "label",
+            "series"
+          ],
+          "type": "object"
+        }
+      ],
+      "type": "object",
+      "unevaluatedProperties": false,
+      "x-sentropic": {
+        "contract": "1.0",
+        "element": "st-time-series-chart",
+        "engine": "core",
+        "events": [],
+        "example": {
+          "component": "TimeSeriesChart",
+          "id": "root",
+          "label": "Queue depth",
+          "series": [
+            {
+              "data": [
+                {
+                  "x": 1767225600123,
+                  "y": 4
+                },
+                {
+                  "x": 1767225601123,
+                  "y": 7
+                }
+              ],
+              "id": "jobs",
+              "label": "Jobs"
+            }
+          ]
+        },
+        "fallback": "text",
+        "parity": {
+          "angular": {
+            "file": "packages/elements/src/element/dom/time-series-chart.svelte",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          },
+          "react": {
+            "file": "packages/elements/src/element/dom/time-series-chart.svelte",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          },
+          "svelte": {
+            "file": "packages/elements/src/element/dom/time-series-chart.svelte",
+            "note": "Reference pilot (§3.1); the catalogue is derived from it.",
+            "status": "source-of-truth",
+            "type": "TimeSeriesChartProps"
+          },
+          "vue": {
+            "file": "packages/elements/src/element/dom/time-series-chart.svelte",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          }
+        },
+        "schema": "https://design-system.sent-tech.ca/catalogs/elements/v1/components/TimeSeriesChart.json"
       }
     }
   },

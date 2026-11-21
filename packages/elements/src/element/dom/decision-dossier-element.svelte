@@ -18,7 +18,10 @@
 
   let { envelope, hostConfig }: { envelope?: unknown; hostConfig?: HostConfig } = $props();
 
-  const runtime = createElementRuntime("DecisionDossier");
+  const runtime = createElementRuntime("DecisionDossier", {
+    chunk: "focus",
+    load: () => import("./engines/focus-renderer.js"),
+  });
 
   let islandEnvelope = $state<unknown>(undefined);
   let islandHostConfig = $state<HostConfig | undefined>(undefined);

@@ -1,0 +1,28 @@
+{
+  "contract": "1.0",
+  "root": {
+    "component": "TimeSeriesChart",
+    "id": "root",
+    "label": "Queue depth",
+    "series": [
+      {
+        "id": "jobs",
+        "label": "Jobs",
+        "data": [
+          {
+            "x": 1767225600123,
+            "y": 4
+          },
+          {
+            "x": 1767225601123,
+            "y": 7
+          },
+          {
+            "x": 1767225602123,
+            "y": 5
+          }
+        ]
+      }
+    ]
+  }
+}

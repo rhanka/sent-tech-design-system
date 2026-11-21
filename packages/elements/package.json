@@ -6,7 +6,7 @@
     "access": "public"
   },
   "type": "module",
-  "description": "Sentropic design system custom elements for the JSON render catalogue (BarChart, BpmnCanvas, DecisionDossier): envelope validator plus CDN browser bundle.",
+  "description": "Sentropic design system custom elements for the JSON render catalogue (BarChart, BpmnCanvas, DecisionDossier, TimeSeriesChart): envelope validator plus CDN browser bundle.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
@@ -17,7 +17,9 @@
     "dist",
     "catalog.json",
     "envelope.json",
+    "fixtures",
     "schemas",
+    "skill",
     "!dist/**/*.map",
     "!dist/.srchash"
   ],
@@ -28,7 +30,10 @@
     },
     "./catalog.json": "./catalog.json",
     "./envelope.json": "./envelope.json",
+    "./fixtures/*": "./fixtures/*",
     "./schemas/*": "./schemas/*",
+    "./skill/SKILL.md": "./skill/SKILL.md",
+    "./shells/manifest.json": "./dist/shells/manifest.json",
     "./bpmn": {
       "types": "./dist/element/bpmn.d.ts",
       "import": "./dist/element/bpmn.js"
@@ -59,6 +64,7 @@
   "devDependencies": {
     "@a2ui/web_core": "0.14.0",
     "@json-render/svelte": "0.21.3",
+    "fflate": "0.8.3",
     "ts-json-schema-generator": "2.9.0"
   }
 }

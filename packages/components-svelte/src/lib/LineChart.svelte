@@ -100,6 +100,12 @@
      * several LineCharts share one scale. Invalid/absent → auto range (unchanged).
      */
     domain?: [number, number];
+    /** Fixed numeric x domain shared by aligned LineCharts. */
+    xDomain?: [number, number];
+    /** Formats x ticks and tooltips while preserving the numeric coordinates. */
+    formatX?: (x: number | string) => string;
+    /** A composed chart can provide a shared accessible data table. */
+    showDataList?: boolean;
     /**
      * Value-axis scale. `"linear"` (default) is unchanged. `"log"` switches the
      * y axis to base-10 logarithmic — values `<= 0` are ignored for domain/ticks
@@ -160,6 +166,9 @@
     annotations,
     dataLabels,
     domain,
+    xDomain: sharedXDomain,
+    formatX = String,
+    showDataList = true,
     scale = "linear",
     invertAxis = false,
     showLegend,
@@ -192,9 +201,16 @@
     else step = 10 * pow;
     const start = Math.floor(min / step) * step;
     const end = Math.ceil(max / step) * step;
+    if (!Number.isFinite(start) || !Number.isFinite(end) || start + step <= start) return [min, max];
     const ticks: number[] = [];
-    for (let v = start; v <= end + step / 2; v += step) {
-      ticks.push(Number(v.toFixed(10)));
+    const steps = Math.round((end - start) / step);
+    if (!Number.isFinite(steps)) return [min, max];
+    for (let index = 0; index <= steps; index++) {
+      const tick = start + index * step;
+      if (!Number.isFinite(tick)) return [min, max];
+      const roundedTick = step < 1e-10 ? tick : Number(tick.toFixed(10));
+      // Near the precision limit, different steps can round to the same number.
+      if (roundedTick !== ticks[ticks.length - 1]) ticks.push(roundedTick);
     }
     return ticks;
   }
@@ -349,6 +365,9 @@
   const plotHeight = $derived(Math.max(height - MARGIN.top - MARGIN.bottom, 1));
 
   const xDomain = $derived.by(() => {
+    if (sharedXDomain) {
+      return { kind: "numeric" as const, min: sharedXDomain[0], max: sharedXDomain[1] };
+    }
     if (data.length === 0) return { kind: "ordinal" as const, values: [] as (number | string)[] };
     const allNumeric = data.every((d) => isNumeric(d.x));
     if (allNumeric) {
@@ -393,8 +412,14 @@
     let maxRaw = ys.length ? Math.max(...ys) : 0;
     // Fold overlay values into the domain so they never fall outside the plot.
     [minRaw, maxRaw] = extendValueDomain(minRaw, maxRaw, referenceLines, bands, goal);
-    const padded = (maxRaw - minRaw) * 0.08 || Math.max(Math.abs(maxRaw), 1) * 0.1;
-    return niceTicks(minRaw - padded, maxRaw + padded, 5);
+    const range = maxRaw - minRaw;
+    const padded = (Number.isFinite(range) ? range * 0.08 : maxRaw * 0.08 - minRaw * 0.08)
+      || Math.max(Math.abs(maxRaw), 1) * 0.1;
+    return niceTicks(
+      Math.max(-Number.MAX_VALUE, minRaw - padded),
+      Math.min(Number.MAX_VALUE, maxRaw + padded),
+      5,
+    );
   });
 
   const yDomain = $derived.by(() => {
@@ -412,7 +437,10 @@
       const clamped = v > 0 ? v : yDomain.min;
       f = hi === lo ? 0 : (Math.log10(clamped) - lo) / (hi - lo);
     } else {
-      f = yDomain.max === yDomain.min ? 0 : (v - yDomain.min) / (yDomain.max - yDomain.min);
+      const { min, max } = yDomain;
+      const range = max - min;
+      f = !Number.isFinite(range) ? (v / 2 - min / 2) / (max / 2 - min / 2)
+        : range === 0 ? 0 : (v - min) / range;
     }
     return clampFraction(invertAxis ? 1 - f : f);
   });
@@ -634,23 +662,32 @@
     }))
   );
 
-  const xTickEntries = $derived.by(() => {
+  const xTickEntries = $derived.by<{ x: number; label: string; anchor?: "start" | "end" }[]>(() => {
+    if (sharedXDomain) {
+      const [min, max] = sharedXDomain;
+      return min === max
+        ? [{ x: MARGIN.left, label: formatX(min), anchor: "start" as const }]
+        : [
+            { x: MARGIN.left, label: formatX(min), anchor: "start" as const },
+            { x: MARGIN.left + plotWidth, label: formatX(max), anchor: "end" as const },
+          ];
+    }
     if (data.length === 0) return [];
     if (xDomain.kind === "ordinal") {
       return points.map((p, i) => ({
         x: p.x,
-        label: String(data[i].x)
+        label: formatX(data[i].x)
       }));
     }
     const target = Math.min(5, data.length);
     const stride = Math.max(1, Math.round((data.length - 1) / (target - 1 || 1)));
     const entries: { x: number; label: string }[] = [];
     for (let i = 0; i < data.length; i += stride) {
-      entries.push({ x: points[i].x, label: String(data[i].x) });
+      entries.push({ x: points[i].x, label: formatX(data[i].x) });
     }
     const lastIdx = data.length - 1;
-    if (entries[entries.length - 1]?.label !== String(data[lastIdx].x)) {
-      entries.push({ x: points[lastIdx].x, label: String(data[lastIdx].x) });
+    if (entries[entries.length - 1]?.label !== formatX(data[lastIdx].x)) {
+      entries.push({ x: points[lastIdx].x, label: formatX(data[lastIdx].x) });
     }
     return entries;
   });
@@ -773,7 +810,7 @@
         class="st-lineChart__tickLabel"
         x={tick.x}
         y={height - MARGIN.bottom + 16}
-        text-anchor="middle"
+        text-anchor={tick.anchor ?? "middle"}
       >
         {tick.label}
       </text>
@@ -950,7 +987,9 @@
     {/if}
   </div>
 
-  <ChartDataList {label} items={dataValueItems} />
+  {#if showDataList}
+    <ChartDataList {label} items={dataValueItems} />
+  {/if}
 
   {#if activeIndex >= 0 && points[activeIndex]}
     {@const p = points[activeIndex]}
@@ -959,7 +998,7 @@
       role="presentation"
       style="left: {(p.x / width) * 100}%; top: {(p.y / height) * 100}%"
     >
-      <span class="st-lineChart__tooltipLabel">{p.datum.x}</span>
+      <span class="st-lineChart__tooltipLabel">{formatX(p.datum.x)}</span>
       <span class="st-lineChart__tooltipValue">{p.datum.y}</span>
     </div>
   {/if}

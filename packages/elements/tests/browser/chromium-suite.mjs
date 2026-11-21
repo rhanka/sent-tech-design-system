@@ -68,11 +68,18 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PACKAGE_DIR = path.resolve(HERE, "..", "..");
 const WORKTREE_ROOT = path.resolve(PACKAGE_DIR, "..", "..");
 const BROWSER_DIST = join(PACKAGE_DIR, "dist", "browser");
+const SHELL_DIST = join(PACKAGE_DIR, "dist", "shells");
 const FIXTURES = join(PACKAGE_DIR, "tests", "fixtures");
 const THEMES_CSS = path.resolve(WORKTREE_ROOT, "packages", "themes", "css");
 const BAR_CHART_SOURCE = path.resolve(WORKTREE_ROOT, "packages", "components-svelte", "src", "lib", "BarChart.svelte");
 const ELEMENTS_ENTRY = join(BROWSER_DIST, "elements.js");
 const PDATA_FIXTURES = [1, 2, 3, 4, 5].map((n) => `bar-chart-pdata-${n}.json`);
+const TIME_SERIES_FIXTURES = ["single", "multi", "thresholds"].map((name) => `time-series-${name}.json`);
+const SHELL_FIXTURES = [
+  ["BarChart", "st-bar-chart", "bar-chart-pdata-1.json", "svg"],
+  ["DecisionDossier", "st-decision-dossier", "decision-dossier.json", "[data-st-dossier]"],
+  ...TIME_SERIES_FIXTURES.map((name) => ["TimeSeriesChart", "st-time-series-chart", name, "table tbody tr"]),
+];
 
 /**
  * §6.4 pilot CSP: the MCP Apps default (MCPA:276-285 — a `ui://` document
@@ -254,7 +261,8 @@ const MIME = {
 };
 
 function readFixture(name) {
-  return readFileSync(join(FIXTURES, name), "utf8");
+  const dir = TIME_SERIES_FIXTURES.includes(name) ? join(PACKAGE_DIR, "fixtures") : FIXTURES;
+  return readFileSync(join(dir, name), "utf8");
 }
 
 function islandScript(jsonText) {
@@ -358,6 +366,19 @@ function dossierL6Body() {
 
 const PAGES = {
   "/pilot.html": pageHtml(PILOT_CSP, pilotBody()),
+  "/time-series.html": pageHtml(STRICT_CSP, `
+    ${TIME_SERIES_FIXTURES.map((name) => elementWithIsland("st-time-series-chart", name, name)).join("\n")}
+    ${mutatedIsland("st-time-series-chart", "near-equal-values", TIME_SERIES_FIXTURES[0], (envelope) => {
+      const values = [1000000000, 1000000000.0000002, 1000000000.0000005];
+      envelope.root.series[0].data = envelope.root.series[0].data.slice(0, values.length)
+        .map((point, index) => ({ ...point, y: values[index] }));
+    })}
+    ${mutatedIsland("st-time-series-chart", "colliding-series-labels", TIME_SERIES_FIXTURES[1], (envelope) => {
+      for (const series of envelope.root.series) series.label = "Sensor";
+      envelope.root.series.push({ id: "third", label: "Sensor (east)", data: [{ x: 1767229200000, y: 30 }] });
+    })}
+    <script type="module" src="/bundle/elements.js"></script>
+  `),
   "/dossier-l6.html": pageHtml(PILOT_CSP, dossierL6Body()),
   "/no-bpmn.html": pageHtml(
     PILOT_CSP,
@@ -419,6 +440,11 @@ const PAGES = {
   `,
   ),
 };
+
+for (const [component, , fixture] of SHELL_FIXTURES) {
+  const html = readFileSync(join(SHELL_DIST, `${component}.html`), "utf8");
+  PAGES[`/shell/${fixture}`] = html.replace("<!-- st-envelope -->", () => islandScript(readFixture(fixture)));
+}
 
 // The strict and theme pages mount ONE reference each (into their own
 // element ids), so they get their own built entries; the harness's emitted
@@ -528,10 +554,7 @@ const BASE = `http://127.0.0.1:${PORT}`;
 // ---------------------------------------------------------------------------
 
 const puppeteer = await import("puppeteer-core");
-// Snap-confined Chromium cannot create its SingletonLock under $TMPDIR
-// (Permission denied, measured); /tmp is writable to it, so the throwaway
-// browser profile lives there, never in the session tmp root.
-const chromiumProfile = mkdtempSync("/tmp/st-elements-chromium-");
+const chromiumProfile = mkdtempSync(join(tmpdir(), "st-elements-chromium-"));
 const browser = await puppeteer.default.launch({
   executablePath: findChrome(),
   headless: "new",
@@ -617,7 +640,7 @@ async function waitFor(page, fn, timeout, label) {
   for (;;) {
     let value;
     try {
-      value = await page.evaluate(fn);
+      value = await page.evaluate(`Boolean((${fn})())`);
     } catch {
       /* page navigated? keep waiting */
     }
@@ -941,6 +964,96 @@ async function shadowSvg(page, elementSelector) {
 }
 
 // ---------------------------------------------------------------------------
+// The packaged temporal element under strict CSP.
+{
+  const observed = await openPage("/time-series.html");
+  const mounts = await observed.page.evaluate(async () => {
+    return Promise.all([...document.querySelectorAll("st-time-series-chart")].map(async (element) => {
+      await element.ready;
+      const root = element.shadowRoot;
+      return {
+        id: element.id,
+        state: element.state ?? null,
+        rows: [...(root?.querySelectorAll("table tbody tr") ?? [])].map((row) =>
+          [...row.cells].map((cell) => cell.textContent.trim())),
+        series: [...(root?.querySelectorAll('[role="img"]') ?? [])].map((chart) => {
+          const line = chart.querySelector("path.st-lineChart__line");
+          return {
+            label: chart.getAttribute("aria-label"),
+            points: [...chart.querySelectorAll("circle[data-chart-index]")].map((point) =>
+              [Number(point.getAttribute("cx")), Number(point.getAttribute("cy"))]),
+            stroke: line && getComputedStyle(line).stroke,
+          };
+        }),
+        overlays: [...(root?.querySelectorAll("svg text") ?? [])].map((label) => label.textContent.trim()),
+      };
+    }));
+  });
+  for (const [index, name] of TIME_SERIES_FIXTURES.entries()) {
+    const { root } = JSON.parse(readFixture(name));
+    const expectedRows = root.series.flatMap((series) => series.data.map(({ x, y }) => [x, series.label, series.id, String(y)]))
+      .sort(([left], [right]) => left - right)
+      .map(([x, label, id, value]) => [new Date(x).toISOString(), label, id, value]);
+    const mount = mounts[index];
+    assert(mount.state === "rendered", name, `expected rendered, got ${mount.state}`);
+    assert(JSON.stringify(mount.rows) === JSON.stringify(expectedRows), name, `table differs: ${JSON.stringify(mount.rows)}`);
+    assert(mount.series.length === root.series.length && mount.series.every((series, i) =>
+      series.label === root.series[i].label && series.points.length === root.series[i].data.length &&
+      series.points.flat().every(Number.isFinite) && series.stroke && series.stroke !== "none" &&
+      series.points.every(([, cy], pointIndex) => series.points.every(([, otherY], otherIndex) =>
+        Math.sign(otherY - cy) === Math.sign(root.series[i].data[pointIndex].y - root.series[i].data[otherIndex].y)))),
+    name, `plot differs: ${JSON.stringify(mount.series)}`);
+  }
+  // The shared three-hour domain spans x=44 to x=464, so each hour is 140 px.
+  // The y axes for this fixture span values 5 to 25 over y=208 to y=12.
+  const multiPoints = mounts[1].series.map(({ points }) => points);
+  const expectedPoints = [
+    [[44, 159], [184, 51.2], [464, 110]],
+    [[184, 119.8], [324, 178.6], [464, 61]],
+  ];
+  assert(multiPoints.length === expectedPoints.length && multiPoints.every((points, seriesIndex) =>
+    points.length === expectedPoints[seriesIndex].length && points.every((point, pointIndex) =>
+      point.every((coordinate, axis) => Math.abs(coordinate - expectedPoints[seriesIndex][pointIndex][axis]) < 0.01))),
+  "time-series: proportional coordinates", `expected ${JSON.stringify(expectedPoints)}, got ${JSON.stringify(multiPoints)}`);
+  const nearEqual = mounts.find(({ id }) => id === "near-equal-values");
+  const nearEqualPoints = nearEqual.series[0]?.points ?? [];
+  assert(nearEqual.state === "rendered" && nearEqualPoints.length === 3 &&
+    nearEqualPoints[0][1] > nearEqualPoints[1][1] && nearEqualPoints[1][1] > nearEqualPoints[2][1],
+    "time-series: near-equal values", `plot differs: ${JSON.stringify(nearEqual)}`);
+  const collidingLabels = mounts.find(({ id }) => id === "colliding-series-labels");
+  const sharedInstant = "2026-01-01T01:00:00.000Z";
+  const collidingRows = collidingLabels.rows.filter(([instant]) => instant === sharedInstant);
+  assert(collidingLabels.state === "rendered" && JSON.stringify(collidingRows) === JSON.stringify([
+    [sharedInstant, "Sensor", "east", "21"],
+    [sharedInstant, "Sensor", "west", "14"],
+    [sharedInstant, "Sensor (east)", "third", "30"],
+  ]), "time-series: colliding labels retain series IDs", `table differs: ${JSON.stringify(collidingRows)}`);
+  assert(["Warning", "Deployment", "Expected range", "Goal"].every((label) => mounts[2].overlays.includes(label)),
+    "time-series: overlays", `missing labels: ${JSON.stringify(mounts[2].overlays)}`);
+  assert(observed.requests.every((url) => !url.includes("/chunks/bpmn-")), "time-series: isolated", "requested a BPMN chunk");
+  const otherErrors = observed.consoleErrors.filter((error) => !error.includes("style-src"));
+  assert(otherErrors.length === 0, "time-series: zero other console errors", otherErrors.join(" | "));
+  const violations = await observed.violations();
+  assert(violations.every((violation) => violation.directive.startsWith("style-src")),
+    "time-series: strict CSP", JSON.stringify(violations));
+  await observed.close();
+}
+
+// Each qualified shell renders its fixture with one document request.
+for (const [component, tag, fixture, selector] of SHELL_FIXTURES) {
+  const pathname = `/shell/${fixture}`;
+  const observed = await openPage(pathname);
+  const label = `${component} shell, ${fixture}`;
+  await waitFor(observed.page, `() => document.querySelector(${JSON.stringify(tag)})?.shadowRoot?.querySelector(${JSON.stringify(selector)})`,
+    20000, label);
+  assert(observed.requests.every((url) => url === BASE + pathname), label, `unexpected requests: ${observed.requests.join(", ")}`);
+  assert(observed.consoleErrors.length === 0, label, observed.consoleErrors.join(" | "));
+  const violations = await observed.violations();
+  assert(violations.length === 0, label, JSON.stringify(violations));
+  ok(label);
+  await observed.close();
+}
+
 // invalid-engines page: §6.6 — an invalid envelope renders its diagnostics
 // WITHOUT loading an engine (B8), on EACH lazy element; a mismatching
 // envelope on a lazy element refuses as unknown-component (B7) and also
