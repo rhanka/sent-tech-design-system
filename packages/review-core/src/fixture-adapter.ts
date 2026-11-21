@@ -503,13 +503,14 @@ export function createFixtureCommentsAdapter(
     },
 
     async listThreadSummaries(tenant, query) {
+      const { status, ...targetQuery } = query;
       const grouped = new Map<string, Comment[]>();
-      for (const row of matchingRows(tenant, query)) {
+      for (const row of matchingRows(tenant, targetQuery)) {
         const thread = grouped.get(row.threadId);
         if (thread) thread.push(row);
         else grouped.set(row.threadId, [row]);
       }
-      return [...grouped].map(([threadId, thread]) => {
+      const summaries = [...grouped].map(([threadId, thread]): StoreThreadSummary => {
         const first = thread[0]!;
         const last = thread.at(-1)!;
         const target = normalizeCommentTarget((firstAnchoredRow(thread) ?? first).target);
@@ -528,6 +529,7 @@ export function createFixtureCommentsAdapter(
           ...(assignee !== undefined ? { assignee } : {}),
         };
       });
+      return status === undefined ? summaries : summaries.filter((summary) => summary.status === status);
     },
 
     async setState(tenant, threadId, state) {

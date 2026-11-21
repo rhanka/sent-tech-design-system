@@ -132,6 +132,25 @@ describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
     for (const verb of ["get", "listThread", "editThread", "reanchor"]) expect(verb in adapter).toBe(false);
   });
 
+  it("filters summaries by whole-thread status after a reply to a closed thread", async () => {
+    const { adapter, store } = makeFixture();
+    const tenant = { workspaceId: TENANT };
+    const root = await adapter.create({ tenant: TENANT, target: TARGET, body: "Original" });
+    await adapter.setState(TENANT, root.threadId, "closed");
+    const reply = await adapter.reply({ tenant: TENANT, target: TARGET, threadId: root.threadId, body: "Reply" });
+    const open = await adapter.create({ tenant: TENANT, target: TARGET, body: "Open thread" });
+
+    expect(await store.listThreadSummaries(tenant, { ...TARGET, status: "open" })).toMatchObject([
+      { threadId: open.threadId, messageCount: 1, status: "open" },
+    ]);
+    expect(await store.listThreadSummaries(tenant, { ...TARGET, status: "closed" })).toMatchObject([
+      { threadId: root.threadId, rootMessage: root.body, lastMessage: reply.body, messageCount: 2, status: "closed" },
+    ]);
+    expect(await store.listByTarget(tenant, { ...TARGET, status: "open" })).toMatchObject([
+      { id: reply.id }, { id: open.id },
+    ]);
+  });
+
   it("should mint distinct threadId !== comment.id and enforce threadId vs commentId verb keys", async () => {
     const fixture = makeFixture();
     const adapter: CommentsAdapter = fixture.adapter;
