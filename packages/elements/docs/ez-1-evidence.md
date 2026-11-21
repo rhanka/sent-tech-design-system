@@ -33,6 +33,8 @@ cache directories. These commands ran from the DS worktree.
 | `rtk node packages/elements/tests/browser/chromium-suite.mjs` | All assertions passed. The three temporal datasets, categorical dataset and dossier rendered in their qualified shells without secondary requests |
 | `rtk node --test scripts/elements-browser-artifacts.test.mjs scripts/elements-publish-tarball.test.mjs` | 15 passed, including packed shell byte counts and fingerprints |
 | `rtk npm run dist:import-closure -- --workspaces=@sentropic/design-system-elements` | Packed Node imports and public assets passed |
+| `rtk node scripts/smoke-pack.mjs --workspaces=@sentropic/design-system-elements` | Installed package smoke passed |
+| `rtk npm run index:check --workspace @sentropic/design-system-component-index` | 436 artifacts match after regenerating the LineChart entry and contract |
 
 The temporal suite covers closed objects, millisecond precision, ordering,
 unique series IDs and the 4096-byte Markdown boundary. Chromium verifies
@@ -86,6 +88,7 @@ FA-H9 can pin the standalone temporal schema. CK-H1a can pin the packed
 shell manifest and read the qualified module and HTML files using the
 paths and hashes it carries. The dependency version and integrity for
 those integrations come from the release PR and the published archive.
-This build did not publish a registry version or exercise an h2a host.
+Registry publication and h2a host verification are pending under the
+release PR and CK-H1a.
 The pinned h2a categorical transcript fallback still constructs SVG
 in `packages/h2a/src/runtime/mcp/ui-render/fallback.ts`.
