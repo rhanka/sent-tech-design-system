@@ -76,7 +76,7 @@ describe("AC-L1: catalogue identity and component inventory", () => {
   });
 
   it("advertises a text fallback for categorical charts", () => {
-    expect(catalog.components.BarChart["x-sentropic"].fallback).toBe("text");
+    expect(catalog.components.BarChart).toMatchObject({ "x-sentropic": { fallback: "text" } });
   });
 
   it("functions is empty and $defs carries anyComponent and theme (§5.2)", () => {
