@@ -104,7 +104,7 @@ describe("canonical JSON", () => {
         '"profileRefs":["generic@1"],"relations":{},"resources":{},"revision":0,' +
         '"schemaVersion":{"major":1,"minor":1},"typeDefinitions":{}},' +
         '"views":{"view:v":{"entityOccurrences":{},"filters":[],"groups":{},"portOccurrences":{},' +
-        '"presentation":{"anatomy":"v2","camera":{"x":0,"y":0,"zoom":1}},"relationOccurrences":{},"revision":0,' +
+        '"presentation":{"camera":{"x":0,"y":0,"zoom":1}},"relationOccurrences":{},"revision":0,' +
         '"semanticDocumentId":"document:empty","viewId":"view:v"}}}',
     );
   });

@@ -1,8 +1,8 @@
 {
   "componentId": "gauge-chart",
   "contractSource": "derived",
-  "digest": "sha256:3ecff99a20c8d52df88a2e6ff0cffc0805ac8d7639038cc0709bbb1b8dc5a9f4",
-  "entryDigest": "sha256:99f46aceffa5b4b959e2dca098aafa4fab6af9aab0b19050812dd5c51bed7022",
+  "digest": "sha256:c7bd75c66105d3bf2ca77b7fae883f6b50202409f9e0b61437ea5309fbec6d9a",
+  "entryDigest": "sha256:6a30eb880f01fb16edfdbb072e375ab2f7dcf2d79e1f65f27027ca97734e9193",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -327,7 +327,7 @@
         "declarationPath": "packages/components-svelte/dist/GaugeChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "GaugeChartProps",
-        "version": "0.43.0"
+        "version": "0.43.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -431,7 +431,7 @@
         "declarationPath": "packages/components-vue/dist/GaugeChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "GaugeChartProps",
-        "version": "0.41.0-next.8"
+        "version": "0.41.0-next.9"
       },
       "status": "complete",
       "unresolved": [],
