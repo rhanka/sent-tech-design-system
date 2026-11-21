@@ -3,12 +3,19 @@ import { copyFileSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
-import { build } from "vite";
+import { build, normalizePath } from "vite";
 
 const packageDir = dirname(dirname(fileURLToPath(import.meta.url)));
 const kitDir = join(packageDir, "dist", "focus-kit");
 const domDir = join(packageDir, "src", "element", "dom");
-const themeFile = join(packageDir, "..", "themes", "css", "sent-tech.css");
+const themeFile = normalizePath(join(packageDir, "..", "themes", "css", "sent-tech.css"));
+const reviewCore = "@sentropic/design-system-review-core";
+const packageManifest = JSON.parse(readFileSync(join(packageDir, "package.json"), "utf8"));
+const reviewCoreEntry = import.meta.resolve(reviewCore);
+const installedReviewCore = JSON.parse(readFileSync(new URL("../package.json", reviewCoreEntry), "utf8"));
+if (installedReviewCore.version !== packageManifest.dependencies[reviewCore]) {
+  throw new Error(`Focus kit resolved ${reviewCore}@${installedReviewCore.version}`);
+}
 
 const { output } = await build({
   configFile: false,
@@ -16,6 +23,13 @@ const { output } = await build({
   root: packageDir,
   publicDir: false,
   logLevel: "warn",
+  resolve: {
+    // CommentLayer imports this name too. Keep both importers on the
+    // exact published dependency resolved from elements, including in SSR.
+    alias: [{ find: /^@sentropic\/design-system-review-core$/, replacement: fileURLToPath(reviewCoreEntry) }],
+    dedupe: [reviewCore],
+  },
+  ssr: { noExternal: [reviewCore] },
   plugins: [
     {
       name: "focus-kit-theme",
@@ -76,7 +90,7 @@ const files = Object.keys(mimeTypes).sort().map((path) => {
     size: bytes.length,
   };
 });
-const { name, version } = JSON.parse(readFileSync(join(packageDir, "package.json"), "utf8"));
+const { name, version } = packageManifest;
 // The manifest keys are in RFC 8785 order at both levels. The manifest lives
 // beside the kit payload and lists the bytes shipped to the artifact host.
 const manifest = {

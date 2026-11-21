@@ -115,6 +115,21 @@ it("marks the B5 header and section containers around h1, p, li and table", () =
   }
 });
 
+it("retains the completed root when Focus rejects a replacement document", () => {
+  const node = host();
+  const dossier = mount(node);
+  const ready = vi.fn();
+  node.addEventListener("st-dossier-ready", ready);
+  expect(() => dossier.render({})).toThrow();
+  expect(dossier.reviewRoot).toBeNull();
+  dossier.render(report);
+  const current = dossier.reviewRoot;
+  expect(() => dossier.render({ ...report, citations: [] })).toThrow();
+  expect(dossier.reviewRoot).toBe(current);
+  expect(current?.isConnected).toBe(true);
+  expect(ready).toHaveBeenCalledOnce();
+});
+
 it("resolves a fragment set before an asynchronous render and handles subsequent hash changes", async () => {
   history.replaceState(null, "", "#annex%3Ameasurements");
   const node = host();

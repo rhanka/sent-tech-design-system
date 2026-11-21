@@ -1,3 +1,4 @@
+import { assertFocusDocument } from "@sentropic/focus/validate";
 import { renderDossierContent } from "./engines/focus-renderer.js";
 import { dispatchIntent } from "./intents.js";
 
@@ -62,8 +63,9 @@ export function mountDossier(host: HTMLElement): DossierMount {
     },
     render(document) {
       if (destroyed) throw new Error("The dossier mount has been destroyed");
+      const validated = assertFocusDocument(document);
       clear();
-      const current = renderDossierContent(host, document, (id) => dispatchIntent(host, "choose-option", id), "light");
+      const current = renderDossierContent(host, validated, (id) => dispatchIntent(host, "choose-option", id), "light");
       rendered = current;
       host.dispatchEvent(new CustomEvent<DossierReadyDetail>("st-dossier-ready", {
         detail: { reviewRoot: current.reviewRoot },
