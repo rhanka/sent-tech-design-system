@@ -58,7 +58,6 @@ import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, mkdtempSync, mkdirSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import http from "node:http";
-import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { renderHtml } from "@sentropic/focus";
@@ -222,7 +221,9 @@ const referenceProps = PDATA_FIXTURES.map((name) => {
   return props;
 });
 
-const work = mkdtempSync(join(tmpdir(), "st-elements-suite-"));
+const tempRoot = join(WORKTREE_ROOT, "tmp");
+mkdirSync(tempRoot, { recursive: true });
+const work = mkdtempSync(join(tempRoot, "st-elements-suite-"));
 const focusReport = readFileSync(join(FIXTURES, "focus-artifact", "report.json"), "utf8");
 const focusB5 = readFileSync(join(FIXTURES, "focus-artifact", "b5.json"), "utf8");
 const offlineDocument = canonicalJson({ ...JSON.parse(focusReport), subject: "Source contains </script> · 漢字" });
@@ -595,19 +596,22 @@ const BASE = `http://127.0.0.1:${server.address().port}`;
 // ---------------------------------------------------------------------------
 
 const puppeteer = await import("puppeteer-core");
-const chromiumProfile = mkdtempSync(join(tmpdir(), "st-elements-chromium-"));
-const browser = await puppeteer.default.launch({
-  executablePath: findChrome(),
-  headless: "new",
-  userDataDir: chromiumProfile,
-  args: ["--no-sandbox", "--disable-dev-shm-usage", "--font-render-hinting=none"],
-});
-
-// Everything below runs inside try/finally: the throwaway profile, the
-// server and the work dir are removed even when a page operation throws,
+const chromiumProfile = join(work, "chromium");
+const chromiumRuntime = join(work, "runtime");
+let browser;
+// Everything below runs inside try/finally: the server and the work dir
+// (including the profile) are cleaned up even when a page operation throws,
 // like RichTextEditor.browser.test.mjs (a top-level `process.exit` would
 // skip `finally`, so failures set `process.exitCode` instead).
 try {
+mkdirSync(chromiumRuntime, { mode: 0o700 });
+browser = await puppeteer.default.launch({
+  executablePath: findChrome(),
+  headless: "new",
+  userDataDir: chromiumProfile,
+  env: { ...process.env, TMPDIR: work, XDG_RUNTIME_DIR: chromiumRuntime },
+  args: ["--no-sandbox", "--disable-dev-shm-usage", "--font-render-hinting=none"],
+});
 
 /**
  * One observed page: console + CSP partitioning with the U-12 offline rule.
@@ -1890,15 +1894,12 @@ if (failures.length > 0) {
 }
 } finally {
   try {
-    await browser.close();
+    await browser?.close();
   } catch { /* already closed */ }
   try {
     server.close();
   } catch { /* already closed */ }
   try {
     rmSync(work, { recursive: true, force: true });
-  } catch { /* already removed */ }
-  try {
-    rmSync(chromiumProfile, { recursive: true, force: true });
   } catch { /* already removed */ }
 }
