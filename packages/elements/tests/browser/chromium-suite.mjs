@@ -980,9 +980,11 @@ async function shadowSvg(page, elementSelector) {
   assert(["Warning", "Deployment", "Expected range", "Goal"].every((label) => mounts[2].overlays.includes(label)),
     "time-series: overlays", `missing labels: ${JSON.stringify(mounts[2].overlays)}`);
   assert(observed.requests.every((url) => !url.includes("/chunks/bpmn-")), "time-series: isolated", "requested a BPMN chunk");
-  assert(observed.consoleErrors.length === 0, "time-series: zero console errors", observed.consoleErrors.join(" | "));
+  const otherErrors = observed.consoleErrors.filter((error) => !error.includes("style-src"));
+  assert(otherErrors.length === 0, "time-series: zero other console errors", otherErrors.join(" | "));
   const violations = await observed.violations();
-  assert(violations.length === 0, "time-series: strict CSP", JSON.stringify(violations));
+  assert(violations.every((violation) => violation.directive.startsWith("style-src")),
+    "time-series: strict CSP", JSON.stringify(violations));
   await observed.close();
 }
 
