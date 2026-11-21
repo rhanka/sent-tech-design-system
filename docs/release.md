@@ -182,12 +182,11 @@ Measured on 2026-09-25 against the registry (`npm view <name> version` for each 
 | `@sentropic/design-system-theme-latex` | 0.1.0 | E404 | bootstrap in `latex-publish.yml` |
 | `@sentropic/design-system-theme-quebec` | 0.1.0 | E404 | bootstrap in `quebec-publish.yml` |
 | `@sentropic/design-system-rich-text` | 0.1.0 | E404 (measured 2026-10-30) | bootstrap in `rich-text-publish.yml`, tag `rich-text-v<version>` |
-| `@sentropic/design-system-elements` | 0.1.0 | E404 (measured 2026-11-01) | bootstrap in `elements-publish.yml`, tag `elements-v<version>` |
 | `@sentropic/diagram-core` | 0.1.0 | E404 (measured 2026-11-03) | bootstrap in `diagram-core-publish.yml`, tag `diagram-core-v<version>` |
 | `@sentropic/diagram-canvas` | 0.1.0 | unverified (not measured; `private: true` in this repository until DC-2a L4, 2026-11-11, so no workflow here ever published it — run `npm view @sentropic/diagram-canvas version` before the first tag) | bootstrap in `diagram-canvas-publish.yml`, tag `diagram-canvas-v<version>` |
 | `@sentropic/design-system-review-core` | 0.1.0 | E404 (measured 2026-11-20) | bootstrap in `review-core-publish.yml`, tag `review-core-v<version>` |
 
-For these eight (`@sentropic/diagram-canvas` pending its registry measurement), the bootstrap checklist above is the only order that works: the trusted publisher cannot be declared first, because npm has no package page to declare it on. The seven names whose registry version is behind the repository (`design-system-angular`, `dataviz-core`, `dataviz-react`, `dataviz-svelte`, `dataviz-vue`, `graph`, `design-system-skills`) exist on npm and need nothing but their tag, with the trusted publisher declared.
+For the packages in the table (`@sentropic/diagram-canvas` pending its registry measurement), follow the bootstrap checklist above. The seven names whose registry version is behind the repository (`design-system-angular`, `dataviz-core`, `dataviz-react`, `dataviz-svelte`, `dataviz-vue`, `graph`, `design-system-skills`) exist on npm and need nothing but their tag, with the trusted publisher declared.
 
 ### The eight whose version number is already taken
 
@@ -302,24 +301,35 @@ git push origin diagram-canvas-v0.1.0
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
-Then publish the elements package by pushing the `elements-v<version>` tag:
+### Elements 0.3.0
+
+This release ships the Focus static artifact kit and the `st-dossier-ready`
+review root (FA-D1, #322), plus the `TimeSeriesChart` element, catalogue entry
+and transcript formatter (EZ-1, #321). Publish Elements before any Vue release
+that carries its updated optional BPMN peer pin.
+
+On the merged default-branch commit, push the `elements-v<version>` tag.
+The publish job grants `id-token: write` and uses npm 11 with the public npm
+registry. Confirm the package's npm Trusted Publisher names
+`rhanka/sent-tech-design-system` and `elements-publish.yml`. The workflow still
+contains a bootstrap step that configures token auth if `NPM_TOKEN` is present.
 
 ```bash
 git push origin main
-git tag elements-v0.2.0
-git push origin elements-v0.2.0
+git tag elements-v0.3.0
+git push origin elements-v0.3.0
 ```
 
 The browser bundle is served from the CDN base (exact version pinned, §7 — never a range, never `latest`):
 
 ```
-https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.2.0/dist/browser/
+https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.3.0/dist/browser/
 ```
 
 Once jsDelivr visibly serves the pinned version, run the post-publish CDN check (also wired into each publish workflow's `post-publish-check` job):
 
 ```bash
-node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.2.0
+node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.3.0
 node scripts/verify-jsdelivr-published.mjs --package @sentropic/diagram-core --version 0.1.0
 node scripts/verify-jsdelivr-published.mjs --package @sentropic/diagram-canvas --version 0.1.0
 ```
