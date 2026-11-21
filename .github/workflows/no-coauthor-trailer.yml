@@ -28,39 +28,45 @@ jobs:
           const { execFileSync } = require('node:child_process');
           const { readFileSync } = require('node:fs');
 
+          const scissors = /^# -{3,} >8 -{3,}$/;
           const rules = [
-            ['co-authored-by', /^[ \t]*co-authored-by[ \t]*:/im],
-            ['claude-session', /^[ \t]*claude-session[ \t]*:/im],
-            ['generated-by', /^[ \t]*generated-by[ \t]*:/im],
-            ['generated-with', /^[ \t]*generated[ \t]+with\b/im],
-            ['generated-with-or-by-ai', /generated[ \t]+(?:with|by)[ \t]+\[?(?:claude|codex|openai|gemini|antigravity|mistral[ \t]+vibe|vibe|muse|copilot|cursor|ai)\b/i],
+            ['co-authored-by', /^\s*co-authored-by\s*:/i],
+            ['claude-session', /^\s*claude-session\s*:/i],
+            ['generated-by-ai', /^\s*generated-by\s*:.*\b(?:claude|anthropic|codex|openai|gemini|antigravity|agy|mistral|vibe|muse|copilot|cursor|ai)\b/i],
+            ['generated-with-ai', /generated\s+(?:with|by)\s+\[?(?:claude(?:\s+code)?|codex|gemini|antigravity|mistral\s+vibe|vibe|muse|copilot|cursor)\b/i],
             ['claude-code-url', /claude\.com\/claude-code/i],
-            ['claude-session-url', /claude\.ai\/code\/session_/i],
+            ['claude-session-url', /claude\.ai\/code\/session_[a-z0-9_-]+/i],
             ['robot-marker', /🤖/u],
           ];
 
           let failed = false;
-          function scan(label, message) {
-            const hits = rules.filter(([, pattern]) => pattern.test(message));
-            if (hits.length === 0) return;
+          function scan(label, message, { commit = false } = {}) {
+            const hits = new Set();
+            for (const line of message.split(/\r?\n/)) {
+              if (commit && scissors.test(line)) break;
+              if (commit && line.startsWith('#')) continue;
+              const rule = rules.find(([, pattern]) => pattern.test(line));
+              if (rule) hits.add(rule[0]);
+            }
+            if (hits.size === 0) return;
 
             failed = true;
-            console.error(`::error::${label} contains forbidden AI attribution (${hits.map(([id]) => id).join(', ')})`);
+            console.error(`::error::${label} contains forbidden AI attribution (${[...hits].join(', ')})`);
           }
 
           const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
           const pr = event.pull_request;
           const base = pr ? pr.base.sha : event.before;
           const head = pr ? pr.head.sha : event.after;
-          const range = !pr && /^0+$/.test(base) ? head : `${base}..${head}`;
-          const fields = execFileSync('git', ['log', '-z', '--format=%H%x00%B', range, '--'], {
+          const revArgs = !pr && /^0+$/.test(base) ? ['-n', '50', head] : [`${base}..${head}`];
+          const fields = execFileSync('git', ['log', '-z', '--format=%H%x00%B', ...revArgs, '--'], {
             encoding: 'utf8',
             maxBuffer: 64 * 1024 * 1024,
           }).split('\0');
           fields.pop();
 
           for (let i = 0; i < fields.length; i += 2) {
-            scan(`Commit ${fields[i]}`, fields[i + 1]);
+            scan(`Commit ${fields[i]}`, fields[i + 1], { commit: true });
           }
           if (pr) {
             scan('PR title', pr.title);
