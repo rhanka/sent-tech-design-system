@@ -66,9 +66,9 @@ describe("DC-2a tokens (AC-6)", () => {
     expect(token("diagramScene", "edgeCornerRadius")).toBe(`${DEFAULT_EDGE_CORNER_RADIUS}px`);
     expect(token("diagramScene", "routeSpacing")).toBe(`${DEFAULT_ROUTE_SPACING}px`);
     expect(token("diagramScene", "routeBorderClearance")).toBe(`${DEFAULT_ROUTE_BORDER_CLEARANCE}px`);
-    expect(token("diagramScene", "flowStrokeWidth")).toBe(`${DEFAULT_LINK_STROKE_WIDTH}px`);
-    expect(token("diagramScene", "flowRelatedStrokeWidth")).toBe(`${DEFAULT_LINK_RELATED_STROKE_WIDTH}px`);
-    expect(token("diagramScene", "flowPrimaryStrokeWidth")).toBe(`${DEFAULT_LINK_PRIMARY_STROKE_WIDTH}px`);
+    expect(token("diagramScene", "flowStrokeWidth")).toBe("1.5px");
+    expect(token("diagramScene", "flowRelatedStrokeWidth")).toBe("2px");
+    expect(token("diagramScene", "flowPrimaryStrokeWidth")).toBe("2.5px");
   });
 
   it("the edge-label line box is one number in the token, the shipped measurer and the test measurer", () => {

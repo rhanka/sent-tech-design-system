@@ -18,12 +18,12 @@ export function channelMetrics(metrics: Partial<LayoutMetrics>, horizontal: bool
   };
 }
 /**
- * Fixed gutter width for a channel (DE-2 ask 3).
- * Routing subdivides the fixed gutter into tracks spaced by `routeSpacing`
- * rather than widening the gutter with traffic or labels.
+ * Flow-sized gap for leaf-card channels (`!zone`). Sibling-zone gutters
+ * (`zone === true`, REQ-R7-14) bypass this helper and stay fixed at `zoneGutter`.
  */
-export function channelGap(_n: number, _labelled: boolean, metrics: ChannelMetrics): number {
-  return metrics.gapMin;
+export function channelGap(n: number, labelled: boolean, metrics: ChannelMetrics): number {
+  return n === 0 ? metrics.gapMin : Math.min(metrics.gapMax,
+    Math.max(metrics.gapMin, metrics.gapBase + n * metrics.trackSpacing + (labelled ? metrics.labelBand : 0)));
 }
 /** Maximum number of parallel longitudinal tracks a gutter of width `gap` holds at `routeSpacing` with `borderClearance` on both sides. */
 export function channelCapacity(

@@ -54,6 +54,8 @@ export function shouldRefitRenderedBounds(previous: Rect | undefined, next: Rect
   return delta > RENDERED_BOUNDS_REFIT_TOLERANCE;
 }
 
+/** Token default of a resting numbered-flow stroke, CSS px (DC-2c). */
+const RESTING_FLOW_STROKE_WIDTH = 1.5;
 /** Token default of a resting connector stroke, CSS px (DE-2 `linkStrokeWidth`). */
 const RESTING_EDGE_STROKE_WIDTH = 2.5;
 
@@ -102,13 +104,15 @@ function restingStrokeWidth(element: Element, style: CSSStyleDeclaration): numbe
   const width = parseFloat(style.strokeWidth) || 0;
   const state = element.getAttribute('data-flow-state');
   if (state !== 'primary' && state !== 'related') return width;
-  const token = element.hasAttribute('data-flow-step')
+  const isFlow = element.hasAttribute('data-flow-step');
+  const token = isFlow
     ? '--st-component-diagramScene-flowStrokeWidth'
     : element.getAttribute('data-edge-emphasis') === 'emphasis'
       ? '--st-component-diagramScene-linkEmphasisStrokeWidth'
       : '--st-component-diagramScene-linkStrokeWidth';
   const resting = parseFloat(style.getPropertyValue(token));
-  return Number.isFinite(resting) ? resting : Math.min(width, RESTING_EDGE_STROKE_WIDTH);
+  const fallbackWidth = isFlow ? RESTING_FLOW_STROKE_WIDTH : RESTING_EDGE_STROKE_WIDTH;
+  return Number.isFinite(resting) ? resting : Math.min(width, fallbackWidth);
 }
 
 /**

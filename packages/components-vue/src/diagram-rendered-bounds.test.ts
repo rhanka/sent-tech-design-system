@@ -195,10 +195,10 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
     // Connectors on the outer perimeter of the model bounds, as orthogonal
     // routes and self-relations are: the half-stroke is the outermost ink.
     const model = { x: 0, y: 0, width: 2398, height: 400 };
-    const edge = 'class="st-diagramSceneFigure-edge" data-scene-edge="e" data-flow-step="r" style="stroke:rgb(100, 116, 139);stroke-width:2.5px;vector-effect:non-scaling-stroke"';
+    const edge = 'class="st-diagramSceneFigure-edge" data-scene-edge="e" data-flow-step="r" style="stroke:rgb(100, 116, 139);stroke-width:1.5px;vector-effect:non-scaling-stroke"';
     const view = paintedWorld(`<div data-scene-occurrence="card"></div><svg><path ${edge}/></svg>`,
       { '[data-scene-occurrence]': { x: 40, y: 40, width: 460, height: 200 }, 'path': model });
-    const pad = 1.25 / 0.45;
+    const pad = 0.75 / 0.45;
     const reads = [0.45, 0.499, 0.5, 0.54, 0.62].map(zoom => {
       Object.assign(view.camera, { zoom, tx: 12.3 + zoom, ty: 45.6 - zoom });
       return measure(view.frame, model, zoom)!;
@@ -239,7 +239,7 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
       }
       // A selected or hovered flow step is drawn thicker: transient, the
       // fit stays where it is, at the fit zoom and from an interactive one.
-      for (const [flowState, width] of [['primary', '3.5px'], ['related', '3px']] as const) {
+      for (const [flowState, width] of [['primary', '2.5px'], ['related', '2px']] as const) {
         polyline.setAttribute('data-flow-state', flowState);
         polyline.style.strokeWidth = width;
         for (const zoom of [undefined, 0.62, 0.45]) {
@@ -247,19 +247,19 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
           expect(state(), `${viewWidth}/${flowState}/${zoom}`).toEqual(settled);
         }
         polyline.removeAttribute('data-flow-state');
-        polyline.style.strokeWidth = '2.5px';
+        polyline.style.strokeWidth = '1.5px';
       }
       // A resting stroke that really is wider still refits.
       polyline.style.strokeWidth = '6px';
       ajuster();
-      expect(state().bounds.width).toBeGreaterThan(settled.bounds.width + 2 * (3 - 1.25) / 0.45 - 0.1);
-      polyline.style.strokeWidth = '2.5px';
+      expect(state().bounds.width).toBeGreaterThan(settled.bounds.width + 2 * (3 - 0.75) / 0.45 - 0.1);
+      polyline.style.strokeWidth = '1.5px';
     }
     // Highlighted, the read is the resting read itself.
     Object.assign(view.camera, { zoom: 0.5, tx: 7, ty: 9 });
     const resting = measure(view.frame, model, 0.5);
     polyline.setAttribute('data-flow-state', 'primary');
-    polyline.style.strokeWidth = '3.5px';
+    polyline.style.strokeWidth = '2.5px';
     expect(measure(view.frame, model, 0.5)).toEqual(resting);
     view.dispose();
   });

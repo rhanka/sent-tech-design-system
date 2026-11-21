@@ -13,13 +13,15 @@ exports[`should compare memory/false grouping, reading order and channel geometr
       ],
       [
         "sys-h2a",
+      ],
+      [
         "sys-engram",
       ],
       [
-        "act-memctl",
+        "sys-track",
       ],
       [
-        "sys-track",
+        "act-memctl",
       ],
     ],
     "oldColumns": [

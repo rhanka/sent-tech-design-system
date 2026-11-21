@@ -141,9 +141,9 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     edgeLabelSize: "18px",
     edgeLabelFontSize: "18px",
     edgeLabelLineHeight: "22px",
-    flowStrokeWidth: "2.5px",
-    flowRelatedStrokeWidth: "3px",
-    flowPrimaryStrokeWidth: "3.5px",
+    flowStrokeWidth: "1.5px",
+    flowRelatedStrokeWidth: "2px",
+    flowPrimaryStrokeWidth: "2.5px",
   },
   diagramIcon: {
     viewBox: "0 0 64 64",

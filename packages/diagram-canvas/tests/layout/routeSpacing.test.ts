@@ -513,12 +513,12 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
     expect(totalStates).toBe(84);
   }, 60_000);
 
-  it("uses one fixed zoneGutter token (>= 96) between sibling zones on both axes and never widens it under traffic or fold (DE-2 ask 3)", () => {
+  it("uses one fixed zoneGutter token (>= 96) between sibling zones on both axes and never widens it under traffic or fold while preserving dynamic leaf-card channels (REQ-R7-14 / REQ-R7-28)", () => {
     expect(DEFAULT_ZONE_GUTTER).toBeGreaterThanOrEqual(96);
     const params = channelMetrics({}, true);
-    // channelGap never widens with route traffic or labels.
+    // Leaf-card channelGap keeps dynamic traffic/label widening from main; only sibling-zone gutters stay fixed.
     expect(channelGap(0, false, params)).toBe(params.gapMin);
-    expect(channelGap(8, true, params)).toBe(params.gapMin);
+    expect(channelGap(8, true, params)).toBeGreaterThan(params.gapMin);
 
     // 4 sibling zones packed in 2x2 have both horizontal and vertical zone gutters.
     const entities: Record<string, Entity> = {};

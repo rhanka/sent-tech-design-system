@@ -18652,7 +18652,7 @@
   }
   .st-diagramSceneFigure-edge {
     fill: none;
-    stroke: var(--st-component-diagramScene-edgeStroke, var(--st-semantic-border-strong));
+    stroke: var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
     stroke-linejoin: round;
     stroke-width: var(--st-component-diagramScene-linkStrokeWidth, 2.5px);
     vector-effect: non-scaling-stroke;
