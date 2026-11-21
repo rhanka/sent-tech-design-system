@@ -32,7 +32,7 @@ const maskId = 'diagram-connector-mask-' + hostId;
 const strings = computed(() => ({ ...DEFAULT_LABELS, ...props.labels }));
 const flowOptions = computed(() => ({ ...props.flows, countTemplate: strings.value.count }));
 const tokens = shallowRef<FlowTokens>(DEFAULT_FLOW_TOKENS);
-const { frameEl: frame, viewportEl: viewport, measure, measureLines, effectiveMetrics,
+const { frameEl: frame, viewportEl: viewport, measure, measureLines, effectiveMetrics, r7Mode,
   fit, zoom, readout, placement, viewportStyle, refitOnFold,
   setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
     props, () => scene.value, camera => props.onCameraChange?.(camera), readFlowTokens,
@@ -42,12 +42,49 @@ const foldState = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?
 const collapsedNow = computed(() => props.collapsed ?? foldState.value);
 watch(() => [...collapsedNow.value].sort().join('\0'), () => refitOnFold(), { flush: 'pre' });
 let previousOrientation: SceneOrientations | undefined, orientationDocument: string | undefined;
+let orientationInputTuple: readonly unknown[] | undefined;
 const orientationSeedByFold = new Map<string, SceneOrientations | undefined>();
 const layout = computed(() => {
-  if (orientationDocument !== props.document.documentId) { orientationDocument = props.document.documentId; previousOrientation = undefined; orientationSeedByFold.clear(); }
-  const foldKey = [...collapsedNow.value].sort().join("\0");
-  const orientationSeed = orientationSeedByFold.has(foldKey) ? orientationSeedByFold.get(foldKey) : previousOrientation;
-  if (!orientationSeedByFold.has(foldKey)) orientationSeedByFold.set(foldKey, orientationSeed);
+  if (orientationDocument !== props.document.documentId) {
+    orientationDocument = props.document.documentId;
+    previousOrientation = undefined;
+    orientationInputTuple = undefined;
+    orientationSeedByFold.clear();
+  }
+  let orientationSeed: SceneOrientations | undefined = previousOrientation;
+  if (r7Mode.value) {
+    const nextInputs: readonly unknown[] = [
+      props.document,
+      props.document.revision,
+      props.view,
+      props.presentation,
+      JSON.stringify(props.hints ?? null),
+      JSON.stringify(effectiveMetrics.value),
+      JSON.stringify(props.rowPack ?? null),
+      props.targetWidth,
+      measureLines.value,
+      measureLines.value.version,
+      JSON.stringify(flowOptions.value),
+      JSON.stringify(tokens.value),
+      props.iconBindings,
+      props.strictIcons ?? true,
+      props.depthParityStart,
+    ];
+    const sameNonFoldInputs =
+      orientationInputTuple !== undefined &&
+      orientationInputTuple.length === nextInputs.length &&
+      nextInputs.every((value, index) => Object.is(value, orientationInputTuple![index]));
+    if (!sameNonFoldInputs) {
+      orientationInputTuple = nextInputs;
+      orientationSeedByFold.clear();
+    }
+    const foldKey = [...collapsedNow.value].sort().join("\0");
+    orientationSeed = orientationSeedByFold.has(foldKey) ? orientationSeedByFold.get(foldKey) : previousOrientation;
+    if (!orientationSeedByFold.has(foldKey)) orientationSeedByFold.set(foldKey, orientationSeed);
+  } else if (orientationSeedByFold.size > 0 || orientationInputTuple !== undefined) {
+    orientationInputTuple = undefined;
+    orientationSeedByFold.clear();
+  }
   const result = layoutScene({
     cache: props.layoutCache ?? ownedCache, document: props.document, registry: props.registry, presentation: props.presentation,
     ...(props.iconBindings === undefined ? {} : { iconBindings: props.iconBindings }),

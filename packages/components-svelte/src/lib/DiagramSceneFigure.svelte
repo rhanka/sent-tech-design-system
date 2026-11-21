@@ -284,28 +284,64 @@
   let tokenMetrics = $state.raw<Partial<LayoutMetrics>>({});
   const effectiveMetrics = $derived({ ...tokenMetrics, ...metrics });
   const lineMeasurer = $derived<LineMeasurer>(measureLines ?? cardLineMeasurer(effectiveMeasure));
+  const r7Mode = $derived(isR7ConnectorPresentation(presentation, view, semanticDocument));
 
   // O-4: the orientation record last emitted, fed back to the next layout
   // call. Deliberately not reactive state: it is an input of the next pass,
   // never a reason to run one. A different document starts with no record.
-  // Returning to a previously visited fold state reuses the orientation seed
-  // recorded on its first visit so unfolding restores initial geometry intact.
+  // On r7 scenes only, returning to a previously visited fold state within the
+  // same non-fold input revision reuses the orientation seed recorded on its
+  // first visit so unfolding restores initial geometry; any revision, hint,
+  // metric, or measurer change resets that map, and legacy scenes keep main O-4.
   let previousOrientation: SceneOrientations | undefined;
   let orientationDocument: string | undefined;
+  let orientationInputTuple: readonly unknown[] | undefined;
   const orientationSeedByFold = new Map<string, SceneOrientations | undefined>();
 
   const layoutResult = $derived.by<LayoutResult>(() => {
     if (orientationDocument !== semanticDocument.documentId) {
       orientationDocument = semanticDocument.documentId;
       previousOrientation = undefined;
+      orientationInputTuple = undefined;
       orientationSeedByFold.clear();
     }
-    const foldKey = [...collapsedNow].sort().join("\0");
-    const orientationSeed = orientationSeedByFold.has(foldKey)
-      ? orientationSeedByFold.get(foldKey)
-      : previousOrientation;
-    if (!orientationSeedByFold.has(foldKey)) {
-      orientationSeedByFold.set(foldKey, orientationSeed);
+    let orientationSeed: SceneOrientations | undefined = previousOrientation;
+    if (r7Mode) {
+      const nextInputs: readonly unknown[] = [
+        semanticDocument,
+        semanticDocument.revision,
+        view,
+        presentation,
+        JSON.stringify(hints ?? null),
+        JSON.stringify(effectiveMetrics),
+        JSON.stringify(rowPack ?? null),
+        targetWidth,
+        lineMeasurer,
+        lineMeasurer.version,
+        JSON.stringify(flowOptions),
+        JSON.stringify(flowTokens),
+        iconBindings,
+        strictIcons,
+        depthParityStart,
+      ];
+      const sameNonFoldInputs =
+        orientationInputTuple !== undefined &&
+        orientationInputTuple.length === nextInputs.length &&
+        nextInputs.every((value, index) => Object.is(value, orientationInputTuple![index]));
+      if (!sameNonFoldInputs) {
+        orientationInputTuple = nextInputs;
+        orientationSeedByFold.clear();
+      }
+      const foldKey = [...collapsedNow].sort().join("\0");
+      orientationSeed = orientationSeedByFold.has(foldKey)
+        ? orientationSeedByFold.get(foldKey)
+        : previousOrientation;
+      if (!orientationSeedByFold.has(foldKey)) {
+        orientationSeedByFold.set(foldKey, orientationSeed);
+      }
+    } else if (orientationSeedByFold.size > 0 || orientationInputTuple !== undefined) {
+      orientationInputTuple = undefined;
+      orientationSeedByFold.clear();
     }
     const result = layoutScene({
       cache: layoutCache ?? ownedCache,
@@ -603,8 +639,6 @@
   // camera that is still at the fit on the fit, and reclamps any other.
   let requestedZoom = $state<number>();
   let atFit = true;
-
-  const r7Mode = $derived(isR7ConnectorPresentation(presentation, view, semanticDocument));
 
   // m3: camera tokens are re-read on every measure and before every camera
   // input, so a post-mount theme change applies without waiting for a resize.
