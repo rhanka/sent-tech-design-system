@@ -630,7 +630,7 @@ describe("DiagramSceneFigure camera", () => {
     expect(view.button("Zoom out").disabled).toBe(true);
   });
 
-  it("Z-6 / AC-15 zoom, fit and reset run no layout and change no rectangle or orientation", async () => {
+  it("Z-6 / AC-15 zoom, fit, reset and resize run no layout and change no rectangle or orientation", async () => {
     const view = mount(WIDE);
     await tick();
     const layoutsBefore = view.layouts.length;
@@ -644,6 +644,7 @@ describe("DiagramSceneFigure camera", () => {
     view.component.setZoom(0.5);
     await tick();
     await fireEvent.click(view.button("Fit"));
+    await resize(1024, 768);
     expect(view.layouts.length).toBe(layoutsBefore);
     // No layout, and no label replay either: the measurer is never called.
     expect(view.counting.mock.calls.length).toBe(measuresBefore);
@@ -1056,14 +1057,14 @@ describe("DiagramSceneFigure folds", () => {
     reducedMotion = true;
     const view = mount(WIDE);
     await tick();
-    const initialLayouts = view.layouts.length;
+    expect(view.layouts.length).toBe(1);
     const first = view.lastLayout();
     expect(Object.keys(first.orientations ?? {})).toContain("root");
     expect(view.drawn()).toContain(occurrence("a1"));
 
     await fireEvent.click(view.toggle("a"));
     await tick();
-    expect(view.layouts.length).toBe(initialLayouts + 1);
+    expect(view.layouts.length).toBe(2);
     expect(view.drawn()).not.toContain(occurrence("a1"));
     expect(view.rectOf("a")).toMatchObject({ width: FIXED_CARD_WIDTH, height: FIXED_CARD_HEIGHT });
     // The second pass equals an engine call fed the first record …
@@ -1087,7 +1088,7 @@ describe("DiagramSceneFigure folds", () => {
     await fireEvent.click(view.toggle("a"));
     await tick();
     expect(view.lastLayout().orientations).toEqual((fed as SceneLaidOut).orientations);
-    expect(view.layouts.length).toBe(initialLayouts + 3);
+    expect(view.layouts.length).toBe(4);
   });
 
   it("passes previousOrientation to the engine: a level inside the hysteresis band keeps its previous orientation", () => {
@@ -1699,7 +1700,7 @@ describe("DiagramSceneFigure cheap minors", () => {
 
 
 describe("DC-2b cache and content size", () => {
-  it("performs no layout during 120 pan + 120 zoom steps and remeasures on resize", async () => {
+  it("publishes only actual size changes and performs no layout during 120 pan + 120 zoom steps and resize", async () => {
     reducedMotion = true;
     const cache = canvas.createLayoutCache();
     const dispose = vi.spyOn(cache, "dispose");
@@ -1725,7 +1726,8 @@ describe("DC-2b cache and content size", () => {
     console.info(`DC-2b Svelte mounted camera: 120 pan + 120 zoom events, p95 ${p95.toFixed(3)} ms <= 16.7 ms; 0 layout/measurement/size emissions`);
     expect(p95).toBeLessThanOrEqual(16.7);
     await resize(1024, 768);
-    expect(cache.stats().misses).toBeGreaterThan(before.misses);
+    expect(cache.stats()).toEqual(before);
+    expect(view.counting).toHaveBeenCalledTimes(measurements);
     expect(size).not.toHaveBeenCalled();
     await fireEvent.click(view.toggle("a"));
     await tick();
@@ -1749,7 +1751,7 @@ describe("DC-2b cache and content size", () => {
     const remove = vi.spyOn(EventTarget.prototype, "removeEventListener");
     const view = mount(WIDE);
     await tick();
-    expect(cache.stats().entries).toBeGreaterThan(0);
+    expect(cache.stats().entries).toBe(1);
     const wheel = add.mock.calls.findIndex(([type], index) => type === "wheel" && add.mock.contexts[index] === view.viewport);
     expect(wheel).toBeGreaterThanOrEqual(0);
     view.unmount();

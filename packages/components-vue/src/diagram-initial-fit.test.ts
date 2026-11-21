@@ -5,6 +5,7 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { readFileSync } from 'node:fs';
 import { convertEngramErdScene, m3ProfileRegistry, shippedExecutorBindings, type EngramErdScene } from '@sentropic/diagram-core';
+import { createLayoutCache } from '@sentropic/diagram-canvas';
 import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svelte';
 import VueScene from './DiagramSceneFigure.vue';
 import { hCondInput } from '../../diagram-canvas/tests/layout/dc2a/h-cond.js';
@@ -247,6 +248,36 @@ it('should apply all scene spacing tokens, metric overrides and bundle markup eq
 });
 
 for (const host of hosts) describe(`${host.name} load without interaction`, () => {
+  for (const name of ['three cards', 'numbered flows']) {
+    it(`should layout ${name} once and fit on resize without touching the layout cache`, async () => {
+      const width = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(900);
+      vi.stubGlobal('innerHeight', 900);
+      const layoutCache = createLayoutCache();
+      const onLayout = vi.fn();
+      const input = cases.find(scene => scene.name === name)!.input();
+      const view = await host.mount({ ...input, layoutCache, onLayout });
+      try {
+        await view.flush();
+        expect.soft(onLayout).toHaveBeenCalledTimes(1);
+        expect.soft(layoutCache.stats()).toMatchObject({ entries: 1, misses: 1 });
+        const initial = geometry(view.element).zoom;
+        const stats = layoutCache.stats();
+
+        width.mockReturnValue(340);
+        window.dispatchEvent(new Event('resize'));
+        await view.flush();
+        expect(geometry(view.element).zoom).toBeLessThan(initial);
+        expect.soft(onLayout).toHaveBeenCalledTimes(1);
+        expect.soft(layoutCache.stats()).toEqual(stats);
+
+        await view.update({ targetWidth: 1024 });
+        await view.flush();
+        expect(onLayout).toHaveBeenCalledTimes(2);
+      } finally {
+        view.dispose();
+      }
+    });
+  }
   it('should use numbered-flow icon bindings and the supplied glyph resolver', async () => {
     const glyph = { face: 'M1 1H63V63H1Z' };
     const resolveGlyph = vi.fn(() => glyph);
