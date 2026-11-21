@@ -17,7 +17,7 @@ if (installedReviewCore.version !== packageManifest.dependencies[reviewCore]) {
   throw new Error(`Focus kit resolved ${reviewCore}@${installedReviewCore.version}`);
 }
 
-const { output } = await build({
+const dossierConfig = {
   configFile: false,
   envDir: false,
   root: packageDir,
@@ -30,39 +30,41 @@ const { output } = await build({
     dedupe: [reviewCore],
   },
   ssr: { noExternal: [reviewCore] },
-  plugins: [
-    {
-      name: "focus-kit-theme",
-      enforce: "pre",
-      transform(css, id) {
-        if (id !== themeFile) return;
-        // The generated theme places this declaration directly inside the
-        // media rule. Move it into the selector before Lightning CSS parses it.
-        return css.replace(/(@media \(prefers-color-scheme: dark\) \{)\s*color-scheme: dark;\s*(:root:not\([^)]*\) \{)/,
-          "$1\n  $2\n    color-scheme: dark;").replace(/:root(?=\[data-color-mode=|:not\()/g, '[data-st-theme="sent-tech"]');
-      },
-    },
-    svelte({ compilerOptions: { css: "external", customElement: false } }),
-  ],
-  build: {
-    outDir: kitDir,
-    emptyOutDir: true,
-    target: "es2022",
-    cssCodeSplit: false,
-    modulePreload: false,
-    rollupOptions: {
-      input: join(domDir, "dossier-entry.ts"),
-      preserveEntrySignatures: "strict",
-      treeshake: true,
-      output: {
-        format: "es",
-        entryFileNames: "renderer/dossier.js",
-        assetFileNames: "renderer/dossier[extname]",
-      },
-    },
-  },
-});
+};
 
+function buildDossier(input, outDir, entryFileNames) {
+  return build({
+    ...dossierConfig,
+    plugins: [
+      {
+        name: "focus-kit-theme",
+        enforce: "pre",
+        transform(css, id) {
+          if (id !== themeFile) return;
+          // Move the theme declaration into the selector before Lightning CSS parses it.
+          return css.replace(/(@media \(prefers-color-scheme: dark\) \{)\s*color-scheme: dark;\s*(:root:not\([^)]*\) \{)/,
+            "$1\n  $2\n    color-scheme: dark;").replace(/:root(?=\[data-color-mode=|:not\()/g, '[data-st-theme="sent-tech"]');
+        },
+      },
+      svelte({ compilerOptions: { css: "external", customElement: false } }),
+    ],
+    build: {
+      outDir,
+      emptyOutDir: true,
+      target: "es2022",
+      cssCodeSplit: false,
+      modulePreload: false,
+      rollupOptions: {
+        input: join(domDir, input),
+        preserveEntrySignatures: "strict",
+        treeshake: true,
+        output: { format: "es", entryFileNames, assetFileNames: "renderer/dossier[extname]" },
+      },
+    },
+  });
+}
+
+const { output } = await buildDossier("dossier-entry.ts", kitDir, "renderer/dossier.js");
 const entry = output.find((file) => file.type === "chunk" && file.isEntry);
 const css = output.find((file) => file.type === "asset" && file.fileName === "renderer/dossier.css");
 if (output.length !== 2 || entry?.fileName !== "renderer/dossier.js" || css === undefined ||
@@ -73,6 +75,9 @@ const renderedModules = Object.entries(entry.modules).filter(([, module]) => mod
 if (renderedModules.some(([id]) => /[\\/]dom[\\/]browser-entry\.ts$|[\\/]dom[\\/].+-element\.svelte$/.test(id))) {
   throw new Error("The dossier kit includes a Shadow DOM element");
 }
+
+// The package import exposes mounting without running the static page bootstrap.
+await buildDossier("dossier-mount.ts", join(packageDir, "dist", "dossier"), "dossier-mount.js");
 
 const entrypoint = "index.html";
 copyFileSync(join(domDir, "dossier-shell.html"), join(kitDir, entrypoint));

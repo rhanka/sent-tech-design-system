@@ -74,6 +74,7 @@ const FIXTURES = join(PACKAGE_DIR, "tests", "fixtures");
 const THEMES_CSS = path.resolve(WORKTREE_ROOT, "packages", "themes", "css");
 const BAR_CHART_SOURCE = path.resolve(WORKTREE_ROOT, "packages", "components-svelte", "src", "lib", "BarChart.svelte");
 const ELEMENTS_ENTRY = join(BROWSER_DIST, "elements.js");
+const DOSSIER_MOUNT_ENTRY = fileURLToPath(import.meta.resolve("@sentropic/design-system-elements/dossier-mount"));
 const PDATA_FIXTURES = [1, 2, 3, 4, 5].map((n) => `bar-chart-pdata-${n}.json`);
 
 /**
@@ -398,6 +399,7 @@ function dossierL6Body() {
 }
 
 const PAGES = {
+  "/focus-mount-host.html": '<!doctype html><title>Focus mount host</title><main data-st-dossier-page></main>',
   "/pilot.html": pageHtml(PILOT_CSP, pilotBody()),
   "/dossier-l6.html": pageHtml(PILOT_CSP, dossierL6Body()),
   "/no-bpmn.html": pageHtml(
@@ -563,7 +565,8 @@ const server = http.createServer((req, res) => {
       res.end(body);
       return;
     }
-  } else if (url.pathname.startsWith("/bundle/")) file = join(BROWSER_DIST, url.pathname.slice("/bundle/".length));
+  } else if (url.pathname === "/focus-mount.js") file = DOSSIER_MOUNT_ENTRY;
+  else if (url.pathname.startsWith("/bundle/")) file = join(BROWSER_DIST, url.pathname.slice("/bundle/".length));
   else if (url.pathname.startsWith("/ref/")) file = join(work, "dist", url.pathname.slice("/ref/".length));
   else if (url.pathname.startsWith("/themes/")) file = join(THEMES_CSS, url.pathname.slice("/themes/".length));
   else if (url.pathname.startsWith("/fixtures/")) file = join(FIXTURES, url.pathname.slice("/fixtures/".length));
@@ -684,7 +687,7 @@ async function waitFor(page, fn, timeout, label) {
   for (;;) {
     let value;
     try {
-      value = await page.evaluate(fn);
+      value = await page.evaluate(`Boolean((${fn})())`);
     } catch {
       /* page navigated? keep waiting */
     }
@@ -1741,6 +1744,36 @@ async function shadowSvg(page, elementSelector) {
 // ---------------------------------------------------------------------------
 // Focus kit payload and standalone assembler.
 // ---------------------------------------------------------------------------
+
+{
+  const observed = await openPage("/focus-mount-host.html");
+  const state = await observed.page.evaluate(async (hostDocument, shellDocument) => {
+    const host = document.querySelector("[data-st-dossier-page]");
+    let reads = 0;
+    let release;
+    const pending = new Promise((resolve) => { release = resolve; });
+    window.fetch = () => {
+      reads++;
+      return pending;
+    };
+    const { mountDossier } = await import("/focus-mount.js");
+    const dossier = mountDossier(host);
+    dossier.render(hostDocument);
+    const root = dossier.reviewRoot;
+    release({ ok: true, json: async () => shellDocument });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    return {
+      reads,
+      ready: window.__focusReady.length,
+      connected: root.parentElement === host,
+      title: host.querySelector("h1")?.textContent,
+    };
+  }, JSON.parse(readFileSync(join(FIXTURES, "focus-artifact", "decision-v2.json"), "utf8")), JSON.parse(focusB5));
+  const label = "Public Focus mount leaves bootstrap to the host";
+  if (assert(state.reads === 0 && state.ready === 1 && state.connected && state.title === "Decision with embedded evidence",
+    label, JSON.stringify(state))) ok(label);
+  await observed.close();
+}
 
 for (const [label, url, offline] of [
   ["Focus strict", "/focus-kit/strict/#annex%3Ameasurements", false],

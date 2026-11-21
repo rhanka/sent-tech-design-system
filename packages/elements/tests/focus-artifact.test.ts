@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, expect, it, vi } from "vitest";
+import { renderHtml } from "@sentropic/focus";
+import { assertFocusDocument, assertFocusForPresentation } from "@sentropic/focus/validate";
 import { mountDossier, type DossierReadyDetail } from "../src/element/dom/dossier-mount.js";
 import b5 from "./fixtures/focus-artifact/b5.json";
 import decisionV1 from "./fixtures/focus-artifact/decision-v1.json";
@@ -48,8 +50,17 @@ it.each([
   node.addEventListener("st-intent", selected);
   mount(node).render(doc);
   expect.soft(node.querySelector("header h1")?.textContent).toBe(doc.title);
-  expect.soft(Array.from(node.querySelectorAll("[data-anchor-id]"), (element) => element.getAttribute("data-anchor-id")).sort())
-    .toEqual([doc.ref, ...ids].sort());
+  expect.soft(Array.from(node.querySelectorAll<HTMLElement>("[data-anchor-id]"), (element) => element.dataset.anchorId))
+    .toEqual([doc.ref, ...ids]);
+  const owner = new DOMParser().parseFromString(renderHtml(assertFocusDocument(doc), {
+    renderMarkdown: () => "",
+    sanitizeHtml: (html) => html,
+  }), "text/html");
+  const ownerReadability = owner.querySelector(".focus-readability");
+  const renderedReadability = node.querySelector("header + section");
+  const readabilityText = (section: Element | null) =>
+    Array.from(section?.children ?? [], (child) => [child.localName, child.textContent]);
+  expect.soft(readabilityText(renderedReadability)).toEqual(readabilityText(ownerReadability));
   expect.soft(node.querySelectorAll("[data-commentable]")).toHaveLength(ids.length + 1);
   for (const element of node.querySelectorAll("[data-anchor-id]")) {
     expect(element.hasAttribute("data-commentable")).toBe(true);
@@ -71,12 +82,19 @@ it.each([
   if (actions > 0) {
     expect(node.textContent).toContain("Identify every existing rendering path.");
     expect(node.textContent).toContain("ecosystem:overview");
-    controls[0]?.click();
-    expect(selected).toHaveBeenCalledOnce();
-    expect(selected.mock.calls[0]?.[0].detail).toEqual({
-      event: "intent", name: "choose-option", target: "opt-a", context: {},
-    });
+    const ownerLabels = Array.from(owner.querySelectorAll(".focus-option > strong"), (label) => label.textContent);
+    expect(Array.from(controls, (control) => control.querySelector(".st-dossier__optionLabel")?.textContent))
+      .toEqual(ownerLabels);
+    for (const control of controls) control.click();
+    expect(selected.mock.calls.map(([event]) => event.detail)).toEqual(["opt-a", "opt-b"].map((target) => ({
+      event: "intent", name: "choose-option", target, context: {},
+    })));
+    expect(Array.from(controls, (control) => control.getAttribute("aria-pressed"))).toEqual(["false", "true"]);
   }
+});
+
+it("accepts the B5 fixture at the Focus presentation gate", () => {
+  expect(() => assertFocusForPresentation(b5)).not.toThrow();
 });
 
 it("announces one completed light DOM root per render", () => {
@@ -127,6 +145,28 @@ it("retains the completed root when Focus rejects a replacement document", () =>
   expect(() => dossier.render({ ...report, citations: [] })).toThrow();
   expect(dossier.reviewRoot).toBe(current);
   expect(current?.isConnected).toBe(true);
+  expect(ready).toHaveBeenCalledOnce();
+});
+
+it.each([
+  { family: "section", doc: { ...b5, sections: b5.sections.map((section) => section.id === "B" ? { ...section, id: b5.ref } : section) } },
+  { family: "option", doc: { ...decisionV2, sections: decisionV2.sections.map((section) => section.kind === "optionSet"
+    ? { ...section, options: section.options?.map((option) => option.id === "opt-b" ? { ...option, id: decisionV2.ref } : option) }
+    : section) } },
+  { family: "source", doc: { ...report, sources: [...report.sources, { ...report.sources[0], id: report.ref }] } },
+  { family: "citation", doc: { ...report, citations: [...report.citations, { ...report.citations[0], id: report.ref }] } },
+  { family: "evidence group", doc: { ...report, evidenceGroups: [...report.evidenceGroups, { ...report.evidenceGroups[0], id: report.ref }] } },
+  { family: "annex", doc: { ...report, annexes: [...report.annexes, { ...report.annexes[0], id: report.ref }] } },
+])("retains the previous root when a $family ID collides with the header anchor", ({ doc }) => {
+  const node = host();
+  const dossier = mount(node);
+  const ready = vi.fn();
+  node.addEventListener("st-dossier-ready", ready);
+  dossier.render(report);
+  const current = dossier.reviewRoot;
+  expect(() => dossier.render(doc)).toThrow(/focus-anchor-equals-document-ref/);
+  expect(dossier.reviewRoot).toBe(current);
+  expect(current?.parentElement).toBe(node);
   expect(ready).toHaveBeenCalledOnce();
 });
 

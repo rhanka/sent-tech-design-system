@@ -64,6 +64,14 @@ export function mountDossier(host: HTMLElement): DossierMount {
     render(document) {
       if (destroyed) throw new Error("The dossier mount has been destroyed");
       const validated = assertFocusDocument(document);
+      const { ref, sections } = validated;
+      const sectionCollision = sections.some((section) => section.id === ref ||
+        (section.kind === "optionSet" && section.options.some(({ id }) => id === ref)));
+      const evidence = "sources" in validated
+        ? [...validated.sources, ...validated.citations, ...validated.evidenceGroups, ...validated.annexes] : [];
+      if (sectionCollision || evidence.some(({ id }) => id === ref)) {
+        throw new Error(`focus-anchor-equals-document-ref: ${ref} is reserved for the header anchor`);
+      }
       clear();
       const current = renderDossierContent(host, validated, (id) => dispatchIntent(host, "choose-option", id), "light");
       rendered = current;

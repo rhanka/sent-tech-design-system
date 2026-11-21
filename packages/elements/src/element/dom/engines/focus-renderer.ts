@@ -17,7 +17,7 @@
  */
 
 import DOMPurify from "dompurify";
-import type { DecisionDossierDocumentV2 } from "@sentropic/focus";
+import type { DecisionDossierDocumentV2, DossierReadability } from "@sentropic/focus";
 import { validateDecisionDossierDocument } from "@sentropic/focus/validate";
 import { renderMarkdown } from "../../markdown/minimal-markdown.js";
 import { createFocusPort } from "../../../ports/focus.js";
@@ -117,9 +117,9 @@ function appendSectionContext(node: HTMLElement, section: Record<string, unknown
 }
 
 /** One plain text element. */
-function text(tag: string, className: string, text: string): HTMLElement {
+function text(tag: string, className: string | undefined, text: string): HTMLElement {
   const node = document.createElement(tag);
-  node.className = className;
+  if (className !== undefined) node.className = className;
   node.textContent = text;
   return node;
 }
@@ -469,6 +469,23 @@ export function renderDossierContent(
   header.append(text(surface === "light" ? "h1" : "h2", "st-dossier__title", field(doc.title) ?? ""));
   header.setAttribute("data-st-dossier-title", "");
   article.append(header);
+
+  const readability = doc.readability as DossierReadability | undefined;
+  if (surface === "light" && readability !== undefined) {
+    const { ownerRequestQuote, stakes, readingBudgetMinutes, stakesLevel } = readability;
+    const context = document.createElement("section");
+    context.className = "st-dossier__readability";
+    if (ownerRequestQuote !== undefined) {
+      context.append(text("h2", undefined, "Owner request"), text("blockquote", undefined, ownerRequestQuote));
+    }
+    if (stakes !== undefined) {
+      context.append(text("h2", undefined, "Stakes"), text("p", undefined, stakes));
+    }
+    if (readingBudgetMinutes !== undefined && stakesLevel !== undefined) {
+      context.append(text("p", "st-dossier__readingTime", `Reading budget: ${readingBudgetMinutes} min (${stakesLevel} stakes)`));
+    }
+    if (context.hasChildNodes()) article.append(context);
+  }
 
   const face = { interactions, recommended, knownOptions, selected, expanded, sections, light: surface === "light", citationCalls };
   function renderSection(record: Record<string, unknown>): HTMLElement {

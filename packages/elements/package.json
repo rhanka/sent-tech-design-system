@@ -41,7 +41,7 @@
     },
     "./dossier-mount": {
       "types": "./dist/element/dom/dossier-mount.d.ts",
-      "import": "./dist/focus-kit/renderer/dossier.js"
+      "import": "./dist/dossier/dossier-mount.js"
     },
     "./focus-kit": {
       "types": "./dist/focus-kit.d.ts",
