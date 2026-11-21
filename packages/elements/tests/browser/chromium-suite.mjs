@@ -1791,6 +1791,7 @@ async function shadowSvg(page, elementSelector) {
   const fixtureDir = join(FIXTURES, "focus-artifact");
   const fixtures = new Map(readdirSync(fixtureDir).filter((file) => file.endsWith(".json"))
     .map((file) => [file, JSON.parse(readFileSync(join(fixtureDir, file), "utf8"))]));
+  fixtures.set("dossier-annotated.json", JSON.parse(readFixture("dossier-annotated.json")).root.document);
   const decision = fixtures.get("decision-v2.json");
   fixtures.set("decision-v2 with glossary and amendments", {
     ...decision,

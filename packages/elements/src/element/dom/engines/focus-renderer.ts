@@ -232,8 +232,7 @@ function displayRecommendedAnswer(question: Record<string, unknown>, sections: r
 }
 
 /** One annotation marker: display state only, never a control (F-R6). */
-function annotationNode(option: Record<string, unknown>): HTMLElement | undefined {
-  const annotation = field(option.annotation);
+export function renderDossierOptionAnnotation(annotation: string | undefined): HTMLElement | undefined {
   if (annotation === undefined || annotation === "none") return undefined;
   const marker = text("span", "st-dossier__optionAnnotation", annotation);
   marker.setAttribute("data-annotation", annotation);
@@ -283,7 +282,7 @@ function optionCard(
       if (consequence !== undefined) card.append(text("span", "st-dossier__optionConsequence", consequence));
       if (bodyText !== undefined) card.append(text("span", "st-dossier__optionBody", bodyText));
     }
-    const marker = annotationNode(option);
+    const marker = renderDossierOptionAnnotation(field(option.annotation));
     if (marker !== undefined) card.append(marker);
     if (annotationComment !== undefined) card.append(text("span", "st-dossier__optionAnnotationComment", annotationComment));
     return card;
@@ -302,7 +301,7 @@ function optionCard(
   if (!(long && bodyText === undefined) && consequence !== undefined) {
     select.append(text("span", "st-dossier__optionConsequence", consequence));
   }
-  const marker = annotationNode(option);
+  const marker = renderDossierOptionAnnotation(field(option.annotation));
   if (marker !== undefined) select.append(marker);
   if (annotationComment !== undefined) select.append(text("span", "st-dossier__optionAnnotationComment", annotationComment));
   if (!long && bodyText !== undefined) {

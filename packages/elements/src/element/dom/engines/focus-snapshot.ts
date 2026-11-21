@@ -1,6 +1,7 @@
 import { isEvidenceDossier, renderHtml, type FocusDocument } from "@sentropic/focus";
 import { DecisionDossierValidationError } from "@sentropic/focus/validate";
 import { appendDossierEvidence, dossierCitations, markDossierAnchor } from "./dossier-evidence.js";
+import { renderDossierOptionAnnotation } from "./focus-renderer.js";
 
 /** Render the pinned Focus snapshot, then wire the kit's controls and anchors. */
 export function renderFocusSnapshot(
@@ -59,11 +60,13 @@ export function renderFocusSnapshot(
     block.setAttribute("data-st-option-set", section.id);
     const cards = block.querySelectorAll<HTMLElement>(":scope > ul > li");
     if (cards.length !== section.options.length) throw new Error("Unexpected Focus option count");
-    for (const [cardIndex, { id, citationRefs }] of section.options.entries()) {
+    for (const [cardIndex, { id, annotation, citationRefs }] of section.options.entries()) {
       const card = cards[cardIndex]!;
       const label = card.firstElementChild!;
       markDossierAnchor(card, id);
       label.classList.add("st-dossier__optionLabel");
+      const marker = renderDossierOptionAnnotation(annotation);
+      if (marker !== undefined) card.querySelector(":scope > .focus-consequence")!.after(marker);
       if (citationRefs?.length) {
         const calls = block.nextElementSibling;
         if (!calls?.matches("p:has(> sup > a.focus-citation)")) throw new Error("Missing Focus option citation calls");
