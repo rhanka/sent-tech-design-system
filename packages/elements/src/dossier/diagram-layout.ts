@@ -1,5 +1,5 @@
 import {
-  DIAGRAM_PRESENTATION_CONTRACT_PIN, localIdOf, occurrenceRef, defaultProfileRegistry,
+  DIAGRAM_PRESENTATION_CONTRACT_PIN, localIdOf, occurrenceRef, createProfileRegistry, embeddedExecutorBindings, genericProfile,
   type OccurrenceRef, type SemanticDocument,
 } from "@sentropic/diagram-core";
 import { layoutCard, layoutZone, defaultCardMeasure, sceneCardMeasure } from "@sentropic/diagram-canvas/diagramCardModel";
@@ -10,6 +10,14 @@ import { DossierDiagramError } from "./diagram-source.js";
 const measure = sceneCardMeasure(defaultCardMeasure);
 const measureLines = cardLineMeasurer(measure);
 const layoutFailures = new Set(["label-unplaced", "label-budget-exhausted", "route-obstructed", "channel-unresolved", "docking-overflow"]);
+// r7 creates fold groups only for types marked as containers. generic@1
+// describes containment but omits that flag. Enable it in this layout registry.
+const profiles = [{
+  ...genericProfile,
+  entityTypes: genericProfile.entityTypes.map((type) => type.id === "container" ? { ...type, container: true } : type),
+}];
+const registry = createProfileRegistry(profiles);
+const bindings = embeddedExecutorBindings(profiles);
 
 export function dossierDiagramLayout(scene: SemanticDocument) {
   const entities: SceneLayoutInput["presentation"]["entities"] = Object.fromEntries(
@@ -26,7 +34,7 @@ export function dossierDiagramLayout(scene: SemanticDocument) {
   const presentation: SceneLayoutInput["presentation"] = {
     contractPin: DIAGRAM_PRESENTATION_CONTRACT_PIN, entities, legends: {}, categoryTokens: [],
   };
-  return { document: scene, registry: defaultProfileRegistry, presentation, measureLines, containers };
+  return { document: scene, registry, bindings, presentation, measureLines, containers };
 }
 
 export function drawDossierDiagram(

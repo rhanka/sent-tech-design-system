@@ -1,7 +1,7 @@
 import { assertFocusDocument } from "@sentropic/focus/validate";
 import { renderMarkdown } from "../markdown/minimal-markdown.js";
 import { createDossierDiagram } from "./engines/dossier-diagrams.js";
-import type { DossierViews } from "../../ports/dossier-views.js";
+import { validateDossierViews } from "../../dossier/dossier-views.js";
 import { connectDossier, renderDossierContent, renderMarkdownToSafeHtml } from "./engines/focus-renderer.js";
 import { renderFocusSnapshot } from "./engines/focus-snapshot.js";
 import { dispatchIntent } from "./intents.js";
@@ -81,9 +81,10 @@ export function mountDossier(host: HTMLElement): DossierMount {
       if (sectionCollision || evidence.some(({ id }) => id === ref)) {
         throw new Error(`focus-anchor-equals-document-ref: ${ref} is reserved for the header anchor`);
       }
-      const views = options?.views as DossierViews | undefined;
-      const diagrams = new Map(sections.filter((section) => section.kind === "diagram").map((section) =>
-        [section.id, createDossierDiagram(host.ownerDocument, section, views?.diagrams[section.id])]));
+      const diagramSections = sections.filter((section) => section.kind === "diagram");
+      const views = validateDossierViews(document, options?.manifest, options?.views, new Set(diagramSections.map(({ id }) => id)));
+      const diagrams = new Map(diagramSections.map((section) =>
+        [section.id, createDossierDiagram(host.ownerDocument, section, views.get(section.id))]));
       const snapshot = renderFocusSnapshot(validated, (source) => renderMarkdownToSafeHtml(renderMarkdown(source, true), true), diagrams);
       const dispatch = (id: string) => dispatchIntent(host, "choose-option", id);
       clear();

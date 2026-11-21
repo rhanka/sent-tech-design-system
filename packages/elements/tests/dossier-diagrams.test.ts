@@ -2,6 +2,7 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { baseDigest, canonicalJson } from "@sentropic/focus/editing";
 import { mountDossier } from "../src/element/dom/dossier-mount.js";
+import { buildDossierViews } from "../src/ports/dossier-views.js";
 import decision from "./fixtures/focus-artifact/decision-v1.json";
 
 const kit = { name: "test-kit", files: [{ path: "index.html", size: 10 }] };
@@ -41,20 +42,14 @@ afterEach(() => {
   document.body.replaceChildren();
 });
 
-// This public port is introduced by FA-D2.
-async function producer() {
-  const path = "../src/ports/dossier-views.ts";
-  return (await import(path)).buildDossierViews;
-}
-
 function companionManifest(doc: unknown, views: unknown) {
   return {
     contract: "focus-dossier/1",
     document: { digest: baseDigest(doc) },
     renderer: { digest: baseDigest(kit) },
     derived: [{
-      path: "views.json", mimeType: "application/json", sha256: baseDigest(views),
-      size: new TextEncoder().encode(canonicalJson(views)).length,
+      path: "views.json", mimeType: "application/json", digest: baseDigest(views),
+      bytes: new TextEncoder().encode(canonicalJson(views)).length,
     }],
   };
 }
@@ -78,16 +73,15 @@ it("renders the authoritative scene and replots it when a container folds or exp
 
 it.each([["ecosystem:overview", "h2a"], [flowchart, "opens"]])(
   "builds the same companion bytes and renders a source-only diagram %s",
-  async (source, label) => {
+  (source, label) => {
     const doc = dossier(source);
     const original = JSON.stringify(doc);
-    const build = await producer();
-    const views = build(doc, kit);
+    const views = buildDossierViews(doc, kit)!;
     expect(views).toMatchObject({
       contract: "focus-views/1", documentDigest: baseDigest(doc), rendererDigest: baseDigest(kit),
       diagrams: { "diagram-1": { scene: { profileRefs: ["generic@1"] }, views: { expanded: expect.any(Object), folded: expect.any(Object) } } },
     });
-    expect(canonicalJson(build(JSON.parse(original), kit))).toBe(canonicalJson(views));
+    expect(canonicalJson(buildDossierViews(JSON.parse(original), kit))).toBe(canonicalJson(views));
     const { host, rendered } = mount();
     rendered.render(doc, { views, manifest: companionManifest(doc, views) });
     expect(host.querySelector('[data-anchor-id="diagram-1"] svg')?.textContent).toContain(label);
@@ -96,14 +90,13 @@ it.each([["ecosystem:overview", "h2a"], [flowchart, "opens"]])(
   },
 );
 
-it("refuses missing scenes and mismatched companions before announcing a root", async () => {
+it("refuses missing scenes and mismatched companions before announcing a root", () => {
   const { host, rendered } = mount();
   const ready = vi.fn();
   host.addEventListener("st-dossier-ready", ready);
   const doc = dossier(flowchart);
   expect(() => rendered.render(doc)).toThrow(/diagram-1/);
-  const build = await producer();
-  const views = build(doc, kit);
+  const views = buildDossierViews(doc, kit)!;
   const manifest = companionManifest(doc, views);
   expect(() => rendered.render({ ...doc, title: "Other document" }, { views, manifest })).toThrow(/document.*digest/i);
   const otherKit = { ...manifest, renderer: { digest: baseDigest("other kit") } };
@@ -115,14 +108,13 @@ it("refuses missing scenes and mismatched companions before announcing a root", 
 
 it.each(["ecosystem:missing", 'flowchart LR\na["A"]\na --> b', 'flowchart LR\na["A"]\na -->|opens| absent'])(
   "refuses unsupported source %s at build time",
-  async (source) => {
-    const build = await producer();
-    expect(() => build(dossier(source), kit)).toThrow(expect.objectContaining({ sectionId: "diagram-1", code: "diagram-source-unsupported" }));
+  (source) => {
+    expect(() => buildDossierViews(dossier(source), kit)).toThrow(expect.objectContaining({ sectionId: "diagram-1", code: "diagram-source-unsupported" }));
   },
 );
 
-it("reports all text overflow diagnostics before returning a companion or mounting", async () => {
-  const longTitle = "W".repeat(1600);
+it("reports all text overflow diagnostics before returning a companion or mounting", () => {
+  const longTitle = "W".repeat(180);
   const overflow = structuredClone(scene);
   overflow.entities["entity:child"].attributes.name.value = longTitle;
   const doc = dossier(flowchart, { scene: overflow });
@@ -132,7 +124,6 @@ it("reports all text overflow diagnostics before returning a companion or mounti
     diagnostics: expect.arrayContaining([expect.objectContaining({ code: "card-overflow", slot: "title", text: longTitle })]),
   });
   expect(() => rendered.render(doc)).toThrow(refused);
-  const build = await producer();
-  expect(() => build(doc, kit)).toThrow(refused);
+  expect(() => buildDossierViews(doc, kit)).toThrow(refused);
   expect(rendered.reviewRoot).toBeNull();
 });

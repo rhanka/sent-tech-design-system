@@ -1,8 +1,7 @@
 import type { DiagramNode } from "@sentropic/focus";
-import type { SemanticDocument } from "@sentropic/diagram-core";
+import { canonicalJson } from "@sentropic/focus/editing";
 import { drawDossierDiagram, prepareDossierDiagram } from "../../../dossier/diagram-layout.js";
-import { DossierDiagramError } from "../../../dossier/diagram-source.js";
-import type { DossierDiagramViews } from "../../../ports/dossier-views.js";
+import { DossierDiagramError, readDossierScene } from "../../../dossier/diagram-source.js";
 
 let nextScene = 0;
 
@@ -25,12 +24,19 @@ function sceneSvg(owner: Document, source: string, prefix: string): SVGSVGElemen
   return svg;
 }
 
-export function createDossierDiagram(owner: Document, section: DiagramNode, derived?: DossierDiagramViews): HTMLElement {
-  const scene = section.scene ?? derived?.scene;
-  if (scene === undefined) {
+export function createDossierDiagram(
+  owner: Document, section: DiagramNode, derived?: { readonly scene: unknown; readonly views: Record<string, unknown> },
+): HTMLElement {
+  const sceneInput = section.scene ?? derived?.scene;
+  if (sceneInput === undefined) {
     throw new DossierDiagramError(section.id, "diagram-views-invalid", "A scene or a views companion is required");
   }
-  const { layout, expanded } = prepareDossierDiagram(section.id, section.alt, scene as SemanticDocument);
+  const scene = readDossierScene(section.id, sceneInput);
+  const { layout, expanded, folded } = prepareDossierDiagram(section.id, section.alt, scene);
+  if (derived !== undefined && (canonicalJson(derived.scene) !== canonicalJson(scene) ||
+      canonicalJson(derived.views) !== canonicalJson({ expanded: expanded.result.view, folded: folded.result.view }))) {
+    throw new DossierDiagramError(section.id, "diagram-views-invalid", "The views companion does not match the scene");
+  }
   const drawing = owner.createElement("div");
   drawing.className = "st-dossier__diagramDrawing";
   const viewport = owner.createElement("div");
