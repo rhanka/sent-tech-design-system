@@ -29,6 +29,7 @@
     "./catalog.json": "./catalog.json",
     "./envelope.json": "./envelope.json",
     "./schemas/*": "./schemas/*",
+    "./shells/*": "./dist/shells/*",
     "./bpmn": {
       "types": "./dist/element/bpmn.d.ts",
       "import": "./dist/element/bpmn.js"
@@ -59,6 +60,7 @@
   "devDependencies": {
     "@a2ui/web_core": "0.14.0",
     "@json-render/svelte": "0.21.3",
+    "fflate": "0.8.3",
     "ts-json-schema-generator": "2.9.0"
   }
 }

@@ -1,9 +1,10 @@
 // The browser bundle build of the elements package (§6.6, §15 AC-L2):
 // ONE ESM build whose core (the entry closure — validator, error panel,
-// BarChart and the default theme) renders `<st-bar-chart>`, and whose lazy
+// charts and the default theme) renders the two chart elements, and whose lazy
 // chunks load on the first mount of the element that needs them:
 //
-//   chunks/bpmn-canvas-*.js   engine:bpmn-canvas  (bpmn-moddle + canvas)
+//   chunks/bpmn-canvas-*.js   engine:bpmn-canvas  (F1 and bpmn-moddle)
+//   chunks/bpmn-mount-*.js    engine:bpmn-canvas  (canvas view)
 //   chunks/focus-renderer-*  engine:focus        (focus port + minimal renderer)
 //   chunks/forge-*            theme:forge        (non-default theme)
 //   chunks/entropic-*         theme:entropic     (non-default theme)
@@ -17,8 +18,7 @@
 // ENTRY loads statically is "core" (it is page weight no matter which
 // element mounts); everything the engine facades pull in at load time
 // belongs to the engine's group, and the two non-default themes to theirs.
-// Anything unclassified falls back to "core" — the budget stays honest to
-// the pessimistic side.
+// Anything unclassified falls back to "core".
 //
 // 0 Python. Node only. Wired as `npm run build:browser` in package.json.
 
@@ -29,13 +29,18 @@ import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { brotliCompressSync, gzipSync } from "node:zlib";
+import { buildComponentShells } from "./build-shells.mjs";
 
 const packageDir = dirname(dirname(fileURLToPath(import.meta.url)));
 const browserDir = join(packageDir, "dist", "browser");
 
-/** Only the three wrapper components compile as custom elements (§6.2). */
-function isCustomElement(options) {
-  return typeof options.filename === "string" && options.filename.endsWith("-element.svelte");
+function compileSvelte() {
+  return svelte({
+    compilerOptions: {
+      customElement: ({ filename }) => typeof filename === "string" && filename.endsWith("-element.svelte"),
+      css: "injected",
+    },
+  });
 }
 
 // --- 1. The bundle -----------------------------------------------------------
@@ -44,16 +49,7 @@ const result = await build({
   configFile: false,
   root: packageDir,
   logLevel: "warn",
-  plugins: [
-    svelte({
-      compilerOptions: {
-        customElement: isCustomElement,
-        // §6.2 known risk: every component ships its styles inside the chunk
-        // (no external .css), so a chunk is self-contained in the shadow DOM.
-        css: "injected",
-      },
-    }),
-  ],
+  plugins: [compileSvelte()],
   build: {
     outDir: "dist/browser",
     emptyOutDir: true,
@@ -126,7 +122,7 @@ function reach(startNames, withDynamic) {
 const coreSet = reach([entry.fileName], false);
 
 const facades = [
-  { group: "engine:bpmn-canvas", match: (id) => /[\\/]engines[\\/]bpmn-canvas\.ts$/.test(id) },
+  { group: "engine:bpmn-canvas", match: (id) => /[\\/](?:bpmn-canvas|bpmn-mount)\.ts$/.test(id) },
   { group: "engine:focus", match: (id) => /[\\/]engines[\\/]focus-renderer\.ts$/.test(id) },
   { group: "theme:forge", match: (id) => /[\\/]forge\.css(\?raw)?$/.test(id) },
   { group: "theme:entropic", match: (id) => /[\\/]entropic\.css(\?raw)?$/.test(id) },
@@ -214,3 +210,4 @@ console.log(lines.join("\n"));
 console.log(`sri.json pins ${Object.keys(files).length} files under ${relative(packageDir, browserDir)}`);
 const stats = statSync(join(browserDir, "sri.json"));
 console.log(`sri.json itself: ${stats.size} raw bytes (not listed in its own manifest)`);
+await buildComponentShells(packageDir, compileSvelte);

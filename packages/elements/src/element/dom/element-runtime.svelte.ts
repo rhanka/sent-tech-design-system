@@ -15,14 +15,15 @@
  * hosts observe the element itself, never the runtime.
  */
 
-import { prepareBpmnEnvelope } from '../bpmn.js';
-import { bpmnWatermark, type HostConfig } from '../bpmn-types.js';
-export { bpmnWatermark, type HostConfig } from '../bpmn-types.js';
+import type { prepareBpmnEnvelope } from "../bpmn.js";
+import type { HostConfig } from "../bpmn-types.js";
+export type { HostConfig } from "../bpmn-types.js";
 import type { Diagnostic } from "../../validate/index.js";
 import { engineLoadFailed } from "../../validate/diagnostics.js";
 import { normalizeEnvelopeInput } from "../../validate/envelope.js";
 import { getValidator, registerPort, type EngineChunkName } from "./validator.js";
 import type { TimeSeriesChartProps } from "../../contracts/time-series-chart.js";
+import type { SemanticPort } from "../../ports/types.js";
 
 /** The wrapper states a host can observe. */
 export type ElementState = "idle" | "rendering" | "rendered" | "refused";
@@ -42,31 +43,9 @@ export type ElementPayload =
 /** The catalogue components L2 wraps. */
 export type ElementComponent = "BarChart" | "BpmnCanvas" | "DecisionDossier" | "TimeSeriesChart";
 
-/** The engine module each lazy component loads (chunk names per §6.6). */
-const ENGINE_CHUNKS: Partial<Record<ElementComponent, EngineChunkName>> = {
-  BpmnCanvas: "bpmn-canvas",
-  DecisionDossier: "focus",
-};
-
-/** Memoized engine chunk loads — one dynamic import per page and engine. */
-const engineCache = new Map<ElementComponent, Promise<unknown>>();
-
-async function loadEngine(component: ElementComponent): Promise<unknown> {
-  const cached = engineCache.get(component);
-  if (cached !== undefined) return cached;
-  const loading =
-    component === "BpmnCanvas"
-      ? import("./engines/bpmn-canvas.js")
-      : component === "DecisionDossier"
-        ? import("./engines/focus-renderer.js")
-        : Promise.reject(new Error("core components load no engine chunk"));
-  const tracked = loading.catch((error) => {
-    engineCache.delete(component);
-    throw error;
-  });
-  engineCache.set(component, tracked);
-  return tracked;
-}
+type ElementEngine =
+  | { chunk: "bpmn-canvas"; prepare: typeof prepareBpmnEnvelope }
+  | { chunk: "focus"; load: () => Promise<{ port: SemanticPort }> };
 
 /** The envelope root: `component`, `id` and the component's props. */
 function envelopeRoot(envelope: unknown): Record<string, unknown> {
@@ -101,8 +80,7 @@ function componentMismatch(component: ElementComponent, found: string): Diagnost
  * — structural, contract, mode, size, or another chunk's missing port —
  * refuses in core without loading.
  */
-function needsOwnEngine(component: ElementComponent, errors: readonly Diagnostic[]): boolean {
-  const chunk = ENGINE_CHUNKS[component];
+function needsOwnEngine(chunk: EngineChunkName | undefined, errors: readonly Diagnostic[]): boolean {
   if (chunk === undefined) return false;
   return (
     errors.length > 0 &&
@@ -126,7 +104,7 @@ function needsOwnEngine(component: ElementComponent, errors: readonly Diagnostic
  * Create the runtime of one element instance. Called once from the wrapper
  * component's script; the returned holder is reactive in that component.
  */
-export function createElementRuntime(component: ElementComponent) {
+export function createElementRuntime(component: ElementComponent, engine?: ElementEngine) {
   let state = $state<ElementState>("idle");
   let diagnostics = $state<readonly Diagnostic[]>([]);
   let payload = $state<ElementPayload | null>(null);
@@ -174,11 +152,13 @@ export function createElementRuntime(component: ElementComponent) {
   async function ingest(envelope: unknown, hostConfig: HostConfig | undefined): Promise<void> {
     const ticket = ++sequence;
     state = "rendering";
-    if (component === 'BpmnCanvas') {
-      const prepared = await prepareBpmnEnvelope(envelope, hostConfig);
+    if (engine?.chunk === "bpmn-canvas") {
+      const prepared = await engine.prepare(envelope, hostConfig);
       if (ticket !== sequence) return;
-      diagnostics = [...prepared.diagnostics]; payload = prepared.payload;
-      settle(prepared.payload === null ? 'refused' : 'rendered'); return;
+      diagnostics = [...prepared.diagnostics];
+      payload = prepared.payload;
+      settle(payload === null ? "refused" : "rendered");
+      return;
     }
 
     try {
@@ -203,18 +183,17 @@ export function createElementRuntime(component: ElementComponent) {
         return;
       }
       const errors = first.filter((diagnostic) => diagnostic.severity === "error");
-      if (errors.length > 0 && !needsOwnEngine(component, errors)) {
+      if (errors.length > 0 && !needsOwnEngine(engine?.chunk, errors)) {
         diagnostics = [...first];
         payload = null;
         settle("refused");
         return;
       }
-      const chunk = ENGINE_CHUNKS[component];
-      if (chunk !== undefined && errors.length > 0) {
+      if (engine !== undefined && errors.length > 0) {
         // Structurally clean, port missing: load THIS component's chunk,
         // register its port, and validate again — semantics included.
-        const engine = await loadEngine(component);
-        registerPort(chunk, (engine as { port: import("../../ports/types.js").SemanticPort }).port);
+        const { port } = await engine.load();
+        registerPort(engine.chunk, port);
         if (ticket !== sequence) return;
         const second = getValidator().validate(normalized.ok ? normalized.value : envelope);
         if (ticket !== sequence) return;
@@ -250,7 +229,7 @@ export function createElementRuntime(component: ElementComponent) {
     } catch (error) {
       if (ticket !== sequence) return;
       const cause = error instanceof Error ? error.message : String(error);
-      const chunk = ENGINE_CHUNKS[component];
+      const chunk = engine?.chunk;
       ownDiagnostics(
         chunk === undefined
           ? {

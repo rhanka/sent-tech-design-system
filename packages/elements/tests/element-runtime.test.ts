@@ -39,6 +39,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 
 import { createElementRuntime, type ElementComponent } from "../src/element/dom/element-runtime.svelte.js";
+import { prepareBpmnEnvelope } from "../src/element/bpmn.js";
 import type { Diagnostic } from "../src/validate/diagnostics.js";
 
 /** The mocked engines' shared state: evaluation counters and fake ports. */
@@ -63,7 +64,6 @@ vi.mock("../src/element/dom/engines/bpmn-canvas.ts", () => {
       document === undefined
         ? { ok: false as const, code: "st-no-document", message: "the document is missing" }
         : { ok: true as const, xml: "<svg></svg>", warnings: [] },
-    renderBpmn: async () => () => {},
   };
 });
 vi.mock("../src/element/dom/engines/focus-renderer.ts", () => {
@@ -95,7 +95,12 @@ async function ingestDelta(
 ): Promise<{ readonly state: string; readonly diagnostics: readonly Diagnostic[]; readonly payload: unknown; readonly focus: number; readonly bpmn: number }> {
   const beforeFocus = engines.focusLoads;
   const beforeBpmn = engines.bpmnLoads;
-  const runtime = createElementRuntime(component);
+  const engine = component === "BpmnCanvas"
+    ? { chunk: "bpmn-canvas" as const, prepare: prepareBpmnEnvelope }
+    : component === "DecisionDossier"
+      ? { chunk: "focus" as const, load: () => import("../src/element/dom/engines/focus-renderer.js") }
+      : undefined;
+  const runtime = createElementRuntime(component, engine);
   await runtime.ingest(envelope, undefined);
   return {
     state: runtime.state,
