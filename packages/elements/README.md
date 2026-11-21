@@ -93,9 +93,10 @@ ISO timestamps with millisecond precision. The common `referenceLines`,
 `bands` and `goalLine` use value units, with whole UTC epoch milliseconds
 for any reference line on the x axis.
 
-The element exposes the observations in an accessible time, series and value
-table. Rows sort by ascending time, with input series order breaking ties.
-When labels repeat, the table appends each matching series ID to its label.
+The element exposes the observations in an accessible table with columns for
+time, series label, series ID and value. Rows sort by ascending time, with
+input series order breaking ties. The series ID identifies each series even
+when labels collide.
 For the transcript, validate the envelope against the pinned catalogue, then
 call `formatTimeSeriesMarkdown(envelope.root)` with the validated props.
 It formats the same rows, escapes Markdown delimiters and fails with a

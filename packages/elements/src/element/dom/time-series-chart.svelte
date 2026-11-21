@@ -46,12 +46,22 @@
   <table>
     <caption>{label}</caption>
     <thead>
-      <tr><th scope="col">Time (UTC)</th><th scope="col">Series</th><th scope="col">Value</th></tr>
+      <tr>
+        <th scope="col">Time (UTC)</th>
+        <th scope="col">Series</th>
+        <th scope="col">Series ID</th>
+        <th scope="col">Value</th>
+      </tr>
     </thead>
     <tbody>
-      {#each rows as row}
+      {#each rows as row (`${row.x}:${row.seriesId}`)}
         {@const instant = formatTimeSeriesInstant(row.x)}
-        <tr><td><time datetime={instant}>{instant}</time></td><td>{row.series}</td><td>{row.y}</td></tr>
+        <tr>
+          <td><time datetime={instant}>{instant}</time></td>
+          <td>{row.seriesLabel}</td>
+          <td>{row.seriesId}</td>
+          <td>{row.y}</td>
+        </tr>
       {/each}
     </tbody>
   </table>

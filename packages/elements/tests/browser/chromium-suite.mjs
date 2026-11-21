@@ -373,8 +373,9 @@ const PAGES = {
       envelope.root.series[0].data = envelope.root.series[0].data.slice(0, values.length)
         .map((point, index) => ({ ...point, y: values[index] }));
     })}
-    ${mutatedIsland("st-time-series-chart", "repeated-series-labels", TIME_SERIES_FIXTURES[1], (envelope) => {
+    ${mutatedIsland("st-time-series-chart", "colliding-series-labels", TIME_SERIES_FIXTURES[1], (envelope) => {
       for (const series of envelope.root.series) series.label = "Sensor";
+      envelope.root.series.push({ id: "third", label: "Sensor (east)", data: [{ x: 1767229200000, y: 30 }] });
     })}
     <script type="module" src="/bundle/elements.js"></script>
   `),
@@ -990,9 +991,9 @@ async function shadowSvg(page, elementSelector) {
   });
   for (const [index, name] of TIME_SERIES_FIXTURES.entries()) {
     const { root } = JSON.parse(readFixture(name));
-    const expectedRows = root.series.flatMap((series) => series.data.map(({ x, y }) => [x, series.label, String(y)]))
+    const expectedRows = root.series.flatMap((series) => series.data.map(({ x, y }) => [x, series.label, series.id, String(y)]))
       .sort(([left], [right]) => left - right)
-      .map(([x, label, value]) => [new Date(x).toISOString(), label, value]);
+      .map(([x, label, id, value]) => [new Date(x).toISOString(), label, id, value]);
     const mount = mounts[index];
     assert(mount.state === "rendered", name, `expected rendered, got ${mount.state}`);
     assert(JSON.stringify(mount.rows) === JSON.stringify(expectedRows), name, `table differs: ${JSON.stringify(mount.rows)}`);
@@ -1019,11 +1020,14 @@ async function shadowSvg(page, elementSelector) {
   assert(nearEqual.state === "rendered" && nearEqualPoints.length === 3 &&
     nearEqualPoints[0][1] > nearEqualPoints[1][1] && nearEqualPoints[1][1] > nearEqualPoints[2][1],
     "time-series: near-equal values", `plot differs: ${JSON.stringify(nearEqual)}`);
-  const repeatedLabels = mounts.find(({ id }) => id === "repeated-series-labels");
-  const repeatedSeries = repeatedLabels.rows.map(([, series]) => series);
-  assert(repeatedLabels.state === "rendered" && JSON.stringify(repeatedSeries) === JSON.stringify([
-    "Sensor (east)", "Sensor (east)", "Sensor (west)", "Sensor (west)", "Sensor (east)", "Sensor (west)",
-  ]), "time-series: repeated labels retain identity", `table differs: ${JSON.stringify(repeatedLabels.rows)}`);
+  const collidingLabels = mounts.find(({ id }) => id === "colliding-series-labels");
+  const sharedInstant = "2026-01-01T01:00:00.000Z";
+  const collidingRows = collidingLabels.rows.filter(([instant]) => instant === sharedInstant);
+  assert(collidingLabels.state === "rendered" && JSON.stringify(collidingRows) === JSON.stringify([
+    [sharedInstant, "Sensor", "east", "21"],
+    [sharedInstant, "Sensor", "west", "14"],
+    [sharedInstant, "Sensor (east)", "third", "30"],
+  ]), "time-series: colliding labels retain series IDs", `table differs: ${JSON.stringify(collidingRows)}`);
   assert(["Warning", "Deployment", "Expected range", "Goal"].every((label) => mounts[2].overlays.includes(label)),
     "time-series: overlays", `missing labels: ${JSON.stringify(mounts[2].overlays)}`);
   assert(observed.requests.every((url) => !url.includes("/chunks/bpmn-")), "time-series: isolated", "requested a BPMN chunk");

@@ -47,40 +47,45 @@ describe.each([
 
 describe("TimeSeriesChart Markdown fallback", () => {
   it("should use UTC milliseconds and break timestamp ties by series order", () => {
-    expect(formatTimeSeriesMarkdown(single.root)).toContain("| 2026-01-01T00:00:00.123Z | Jobs | 4 |");
+    expect(formatTimeSeriesMarkdown(single.root)).toContain("| 2026-01-01T00:00:00.123Z | Jobs | jobs | 4 |");
     expect(formatTimeSeriesMarkdown(multi.root).split("\n").slice(2)).toEqual([
-      "| 2026-01-01T00:00:00.000Z | East | 10 |",
-      "| 2026-01-01T01:00:00.000Z | East | 21 |",
-      "| 2026-01-01T01:00:00.000Z | West | 14 |",
-      "| 2026-01-01T02:00:00.000Z | West | 8 |",
-      "| 2026-01-01T03:00:00.000Z | East | 15 |",
-      "| 2026-01-01T03:00:00.000Z | West | 20 |",
+      "| 2026-01-01T00:00:00.000Z | East | east | 10 |",
+      "| 2026-01-01T01:00:00.000Z | East | east | 21 |",
+      "| 2026-01-01T01:00:00.000Z | West | west | 14 |",
+      "| 2026-01-01T02:00:00.000Z | West | west | 8 |",
+      "| 2026-01-01T03:00:00.000Z | East | east | 15 |",
+      "| 2026-01-01T03:00:00.000Z | West | west | 20 |",
     ]);
     for (const fixture of [single, multi, thresholds]) {
       expect(Buffer.byteLength(formatTimeSeriesMarkdown(fixture.root))).toBeLessThanOrEqual(4096);
     }
   });
 
-  it("should escape labels while retaining one row per observation", () => {
+  it("should escape labels and IDs while retaining one row per observation", () => {
     const props = {
       ...single.root,
-      series: [{ id: "series", label: "🧪 | <em>\nNext", data: [{ x: 1, y: 2 }] }],
+      series: [{ id: "series|a\\b", label: "🧪 | <em>\nNext", data: [{ x: 1, y: 2 }] }],
     };
     expect(formatTimeSeriesMarkdown(props).split("\n").at(-1)).toBe(
-      "| 1970-01-01T00:00:00.001Z | 🧪 &#124; &#60;em&#62;&#10;Next | 2 |",
+      "| 1970-01-01T00:00:00.001Z | 🧪 &#124; &#60;em&#62;&#10;Next | series&#124;a&#92;b | 2 |",
     );
   });
 
-  it("should identify each series when labels repeat", () => {
-    const props = { ...multi.root, series: multi.root.series.map((series) => ({ ...series, label: "Sensor" })) };
-    expect(formatTimeSeriesMarkdown(props).split("\n").slice(2)).toEqual([
-      "| 2026-01-01T00:00:00.000Z | Sensor (east) | 10 |",
-      "| 2026-01-01T01:00:00.000Z | Sensor (east) | 21 |",
-      "| 2026-01-01T01:00:00.000Z | Sensor (west) | 14 |",
-      "| 2026-01-01T02:00:00.000Z | Sensor (west) | 8 |",
-      "| 2026-01-01T03:00:00.000Z | Sensor (east) | 15 |",
-      "| 2026-01-01T03:00:00.000Z | Sensor (west) | 20 |",
+  it("should preserve series IDs when a label matches a disambiguated label", () => {
+    const props = {
+      ...multi.root,
+      series: [
+        ...multi.root.series.map((series) => ({ ...series, label: "Sensor" })),
+        { id: "third", label: "Sensor (east)", data: [{ x: 1767229200000, y: 30 }] },
+      ],
+    };
+    const markdown = formatTimeSeriesMarkdown(props);
+    expect(markdown.split("\n").filter((row) => row.startsWith("| 2026-01-01T01:00:00.000Z |"))).toEqual([
+      "| 2026-01-01T01:00:00.000Z | Sensor | east | 21 |",
+      "| 2026-01-01T01:00:00.000Z | Sensor | west | 14 |",
+      "| 2026-01-01T01:00:00.000Z | Sensor (east) | third | 30 |",
     ]);
+    expect(markdown).toContain("| Time (UTC) | Series | Series ID | Value |");
   });
 
   it("should accept 4096 UTF-8 bytes and refuse an overflow without dropping rows", () => {
