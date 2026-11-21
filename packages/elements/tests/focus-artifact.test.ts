@@ -120,7 +120,12 @@ it("resolves a fragment set before an asynchronous render and handles subsequent
   const node = host();
   const dossier = mount(node);
   expect(dossier.reviewRoot).toBeNull();
+  const ready = vi.fn(() => {
+    expect(node.querySelector<HTMLDetailsElement>('[data-anchor-id="annex:measurements"]')?.open).toBe(false);
+  });
+  node.addEventListener("st-dossier-ready", ready);
   await Promise.resolve().then(() => dossier.render(report));
+  expect(ready).toHaveBeenCalledOnce();
   const annex = node.querySelector<HTMLDetailsElement>('[data-anchor-id="annex:measurements"]');
   expect(annex?.open).toBe(true);
   expect(document.activeElement).toBe(annex);
@@ -128,7 +133,9 @@ it("resolves a fragment set before an asynchronous render and handles subsequent
   window.dispatchEvent(new HashChangeEvent("hashchange"));
   const citation = node.querySelector('[data-anchor-id="shared-input"]');
   expect(document.activeElement).toBe(citation);
-  history.replaceState(null, "", "#unknown");
-  window.dispatchEvent(new HashChangeEvent("hashchange"));
-  expect(document.activeElement).toBe(citation);
+  for (const hash of ["#unknown", "#%broken"]) {
+    history.replaceState(null, "", hash);
+    window.dispatchEvent(new HashChangeEvent("hashchange"));
+    expect(document.activeElement).toBe(citation);
+  }
 });
