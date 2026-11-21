@@ -457,7 +457,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     vector-effect: non-scaling-stroke;
   }
   .st-diagramSceneFigure-edge[data-edge-emphasis="emphasis"] {
-    stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive, #001f33));
+    stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
     stroke-width: var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px);
   }
   .st-diagramSceneFigure-edge[data-edge-stroke="dashed"] {
