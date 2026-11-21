@@ -2333,7 +2333,30 @@ export function validateView(
     }
 
     if (view.presentation.diagram === undefined) {
+      const allowedKeys = new Set([
+        "id",
+        "relation",
+        "endpoints",
+        "waypoints",
+        "strokeStyle",
+        "arrowhead",
+        "emphasis",
+      ]);
       const raw = occurrence as unknown as Record<string, unknown>;
+      for (const field of Object.keys(raw).sort()) {
+        if (!allowedKeys.has(field)) {
+          diagnostics.push(
+            diagnostic({
+              code: "occurrence-endpoint-mismatch",
+              severity: "error",
+              path: `${path}.${field}`,
+              message: `relation occurrence field ${field} is not part of the closed connector vocabulary`,
+              refs: [occurrence.id],
+              details: { check: "presentation-shape-invalid" },
+            }),
+          );
+        }
+      }
       if (raw["strokeStyle"] !== undefined && !isStrokeStyle(raw["strokeStyle"])) {
         diagnostics.push(
           diagnostic({

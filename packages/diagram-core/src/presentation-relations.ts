@@ -35,11 +35,25 @@ function normalizeViewForPinnedAdapter(
     isPresentationContractV2Pin(diagram["contractPin"] as unknown as PresentationPin);
   const isFrozenV1 = hasDiagram && !isV2;
 
+  const ALLOWED_RELATION_OCCURRENCE_KEYS = new Set([
+    "id",
+    "relation",
+    "endpoints",
+    "waypoints",
+    "strokeStyle",
+    "arrowhead",
+    "emphasis",
+  ]);
   const connectorDiagnostics: Diagnostic[] = [];
   let relationOccurrencesChanged = false;
   const normalizedRelations: Record<string, unknown> = {};
   for (const key of Object.keys(view.relationOccurrences).sort()) {
     const occurrence = view.relationOccurrences[key] as unknown as Record<string, unknown>;
+    for (const field of Object.keys(occurrence).sort()) {
+      if (!ALLOWED_RELATION_OCCURRENCE_KEYS.has(field)) {
+        connectorDiagnostics.push(shapeInvalid(`relationOccurrences.${key}.${field}`));
+      }
+    }
     const arrowhead = occurrence["arrowhead"];
     if (arrowhead !== undefined && (isFrozenV1 || !isArrowheadKind(arrowhead))) {
       connectorDiagnostics.push(shapeInvalid(`relationOccurrences.${key}.arrowhead`));
