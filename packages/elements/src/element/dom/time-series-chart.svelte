@@ -1,7 +1,7 @@
 <script lang="ts">
   import LineChart, { type LineChartTone } from "../../../../components-svelte/src/lib/LineChart.svelte";
   import type { TimeSeriesChartProps } from "../../contracts/time-series-chart.js";
-  import { formatTimeSeriesInstant, timeSeriesRows } from "../../time-series.js";
+  import { formatTimeSeriesId, formatTimeSeriesInstant, timeSeriesRows } from "../../time-series.js";
 
   let { label, series, referenceLines, bands, goalLine }: TimeSeriesChartProps = $props();
   const tones: readonly LineChartTone[] = [
@@ -25,14 +25,34 @@
     return start === Infinity ? undefined : [start, end];
   });
 
+  const seriesNames = $derived.by(() => {
+    const labels = series.map(({ label }) => label.trim().replace(/\s+/g, " "));
+    const counts = new Map<string, number>();
+    for (const label of labels) counts.set(label, (counts.get(label) ?? 0) + 1);
+    // Reserve existing labels before assigning new names to repeated labels.
+    const used = new Set(counts.keys());
+    return series.map(({ id, label }, index) => {
+      const normalized = labels[index]!;
+      if (counts.get(normalized) === 1) return label;
+      const base = `${normalized} [ID: ${formatTimeSeriesId(id)}]`.trimStart();
+      let name = base;
+      for (let suffix = 2; used.has(name); suffix += 1) {
+        name = `${base} (${suffix})`;
+      }
+      used.add(name);
+      return name;
+    });
+  });
+
   const rows = $derived(timeSeriesRows({ label, series }));
 </script>
 
 <section aria-label={label}>
   {#each series as entry, index (entry.id)}
-    <h3>{entry.label}</h3>
+    {@const name = seriesNames[index]!}
+    <h3>{name}</h3>
     <LineChart
-      label={entry.label}
+      label={name}
       data={entry.data}
       tone={tones[index % tones.length]}
       {xDomain}

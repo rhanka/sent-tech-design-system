@@ -376,6 +376,8 @@ const PAGES = {
     ${mutatedIsland("st-time-series-chart", "colliding-series-labels", TIME_SERIES_FIXTURES[1], (envelope) => {
       for (const series of envelope.root.series) series.label = "Sensor";
       envelope.root.series.push({ id: "third", label: "Sensor (east)", data: [{ x: 1767229200000, y: 30 }] });
+      envelope.root.series.push({ id: "fourth", label: "Sensor [ID: east]", data: [{ x: 1767229200001, y: 30 }] });
+      envelope.root.series.push({ id: "east ", label: "Sensor", data: [{ x: 1767229200001, y: 30 }] });
     })}
     <script type="module" src="/bundle/elements.js"></script>
   `),
@@ -976,6 +978,7 @@ async function shadowSvg(page, elementSelector) {
         state: element.state ?? null,
         rows: [...(root?.querySelectorAll("table tbody tr") ?? [])].map((row) =>
           [...row.cells].map((cell) => cell.textContent.trim())),
+        headings: [...(root?.querySelectorAll("h3") ?? [])].map((heading) => heading.innerText),
         series: [...(root?.querySelectorAll('[role="img"]') ?? [])].map((chart) => {
           const line = chart.querySelector("path.st-lineChart__line");
           return {
@@ -1028,6 +1031,13 @@ async function shadowSvg(page, elementSelector) {
     [sharedInstant, "Sensor", "west", "14"],
     [sharedInstant, "Sensor (east)", "third", "30"],
   ]), "time-series: colliding labels retain series IDs", `table differs: ${JSON.stringify(collidingRows)}`);
+  const expectedNames = ["Sensor [ID: east] (2)", "Sensor [ID: west]", "Sensor (east)", "Sensor [ID: east]", "Sensor [ID: east\\u0020]"];
+  const headingsMatch = assert(JSON.stringify(collidingLabels.headings) === JSON.stringify(expectedNames),
+    "time-series: duplicate labels have distinct headings", JSON.stringify(collidingLabels.headings));
+  const accessibleNames = collidingLabels.series.map(({ label }) => label);
+  const namesMatch = assert(JSON.stringify(accessibleNames) === JSON.stringify(expectedNames),
+    "time-series: duplicate labels have distinct SVG names", JSON.stringify(accessibleNames));
+  if (headingsMatch && namesMatch) ok("time-series: duplicate labels distinguish headings and SVG names");
   assert(["Warning", "Deployment", "Expected range", "Goal"].every((label) => mounts[2].overlays.includes(label)),
     "time-series: overlays", `missing labels: ${JSON.stringify(mounts[2].overlays)}`);
   assert(observed.requests.every((url) => !url.includes("/chunks/bpmn-")), "time-series: isolated", "requested a BPMN chunk");
