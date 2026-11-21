@@ -181,8 +181,9 @@ lists per-component capabilities, complete HTML sizes, and SHA-256
 fingerprints for the shell files, module entries and input schemas. The
 limits are strictly below 960 KiB raw and at most 150 KiB gzip (fflate
 level 6, mtime 0). Consumers can pin the standalone temporal schema for
-FA-H9 and use the qualified module and shell entries for CK-H1a. Provide the
-envelope through the element property or insert a child JSON island at
+FA-H9 and read the qualified module and shell files relative to the
+manifest for CK-H1a. Provide the envelope through the element property
+or insert a child JSON island at
 `<!-- st-envelope -->` in the HTML template. Escape every `<` in the island
 JSON as `\u003c` when embedding it in HTML. Keep the inline module bytes
 for the shell's CSP hash, and measure the final HTML again if the host adds
