@@ -3,11 +3,10 @@ import { cleanup, render } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { readFileSync } from 'node:fs';
-import { convertEngramErdScene, m3ProfileRegistry, shippedExecutorBindings, type EngramErdScene } from '@sentropic/diagram-core';
 import { createLayoutCache } from '@sentropic/diagram-canvas';
 import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svelte';
 import VueScene from './DiagramSceneFigure.vue';
+import { erdFixture } from '../../diagram-canvas/tests/host-support/erdFixture.js';
 import { hCondInput } from '../../diagram-canvas/tests/layout/dc2a/h-cond.js';
 import { flowFixture } from '../../diagram-canvas/test-support/flowFixture.js';
 
@@ -51,11 +50,9 @@ const cases = [
   }))),
   { name: 'ontology through the flow host', input: () => ({ ...hCondInput('ontology', false), measureLines: undefined, flows: {} }) },
 ];
-const erdFixture = (JSON.parse(readFileSync('../diagram-core/tests/fixtures/erd/ERD-SCENES.json', 'utf8')).ontologies as EngramErdScene[])[0]!;
-const erdInput = () => ({ ...convertEngramErdScene(erdFixture), registry: m3ProfileRegistry, bindings: shippedExecutorBindings });
 const cardlessCases = [
-  { name: 'ERD', input: erdInput, selector: '[data-scene-kind="erd"]' },
-  { name: 'ERD with explicit flows', input: () => ({ ...erdInput(), flows: {} }), selector: '[data-scene-kind="erd"]' },
+  { name: 'ERD', input: erdFixture, selector: '[data-scene-kind="erd"]' },
+  { name: 'ERD with explicit flows', input: () => ({ ...erdFixture(), flows: {} }), selector: '[data-scene-kind="erd"]' },
   { name: 'label-only numbered flow', input: () => {
     const input = cases.find(scene => scene.name === 'numbered flows')!.input();
     const entities = Object.fromEntries(Object.entries(input.presentation.entities).map(([id, entry]) =>
