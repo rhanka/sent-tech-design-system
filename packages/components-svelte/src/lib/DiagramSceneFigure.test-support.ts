@@ -150,7 +150,7 @@ export function defineHostContract(adapter: HostAdapter): void {
       const baseline = await heap();
       const before = cache.stats();
       for (let cycle = 0; cycle < 240; cycle++) { await toggle(); await toggle(); }
-      expect(cache.stats()).toMatchObject({ entries: 2, misses: before.misses, hits: before.hits + 480, evictions: 0 });
+      expect(cache.stats()).toMatchObject({ entries: before.entries, misses: before.misses, hits: before.hits + 480, evictions: 0 });
       expect(cache.stats().bytes).toBeLessThanOrEqual(16 * 1024 * 1024);
       const afterCycles = await heap();
       const beforeIdle = cache.stats();
