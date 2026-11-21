@@ -17,11 +17,13 @@
  */
 
 import DOMPurify from "dompurify";
+import type { DecisionDossierDocumentV2 } from "@sentropic/focus";
 import { validateDecisionDossierDocument } from "@sentropic/focus/validate";
 import { renderMarkdown } from "../../markdown/minimal-markdown.js";
 import { createFocusPort } from "../../../ports/focus.js";
 import type { SemanticPort } from "../../../ports/types.js";
 import { adoptDossierSheet, FOLD_THRESHOLD_CHARS } from "./dossier-styles.js";
+import { appendDossierEvidence, dossierCitations, markDossierAnchor } from "./dossier-evidence.js";
 
 /** The §4.3 semantic port: the pinned focus validator is the authority. */
 export const port: SemanticPort = createFocusPort(validateDecisionDossierDocument);
@@ -78,13 +80,14 @@ export function isLongOption(option: Record<string, unknown>): boolean {
  * so the invariant is on survivors, never on input shape.
  */
 const SANITIZER_ALLOWED_TAGS = ["p", "ul", "li", "code", "a", "strong", "em"];
+const TABLE_TAGS = ["table", "thead", "tbody", "tr", "th", "td"];
 const SANITIZER_ALLOWED_ATTR = ["href"];
 const SANITIZER_ALLOWED_URI = /^https:\/\/[^\s"'<>]+$/i;
 
 /** Sanitize one HTML string to the `renderMarkdown` subset (U-14). */
-export function renderMarkdownToSafeHtml(html: string): string {
+export function renderMarkdownToSafeHtml(html: string, tables = false): string {
   return DOMPurify.sanitize(html, {
-    ALLOWED_TAGS: SANITIZER_ALLOWED_TAGS,
+    ALLOWED_TAGS: tables ? [...SANITIZER_ALLOWED_TAGS, ...TABLE_TAGS] : SANITIZER_ALLOWED_TAGS,
     ALLOWED_ATTR: SANITIZER_ALLOWED_ATTR,
     ALLOW_DATA_ATTR: false,
     ALLOWED_URI_REGEXP: SANITIZER_ALLOWED_URI,
@@ -92,11 +95,25 @@ export function renderMarkdownToSafeHtml(html: string): string {
 }
 
 /** One sanitized markdown block (U-14): the only `innerHTML` path. */
-function markdownBlock(source: string): HTMLDivElement {
+function markdownBlock(source: string, tables: boolean): HTMLDivElement {
   const block = document.createElement("div");
   block.className = "st-dossier__prose";
-  block.innerHTML = renderMarkdownToSafeHtml(renderMarkdown(source));
+  block.innerHTML = renderMarkdownToSafeHtml(renderMarkdown(source, tables), tables);
   return block;
+}
+
+function appendSectionContext(node: HTMLElement, section: Record<string, unknown>): void {
+  if (Array.isArray(section.inputs) && section.inputs.length > 0) {
+    const inputs = document.createElement("ul");
+    for (const input of section.inputs) {
+      const ref = field(input.ref) ?? "";
+      const label = field(input.label) ?? ref;
+      inputs.append(text("li", "st-dossier__input", label === ref ? ref : `${label} (${ref})`));
+    }
+    node.append(inputs);
+  }
+  const criterion = field(section.completionCriterion);
+  if (criterion !== undefined) node.append(text("p", "st-dossier__criterion", criterion));
 }
 
 /** One plain text element. */
@@ -299,11 +316,15 @@ function sectionNode(
     readonly selected: Map<string, string>;
     readonly expanded: Set<string>;
     readonly sections: readonly unknown[];
+    readonly light: boolean;
+    readonly citationCalls: ReturnType<typeof dossierCitations>;
   },
 ): HTMLElement {
   const kind = field(section.kind) ?? "";
   if (kind === "prose") {
-    return markdownBlock(field(section.markdown) ?? "");
+    const prose = markdownBlock(field(section.markdown) ?? "", face.light);
+    appendSectionContext(prose, section);
+    return prose;
   }
   if (kind === "question") {
     const wrap = document.createElement("div");
@@ -328,6 +349,7 @@ function sectionNode(
     if (recommendedAnswer !== undefined) {
       wrap.append(text("p", "st-dossier__questionReco", displayRecommendedAnswer(section, face.sections) ?? recommendedAnswer));
     }
+    appendSectionContext(wrap, section);
     return wrap;
   }
   if (kind === "optionSet") {
@@ -344,14 +366,15 @@ function sectionNode(
     const recommendedId = recommendedKey !== undefined ? face.recommended.get(recommendedKey) : undefined;
     for (const record of records) {
       const optionId = field(record.id) ?? "";
-      wrap.append(
-        optionCard(record, {
-          disabled: optionDisabled(face.interactions, optionId),
-          recommended: recommendedId !== undefined && recommendedId === optionId,
-          selected: face.selected.get(setId) === optionId,
-          expanded: face.expanded.has(optionId),
-        }),
-      );
+      const card = optionCard(record, {
+        disabled: optionDisabled(face.interactions, optionId),
+        recommended: recommendedId !== undefined && recommendedId === optionId,
+        selected: face.selected.get(setId) === optionId,
+        expanded: face.expanded.has(optionId),
+      });
+      if (optionId !== "") markDossierAnchor(card, optionId);
+      face.citationCalls(record.citationRefs, card);
+      wrap.append(card);
     }
     return wrap;
   }
@@ -390,7 +413,8 @@ function sectionNode(
     wrap.setAttribute("data-st-diagram", field(section.id) ?? "");
     const alt = field(section.alt);
     if (alt !== undefined) wrap.append(text("figcaption", "st-dossier__diagramAlt", alt));
-    const pre = text("pre", "st-dossier__diagramSource", field(section.source) ?? "");
+    const reference = [field(section.renderComponent), field(section.sourceRef)].filter(Boolean).join(": ");
+    const pre = text("pre", "st-dossier__diagramSource", field(section.source) ?? reference);
     pre.setAttribute("data-st-diagram-source", "");
     wrap.append(pre);
     return wrap;
@@ -412,7 +436,7 @@ export function renderDossier(
 ): () => void {
   const root = node.getRootNode();
   adoptDossierSheet(root instanceof ShadowRoot || root instanceof Document ? root : document);
-  return renderDossierContent(node, document_, dispatch, "h2").destroy;
+  return renderDossierContent(node, document_, dispatch, "shadow").destroy;
 }
 
 /** Shared DOM renderer. Its light DOM caller supplies the external stylesheet. */
@@ -420,11 +444,13 @@ export function renderDossierContent(
   node: HTMLElement,
   document_: unknown,
   dispatch: DossierDispatch,
-  titleTag: "h1" | "h2",
+  surface: "light" | "shadow",
 ): { reviewRoot: HTMLElement; destroy: () => void } {
   const doc = (document_ ?? {}) as Record<string, unknown>;
   const sections = Array.isArray(doc.sections) ? doc.sections : [];
   const interactions = Array.isArray(doc.interactions) ? doc.interactions : [];
+  const evidence = doc.schemaVersion === 2 ? document_ as DecisionDossierDocumentV2 : undefined;
+  const citationCalls = dossierCitations(evidence);
   const recommended = recommendedByQuestion(sections);
   const knownOptions = optionIdsOf(sections);
   const selected = new Map<string, string>();
@@ -436,13 +462,22 @@ export function renderDossierContent(
 
   const header = document.createElement("header");
   header.className = "st-dossier__header";
+  const ref = field(doc.ref);
+  if (ref !== undefined) markDossierAnchor(header, ref);
   const subject = field(doc.subject);
   if (subject !== undefined) header.append(text("p", "st-dossier__subject", subject));
-  header.append(text(titleTag, "st-dossier__title", field(doc.title) ?? ""));
+  header.append(text(surface === "light" ? "h1" : "h2", "st-dossier__title", field(doc.title) ?? ""));
   header.setAttribute("data-st-dossier-title", "");
   article.append(header);
 
-  const face = { interactions, recommended, knownOptions, selected, expanded, sections };
+  const face = { interactions, recommended, knownOptions, selected, expanded, sections, light: surface === "light", citationCalls };
+  function renderSection(record: Record<string, unknown>): HTMLElement {
+    const rendered = sectionNode(record, face);
+    const id = field(record.id);
+    if (id !== undefined) markDossierAnchor(rendered, id);
+    citationCalls(record.citationRefs, rendered);
+    return rendered;
+  }
   const questionIds = new Set<string>();
   for (const section of sections) {
     if (typeof section !== "object" || section === null) continue;
@@ -460,19 +495,19 @@ export function renderDossierContent(
       // Deferred when linked to a question; an orphan renders at its position.
       const linkId = field(record.questionId);
       if (linkId !== undefined && questionIds.has(linkId)) continue;
-      const rendered = sectionNode(record, face);
+      const rendered = renderSection(record);
       setWraps.push(rendered);
       article.append(rendered);
       continue;
     }
-    article.append(sectionNode(record, face));
+    article.append(renderSection(record));
     if (record.kind === "question") {
       const questionId = field(record.id);
       if (questionId === undefined) continue;
       for (const linked of optionSetsForQuestion(sections, questionId)) {
         if (emittedSets.has(linked)) continue;
         emittedSets.add(linked);
-        const rendered = sectionNode(linked, face);
+        const rendered = renderSection(linked);
         setWraps.push(rendered);
         article.append(rendered);
       }
@@ -502,6 +537,7 @@ export function renderDossierContent(
     note.setAttribute("data-st-provenance", source);
     article.append(note);
   }
+  if (evidence !== undefined) appendDossierEvidence(article, evidence, citationCalls);
 
   /** Apply one selection move inside its option set (F-R3 single rule). */
   const applySelection = (select: Element): void => {
@@ -527,7 +563,7 @@ export function renderDossierContent(
   const onClick = (event: Event): void => {
     const target = event.target;
     if (!(target instanceof Element)) return;
-    if (target.closest("[data-option-fold]") !== null) return;
+    if (target.closest("[data-option-fold], a") !== null) return;
     const select = target.closest("[data-option-id]");
     if (select !== null && node.contains(select) && select.closest("[data-option-disabled]") === null) {
       applySelection(select);

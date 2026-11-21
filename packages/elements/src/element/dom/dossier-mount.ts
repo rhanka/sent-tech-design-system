@@ -29,7 +29,7 @@ export function mountDossier(host: HTMLElement): DossierMount {
     render(document) {
       if (destroyed) throw new Error("The dossier mount has been destroyed");
       clear();
-      rendered = renderDossierContent(host, document, (id) => dispatchIntent(host, "choose-option", id), "h1");
+      rendered = renderDossierContent(host, document, (id) => dispatchIntent(host, "choose-option", id), "light");
       host.dispatchEvent(new CustomEvent<DossierReadyDetail>("st-dossier-ready", {
         detail: { reviewRoot: rendered.reviewRoot },
         bubbles: true,

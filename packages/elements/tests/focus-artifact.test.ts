@@ -105,6 +105,8 @@ it("marks the B5 header and section containers around h1, p, li and table", () =
   const dossier = mount(host());
   dossier.render(b5);
   const root = dossier.reviewRoot;
+  expect(Array.from(root?.querySelectorAll<HTMLElement>(":scope > [data-anchor-id]") ?? [], (node) => node.dataset.anchorId))
+    .toEqual(["focus-test", "A", "B", "C"]);
   expect(root?.querySelector("h1")?.closest("[data-anchor-id][data-commentable]")?.getAttribute("data-anchor-id"))
     .toBe("focus-test");
   for (const selector of ["p strong", "li strong", "table td strong"]) {
