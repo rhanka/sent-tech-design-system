@@ -250,7 +250,7 @@ export const barChartContract: ContractModule = {
     element: "st-bar-chart",
     engine: "core",
     events: ["select"],
-    fallback: "svg",
+    fallback: "text",
   },
   example: {
     id: "root",

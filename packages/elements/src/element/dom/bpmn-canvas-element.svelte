@@ -13,12 +13,13 @@
   import { createElementRuntime, type HostConfig } from "./element-runtime.svelte.js";
   import { themedRoot, themeIdOf, colorModeOf } from "./element-action.js";
   import { envelopeIslandInput, readHostConfigIsland } from "./input.js";
-  import { renderBpmnAction } from "./render-action.js";
+  import { prepareBpmnEnvelope } from "../bpmn.js";
+  import { renderBpmnAction } from "./render-bpmn-action.js";
   import ErrorPanel from "./error-panel.svelte";
 
   let { envelope, hostConfig }: { envelope?: unknown; hostConfig?: HostConfig } = $props();
 
-  const runtime = createElementRuntime("BpmnCanvas");
+  const runtime = createElementRuntime("BpmnCanvas", { chunk: "bpmn-canvas", prepare: prepareBpmnEnvelope });
 
   let islandEnvelope = $state<unknown>(undefined);
   let islandHostConfig = $state<HostConfig | undefined>(undefined);
