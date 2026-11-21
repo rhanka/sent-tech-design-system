@@ -1,0 +1,97 @@
+{
+  "carries": [
+    "T-44",
+    "T-45"
+  ],
+  "hints": {
+    "vocabulary": "ds-layout-hints@2",
+    "mode": "stage-columns",
+    "grids": {
+      "root": {
+        "stage_columns": [
+          "s1",
+          "s2",
+          "s3",
+          "s4"
+        ],
+        "transverse_bands": [
+          {
+            "id": "t1",
+            "items": [
+              "entity:t1-s1",
+              "entity:t1-s2",
+              "entity:t1-s3",
+              "entity:t1-s4"
+            ]
+          },
+          {
+            "id": "t2",
+            "items": [
+              "entity:t2-s1",
+              "entity:t2-s2",
+              "entity:t2-s3",
+              "entity:t2-s4"
+            ]
+          },
+          {
+            "id": "t3",
+            "items": [
+              "entity:t3-s1",
+              "entity:t3-s2",
+              "entity:t3-s3",
+              "entity:t3-s4"
+            ]
+          },
+          {
+            "id": "foot",
+            "items": [
+              "entity:transverse"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:t1-s1": {
+            "column": "s1"
+          },
+          "entity:t1-s2": {
+            "column": "s2"
+          },
+          "entity:t1-s3": {
+            "column": "s3"
+          },
+          "entity:t1-s4": {
+            "column": "s4"
+          },
+          "entity:t2-s1": {
+            "column": "s1"
+          },
+          "entity:t2-s2": {
+            "column": "s2"
+          },
+          "entity:t2-s3": {
+            "column": "s3"
+          },
+          "entity:t2-s4": {
+            "column": "s4"
+          },
+          "entity:t3-s1": {
+            "column": "s1"
+          },
+          "entity:t3-s2": {
+            "column": "s2"
+          },
+          "entity:t3-s3": {
+            "column": "s3"
+          },
+          "entity:t3-s4": {
+            "column": "s4"
+          },
+          "entity:transverse": {
+            "column": "s1",
+            "to_column": "s4"
+          }
+        }
+      }
+    }
+  }
+}

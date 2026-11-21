@@ -1,0 +1,96 @@
+{
+  "carries": [
+    "T-58"
+  ],
+  "hints": {
+    "vocabulary": "ds-layout-hints@2",
+    "mode": "stage-columns",
+    "grids": {
+      "root": {
+        "stage_columns": [
+          "s1",
+          "t1",
+          "t2",
+          "t3"
+        ],
+        "transverse_bands": [
+          {
+            "id": "upper",
+            "items": [
+              "entity:stack",
+              "entity:zone-p"
+            ]
+          },
+          {
+            "id": "lower",
+            "items": [
+              "entity:zone-q"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:stack": {
+            "column": "s1"
+          },
+          "entity:zone-p": {
+            "column": "t1",
+            "to_column": "t3"
+          },
+          "entity:zone-q": {
+            "column": "t1",
+            "to_column": "t3"
+          }
+        }
+      },
+      "entity:zone-p": {
+        "stage_columns": "inherit",
+        "transverse_bands": [
+          {
+            "id": "r1",
+            "items": [
+              "entity:p-1-t1",
+              "entity:p-1-t2",
+              "entity:p-1-t3"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:p-1-t1": {
+            "column": "t1"
+          },
+          "entity:p-1-t2": {
+            "column": "t2"
+          },
+          "entity:p-1-t3": {
+            "column": "t3"
+          }
+        }
+      },
+      "entity:zone-q": {
+        "stage_columns": "inherit",
+        "transverse_bands": [
+          {
+            "id": "r1",
+            "items": [
+              "entity:q-1-t1",
+              "entity:q-1-t3"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:q-1-t1": {
+            "column": "t1"
+          },
+          "entity:q-1-t3": {
+            "column": "t3"
+          }
+        }
+      }
+    },
+    "stacks": {
+      "entity:stack": {
+        "axis": "column"
+      }
+    }
+  }
+}

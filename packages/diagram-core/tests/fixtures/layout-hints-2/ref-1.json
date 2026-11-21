@@ -1,0 +1,202 @@
+{
+  "carries": [
+    "T-35",
+    "T-38",
+    "T-39",
+    "T-40",
+    "T-41",
+    "T-42"
+  ],
+  "hints": {
+    "vocabulary": "ds-layout-hints@2",
+    "mode": "stage-columns",
+    "grids": {
+      "root": {
+        "stage_columns": [
+          "s1",
+          "s2",
+          "s3",
+          "s4",
+          "s5"
+        ],
+        "transverse_bands": [
+          {
+            "id": "r1",
+            "items": [
+              "entity:source-a",
+              "entity:host"
+            ]
+          },
+          {
+            "id": "r2",
+            "items": [
+              "entity:source-b"
+            ]
+          },
+          {
+            "id": "r3",
+            "items": []
+          },
+          {
+            "id": "r4",
+            "items": [
+              "entity:source-c"
+            ]
+          },
+          {
+            "id": "r5",
+            "items": [
+              "entity:source-d"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:source-a": {
+            "column": "s1"
+          },
+          "entity:host": {
+            "column": "s2",
+            "to_column": "s5",
+            "to_band": "r5"
+          },
+          "entity:source-b": {
+            "column": "s1",
+            "to_band": "r3"
+          },
+          "entity:source-c": {
+            "column": "s1"
+          },
+          "entity:source-d": {
+            "column": "s1"
+          }
+        }
+      },
+      "entity:host": {
+        "stage_columns": "inherit",
+        "transverse_bands": [
+          {
+            "id": "t1",
+            "items": [
+              "entity:trigger-a",
+              "entity:engine",
+              "entity:storage",
+              "entity:exposure"
+            ]
+          },
+          {
+            "id": "t2",
+            "items": [
+              "entity:trigger-b"
+            ]
+          },
+          {
+            "id": "t3",
+            "items": [
+              "entity:trigger-c"
+            ]
+          },
+          {
+            "id": "t4",
+            "items": [
+              "entity:trigger-d"
+            ]
+          },
+          {
+            "id": "t5",
+            "items": [
+              "entity:trigger-e"
+            ]
+          },
+          {
+            "id": "t6",
+            "items": [
+              "entity:transverse"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:trigger-a": {
+            "column": "s2"
+          },
+          "entity:engine": {
+            "column": "s3",
+            "to_band": "t5"
+          },
+          "entity:storage": {
+            "column": "s4",
+            "to_band": "t5"
+          },
+          "entity:exposure": {
+            "column": "s5",
+            "to_band": "t5"
+          },
+          "entity:trigger-b": {
+            "column": "s2"
+          },
+          "entity:trigger-c": {
+            "column": "s2"
+          },
+          "entity:trigger-d": {
+            "column": "s2"
+          },
+          "entity:trigger-e": {
+            "column": "s2"
+          },
+          "entity:transverse": {
+            "column": "s2",
+            "to_column": "s4"
+          }
+        }
+      },
+      "entity:storage": {
+        "stage_columns": [
+          "c1",
+          "c2"
+        ],
+        "transverse_bands": [
+          {
+            "id": "u1",
+            "items": [
+              "entity:store-a"
+            ]
+          },
+          {
+            "id": "u2",
+            "items": [
+              "entity:store-b"
+            ]
+          },
+          {
+            "id": "u3",
+            "items": [
+              "entity:store-c",
+              "entity:store-d"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:store-a": {
+            "column": "c1",
+            "to_column": "c2"
+          },
+          "entity:store-b": {
+            "column": "c1",
+            "to_column": "c2"
+          },
+          "entity:store-c": {
+            "column": "c1"
+          },
+          "entity:store-d": {
+            "column": "c2"
+          }
+        }
+      }
+    },
+    "stacks": {
+      "entity:engine": {
+        "axis": "column"
+      }
+    },
+    "fanIn": "comb"
+  }
+}

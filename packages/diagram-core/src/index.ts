@@ -36,4 +36,5 @@ export { relationBaseType, relationSchema } from "./relation-types.js";
 export { withFlowTypes, validateFlows, flowIndex, type FlowStep, type FlowScenario, type FlowIndex } from "./flows.js";
 export * from "./erd.js";
 export * from "./layout-hints.js";
+export * from "./layout-hints-v2.js";
 export * from "./notation.js";

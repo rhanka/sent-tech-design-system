@@ -1,0 +1,117 @@
+{
+  "carries": [
+    "T-48",
+    "T-49",
+    "T-50",
+    "T-51"
+  ],
+  "hints": {
+    "vocabulary": "ds-layout-hints@2",
+    "mode": "stage-columns",
+    "grids": {
+      "root": {
+        "stage_columns": [
+          "s1",
+          "s2",
+          "s3",
+          "s4",
+          "s5"
+        ],
+        "transverse_bands": [
+          {
+            "id": "l1",
+            "items": [
+              "entity:source-l1"
+            ]
+          },
+          {
+            "id": "l2",
+            "items": [
+              "entity:source-l2"
+            ]
+          },
+          {
+            "id": "l3",
+            "items": [
+              "entity:source-l3",
+              "entity:path-s2",
+              "entity:path-s3",
+              "entity:path-s4",
+              "entity:path-s5"
+            ]
+          },
+          {
+            "id": "l4",
+            "items": [
+              "entity:source-l4"
+            ]
+          },
+          {
+            "id": "l5",
+            "items": [
+              "entity:source-l5",
+              "entity:sink"
+            ]
+          },
+          {
+            "id": "l6",
+            "items": [
+              "entity:source-l6"
+            ]
+          },
+          {
+            "id": "note",
+            "items": [
+              "entity:note"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:source-l1": {
+            "column": "s1"
+          },
+          "entity:source-l2": {
+            "column": "s1"
+          },
+          "entity:source-l3": {
+            "column": "s1"
+          },
+          "entity:path-s2": {
+            "column": "s2",
+            "to_band": "l4"
+          },
+          "entity:path-s3": {
+            "column": "s3",
+            "to_band": "l4"
+          },
+          "entity:path-s4": {
+            "column": "s4",
+            "to_band": "l4"
+          },
+          "entity:path-s5": {
+            "column": "s5",
+            "to_band": "l4"
+          },
+          "entity:source-l4": {
+            "column": "s1"
+          },
+          "entity:source-l5": {
+            "column": "s1"
+          },
+          "entity:sink": {
+            "column": "s5",
+            "to_band": "l6"
+          },
+          "entity:source-l6": {
+            "column": "s1"
+          },
+          "entity:note": {
+            "column": "s2",
+            "to_column": "s5"
+          }
+        }
+      }
+    },
+    "fanIn": "comb"
+  }
+}
