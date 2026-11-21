@@ -152,6 +152,39 @@ describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
     expect(await adapter.list(TENANT, TARGET)).toMatchObject([{ authorship: { author: CLAUDE, runId: session.runId } }]);
   });
 
+  it("rejects an ambiguous two-argument registration when the tool call was already registered in two workspaces", async () => {
+    const { adapter, registerLiveSession } = makeFixture();
+    const toolCallId = "shared-tool-call";
+    registerLiveSession({ workspaceId: "ws-a" }, toolCallId, { actor: CLAUDE, runId: "run-a" });
+    registerLiveSession({ workspaceId: "ws-b" }, toolCallId, { actor: CLAUDE, runId: "run-b" });
+
+    expect(() => registerLiveSession(toolCallId, { actor: CLAUDE, runId: "run-ambiguous" })).toThrow(/workspace/);
+
+    const inC = await adapter.create({
+      tenant: "ws-c", target: TARGET, body: "C comment", provenance: { toolCallId },
+    });
+    expect(inC.authorship.runId).toBeUndefined();
+    expect((await adapter.list("ws-c", TARGET))[0]?.authorship.runId).toBeUndefined();
+  });
+
+  it("applies a replacement two-argument registration after the only comment is deleted", async () => {
+    const { adapter, registerLiveSession } = makeFixture();
+    const toolCallId = "replaced-tool-call";
+    registerLiveSession(toolCallId, { actor: CLAUDE, runId: "run-old" });
+    const first = await adapter.create({
+      tenant: TENANT, target: TARGET, body: "First", provenance: { toolCallId },
+    });
+    expect(first.authorship.runId).toBe("run-old");
+    await adapter.remove(TENANT, first.id);
+
+    registerLiveSession(toolCallId, { actor: CLAUDE, runId: "run-new" });
+    const second = await adapter.create({
+      tenant: TENANT, target: TARGET, body: "Second", provenance: { toolCallId },
+    });
+    expect(second.authorship.runId).toBe("run-new");
+    expect(await adapter.list(TENANT, TARGET)).toMatchObject([{ authorship: { runId: "run-new" } }]);
+  });
+
   it("rejects replies against a different target and edits by an author without comment rights", async () => {
     const { adapter, setCaller } = makeFixture();
     const root = await adapter.create({ tenant: TENANT, target: TARGET, body: "Original" });
