@@ -75,6 +75,10 @@ describe("AC-L1: catalogue identity and component inventory", () => {
     expect(Object.keys(catalog.components).sort()).toEqual(["BarChart", "BpmnCanvas", "DecisionDossier", "TimeSeriesChart"]);
   });
 
+  it("advertises a text fallback for categorical charts", () => {
+    expect(catalog.components.BarChart["x-sentropic"].fallback).toBe("text");
+  });
+
   it("functions is empty and $defs carries anyComponent and theme (§5.2)", () => {
     expect(catalog.functions).toEqual({});
     const defs = catalog.$defs as Record<string, unknown>;
