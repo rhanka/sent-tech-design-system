@@ -98,6 +98,18 @@ const PILOT_CSP = [
 /** §6.4 strict row: no 'unsafe-inline' anywhere. */
 const STRICT_CSP = "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'";
 const FOCUS_STRICT_CSP = "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'none'";
+// Effective headers from sentropic 13490b16b: content/headers.ts plus the
+// safe-mode worker-src appended in apps/artifact-content/src/host.ts.
+const FOCUS_SAFE_CSP = [
+  "default-src 'self'", "script-src 'self' 'unsafe-inline'", "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data:", "connect-src 'self'", "font-src 'self'", "media-src 'self'", "base-uri 'none'",
+  "form-action 'none'", "frame-ancestors 'none'", "worker-src 'none'",
+].join("; ");
+const FOCUS_APPLICATION_CSP = [
+  "default-src 'self'", "script-src 'self'", "style-src 'self' 'unsafe-inline'", "img-src 'self' data: blob:",
+  "font-src 'self'", "media-src 'self' blob:", "connect-src 'self'", "worker-src 'self'", "child-src 'self'",
+  "frame-src 'none'", "frame-ancestors 'none'", "object-src 'none'", "base-uri 'none'", "form-action 'none'",
+].join("; ");
 /** §6.4 artifact row, offline simulation: only jsDelivr /npm/ scripts. */
 const ARTIFACT_CSP = "default-src 'none'; script-src https://cdn.jsdelivr.net/npm/; style-src https://cdn.jsdelivr.net/npm/ 'unsafe-inline'; img-src 'self' data:; font-src https://cdn.jsdelivr.net/npm/; connect-src 'none'";
 
@@ -210,6 +222,7 @@ const referenceProps = PDATA_FIXTURES.map((name) => {
 
 const work = mkdtempSync(join(tmpdir(), "st-elements-suite-"));
 const focusReport = readFileSync(join(FIXTURES, "focus-artifact", "report.json"), "utf8");
+const focusB5 = readFileSync(join(FIXTURES, "focus-artifact", "b5.json"), "utf8");
 const offlineDocument = canonicalJson({ ...JSON.parse(focusReport), subject: "Source contains </script> · 漢字" });
 const standalone = join(work, "focus-standalone.html");
 writeFileSync(standalone, assembleStandaloneDossier({ document: offlineDocument }));
@@ -527,17 +540,27 @@ const server = http.createServer((req, res) => {
     return;
   }
   let file = null;
-  if (url.pathname.startsWith("/focus-kit/")) {
-    const name = url.pathname.slice("/focus-kit/".length) || kitManifest.entrypoint;
+  const focusRoute = url.pathname.match(/^\/focus-kit\/(safe|application|strict)\/(.*)$/);
+  if (focusRoute !== null) {
+    const [, mode, asset] = focusRoute;
+    const name = asset || kitManifest.entrypoint;
     const entry = kitFiles.get(name);
     if (name === "dossier.json" || entry !== undefined) {
       const mime = entry?.mimeType ?? "application/json";
+      const body = name === "dossier.json" ? (mode === "strict" ? focusReport : focusB5) : readFileSync(join(FOCUS_DIST, name));
+      const csp = mode === "application" ? FOCUS_APPLICATION_CSP
+        : mime !== "text/html" ? undefined : mode === "safe" ? FOCUS_SAFE_CSP : FOCUS_STRICT_CSP;
       res.writeHead(200, {
-        "content-type": mime,
+        "content-type": mime.startsWith("text/") ? `${mime}; charset=utf-8` : mime,
+        "content-length": Buffer.byteLength(body),
         "x-content-type-options": "nosniff",
-        ...(mime === "text/html" ? { "content-security-policy": FOCUS_STRICT_CSP } : {}),
+        "cross-origin-resource-policy": "same-origin",
+        "cache-control": "no-store",
+        "x-frame-options": "DENY",
+        "referrer-policy": "no-referrer",
+        ...(csp === undefined ? {} : { "content-security-policy": csp }),
       });
-      res.end(name === "dossier.json" ? focusReport : readFileSync(join(FOCUS_DIST, name)));
+      res.end(body);
       return;
     }
   } else if (url.pathname.startsWith("/bundle/")) file = join(BROWSER_DIST, url.pathname.slice("/bundle/".length));
@@ -594,6 +617,8 @@ async function openPage(name, { offline = false } = {}) {
   const cspViolations = [];
   const requests = [];
   const failedAssets = [];
+  const workers = [];
+  page.on("workercreated", (worker) => workers.push(worker.url()));
   page.on("console", (message) => {
     if (message.type() !== "error") return;
     const location = message.location();
@@ -632,9 +657,11 @@ async function openPage(name, { offline = false } = {}) {
   page.on("requestfailed", (request) => {
     if (request.url().includes("cdn.jsdelivr.net")) failedAssets.push(request.url());
   });
-  await page.goto(offline ? name : `${BASE}${name}`, { waitUntil: "load", timeout: 60000 });
+  const response = await page.goto(offline ? name : `${BASE}${name}`, { waitUntil: "load", timeout: 60000 });
   return {
     page,
+    response,
+    workers,
     consoleErrors,
     cspViolations,
     get requests() {
@@ -1716,7 +1743,7 @@ async function shadowSvg(page, elementSelector) {
 // ---------------------------------------------------------------------------
 
 for (const [label, url, offline] of [
-  ["Focus strict", "/focus-kit/#annex%3Ameasurements", false],
+  ["Focus strict", "/focus-kit/strict/#annex%3Ameasurements", false],
   ["Focus standalone", `${pathToFileURL(standalone).href}#annex%3Ameasurements`, true],
 ]) {
   const observed = await openPage(url, { offline });
@@ -1751,6 +1778,39 @@ for (const [label, url, offline] of [
     `${label}: no external requests, CSP violations or console errors`,
     JSON.stringify({ external, violations, errors: observed.consoleErrors }));
   record(label, `${external.length} external requests, ${violations.length} CSP violations`);
+  await observed.close();
+}
+
+for (const [mode, policy] of [["safe", FOCUS_SAFE_CSP], ["application", FOCUS_APPLICATION_CSP]]) {
+  const observed = await openPage(`/focus-kit/${mode}/#B`);
+  const page = observed.page;
+  await page.waitForFunction(() => window.__focusReady.length > 0, { timeout: 2000 });
+  const state = await page.evaluate(() => {
+    const [root] = window.__focusReady;
+    const block = root.querySelector('[data-anchor-id="B"]');
+    const containingAnchor = (selector) => root.querySelector(selector)
+      ?.closest("[data-anchor-id][data-commentable]")?.dataset.anchorId;
+    return {
+      ready: window.__focusReady.length,
+      lightDom: root.getRootNode() === document,
+      ids: [...root.querySelectorAll(":scope > [data-anchor-id]")].map((child) => child.dataset.anchorId),
+      descendants: ["header h1", '[data-anchor-id="B"] p strong', "li strong", "table td strong"].map(containingAnchor),
+      focused: document.activeElement === block,
+      styled: getComputedStyle(block.querySelector("td")).borderTopWidth === "1px",
+      styles: document.querySelectorAll("style").length,
+    };
+  });
+  assert(observed.response?.headers()["content-security-policy"] === policy, `Focus ${mode}: effective CSP`, "policy mismatch");
+  assert(state.ready === 1 && state.lightDom && state.focused && state.styled && state.styles === 0 &&
+    state.ids.join(",") === "focus-test,A,B,C" && state.descendants.join(",") === "focus-test,B,B,B",
+    `Focus ${mode}: B5 fixture`, JSON.stringify(state));
+  const external = observed.requests.filter((request) => /^https?:/.test(request) && new URL(request).origin !== BASE);
+  const blobs = observed.requests.filter((request) => request.startsWith("blob:"));
+  const violations = await observed.violations();
+  assert(external.length === 0 && violations.length === 0 && observed.consoleErrors.length === 0 &&
+    blobs.length === 0 && observed.workers.length === 0, `Focus ${mode}: clean B5 load`,
+    JSON.stringify({ external, violations, errors: observed.consoleErrors, blobs, workers: observed.workers }));
+  record(`Focus ${mode} B5`, `${external.length} external requests, ${violations.length} CSP violations, ${observed.workers.length} workers`);
   await observed.close();
 }
 

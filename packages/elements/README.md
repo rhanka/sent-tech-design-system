@@ -17,6 +17,28 @@ mapping to the underlying component, and component callbacks translated to
 §4.6 `st-intent` events. Every component in the bundle is compiled with
 `css: "injected"` (§6.2 known risk: styles ship inside the chunk).
 
+## Focus artifact kit
+
+The `./focus-kit/manifest.json` export lists the fixed payload by relative
+path, MIME type, byte size and SHA-256. Copy the files exposed under
+`./focus-kit/<path>` next to the canonical `dossier.json` and serve
+`index.html`. The SHA-256 of the manifest's canonical bytes identifies the
+renderer.
+
+Applications with their own page can import `mountDossier(host)` from
+`@sentropic/design-system-elements/dossier-mount` and load
+`./focus-kit/renderer/dossier.css` as an external stylesheet. Set
+`data-st-theme="sent-tech"` on the host or an ancestor. Call
+`mount.render(document)` with a Focus decision or report. The host emits
+`st-dossier-ready` with `detail.reviewRoot` after each completed render, and
+`st-intent` when an option is chosen. `mount.destroy()` removes the root and
+the listeners.
+
+For a single offline HTML file, use `assembleStandaloneDossier({ document })`
+from `@sentropic/design-system-elements/focus-kit` with the canonical JSON
+text. It embeds the document, stylesheet and module with a CSP based on the
+inline assets' hashes.
+
 ## Using the elements
 
 ```html

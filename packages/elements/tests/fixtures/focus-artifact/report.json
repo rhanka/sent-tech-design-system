@@ -9,7 +9,7 @@
       "kind": "prose",
       "id": "p1",
       "targetRef": "build-report",
-      "markdown": "The measured build used one input.",
+      "markdown": "In short: The measured build used one input.",
       "citationRefs": [
         "shared-input"
       ]
@@ -130,7 +130,7 @@
           "rows": [
             [
               "Builds",
-              "1"
+              "One"
             ]
           ]
         },
