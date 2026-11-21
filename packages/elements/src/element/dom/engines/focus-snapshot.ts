@@ -50,15 +50,26 @@ export function renderFocusSnapshot(
   for (const [index, section] of sections.entries()) {
     const block = blocks[index]!;
     markDossierAnchor(block, section.id);
+    // Focus puts citation calls beside their content. Move the existing
+    // badges inside the block so review capture inherits its anchor.
+    while (block.nextElementSibling?.matches("sup:has(> a.focus-citation)")) {
+      block.append(block.nextElementSibling);
+    }
     if (section.kind !== "optionSet") continue;
     block.setAttribute("data-st-option-set", section.id);
     const cards = block.querySelectorAll<HTMLElement>(":scope > ul > li");
     if (cards.length !== section.options.length) throw new Error("Unexpected Focus option count");
-    for (const [cardIndex, { id }] of section.options.entries()) {
+    for (const [cardIndex, { id, citationRefs }] of section.options.entries()) {
       const card = cards[cardIndex]!;
       const label = card.firstElementChild!;
       markDossierAnchor(card, id);
       label.classList.add("st-dossier__optionLabel");
+      if (citationRefs?.length) {
+        const calls = block.nextElementSibling;
+        if (!calls?.matches("p:has(> sup > a.focus-citation)")) throw new Error("Missing Focus option citation calls");
+        card.append(...calls.querySelectorAll(":scope > sup"));
+        calls.remove();
+      }
       if (recommended.has(id)) card.setAttribute("data-st-recommended", "");
       if (disabled.has(id)) {
         card.setAttribute("data-option-disabled", id);

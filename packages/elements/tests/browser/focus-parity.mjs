@@ -17,18 +17,39 @@ export async function compareFocusMount(doc, ownerHtml) {
   const blocks = [...expected.querySelectorAll(
     ":scope > :is(.focus-prose, .focus-question, .focus-optionset, .focus-outcome, .focus-diagram, .focus-amendment-trace)",
   )];
-  for (const [index, { id }] of sections.entries()) markDefinition(blocks[index], id);
+  // Focus places calls after their blocks. The kit keeps them with the content
+  // they cite so review capture inherits the section or option ID.
+  for (const calls of expected.querySelectorAll(
+    ":scope > sup:has(> a.focus-citation), :scope > p:has(> sup > a.focus-citation)",
+  )) calls.remove();
+  const citationNumbers = new Map(doc.citations?.map(({ id }, index) => [id, index + 1]));
+  function appendCalls(element, refs = []) {
+    for (const id of refs) {
+      const badge = expected.ownerDocument.createElement("sup");
+      const link = expected.ownerDocument.createElement("a");
+      link.setAttribute("href", `#${encodeURIComponent(id)}`);
+      link.textContent = `[${citationNumbers.get(id)}]`;
+      badge.append(link);
+      element.append(badge);
+    }
+  }
+  for (const [index, section] of sections.entries()) {
+    markDefinition(blocks[index], section.id);
+    appendCalls(blocks[index], section.citationRefs);
+  }
 
   // The mount provides real selection buttons on the read-only option list.
   const disabled = new Set(doc.interactions.filter((action) => action.name === "choose-option" && !action.enabled)
     .map((action) => action.targetRef));
-  const optionIds = sections.flatMap(({ options }) => options?.map(({ id }) => id) ?? []);
-  for (const [index, option] of [...expected.querySelectorAll(".focus-option")].entries()) {
-    markDefinition(option, optionIds[index]);
-    if (disabled.has(optionIds[index])) {
-      option.setAttribute("aria-disabled", "true");
+  const options = sections.flatMap(({ options }) => options ?? []);
+  for (const [index, card] of [...expected.querySelectorAll(".focus-option")].entries()) {
+    const option = options[index];
+    markDefinition(card, option.id);
+    appendCalls(card, option.citationRefs);
+    if (disabled.has(option.id)) {
+      card.setAttribute("aria-disabled", "true");
     } else {
-      const label = option.firstElementChild;
+      const label = card.firstElementChild;
       const button = expected.ownerDocument.createElement("button");
       label.before(button);
       button.append(label);
