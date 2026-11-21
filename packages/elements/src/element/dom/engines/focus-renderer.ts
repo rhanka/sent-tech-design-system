@@ -17,7 +17,7 @@
  */
 
 import DOMPurify from "dompurify";
-import type { DecisionDossierDocumentV2, DossierReadability } from "@sentropic/focus";
+import type { AmendmentStep, DecisionDossierDocumentV2, DossierReadability } from "@sentropic/focus";
 import { validateDecisionDossierDocument } from "@sentropic/focus/validate";
 import { renderMarkdown } from "../../markdown/minimal-markdown.js";
 import { createFocusPort } from "../../../ports/focus.js";
@@ -122,6 +122,27 @@ function text(tag: string, className: string | undefined, text: string): HTMLEle
   if (className !== undefined) node.className = className;
   node.textContent = text;
   return node;
+}
+
+function appendAmendmentTrace(container: HTMLElement, steps: readonly AmendmentStep[]): void {
+  container.append(text("h3", undefined, "Amendment trace"));
+  if (steps.length === 0) {
+    const empty = document.createElement("p");
+    empty.append(text("em", undefined, "(none)"));
+    container.append(empty);
+    return;
+  }
+  const list = document.createElement("ol");
+  list.className = "st-dossier__trace";
+  for (const { at, author, summary } of steps) {
+    const entry = document.createElement("li");
+    entry.className = "st-dossier__traceStep";
+    entry.setAttribute("data-st-trace-step", `${at} ${author}`.trim());
+    entry.setAttribute("data-st-trace-at", at);
+    entry.append(text("code", undefined, at), " ", text("strong", undefined, author), ` — ${summary}`);
+    list.append(entry);
+  }
+  container.append(list);
 }
 
 /** True when the interactions disable choosing this option (L2 gate). */
@@ -360,7 +381,12 @@ function sectionNode(
     const records = options.filter((option): option is Record<string, unknown> => typeof option === "object" && option !== null);
     wrap.setAttribute("data-st-layout", decideOptionSetLayout(records.length, records.some(isLongOption)));
     const title = field(section.title);
-    if (title !== undefined) wrap.append(text("h4", "st-dossier__optionsTitle", title));
+    if (face.light) {
+      const heading = typeof section.title === "string" ? `Options — ${section.title}` : "Options";
+      wrap.append(text("h3", "st-dossier__optionsTitle", heading));
+    } else if (title !== undefined) {
+      wrap.append(text("h4", "st-dossier__optionsTitle", title));
+    }
     const setId = field(section.id) ?? "";
     const recommendedKey = field(section.questionId) ?? field(section.targetRef);
     const recommendedId = recommendedKey !== undefined ? face.recommended.get(recommendedKey) : undefined;
@@ -382,18 +408,25 @@ function sectionNode(
     const wrap = document.createElement("div");
     wrap.className = "st-dossier__outcome";
     wrap.setAttribute("data-st-outcome", field(section.id) ?? "");
+    const modality = field(section.modality);
+    if (face.light && modality !== undefined) wrap.append(text("h3", undefined, `Outcome (${modality})`));
     const statement = text("p", "st-dossier__outcomeText", field(section.statement) ?? "");
     statement.setAttribute("data-st-outcome-statement", "");
     wrap.append(statement);
-    const modality = field(section.modality);
-    if (modality !== undefined) wrap.append(text("span", "st-dossier__modality", modality));
+    if (!face.light && modality !== undefined) wrap.append(text("span", "st-dossier__modality", modality));
     return wrap;
   }
   if (kind === "amendmentTrace") {
+    const steps = Array.isArray(section.steps) ? section.steps : [];
+    if (face.light) {
+      const wrap = document.createElement("section");
+      wrap.setAttribute("data-st-trace", field(section.id) ?? "");
+      appendAmendmentTrace(wrap, steps);
+      return wrap;
+    }
     const wrap = document.createElement("ol");
     wrap.className = "st-dossier__trace";
     wrap.setAttribute("data-st-trace", field(section.id) ?? "");
-    const steps = Array.isArray(section.steps) ? section.steps : [];
     for (const step of steps) {
       if (typeof step === "object" && step !== null) {
         const record = step as Record<string, unknown>;
@@ -472,7 +505,7 @@ export function renderDossierContent(
 
   const readability = doc.readability as DossierReadability | undefined;
   if (surface === "light" && readability !== undefined) {
-    const { ownerRequestQuote, stakes, readingBudgetMinutes, stakesLevel } = readability;
+    const { ownerRequestQuote, stakes, readingBudgetMinutes, stakesLevel, glossary } = readability;
     const context = document.createElement("section");
     context.className = "st-dossier__readability";
     if (ownerRequestQuote !== undefined) {
@@ -483,6 +516,15 @@ export function renderDossierContent(
     }
     if (readingBudgetMinutes !== undefined && stakesLevel !== undefined) {
       context.append(text("p", "st-dossier__readingTime", `Reading budget: ${readingBudgetMinutes} min (${stakesLevel} stakes)`));
+    }
+    if (glossary?.length) {
+      const details = document.createElement("details");
+      const definitions = document.createElement("dl");
+      for (const { term, definition } of glossary) {
+        definitions.append(text("dt", undefined, term), text("dd", undefined, definition));
+      }
+      details.append(text("summary", undefined, `Glossary (${glossary.length} ${glossary.length === 1 ? "term" : "terms"})`), definitions);
+      context.append(details);
     }
     if (context.hasChildNodes()) article.append(context);
   }
@@ -532,16 +574,20 @@ export function renderDossierContent(
   }
 
   const trace = Array.isArray(doc.amendmentTrace) ? doc.amendmentTrace : [];
-  if (trace.length > 0) {
+  if (face.light || trace.length > 0) {
     const footer = document.createElement("footer");
     footer.className = "st-dossier__traceFooter";
     footer.setAttribute("data-st-trace-footer", "");
-    for (const step of trace) {
-      if (typeof step === "object" && step !== null) {
-        const record = step as Record<string, unknown>;
-        const item = text("p", "st-dossier__traceEntry", field(record.summary) ?? "");
-        item.setAttribute("data-st-trace-at", field(record.at) ?? "");
-        footer.append(item);
+    if (face.light) {
+      appendAmendmentTrace(footer, trace);
+    } else {
+      for (const step of trace) {
+        if (typeof step === "object" && step !== null) {
+          const record = step as Record<string, unknown>;
+          const item = text("p", "st-dossier__traceEntry", field(record.summary) ?? "");
+          item.setAttribute("data-st-trace-at", field(record.at) ?? "");
+          footer.append(item);
+        }
       }
     }
     article.append(footer);

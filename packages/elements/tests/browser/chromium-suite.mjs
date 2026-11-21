@@ -61,6 +61,8 @@ import http from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { renderHtml } from "@sentropic/focus";
+import { compareFocusMount } from "./focus-parity.mjs";
 
 const { join } = path;
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -73,6 +75,7 @@ const THEMES_CSS = path.resolve(WORKTREE_ROOT, "packages", "themes", "css");
 const BAR_CHART_SOURCE = path.resolve(WORKTREE_ROOT, "packages", "components-svelte", "src", "lib", "BarChart.svelte");
 const ELEMENTS_ENTRY = join(BROWSER_DIST, "elements.js");
 const DOSSIER_MOUNT_ENTRY = fileURLToPath(import.meta.resolve("@sentropic/design-system-elements/dossier-mount"));
+const MARKDOWN_MODULE = new URL("../../dist/element/markdown/minimal-markdown.js", import.meta.url);
 const FOCUS_KIT_MODULE = "@sentropic/design-system-elements/focus-kit";
 const kitManifestUrl = new URL(import.meta.resolve("@sentropic/design-system-elements/focus-kit/manifest.json"));
 const PDATA_FIXTURES = [1, 2, 3, 4, 5].map((n) => `bar-chart-pdata-${n}.json`);
@@ -168,7 +171,7 @@ function record(label, value) {
 // Step 1 — the browser bundles and Node assembler under test.
 // ---------------------------------------------------------------------------
 
-const builtEntries = [ELEMENTS_ENTRY, DOSSIER_MOUNT_ENTRY, new URL(import.meta.resolve(FOCUS_KIT_MODULE)), kitManifestUrl];
+const builtEntries = [ELEMENTS_ENTRY, DOSSIER_MOUNT_ENTRY, MARKDOWN_MODULE, new URL(import.meta.resolve(FOCUS_KIT_MODULE)), kitManifestUrl];
 if (builtEntries.some((entry) => !existsSync(entry))) {
   const build = spawnSync(
     "npm",
@@ -1770,6 +1773,31 @@ async function shadowSvg(page, elementSelector) {
   const label = "Public Focus mount leaves bootstrap to the host";
   if (assert(state.reads === 0 && state.ready === 1 && state.connected && state.title === "Decision with embedded evidence",
     label, JSON.stringify(state))) ok(label);
+  await observed.close();
+}
+
+{
+  const { renderMarkdown } = await import(MARKDOWN_MODULE.href);
+  const observed = await openPage("/focus-mount-host.html");
+  const fixtureDir = join(FIXTURES, "focus-artifact");
+  const fixtures = new Map(readdirSync(fixtureDir).filter((file) => file.endsWith(".json"))
+    .map((file) => [file, JSON.parse(readFileSync(join(fixtureDir, file), "utf8"))]));
+  const decision = fixtures.get("decision-v2.json");
+  fixtures.set("decision-v2 with glossary and amendments", {
+    ...decision,
+    readability: { ...decision.readability, glossary: [{ term: "Contract", definition: "The shared rendering rules." }] },
+    sections: [...decision.sections, {
+      kind: "amendmentTrace", id: "prior-amendments", targetRef: decision.ref,
+      steps: [{ at: "2026-11-01T09:00:00Z", author: "Noor Benali", summary: "Added build evidence." }],
+    }],
+    amendmentTrace: [{ at: "2026-11-03T12:34:00Z", author: "Camille Martin", summary: "Recorded the chosen contract." }],
+  });
+  for (const [name, doc] of fixtures) {
+    const ownerHtml = renderHtml(doc, { renderMarkdown: (source) => renderMarkdown(source, true), sanitizeHtml: (html) => html });
+    const differences = await observed.page.evaluate(compareFocusMount, doc, ownerHtml);
+    const label = `Packaged Focus mount content matches Focus 0.6 for ${name}`;
+    if (assert(differences.length === 0, label, differences.join("\n"))) ok(label);
+  }
   await observed.close();
 }
 
