@@ -34,11 +34,21 @@ export interface CameraFitInput {
   readonly viewWidth: number;
   /** `window.innerHeight`, CSS px. */
   readonly windowHeight: number;
+  /**
+   * Optional explicit fit-box height, CSS px (used in fullscreen so the scene
+   * uses the full available viewport height rather than the inline 16:9 box).
+   */
+  readonly viewHeight?: number;
   /** Measured horizontal scrollbar thickness (`offsetHeight - clientHeight`), CSS px. */
   readonly scrollbarHeight?: number;
   readonly maxDisplayScale?: number;
   /** Optional higher readability floor; never lowers the absolute 0.30 floor. */
   readonly minReadableScale?: number;
+  /**
+   * When true, drops the 0.30 readability floor so the whole scene fits inside
+   * the visible frame with `pans: false` and no scrolling (« Tout voir » mode).
+   */
+  readonly unconstrained?: boolean;
   /**
    * Grid the applied fit zoom lands on, scale units. The fit is floored to
    * it, never rounded: an applied zoom above `zoomFit` would paint past the
@@ -88,7 +98,10 @@ export function fitBox(viewWidth: number, windowHeight: number): { readonly widt
 export function cameraFit(input: CameraFitInput): CameraFit {
   const maxZoom = Math.max(DEFAULT_MIN_READABLE_SCALE, input.maxDisplayScale ?? DEFAULT_MAX_DISPLAY_SCALE);
   const readableFloor = Math.min(maxZoom, Math.max(DEFAULT_MIN_READABLE_SCALE, input.minReadableScale ?? DEFAULT_MIN_READABLE_SCALE));
-  const frame = fitBox(input.viewWidth, input.windowHeight);
+  const hasExplicitHeight = input.viewHeight !== undefined && Number.isFinite(input.viewHeight) && input.viewHeight >= 0;
+  const frame = hasExplicitHeight
+    ? { width: input.viewWidth, height: input.viewHeight! }
+    : fitBox(input.viewWidth, input.windowHeight);
   // Hosts add the scrollbar back to the outer height; fit and placement use
   // only the drawable area, keeping the combined height inside the fit box.
   const box = { width: frame.width, height: Math.max(0, frame.height - (input.scrollbarHeight ?? 0)) };
@@ -102,10 +115,15 @@ export function cameraFit(input: CameraFitInput): CameraFit {
   // (transform, camera state, painted-bounds read) gets this single value,
   // and the fit height below is the one of the drawing at that same zoom.
   const applied = input.zoomQuantum === undefined || zoomFit >= maxZoom ? zoomFit : floorToQuantum(zoomFit, input.zoomQuantum);
-  // All hosts and camera inputs share this range. A small frame or a large
-  // unfolded scene reaches the floor, then scrolls to expose the rest.
-  const zoom = Math.max(readableFloor, applied);
-  const fitHeight = Math.min(box.height, Math.ceil((bounds.height * zoom + 2 * FIT_PAINT_INSET) * 64) / 64);
+  // In unconstrained (« Tout voir ») mode, drop the readability floor so the
+  // whole scene fits without scrolling; keep a strictly positive scale even if
+  // an extreme scene lands below one quantum step.
+  const zoom = input.unconstrained === true
+    ? (applied > 0 ? applied : zoomFit > 0 ? zoomFit : readableFloor)
+    : Math.max(readableFloor, applied);
+  const fitHeight = hasExplicitHeight
+    ? box.height
+    : Math.min(box.height, Math.ceil((bounds.height * zoom + 2 * FIT_PAINT_INSET) * 64) / 64);
   return { fitWidth: box.width, fitHeight, zoomFit, zoom, minZoom: zoom, maxZoom, pans: zoom > zoomFit };
 }
 

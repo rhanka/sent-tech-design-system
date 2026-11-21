@@ -10,9 +10,10 @@ import {
 import * as sceneModule from "../../src/scene.js";
 import * as labelsModule from "../../src/layout/labels.js";
 import {
-  FIT_QUANTUM, layoutScene, resolveScene, resolveZoom, sceneContentSize, sceneFit, scenePlacement,
+  DEFAULT_SCENE_LABELS, FIT_QUANTUM, layoutScene, resolveScene, resolveZoom, sceneContentSize, sceneFit, scenePlacement,
   type SceneLayoutInput,
 } from "../../src/presentation/diagramSceneModel.js";
+import type { DiagramSceneFigureLabels } from "../../src/presentation/diagramSceneTypes.js";
 import { pinnedMeasurer, sceneInput } from "../layout/dc2a/scenes.js";
 
 const witness = sceneInput("vue-globale", "after");
@@ -309,5 +310,78 @@ describe("shared scene presentation (DC-2b)", () => {
     // Explicit opt-in scale overrides still apply, while the 0.30 absolute floor never lowers.
     expect(sceneFit({ bounds: singleBounds, viewWidth: 1280, windowHeight: 720, maxDisplayScale: 0.8 }).maxZoom).toBe(0.8);
     expect(sceneFit({ bounds: scene.bounds!, viewWidth: 390, windowHeight: 844, minReadableScale: 0.2 }).minZoom).toBe(0.30);
+  });
+
+  // Owner 21/11: « Diag - je veux pour voir dit total sans limit pour vraiment tout voir sans scroll » (Track 01M7ZN6TME8E8V6BPKXXSA6SNS).
+  it("fits the whole scene with no readability floor and no scroll when unconstrained (« Tout voir »)", () => {
+    // Measured owner case: 5876 x 2284 scene in 1366 x 900 (fit box 1366 x 765) and 390 x 844 phone.
+    const largeBounds = { x: -24, y: -18, width: 5876, height: 2284 };
+
+    // Default fit stays floored at 0.30 and pans (REQ-R7-28).
+    const defaultDesktop = sceneFit({ bounds: largeBounds, viewWidth: 1366, windowHeight: 900 });
+    expect(defaultDesktop.zoom).toBe(0.30);
+    expect(defaultDesktop.pans).toBe(true);
+    expect(scenePlacement(largeBounds, defaultDesktop.zoom, defaultDesktop).overflowX).toBe(true);
+
+    // Unconstrained fit drops the 0.30 floor so the whole scene fits with zero overflow.
+    for (const [viewWidth, windowHeight] of [[1366, 900], [390, 844]] as const) {
+      const viewAll = sceneFit({ bounds: largeBounds, viewWidth, windowHeight, unconstrained: true });
+      expect(viewAll.zoom).toBeLessThan(0.30);
+      expect(viewAll.zoom).toBeGreaterThan(0);
+      expect(viewAll.zoom).toBeLessThanOrEqual(viewAll.zoomFit);
+      expect(viewAll.minZoom).toBe(viewAll.zoom);
+      expect(viewAll.maxZoom).toBe(0.62);
+      expect(viewAll.pans).toBe(false);
+      const placed = scenePlacement(largeBounds, viewAll.zoom, viewAll);
+      expect(placed.overflowX).toBe(false);
+      expect(placed.overflowY).toBe(false);
+      expect(placed.contentWidth).toBeLessThanOrEqual(viewAll.fitWidth);
+      expect(placed.contentHeight).toBeLessThanOrEqual(viewAll.fitHeight);
+      // Zooming in for detail stays allowed from the unconstrained floor up to maxDisplayScale.
+      expect(resolveZoom(0.62, viewAll)).toBe(0.62);
+      expect(resolveZoom(viewAll.zoom * 1.2, viewAll)).toBeCloseTo(viewAll.zoom * 1.2, 10);
+      expect(resolveZoom(0.001, viewAll)).toBe(viewAll.zoom);
+    }
+
+    // Explicit fullscreen viewHeight uses the full screen area and yields a larger scale than inline.
+    const inlineMobile = sceneFit({ bounds: { x: 0, y: 0, width: 1200, height: 1800 }, viewWidth: 390, windowHeight: 844, unconstrained: true });
+    const fullscreenMobile = sceneFit({ bounds: { x: 0, y: 0, width: 1200, height: 1800 }, viewWidth: 390, windowHeight: 844, viewHeight: 780, unconstrained: true });
+    expect(fullscreenMobile.fitHeight).toBe(780);
+    expect(fullscreenMobile.zoom).toBeGreaterThan(inlineMobile.zoom);
+    expect(fullscreenMobile.pans).toBe(false);
+    expect(scenePlacement({ x: 0, y: 0, width: 1200, height: 1800 }, fullscreenMobile.zoom, fullscreenMobile)).toMatchObject({
+      overflowX: false,
+      overflowY: false,
+    });
+
+    // Extreme sub-quantum scene stays strictly positive (never collapses to scale 0).
+    const extreme = sceneFit({ bounds: { x: 0, y: 0, width: 1_000_000, height: 500_000 }, viewWidth: 390, windowHeight: 844, unconstrained: true });
+    expect(extreme.zoom).toBeGreaterThan(0);
+    expect(extreme.zoom).toBe(extreme.zoomFit);
+    expect(extreme.pans).toBe(false);
+
+    // Default labels expose viewAll/fullscreen while keeping older typed label objects compatible.
+    expect(DEFAULT_SCENE_LABELS.viewAll).toBe("View all");
+    expect(DEFAULT_SCENE_LABELS.fullscreen).toBe("Fullscreen");
+    const legacyLabels: DiagramSceneFigureLabels = {
+      navigator: "Nav",
+      step: "Step",
+      scenario: "Scenario",
+      count: "{n}",
+      node: "Node",
+      previous: "Prev",
+      next: "Next",
+      allScenarios: "All",
+      controls: "Zoom",
+      zoomIn: "In",
+      zoomOut: "Out",
+      fit: "Fit",
+      zoomLevel: (p) => `${p}%`,
+      viewport: "Diagram",
+      expand: (t) => t,
+      collapse: (t) => t,
+    };
+    expect(legacyLabels.viewAll).toBeUndefined();
+    expect(legacyLabels.fullscreen).toBeUndefined();
   });
 });
