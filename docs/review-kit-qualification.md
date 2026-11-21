@@ -24,6 +24,22 @@ The consumer checks the registry metadata, computes SHA-512 from the archives, a
 
 The candidate Svelte 0.43.1 was available for local smoke-pack. The registry lookup for 0.43.1 returned 404 during the run. The isolated host retains its lockfile and both module graphs under `.vite/review-consumer/host-*`. Local smoke-pack ran with `TMPDIR`, `XDG_RUNTIME_DIR`, and `npm_config_cache` inside `.vite/ds-7`.
 
+## Round 1 corrections
+
+| Regression | Red run | Green run |
+| --- | --- | --- |
+| Tenant isolation | A shared workspace allowed cross-tenant `get` and `edit`. | All store reads and the six mutations addressing an existing row or thread respect tenant and workspace scope. The UI fixture can bind a `tenantId` alongside its workspace argument. |
+| Thread status | An open query returned the reply to a closed thread as its own summary. | The closed summary carries both messages. Row-level status filtering still returns individual open rows. |
+| Create and reply | Create appended when given a thread ID. Reply created a root when the ID was omitted. | Create mints a root. Reply requires an existing thread in scope. |
+| Mutation confirmation | Removing the confirmation call let both adapter promises resolve before the read. | A blocked `listThread` holds each promise pending and returns the updated row after release. |
+| Capture | Suppressing the table-cell write passed the original consumer and failed the new row-count assertion. | Every element and text capture verifies a new row ID, the submitted body, and the decoded anchor. |
+| Package exports | Removing `ReviewModeToggle` from the candidate JavaScript barrel failed the Vite import. Removing `ReviewModeToggleProps` from the installed declarations failed TypeScript. | The installed package checks import and type-check `CommentAuthorship`, `CommentComposer`, `CommentLayer`, `CommentPin`, `CommentThread`, `OrphanList`, `ReviewModeToggle`, and `ThreadPanel`. |
+| CI lane | The workflow guard failed on the missing `TMPDIR` binding. | `Verify` creates the runtime, temporary and npm cache directories under `.vite/pack-smoke` before running smoke-pack. |
+
+Round 1 replayed `rtk npm run test --workspace packages/review-core` (60 tests), both package type checks, the four targeted Svelte files above (32 tests), `rtk node --test scripts/verify-workflow-invariants.test.mjs` (23 tests), the core/Svelte and core/Vue smoke-pack selections, and `rtk node scripts/test-review-consumer.mjs` against the same published archives. The published consumer checks both Vite graphs and uses its own installed TypeScript to verify the public props.
+
+The candidate `review-core` archive still identifies as 0.1.1. It was packed from the updated fixture source at `b2954e161` with integrity `sha512-XHYJLCgJnhaJkxC4T/o10tHhX8lyZi5v2p6bnzsqhV4q2PyLZVhkNRE67cH89MpIqpE6VqhselRpEEUGj8tXUA==`. Release the fixture corrections as `review-core` 0.1.2 in the release PR. The Svelte 0.43.1 candidate retains archive integrity `sha512-D/iHwKU4Mqgwj44JUJRIgW3j1E/62IR2efVD7Uj8aRu9S+sQxusn0vDmywPKx0D4cv4nGSbWc8t3D64MUhZE2Q==`.
+
 ## To execute in the integration lots
 
 FA-D3 owns the dossier kit build, mounting from `reviewRoot` on `st-dossier-ready`, root replacement, and the no-adapter path. H1 owns the Focus Web graph, and H5/FA-H5 own the persistent C2 path. The DS-7 adapter tests exercise an in-memory fixture. The accessibility and client-bundle checks use jsdom.
