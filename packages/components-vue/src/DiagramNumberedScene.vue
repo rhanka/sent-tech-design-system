@@ -10,7 +10,7 @@ import {
   type FlowState, type FlowAction, type Visible,
 } from "@sentropic/diagram-canvas/flowModel";
 import {
-  collapsedOccurrencesOf, connectorDashArray, connectorMarkerIds, connectorMarkerRef, connectorPath, DEFAULT_EDGE_CORNER_RADIUS, DEFAULT_SCENE_LABELS, extraConnectorMarkers, sceneContentSize, layoutScene, linkLegendSwatchGeometry, resolveScene,
+  collapsedOccurrencesOf, connectorDashArray, connectorMarkerIds, connectorMarkerRef, connectorPath, DEFAULT_EDGE_CORNER_RADIUS, DEFAULT_SCENE_LABELS, extraConnectorMarkers, sceneContentSize, layoutScene, linkLegendBoxStyle, linkLegendSwatchGeometry, resolveScene,
   parseScale, sceneConnectorMask, sceneNodesOnPlane,
   type SceneModel, type SceneNodeModel, type SceneOrientations, type SceneOccurrenceRef,
 } from "@sentropic/diagram-canvas/diagramSceneModel";
@@ -312,7 +312,7 @@ const scenarioId = useId();
                 </template>
                 <template v-else><span v-for="(line, index) in label.lines" :key="index">{{ line }}</span></template>
               </div>
-              <aside v-if="scene.linkLegend !== undefined" class="st-diagramSceneFigure-legend" role="region" :aria-label="scene.linkLegend.title" data-scene-legend="" :data-legend-anchor="scene.linkLegend.anchor" :style="boxStyle(scene.linkLegend.rect)">
+              <aside v-if="scene.linkLegend !== undefined" class="st-diagramSceneFigure-legend" role="region" :aria-label="scene.linkLegend.title" data-scene-legend="" :data-legend-anchor="scene.linkLegend.anchor" :style="linkLegendBoxStyle(scene.linkLegend)">
                 <div class="st-diagramSceneFigure-legendTitle">{{ scene.linkLegend.title }}</div>
                 <ul class="st-diagramSceneFigure-legendList">
                   <li v-for="{ entry, swatch } in legendEntries" :key="entry.key" class="st-diagramSceneFigure-legendItem" :data-legend-style="entry.key" :data-edge-stroke="entry.strokeStyle" :data-edge-arrowhead="entry.arrowhead" :data-edge-emphasis="entry.emphasis">

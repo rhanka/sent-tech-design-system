@@ -322,7 +322,7 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
     ]);
   });
 
-  it("scales measured legend box width, headerHeight, and rowHeight when edgeLabelSize overrides the 18px default", () => {
+  it("scales measured legend box width, headerHeight, headerGap, and rowHeight identically for HTML hosts and renderSceneSvg across edgeLabelSize values (REQ-R7-12)", () => {
     const { document, presentation } = multiStyleFixture();
     const baseInput = {
       document,
@@ -337,18 +337,39 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
     if (defaultLayout.status !== "laid-out") return;
     const defaultScene = resolveScene(defaultLayout, baseInput);
 
+    for (const fontSize of [12, 18, 27]) {
+      const input = fontSize === 18 ? baseInput : { ...baseInput, metrics: { edgeLabelSize: fontSize } };
+      const laid = layoutScene(input);
+      expect(laid.status).toBe("laid-out");
+      if (laid.status !== "laid-out") return;
+      const scene = resolveScene(laid, input);
+      const legend = scene.linkLegend!;
+      expect(legend).toBeDefined();
+      expect(legend.fontSize).toBe(fontSize);
+      expect(legend.headerGap).toBeGreaterThan(0);
+      expect(legend.rowHeight).toBeGreaterThanOrEqual(legend.swatchHeight);
+      // Every entry sits at padding + headerHeight + headerGap + i*(rowHeight + rowGap), and the last row + bottom padding equals rect.height exactly.
+      legend.entries.forEach((entry, index) => {
+        expect(entry.rowY).toBe(legend.padding + legend.headerHeight + legend.headerGap + index * (legend.rowHeight + legend.rowGap));
+      });
+      const last = legend.entries.at(-1)!;
+      expect(last.rowY + last.rowHeight + legend.padding).toBe(legend.rect.height);
+
+      // HTML host inline geometry variables match buildSceneLinkLegend 1:1.
+      const { svg } = renderSceneSvg(input);
+      const expectedFirstSwatchY = legend.entries[0]!.rowY + (legend.entries[0]!.rowHeight - legend.swatchHeight) / 2;
+      expect(svg).toContain(`transform="translate(${legend.padding} ${expectedFirstSwatchY})"`);
+    }
+
     const largeInput = { ...baseInput, metrics: { edgeLabelSize: 27 } };
     const largeLayout = layoutScene(largeInput);
     expect(largeLayout.status).toBe("laid-out");
     if (largeLayout.status !== "laid-out") return;
     const largeScene = resolveScene(largeLayout, largeInput);
-
-    expect(defaultScene.linkLegend).toBeDefined();
-    expect(largeScene.linkLegend).toBeDefined();
-    expect(largeScene.linkLegend!.fontSize).toBe(27);
     expect(largeScene.linkLegend!.rect.width).toBeGreaterThan(defaultScene.linkLegend!.rect.width);
     expect(largeScene.linkLegend!.rect.height).toBeGreaterThan(defaultScene.linkLegend!.rect.height);
     expect(largeScene.linkLegend!.headerHeight).toBeGreaterThan(defaultScene.linkLegend!.headerHeight);
+    expect(largeScene.linkLegend!.headerGap).toBeGreaterThan(defaultScene.linkLegend!.headerGap);
     expect(largeScene.linkLegend!.entries[0]!.rowHeight).toBeGreaterThan(defaultScene.linkLegend!.entries[0]!.rowHeight);
   });
 });

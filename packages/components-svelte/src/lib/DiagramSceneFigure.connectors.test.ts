@@ -224,4 +224,36 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     expect(parseFloat(scaledLabel.style.width)).toBeGreaterThan(baseWidth);
     expect(parseFloat(scaledLabel.style.height)).toBeGreaterThan(baseHeight);
   });
+
+  it("should match buildSceneLinkLegend geometry variables with zero overflow at edgeLabelSize 12px and 18px (REQ-R7-12)", async () => {
+    const fixture = nestedZoneFixture({ outside: true });
+    const [r0, r1] = fixture.relations.map((r) => r.occurrence);
+    const presentation = {
+      ...fixture.presentation,
+      relations: {
+        [r0!]: { strokeStyle: "dashed" as const },
+        [r1!]: { strokeStyle: "dotted" as const },
+      },
+    };
+    for (const edgeLabelSize of [12, 18]) {
+      const view = render(DiagramSceneFigure, {
+        ...propsOf(fixture),
+        presentation,
+        metrics: { edgeLabelSize },
+      } as DiagramSceneFigureProps);
+      await tick();
+      const legend = view.container.querySelector<HTMLElement>("[data-scene-legend]")!;
+      expect(legend).not.toBeNull();
+      const num = (prop: string) => parseFloat(legend.style.getPropertyValue(prop));
+      const items = legend.querySelectorAll("[data-legend-style]").length;
+      const contentHeight =
+        2 * num("--st-diagram-legend-padding") +
+        num("--st-diagram-legend-header-height") +
+        num("--st-diagram-legend-header-gap") +
+        items * num("--st-diagram-legend-row-height") +
+        Math.max(0, items - 1) * num("--st-diagram-legend-row-gap");
+      expect(contentHeight).toBe(parseFloat(legend.style.height));
+      view.unmount();
+    }
+  });
 });
