@@ -77,6 +77,8 @@ export interface ComposedPaintedGap {
   readonly paintedGap: number;
   readonly token: number;
   readonly slack: number;
+  readonly fromSlack: number;
+  readonly toSlack: number;
 }
 
 export interface LayoutCompositionReport {

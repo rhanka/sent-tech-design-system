@@ -79,6 +79,16 @@ import {
   type LayoutCompositionReport,
   type StackLayoutResult,
 } from "./compose.js";
+import {
+  auditSiblingZonePaintedGaps,
+  computePlanDigest,
+  foldNeutralView,
+  type FrozenAutoPackLevel,
+  type NominalCompositionPlan,
+  type SubtreeMemo,
+  type SubtreeMemoEntry,
+  type SubtreeNodeSnapshot,
+} from "./plan.js";
 import { isAncestor, type LayoutEdge, type LayoutGraph, type LayoutNode } from "./graph.js";
 import {
   effectiveStretch,
@@ -471,10 +481,86 @@ const OUTER_LANES = 6;
 /** MAJ-1: at most one widening round after pass 1 (BF-6); afterwards the set only shrinks. */
 const WIDEN_ROUNDS = 1;
 
+export interface LayoutExecutionContext {
+  readonly plan?: NominalCompositionPlan;
+  readonly memo?: SubtreeMemo;
+}
+
+interface PlanPassCapture {
+  autoPackLevels: Record<string, FrozenAutoPackLevel>;
+  innerWiden: Record<string, number>;
+}
+
+interface PlanExecutionContext {
+  readonly mode: "nominal-plan" | "state";
+  readonly plan?: NominalCompositionPlan;
+  readonly memo?: SubtreeMemo;
+  readonly tauOverride?: number;
+  readonly sigmaColsOverride?: Readonly<Record<string, number>>;
+  readonly sigmaBandsOverride?: Readonly<Record<string, number>>;
+  readonly capture?: PlanPassCapture;
+}
+
+/**
+ * Compute the fold-independent nominal composition plan (H2-STEP0 §4.2 S-1).
+ * Runs with `collapsed = ∅` on the fold-neutral view, freezing auto-packed
+ * shelf partitions (by child entity ref) and inner-container label widenings.
+ */
+export function computeNominalCompositionPlan(
+  document: SemanticDocument,
+  options: LayoutOptions,
+  sourceView?: ViewDocument,
+): { readonly status: "ok"; readonly plan: NominalCompositionPlan } | { readonly status: "refused"; readonly result: LayoutResult } {
+  const neutralView = sourceView === undefined ? undefined : foldNeutralView(sourceView);
+  const { previousOrientation: _ignoredPrev, ...restOptions } = options;
+  void _ignoredPrev;
+  const nominalOptions: LayoutOptions = {
+    ...restOptions,
+    collapsed: [],
+  };
+  const tau = 1.78;
+  const capture: PlanPassCapture = { autoPackLevels: {}, innerWiden: {} };
+  const pass = layoutMeasuredPass(document, nominalOptions, neutralView, new Set(), {
+    mode: "nominal-plan",
+    tauOverride: tau,
+    capture,
+  });
+  if (pass.status === "refused") {
+    return { status: "refused", result: pass };
+  }
+  const autoPackLevels = Object.fromEntries(
+    Object.entries(capture.autoPackLevels).sort(([left], [right]) => byString(left, right)),
+  );
+  const innerWiden = Object.fromEntries(
+    Object.entries(capture.innerWiden).sort(([left], [right]) => byString(left, right)),
+  );
+  const sigmaCols: Record<string, number> = {};
+  const sigmaBands: Record<string, number> = {};
+  const planDigest = computePlanDigest({
+    tau,
+    autoPackLevels,
+    innerWiden,
+    sigmaCols,
+    sigmaBands,
+  });
+  return {
+    status: "ok",
+    plan: {
+      planDigest,
+      tau,
+      autoPackLevels,
+      innerWiden,
+      sigmaCols,
+      sigmaBands,
+    },
+  };
+}
+
 export function layoutMeasured(
   document: SemanticDocument,
   options: LayoutOptions,
   sourceView?: ViewDocument,
+  execution?: LayoutExecutionContext,
 ): LayoutResult {
   const relationStyleRefusals = validateRelationPresentations(
     options.presentation?.relations,
@@ -485,7 +571,21 @@ export function layoutMeasured(
     return { status: "refused", refusals: relationStyleRefusals, diagnostics: [] };
   }
   if (document.profileRefs.length === 1 && document.profileRefs[0] === "erd@1") return layoutErd(document, options, sourceView);
-  const first = layoutMeasuredPass(document, options, sourceView, new Set());
+  let stateCtx: PlanExecutionContext | undefined;
+  if (options.hints?.composition !== undefined) {
+    let nominalPlan = execution?.plan;
+    if (nominalPlan === undefined) {
+      const built = computeNominalCompositionPlan(document, options, sourceView);
+      if (built.status === "refused") return built.result;
+      nominalPlan = built.plan;
+    }
+    stateCtx = {
+      mode: "state",
+      plan: nominalPlan,
+      ...(execution?.memo === undefined ? {} : { memo: execution.memo }),
+    };
+  }
+  const first = layoutMeasuredPass(document, options, sourceView, new Set(), stateCtx);
   if (first.status !== "laid-out" || first.flowTargets === undefined) return first;
   const forced = new Set<string>();
   const failed = new Set(first.warnings.filter((w) => w.code === "route-obstructed" || w.code === "badge-unplaced").flatMap((w) => w.refs));
@@ -494,11 +594,17 @@ export function layoutMeasured(
     if (members.length >= 2 && !first.flowBundles?.some((b) => b.id === key) && members.some((m) => failed.has(m.occurrence))) forced.add(key);
   }
   if (forced.size === 0) return first;
-  const repaired = layoutMeasuredPass(document, options, sourceView, forced);
+  const repaired = layoutMeasuredPass(document, options, sourceView, forced, stateCtx);
   return repaired.status === "laid-out" ? { ...repaired, flowRepairPasses: 1 } : repaired;
 }
 
-function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, sourceView: ViewDocument | undefined, forced: ReadonlySet<string>): LayoutResult {
+function layoutMeasuredPass(
+  document: SemanticDocument,
+  options: LayoutOptions,
+  sourceView: ViewDocument | undefined,
+  forced: ReadonlySet<string>,
+  planCtx?: PlanExecutionContext,
+): LayoutResult {
   if (!Number.isFinite(options.targetWidth) || options.targetWidth <= 0) {
     return {
       status: "refused",
@@ -1148,6 +1254,23 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     readonly unplaced: number;
   }
 
+  const nominalPlan = planCtx?.mode === "state" ? planCtx.plan : undefined;
+  const subtreeMemo = planCtx?.mode === "state" ? planCtx.memo : undefined;
+  const innerWidenMap: ReadonlyMap<string, number> | undefined =
+    nominalPlan === undefined ? undefined : new Map(Object.entries(nominalPlan.innerWiden));
+  const sigmaColsMap: ReadonlyMap<string, number> | undefined =
+    planCtx?.sigmaColsOverride !== undefined
+      ? new Map(Object.entries(planCtx.sigmaColsOverride))
+      : nominalPlan !== undefined && Object.keys(nominalPlan.sigmaCols).length > 0
+        ? new Map(Object.entries(nominalPlan.sigmaCols))
+        : undefined;
+  const sigmaBandsMap: ReadonlyMap<string, number> | undefined =
+    planCtx?.sigmaBandsOverride !== undefined
+      ? new Map(Object.entries(planCtx.sigmaBandsOverride))
+      : nominalPlan !== undefined && Object.keys(nominalPlan.sigmaBands).length > 0
+        ? new Map(Object.entries(nominalPlan.sigmaBands))
+        : undefined;
+
   /**
    * One placement pass: size, measure headers, seat, dock, route, place
    * labels. `plan` absent is pass 1 — every gutter at its base gap, shelves
@@ -1199,9 +1322,94 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     const composedUnplaced = new Map<string, readonly EntityRef[]>();
     const orientationRecord = new Map<string, LevelOrientation>();
     const chosen = new Map<string, FrozenRun>();
+    const capturedAutoPack = new Map<string, FrozenAutoPackLevel>();
+    const memoStoreQueue = new Map<EntityRef, string>();
     const headers = new Map<EntityRef, HeaderMeasurement>();
     const headerInputs = new Map<EntityRef, EntityMeasurementInput>();
     const headerWidths = new Map<EntityRef, number>();
+    const widenForScope = (scopeKey: string): ReadonlyMap<string, number> | undefined => {
+      if (nominalPlan !== undefined) {
+        return scopeKey === ROOT_LEVEL_KEY ? plan?.widen : innerWidenMap;
+      }
+      return plan?.widen;
+    };
+    const visibleDescendantsOf = (rootEntity: EntityRef): EntityRef[] => {
+      const result: EntityRef[] = [];
+      const visit = (parent: EntityRef): void => {
+        for (const child of orderedChildrenOf(parent)) {
+          result.push(child);
+          if (kinds.get(child) === "container-expanded" || kinds.get(child) === "legend-expanded") {
+            visit(child);
+          }
+        }
+      };
+      visit(rootEntity);
+      return result;
+    };
+    const descendantFoldKey = (rootEntity: EntityRef): string => {
+      const folded: string[] = [];
+      for (const desc of visibleDescendantsOf(rootEntity)) {
+        if (isCollapsed(desc)) folded.push(desc);
+      }
+      folded.sort(byString);
+      return folded.join(",");
+    };
+    const memoKeyFor = (entity: EntityRef, inheritedKey?: string): string =>
+      `${nominalPlan!.planDigest}|${entity}|${descendantFoldKey(entity)}|${inheritedKey ?? ""}`;
+    const restoreMemoEntry = (entry: SubtreeMemoEntry): void => {
+      for (const snap of entry.descendants) {
+        outerWidths.set(snap.entity, snap.outerWidth);
+        packedSizes.set(snap.entity, { width: snap.packedSize.width, height: snap.packedSize.height });
+        if (snap.header !== undefined) headers.set(snap.entity, snap.header);
+        if (snap.headerInput !== undefined) headerInputs.set(snap.entity, snap.headerInput);
+        if (snap.headerWidth !== undefined) headerWidths.set(snap.entity, snap.headerWidth);
+        if (snap.composedGrid !== undefined) composedGrids.set(snap.runKey, snap.composedGrid);
+        if (snap.composedStack !== undefined) composedStacks.set(snap.runKey, snap.composedStack);
+        if (snap.composedUnplaced !== undefined) composedUnplaced.set(snap.runKey, snap.composedUnplaced);
+        if (snap.packedRun !== undefined) packedRuns.set(snap.runKey, snap.packedRun as PackedRun);
+        if (snap.levelRun !== undefined) levelRuns.set(snap.entity, snap.levelRun as Run);
+        if (snap.chosen !== undefined) chosen.set(snap.runKey, snap.chosen);
+        if (snap.orientation !== undefined) orientationRecord.set(snap.runKey, snap.orientation);
+      }
+    };
+    const snapshotSubtree = (rootEntity: EntityRef): SubtreeMemoEntry => {
+      const nodes = [rootEntity, ...visibleDescendantsOf(rootEntity)];
+      const descendants: SubtreeNodeSnapshot[] = nodes.map((entity) => {
+        const runKey = levelKeyOf(entity);
+        const header = headers.get(entity);
+        const headerInput = headerInputs.get(entity);
+        const headerWidth = headerWidths.get(entity);
+        const composedGrid = composedGrids.get(runKey);
+        const composedStack = composedStacks.get(runKey);
+        const unplacedList = composedUnplaced.get(runKey);
+        const packedRun = packedRuns.get(runKey);
+        const levelRun = levelRuns.get(entity);
+        const chosenRun = chosen.get(runKey);
+        const orient = orientationRecord.get(runKey);
+        const packedSize = packedSizes.get(entity) ?? { width: 0, height: 0 };
+        return {
+          entity,
+          runKey,
+          outerWidth: outerWidths.get(entity) ?? packedSize.width,
+          packedSize: { width: packedSize.width, height: packedSize.height },
+          ...(header === undefined ? {} : { header }),
+          ...(headerInput === undefined ? {} : { headerInput }),
+          ...(headerWidth === undefined ? {} : { headerWidth }),
+          ...(composedGrid === undefined ? {} : { composedGrid }),
+          ...(composedStack === undefined ? {} : { composedStack }),
+          ...(unplacedList === undefined ? {} : { composedUnplaced: unplacedList }),
+          ...(packedRun === undefined ? {} : { packedRun }),
+          ...(levelRun === undefined ? {} : { levelRun }),
+          ...(chosenRun === undefined ? {} : { chosen: chosenRun }),
+          ...(orient === undefined ? {} : { orientation: orient }),
+        };
+      });
+      const rootSize = packedSizes.get(rootEntity)!;
+      return {
+        naturalSize: { width: rootSize.width, height: rootSize.height },
+        descendants,
+      };
+    };
     /** The header of one occurrence at an inner width: measured once per width, never twice at the same. */
     const headerAt = (id: EntityRef, inner: number): HeaderMeasurement => {
       const known = headers.get(id);
@@ -1249,7 +1457,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const baseX = hasSiblingZones ? zoneGutter : zone ? rowGaps.zoneX : rowGaps.cardX;
       const baseY = hasSiblingZones ? zoneGutter : zone ? rowGaps.zoneY : rowGaps.cardY;
       const packOptions = {
-        targetAspect: rowPack.targetAspect,
+        targetAspect: planCtx?.mode === "nominal-plan" && planCtx.tauOverride !== undefined ? planCtx.tauOverride : rowPack.targetAspect,
         gapX: baseX,
         gapY: baseY,
         chromeWidth,
@@ -1257,18 +1465,47 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         tallBias: rowPack.tallBias,
         emptyPenaltyWeight: rowPack.emptyPenaltyWeight,
       };
+      const plannedLevel = nominalPlan?.autoPackLevels[run.key];
       const frozen = plan?.frozen.get(run.key);
       let orientation: LevelOrientation;
       let shelves: readonly (readonly number[])[];
       const forcedOrientation = run.mode === "auto" ? orientationOverrides?.get(run.key) : undefined;
-      if (forcedOrientation !== undefined) {
+      if (plannedLevel !== undefined) {
+        // H2 F-1 / F-2: seat visible children on the nominal plan's frozen shelves
+        // (membership by child EntityRef, never re-wrapped, never flipped).
+        const indexByEntity = new Map<EntityRef, number>();
+        run.items.forEach((item, idx) => {
+          if ("entity" in item) indexByEntity.set(item.entity, idx);
+        });
+        const placedSlots = new Set<number>();
+        const mapped: number[][] = [];
+        for (const plannedShelf of plannedLevel.shelves) {
+          const indices: number[] = [];
+          for (const entity of plannedShelf) {
+            const idx = indexByEntity.get(entity);
+            if (idx !== undefined) {
+              indices.push(idx);
+              placedSlots.add(idx);
+            }
+          }
+          if (indices.length > 0) mapped.push(indices);
+        }
+        const remaining: number[] = [];
+        run.items.forEach((_, idx) => {
+          if (!placedSlots.has(idx)) remaining.push(idx);
+        });
+        if (remaining.length > 0) mapped.push(remaining);
+        orientation = plannedLevel.orientation;
+        shelves = mapped;
+      } else if (forcedOrientation !== undefined) {
         orientation = forcedOrientation;
         shelves = (forcedOrientation === "rows" ? packRows : packColumns)(boxes, packOptions).rows;
       } else if (frozen !== undefined && frozen.shelves.reduce((count, shelf) => count + shelf.length, 0) === boxes.length) {
         orientation = frozen.orientation;
         shelves = frozen.shelves;
       } else if (run.mode === "auto") {
-        const choice = chooseOrientation(boxes, packOptions, rowPack.orientationHysteresis, options.previousOrientation?.[run.key]);
+        const previousForChoice = planCtx?.mode === "nominal-plan" ? undefined : options.previousOrientation?.[run.key];
+        const choice = chooseOrientation(boxes, packOptions, rowPack.orientationHysteresis, previousForChoice);
         orientation = choice.orientation;
         shelves = choice.result.rows;
       } else {
@@ -1278,11 +1515,24 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       // A column shelf containing one box per column paints the same single
       // row. Canonicalize that equivalent arrangement before feeding fold
       // hysteresis back; otherwise the metadata can alternate without a move.
-      if (run.mode === "auto" && orientation === "columns" && shelves.every(shelf => shelf.length === 1)) {
+      if (plannedLevel === undefined && run.mode === "auto" && orientation === "columns" && shelves.every(shelf => shelf.length === 1)) {
         orientation = "rows";
         shelves = [shelves.flat()];
       }
       chosen.set(run.key, { orientation, shelves });
+      if (planCtx?.mode === "nominal-plan" && plan === undefined && run.key !== ROOT_LEVEL_KEY) {
+        const entityShelves = shelves
+          .map((shelf) =>
+            shelf
+              .map((slot) => {
+                const item = run.items[slot];
+                return item !== undefined && "entity" in item ? item.entity : undefined;
+              })
+              .filter((e): e is EntityRef => e !== undefined),
+          )
+          .filter((shelf) => shelf.length > 0);
+        capturedAutoPack.set(run.key, { orientation, shelves: entityShelves });
+      }
       if (run.mode === "auto" && boxes.length > 0) orientationRecord.set(run.key, orientation);
       const rows = orientation === "rows";
       const alongBase = rows ? baseX : baseY;
@@ -1291,6 +1541,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const cardAcrossBase = rows ? rowGaps.cardY : rowGaps.cardX;
       const zoneAlongBase = rows ? rowGaps.zoneX : rowGaps.zoneY;
       const zoneAcrossBase = rows ? rowGaps.zoneY : rowGaps.zoneX;
+      const activeWiden = widenForScope(run.key);
       // §3.5: a gutter keeps its base gap (or the authored `gapAfter` of the
       // group before it) unless the plan widens it for a label. One along gap
       // per slot index on every shelf: the grid keeps its column starts.
@@ -1312,14 +1563,14 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
             if (leftZone && rightZone) return zoneGutter;
             return Math.max(
               gapAfterOf(leftSlot) ?? (leftZone || rightZone ? zoneAlongBase : cardAlongBase),
-              plan?.widen.get(`${run.key}|along|${String(slot)}`) ?? 0,
-              plan?.widen.get(`${run.key}|along|${String(slot)}|${String(shelf)}`) ?? 0,
+              activeWiden?.get(`${run.key}|along|${String(slot)}`) ?? 0,
+              activeWiden?.get(`${run.key}|along|${String(slot)}|${String(shelf)}`) ?? 0,
             );
           }
           return Math.max(
             gapAfterOf(leftSlot) ?? alongBase,
-            plan?.widen.get(`${run.key}|along|${String(slot)}`) ?? 0,
-            plan?.widen.get(`${run.key}|along|${String(slot)}|${String(shelf)}`) ?? 0,
+            activeWiden?.get(`${run.key}|along|${String(slot)}`) ?? 0,
+            activeWiden?.get(`${run.key}|along|${String(slot)}|${String(shelf)}`) ?? 0,
           );
         },
         (shelf) => {
@@ -1330,9 +1581,9 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
             const nextZone = shelfHasZone(run, nextShelf);
             if (currentZone && nextZone) return zoneGutter;
             const base = currentZone || nextZone ? zoneAcrossBase : cardAcrossBase;
-            return Math.max(gapAfterOf(last) ?? base, plan?.widen.get(`${run.key}|across|${String(shelf)}`) ?? 0);
+            return Math.max(gapAfterOf(last) ?? base, activeWiden?.get(`${run.key}|across|${String(shelf)}`) ?? 0);
           }
-          return Math.max(gapAfterOf(last) ?? acrossBase, plan?.widen.get(`${run.key}|across|${String(shelf)}`) ?? 0);
+          return Math.max(gapAfterOf(last) ?? acrossBase, activeWiden?.get(`${run.key}|across|${String(shelf)}`) ?? 0);
         },
       );
       packedRuns.set(run.key, { run, rows, shelves, boxes, positions: seated.positions, alongBase, acrossBase });
@@ -1357,6 +1608,8 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       hostGrid: import("@sentropic/diagram-core").LayoutGrid,
       visibleList: readonly EntityRef[],
     ): GridLayoutResult => {
+      const hostWiden = widenForScope(gridRunKey);
+      const isRootGrid = gridScope === "root";
       if (!Array.isArray(hostGrid.stage_columns)) {
         return layoutGridScope({
           scope: gridScope,
@@ -1368,7 +1621,9 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
           isExpandedContainer: isStretchedBox,
           rowGaps,
           zoneGutter,
-          widen: plan?.widen,
+          widen: hostWiden,
+          ...(isRootGrid && sigmaColsMap !== undefined ? { sigmaCols: sigmaColsMap } : {}),
+          ...(isRootGrid && sigmaBandsMap !== undefined ? { sigmaBands: sigmaBandsMap } : {}),
         });
       }
       const hostStageCols = hostGrid.stage_columns;
@@ -1483,15 +1738,28 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         isExpandedContainer: isStretchedBox,
         rowGaps,
         zoneGutter,
-        widen: plan?.widen,
+        widen: hostWiden,
+        ...(isRootGrid && sigmaColsMap !== undefined ? { sigmaCols: sigmaColsMap } : {}),
+        ...(isRootGrid && sigmaBandsMap !== undefined ? { sigmaBands: sigmaBandsMap } : {}),
         inheritedContributions,
         onStageColumnsResolved: topInheritors.length === 0 ? undefined : (resolvedCols) => {
           const updatedSizes = new Map<EntityRef, { readonly width: number; readonly height: number }>();
           const realizeInheritor = (containerId: EntityRef): { width: number; height: number } => {
             const meta = inheritedNodeMeta.get(containerId)!;
-            for (const child of meta.childInheritors) realizeInheritor(child);
             const firstActive = resolvedCols.declColToActive.get(meta.firstDecl)!;
             const lastActive = resolvedCols.declColToActive.get(meta.lastDecl)!;
+            const inheritedSpanKey = `${resolvedCols.colIds.slice(firstActive, lastActive + 1).join(",")};${resolvedCols.colWidths.slice(firstActive, lastActive + 1).join(",")};${resolvedCols.colGaps.slice(firstActive, lastActive).join(",")};${String(meta.containerSlotInset)}`;
+            if (subtreeMemo !== undefined && nominalPlan !== undefined) {
+              const key = memoKeyFor(containerId, inheritedSpanKey);
+              const hit = subtreeMemo.get(key);
+              if (hit !== undefined) {
+                restoreMemoEntry(hit);
+                updatedSizes.set(containerId, hit.naturalSize);
+                return hit.naturalSize;
+              }
+              memoStoreQueue.set(containerId, key);
+            }
+            for (const child of meta.childInheritors) realizeInheritor(child);
             const containerRunKey = levelKeyOf(containerId);
             const gridLayout = layoutInheritedGridScope({
               scope: containerId,
@@ -1513,7 +1781,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
               isExpandedContainer: isStretchedBox,
               rowGaps,
               zoneGutter,
-              widen: plan?.widen,
+              widen: widenForScope(containerRunKey),
             });
             composedGrids.set(containerRunKey, gridLayout);
             if (gridLayout.unplaced.length > 0) composedUnplaced.set(containerRunKey, gridLayout.unplaced);
@@ -1553,6 +1821,20 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         return size;
       }
       if (kind === "legend-key") return { width: innerWidthOf(legendKeyCardWidth(id)), height: LEGEND_KEY_HEIGHT };
+      if (
+        subtreeMemo !== undefined &&
+        nominalPlan !== undefined &&
+        kind === "container-expanded" &&
+        composition?.grids[id]?.stage_columns !== "inherit"
+      ) {
+        const key = memoKeyFor(id);
+        const hit = subtreeMemo.get(key);
+        if (hit !== undefined) {
+          restoreMemoEntry(hit);
+          return hit.naturalSize;
+        }
+        memoStoreQueue.set(id, key);
+      }
       const zoneGeo = anatomyZoneGeometry(occurrenceAnatomy(representativeOf(id)));
       const hasIcon = presentation.entities[representativeOf(id)]?.icon !== "none";
       const headerReserve = zoneGeo.headerTextInset - (hasIcon ? 0 : zoneGeo.iconSize + zoneGeo.iconTextGap);
@@ -1582,7 +1864,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
           isExpandedContainer: isStretchedBox,
           rowGaps,
           zoneGutter,
-          widen: plan?.widen,
+          widen: widenForScope(runKey),
         });
         composedStacks.set(runKey, stackLayout);
         const outer = Math.max(floor, stackLayout.width + (ordered.length > 0 ? 2 * contentInset : 0));
@@ -1660,6 +1942,8 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       composedUnplaced.clear();
       orientationRecord.clear();
       chosen.clear();
+      capturedAutoPack.clear();
+      memoStoreQueue.clear();
       if (composition?.grids.root !== undefined) {
         const rootGrid = solveStagedGridWithInherit("root", ROOT_LEVEL_KEY, composition.grids.root, rootOrder);
         composedGrids.set(ROOT_LEVEL_KEY, rootGrid);
@@ -1684,6 +1968,18 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const before = new Map(outerWidths);
       sizeAll();
       if (before.size === outerWidths.size && [...outerWidths].every(([id, width]) => before.get(id) === width)) break;
+    }
+    if (planCtx?.mode === "nominal-plan" && plan === undefined && planCtx.capture !== undefined) {
+      for (const [runKey, level] of capturedAutoPack) {
+        planCtx.capture.autoPackLevels[runKey] = level;
+      }
+    }
+    if (subtreeMemo !== undefined && nominalPlan !== undefined && memoStoreQueue.size > 0) {
+      for (const [entityId, memoKey] of memoStoreQueue) {
+        if (packedSizes.has(entityId)) {
+          subtreeMemo.set(memoKey, snapshotSubtree(entityId));
+        }
+      }
     }
     for (const id of headerIds) {
       const size = packedSizes.get(id);
@@ -3105,9 +3401,15 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       };
     });
     // A widened leaf gutter that disappeared is dropped; zone gutters stay fixed under zoneRule (REQ-R7-14).
+    // Under a nominal composition plan (S-2 step 5), inner gutters (below "root") stay frozen to the plan.
+    const isFrozenInnerGutter = (gutterId: string): boolean =>
+      nominalPlan !== undefined && !gutterId.startsWith(`${ROOT_LEVEL_KEY}|`);
     const unused: string[] = [];
     const gutterIds = new Set(gutters.map((gutter) => gutter.id));
-    for (const id of [...(plan?.widen.keys() ?? [])].sort(byString)) if (!gutterIds.has(id)) unused.push(id);
+    for (const id of [...(plan?.widen.keys() ?? [])].sort(byString)) {
+      if (isFrozenInnerGutter(id)) continue;
+      if (!gutterIds.has(id)) unused.push(id);
+    }
 
     // A label with no room is probed with the free space of a base gap above
     // and under it: where it then fits, leaf-card lanes it sits in are asked
@@ -3126,6 +3428,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const level = shared === undefined ? ROOT_LEVEL_KEY : representativeOf(shared);
       for (const gutter of gutters) {
         if (zoneRule && gutter.zone) continue;
+        if (isFrozenInnerGutter(gutter.id)) continue;
         // S-1: an outgoing edge may use a level's base gutter, but cannot
         // change its geometry when a different level is folded.
         if (!gutter.id.startsWith(`${level}|`)) continue;
@@ -3137,7 +3440,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     }
 
     for (const channel of channels) {
-      if (zoneRule && channel.zone) {
+      if ((zoneRule && channel.zone) || isFrozenInnerGutter(channel.id)) {
         requested.delete(channel.id);
         continue;
       }
@@ -3345,14 +3648,48 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         }
       }
     }
-    const compositionReport: LayoutCompositionReport | undefined =
-      composition === undefined
-        ? undefined
-        : {
-            grids: Object.fromEntries(
-              Object.entries(composedGridReports).sort(([left], [right]) => byString(left, right)),
-            ),
-          };
+    let compositionReport: LayoutCompositionReport | undefined;
+    if (composition !== undefined) {
+      const sortedGridReports = Object.fromEntries(
+        Object.entries(composedGridReports).sort(([left], [right]) => byString(left, right)),
+      );
+      const packedLevelsForAudit: {
+        readonly scope: string;
+        readonly rows: boolean;
+        readonly shelves: readonly (readonly { readonly entity: EntityRef; readonly rect: Rect }[])[];
+      }[] = [];
+      for (const [key, packed] of [...packedRuns].sort(([left], [right]) => byString(left, right))) {
+        const boxes = seatedBoxes.get(key);
+        if (boxes === undefined || boxes.length < 2) continue;
+        const shelves = packed.shelves
+          .map((shelf) =>
+            shelf
+              .map((slot) => {
+                const item = packed.run.items[slot];
+                const rect = boxes[slot];
+                if (item === undefined || !("entity" in item) || rect === undefined) return undefined;
+                return { entity: item.entity, rect };
+              })
+              .filter((entry): entry is { entity: EntityRef; rect: Rect } => entry !== undefined),
+          )
+          .filter((shelf) => shelf.length > 0);
+        if (shelves.length > 0) {
+          packedLevelsForAudit.push({ scope: key, rows: packed.rows, shelves });
+        }
+      }
+      const paintedGaps = auditSiblingZonePaintedGaps({
+        gridReports: sortedGridReports,
+        packedLevels: packedLevelsForAudit,
+        isContainer: entityIsContainer,
+        zoneGutter,
+      });
+      compositionReport = {
+        grids: sortedGridReports,
+        ...(nominalPlan === undefined ? {} : { planDigest: nominalPlan.planDigest }),
+        ...(nominalPlan?.nominalAspect === undefined ? {} : { nominalAspect: nominalPlan.nominalAspect }),
+        paintedGapsAboveToken: paintedGaps.aboveToken,
+      };
+    }
     const result: LayoutResult = {
       status: "laid-out",
       ...(hasFlows ? { badgeBoxes: marks.badges, arrowBoxes: marks.arrows, flowBundles: flowPlan.bundles, flowTargets: marks.targets, flowRepairPasses: 0 as const } : {}),
@@ -3426,13 +3763,22 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     previous = outcome;
     outcome = runPass({ frozen, widen, external });
   }
+  if (planCtx?.mode === "nominal-plan" && planCtx.capture !== undefined) {
+    for (const [id, gap] of [...widen].sort(([left], [right]) => byString(left, right))) {
+      if (!id.startsWith(`${ROOT_LEVEL_KEY}|`)) {
+        planCtx.capture.innerWiden[id] = gap;
+      }
+    }
+  }
   // When strict route spacing reports channel capacity overflow inside an
   // auto-packed level (e.g. a folded child causes a column/row stack whose
   // single fixed gutter has lower capacity than the edges crossing it), try
   // flipping that level's orientation (`rows` <-> `columns`) and adopt it ONLY
   // when it completely resolves all route-spacing conflicts without introducing
   // obstructions.
+  // H2 F-2 / R-9: never run orientation retry on planned/composed scenes.
   if (
+    composition === undefined &&
     routeSpacing > 0 &&
     filteredGraph.nodes.size <= 25 &&
     outcome.result.status === "laid-out" &&

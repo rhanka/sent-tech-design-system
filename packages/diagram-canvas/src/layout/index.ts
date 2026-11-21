@@ -43,8 +43,29 @@ export {
   type ResidualReason,
   type SegmentResidual,
 } from "./engine.js";
-export { layoutFolded, layoutMeasured } from "./measured.js";
-export { createLayoutCache, type LayoutCache, type LayoutCacheConfig, type LayoutCacheOptions, type LayoutCacheStats } from "./cache.js";
+export { computeNominalCompositionPlan, layoutFolded, layoutMeasured, type LayoutExecutionContext } from "./measured.js";
+export {
+  createLayoutCache,
+  type LayoutCache,
+  type LayoutCacheConfig,
+  type LayoutCacheOptions,
+  type LayoutCachePlanStats,
+  type LayoutCacheStats,
+} from "./cache.js";
+export {
+  auditSiblingZonePaintedGaps,
+  buildLayoutKeyRecord,
+  computeCompositionPlanKey,
+  computePlanDigest,
+  createSubtreeMemo,
+  foldNeutralView,
+  type FrozenAutoPackLevel,
+  type NominalCompositionPlan,
+  type SubtreeMemo,
+  type SubtreeMemoEntry,
+  type SubtreeMemoStats,
+  type SubtreeNodeSnapshot,
+} from "./plan.js";
 export {
   digestOf,
   LAYOUT_ENGINE_VERSION,
