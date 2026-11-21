@@ -998,10 +998,17 @@ async function shadowSvg(page, elementSelector) {
         Math.sign(otherY - cy) === Math.sign(root.series[i].data[pointIndex].y - root.series[i].data[otherIndex].y)))),
     name, `plot differs: ${JSON.stringify(mount.series)}`);
   }
-  const [east, west] = mounts[1].series;
-  assert(east?.points[1]?.[0] !== undefined && east.points[1][0] === west?.points[0]?.[0] &&
-    east.points[2][0] === west.points[2][0],
-    "time-series: shared domain", `timestamps do not align: ${JSON.stringify(mounts[1].series)}`);
+  // The shared three-hour domain spans x=44 to x=464, so each hour is 140 px.
+  // The y axes for this fixture span values 5 to 25 over y=208 to y=12.
+  const multiPoints = mounts[1].series.map(({ points }) => points);
+  const expectedPoints = [
+    [[44, 159], [184, 51.2], [464, 110]],
+    [[184, 119.8], [324, 178.6], [464, 61]],
+  ];
+  assert(multiPoints.length === expectedPoints.length && multiPoints.every((points, seriesIndex) =>
+    points.length === expectedPoints[seriesIndex].length && points.every((point, pointIndex) =>
+      point.every((coordinate, axis) => Math.abs(coordinate - expectedPoints[seriesIndex][pointIndex][axis]) < 0.01))),
+  "time-series: proportional coordinates", `expected ${JSON.stringify(expectedPoints)}, got ${JSON.stringify(multiPoints)}`);
   const nearEqual = mounts[TIME_SERIES_FIXTURES.length];
   const nearEqualPoints = nearEqual.series[0]?.points ?? [];
   assert(nearEqual.state === "rendered" && nearEqualPoints.length === 3 &&
