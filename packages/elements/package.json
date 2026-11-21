@@ -29,7 +29,7 @@
     "./catalog.json": "./catalog.json",
     "./envelope.json": "./envelope.json",
     "./schemas/*": "./schemas/*",
-    "./shells/*": "./dist/shells/*",
+    "./shells/manifest.json": "./dist/shells/manifest.json",
     "./bpmn": {
       "types": "./dist/element/bpmn.d.ts",
       "import": "./dist/element/bpmn.js"
