@@ -127,9 +127,27 @@ describe("fit-to-window host framing (DE-2 ask 9)", () => {
     expect(zoom).toBeCloseTo(fit.zoom);
     expect(zoom).toBeLessThan(0.45);
     expect(fit.pans).toBe(false);
-    const shaft = svg.match(/<path data-scene-edge="occurrence:r.r-solid"[^>]+>/)?.[0];
-    const label = svg.match(/<g data-scene-label="occurrence:r.r-solid"[^>]+>/)?.[0];
-    expect.soft(Number(shaft?.match(/stroke-width="([^"]+)"/)?.[1])).toBe(2.5);
-    expect.soft(Number(label?.match(/font-size="([^"]+)"/)?.[1]) * zoom).toBeGreaterThanOrEqual(8);
+    const expectedWidths: readonly [string, number][] = [
+      ["occurrence:r.r-solid", 2.5],
+      ["occurrence:r.r-emph", 3.5],
+      ["occurrence:r.r-dashed", 2.5],
+      ["occurrence:r.r-dotted", 2.5],
+    ];
+    for (const [occurrence, expectedWidth] of expectedWidths) {
+      const shaft = svg.match(new RegExp(`<path data-scene-edge="${occurrence}"[^>]+>`))?.[0];
+      const label = svg.match(new RegExp(`<g data-scene-label="${occurrence}"[^>]+>`))?.[0];
+      expect.soft(Number(shaft?.match(/stroke-width="([^"]+)"/)?.[1]), occurrence).toBe(expectedWidth);
+      expect.soft(Number(label?.match(/font-size="([^"]+)"/)?.[1]) * zoom, occurrence).toBeGreaterThanOrEqual(8);
+    }
+    const expectedSwatchWidths: readonly [string, number][] = [
+      ["solid:arrow:default", 2.5],
+      ["solid:none:emphasis", 3.5],
+      ["dashed:arrow:default", 2.5],
+      ["dotted:arrow:default", 2.5],
+    ];
+    for (const [styleKey, expectedWidth] of expectedSwatchWidths) {
+      const swatch = svg.match(new RegExp(`<path data-legend-swatch="${styleKey}"[^>]+>`))?.[0];
+      expect.soft(Number(swatch?.match(/stroke-width="([^"]+)"/)?.[1]), styleKey).toBe(expectedWidth);
+    }
   });
 });
