@@ -217,43 +217,133 @@ function relationPresentationFor(
   return relations[occurrence] ?? relations[relation];
 }
 
+const ALLOWED_RELATION_OCCURRENCE_FIELDS = new Set([
+  "id",
+  "relation",
+  "endpoints",
+  "waypoints",
+  "strokeStyle",
+  "arrowhead",
+  "emphasis",
+]);
+
 function validateRelationPresentations(
   relations: Readonly<Record<string, RelationPresentation>> | undefined,
+  contractPin: DiagramPresentation["contractPin"] | undefined,
+  sourceView: ViewDocument | undefined,
 ): LayoutRefusal[] {
-  if (relations === undefined) return [];
   const refusals: LayoutRefusal[] = [];
-  for (const key of Object.keys(relations).sort(byString)) {
-    const entry = relations[key] as unknown as Record<string, unknown> | undefined;
-    if (entry === undefined) continue;
-    for (const field of Object.keys(entry).sort(byString)) {
-      if (field !== "strokeStyle" && field !== "arrowhead" && field !== "emphasis") {
+  const isV2 = contractPin !== undefined && isPresentationContractV2Pin(contractPin);
+  const isFrozenV1 = contractPin !== undefined && !isV2;
+
+  if (relations !== undefined) {
+    const keys = Object.keys(relations).sort(byString);
+    if (isFrozenV1 && keys.length > 0) {
+      for (const key of keys) {
         refusals.push({
           code: "document-invalid",
-          path: `presentation.relations.${key}.${field}`,
-          message: `unknown connector presentation field ${field}; select connectors by closed registry words only`,
+          path: `presentation.relations.${key}`,
+          message: "presentation.relations requires diagram-presentation@2; frozen diagram-presentation@1 cannot persist DE-2 connector styles",
         });
       }
     }
-    if (entry["strokeStyle"] !== undefined && !isStrokeStyle(entry["strokeStyle"])) {
-      refusals.push({
-        code: "document-invalid",
-        path: `presentation.relations.${key}.strokeStyle`,
-        message: `strokeStyle ${String(entry["strokeStyle"])} is not a closed dash-pattern registry word`,
-      });
+    for (const key of keys) {
+      const entry = relations[key] as unknown as Record<string, unknown> | undefined;
+      if (entry === undefined) continue;
+      for (const field of Object.keys(entry).sort(byString)) {
+        if (field !== "strokeStyle" && field !== "arrowhead" && field !== "emphasis") {
+          refusals.push({
+            code: "document-invalid",
+            path: `presentation.relations.${key}.${field}`,
+            message: `unknown connector presentation field ${field}; select connectors by closed registry words only`,
+          });
+        }
+      }
+      if (entry["strokeStyle"] !== undefined && !isStrokeStyle(entry["strokeStyle"])) {
+        refusals.push({
+          code: "document-invalid",
+          path: `presentation.relations.${key}.strokeStyle`,
+          message: `strokeStyle ${String(entry["strokeStyle"])} is not a closed dash-pattern registry word`,
+        });
+      }
+      if (entry["arrowhead"] !== undefined && !isArrowheadKind(entry["arrowhead"])) {
+        refusals.push({
+          code: "document-invalid",
+          path: `presentation.relations.${key}.arrowhead`,
+          message: `arrowhead ${String(entry["arrowhead"])} is not a closed arrowhead registry word`,
+        });
+      }
+      if (entry["emphasis"] !== undefined && !isLinkEmphasis(entry["emphasis"])) {
+        refusals.push({
+          code: "document-invalid",
+          path: `presentation.relations.${key}.emphasis`,
+          message: `emphasis ${String(entry["emphasis"])} is not a closed link-emphasis registry word`,
+        });
+      }
     }
-    if (entry["arrowhead"] !== undefined && !isArrowheadKind(entry["arrowhead"])) {
-      refusals.push({
-        code: "document-invalid",
-        path: `presentation.relations.${key}.arrowhead`,
-        message: `arrowhead ${String(entry["arrowhead"])} is not a closed arrowhead registry word`,
-      });
-    }
-    if (entry["emphasis"] !== undefined && !isLinkEmphasis(entry["emphasis"])) {
-      refusals.push({
-        code: "document-invalid",
-        path: `presentation.relations.${key}.emphasis`,
-        message: `emphasis ${String(entry["emphasis"])} is not a closed link-emphasis registry word`,
-      });
+  }
+
+  if (sourceView !== undefined) {
+    for (const key of Object.keys(sourceView.relationOccurrences).sort(byString)) {
+      const occurrence = sourceView.relationOccurrences[key] as unknown as Record<string, unknown> | undefined;
+      if (occurrence === undefined) continue;
+      for (const field of Object.keys(occurrence).sort(byString)) {
+        if (!ALLOWED_RELATION_OCCURRENCE_FIELDS.has(field)) {
+          refusals.push({
+            code: "document-invalid",
+            path: `sourceView.relationOccurrences.${key}.${field}`,
+            message: `unknown connector occurrence field ${field}; select connectors by closed registry words only`,
+          });
+        }
+      }
+      const strokeStyle = occurrence["strokeStyle"];
+      if (strokeStyle !== undefined) {
+        if (!isStrokeStyle(strokeStyle)) {
+          refusals.push({
+            code: "document-invalid",
+            path: `sourceView.relationOccurrences.${key}.strokeStyle`,
+            message: `strokeStyle ${String(strokeStyle)} is not a closed dash-pattern registry word`,
+          });
+        } else if (isFrozenV1 && strokeStyle === "dotted") {
+          refusals.push({
+            code: "document-invalid",
+            path: `sourceView.relationOccurrences.${key}.strokeStyle`,
+            message: "strokeStyle dotted requires diagram-presentation@2 under view validation",
+          });
+        }
+      }
+      const arrowhead = occurrence["arrowhead"];
+      if (arrowhead !== undefined) {
+        if (!isArrowheadKind(arrowhead)) {
+          refusals.push({
+            code: "document-invalid",
+            path: `sourceView.relationOccurrences.${key}.arrowhead`,
+            message: `arrowhead ${String(arrowhead)} is not a closed arrowhead registry word`,
+          });
+        } else if (isFrozenV1) {
+          refusals.push({
+            code: "document-invalid",
+            path: `sourceView.relationOccurrences.${key}.arrowhead`,
+            message: "arrowhead requires diagram-presentation@2 under view validation",
+          });
+        }
+      }
+      const emphasis = occurrence["emphasis"];
+      if (emphasis !== undefined) {
+        if (!isLinkEmphasis(emphasis)) {
+          refusals.push({
+            code: "document-invalid",
+            path: `sourceView.relationOccurrences.${key}.emphasis`,
+            message: `emphasis ${String(emphasis)} is not a closed link-emphasis registry word`,
+          });
+        } else if (isFrozenV1) {
+          refusals.push({
+            code: "document-invalid",
+            path: `sourceView.relationOccurrences.${key}.emphasis`,
+            message: "emphasis requires diagram-presentation@2 under view validation",
+          });
+        }
+      }
     }
   }
   return refusals;
@@ -396,7 +486,11 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       diagnostics: [],
     };
   }
-  const relationStyleRefusals = validateRelationPresentations(presentation.relations);
+  const relationStyleRefusals = validateRelationPresentations(
+    presentation.relations,
+    presentation.contractPin,
+    sourceView,
+  );
   if (relationStyleRefusals.length > 0) {
     return { status: "refused", refusals: relationStyleRefusals, diagnostics: [] };
   }
@@ -864,9 +958,9 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     // bundling never silently drops a strokeStyle, arrowhead, or emphasis from
     // the scene or its automatic link legend (REQ-R7-05 / REQ-R7-11 / REQ-R7-12).
     const relStyle = relationPresentationFor(presentation.relations, projectedEdge.id, projectedEdge.relation);
-    const strokeStyle = resolveDashPattern(projectedEdge.strokeStyle ?? relStyle?.strokeStyle).style;
-    const arrowhead = resolveArrowhead(projectedEdge.arrowhead ?? relStyle?.arrowhead).canonicalKind;
-    const emphasis = resolveLinkEmphasis(projectedEdge.emphasis ?? relStyle?.emphasis).emphasis;
+    const strokeStyle = resolveDashPattern(projectedEdge.strokeStyle ?? relStyle?.strokeStyle)?.style ?? "solid";
+    const arrowhead = resolveArrowhead(projectedEdge.arrowhead ?? relStyle?.arrowhead)?.canonicalKind ?? "arrow";
+    const emphasis = resolveLinkEmphasis(projectedEdge.emphasis ?? relStyle?.emphasis)?.emphasis ?? "default";
     const key = JSON.stringify([edge.source.entity, edge.target.entity, strokeStyle, arrowhead, emphasis]);
     const pair = liftedPairs.get(key) ?? [];
     pair.push(edge);
@@ -2646,7 +2740,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const sourceRole = occurrence.endpoints.find((endpoint) => endpoint.role === "source")!;
       const targetRole = occurrence.endpoints.find((endpoint) => endpoint.role === "target")!;
       const style = relationPresentationFor(presentation.relations, occurrence.id, occurrence.relation);
-      const arrowhead = resolveArrowhead(occurrence.arrowhead ?? style?.arrowhead).canonicalKind;
+      const arrowhead = resolveArrowhead(occurrence.arrowhead ?? style?.arrowhead)?.canonicalKind ?? "arrow";
       const passable = new Set<string>([
         ...projectedAncestorsOf(sourceRole.occurrence),
         ...projectedAncestorsOf(targetRole.occurrence),

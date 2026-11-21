@@ -4,6 +4,7 @@ import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svel
 import type { DiagramSceneFigureProps } from './DiagramSceneFigure.types.js';
 import type { SceneDocument, ScenePresentation, SceneOccurrenceRef } from './diagramSceneModel.js';
 import { CURRENT_SCHEMA_VERSION, DEFAULT_PRESENTATION, DIAGRAM_PRESENTATION_CONTRACT_PIN, createView, entityRef, m3ProfileRegistry, occurrenceRef, shippedExecutorBindings, viewRef } from '../../diagram-canvas/tests/scene-host-fixtures.js';
+import { DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } from '@sentropic/diagram-core';
 import { hCondInput } from '../../diagram-canvas/tests/layout/dc2a/h-cond.js';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -862,6 +863,7 @@ describe('scene host DOM and camera/fold behavior', () => {
     );
     const presentation = {
       ...base.presentation,
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
       relations: {
         'relation:link.a.b': { strokeStyle: 'dotted', arrowhead: 'arrow' },
         'relation:link.b.ext': { arrowhead: 'none', emphasis: 'emphasis' },

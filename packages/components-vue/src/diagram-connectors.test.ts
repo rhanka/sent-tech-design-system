@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent } from "@testing-library/dom";
 import { mount } from "@vue/test-utils";
 import { nextTick as tick } from "vue";
+import { DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } from "@sentropic/diagram-core";
 import { expectConnectorPaint, scenePaintOrder } from "../../diagram-canvas/tests/host-support/connectorHostContract.js";
 import { flowFixture, flowMeasure } from "../../diagram-canvas/test-support/flowFixture.js";
 import { nestedZoneFixture } from "../../diagram-canvas/test-support/nestedZoneFixture.js";
@@ -80,6 +81,7 @@ for (const host of ["base", "numbered-flow"] as const) {
       const crossEdge = fixture.relations[fixture.relations.length - 1]!.occurrence;
       const presentation = {
         ...fixture.presentation,
+        contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
         relations: {
           [r0!]: { strokeStyle: "dotted" as const, arrowhead: "arrow" as const },
           [r1!]: { arrowhead: "none" as const, emphasis: "emphasis" as const },
@@ -180,6 +182,7 @@ for (const host of ["base", "numbered-flow"] as const) {
       const [r0, r1] = fixture.relations.map((r) => r.occurrence);
       const presentation = {
         ...fixture.presentation,
+        contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
         relations: {
           [r0!]: { strokeStyle: "dashed" as const },
           [r1!]: { strokeStyle: "dotted" as const },

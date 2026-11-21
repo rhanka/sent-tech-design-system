@@ -224,6 +224,21 @@ describe("DE-2 view validation and fold projection", () => {
           "relationOccurrences.occurrence:r.cross.arrowhead",
         ]);
       }
+
+      // REQ-R7-17: literal colour, stroke width, and dash array fields are refused on @2 and diagram-less occurrences.
+      const literalView = sampleView(doc, {
+        withDiagramPresentation,
+        cross: { color: "#ff0000", strokeWidth: 4, dashArray: [4, 2] },
+      });
+      const literalDiags = validateView(literalView, doc, options());
+      expect(literalDiags.map((d) => d.path).sort()).toEqual([
+        "relationOccurrences.occurrence:r.cross.color",
+        "relationOccurrences.occurrence:r.cross.dashArray",
+        "relationOccurrences.occurrence:r.cross.strokeWidth",
+      ]);
+      for (const entry of literalDiags) {
+        expect((entry.details as { check?: string } | undefined)?.check).toBe("presentation-shape-invalid");
+      }
     });
   }
 

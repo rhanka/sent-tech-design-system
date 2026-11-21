@@ -1,5 +1,6 @@
 import {
   CURRENT_SCHEMA_VERSION,
+  DIAGRAM_PRESENTATION_CONTRACT_PIN,
   DIAGRAM_PRESENTATION_V2_CONTRACT_PIN,
   m3ProfileRegistry,
   occurrenceRef,
@@ -248,5 +249,110 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
       "presentation.relations.relation:solid-default.emphasis",
       "presentation.relations.relation:solid-default.strokeStyle",
     ]);
+  });
+
+  it("refuses presentation.relations under frozen diagram-presentation@1 and unknown arrowheads in retained views without throwing TypeError (REQ-R7-11 / REQ-R7-17)", () => {
+    const { document, presentation } = connectorFixture();
+    // Frozen @1 + presentation.relations refuses cleanly instead of emitting a validateView-invalid view.
+    const v1Refused = layoutScene({
+      document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      presentation: {
+        ...presentation,
+        contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      },
+      collapsed: [],
+    });
+    expect(v1Refused.status).toBe("refused");
+    if (v1Refused.status === "refused") {
+      expect(v1Refused.refusals.some((r) => r.path.startsWith("presentation.relations."))).toBe(true);
+    }
+
+    // Valid @2 layout -> retained view with an injected unknown arrowhead / literal fields refuses cleanly (never throws).
+    const base = layoutScene({
+      document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      presentation,
+      collapsed: [],
+    });
+    expect(base.status).toBe("laid-out");
+    if (base.status !== "laid-out") return;
+    expect(validateView(base.view, document, { registry: m3ProfileRegistry, bindings: shippedExecutorBindings })).toEqual([]);
+
+    const tampered = {
+      ...base.view,
+      relationOccurrences: {
+        ...base.view.relationOccurrences,
+        "occurrence:r.solid-default": {
+          ...base.view.relationOccurrences["occurrence:r.solid-default"]!,
+          arrowhead: "diamond" as never,
+          color: "#ff0000" as never,
+        },
+      },
+    };
+    const unknownHead = layoutScene({
+      document,
+      view: tampered,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      presentation: base.view.presentation.diagram!,
+      collapsed: [],
+    });
+    expect(unknownHead.status).toBe("refused");
+    if (unknownHead.status === "refused") {
+      expect(unknownHead.refusals.map((r) => r.path).sort()).toEqual([
+        "sourceView.relationOccurrences.occurrence:r.solid-default.arrowhead",
+        "sourceView.relationOccurrences.occurrence:r.solid-default.color",
+      ]);
+    }
+  });
+
+  it("round-trips a persisted @2 dashed-only view cleanly through validateView without losing r7 mode, dashes, or legend (REQ-R7-11 / REQ-R7-12)", () => {
+    const { document, presentation } = connectorFixture();
+    const dashedOnlyPresentation = {
+      ...presentation,
+      relations: {
+        "relation:proposed-cross": { strokeStyle: "dashed" as const },
+      },
+    };
+    const first = layoutScene({
+      document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      presentation: dashedOnlyPresentation,
+      collapsed: [],
+    });
+    expect(first.status).toBe("laid-out");
+    if (first.status !== "laid-out") return;
+    expect(validateView(first.view, document, { registry: m3ProfileRegistry, bindings: shippedExecutorBindings })).toEqual([]);
+
+    // Re-render and fold from the persisted view alone (presentation.relations stripped).
+    const persistedPres = first.view.presentation.diagram!;
+    const second = layoutScene({
+      document,
+      view: first.view,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      presentation: persistedPres,
+      collapsed: [],
+    });
+    expect(second.status).toBe("laid-out");
+    if (second.status !== "laid-out") return;
+    const scene = resolveScene(second, {
+      document,
+      view: first.view,
+      presentation: persistedPres,
+      measureLines,
+    });
+    expect(scene.r7Connectors).toBe(true);
+    expect(scene.edges.find((e) => e.occurrence === "occurrence:r.proposed-cross")?.strokeStyle).toBe("dashed");
+    expect(scene.linkLegend?.entries.map((e) => e.key)).toEqual(["solid:arrow:default", "dashed:arrow:default"]);
   });
 });

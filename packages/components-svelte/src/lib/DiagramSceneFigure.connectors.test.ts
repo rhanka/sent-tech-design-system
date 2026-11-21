@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } from "@sentropic/diagram-core";
 import { expectConnectorPaint, scenePaintOrder } from "../../../diagram-canvas/tests/host-support/connectorHostContract.js";
 import { flowFixture, flowMeasure } from "../../../diagram-canvas/test-support/flowFixture.js";
 import { nestedZoneFixture } from "../../../diagram-canvas/test-support/nestedZoneFixture.js";
@@ -69,6 +70,7 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     const crossEdge = fixture.relations[fixture.relations.length - 1]!.occurrence;
     const presentation = {
       ...fixture.presentation,
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
       relations: {
         [r0!]: { strokeStyle: "dotted" as const, arrowhead: "arrow" as const },
         [r1!]: { arrowhead: "none" as const, emphasis: "emphasis" as const },
@@ -149,6 +151,7 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     const [r0, r1] = fixture.relations.map((r) => r.occurrence);
     const presentation = {
       ...fixture.presentation,
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
       relations: {
         [r0!]: { strokeStyle: "dashed" as const },
         [r1!]: { strokeStyle: "dotted" as const },
@@ -228,6 +231,7 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     const [r0, r1] = fixture.relations.map((r) => r.occurrence);
     const presentation = {
       ...fixture.presentation,
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
       relations: {
         [r0!]: { strokeStyle: "dashed" as const },
         [r1!]: { strokeStyle: "dotted" as const },
