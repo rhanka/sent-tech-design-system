@@ -1,6 +1,7 @@
 <script lang="ts">
   import LineChart, { type LineChartTone } from "../../../../components-svelte/src/lib/LineChart.svelte";
   import type { TimeSeriesChartProps } from "../../contracts/time-series-chart.js";
+  import { formatTimeSeriesInstant, timeSeriesRows } from "../../time-series.js";
 
   let { label, series, referenceLines, bands, goalLine }: TimeSeriesChartProps = $props();
   const tones: readonly LineChartTone[] = [
@@ -24,9 +25,7 @@
     return start === Infinity ? undefined : [start, end];
   });
 
-  function formatTime(value: number | string): string {
-    return new Date(Number(value)).toISOString();
-  }
+  const rows = $derived(timeSeriesRows({ label, series }));
 </script>
 
 <section aria-label={label}>
@@ -37,11 +36,40 @@
       data={entry.data}
       tone={tones[index % tones.length]}
       {xDomain}
-      formatX={formatTime}
+      formatX={(value) => formatTimeSeriesInstant(Number(value))}
       {referenceLines}
       {bands}
       {goalLine}
       showDataList={false}
     />
   {/each}
+  <table>
+    <caption>{label}</caption>
+    <thead>
+      <tr><th scope="col">Time (UTC)</th><th scope="col">Series</th><th scope="col">Value</th></tr>
+    </thead>
+    <tbody>
+      {#each rows as row}
+        {@const instant = formatTimeSeriesInstant(row.x)}
+        <tr><td><time datetime={instant}>{instant}</time></td><td>{row.series}</td><td>{row.y}</td></tr>
+      {/each}
+    </tbody>
+  </table>
 </section>
+
+<style>
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  caption,
+  th,
+  td {
+    padding: 0.5rem;
+    text-align: start;
+  }
+  th,
+  td {
+    border-block-end: 1px solid var(--st-semantic-border-subtle);
+  }
+</style>

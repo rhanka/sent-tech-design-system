@@ -144,6 +144,7 @@ export const TARBALL_REQUIRED_FILES = [
   "schemas/BarChart.v1.json",
   "schemas/BpmnCanvas.v1.json",
   "schemas/DecisionDossier.v1.json",
+  "schemas/TimeSeriesChart.v1.json",
   "dist/index.js",
   "dist/index.d.ts",
   "dist/browser/elements.js",

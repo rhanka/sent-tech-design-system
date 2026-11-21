@@ -6,7 +6,7 @@
     "access": "public"
   },
   "type": "module",
-  "description": "Sentropic design system custom elements for the JSON render catalogue (BarChart, BpmnCanvas, DecisionDossier): envelope validator plus CDN browser bundle.",
+  "description": "Sentropic design system custom elements for the JSON render catalogue (BarChart, BpmnCanvas, DecisionDossier, TimeSeriesChart): envelope validator plus CDN browser bundle.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

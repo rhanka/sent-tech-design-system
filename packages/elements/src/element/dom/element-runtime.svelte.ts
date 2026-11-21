@@ -22,6 +22,7 @@ import type { Diagnostic } from "../../validate/index.js";
 import { engineLoadFailed } from "../../validate/diagnostics.js";
 import { normalizeEnvelopeInput } from "../../validate/envelope.js";
 import { getValidator, registerPort, type EngineChunkName } from "./validator.js";
+import type { TimeSeriesChartProps } from "../../contracts/time-series-chart.js";
 
 /** The wrapper states a host can observe. */
 export type ElementState = "idle" | "rendering" | "rendered" | "refused";
@@ -29,6 +30,7 @@ export type ElementState = "idle" | "rendering" | "rendered" | "refused";
 /** What one wrapper renders after a clean validation. */
 export type ElementPayload =
   | { readonly kind: "bar-chart"; readonly props: Record<string, unknown> }
+  | { readonly kind: "time-series-chart"; readonly props: TimeSeriesChartProps }
   | {
       readonly kind: "bpmn";
       readonly xml: string;
@@ -38,10 +40,10 @@ export type ElementPayload =
   | { readonly kind: "dossier"; readonly document: unknown };
 
 /** The catalogue components L2 wraps. */
-export type ElementComponent = "BarChart" | "BpmnCanvas" | "DecisionDossier";
+export type ElementComponent = "BarChart" | "BpmnCanvas" | "DecisionDossier" | "TimeSeriesChart";
 
 /** The engine module each lazy component loads (chunk names per §6.6). */
-const ENGINE_CHUNKS: Record<Exclude<ElementComponent, "BarChart">, EngineChunkName> = {
+const ENGINE_CHUNKS: Partial<Record<ElementComponent, EngineChunkName>> = {
   BpmnCanvas: "bpmn-canvas",
   DecisionDossier: "focus",
 };
@@ -100,8 +102,8 @@ function componentMismatch(component: ElementComponent, found: string): Diagnost
  * refuses in core without loading.
  */
 function needsOwnEngine(component: ElementComponent, errors: readonly Diagnostic[]): boolean {
-  if (component === "BarChart") return false;
   const chunk = ENGINE_CHUNKS[component];
+  if (chunk === undefined) return false;
   return (
     errors.length > 0 &&
     errors.every(
@@ -207,11 +209,12 @@ export function createElementRuntime(component: ElementComponent) {
         settle("refused");
         return;
       }
-      if (component !== "BarChart" && errors.length > 0) {
+      const chunk = ENGINE_CHUNKS[component];
+      if (chunk !== undefined && errors.length > 0) {
         // Structurally clean, port missing: load THIS component's chunk,
         // register its port, and validate again — semantics included.
         const engine = await loadEngine(component);
-        registerPort(ENGINE_CHUNKS[component], (engine as { port: import("../../ports/types.js").SemanticPort }).port);
+        registerPort(chunk, (engine as { port: import("../../ports/types.js").SemanticPort }).port);
         if (ticket !== sequence) return;
         const second = getValidator().validate(normalized.ok ? normalized.value : envelope);
         if (ticket !== sequence) return;
@@ -237,6 +240,9 @@ export function createElementRuntime(component: ElementComponent) {
       if (component === "BarChart") {
         const { component: _c, id: _i, ...props } = root;
         payload = { kind: "bar-chart", props };
+      } else if (component === "TimeSeriesChart") {
+        const { component: _c, id: _i, ...props } = root;
+        payload = { kind: "time-series-chart", props: props as unknown as TimeSeriesChartProps };
       } else {
         payload = { kind: "dossier", document: root.document };
       }
@@ -244,7 +250,7 @@ export function createElementRuntime(component: ElementComponent) {
     } catch (error) {
       if (ticket !== sequence) return;
       const cause = error instanceof Error ? error.message : String(error);
-      const chunk = ENGINE_CHUNKS[component as Exclude<ElementComponent, "BarChart">];
+      const chunk = ENGINE_CHUNKS[component];
       ownDiagnostics(
         chunk === undefined
           ? {
