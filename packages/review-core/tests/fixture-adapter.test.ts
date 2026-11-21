@@ -50,6 +50,40 @@ function makeFixture() {
 }
 
 describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
+  it("isolates store reads for different tenants in the same workspace", async () => {
+    const { adapter, store } = makeFixture();
+    const tenant = { workspaceId: TENANT, tenantId: "tenant-a", userId: ALICE.actorId };
+    const root = await store.add(tenant, { tenant, target: TARGET, body: "Private", author: { id: ALICE.actorId } });
+    const otherUser = { ...tenant, userId: BOB.actorId };
+    expect(await store.get(otherUser, root.id)).toEqual(root);
+
+    const otherTenant = { ...tenant, tenantId: "tenant-b" };
+    expect(await store.get(otherTenant, root.id)).toBeNull();
+    expect(await store.listThread(otherTenant, root.threadId)).toEqual([]);
+    expect(await store.listByTarget(otherTenant, TARGET)).toEqual([]);
+    expect(await store.listThreadSummaries(otherTenant, TARGET)).toEqual([]);
+    expect(await adapter.list(TENANT, TARGET)).toEqual([]);
+  });
+
+  it("rejects store mutations against another tenant in the same workspace", async () => {
+    const { store } = makeFixture();
+    const tenant = { workspaceId: TENANT, tenantId: "tenant-a" };
+    const otherTenant = { ...tenant, tenantId: "tenant-b" };
+    const author = { id: ALICE.actorId };
+    const root = await store.add(tenant, { tenant, target: TARGET, body: "Private", author });
+    const { id, threadId } = root;
+    const notFound = { code: "NOT_FOUND", status: 404 };
+    await expect(store.edit(otherTenant, id, { body: "Edited" })).rejects.toMatchObject(notFound);
+    await expect(store.delete(otherTenant, id)).rejects.toMatchObject(notFound);
+    await expect(store.add(otherTenant, { tenant: otherTenant, threadId, target: TARGET, body: "Reply", author }))
+      .rejects.toMatchObject(notFound);
+    await expect(store.editThread(otherTenant, threadId, { content: "Edited", assignedTo: BOB.actorId }))
+      .rejects.toMatchObject(notFound);
+    await expect(store.setState(otherTenant, threadId, "closed")).rejects.toMatchObject(notFound);
+    await expect(store.assign(otherTenant, threadId, BOB.actorId)).rejects.toMatchObject(notFound);
+    expect(await store.listThread(tenant, threadId)).toEqual([root]);
+  });
+
   it("rejects replies against a different target and edits by an author without comment rights", async () => {
     const { adapter, setCaller } = makeFixture();
     const root = await adapter.create({ tenant: TENANT, target: TARGET, body: "Original" });
@@ -339,6 +373,7 @@ describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
 
     const fixture = createFixtureCommentsAdapter({
       caller: { userId: ALICE.actorId },
+      tenantId: "ten-1",
       initialComments: [
         {
           id: "c-seed",
