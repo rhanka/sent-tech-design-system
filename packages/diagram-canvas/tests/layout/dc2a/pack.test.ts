@@ -260,6 +260,7 @@ describe("camera fit (§5)", () => {
     expect(clampZoom(0.55, fit)).toBe(0.55);
   });
 
+  // Décision du 21/11. « L'utilisateur a les boutons de zoom et autolayout. Par défaut quand on redimensionne on autolayout zoom intégral + plancher à 30 % ».
   it("fit stops at the readability floor and scrolls the remaining drawing", () => {
     expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.30);
     const huge = cameraFit({ bounds: { width: 460, height: 8000 }, viewWidth: 1440, windowHeight: 2000 });

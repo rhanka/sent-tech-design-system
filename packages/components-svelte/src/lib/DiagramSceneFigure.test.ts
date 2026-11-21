@@ -950,6 +950,7 @@ describe("DiagramSceneFigure camera", () => {
     expect(view.readout()).toBe("100 %");
   });
 
+  // Décision du 21/11. « L'utilisateur a les boutons de zoom et autolayout. Par défaut quand on redimensionne on autolayout zoom intégral + plancher à 30 % ».
   it("pins v1 and fallback-v1 figure max size, cap and R7 zoom floor", async () => {
     // 1. Explicit v1 view and unpinned v1 scene produce identical 0.41.5 camera bounds and figure fit height.
     const completeSingle = sceneOf("complete-single", [{ id: "solo" }]);
