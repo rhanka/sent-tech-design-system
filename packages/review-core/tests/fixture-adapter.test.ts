@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { setImmediate } from "node:timers/promises";
+import { describe, expect, it, vi } from "vitest";
 
 import {
   MAX_SECTION_KEY_LENGTH,
@@ -166,6 +167,41 @@ describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
     const input = { tenant: TENANT, target: TARGET, body: "Reply" };
     await expect(adapter.reply(input as ReplyCommentInput)).rejects.toMatchObject({ code: "NOT_FOUND", status: 404 });
     expect(await adapter.list(TENANT, TARGET)).toEqual([]);
+  });
+
+  it.each([
+    {
+      verb: "setState",
+      mutate: (adapter: CommentsAdapter, threadId: string) => adapter.setState(TENANT, threadId, "closed"),
+      expected: { state: "closed" },
+    },
+    {
+      verb: "assign",
+      mutate: (adapter: CommentsAdapter, threadId: string) => adapter.assign(TENANT, threadId, BOB.actorId),
+      expected: { assignedTo: BOB.actorId },
+    },
+  ])("waits for the $verb confirmation read after committing the mutation", async ({ mutate, expected }) => {
+    const { adapter, store } = makeFixture();
+    const root = await adapter.create({ tenant: TENANT, target: TARGET, body: "Original" });
+    let releaseRead!: () => void;
+    const blockedRead = new Promise<void>((resolve) => { releaseRead = resolve; });
+    const listThread = store.listThread;
+    const read = vi.spyOn(store, "listThread").mockImplementation(async (tenant, threadId) => {
+      const rows = await listThread(tenant, threadId);
+      await blockedRead;
+      expect(rows).toMatchObject([expected]);
+      return rows;
+    });
+
+    const mutation = mutate(adapter, root.threadId);
+    const pending = Symbol("pending");
+    try {
+      expect(await Promise.race([mutation, setImmediate(pending)])).toBe(pending);
+      expect(read).toHaveBeenCalledExactlyOnceWith({ workspaceId: TENANT }, root.threadId);
+    } finally {
+      releaseRead();
+      await expect(mutation).resolves.toBeUndefined();
+    }
   });
 
   it("should mint distinct threadId !== comment.id and enforce threadId vs commentId verb keys", async () => {
