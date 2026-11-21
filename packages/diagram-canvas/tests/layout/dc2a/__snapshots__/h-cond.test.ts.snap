@@ -3,10 +3,10 @@
 exports[`h-cond golden scenes > should keep architecture/folded/390 complete and separated 1`] = `
 {
   "bounds": {
-    "height": 767.34375,
-    "width": 1353.671875,
-    "x": -337.671875,
-    "y": -39.671875,
+    "height": 769,
+    "width": 1354.5,
+    "x": -338.5,
+    "y": -40.5,
   },
   "edges": [
     {
@@ -93,7 +93,7 @@ exports[`h-cond golden scenes > should keep architecture/folded/390 complete and
         "height": 238,
         "width": 320,
         "x": 348,
-        "y": 485.6666666666667,
+        "y": 486.5,
       },
       "bundle": {
         "groups": [
@@ -169,7 +169,7 @@ analysé en AST · Svelte & HTTP statique",
       "box": {
         "height": 90,
         "width": 320,
-        "x": -333.6666666666667,
+        "x": -334.5,
         "y": 167.5,
       },
       "bundle": {
@@ -215,7 +215,7 @@ route la récupération paginée",
         "height": 22,
         "width": 248.2823904,
         "x": 383.85880480000003,
-        "y": -35.666666666666664,
+        "y": -36.5,
       },
       "lines": [
         "appelle · MCP distant OAuth",
@@ -267,10 +267,10 @@ route la récupération paginée",
 exports[`h-cond golden scenes > should keep architecture/folded/1440 complete and separated 1`] = `
 {
   "bounds": {
-    "height": 767.34375,
-    "width": 1353.671875,
-    "x": -337.671875,
-    "y": -39.671875,
+    "height": 769,
+    "width": 1354.5,
+    "x": -338.5,
+    "y": -40.5,
   },
   "edges": [
     {
@@ -357,7 +357,7 @@ exports[`h-cond golden scenes > should keep architecture/folded/1440 complete an
         "height": 238,
         "width": 320,
         "x": 348,
-        "y": 485.6666666666667,
+        "y": 486.5,
       },
       "bundle": {
         "groups": [
@@ -433,7 +433,7 @@ analysé en AST · Svelte & HTTP statique",
       "box": {
         "height": 90,
         "width": 320,
-        "x": -333.6666666666667,
+        "x": -334.5,
         "y": 167.5,
       },
       "bundle": {
@@ -479,7 +479,7 @@ route la récupération paginée",
         "height": 22,
         "width": 248.2823904,
         "x": 383.85880480000003,
-        "y": -35.666666666666664,
+        "y": -36.5,
       },
       "lines": [
         "appelle · MCP distant OAuth",
@@ -968,7 +968,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
         "height": 22,
         "width": 302.6589504,
         "x": 1823.2291984,
-        "y": 1682.8958333333333,
+        "y": 1682.0625,
       },
       "lines": [
         "chargé par · 3 formes déclaratives",
@@ -980,7 +980,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
         "height": 22,
         "width": 315.96757439999993,
         "x": 1746.5748864,
-        "y": 1898.8958333333333,
+        "y": 1898.0625,
       },
       "lines": [
         "lu via CLI · track query & decision ls",
@@ -992,7 +992,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
         "height": 22,
         "width": 325.24016639999996,
         "x": 1493.9890320000002,
-        "y": 1716.2291666666667,
+        "y": 1717.0625,
       },
       "lines": [
         "analysé en AST · pgTable & requêtes",
@@ -1004,7 +1004,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
         "height": 22,
         "width": 355.854336,
         "x": 2282.6315056,
-        "y": 1960.2291666666667,
+        "y": 1961.0625,
       },
       "lines": [
         "analysé en AST · Svelte & HTTP statique",
@@ -1016,7 +1016,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
         "height": 22,
         "width": 77.57255039999998,
         "x": 3143.1173472,
-        "y": 346.7916666666667,
+        "y": 347.625,
       },
       "lines": [
         "alimente",
@@ -1027,8 +1027,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "box": {
         "height": 22,
         "width": 77.57255039999998,
-        "x": 3249.8781301333333,
-        "y": 618.7916666666666,
+        "x": 3249.0447968,
+        "y": 619.625,
       },
       "lines": [
         "alimente",
@@ -1039,7 +1039,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "box": {
         "height": 22,
         "width": 77.57255039999998,
-        "x": 3047.8781301333333,
+        "x": 3047.0447968,
         "y": 620.125,
       },
       "lines": [
@@ -1051,8 +1051,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "box": {
         "height": 22,
         "width": 77.57255039999998,
-        "x": 3233.7840138666666,
-        "y": 834.7916666666666,
+        "x": 3234.6173472,
+        "y": 800.625,
       },
       "lines": [
         "alimente",
@@ -1064,7 +1064,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
         "height": 22,
         "width": 367.0961568,
         "x": 2078.1459904,
-        "y": 860.2291666666666,
+        "y": 861.0625,
       },
       "lines": [
         "écrit sans écrasement · avant mergeEdge",
@@ -1075,8 +1075,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "box": {
         "height": 22,
         "width": 203.57234880000007,
-        "x": 2874.9088138666666,
-        "y": 1246.7916666666667,
+        "x": 2683.1697984,
+        "y": 921.40625,
       },
       "lines": [
         "parcourt les multi-liens",
@@ -1087,8 +1087,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "box": {
         "height": 22,
         "width": 313.90077120000007,
-        "x": 2573.6747093333333,
-        "y": 895.40625,
+        "x": 2572.841376,
+        "y": 892.90625,
       },
       "lines": [
         "lit Spec.content & attributs paginés",
@@ -1100,7 +1100,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
         "height": 22,
         "width": 209.24214720000006,
         "x": 1624,
-        "y": 1138.7916666666667,
+        "y": 1139.625,
       },
       "lines": [
         "route les requêtes MCP",
@@ -1111,8 +1111,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "box": {
         "height": 22,
         "width": 259.9175328,
-        "x": 1106.4158005333334,
-        "y": 748.6666666666666,
+        "x": 1105.5824671999999,
+        "y": 749.5,
       },
       "lines": [
         "route la récupération paginée",
@@ -1123,8 +1123,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "box": {
         "height": 22,
         "width": 251.49145920000004,
-        "x": 1037.6666666666667,
-        "y": 445.2291666666667,
+        "x": 1038.5,
+        "y": 446.0625,
       },
       "lines": [
         "contrôle portée engram:read",
@@ -1135,8 +1135,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "box": {
         "height": 22,
         "width": 213.6126336000001,
-        "x": 1037.6666666666667,
-        "y": 472.89583333333337,
+        "x": 1038.5,
+        "y": 474.5625,
       },
       "lines": [
         "isole le tenant applicatif",
@@ -1147,8 +1147,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/390 complete a
       "box": {
         "height": 22,
         "width": 248.2823904,
-        "x": 548.0509429333333,
-        "y": 411.8958333333333,
+        "x": 547.2176096000001,
+        "y": 411.0625,
       },
       "lines": [
         "appelle · MCP distant OAuth",
@@ -1808,7 +1808,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
         "height": 22,
         "width": 302.6589504,
         "x": 1823.2291984,
-        "y": 1682.8958333333333,
+        "y": 1682.0625,
       },
       "lines": [
         "chargé par · 3 formes déclaratives",
@@ -1820,7 +1820,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
         "height": 22,
         "width": 315.96757439999993,
         "x": 1746.5748864,
-        "y": 1898.8958333333333,
+        "y": 1898.0625,
       },
       "lines": [
         "lu via CLI · track query & decision ls",
@@ -1832,7 +1832,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
         "height": 22,
         "width": 325.24016639999996,
         "x": 1493.9890320000002,
-        "y": 1716.2291666666667,
+        "y": 1717.0625,
       },
       "lines": [
         "analysé en AST · pgTable & requêtes",
@@ -1844,7 +1844,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
         "height": 22,
         "width": 355.854336,
         "x": 2282.6315056,
-        "y": 1960.2291666666667,
+        "y": 1961.0625,
       },
       "lines": [
         "analysé en AST · Svelte & HTTP statique",
@@ -1856,7 +1856,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
         "height": 22,
         "width": 77.57255039999998,
         "x": 3143.1173472,
-        "y": 346.7916666666667,
+        "y": 347.625,
       },
       "lines": [
         "alimente",
@@ -1867,8 +1867,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "box": {
         "height": 22,
         "width": 77.57255039999998,
-        "x": 3249.8781301333333,
-        "y": 618.7916666666666,
+        "x": 3249.0447968,
+        "y": 619.625,
       },
       "lines": [
         "alimente",
@@ -1879,7 +1879,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "box": {
         "height": 22,
         "width": 77.57255039999998,
-        "x": 3047.8781301333333,
+        "x": 3047.0447968,
         "y": 620.125,
       },
       "lines": [
@@ -1891,8 +1891,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "box": {
         "height": 22,
         "width": 77.57255039999998,
-        "x": 3233.7840138666666,
-        "y": 834.7916666666666,
+        "x": 3234.6173472,
+        "y": 800.625,
       },
       "lines": [
         "alimente",
@@ -1904,7 +1904,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
         "height": 22,
         "width": 367.0961568,
         "x": 2078.1459904,
-        "y": 860.2291666666666,
+        "y": 861.0625,
       },
       "lines": [
         "écrit sans écrasement · avant mergeEdge",
@@ -1915,8 +1915,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "box": {
         "height": 22,
         "width": 203.57234880000007,
-        "x": 2874.9088138666666,
-        "y": 1246.7916666666667,
+        "x": 2683.1697984,
+        "y": 921.40625,
       },
       "lines": [
         "parcourt les multi-liens",
@@ -1927,8 +1927,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "box": {
         "height": 22,
         "width": 313.90077120000007,
-        "x": 2573.6747093333333,
-        "y": 895.40625,
+        "x": 2572.841376,
+        "y": 892.90625,
       },
       "lines": [
         "lit Spec.content & attributs paginés",
@@ -1940,7 +1940,7 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
         "height": 22,
         "width": 209.24214720000006,
         "x": 1624,
-        "y": 1138.7916666666667,
+        "y": 1139.625,
       },
       "lines": [
         "route les requêtes MCP",
@@ -1951,8 +1951,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "box": {
         "height": 22,
         "width": 259.9175328,
-        "x": 1106.4158005333334,
-        "y": 748.6666666666666,
+        "x": 1105.5824671999999,
+        "y": 749.5,
       },
       "lines": [
         "route la récupération paginée",
@@ -1963,8 +1963,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "box": {
         "height": 22,
         "width": 251.49145920000004,
-        "x": 1037.6666666666667,
-        "y": 445.2291666666667,
+        "x": 1038.5,
+        "y": 446.0625,
       },
       "lines": [
         "contrôle portée engram:read",
@@ -1975,8 +1975,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "box": {
         "height": 22,
         "width": 213.6126336000001,
-        "x": 1037.6666666666667,
-        "y": 472.89583333333337,
+        "x": 1038.5,
+        "y": 474.5625,
       },
       "lines": [
         "isole le tenant applicatif",
@@ -1987,8 +1987,8 @@ exports[`h-cond golden scenes > should keep architecture/unfolded/1440 complete 
       "box": {
         "height": 22,
         "width": 248.2823904,
-        "x": 548.0509429333333,
-        "y": 411.8958333333333,
+        "x": 547.2176096000001,
+        "y": 411.0625,
       },
       "lines": [
         "appelle · MCP distant OAuth",
@@ -2212,8 +2212,8 @@ exports[`h-cond golden scenes > should keep ontology/folded/390 complete and sep
 {
   "bounds": {
     "height": 800,
-    "width": 1691.34375,
-    "x": -337.671875,
+    "width": 1693,
+    "x": -338.5,
     "y": 0,
   },
   "edges": [
@@ -2361,8 +2361,8 @@ exports[`h-cond golden scenes > should keep ontology/folded/390 complete and sep
       "box": {
         "height": 120,
         "width": 320,
-        "x": 465.6666666666667,
-        "y": 485.6666666666667,
+        "x": 466.5,
+        "y": 486.5,
       },
       "bundle": {
         "groups": [
@@ -2417,7 +2417,7 @@ governs",
         "height": 22,
         "width": 69.95328,
         "x": 473.02336,
-        "y": 180.33333333333334,
+        "y": 179.5,
       },
       "lines": [
         "governs",
@@ -2428,7 +2428,7 @@ governs",
       "box": {
         "height": 120,
         "width": 320,
-        "x": 1029.6666666666667,
+        "x": 1030.5,
         "y": 176,
       },
       "bundle": {
@@ -2483,7 +2483,7 @@ decides",
       "box": {
         "height": 22,
         "width": 71.13445440000001,
-        "x": 235.66666666666666,
+        "x": 236.5,
         "y": 529,
       },
       "lines": [
@@ -2495,7 +2495,7 @@ decides",
       "box": {
         "height": 90,
         "width": 320,
-        "x": -333.6666666666667,
+        "x": -334.5,
         "y": 194.5,
       },
       "bundle": {
@@ -2540,8 +2540,8 @@ writes",
       "box": {
         "height": 22,
         "width": 120.25489919999998,
-        "x": -2.333333333333334,
-        "y": 477.6666666666667,
+        "x": -134.75489919999998,
+        "y": 385.5,
       },
       "lines": [
         "reads · writes",
@@ -2603,8 +2603,8 @@ exports[`h-cond golden scenes > should keep ontology/folded/1440 complete and se
 {
   "bounds": {
     "height": 800,
-    "width": 1691.34375,
-    "x": -337.671875,
+    "width": 1693,
+    "x": -338.5,
     "y": 0,
   },
   "edges": [
@@ -2752,8 +2752,8 @@ exports[`h-cond golden scenes > should keep ontology/folded/1440 complete and se
       "box": {
         "height": 120,
         "width": 320,
-        "x": 465.6666666666667,
-        "y": 485.6666666666667,
+        "x": 466.5,
+        "y": 486.5,
       },
       "bundle": {
         "groups": [
@@ -2808,7 +2808,7 @@ governs",
         "height": 22,
         "width": 69.95328,
         "x": 473.02336,
-        "y": 180.33333333333334,
+        "y": 179.5,
       },
       "lines": [
         "governs",
@@ -2819,7 +2819,7 @@ governs",
       "box": {
         "height": 120,
         "width": 320,
-        "x": 1029.6666666666667,
+        "x": 1030.5,
         "y": 176,
       },
       "bundle": {
@@ -2874,7 +2874,7 @@ decides",
       "box": {
         "height": 22,
         "width": 71.13445440000001,
-        "x": 235.66666666666666,
+        "x": 236.5,
         "y": 529,
       },
       "lines": [
@@ -2886,7 +2886,7 @@ decides",
       "box": {
         "height": 90,
         "width": 320,
-        "x": -333.6666666666667,
+        "x": -334.5,
         "y": 194.5,
       },
       "bundle": {
@@ -2931,8 +2931,8 @@ writes",
       "box": {
         "height": 22,
         "width": 120.25489919999998,
-        "x": -2.333333333333334,
-        "y": 477.6666666666667,
+        "x": -134.75489919999998,
+        "y": 385.5,
       },
       "lines": [
         "reads · writes",
@@ -3619,7 +3619,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 76.37141760000002,
         "x": 491.8142912,
-        "y": 1212.8958333333333,
+        "y": 1212.0625,
       },
       "lines": [
         "contains",
@@ -3630,7 +3630,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 80.40724800000001,
-        "x": 145.92608533333333,
+        "x": 145.092752,
         "y": 1261.5625,
       },
       "lines": [
@@ -3643,7 +3643,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 80.40724800000001,
         "x": 489.796376,
-        "y": 1104.8958333333333,
+        "y": 1104.0625,
       },
       "lines": [
         "specifies",
@@ -3655,7 +3655,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 69.95328,
         "x": 1832.02336,
-        "y": 763.6666666666666,
+        "y": 764.5,
       },
       "lines": [
         "governs",
@@ -3667,7 +3667,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 69.95328,
         "x": 2115.52336,
-        "y": 763.6666666666666,
+        "y": 764.5,
       },
       "lines": [
         "governs",
@@ -3679,7 +3679,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 69.95328,
         "x": 1652.02336,
-        "y": 763.6666666666666,
+        "y": 764.5,
       },
       "lines": [
         "governs",
@@ -3690,7 +3690,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 69.95328,
-        "x": -2.333333333333334,
+        "x": -84.45328,
         "y": 692.5625,
       },
       "lines": [
@@ -3703,7 +3703,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 141.24166080000003,
         "x": 1698.3791696,
-        "y": 388.2291666666667,
+        "y": 389.0625,
       },
       "lines": [
         "in_workpackage",
@@ -3714,8 +3714,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 131.5358304,
-        "x": 930.7975029333332,
-        "y": 692.3333333333334,
+        "x": 860.0525504,
+        "y": 821.5,
       },
       "lines": [
         "tracks · réalise",
@@ -3727,7 +3727,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 131.5358304,
         "x": 1220.2320848,
-        "y": 809.6666666666666,
+        "y": 775.5,
       },
       "lines": [
         "tracks · réalise",
@@ -3738,7 +3738,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 69.93352320000001,
-        "x": 992.3998101333333,
+        "x": 991.5664768,
         "y": 720.5625,
       },
       "lines": [
@@ -3750,7 +3750,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 69.93352320000001,
-        "x": 1401.3998101333332,
+        "x": 1400.5664768,
         "y": 403.5625,
       },
       "lines": [
@@ -3763,7 +3763,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 68.319312,
         "x": 2919.340344,
-        "y": 354.8958333333333,
+        "y": 354.0625,
       },
       "lines": [
         "renders",
@@ -3775,7 +3775,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 44.18234880000001,
         "x": 3103.4088256,
-        "y": 444.2291666666667,
+        "y": 445.0625,
       },
       "lines": [
         "uses",
@@ -3786,8 +3786,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 165.35906880000007,
-        "x": 2901.6666666666665,
-        "y": 444.2291666666667,
+        "x": 2902.5,
+        "y": 445.0625,
       },
       "lines": [
         "calls · HTTP littéral",
@@ -3799,7 +3799,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 71.13445440000001,
         "x": 2260,
-        "y": 1030.2291666666667,
+        "y": 1031.0625,
       },
       "lines": [
         "handles",
@@ -3811,7 +3811,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 51.013968000000006,
         "x": 1482.493016,
-        "y": 809.6666666666666,
+        "y": 810.5,
       },
       "lines": [
         "reads",
@@ -3822,8 +3822,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 53.829513600000006,
-        "x": 1689.6666666666667,
-        "y": 1030.2291666666667,
+        "x": 1422.1635024,
+        "y": 821.5,
       },
       "lines": [
         "writes",
@@ -3835,7 +3835,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 120.25489919999998,
         "x": 633.3725504,
-        "y": 475.6666666666667,
+        "y": 476.5,
       },
       "lines": [
         "reads · writes",
@@ -3847,7 +3847,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 81.2144544,
         "x": 485.3927728,
-        "y": 294.2291666666667,
+        "y": 295.0625,
       },
       "lines": [
         "has_field",
@@ -3859,7 +3859,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 133.95704640000002,
         "x": 775.0214768,
-        "y": 475.6666666666667,
+        "y": 476.5,
       },
       "lines": [
         "references · FK",
@@ -3870,7 +3870,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
       "box": {
         "height": 22,
         "width": 92.4756288,
-        "x": 1348.8577045333332,
+        "x": 1348.0243712,
         "y": 1261.5625,
       },
       "lines": [
@@ -3883,7 +3883,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/390 complete and s
         "height": 22,
         "width": 93.71647679999998,
         "x": 1688.6417616,
-        "y": 1246.2291666666667,
+        "y": 1247.0625,
       },
       "lines": [
         "at_commit",
@@ -4696,7 +4696,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 76.37141760000002,
         "x": 491.8142912,
-        "y": 1212.8958333333333,
+        "y": 1212.0625,
       },
       "lines": [
         "contains",
@@ -4707,7 +4707,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 80.40724800000001,
-        "x": 145.92608533333333,
+        "x": 145.092752,
         "y": 1261.5625,
       },
       "lines": [
@@ -4720,7 +4720,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 80.40724800000001,
         "x": 489.796376,
-        "y": 1104.8958333333333,
+        "y": 1104.0625,
       },
       "lines": [
         "specifies",
@@ -4732,7 +4732,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 69.95328,
         "x": 1832.02336,
-        "y": 763.6666666666666,
+        "y": 764.5,
       },
       "lines": [
         "governs",
@@ -4744,7 +4744,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 69.95328,
         "x": 2115.52336,
-        "y": 763.6666666666666,
+        "y": 764.5,
       },
       "lines": [
         "governs",
@@ -4756,7 +4756,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 69.95328,
         "x": 1652.02336,
-        "y": 763.6666666666666,
+        "y": 764.5,
       },
       "lines": [
         "governs",
@@ -4767,7 +4767,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 69.95328,
-        "x": -2.333333333333334,
+        "x": -84.45328,
         "y": 692.5625,
       },
       "lines": [
@@ -4780,7 +4780,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 141.24166080000003,
         "x": 1698.3791696,
-        "y": 388.2291666666667,
+        "y": 389.0625,
       },
       "lines": [
         "in_workpackage",
@@ -4791,8 +4791,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 131.5358304,
-        "x": 930.7975029333332,
-        "y": 692.3333333333334,
+        "x": 860.0525504,
+        "y": 821.5,
       },
       "lines": [
         "tracks · réalise",
@@ -4804,7 +4804,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 131.5358304,
         "x": 1220.2320848,
-        "y": 809.6666666666666,
+        "y": 775.5,
       },
       "lines": [
         "tracks · réalise",
@@ -4815,7 +4815,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 69.93352320000001,
-        "x": 992.3998101333333,
+        "x": 991.5664768,
         "y": 720.5625,
       },
       "lines": [
@@ -4827,7 +4827,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 69.93352320000001,
-        "x": 1401.3998101333332,
+        "x": 1400.5664768,
         "y": 403.5625,
       },
       "lines": [
@@ -4840,7 +4840,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 68.319312,
         "x": 2919.340344,
-        "y": 354.8958333333333,
+        "y": 354.0625,
       },
       "lines": [
         "renders",
@@ -4852,7 +4852,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 44.18234880000001,
         "x": 3103.4088256,
-        "y": 444.2291666666667,
+        "y": 445.0625,
       },
       "lines": [
         "uses",
@@ -4863,8 +4863,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 165.35906880000007,
-        "x": 2901.6666666666665,
-        "y": 444.2291666666667,
+        "x": 2902.5,
+        "y": 445.0625,
       },
       "lines": [
         "calls · HTTP littéral",
@@ -4876,7 +4876,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 71.13445440000001,
         "x": 2260,
-        "y": 1030.2291666666667,
+        "y": 1031.0625,
       },
       "lines": [
         "handles",
@@ -4888,7 +4888,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 51.013968000000006,
         "x": 1482.493016,
-        "y": 809.6666666666666,
+        "y": 810.5,
       },
       "lines": [
         "reads",
@@ -4899,8 +4899,8 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 53.829513600000006,
-        "x": 1689.6666666666667,
-        "y": 1030.2291666666667,
+        "x": 1422.1635024,
+        "y": 821.5,
       },
       "lines": [
         "writes",
@@ -4912,7 +4912,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 120.25489919999998,
         "x": 633.3725504,
-        "y": 475.6666666666667,
+        "y": 476.5,
       },
       "lines": [
         "reads · writes",
@@ -4924,7 +4924,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 81.2144544,
         "x": 485.3927728,
-        "y": 294.2291666666667,
+        "y": 295.0625,
       },
       "lines": [
         "has_field",
@@ -4936,7 +4936,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 133.95704640000002,
         "x": 775.0214768,
-        "y": 475.6666666666667,
+        "y": 476.5,
       },
       "lines": [
         "references · FK",
@@ -4947,7 +4947,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
       "box": {
         "height": 22,
         "width": 92.4756288,
-        "x": 1348.8577045333332,
+        "x": 1348.0243712,
         "y": 1261.5625,
       },
       "lines": [
@@ -4960,7 +4960,7 @@ exports[`h-cond golden scenes > should keep ontology/unfolded/1440 complete and 
         "height": 22,
         "width": 93.71647679999998,
         "x": 1688.6417616,
-        "y": 1246.2291666666667,
+        "y": 1247.0625,
       },
       "lines": [
         "at_commit",
