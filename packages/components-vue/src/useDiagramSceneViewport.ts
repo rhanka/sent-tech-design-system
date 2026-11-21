@@ -20,15 +20,25 @@ export function useDiagramSceneViewport(
     const effectiveMetrics = computed(() => ({ ...tokenMetrics.value, ...props.metrics }));
     const measureLines = computed(() => props.measureLines ?? cardLineMeasurer(measure.value));
 
+    const figureEl = shallowRef<HTMLElement>();
+    const controlsEl = shallowRef<HTMLElement>();
     const frameEl = shallowRef<HTMLElement>();
     const viewportEl = shallowRef<HTMLElement>();
     const frameWidth = shallowRef<number>();
     const viewWidth = shallowRef<number>();
     const windowHeight = shallowRef<number>();
+    const measuredFrameHeight = shallowRef<number>();
+    const controlsHeight = shallowRef(0);
     const scrollbarHeight = shallowRef(0);
     const maxDisplayScale = shallowRef<number>();
     const minReadableScale = shallowRef<number>();
     const requestedZoom = shallowRef<number>();
+    const viewAll = shallowRef(false);
+    const nativeFullscreen = shallowRef(false);
+    const fallbackFullscreen = shallowRef(false);
+    const fullscreen = computed(() => nativeFullscreen.value || fallbackFullscreen.value);
+    const fullscreenMode = computed<'native' | 'fallback' | undefined>(() =>
+        nativeFullscreen.value ? 'native' : fallbackFullscreen.value ? 'fallback' : undefined);
     let fittedFonts: Promise<FontFaceSet> | undefined;
     const renderedBounds = shallowRef<{ scene: SceneModel; bounds: Rect }>();
     const cameraBounds = computed(() => renderedBounds.value?.scene === scene.value ? renderedBounds.value?.bounds : scene.value?.bounds);
@@ -70,7 +80,12 @@ export function useDiagramSceneViewport(
 
     function measureFrame(resize = false) {
         if (frameEl.value === undefined) return;
-        const width = frameEl.value.clientWidth || undefined;
+        const rawWidth = frameEl.value.clientWidth;
+        const width = rawWidth > 0
+            ? rawWidth
+            : fullscreen.value && window.innerWidth > 0
+                ? window.innerWidth
+                : undefined;
         const frameHeight = frameEl.value.clientHeight;
         const viewportOuterHeight = viewportEl.value?.offsetHeight ?? 0;
         // The frame can grow with its viewport when a scrollbar appears.
@@ -83,6 +98,8 @@ export function useDiagramSceneViewport(
         const height = window.innerHeight > 0 ? window.innerHeight : undefined;
         const refit = resize || width !== frameWidth.value || frameHeightChanged || height !== windowHeight.value;
         frameWidth.value = width;
+        measuredFrameHeight.value = frameHeight > 0 ? frameHeight : undefined;
+        controlsHeight.value = controlsEl.value?.offsetHeight ?? 0;
         viewWidth.value = viewportEl.value?.clientWidth || width;
         scrollbarHeight.value = viewportOuterHeight - (viewportEl.value?.clientHeight ?? 0);
         windowHeight.value = height;
@@ -93,10 +110,19 @@ export function useDiagramSceneViewport(
         }
     }
     const measured = computed(() => frameWidth.value !== undefined && windowHeight.value !== undefined);
+    const fullscreenViewHeight = computed(() => fullscreen.value
+        ? (measuredFrameHeight.value !== undefined && measuredFrameHeight.value > 0
+            ? measuredFrameHeight.value
+            : windowHeight.value !== undefined
+                ? Math.max(0, windowHeight.value - controlsHeight.value)
+                : undefined)
+        : undefined);
     const fitInput = computed(() => ({
         ...(cameraBounds.value === undefined ? {} : { bounds: cameraBounds.value }),
         viewWidth: frameWidth.value ?? props.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
         windowHeight: windowHeight.value ?? Number.POSITIVE_INFINITY,
+        ...(fullscreenViewHeight.value === undefined ? {} : { viewHeight: fullscreenViewHeight.value }),
+        ...(viewAll.value ? { unconstrained: true } : {}),
         ...(maxDisplayScale.value === undefined ? {} : { maxDisplayScale: maxDisplayScale.value }),
         ...(minReadableScale.value === undefined ? {} : { minReadableScale: minReadableScale.value }),
     }));
@@ -117,6 +143,8 @@ export function useDiagramSceneViewport(
         pans: placement.value.overflowX || placement.value.overflowY,
     }));
     watch(() => props.document.documentId, () => {
+        viewAll.value = false;
+        if (fullscreen.value) exitFullscreen();
         resetToFit();
         fittedFonts = undefined;
         browserMeasure.value = undefined;
@@ -163,6 +191,105 @@ export function useDiagramSceneViewport(
         if (scene.value === painted) readRenderedBounds();
         resetToFit();
     }
+    function enterFullscreen() {
+        const target = figureEl.value;
+        if (target === undefined) return;
+        const doc = target.ownerDocument;
+        const canNative = typeof target.requestFullscreen === 'function' && doc.fullscreenEnabled !== false;
+        if (canNative) {
+            try {
+                const pending = target.requestFullscreen();
+                if (pending !== undefined && typeof pending.then === 'function') {
+                    void pending.then(
+                        () => {
+                            if (doc.fullscreenElement === target) {
+                                nativeFullscreen.value = true;
+                                fallbackFullscreen.value = false;
+                            } else {
+                                nativeFullscreen.value = false;
+                                fallbackFullscreen.value = true;
+                            }
+                            void nextTick(() => measureFrame(true));
+                        },
+                        () => {
+                            nativeFullscreen.value = false;
+                            fallbackFullscreen.value = true;
+                            void nextTick(() => measureFrame(true));
+                        },
+                    );
+                    return;
+                }
+                if (doc.fullscreenElement === target) {
+                    nativeFullscreen.value = true;
+                    fallbackFullscreen.value = false;
+                    void nextTick(() => measureFrame(true));
+                    return;
+                }
+            } catch {
+                // Fall back to fixed-position overlay below.
+            }
+        }
+        nativeFullscreen.value = false;
+        fallbackFullscreen.value = true;
+        void nextTick(() => measureFrame(true));
+    }
+    function exitFullscreen() {
+        const target = figureEl.value;
+        const doc = target?.ownerDocument;
+        const wasActive = nativeFullscreen.value || fallbackFullscreen.value;
+        fallbackFullscreen.value = false;
+        if (doc !== undefined && doc.fullscreenElement === target && typeof doc.exitFullscreen === 'function') {
+            try {
+                const pending = doc.exitFullscreen();
+                if (pending !== undefined && typeof pending.then === 'function') {
+                    void pending.then(
+                        () => {
+                            nativeFullscreen.value = doc.fullscreenElement === target;
+                            void nextTick(() => measureFrame(true));
+                        },
+                        () => {
+                            nativeFullscreen.value = false;
+                            void nextTick(() => measureFrame(true));
+                        },
+                    );
+                    return;
+                }
+            } catch {
+                // Clear local state below.
+            }
+        }
+        nativeFullscreen.value = false;
+        if (wasActive) void nextTick(() => measureFrame(true));
+    }
+    function toggleFullscreen() {
+        readCameraTokens();
+        if (fullscreen.value) exitFullscreen();
+        else enterFullscreen();
+    }
+    function setViewAll(enabled: boolean) {
+        const next = Boolean(enabled);
+        if (next === viewAll.value) return;
+        const painted = animating() ? undefined : scene.value;
+        if (animating()) transition?.settle();
+        readCameraTokens();
+        if (scene.value === painted) readRenderedBounds();
+        viewAll.value = next;
+        if (!next && fullscreen.value) exitFullscreen();
+        resetToFit();
+    }
+    function toggleViewAll() { setViewAll(!viewAll.value); }
+    function onFigureKeydown(event: KeyboardEvent) {
+        if (event.key !== 'Escape' || event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+        if (fallbackFullscreen.value) {
+            exitFullscreen();
+            event.preventDefault();
+            return;
+        }
+        if (viewAll.value && !fullscreen.value) {
+            setViewAll(false);
+            event.preventDefault();
+        }
+    }
     function getCamera() { return camera.value; }
 
     function resetToFit() {
@@ -198,11 +325,23 @@ export function useDiagramSceneViewport(
     }
     let observer: ResizeObserver | undefined;
     let mountedViewport: HTMLElement | undefined;
+    let mountedDocument: Document | undefined;
     let fonts: FontFaceSet | undefined;
     const onResize = () => measureFrame(true);
+    const onFullscreenChange = () => {
+        const target = figureEl.value;
+        const active = target !== undefined && mountedDocument?.fullscreenElement === target;
+        if (active !== nativeFullscreen.value) {
+            nativeFullscreen.value = active;
+            if (active) fallbackFullscreen.value = false;
+            void nextTick(() => measureFrame(true));
+        }
+    };
     onMounted(() => {
         measureFrame();
         window.addEventListener('resize', onResize);
+        mountedDocument = frameEl.value?.ownerDocument ?? document;
+        mountedDocument.addEventListener('fullscreenchange', onFullscreenChange);
         observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(() => measureFrame());
         if (frameEl.value)
             observer?.observe(frameEl.value);
@@ -210,7 +349,7 @@ export function useDiagramSceneViewport(
             observer?.observe(viewportEl.value);
         mountedViewport = viewportEl.value;
         mountedViewport?.addEventListener('wheel', onWheel, { passive: false });
-        fonts = document.fonts;
+        fonts = mountedDocument.fonts;
         fonts?.addEventListener?.('loadingdone', refitForFonts);
         watch(scene, (current, _previous, cleanup) => {
             if (current === undefined || browserMeasure.value !== undefined) return;
@@ -222,14 +361,20 @@ export function useDiagramSceneViewport(
     onUnmounted(() => {
         observer?.disconnect();
         window.removeEventListener('resize', onResize);
+        mountedDocument?.removeEventListener('fullscreenchange', onFullscreenChange);
+        if (figureEl.value !== undefined && mountedDocument?.fullscreenElement === figureEl.value && typeof mountedDocument.exitFullscreen === 'function') {
+            try { void mountedDocument.exitFullscreen()?.catch?.(() => undefined); } catch { /* ignore */ }
+        }
+        mountedDocument = undefined;
         fonts?.removeEventListener?.('loadingdone', refitForFonts);
         mountedViewport?.removeEventListener('wheel', onWheel);
         mountedViewport = undefined;
     });
 
     const edgeLabelLineHeight = computed(() => measureLines.value({ text: 'Mg', role: 'edge-label', availableWidth: 400, allocatedLines: 1, folded: false }).height);
-    const viewportStyle = computed(() => `height:${viewportHeight.value}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px`);
-    return { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
+    const viewportStyle = computed(() => `height:${viewportHeight.value}px;${fullscreen.value ? '' : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px`);
+    return { figureEl, controlsEl, frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
         fit, zoom, readout, placement, viewportStyle, resetToFit,
-        setZoom, zoomIn, zoomOut, fitToFrame, getCamera };
+        viewAll, fullscreen, fallbackFullscreen, fullscreenMode,
+        setZoom, zoomIn, zoomOut, fitToFrame, setViewAll, toggleViewAll, toggleFullscreen, exitFullscreen, onFigureKeydown, getCamera };
 }

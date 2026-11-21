@@ -42,14 +42,20 @@ const scene = shallowRef<{
   zoomIn: () => void;
   zoomOut: () => void;
   fitToFrame: () => void;
+  setViewAll: (enabled: boolean) => void;
+  toggleViewAll: () => void;
+  toggleFullscreen: () => void;
   getCamera: () => DiagramSceneCamera;
 }>();
 function setZoom(zoom: number) { scene.value?.setZoom(zoom); }
 function zoomIn() { scene.value?.zoomIn(); }
 function zoomOut() { scene.value?.zoomOut(); }
 function fitToFrame() { scene.value?.fitToFrame(); }
+function setViewAll(enabled: boolean) { scene.value?.setViewAll(enabled); }
+function toggleViewAll() { scene.value?.toggleViewAll(); }
+function toggleFullscreen() { scene.value?.toggleFullscreen(); }
 function getCamera() { return scene.value!.getCamera(); }
-defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
+defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, setViewAll, toggleViewAll, toggleFullscreen, getCamera });
 </script>
 
 <template>

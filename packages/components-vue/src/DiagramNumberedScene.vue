@@ -21,7 +21,7 @@ import type { DiagramSceneFigureProps as SharedSceneFigureProps, DiagramSceneFig
 export interface DiagramSceneFigureProps extends SharedSceneFigureProps {}
 export type { DiagramSceneFigureLabels, DiagramSceneCamera } from "@sentropic/diagram-canvas/diagramSceneModel";
 
-const DEFAULT_LABELS: DiagramSceneFigureLabels = DEFAULT_SCENE_LABELS;
+const DEFAULT_LABELS = DEFAULT_SCENE_LABELS;
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { compact: false });
 const emit = defineEmits<{ "update:contentSize": [size: DiagramSceneSize] }>();
@@ -31,11 +31,12 @@ const maskId = 'diagram-connector-mask-' + hostId;
 const strings = computed(() => ({ ...DEFAULT_LABELS, ...props.labels }));
 const flowOptions = computed(() => ({ ...props.flows, countTemplate: strings.value.count }));
 const tokens = shallowRef<FlowTokens>(DEFAULT_FLOW_TOKENS);
-const { frameEl: frame, viewportEl: viewport, measure, measureLines, effectiveMetrics,
+const { figureEl, controlsEl, frameEl: frame, viewportEl: viewport, measure, measureLines, effectiveMetrics,
   fit, zoom, readout, placement, viewportStyle, resetToFit,
-  setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
+  viewAll, fullscreen, fallbackFullscreen, fullscreenMode,
+  setZoom, zoomIn, zoomOut, fitToFrame, setViewAll, toggleViewAll, toggleFullscreen, exitFullscreen, onFigureKeydown, getCamera } = useDiagramSceneViewport(
     props, () => scene.value, camera => props.onCameraChange?.(camera), readFlowTokens);
-defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
+defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, setViewAll, toggleViewAll, toggleFullscreen, getCamera });
 const foldState = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? foldState.value);
 watch(() => [...collapsedNow.value].sort().join('\0'), resetToFit, { flush: 'pre' });
@@ -174,8 +175,12 @@ function keydown(event: KeyboardEvent): void {
   if (event.ctrlKey || event.metaKey || event.altKey) return;
   const target = event.target as HTMLElement;
   if (target !== event.currentTarget && target.closest("input,textarea,select,[contenteditable]")) return;
+  if (!event.shiftKey && event.key === "Escape" && fallbackFullscreen.value) { exitFullscreen(); event.preventDefault(); return; }
   if (!event.shiftKey && rove(event)) return;
-  if (!event.shiftKey && steps.value.length > 0 && ["]", "[", "Escape"].includes(event.key)) { dispatch({ type: event.key === "]" ? "next" : event.key === "[" ? "previous" : "escape" }); event.preventDefault(); return; }
+  if (!event.shiftKey && steps.value.length > 0 && ["]", "[", "Escape"].includes(event.key)) {
+    if (event.key === "Escape" && state.value.selection === null && viewAll.value && !fullscreen.value) { setViewAll(false); event.preventDefault(); return; }
+    dispatch({ type: event.key === "]" ? "next" : event.key === "[" ? "previous" : "escape" }); event.preventDefault(); return;
+  }
   if (event.key === "+" || event.key === "=") zoomIn(); else if (event.key === "-" || event.key === "_") zoomOut(); else if (event.key === "0") fitToFrame(); else return;
   event.preventDefault();
 }
@@ -238,13 +243,15 @@ const scenarioId = useId();
 </script>
 
 <template>
-  <figure :class="['st-diagramSceneFigure', props.compact ? 'st-diagramSceneFigure--compact' : undefined]" :aria-label="props.label ?? props.title" :data-zoom="zoom" :data-zoom-readout="readout" :data-scene-refused="layout.status === 'refused' ? layout.refusals[0]?.code : undefined">
+  <figure ref="figureEl" :class="['st-diagramSceneFigure', props.compact ? 'st-diagramSceneFigure--compact' : undefined, fullscreen ? 'st-diagramSceneFigure--fullscreen' : undefined, fallbackFullscreen ? 'st-diagramSceneFigure--fullscreenFallback' : undefined]" :aria-label="props.label ?? props.title" :data-zoom="zoom" :data-zoom-readout="readout" :data-view-all="viewAll ? 'true' : undefined" :data-fullscreen="fullscreenMode" :data-scene-refused="layout.status === 'refused' ? layout.refusals[0]?.code : undefined" @keydown="onFigureKeydown">
     <figcaption v-if="props.title !== undefined" class="st-diagramSceneFigure-title">{{ props.title }}</figcaption>
-    <div class="st-diagramSceneFigure-controls" role="group" :aria-label="strings.controls">
+    <div ref="controlsEl" class="st-diagramSceneFigure-controls" role="group" :aria-label="strings.controls">
       <button type="button" class="st-iconButton st-iconButton--sm st-iconButton--secondary" :aria-label="strings.zoomOut" :disabled="zoom <= fit.minZoom" @click="zoomOut"><DiagramControlGlyph size="var(--st-component-button-anatomy-density-sm-fontSize)" /></button>
       <output class="st-diagramSceneFigure-readout" aria-live="polite" :aria-label="strings.zoomLevel(readout)">{{ readout }} %</output>
       <button type="button" class="st-iconButton st-iconButton--sm st-iconButton--secondary" :aria-label="strings.zoomIn" :disabled="zoom >= fit.maxZoom" @click="zoomIn"><DiagramControlGlyph plus size="var(--st-component-button-anatomy-density-sm-fontSize)" /></button>
       <button type="button" class="st-button st-button--secondary st-button--sm" @click="fitToFrame">{{ strings.fit }}</button>
+      <button type="button" class="st-button st-button--secondary st-button--sm st-diagramSceneFigure-viewAll" :aria-pressed="viewAll" @click="toggleViewAll"><DiagramControlGlyph kind="view-all" size="var(--st-component-diagramScene-controlIconSize, var(--st-component-button-anatomy-density-sm-fontSize))" /><span>{{ strings.viewAll }}</span></button>
+      <button type="button" class="st-iconButton st-iconButton--sm st-iconButton--secondary st-diagramSceneFigure-fullscreen" :aria-label="strings.fullscreen" :aria-pressed="fullscreen" @click="toggleFullscreen"><DiagramControlGlyph :kind="fullscreen ? 'exit-fullscreen' : 'fullscreen'" size="var(--st-component-diagramScene-controlIconSize, var(--st-component-button-anatomy-density-sm-fontSize))" /></button>
     </div>
     <div v-if="steps.length > 0" class="st-diagramSceneFigure-flowNavigator" role="group" :aria-label="strings.navigator">
       <button type="button" class="st-button st-button--secondary st-button--sm" @click="dispatch({ type: 'previous' })">{{ strings.previous }}</button>
