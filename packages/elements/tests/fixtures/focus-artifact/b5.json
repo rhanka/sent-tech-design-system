@@ -1,0 +1,39 @@
+{
+  "ref": "focus-test",
+  "subject": "Review fixture",
+  "title": "Review fixture",
+  "hash": "b5-v1",
+  "cursor": "2026-11-02T00:00:00Z",
+  "interactions": [],
+  "provenance": {
+    "source": "track",
+    "readAt": "2026-11-02T00:00:00Z"
+  },
+  "readability": {
+    "ownerRequestQuote": "Pick one shared way to render interface pieces from plain data.",
+    "stakes": "The choice decides how much effort the team spends keeping every screen consistent.",
+    "stakesLevel": "medium",
+    "readingBudgetMinutes": 3
+  },
+  "amendmentTrace": [],
+  "sections": [
+    {
+      "kind": "prose",
+      "id": "A",
+      "targetRef": "focus-test",
+      "markdown": "First section."
+    },
+    {
+      "kind": "prose",
+      "id": "B",
+      "targetRef": "focus-test",
+      "markdown": "Paragraph with **inner text**.\n\n- List item with **inner text**.\n\n| Metric | Count |\n| --- | --- |\n| **Builds** | 1 |"
+    },
+    {
+      "kind": "prose",
+      "id": "C",
+      "targetRef": "focus-test",
+      "markdown": "Third section."
+    }
+  ]
+}
