@@ -101,6 +101,18 @@ async function submit(input, body) {
   await tick();
 }
 
+async function captureComment(body) {
+  const before = await adapter.list(tenant, target);
+  const previousIds = new Set(before.map((row) => row.id));
+  await submit(review.querySelector("textarea"), body);
+  const after = await adapter.list(tenant, target);
+  const created = after.filter((row) => !previousIds.has(row.id));
+  assert.equal(after.length, before.length + 1, `Expected one additional row for ${body}`);
+  assert.equal(created.length, 1, `Expected one new row ID for ${body}`);
+  assert.equal(created[0].body, body);
+  return created[0];
+}
+
 const captureLayer = mountLayer({
   onCreate: ({ target, body }) => adapter.create({ tenant, target, body }),
 });
@@ -114,9 +126,8 @@ try {
   for (const [element, aid] of captureTargets) {
     element.click();
     flushSync();
-    await submit(review.querySelector("textarea"), `Comment on ${element.tagName}`);
-    const latest = (await adapter.list(tenant, target)).at(-1);
-    const anchor = decodeAnchor(latest.target.sectionKey);
+    const comment = await captureComment(`Comment on ${element.tagName}`);
+    const anchor = decodeAnchor(comment.target.sectionKey);
     assert.equal(anchor?.t, "element");
     assert.equal(anchor.aid, aid, "packaged CommentLayer must use the corrected core for inner targets");
     assert.equal(anchor.v, artifactVersion);
@@ -126,8 +137,7 @@ try {
   window.getSelection().setBaseAndExtent(textNode, 0, textNode, "Échéance".length);
   document.dispatchEvent(new window.KeyboardEvent("keydown", { key: "C", altKey: true, shiftKey: true, bubbles: true }));
   flushSync();
-  await submit(review.querySelector("textarea"), "Check the deadline");
-  const textKey = (await adapter.list(tenant, target)).at(-1).target.sectionKey;
+  const textKey = (await captureComment("Check the deadline")).target.sectionKey;
   assert.match(textKey, /^a1:[A-Za-z0-9_-]+$/);
   assert.ok(textKey.length <= 2048);
   const textAnchor = decodeAnchor(textKey);
