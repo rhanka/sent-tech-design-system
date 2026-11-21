@@ -18,9 +18,9 @@
 //   `@sveltejs/vite-plugin-svelte`) and then through the real
 //   `svelte/compiler` `compile()`. A file a bundler cannot parse - the
 //   defect class that prompted this rewrite - fails here, by filename, with
-//   the compiler's own error. This is deliberately a direct compile, not a
-//   full Vite/bundler build: faster, deterministic, and it covers every
-//   shipped component instead of only the handful a demo app would import.
+//   the compiler's own error. The direct compile covers every shipped component.
+//   A separate Vite entry bundles the public review components and TypeScript
+//   checks their props using the installed declarations.
 // - @sentropic/design-system-react / -vue / -angular: the packed tarball's
 //   main entry is `await import()`-ed for real, with peer runtimes
 //   (react/react-dom, vue, @angular/core) installed fresh in the throwaway
@@ -40,7 +40,6 @@
 //   force Node's JIT fallback path instead. That proves the module graph and
 //   export shapes are real and resolvable, but does not exercise the actual
 //   linker step a consumer's build performs.
-// - No bundler build (Vite/webpack/Rollup) is run against any package.
 // - Only the 18 packages listed below are covered by the tarball-shape and
 //   deep-import checks. The other 5 publishable packages - theme-dsfr,
 //   theme-canada, theme-quebec, theme-latex, codemirror - and apps/* are
@@ -119,6 +118,7 @@ const datavizSvelteManifest = readJson("packages/dataviz-svelte/package.json");
 const datavizReactManifest = readJson("packages/dataviz-react/package.json");
 const datavizVueManifest = readJson("packages/dataviz-vue/package.json");
 const datavizAngularManifest = readJson("packages/dataviz-angular/package.json");
+const reviewCoreName = "@sentropic/design-system-review-core";
 
 // LAZY, and that is load-bearing. In CI this script runs per shard, and a shard
 // builds only its own workspaces — so a package outside the selection has no
@@ -214,6 +214,8 @@ const packages = [
       "dist/rich-text-editor/index.js",
       "dist/rich-text-editor/index.d.ts",
       "dist/rich-text-editor/rich-text-editor.css",
+      ...["CommentLayer", "ThreadPanel", "CommentPin", "CommentComposer", "CommentThread", "CommentAuthorship", "ReviewModeToggle", "OrphanList"]
+        .flatMap((name) => [`dist/${name}.svelte`, `dist/${name}.svelte.d.ts`]),
     ],
     absentFiles: [
       "dist/rich-text-editor.js",
@@ -240,9 +242,9 @@ const packages = [
     ],
   },
   {
-    name: "@sentropic/design-system-review-core",
+    name: reviewCoreName,
     // SPEC-r6 DS-7: framework-neutral zero-dependency review core.
-    requiredFiles: ["dist/index.js", "dist/index.d.ts"],
+    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/adapter.d.ts", "dist/fixture-adapter.js"],
     absentPatterns: ["\\.map$", "\\.srchash$", "\\.test\\."],
   },
   {
@@ -408,7 +410,7 @@ const deepVerify = {
     closure: [
       "@sentropic/graph",
       "@sentropic/design-system-rich-text",
-      "@sentropic/design-system-review-core",
+      reviewCoreName,
       "@sentropic/design-system-themes",
       "@sentropic/diagram-canvas",
     ],
@@ -416,6 +418,7 @@ const deepVerify = {
       ["svelte", rootManifest.devDependencies.svelte],
       ["vite", rootManifest.devDependencies.vite],
       ["@sveltejs/vite-plugin-svelte", rootManifest.devDependencies["@sveltejs/vite-plugin-svelte"]],
+      ["typescript", ts.version],
     ],
   },
   // RT-1: the neutral rich-text package. No local closure (its only runtime
@@ -440,7 +443,7 @@ const deepVerify = {
   // reclassification proof: with ajv still in devDependencies, importing the
   // installed "." entry would die on `ajv/dist/2020.js` with no workspace
   // to fall back on.
-  "@sentropic/design-system-review-core": { closure: [], peers: [] },
+  [reviewCoreName]: { closure: [], peers: [] },
   "@sentropic/design-system-elements": { closure: [], peers: [] },
   "@sentropic/design-system-react": {
     closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens"],
@@ -450,7 +453,7 @@ const deepVerify = {
     ],
   },
   "@sentropic/design-system-vue": {
-    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens", "@sentropic/diagram-canvas", "@sentropic/graph", "@sentropic/design-system-rich-text", "@sentropic/design-system-review-core"],
+    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens", "@sentropic/diagram-canvas", "@sentropic/graph", "@sentropic/design-system-rich-text", reviewCoreName],
     peers: [["vue", vueManifest.devDependencies.vue]],
   },
   "@sentropic/design-system-angular": {
@@ -734,6 +737,11 @@ try {
   console.log("Sent Tech package smoke test");
   console.log(`Temp dir: ${tmp}`);
 
+  if (!selectedNames || selectedNames.has(reviewCoreName)) {
+    assert(selectedPackages.some((pkg) => pkg.name === reviewCoreName) && deepVerify[reviewCoreName],
+      `${reviewCoreName} must be packed and installed by smoke-pack`);
+  }
+
   runLicensingGate();
 
   if (selectedPackages.length === 0) {
@@ -796,6 +804,14 @@ try {
       deepTargets.map((pkg) => pkg.name),
     );
     run("node", [verifyPath], { cwd: installDir });
+
+    if (deepTargets.some((pkg) => pkg.name === "@sentropic/design-system-svelte")) {
+      const reviewFixture = join(root, "scripts", "fixtures", "review-consumer");
+      for (const file of ["check-exports.mjs", "review-exports.ts"]) {
+        cpSync(join(reviewFixture, file), join(installDir, file));
+      }
+      run(process.execPath, ["check-exports.mjs", "--bundle"], { cwd: installDir });
+    }
 
     // The primary Vue surface must install with its pinned prerelease peer and
     // type-check the packed declarations, without workspace resolution or casts.

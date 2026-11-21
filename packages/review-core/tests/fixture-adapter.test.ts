@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { setImmediate } from "node:timers/promises";
+import { describe, expect, it, vi } from "vitest";
 
 import {
   MAX_SECTION_KEY_LENGTH,
@@ -8,6 +9,7 @@ import {
   type CollaborationActor,
   type CommentTarget,
   type CommentsAdapter,
+  type ReplyCommentInput,
   type ReviewComment,
 } from "../src/index.js";
 
@@ -50,6 +52,188 @@ function makeFixture() {
 }
 
 describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
+  it("isolates store reads for different tenants in the same workspace", async () => {
+    const { adapter, store } = makeFixture();
+    const tenant = { workspaceId: TENANT, tenantId: "tenant-a", userId: ALICE.actorId };
+    const root = await store.add(tenant, { tenant, target: TARGET, body: "Private", author: { id: ALICE.actorId } });
+    const otherUser = { ...tenant, userId: BOB.actorId };
+    expect(await store.get(otherUser, root.id)).toEqual(root);
+
+    const otherTenant = { ...tenant, tenantId: "tenant-b" };
+    expect(await store.get(otherTenant, root.id)).toBeNull();
+    expect(await store.listThread(otherTenant, root.threadId)).toEqual([]);
+    expect(await store.listByTarget(otherTenant, TARGET)).toEqual([]);
+    expect(await store.listThreadSummaries(otherTenant, TARGET)).toEqual([]);
+    expect(await adapter.list(TENANT, TARGET)).toEqual([]);
+  });
+
+  it("rejects store mutations against another tenant in the same workspace", async () => {
+    const { store } = makeFixture();
+    const tenant = { workspaceId: TENANT, tenantId: "tenant-a" };
+    const otherTenant = { ...tenant, tenantId: "tenant-b" };
+    const author = { id: ALICE.actorId };
+    const root = await store.add(tenant, { tenant, target: TARGET, body: "Private", author });
+    const { id, threadId } = root;
+    const notFound = { code: "NOT_FOUND", status: 404 };
+    await expect(store.edit(otherTenant, id, { body: "Edited" })).rejects.toMatchObject(notFound);
+    await expect(store.delete(otherTenant, id)).rejects.toMatchObject(notFound);
+    await expect(store.add(otherTenant, { tenant: otherTenant, threadId, target: TARGET, body: "Reply", author }))
+      .rejects.toMatchObject(notFound);
+    await expect(store.editThread(otherTenant, threadId, { content: "Edited", assignedTo: BOB.actorId }))
+      .rejects.toMatchObject(notFound);
+    await expect(store.setState(otherTenant, threadId, "closed")).rejects.toMatchObject(notFound);
+    await expect(store.assign(otherTenant, threadId, BOB.actorId)).rejects.toMatchObject(notFound);
+    expect(await store.listThread(tenant, threadId)).toEqual([root]);
+  });
+
+  it.each([
+    { tenantId: "tenant-b", workspaceId: TENANT },
+    { tenantId: "tenant-a", workspaceId: "ws-other" },
+  ])("isolates live sessions from $tenantId in $workspaceId", async (otherScope) => {
+    const { adapter, store, setCaller, registerLiveSession } = createFixtureCommentsAdapter({
+      caller: { userId: ALICE.actorId, actorKind: "agent", agentActor: CLAUDE, runId: "run-alice" },
+      tenantId: "tenant-a",
+    });
+    const toolCallId = "shared-tool-call";
+    const aliceComment = await adapter.create({
+      tenant: TENANT, target: TARGET, body: "Alice's comment", provenance: { toolCallId },
+    });
+    const otherAgent = { ...CLAUDE, actorId: "agent-other", displayLabel: "Other agent" };
+    setCaller({ userId: BOB.actorId, actorKind: "agent", agentActor: otherAgent, runId: "run-bob" });
+    await store.add(otherScope, {
+      tenant: otherScope, target: TARGET, body: "Bob's comment", author: { id: BOB.actorId },
+      provenance: { toolCallId },
+    });
+
+    expect(aliceComment.authorship).toMatchObject({ author: CLAUDE, runId: "run-alice" });
+    expect(await adapter.list(TENANT, TARGET)).toEqual([aliceComment]);
+
+    registerLiveSession(otherScope, toolCallId, { actor: otherAgent, runId: "run-other" });
+    expect(await adapter.list(TENANT, TARGET)).toEqual([aliceComment]);
+    registerLiveSession({ tenantId: "tenant-a", workspaceId: TENANT }, ` ${toolCallId} `, {
+      actor: CLAUDE, runId: "run-reloaded",
+    });
+    expect(await adapter.list(TENANT, TARGET)).toMatchObject([{ authorship: { author: CLAUDE, runId: "run-reloaded" } }]);
+  });
+
+  it("rejects replies against a different target and edits by an author without comment rights", async () => {
+    const { adapter, setCaller } = makeFixture();
+    const root = await adapter.create({ tenant: TENANT, target: TARGET, body: "Original" });
+    await expect(adapter.reply({
+      tenant: TENANT,
+      target: { ...TARGET, id: "another-artifact" },
+      threadId: root.threadId,
+      body: "Wrong target",
+    })).rejects.toMatchObject({ code: "NOT_FOUND", status: 404 });
+
+    setCaller({ userId: ALICE.actorId, canComment: false });
+    await expect(adapter.edit(TENANT, root.id, "No longer allowed")).rejects.toMatchObject({ code: "FORBIDDEN", status: 403 });
+    await expect(adapter.remove(TENANT, root.id)).rejects.toMatchObject({ code: "FORBIDDEN", status: 403 });
+    expect(await adapter.list(TENANT, TARGET)).toEqual([root]);
+  });
+
+  it("uses store thread verbs and keeps store-only helpers off the adapter", async () => {
+    const fixture = makeFixture();
+    const { adapter, store } = fixture;
+    const tenant = { workspaceId: TENANT };
+    const target = { ...TARGET, sectionKey: "a1:thread" };
+    const root = await adapter.create({ tenant: TENANT, target, body: "Original" });
+    fixture.setCaller({ userId: BOB.actorId });
+    const reply = await adapter.reply({ tenant: TENANT, target: TARGET, threadId: root.threadId, body: "Reply" });
+    expect(await store.get(tenant, root.threadId)).toBeNull();
+    expect(await store.get(tenant, root.id)).toMatchObject({ body: "Original" });
+    expect((await store.listThread(tenant, root.threadId)).map(({ id }) => id)).toEqual([root.id, reply.id]);
+
+    const patch = { content: "Update all rows", assignedTo: ALICE.actorId };
+    await expect(store.editThread(tenant, root.threadId, patch)).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect((await store.listThread(tenant, root.threadId)).map(({ body }) => body)).toEqual(["Original", "Reply"]);
+    fixture.setCaller({ userId: ALICE.actorId, isAdmin: true });
+    expect(await store.editThread(tenant, root.threadId, patch)).toMatchObject([
+      { body: patch.content, assignedTo: ALICE.actorId },
+      { body: patch.content, assignedTo: ALICE.actorId },
+    ]);
+    await expect(adapter.setState(TENANT, root.threadId, "closed")).resolves.toBeUndefined();
+    await expect(adapter.assign(TENANT, root.threadId, null)).resolves.toBeUndefined();
+    expect(await store.listThreadSummaries(tenant, TARGET)).toMatchObject([
+      { threadId: root.threadId, target, messageCount: 2, status: "closed" },
+    ]);
+    expect(await adapter.threadSummaries?.(TENANT, TARGET)).toMatchObject([
+      { threadId: root.threadId, target, commentCount: 2, status: "closed" },
+    ]);
+    expect((await adapter.list(TENANT, TARGET)).every((row) => row.assignedTo === undefined)).toBe(true);
+    for (const verb of ["get", "listThread", "editThread", "reanchor"]) expect(verb in adapter).toBe(false);
+  });
+
+  it("filters summaries by whole-thread status after a reply to a closed thread", async () => {
+    const { adapter, store } = makeFixture();
+    const tenant = { workspaceId: TENANT };
+    const root = await adapter.create({ tenant: TENANT, target: TARGET, body: "Original" });
+    await adapter.setState(TENANT, root.threadId, "closed");
+    const reply = await adapter.reply({ tenant: TENANT, target: TARGET, threadId: root.threadId, body: "Reply" });
+    const open = await adapter.create({ tenant: TENANT, target: TARGET, body: "Open thread" });
+
+    expect(await store.listThreadSummaries(tenant, { ...TARGET, status: "open" })).toMatchObject([
+      { threadId: open.threadId, messageCount: 1, status: "open" },
+    ]);
+    expect(await store.listThreadSummaries(tenant, { ...TARGET, status: "closed" })).toMatchObject([
+      { threadId: root.threadId, rootMessage: root.body, lastMessage: reply.body, messageCount: 2, status: "closed" },
+    ]);
+    expect(await store.listByTarget(tenant, { ...TARGET, status: "open" })).toMatchObject([
+      { id: reply.id }, { id: open.id },
+    ]);
+  });
+
+  it("creates a root even when the caller supplies a threadId", async () => {
+    const { adapter } = makeFixture();
+    const input = { tenant: TENANT, target: TARGET, body: "Original" };
+    const root = await adapter.create(input);
+    const created = await adapter.create({ ...input, body: "Another root", threadId: root.threadId } as ReplyCommentInput);
+    expect(created.threadId).not.toBe(root.threadId);
+    expect(await adapter.list(TENANT, TARGET)).toEqual([root, created]);
+  });
+
+  it("rejects a reply without a threadId and leaves the store untouched", async () => {
+    const { adapter } = makeFixture();
+    const input = { tenant: TENANT, target: TARGET, body: "Reply" };
+    await expect(adapter.reply(input as ReplyCommentInput)).rejects.toMatchObject({ code: "NOT_FOUND", status: 404 });
+    expect(await adapter.list(TENANT, TARGET)).toEqual([]);
+  });
+
+  it.each([
+    {
+      verb: "setState",
+      mutate: (adapter: CommentsAdapter, threadId: string) => adapter.setState(TENANT, threadId, "closed"),
+      expected: { state: "closed" },
+    },
+    {
+      verb: "assign",
+      mutate: (adapter: CommentsAdapter, threadId: string) => adapter.assign(TENANT, threadId, BOB.actorId),
+      expected: { assignedTo: BOB.actorId },
+    },
+  ])("waits for the $verb confirmation read after committing the mutation", async ({ mutate, expected }) => {
+    const { adapter, store } = makeFixture();
+    const root = await adapter.create({ tenant: TENANT, target: TARGET, body: "Original" });
+    let releaseRead!: () => void;
+    const blockedRead = new Promise<void>((resolve) => { releaseRead = resolve; });
+    const listThread = store.listThread;
+    const read = vi.spyOn(store, "listThread").mockImplementation(async (tenant, threadId) => {
+      const rows = await listThread(tenant, threadId);
+      await blockedRead;
+      expect(rows).toMatchObject([expected]);
+      return rows;
+    });
+
+    const mutation = mutate(adapter, root.threadId);
+    const pending = Symbol("pending");
+    try {
+      expect(await Promise.race([mutation, setImmediate(pending)])).toBe(pending);
+      expect(read).toHaveBeenCalledExactlyOnceWith({ workspaceId: TENANT }, root.threadId);
+    } finally {
+      releaseRead();
+      await expect(mutation).resolves.toBeUndefined();
+    }
+  });
+
   it("should mint distinct threadId !== comment.id and enforce threadId vs commentId verb keys", async () => {
     const fixture = makeFixture();
     const adapter: CommentsAdapter = fixture.adapter;
@@ -291,6 +475,7 @@ describe("DS-1 port-shaped in-memory fixture adapter (C2 semantics)", () => {
 
     const fixture = createFixtureCommentsAdapter({
       caller: { userId: ALICE.actorId },
+      tenantId: "ten-1",
       initialComments: [
         {
           id: "c-seed",

@@ -282,7 +282,18 @@ jobs:
 
       - name: pack-smoke
         if: matrix.task == 'pack-smoke'
-        run: node scripts/smoke-pack.mjs --workspaces="${{ matrix.workspaces }}"
+        env:
+          TMPDIR: ${{ github.workspace }}/.vite/pack-smoke/tmp
+          XDG_RUNTIME_DIR: ${{ github.workspace }}/.vite/pack-smoke/runtime
+          npm_config_cache: ${{ github.workspace }}/.vite/pack-smoke/npm-cache
+        run: |
+          mkdir -p "$TMPDIR" "$npm_config_cache"
+          install -d -m 700 "$XDG_RUNTIME_DIR"
+          node scripts/smoke-pack.mjs --workspaces="${{ matrix.workspaces }}"
+
+      - name: Qualify the published review consumer (DS-7)
+        if: matrix.task == 'pack-smoke' && contains(matrix.workspaces, '@sentropic/design-system-svelte')
+        run: node scripts/test-review-consumer.mjs
 
       # Three tests in scripts/verify-dataviz-docs-lot1.test.mjs read a BUILT
       # docs site. Nothing built one: the unsharded `licensing` job runs the

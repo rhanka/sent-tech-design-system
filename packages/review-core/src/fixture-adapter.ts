@@ -6,7 +6,6 @@ import {
   ReviewAdapterError,
   type CommentsAdapter,
   type CreateCommentInput,
-  type ReplyCommentInput,
 } from "./adapter.js";
 import {
   isNonEmptyToolCallId,
@@ -49,6 +48,8 @@ export type FixtureInitialComment = Comment;
 
 export interface FixtureCommentsAdapterOptions {
   caller: FixtureCallerContext;
+  /** Tenant bound to the UI adapter, whose string scope identifies the workspace. */
+  tenantId?: string;
   /** Optional allowlist of valid workspace member ids for `assign`. */
   workspaceMembers?: readonly string[];
   /** Optional resolver for human actors and external live sessions. */
@@ -63,14 +64,56 @@ export interface FixtureCommentsAdapterOptions {
 
 export interface FixtureCommentsAdapterHandle {
   readonly adapter: CommentsAdapter;
+  /** In-memory implementation of the ten CommentStore verbs for contract tests. */
+  readonly store: FixtureCommentStore;
   /** Switch the authenticated caller for subsequent calls in tests/demos. */
   setCaller(caller: FixtureCallerContext): void;
-  /** Register or replace a host-side live session mapping `toolCallId -> agent + runId`. */
-  registerLiveSession(toolCallId: string, session: ResolvedAgentSession): void;
+  /** Register or replace a host-side live session for this tenant and workspace. */
+  registerLiveSession(tenant: TenantContext, toolCallId: string, session: ResolvedAgentSession): void;
   /** Drop host-side live session metadata (simulates reload / expired session fallback). */
   clearLiveSessions(): void;
   /** Read a snapshot of raw stored rows (for test assertions). */
   snapshotRaw(): Comment[];
+}
+
+type NewComment = Pick<Comment, "tenant" | "target" | "author" | "body" | "assignedTo" | "provenance"> & {
+  threadId?: string;
+};
+type TargetQuery = Pick<CommentTarget, "kind" | "id" | "sectionKey"> & { status?: CommentState };
+type StoreThreadSummary = {
+  threadId: string;
+  contextType?: string;
+  target: CommentTarget;
+  sectionKey?: string;
+  rootMessage: string;
+  rootMessageAt: string;
+  lastMessage: string;
+  lastMessageAt: string;
+  messageCount: number;
+  status: CommentState;
+  assignee?: string;
+};
+
+/** CommentStore signatures at sentropic 13490b16b. */
+interface FixtureCommentStore {
+  add(tenant: TenantContext, input: NewComment): Promise<Comment>;
+  get(tenant: TenantContext, id: string): Promise<Comment | null>;
+  edit(tenant: TenantContext, id: string, patch: { body?: string }): Promise<Comment>;
+  editThread(tenant: TenantContext, threadId: string, patch: { content: string; assignedTo: string }): Promise<Comment[]>;
+  delete(tenant: TenantContext, id: string): Promise<void>;
+  listByTarget(tenant: TenantContext, query: TargetQuery): Promise<Comment[]>;
+  listThread(tenant: TenantContext, threadId: string): Promise<Comment[]>;
+  listThreadSummaries(tenant: TenantContext, query: TargetQuery): Promise<StoreThreadSummary[]>;
+  setState(tenant: TenantContext, threadId: string, state: CommentState): Promise<Comment[]>;
+  assign(tenant: TenantContext, threadId: string, assigneeId: string | null): Promise<Comment[]>;
+}
+
+function tenantMatches(rowTenant: TenantContext, tenant: TenantContext): boolean {
+  return rowTenant.workspaceId === tenant.workspaceId && rowTenant.tenantId === tenant.tenantId;
+}
+
+function liveSessionKey(tenant: TenantContext, toolCallId: string): string {
+  return JSON.stringify([tenant.tenantId, tenant.workspaceId, toolCallId.trim()]);
 }
 
 function targetMatches(rowTarget: CommentTarget, queryTarget: CommentTarget): boolean {
@@ -79,17 +122,18 @@ function targetMatches(rowTarget: CommentTarget, queryTarget: CommentTarget): bo
   if (normRow.kind !== normQuery.kind || normRow.id !== normQuery.id) {
     return false;
   }
-  if (normRow.recordType !== normQuery.recordType) {
-    return false;
-  }
   if (normQuery.sectionKey !== undefined && normRow.sectionKey !== normQuery.sectionKey) {
     return false;
   }
   return true;
 }
 
-function subscriptionMatches(rowTarget: CommentTarget, subTarget: CommentTarget): boolean {
-  return targetMatches(rowTarget, subTarget);
+function byCreatedThenId(a: Comment, b: Comment): number {
+  const byCreated = compareIsoTimestamps(a.createdAt, b.createdAt);
+  if (byCreated !== 0) return byCreated;
+  if (a.id < b.id) return -1;
+  if (a.id > b.id) return 1;
+  return 0;
 }
 
 function validateSectionKey(sectionKey: string | undefined): void {
@@ -238,9 +282,10 @@ export function createFixtureCommentsAdapter(
       return options.authorshipResolver?.resolveHumanActor?.(userId);
     },
     resolveAgentFromProvenance(provenance, comment) {
-      const toolCallId = provenance.toolCallId?.trim();
-      if (toolCallId && liveSessions.has(toolCallId)) {
-        return liveSessions.get(toolCallId);
+      const { toolCallId } = provenance;
+      if (toolCallId !== undefined) {
+        const session = liveSessions.get(liveSessionKey(comment.tenant, toolCallId));
+        if (session !== undefined) return session;
       }
       return options.authorshipResolver?.resolveAgentFromProvenance?.(provenance, comment);
     },
@@ -255,17 +300,21 @@ export function createFixtureCommentsAdapter(
     };
   }
 
-  function listMatching(tenant: string, target: CommentTarget): ReviewComment[] {
+  function workspaceTenant(workspaceId: string): TenantContext {
+    return options.tenantId === undefined ? { workspaceId } : { workspaceId, tenantId: options.tenantId };
+  }
+
+  function matchingRows(tenant: TenantContext, target: TargetQuery): Comment[] {
     return rows
-      .filter((row) => row.tenant.workspaceId === tenant && targetMatches(row.target, target))
-      .sort((a, b) => compareIsoTimestamps(a.createdAt, b.createdAt))
-      .map(toReviewComment);
+      .filter((row) => tenantMatches(row.tenant, tenant) && targetMatches(row.target, target) &&
+        (target.status === undefined || row.state === target.status))
+      .sort(byCreatedThenId);
   }
 
   function notifySubscribers(tenant: string, affectedTarget: CommentTarget): void {
     for (const sub of subscriptions) {
-      if (sub.tenant === tenant && subscriptionMatches(affectedTarget, sub.target)) {
-        sub.cb(listMatching(sub.tenant, sub.target));
+      if (sub.tenant === tenant && targetMatches(affectedTarget, sub.target)) {
+        sub.cb(matchingRows(workspaceTenant(sub.tenant), sub.target).map(toReviewComment));
       }
     }
   }
@@ -291,6 +340,7 @@ export function createFixtureCommentsAdapter(
   }
 
   function normalizeAndValidateWriteProvenance(
+    tenant: TenantContext,
     provenance: CommentProvenance | undefined,
   ): CommentProvenance | undefined {
     const actorKind = currentCaller.actorKind ?? "human";
@@ -321,245 +371,269 @@ export function createFixtureCommentsAdapter(
       if (liveRunId !== undefined && liveRunId.length > 0) {
         session.runId = liveRunId;
       }
-      liveSessions.set(toolCallId, session);
+      liveSessions.set(liveSessionKey(tenant, toolCallId), session);
     }
 
     // Persisted provenance carries toolCallId only; runId is dropped at write (§1.3).
     return { toolCallId };
   }
 
-  const adapter: CommentsAdapter = {
-    async list(tenant: string, target: CommentTarget): Promise<ReviewComment[]> {
-      return listMatching(tenant, target);
-    },
+  function threadRows(tenant: TenantContext, threadId: string): Comment[] {
+    return rows
+      .filter((row) => tenantMatches(row.tenant, tenant) && row.threadId === threadId)
+      .sort(byCreatedThenId);
+  }
 
-    async threadSummaries(tenant: string, target: CommentTarget): Promise<CommentThreadSummary[]> {
-      const matching = rows.filter(
-        (row) => row.tenant.workspaceId === tenant && targetMatches(row.target, target),
-      );
-      const grouped = new Map<string, Comment[]>();
-      for (const row of matching) {
-        const bucket = grouped.get(row.threadId);
-        if (bucket) bucket.push(row);
-        else grouped.set(row.threadId, [row]);
-      }
+  function requireThread(tenant: TenantContext, threadId: string): Comment[] {
+    const thread = threadRows(tenant, threadId);
+    if (thread.length === 0) {
+      throw new ReviewAdapterError("NOT_FOUND", 404, `Thread '${threadId}' was not found in tenant '${tenant.workspaceId}'.`);
+    }
+    return thread;
+  }
 
-      const summaries: CommentThreadSummary[] = [];
-      for (const [threadId, threadRows] of grouped) {
-        threadRows.sort((a, b) => compareIsoTimestamps(a.createdAt, b.createdAt));
-        const first = threadRows[0]!;
-        const last = threadRows[threadRows.length - 1]!;
-        const status: CommentState = threadRows.some((r) => r.state === "closed")
-          ? "closed"
-          : "open";
-        const summary: CommentThreadSummary = {
-          threadId,
-          target: normalizeCommentTarget(first.target),
-          status,
-          commentCount: threadRows.length,
-          createdAt: first.createdAt,
-        };
-        const latestUpdated = last.updatedAt ?? last.createdAt;
-        if (latestUpdated !== first.createdAt) {
-          summary.updatedAt = latestUpdated;
-        }
-        let assignedTo: string | undefined;
-        for (let i = threadRows.length - 1; i >= 0; i--) {
-          const candidate = threadRows[i]!.assignedTo;
-          if (typeof candidate === "string" && candidate.length > 0) {
-            assignedTo = candidate;
-            break;
-          }
-        }
-        if (assignedTo !== undefined) {
-          summary.assignedTo = assignedTo;
-        }
-        summaries.push(summary);
-      }
+  function findRow(tenant: TenantContext, id: string): Comment | undefined {
+    return rows.find((row) => tenantMatches(row.tenant, tenant) && row.id === id);
+  }
 
-      summaries.sort((a, b) => compareIsoTimestamps(a.createdAt, b.createdAt));
-      return summaries;
-    },
+  function requireWritableRow(tenant: TenantContext, id: string): Comment {
+    assertCanComment();
+    const row = findRow(tenant, id);
+    if (!row) {
+      throw new ReviewAdapterError("NOT_FOUND", 404, `Comment '${id}' was not found in tenant '${tenant.workspaceId}'.`);
+    }
+    assertAuthorOrAdmin(row);
+    return row;
+  }
 
-    async create(input: CreateCommentInput): Promise<ReviewComment> {
+  function validateAssignee(tenant: TenantContext, assigneeId: string | null): void {
+    if (assigneeId !== null && workspaceMembers && !workspaceMembers.has(assigneeId)) {
+      throw new ReviewAdapterError("INVALID_ASSIGNEE", 400, `Assignee '${assigneeId}' is not a member of workspace '${tenant.workspaceId}'.`);
+    }
+  }
+
+  function firstAnchoredRow(thread: Comment[]): Comment | undefined {
+    return thread.find((row) => row.target.sectionKey !== undefined && row.target.sectionKey.length > 0);
+  }
+
+  function updateThread(thread: Comment[], update: (row: Comment) => void): Comment[] {
+    const timestamp = now();
+    for (const row of thread) {
+      update(row);
+      row.updatedAt = timestamp;
+    }
+    return thread.map(cloneRawComment);
+  }
+
+  const store: FixtureCommentStore = {
+    async add(tenant, input) {
       assertCanComment();
       validateBody(input.body);
-      const normalizedTarget = normalizeCommentTarget(input.target);
-      validateSectionKey(normalizedTarget.sectionKey);
-      const storedProvenance = normalizeAndValidateWriteProvenance(input.provenance);
-
-      const id = `c-${nextCommentSeq++}`;
-      const threadId = `t-${nextThreadSeq++}`;
+      const target = normalizeCommentTarget(input.target);
+      let threadId = input.threadId;
+      if (threadId !== undefined) {
+        const { sectionKey, ...targetScope } = target;
+        const thread = requireThread(tenant, threadId).filter((row) => targetMatches(row.target, targetScope));
+        if (thread.length === 0) {
+          throw new ReviewAdapterError("NOT_FOUND", 404, `Thread '${threadId}' was not found for the target.`);
+        }
+        const inherited = firstAnchoredRow(thread)?.target.sectionKey;
+        if (sectionKey === undefined && inherited !== undefined) target.sectionKey = inherited;
+      }
+      validateSectionKey(target.sectionKey);
+      if (input.assignedTo !== undefined) validateAssignee(tenant, input.assignedTo);
+      const storedProvenance = normalizeAndValidateWriteProvenance(tenant, input.provenance);
+      if (threadId === undefined) {
+        do {
+          threadId = `t-${nextThreadSeq++}`;
+        } while (rows.some((row) => row.threadId === threadId));
+      }
+      let id: string;
+      do {
+        id = `c-${nextCommentSeq++}`;
+      } while (findRow(tenant, id));
       const row: Comment = {
         id,
-        tenant: { workspaceId: input.tenant },
-        target: normalizedTarget,
-        threadId,
-        author: { id: currentCaller.userId },
-        state: "open",
-        body: input.body,
-        createdAt: now(),
-      };
-      if (storedProvenance !== undefined) {
-        row.provenance = storedProvenance;
-      }
-
-      rows.push(row);
-      const view = toReviewComment(row);
-      for (const listener of createdListeners) {
-        listener(view);
-      }
-      notifySubscribers(input.tenant, row.target);
-      return view;
-    },
-
-    async reply(input: ReplyCommentInput): Promise<ReviewComment> {
-      assertCanComment();
-      validateBody(input.body);
-      const normalizedInputTarget = normalizeCommentTarget(input.target);
-
-      const threadRows = rows
-        .filter((row) => row.tenant.workspaceId === input.tenant && row.threadId === input.threadId)
-        .sort((a, b) => compareIsoTimestamps(a.createdAt, b.createdAt));
-
-      if (threadRows.length === 0) {
-        throw new ReviewAdapterError(
-          "NOT_FOUND",
-          404,
-          `Thread '${input.threadId}' was not found in tenant '${input.tenant}'.`,
-        );
-      }
-
-      // Inherit thread's sectionKey when omitted by the caller (§1, §1.4 C2 rule)
-      let effectiveSectionKey = normalizedInputTarget.sectionKey;
-      if (effectiveSectionKey === undefined) {
-        for (const existing of threadRows) {
-          if (existing.target.sectionKey !== undefined && existing.target.sectionKey.length > 0) {
-            effectiveSectionKey = existing.target.sectionKey;
-            break;
-          }
-        }
-      }
-      validateSectionKey(effectiveSectionKey);
-
-      const storedProvenance = normalizeAndValidateWriteProvenance(input.provenance);
-      const target: CommentTarget = {
-        kind: normalizedInputTarget.kind,
-        id: normalizedInputTarget.id,
-      };
-      if (normalizedInputTarget.recordType !== undefined) {
-        target.recordType = normalizedInputTarget.recordType;
-      }
-      if (effectiveSectionKey !== undefined) {
-        target.sectionKey = effectiveSectionKey;
-      }
-
-      const row: Comment = {
-        id: `c-${nextCommentSeq++}`,
-        tenant: { workspaceId: input.tenant },
+        tenant: cloneTenant(tenant),
         target,
-        threadId: input.threadId,
-        author: { id: currentCaller.userId },
+        threadId,
+        author: cloneAuthor(input.author),
         state: "open",
         body: input.body,
         createdAt: now(),
+        ...(input.assignedTo !== undefined ? { assignedTo: input.assignedTo } : {}),
+        ...(storedProvenance !== undefined ? { provenance: storedProvenance } : {}),
       };
-      if (storedProvenance !== undefined) {
-        row.provenance = storedProvenance;
-      }
-
       rows.push(row);
-      const view = toReviewComment(row);
-      for (const listener of createdListeners) {
-        listener(view);
-      }
-      notifySubscribers(input.tenant, row.target);
-      return view;
+      return cloneRawComment(row);
     },
 
-    async edit(tenant: string, commentId: string, body: string): Promise<ReviewComment> {
-      validateBody(body);
-      const row = rows.find((r) => r.tenant.workspaceId === tenant && r.id === commentId);
-      if (!row) {
-        throw new ReviewAdapterError(
-          "NOT_FOUND",
-          404,
-          `Comment '${commentId}' was not found in tenant '${tenant}'.`,
-        );
+    async get(tenant, id) {
+      const row = findRow(tenant, id);
+      return row ? cloneRawComment(row) : null;
+    },
+
+    async edit(tenant, id, { body }) {
+      const row = requireWritableRow(tenant, id);
+      if (body !== undefined) {
+        validateBody(body);
+        row.body = body;
       }
-      assertAuthorOrAdmin(row);
-      row.body = body;
       row.updatedAt = now();
-      const view = toReviewComment(row);
-      notifySubscribers(tenant, row.target);
-      return view;
+      return cloneRawComment(row);
     },
 
-    async setState(tenant: string, threadId: string, state: CommentState): Promise<void> {
+    async editThread(tenant, threadId, { content, assignedTo }) {
+      assertCanComment();
+      validateBody(content);
+      const thread = requireThread(tenant, threadId);
+      for (const row of thread) assertAuthorOrAdmin(row);
+      validateAssignee(tenant, assignedTo);
+      return updateThread(thread, (row) => {
+        row.body = content;
+        row.assignedTo = assignedTo;
+      });
+    },
+
+    async delete(tenant, id) {
+      const row = requireWritableRow(tenant, id);
+      rows.splice(rows.indexOf(row), 1);
+    },
+
+    async listByTarget(tenant, query) {
+      return matchingRows(tenant, query).map(cloneRawComment);
+    },
+
+    async listThread(tenant, threadId) {
+      return threadRows(tenant, threadId).map(cloneRawComment);
+    },
+
+    async listThreadSummaries(tenant, query) {
+      const { status, ...targetQuery } = query;
+      const grouped = new Map<string, Comment[]>();
+      for (const row of matchingRows(tenant, targetQuery)) {
+        const thread = grouped.get(row.threadId);
+        if (thread) thread.push(row);
+        else grouped.set(row.threadId, [row]);
+      }
+      const summaries = [...grouped].map(([threadId, thread]): StoreThreadSummary => {
+        const root = thread[0]!;
+        const last = thread.at(-1)!;
+        const target = normalizeCommentTarget(root.target);
+        const assignee = root.assignedTo;
+        return {
+          threadId,
+          target,
+          rootMessage: root.body,
+          rootMessageAt: root.createdAt,
+          lastMessage: last.body,
+          lastMessageAt: last.createdAt,
+          messageCount: thread.length,
+          status: thread.some((row) => row.state === "closed") ? "closed" : "open",
+          ...(target.recordType !== undefined ? { contextType: target.recordType } : {}),
+          ...(target.sectionKey !== undefined ? { sectionKey: target.sectionKey } : {}),
+          ...(assignee !== undefined ? { assignee } : {}),
+        };
+      });
+      return status === undefined ? summaries : summaries.filter((summary) => summary.status === status);
+    },
+
+    async setState(tenant, threadId, state) {
       assertCanComment();
       assertValidCommentState(state);
-      const threadRows = rows.filter(
-        (row) => row.tenant.workspaceId === tenant && row.threadId === threadId,
-      );
-      if (threadRows.length === 0) {
-        throw new ReviewAdapterError(
-          "NOT_FOUND",
-          404,
-          `Thread '${threadId}' was not found in tenant '${tenant}'.`,
-        );
-      }
-      const timestamp = now();
-      for (const row of threadRows) {
-        row.state = state;
-        row.updatedAt = timestamp;
-      }
-      notifySubscribers(tenant, threadRows[0]!.target);
+      return updateThread(requireThread(tenant, threadId), (row) => { row.state = state; });
     },
 
-    async remove(tenant: string, commentId: string): Promise<void> {
-      const idx = rows.findIndex((row) => row.tenant.workspaceId === tenant && row.id === commentId);
-      if (idx === -1) {
-        throw new ReviewAdapterError(
-          "NOT_FOUND",
-          404,
-          `Comment '${commentId}' was not found in tenant '${tenant}'.`,
-        );
-      }
-      const row = rows[idx]!;
-      assertAuthorOrAdmin(row);
-      rows.splice(idx, 1);
-      notifySubscribers(tenant, row.target);
-    },
-
-    async assign(tenant: string, threadId: string, assigneeId: string | null): Promise<void> {
+    async assign(tenant, threadId, assigneeId) {
       assertCanComment();
-      const threadRows = rows.filter(
-        (row) => row.tenant.workspaceId === tenant && row.threadId === threadId,
-      );
-      if (threadRows.length === 0) {
-        throw new ReviewAdapterError(
-          "NOT_FOUND",
-          404,
-          `Thread '${threadId}' was not found in tenant '${tenant}'.`,
-        );
+      const thread = requireThread(tenant, threadId);
+      validateAssignee(tenant, assigneeId);
+      return updateThread(thread, (row) => {
+        if (assigneeId === null) delete row.assignedTo;
+        else row.assignedTo = assigneeId;
+      });
+    },
+  };
+
+  async function addComment(input: CreateCommentInput, threadId?: string): Promise<ReviewComment> {
+    const { tenant: workspaceId, target, body, provenance } = input;
+    const tenant = workspaceTenant(workspaceId);
+    const row = await store.add(tenant, {
+      tenant,
+      target,
+      body,
+      author: { id: currentCaller.userId },
+      ...(provenance !== undefined ? { provenance } : {}),
+      ...(threadId !== undefined ? { threadId } : {}),
+    });
+    const view = toReviewComment(row);
+    for (const listener of createdListeners) listener(view);
+    notifySubscribers(workspaceId, row.target);
+    return view;
+  }
+
+  async function notifyConfirmedThread(tenant: TenantContext, threadId: string): Promise<void> {
+    const [first] = await store.listThread(tenant, threadId);
+    if (first) notifySubscribers(tenant.workspaceId, first.target);
+  }
+
+  const adapter: CommentsAdapter = {
+    async list(workspaceId, target) {
+      return (await store.listByTarget(workspaceTenant(workspaceId), target)).map(toReviewComment);
+    },
+
+    async threadSummaries(workspaceId, target) {
+      const tenant = workspaceTenant(workspaceId);
+      const summaries = await store.listThreadSummaries(tenant, target);
+      return Promise.all(summaries.map(async (summary): Promise<CommentThreadSummary> => {
+        const matching = (await store.listThread(tenant, summary.threadId)).filter((row) => targetMatches(row.target, target));
+        const last = matching.at(-1);
+        const updatedAt = last?.updatedAt ?? summary.lastMessageAt;
+        return {
+          threadId: summary.threadId,
+          target: summary.target,
+          status: summary.status,
+          commentCount: summary.messageCount,
+          createdAt: summary.rootMessageAt,
+          ...(updatedAt !== summary.rootMessageAt ? { updatedAt } : {}),
+          ...(summary.assignee !== undefined ? { assignedTo: summary.assignee } : {}),
+        };
+      }));
+    },
+
+    create: (input) => addComment(input),
+
+    async reply(input) {
+      const { threadId } = input;
+      if (typeof threadId !== "string" || threadId.length === 0) {
+        throw new ReviewAdapterError("NOT_FOUND", 404, "A reply requires an existing threadId.");
       }
-      if (assigneeId !== null && workspaceMembers && !workspaceMembers.has(assigneeId)) {
-        throw new ReviewAdapterError(
-          "INVALID_ASSIGNEE",
-          400,
-          `Assignee '${assigneeId}' is not a member of workspace '${tenant}'.`,
-        );
-      }
-      const timestamp = now();
-      for (const row of threadRows) {
-        if (assigneeId === null) {
-          delete row.assignedTo;
-        } else {
-          row.assignedTo = assigneeId;
-        }
-        row.updatedAt = timestamp;
-      }
-      notifySubscribers(tenant, threadRows[0]!.target);
+      return addComment(input, threadId);
+    },
+
+    async edit(workspaceId, commentId, body) {
+      const row = await store.edit(workspaceTenant(workspaceId), commentId, { body });
+      notifySubscribers(workspaceId, row.target);
+      return toReviewComment(row);
+    },
+
+    async remove(workspaceId, commentId) {
+      const tenant = workspaceTenant(workspaceId);
+      const row = await store.get(tenant, commentId);
+      await store.delete(tenant, commentId);
+      if (row) notifySubscribers(workspaceId, row.target);
+    },
+
+    async setState(workspaceId, threadId, state) {
+      const tenant = workspaceTenant(workspaceId);
+      await store.setState(tenant, threadId, state);
+      await notifyConfirmedThread(tenant, threadId);
+    },
+
+    async assign(workspaceId, threadId, assigneeId) {
+      const tenant = workspaceTenant(workspaceId);
+      await store.assign(tenant, threadId, assigneeId);
+      await notifyConfirmedThread(tenant, threadId);
     },
 
     subscribe(
@@ -594,32 +668,22 @@ export function createFixtureCommentsAdapter(
     ): Promise<void> => {
       assertCanComment();
       validateSectionKey(sectionKey);
-      const threadRows = rows.filter(
-        (row) => row.tenant.workspaceId === tenant && row.threadId === threadId,
-      );
-      if (threadRows.length === 0) {
-        throw new ReviewAdapterError(
-          "NOT_FOUND",
-          404,
-          `Thread '${threadId}' was not found in tenant '${tenant}'.`,
-        );
-      }
-      const timestamp = now();
-      for (const row of threadRows) {
+      const thread = requireThread(workspaceTenant(tenant), threadId);
+      updateThread(thread, (row) => {
         row.target = { ...row.target, sectionKey };
-        row.updatedAt = timestamp;
-      }
-      notifySubscribers(tenant, threadRows[0]!.target);
+      });
+      notifySubscribers(tenant, thread[0]!.target);
     };
   }
 
   return {
     adapter,
+    store,
     setCaller(caller: FixtureCallerContext): void {
       currentCaller = { ...caller };
     },
-    registerLiveSession(toolCallId: string, session: ResolvedAgentSession): void {
-      liveSessions.set(toolCallId.trim(), session);
+    registerLiveSession(tenant: TenantContext, toolCallId: string, session: ResolvedAgentSession): void {
+      liveSessions.set(liveSessionKey(tenant, toolCallId), session);
     },
     clearLiveSessions(): void {
       liveSessions.clear();
