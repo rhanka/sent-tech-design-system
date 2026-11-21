@@ -22,7 +22,7 @@
 // extensionless `ajv/dist/2020` deep import resolved only under vitest's
 // resolver and left `dist/` unloadable in real Node ESM
 // (ERR_MODULE_NOT_FOUND) — is now a standing guard that loads the built
-// package exactly the way a host would and validates the three examples.
+// package exactly the way a host would and validates the catalogue examples.
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -65,13 +65,13 @@ test("AC-L1: the elements package builds and its generator --check exits 0", () 
   }
 });
 
-test("AC-L1: catalog.json has $id equal to catalogId and three components", () => {
+test("AC-L1: catalog.json has $id equal to catalogId and lists the supported components", () => {
   const catalog = JSON.parse(readFileSync(catalogPath, "utf8"));
   if (catalog.$id !== catalog.catalogId) {
     throw new Error(`catalog.json $id (${catalog.$id}) must equal catalogId (${catalog.catalogId})`);
   }
   const components = Object.keys(catalog.components).sort();
-  const expected = ["BarChart", "BpmnCanvas", "DecisionDossier"];
+  const expected = ["BarChart", "BpmnCanvas", "DecisionDossier", "TimeSeriesChart"];
   if (JSON.stringify(components) !== JSON.stringify(expected)) {
     throw new Error(`catalog.json components must be ${expected.join(", ")}, got ${components.join(", ")}`);
   }
@@ -79,7 +79,7 @@ test("AC-L1: catalog.json has $id equal to catalogId and three components", () =
 
 test("AC-L1: --check refuses a mutated copy in a temp dir and exits non-zero (--root, TF5)", () => {
   // The generator's --root moves only where the committed artifacts are read;
-  // the regeneration itself stays bound to the package. A copy of the six
+  // the regeneration itself stays bound to the package. A copy of the
   // committed artifacts must check fresh as-is, then refuse after ONE
   // out-of-band edit, with exit 1 and the offending file named.
   const artifacts = [
@@ -88,6 +88,7 @@ test("AC-L1: --check refuses a mutated copy in a temp dir and exits non-zero (--
     "schemas/BarChart.v1.json",
     "schemas/BpmnCanvas.v1.json",
     "schemas/DecisionDossier.v1.json",
+    "schemas/TimeSeriesChart.v1.json",
     "src/generated/a2ui-common-types.ts",
   ];
   const scratch = mkdtempSync(join(tmpdir(), "elements-check-"));
@@ -121,7 +122,7 @@ test("AC-L1: --check refuses a mutated copy in a temp dir and exits non-zero (--
   }
 });
 
-test("AC-L1: dist/index.js loads in PLAIN Node ESM and validates the three examples (conductor finding)", async () => {
+test("AC-L1: dist/index.js loads in plain Node ESM and validates the catalogue examples", async () => {
   // The exact failure the conductor observed: `ajv` has NO exports map, so the
   // extensionless `ajv/dist/2020` deep import resolved only under vitest's
   // resolver — plain Node answered ERR_MODULE_NOT_FOUND and asked for

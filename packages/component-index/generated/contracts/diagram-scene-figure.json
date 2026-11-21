@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:21d79e57adbff3108557efc72e194d4a71047822b99b5005b8babe67bd79e81f",
+  "digest": "sha256:ac38af200c297df48d5b22c37e7b3099be92032e0b128bd9562bd76da8c6e00c",
   "entryDigest": "sha256:eee437fdd4c5481e5785237eb39e5918e8563918853b47a8cf8a35db4822d590",
   "format": "component-contract/v1",
   "frameworks": {
@@ -1908,6 +1908,17 @@
               "diagram": {
                 "$ref": "#/$defs/DiagramPresentation",
                 "description": "Typed presentation fragment (M3 §3.2.2). Absent means no presentation contract."
+              },
+              "entityAnatomy": {
+                "additionalProperties": {
+                  "enum": [
+                    "v1",
+                    "v2"
+                  ]
+                },
+                "description": "Per-occurrence anatomy overrides for mixed full-size and compact scenes.",
+                "properties": {},
+                "type": "object"
               },
               "grid": {
                 "additionalProperties": false,
@@ -4247,6 +4258,12 @@
           "reason": "primitive intersection constraints (including brands) are not represented in JSON",
           "replacement": "{\"type\":\"string\"}",
           "sourceType": "OccurrenceRef"
+        },
+        {
+          "name": "PresentationState.entityAnatomy",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"enum\":[\"v1\",\"v2\"]}",
+          "sourceType": "Readonly<Record<string, DiagramAnatomyVersion>>"
         },
         {
           "name": "RouteSpacingReport.channelCapacity",
@@ -6918,6 +6935,17 @@
                 "$ref": "#/$defs/DiagramPresentation",
                 "description": "Typed presentation fragment (M3 §3.2.2). Absent means no presentation contract."
               },
+              "entityAnatomy": {
+                "additionalProperties": {
+                  "enum": [
+                    "v1",
+                    "v2"
+                  ]
+                },
+                "description": "Per-occurrence anatomy overrides for mixed full-size and compact scenes.",
+                "properties": {},
+                "type": "object"
+              },
               "grid": {
                 "additionalProperties": false,
                 "properties": {
@@ -9269,6 +9297,12 @@
           "reason": "primitive intersection constraints (including brands) are not represented in JSON",
           "replacement": "{\"type\":\"string\"}",
           "sourceType": "OccurrenceRef"
+        },
+        {
+          "name": "PresentationState.entityAnatomy",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"enum\":[\"v1\",\"v2\"]}",
+          "sourceType": "Readonly<Record<string, DiagramAnatomyVersion>>"
         },
         {
           "name": "RouteSpacingReport.channelCapacity",
