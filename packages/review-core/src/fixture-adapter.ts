@@ -49,6 +49,8 @@ export type FixtureInitialComment = Comment;
 
 export interface FixtureCommentsAdapterOptions {
   caller: FixtureCallerContext;
+  /** Tenant bound to the UI adapter, whose string scope identifies the workspace. */
+  tenantId?: string;
   /** Optional allowlist of valid workspace member ids for `assign`. */
   workspaceMembers?: readonly string[];
   /** Optional resolver for human actors and external live sessions. */
@@ -105,6 +107,10 @@ interface FixtureCommentStore {
   listThreadSummaries(tenant: TenantContext, query: TargetQuery): Promise<StoreThreadSummary[]>;
   setState(tenant: TenantContext, threadId: string, state: CommentState): Promise<Comment[]>;
   assign(tenant: TenantContext, threadId: string, assigneeId: string | null): Promise<Comment[]>;
+}
+
+function tenantMatches(rowTenant: TenantContext, tenant: TenantContext): boolean {
+  return rowTenant.workspaceId === tenant.workspaceId && rowTenant.tenantId === tenant.tenantId;
 }
 
 function targetMatches(rowTarget: CommentTarget, queryTarget: CommentTarget): boolean {
@@ -289,9 +295,13 @@ export function createFixtureCommentsAdapter(
     };
   }
 
-  function matchingRows(tenant: string, target: TargetQuery): Comment[] {
+  function workspaceTenant(workspaceId: string): TenantContext {
+    return options.tenantId === undefined ? { workspaceId } : { workspaceId, tenantId: options.tenantId };
+  }
+
+  function matchingRows(tenant: TenantContext, target: TargetQuery): Comment[] {
     return rows
-      .filter((row) => row.tenant.workspaceId === tenant && targetMatches(row.target, target) &&
+      .filter((row) => tenantMatches(row.tenant, tenant) && targetMatches(row.target, target) &&
         (target.status === undefined || row.state === target.status))
       .sort(byCreatedThenId);
   }
@@ -299,7 +309,7 @@ export function createFixtureCommentsAdapter(
   function notifySubscribers(tenant: string, affectedTarget: CommentTarget): void {
     for (const sub of subscriptions) {
       if (sub.tenant === tenant && targetMatches(affectedTarget, sub.target)) {
-        sub.cb(matchingRows(sub.tenant, sub.target).map(toReviewComment));
+        sub.cb(matchingRows(workspaceTenant(sub.tenant), sub.target).map(toReviewComment));
       }
     }
   }
@@ -364,7 +374,7 @@ export function createFixtureCommentsAdapter(
 
   function threadRows(tenant: TenantContext, threadId: string): Comment[] {
     return rows
-      .filter((row) => row.tenant.workspaceId === tenant.workspaceId && row.threadId === threadId)
+      .filter((row) => tenantMatches(row.tenant, tenant) && row.threadId === threadId)
       .sort(byCreatedThenId);
   }
 
@@ -377,7 +387,7 @@ export function createFixtureCommentsAdapter(
   }
 
   function findRow(tenant: TenantContext, id: string): Comment | undefined {
-    return rows.find((row) => row.tenant.workspaceId === tenant.workspaceId && row.id === id);
+    return rows.find((row) => tenantMatches(row.tenant, tenant) && row.id === id);
   }
 
   function requireWritableRow(tenant: TenantContext, id: string): Comment {
@@ -485,7 +495,7 @@ export function createFixtureCommentsAdapter(
     },
 
     async listByTarget(tenant, query) {
-      return matchingRows(tenant.workspaceId, query).map(cloneRawComment);
+      return matchingRows(tenant, query).map(cloneRawComment);
     },
 
     async listThread(tenant, threadId) {
@@ -494,7 +504,7 @@ export function createFixtureCommentsAdapter(
 
     async listThreadSummaries(tenant, query) {
       const grouped = new Map<string, Comment[]>();
-      for (const row of matchingRows(tenant.workspaceId, query)) {
+      for (const row of matchingRows(tenant, query)) {
         const thread = grouped.get(row.threadId);
         if (thread) thread.push(row);
         else grouped.set(row.threadId, [row]);
@@ -539,7 +549,7 @@ export function createFixtureCommentsAdapter(
 
   async function addComment(input: CreateCommentInput | ReplyCommentInput): Promise<ReviewComment> {
     const { tenant: workspaceId, ...comment } = input;
-    const tenant = { workspaceId };
+    const tenant = workspaceTenant(workspaceId);
     const row = await store.add(tenant, { ...comment, tenant, author: { id: currentCaller.userId } });
     const view = toReviewComment(row);
     for (const listener of createdListeners) listener(view);
@@ -554,11 +564,11 @@ export function createFixtureCommentsAdapter(
 
   const adapter: CommentsAdapter = {
     async list(workspaceId, target) {
-      return (await store.listByTarget({ workspaceId }, target)).map(toReviewComment);
+      return (await store.listByTarget(workspaceTenant(workspaceId), target)).map(toReviewComment);
     },
 
     async threadSummaries(workspaceId, target) {
-      const tenant = { workspaceId };
+      const tenant = workspaceTenant(workspaceId);
       const summaries = await store.listThreadSummaries(tenant, target);
       return Promise.all(summaries.map(async (summary): Promise<CommentThreadSummary> => {
         const matching = (await store.listThread(tenant, summary.threadId)).filter((row) => targetMatches(row.target, target));
@@ -580,26 +590,26 @@ export function createFixtureCommentsAdapter(
     reply: addComment,
 
     async edit(workspaceId, commentId, body) {
-      const row = await store.edit({ workspaceId }, commentId, { body });
+      const row = await store.edit(workspaceTenant(workspaceId), commentId, { body });
       notifySubscribers(workspaceId, row.target);
       return toReviewComment(row);
     },
 
     async remove(workspaceId, commentId) {
-      const tenant = { workspaceId };
+      const tenant = workspaceTenant(workspaceId);
       const row = await store.get(tenant, commentId);
       await store.delete(tenant, commentId);
       if (row) notifySubscribers(workspaceId, row.target);
     },
 
     async setState(workspaceId, threadId, state) {
-      const tenant = { workspaceId };
+      const tenant = workspaceTenant(workspaceId);
       await store.setState(tenant, threadId, state);
       await notifyConfirmedThread(tenant, threadId);
     },
 
     async assign(workspaceId, threadId, assigneeId) {
-      const tenant = { workspaceId };
+      const tenant = workspaceTenant(workspaceId);
       await store.assign(tenant, threadId, assigneeId);
       await notifyConfirmedThread(tenant, threadId);
     },
@@ -636,7 +646,7 @@ export function createFixtureCommentsAdapter(
     ): Promise<void> => {
       assertCanComment();
       validateSectionKey(sectionKey);
-      const thread = requireThread({ workspaceId: tenant }, threadId);
+      const thread = requireThread(workspaceTenant(tenant), threadId);
       updateThread(thread, (row) => {
         row.target = { ...row.target, sectionKey };
       });
