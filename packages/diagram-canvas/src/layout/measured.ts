@@ -80,7 +80,13 @@ import {
   type StackLayoutResult,
 } from "./compose.js";
 import {
+  ASPECT_16_9_TARGET,
+  ASPECT_16_9_TOLERANCE,
+  ASPECT_TAU_LADDER,
   auditSiblingZonePaintedGaps,
+  chooseAspectTau,
+  combineRootWithLegendBounds,
+  computeAspectSlack,
   computePlanDigest,
   foldNeutralView,
   type FrozenAutoPackLevel,
@@ -486,9 +492,22 @@ export interface LayoutExecutionContext {
   readonly memo?: SubtreeMemo;
 }
 
+interface PlanSizingReport {
+  readonly rootWidth: number;
+  readonly rootHeight: number;
+  readonly xTrackIds: readonly string[];
+  readonly yTrackIds: readonly string[];
+  readonly capX: number;
+  readonly capY: number;
+  readonly legendSize?: { readonly width: number; readonly height: number };
+  readonly effectiveLegendAnchor: "right" | "bottom" | "free-cell" | "none";
+}
+
 interface PlanPassCapture {
   autoPackLevels: Record<string, FrozenAutoPackLevel>;
   innerWiden: Record<string, number>;
+  sizingReport?: PlanSizingReport;
+  paintedBounds?: { readonly width: number; readonly height: number };
 }
 
 interface PlanExecutionContext {
@@ -498,13 +517,23 @@ interface PlanExecutionContext {
   readonly tauOverride?: number;
   readonly sigmaColsOverride?: Readonly<Record<string, number>>;
   readonly sigmaBandsOverride?: Readonly<Record<string, number>>;
+  readonly sizingOnly?: boolean;
   readonly capture?: PlanPassCapture;
 }
+
+const sameRecord = (left: Readonly<Record<string, number>>, right: Readonly<Record<string, number>>): boolean => {
+  const lk = Object.keys(left);
+  const rk = Object.keys(right);
+  if (lk.length !== rk.length) return false;
+  return lk.every((k) => left[k] === right[k]);
+};
 
 /**
  * Compute the fold-independent nominal composition plan (H2-STEP0 §4.2 S-1).
  * Runs with `collapsed = ∅` on the fold-neutral view, freezing auto-packed
- * shelf partitions (by child entity ref) and inner-container label widenings.
+ * shelf partitions (by child entity ref), inner-container label widenings, and
+ * — when `aspect === "16:9"` — the chosen τ, whole-unit slack σ, and at most
+ * one post-route painted-bounds correction pass.
  */
 export function computeNominalCompositionPlan(
   document: SemanticDocument,
@@ -518,40 +547,177 @@ export function computeNominalCompositionPlan(
     ...restOptions,
     collapsed: [],
   };
-  const tau = 1.78;
-  const capture: PlanPassCapture = { autoPackLevels: {}, innerWiden: {} };
-  const pass = layoutMeasuredPass(document, nominalOptions, neutralView, new Set(), {
-    mode: "nominal-plan",
-    tauOverride: tau,
-    capture,
-  });
-  if (pass.status === "refused") {
-    return { status: "refused", result: pass };
-  }
-  const autoPackLevels = Object.fromEntries(
-    Object.entries(capture.autoPackLevels).sort(([left], [right]) => byString(left, right)),
-  );
-  const innerWiden = Object.fromEntries(
-    Object.entries(capture.innerWiden).sort(([left], [right]) => byString(left, right)),
-  );
-  const sigmaCols: Record<string, number> = {};
-  const sigmaBands: Record<string, number> = {};
-  const planDigest = computePlanDigest({
-    tau,
-    autoPackLevels,
-    innerWiden,
-    sigmaCols,
-    sigmaBands,
-  });
-  return {
-    status: "ok",
-    plan: {
-      planDigest,
+  const want16x9 = options.hints?.composition?.aspect === "16:9";
+
+  if (!want16x9) {
+    const tau = 1.78;
+    const capture: PlanPassCapture = { autoPackLevels: {}, innerWiden: {} };
+    const pass = layoutMeasuredPass(document, nominalOptions, neutralView, new Set(), {
+      mode: "nominal-plan",
+      tauOverride: tau,
+      capture,
+    });
+    if (pass.status === "refused") {
+      return { status: "refused", result: pass };
+    }
+    const autoPackLevels = Object.fromEntries(
+      Object.entries(capture.autoPackLevels).sort(([left], [right]) => byString(left, right)),
+    );
+    const innerWiden = Object.fromEntries(
+      Object.entries(capture.innerWiden).sort(([left], [right]) => byString(left, right)),
+    );
+    const sigmaCols: Record<string, number> = {};
+    const sigmaBands: Record<string, number> = {};
+    const planDigest = computePlanDigest({
       tau,
       autoPackLevels,
       innerWiden,
       sigmaCols,
       sigmaBands,
+    });
+    return {
+      status: "ok",
+      plan: {
+        planDigest,
+        tau,
+        autoPackLevels,
+        innerWiden,
+        sigmaCols,
+        sigmaBands,
+      },
+    };
+  }
+
+  // S-1 Step 4: search the fixed τ ladder at nominal (sizing-only, no hysteresis).
+  const ladderCandidates: { readonly tau: number; readonly width: number; readonly height: number }[] = [];
+  let chosenSizingReport: PlanSizingReport | undefined;
+  const sizingByTau = new Map<number, PlanSizingReport>();
+  for (const tau of ASPECT_TAU_LADDER) {
+    const cap: PlanPassCapture = { autoPackLevels: {}, innerWiden: {} };
+    const sizingPass = layoutMeasuredPass(document, nominalOptions, neutralView, new Set(), {
+      mode: "nominal-plan",
+      tauOverride: tau,
+      sizingOnly: true,
+      capture: cap,
+    });
+    if (sizingPass.status === "refused") {
+      return { status: "refused", result: sizingPass };
+    }
+    const report = cap.sizingReport;
+    if (report === undefined) {
+      return { status: "refused", result: sizingPass };
+    }
+    sizingByTau.set(tau, report);
+    const combined = combineRootWithLegendBounds(
+      report.rootWidth,
+      report.rootHeight,
+      report.legendSize,
+      report.effectiveLegendAnchor,
+      false,
+    );
+    ladderCandidates.push({ tau, width: combined.width, height: combined.height });
+  }
+  const chosenTau = chooseAspectTau(ladderCandidates, ASPECT_16_9_TARGET);
+  chosenSizingReport = sizingByTau.get(chosenTau.tau)!;
+
+  // S-1 Step 5: initial slack σ from nominal bounds.
+  const slack1 = computeAspectSlack({
+    width: chosenTau.width,
+    height: chosenTau.height,
+    xTrackIds: chosenSizingReport.xTrackIds,
+    yTrackIds: chosenSizingReport.yTrackIds,
+    capX: chosenSizingReport.capX,
+    capY: chosenSizingReport.capY,
+  });
+
+  // S-1 Step 6a: nominal routed pass #1.
+  const capture1: PlanPassCapture = { autoPackLevels: {}, innerWiden: {} };
+  const pass1 = layoutMeasuredPass(document, nominalOptions, neutralView, new Set(), {
+    mode: "nominal-plan",
+    tauOverride: chosenTau.tau,
+    sigmaColsOverride: slack1.sigmaCols,
+    sigmaBandsOverride: slack1.sigmaBands,
+    capture: capture1,
+  });
+  if (pass1.status === "refused") {
+    return { status: "refused", result: pass1 };
+  }
+  const painted1 = capture1.paintedBounds ?? { width: chosenTau.width, height: chosenTau.height };
+  const ratio1 = painted1.height > 0 && painted1.width > 0 ? painted1.width / painted1.height : ASPECT_16_9_TARGET;
+  const dist1 = Math.abs(Math.log(ratio1 / ASPECT_16_9_TARGET));
+
+  let bestCapture = capture1;
+  let bestSigmaCols = slack1.sigmaCols;
+  let bestSigmaBands = slack1.sigmaBands;
+  let bestRatio = ratio1;
+  let postRouteCorrectionRounds = 0;
+
+  // S-1 Step 6b: at most ONE post-route correction from painted bounds when outside ±2%.
+  if (Math.abs(ratio1 / ASPECT_16_9_TARGET - 1) > ASPECT_16_9_TOLERANCE) {
+    const sumX1 = Object.values(slack1.sigmaCols).reduce((sum, v) => sum + v, 0);
+    const sumY1 = Object.values(slack1.sigmaBands).reduce((sum, v) => sum + v, 0);
+    const baseW = Math.max(1, painted1.width - sumX1);
+    const baseH = Math.max(1, painted1.height - sumY1);
+    const slack2 = computeAspectSlack({
+      width: baseW,
+      height: baseH,
+      xTrackIds: chosenSizingReport.xTrackIds,
+      yTrackIds: chosenSizingReport.yTrackIds,
+      capX: chosenSizingReport.capX,
+      capY: chosenSizingReport.capY,
+    });
+    if (!sameRecord(slack2.sigmaCols, slack1.sigmaCols) || !sameRecord(slack2.sigmaBands, slack1.sigmaBands)) {
+      postRouteCorrectionRounds = 1;
+      const capture2: PlanPassCapture = { autoPackLevels: {}, innerWiden: {} };
+      const pass2 = layoutMeasuredPass(document, nominalOptions, neutralView, new Set(), {
+        mode: "nominal-plan",
+        tauOverride: chosenTau.tau,
+        sigmaColsOverride: slack2.sigmaCols,
+        sigmaBandsOverride: slack2.sigmaBands,
+        capture: capture2,
+      });
+      if (pass2.status === "laid-out") {
+        const painted2 = capture2.paintedBounds ?? painted1;
+        const ratio2 = painted2.height > 0 && painted2.width > 0 ? painted2.width / painted2.height : ASPECT_16_9_TARGET;
+        const dist2 = Math.abs(Math.log(ratio2 / ASPECT_16_9_TARGET));
+        // Keep the better of the two (smaller |ln(A/A*)|; ties keep the first).
+        if (dist2 < dist1 - 1e-9) {
+          bestCapture = capture2;
+          bestSigmaCols = slack2.sigmaCols;
+          bestSigmaBands = slack2.sigmaBands;
+          bestRatio = ratio2;
+        }
+      }
+    }
+  }
+
+  const autoPackLevels = Object.fromEntries(
+    Object.entries(bestCapture.autoPackLevels).sort(([left], [right]) => byString(left, right)),
+  );
+  const innerWiden = Object.fromEntries(
+    Object.entries(bestCapture.innerWiden).sort(([left], [right]) => byString(left, right)),
+  );
+  const nominalAspect = clean(Math.round(bestRatio * 1_000_000) / 1_000_000);
+  const unreached = Math.abs(bestRatio / ASPECT_16_9_TARGET - 1) > ASPECT_16_9_TOLERANCE;
+  const planDigest = computePlanDigest({
+    tau: chosenTau.tau,
+    autoPackLevels,
+    innerWiden,
+    sigmaCols: bestSigmaCols,
+    sigmaBands: bestSigmaBands,
+  });
+  return {
+    status: "ok",
+    plan: {
+      planDigest,
+      tau: chosenTau.tau,
+      autoPackLevels,
+      innerWiden,
+      sigmaCols: bestSigmaCols,
+      sigmaBands: bestSigmaBands,
+      nominalAspect,
+      postRouteCorrectionRounds,
+      ...(unreached ? { aspectUnreached: { achieved: nominalAspect, target: ASPECT_16_9_TARGET } } : {}),
     },
   };
 }
@@ -1968,6 +2134,69 @@ function layoutMeasuredPass(
       const before = new Map(outerWidths);
       sizeAll();
       if (before.size === outerWidths.size && [...outerWidths].every(([id, width]) => before.get(id) === width)) break;
+    }
+    if (planCtx?.sizingOnly === true && planCtx.capture !== undefined) {
+      const rootGridLayout = composedGrids.get(ROOT_LEVEL_KEY);
+      const effectiveLegendAnchor =
+        composition === undefined
+          ? "none"
+          : composition.legend === "host"
+            ? (options.legend ?? "right")
+            : composition.legend;
+      let legendSize: { readonly width: number; readonly height: number } | undefined;
+      if (effectiveLegendAnchor !== "none") {
+        const legendEdges: LinkLegendEdgeInput[] = [];
+        for (const edge of drawnEdges) {
+          const occurrence = projected.relationOccurrences[edge.occurrence];
+          if (occurrence === undefined) continue;
+          const semantic = document.relations[occurrence.relation];
+          if (semantic?.profile === "erd@1" || semantic?.type === "flow-step") continue;
+          const relStyle = presentation.relations?.[occurrence.id] ?? presentation.relations?.[occurrence.relation];
+          const rawStroke = occurrence.strokeStyle ?? relStyle?.strokeStyle;
+          const resolvedStroke = rawStroke === undefined ? undefined : resolveDashPattern(rawStroke)?.style;
+          const rawArrow = occurrence.arrowhead ?? relStyle?.arrowhead;
+          const resolvedArrow = rawArrow === undefined ? undefined : resolveArrowhead(rawArrow)?.canonicalKind;
+          const rawEmphasis = occurrence.emphasis ?? relStyle?.emphasis;
+          const resolvedEmphasis = rawEmphasis === undefined ? undefined : resolveLinkEmphasis(rawEmphasis)?.emphasis;
+          legendEdges.push({
+            ...(r7Routing && resolvedStroke !== undefined && resolvedStroke !== "solid" ? { strokeStyle: resolvedStroke } : {}),
+            ...(r7Routing && resolvedArrow !== undefined && resolvedArrow !== "arrow" ? { arrowhead: resolvedArrow } : {}),
+            ...(r7Routing && resolvedEmphasis === "emphasis" ? { emphasis: resolvedEmphasis } : {}),
+          });
+        }
+        const measuredLegend = measureSceneLinkLegend({
+          edges: legendEdges,
+          measureLines: measure,
+          ...(options.legendTitle === undefined ? {} : { title: options.legendTitle }),
+          ...(options.legendLabels === undefined ? {} : { labels: options.legendLabels }),
+          ...(metrics.edgeLabelSize === undefined ? {} : { fontSize: metrics.edgeLabelSize }),
+        });
+        if (measuredLegend !== undefined) {
+          legendSize = { width: measuredLegend.width, height: measuredLegend.height };
+        }
+      }
+      planCtx.capture.sizingReport = {
+        rootWidth: rootGridLayout?.width ?? 0,
+        rootHeight: rootGridLayout?.height ?? 0,
+        xTrackIds: (rootGridLayout?.columns ?? []).filter((c) => c.kind === "stage").map((c) => c.id),
+        yTrackIds: (rootGridLayout?.bands ?? []).filter((b) => b.kind === "band").map((b) => b.id),
+        capX: rowGaps.maxX,
+        capY: rowGaps.maxY,
+        ...(legendSize === undefined ? {} : { legendSize }),
+        effectiveLegendAnchor,
+      };
+      return {
+        result: {
+          status: "laid-out",
+          view: projected,
+          fit: { direction: "top-to-bottom", width: 0, height: 0, zoom: 1, pans: false, phone: false },
+          warnings: [],
+        },
+        chosen,
+        requested: new Map(),
+        unused: [],
+        unplaced: 0,
+      };
     }
     if (planCtx?.mode === "nominal-plan" && plan === undefined && planCtx.capture !== undefined) {
       for (const [runKey, level] of capturedAutoPack) {
@@ -3683,10 +3912,44 @@ function layoutMeasuredPass(
         isContainer: entityIsContainer,
         zoneGutter,
       });
+      if (nominalPlan?.aspectUnreached !== undefined && collapsedOccurrences.size === 0) {
+        warnings.push({
+          severity: "info",
+          code: "aspect-unreached",
+          refs: [],
+          message: `target 16:9 aspect ratio was not reached within the slack cap (achieved ${nominalPlan.aspectUnreached.achieved.toFixed(3)})`,
+          details: {
+            achieved: nominalPlan.aspectUnreached.achieved,
+            target: nominalPlan.aspectUnreached.target,
+          },
+        });
+      }
+      if (planCtx?.mode === "nominal-plan" && planCtx.capture !== undefined) {
+        const paintedExtras = new Map<RelationRef, Rect>([
+          ...labelBoxes,
+          ...Object.entries(marks.badges).map(([id, box]) => [id as RelationRef, box] as const),
+          ...Object.entries(marks.arrows).flatMap(([id, arrows]) =>
+            arrows.map((arrow, i) => [(id + String(i)) as RelationRef, arrow.box] as const),
+          ),
+          ...(linkLegend === undefined ? [] : [[("__link_legend__" as unknown as RelationRef), linkLegend.rect] as const]),
+        ]);
+        const painted = unionOf(rects, retryRoutes, paintedExtras);
+        planCtx.capture.paintedBounds = { width: painted.width, height: painted.height };
+      }
       compositionReport = {
         grids: sortedGridReports,
         ...(nominalPlan === undefined ? {} : { planDigest: nominalPlan.planDigest }),
-        ...(nominalPlan?.nominalAspect === undefined ? {} : { nominalAspect: nominalPlan.nominalAspect }),
+        ...(nominalPlan?.nominalAspect === undefined
+          ? {}
+          : {
+              nominalAspect: nominalPlan.nominalAspect,
+              tau: nominalPlan.tau,
+              sigmaCols: nominalPlan.sigmaCols,
+              sigmaBands: nominalPlan.sigmaBands,
+              ...(nominalPlan.postRouteCorrectionRounds === undefined
+                ? {}
+                : { postRouteCorrectionRounds: nominalPlan.postRouteCorrectionRounds }),
+            }),
         paintedGapsAboveToken: paintedGaps.aboveToken,
       };
     }

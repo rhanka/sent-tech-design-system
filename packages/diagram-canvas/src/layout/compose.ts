@@ -85,6 +85,10 @@ export interface LayoutCompositionReport {
   readonly grids: Readonly<Record<string, ComposedGridReport>>;
   readonly planDigest?: string;
   readonly nominalAspect?: number;
+  readonly tau?: number;
+  readonly sigmaCols?: Readonly<Record<string, number>>;
+  readonly sigmaBands?: Readonly<Record<string, number>>;
+  readonly postRouteCorrectionRounds?: number;
   readonly paintedGapsAboveToken?: readonly ComposedPaintedGap[];
   readonly combFallbacks?: readonly { readonly hub: string; readonly members: readonly string[]; readonly reason: string }[];
 }
@@ -1287,16 +1291,39 @@ function layoutUnstagedGrid(args: {
 
   activeBands.forEach((band, bandIdx) => {
     const by = bandStarts[bandIdx]!;
-    for (const item of band.items) {
+    // When σ adds width to an unstaged root grid (`__main__`), expanded containers
+    // in the band absorb the extra width in whole world units while keeping every
+    // gutter at its exact token width (§4.2 S-1 step 5).
+    const bandSlackX = Math.max(0, mainWidth - band.width);
+    const expandedIdx = band.items
+      .map((item, idx) => (item.isExpanded ? idx : -1))
+      .filter((idx) => idx >= 0);
+    const itemWidths = band.items.map((item) => item.width);
+    const itemStretchedX = band.items.map(() => false);
+    if (mainSigmaX > 0 && bandSlackX > 0 && expandedIdx.length > 0) {
+      const share = Math.floor(bandSlackX / expandedIdx.length);
+      const rem = bandSlackX - share * expandedIdx.length;
+      expandedIdx.forEach((idx, k) => {
+        const add = share + (k === expandedIdx.length - 1 ? rem : 0);
+        if (add > 0) {
+          itemWidths[idx] = itemWidths[idx]! + add;
+          itemStretchedX[idx] = true;
+        }
+      });
+    }
+    let cursorItemX = 0;
+    band.items.forEach((item, idx) => {
+      const w = itemWidths[idx]!;
+      const relX = cursorItemX;
       const alignedY = alignWithin(by, band.height, item.height, item.align, item.isExpanded);
       placements.push({
         entity: item.entity,
-        relX: clean(mainOriginX + item.relX),
+        relX: clean(mainOriginX + relX),
         relY: clean(alignedY.pos),
-        width: item.width,
+        width: w,
         height: alignedY.size,
-        slotRelRect: { x: clean(mainOriginX + item.relX), y: clean(by), width: item.width, height: band.height },
-        stretchX: false,
+        slotRelRect: { x: clean(mainOriginX + relX), y: clean(by), width: w, height: band.height },
+        stretchX: itemStretchedX[idx]!,
         stretchY: alignedY.stretched,
         isPeripheral: false,
         colStart: mainColIdx,
@@ -1304,19 +1331,23 @@ function layoutUnstagedGrid(args: {
         bandStart: bandIdx,
         bandEnd: bandIdx,
       });
-    }
-    for (const g of band.intraGaps) {
-      gutterCollectors.push((originX, originY) => ({
-        id: g.id,
-        horizontal: false,
-        strips: [{ x: originX + mainOriginX + g.startX, y: originY + by, width: g.gap, height: band.height }],
-        gap: g.gap,
-        base: g.base,
-        authoredBase: false,
-        max: rowGaps.maxX,
-        zone: g.zone,
-      }));
-    }
+      cursorItemX += w;
+      const g = band.intraGaps[idx];
+      if (g !== undefined) {
+        const gx = cursorItemX;
+        gutterCollectors.push((originX, originY) => ({
+          id: g.id,
+          horizontal: false,
+          strips: [{ x: originX + mainOriginX + gx, y: originY + by, width: g.gap, height: band.height }],
+          gap: g.gap,
+          base: g.base,
+          authoredBase: false,
+          max: rowGaps.maxX,
+          zone: g.zone,
+        }));
+        cursorItemX += g.gap;
+      }
+    });
   });
 
   for (let j = 0; j < bandBoundaryInfo.length; j += 1) {

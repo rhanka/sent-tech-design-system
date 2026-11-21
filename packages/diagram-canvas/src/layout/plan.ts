@@ -18,7 +18,7 @@ import {
 } from "@sentropic/diagram-core";
 
 import { DEFAULT_EDGE_LABEL_SIZE } from "../camera.js";
-import { measureLegendProbe } from "../presentation/linkLegend.js";
+import { LINK_LEGEND_GAP, measureLegendProbe, type SceneLinkLegendAnchor } from "../presentation/linkLegend.js";
 import { isR7ConnectorPresentation } from "../r7Mode.js";
 import type { Rect } from "../transform.js";
 import type { ComposedGridReport, ComposedPaintedGap, GridLayoutResult, StackLayoutResult } from "./compose.js";
@@ -28,6 +28,161 @@ import { DEFAULT_LAYOUT_METRICS, type LayoutOptions, type LevelOrientation, type
 
 const byString = (left: string, right: string): number => (left < right ? -1 : left > right ? 1 : 0);
 const clean = (value: number): number => (value === 0 ? 0 : value);
+
+/** Target ratio for `aspect: "16:9"` (REQ-R7-22, H2-STEP0 §4.2 S-1 steps 4–6). */
+export const ASPECT_16_9_TARGET = 16 / 9;
+/** Relative tolerance band around 16:9 (±2%). */
+export const ASPECT_16_9_TOLERANCE = 0.02;
+/** Fixed τ ladder searched at nominal for `aspect: "16:9"` (§4.2 S-1 step 4). */
+export const ASPECT_TAU_LADDER = [0.56, 0.75, 1.0, 1.33, 1.78, 2.37, 3.16, 4.21] as const;
+
+export interface AspectTauCandidate {
+  readonly tau: number;
+  readonly width: number;
+  readonly height: number;
+}
+
+export interface ChosenAspectTau extends AspectTauCandidate {
+  readonly ratio: number;
+  readonly distance: number;
+}
+
+/**
+ * Pick τ* from the fixed ladder minimising `|ln(A / (16/9))|`, breaking ties by:
+ * 1. smaller area (`width * height`),
+ * 2. τ nearest `1.78`,
+ * 3. smaller τ (§4.2 S-1 step 4).
+ */
+export function chooseAspectTau(
+  candidates: readonly AspectTauCandidate[],
+  target: number = ASPECT_16_9_TARGET,
+): ChosenAspectTau {
+  const EPS_DIST = 1e-9;
+  const EPS_AREA = 1e-6;
+  const EPS_TAU = 1e-9;
+  let best: ChosenAspectTau | undefined;
+  for (const cand of candidates) {
+    const ratio = cand.height > 0 && cand.width > 0 ? cand.width / cand.height : target;
+    const distance = Math.abs(Math.log(ratio / target));
+    const entry: ChosenAspectTau = { ...cand, ratio, distance };
+    if (best === undefined) {
+      best = entry;
+      continue;
+    }
+    if (entry.distance < best.distance - EPS_DIST) {
+      best = entry;
+      continue;
+    }
+    if (Math.abs(entry.distance - best.distance) <= EPS_DIST) {
+      const area = entry.width * entry.height;
+      const bestArea = best.width * best.height;
+      if (area < bestArea - EPS_AREA) {
+        best = entry;
+        continue;
+      }
+      if (Math.abs(area - bestArea) <= EPS_AREA) {
+        const dDefault = Math.abs(entry.tau - 1.78);
+        const bestDefault = Math.abs(best.tau - 1.78);
+        if (dDefault < bestDefault - EPS_TAU) {
+          best = entry;
+          continue;
+        }
+        if (Math.abs(dDefault - bestDefault) <= EPS_TAU && entry.tau < best.tau) {
+          best = entry;
+        }
+      }
+    }
+  }
+  return best ?? { tau: 1.78, width: 0, height: 0, ratio: target, distance: 0 };
+}
+
+/** Combine nominal root grid dimensions with the layout-measured legend box (§4.2 S-1 step 3). */
+export function combineRootWithLegendBounds(
+  gridWidth: number,
+  gridHeight: number,
+  legendSize: { readonly width: number; readonly height: number } | undefined,
+  anchor: SceneLinkLegendAnchor | "none",
+  legendInsideCell = false,
+): { readonly width: number; readonly height: number } {
+  if (legendSize === undefined || anchor === "none" || legendInsideCell) {
+    return { width: gridWidth, height: gridHeight };
+  }
+  if (anchor === "bottom") {
+    return {
+      width: Math.max(gridWidth, legendSize.width),
+      height: gridHeight + LINK_LEGEND_GAP + legendSize.height,
+    };
+  }
+  // `"right"` (and `"free-cell"` fallback when no free cell exists)
+  return {
+    width: gridWidth + LINK_LEGEND_GAP + legendSize.width,
+    height: Math.max(gridHeight, legendSize.height),
+  };
+}
+
+export interface AspectSlackResult {
+  readonly sigmaCols: Readonly<Record<string, number>>;
+  readonly sigmaBands: Readonly<Record<string, number>>;
+  readonly capReached: boolean;
+  readonly ratio: number;
+}
+
+/**
+ * Compute per-track whole-unit slack σ to reach `16:9 ± 2%` (§4.2 S-1 step 5).
+ * Equal shares in whole world units, remainder to the last track, each track capped at `gapMax`.
+ */
+export function computeAspectSlack(args: {
+  readonly width: number;
+  readonly height: number;
+  readonly xTrackIds: readonly string[];
+  readonly yTrackIds: readonly string[];
+  readonly capX: number;
+  readonly capY: number;
+  readonly target?: number;
+  readonly tolerance?: number;
+}): AspectSlackResult {
+  const target = args.target ?? ASPECT_16_9_TARGET;
+  const tolerance = args.tolerance ?? ASPECT_16_9_TOLERANCE;
+  if (!(args.width > 0) || !(args.height > 0)) {
+    return { sigmaCols: {}, sigmaBands: {}, capReached: false, ratio: target };
+  }
+  const ratio = args.width / args.height;
+  if (Math.abs(ratio / target - 1) <= tolerance) {
+    return { sigmaCols: {}, sigmaBands: {}, capReached: false, ratio };
+  }
+  const distribute = (
+    totalDelta: number,
+    trackIds: readonly string[],
+    cap: number,
+  ): { readonly map: Readonly<Record<string, number>>; readonly capReached: boolean } => {
+    const n = trackIds.length;
+    if (n === 0 || totalDelta <= 0) return { map: {}, capReached: totalDelta > 0 };
+    const base = Math.floor(totalDelta / n);
+    const rem = totalDelta - base * n;
+    const out: Record<string, number> = {};
+    let capReached = false;
+    trackIds.forEach((id, idx) => {
+      const raw = base + (idx === n - 1 ? rem : 0);
+      if (raw > cap) capReached = true;
+      const clamped = Math.min(cap, raw);
+      if (clamped > 0) out[id] = clamped;
+    });
+    return {
+      map: Object.fromEntries(Object.entries(out).sort(([left], [right]) => byString(left, right))),
+      capReached,
+    };
+  };
+  if (ratio < target) {
+    // Too tall: add width across root x-tracks
+    const deltaW = Math.round(target * args.height - args.width);
+    const { map, capReached } = distribute(deltaW, args.xTrackIds, args.capX);
+    return { sigmaCols: map, sigmaBands: {}, capReached, ratio };
+  }
+  // Too wide: add height across root bands
+  const deltaH = Math.round(args.width / target - args.height);
+  const { map, capReached } = distribute(deltaH, args.yTrackIds, args.capY);
+  return { sigmaCols: {}, sigmaBands: map, capReached, ratio };
+}
 
 export interface FrozenAutoPackLevel {
   readonly orientation: LevelOrientation;
@@ -53,6 +208,8 @@ export interface NominalCompositionPlan {
   readonly nominalAspect?: number;
   /** Info payload when `16:9 ± 2%` could not be reached within the σ cap (H2.6). */
   readonly aspectUnreached?: { readonly achieved: number; readonly target: number };
+  /** Number of post-route σ correction rounds executed at nominal (0 or 1, H2.6). */
+  readonly postRouteCorrectionRounds?: number;
 }
 
 export interface SubtreeNodeSnapshot {
