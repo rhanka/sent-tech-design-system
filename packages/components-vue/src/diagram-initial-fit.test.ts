@@ -68,6 +68,35 @@ function geometry(element: Element) {
 const undo: (() => void)[] = [];
 afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); delete (document as Partial<Document>).fonts; for (const step of undo.splice(0)) step(); });
 
+it('should publish numbered-flow content size once per change in world dimensions', async () => {
+  const width = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(900);
+  vi.stubGlobal('innerHeight', 900);
+  const input = cases.find(scene => scene.name === 'numbered flows/container')!.input();
+  const view = mount(VueScene, { props: input });
+  try {
+    await nextTick();
+    const emitted = () => view.emitted('sizeChange');
+    const initial = emitted()?.[0];
+    expect(initial?.[0]).toMatchObject({ width: expect.any(Number), height: expect.any(Number) });
+    expect.soft(emitted()).toEqual([initial]);
+    expect.soft(view.emitted('update:contentSize')).toEqual([initial]);
+
+    width.mockReturnValue(500);
+    window.dispatchEvent(new Event('resize'));
+    await nextTick();
+    expect.soft(emitted()).toEqual([initial]);
+    expect.soft(view.emitted('update:contentSize')).toEqual([initial]);
+
+    await view.setProps({ collapsed: ['occurrence:e.zone'] });
+    const folded = emitted()?.at(-1);
+    expect(folded).not.toEqual(initial);
+    expect(emitted()).toEqual([initial, folded]);
+    expect(view.emitted('update:contentSize')).toEqual([initial, folded]);
+  } finally {
+    view.unmount();
+  }
+});
+
 /**
  * Painted rects for the jsdom hosts, derived from the rendered world
  * transform and never from camera state: a host that paints one scale and
