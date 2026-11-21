@@ -31,14 +31,14 @@ const maskId = 'diagram-connector-mask-' + hostId;
 const strings = computed(() => ({ ...DEFAULT_LABELS, ...props.labels }));
 const flowOptions = computed(() => ({ ...props.flows, countTemplate: strings.value.count }));
 const tokens = shallowRef<FlowTokens>(DEFAULT_FLOW_TOKENS);
-const { frameEl: frame, viewportEl: viewport, measure, measureLines, effectiveMetrics,
-  fit, zoom, readout, placement, viewportStyle, refitOnFold,
+const { frameEl: frame, viewportEl: viewport, layoutWidth, measure, measureLines, effectiveMetrics,
+  fit, zoom, readout, placement, viewportStyle, resetToFit,
   setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
     props, () => scene.value, camera => props.onCameraChange?.(camera), readFlowTokens);
 defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 const foldState = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? foldState.value);
-watch(() => [...collapsedNow.value].sort().join('\0'), () => refitOnFold(), { flush: 'pre' });
+watch(() => [...collapsedNow.value].sort().join('\0'), resetToFit, { flush: 'pre' });
 let previousOrientation: SceneOrientations | undefined, orientationDocument: string | undefined;
 const layout = computed(() => {
   if (orientationDocument !== props.document.documentId) { orientationDocument = props.document.documentId; previousOrientation = undefined; }
@@ -51,7 +51,7 @@ const layout = computed(() => {
     measureLines: measureLines.value, collapsed: collapsedNow.value, flows: flowOptions.value, flowTokens: tokens.value,
     ...(props.view === undefined ? {} : { view: props.view }), ...(props.bindings === undefined ? {} : { bindings: props.bindings }),
     ...(props.hints === undefined ? {} : { hints: props.hints }), metrics: effectiveMetrics.value,
-    ...(props.rowPack === undefined ? {} : { rowPack: props.rowPack }), ...(props.targetWidth === undefined ? {} : { targetWidth: props.targetWidth }),
+    ...(props.rowPack === undefined ? {} : { rowPack: props.rowPack }), targetWidth: layoutWidth.value,
     ...(previousOrientation === undefined ? {} : { previousOrientation }),
   });
   if (result.status === "laid-out") previousOrientation = result.orientations;

@@ -221,7 +221,7 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
     view.dispose();
   });
   for (const scene of cases.filter(scene => ['numbered flows', 'ontology/unfolded'].includes(scene.name))) it(`should follow the fitted ${scene.name} bounds when the initial font becomes ready`, async () => {
-    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1800);
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(scene.name === 'numbered flows' ? 500 : 1800);
     vi.stubGlobal('innerHeight', 1000);
     let ready!: () => void;
     Object.defineProperty(document, 'fonts', { configurable: true, value: { ready: new Promise<void>(resolve => { ready = resolve; }) } });
@@ -230,9 +230,17 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
     const view = await host.mount({ ...scene.input(),
       onCameraChange: (camera: { zoom: number; fitZoom: number }) => cameras.push(camera) });
     const initialFit = cameras.at(-1)!.fitZoom;
+    const { viewport } = geometry(view.element);
+    viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
+    await view.flush();
+    expect(geometry(view.element).zoom).toBeGreaterThan(initialFit);
+    viewport.scrollLeft = 40;
+    viewport.scrollTop = 20;
     ready(); await Promise.resolve(); await view.flush(); await view.flush();
     expect(cameras.at(-1)!.fitZoom).not.toBe(initialFit);
     expect(cameras.at(-1)!.zoom).toBe(cameras.at(-1)!.fitZoom);
+    expect(viewport.scrollLeft).toBe(0);
+    expect(viewport.scrollTop).toBe(0);
     const before = geometry(view.element).zoom;
     [...view.element.querySelectorAll('button')].find(button => button.textContent?.trim() === 'Fit')!.click();
     await view.flush();
@@ -370,7 +378,48 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
       view.dispose();
     });
   }
-  it('should retain the reclamped numbered-flow zoom when a resize restores the old range', async () => {
+  it('should keep a manual zoom through scrollbar changes and refit when the container resizes', async () => {
+    let frameWidth = 500;
+    let scrollbarWidth = 0;
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.matches('.st-diagramSceneFigure-viewport') ? frameWidth - scrollbarWidth : frameWidth;
+    });
+    vi.stubGlobal('innerHeight', 900);
+    let notifyResize = () => {};
+    vi.stubGlobal('ResizeObserver', class {
+      constructor(callback: () => void) { notifyResize = callback; }
+      observe() {}
+      disconnect() {}
+    });
+    const view = await host.mount(cases.find(scene => scene.name === 'numbered flows')!.input());
+    const initial = geometry(view.element);
+    initial.viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
+    await view.flush();
+    const userZoom = geometry(view.element).zoom;
+    expect(userZoom).toBeGreaterThan(initial.zoom);
+
+    initial.viewport.scrollLeft = 40;
+    initial.viewport.scrollTop = 20;
+    scrollbarWidth = 15;
+    notifyResize();
+    await view.flush();
+    expect(geometry(view.element).zoom).toBe(userZoom);
+    expect(initial.viewport.scrollLeft).toBe(40);
+    expect(initial.viewport.scrollTop).toBe(20);
+
+    frameWidth = 550;
+    notifyResize();
+    await view.flush();
+    const resized = geometry(view.element);
+    expect(resized.zoom).not.toBe(userZoom);
+    expect(resized.viewport.dataset.pans).toBe('false');
+    expect(resized.tx + resized.right * resized.zoom).toBeLessThanOrEqual(frameWidth);
+    expect(resized.viewport.scrollLeft).toBe(0);
+    expect(resized.viewport.scrollTop).toBe(0);
+    view.dispose();
+  });
+
+  it('should refit numbered flows and reset scrolling on a window resize', async () => {
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(340);
     vi.stubGlobal('innerHeight', 900);
     let floor = '.30';
@@ -381,14 +430,19 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
       return style;
     });
     const view = await host.mount(cases.find(scene => scene.name === 'numbered flows')!.input());
-    geometry(view.element).viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
+    const initial = geometry(view.element);
+    initial.viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
     await view.flush();
     expect(geometry(view.element).zoom).toBeGreaterThan(.30);
     expect(geometry(view.element).zoom).toBeLessThan(.6);
     floor = '.6'; window.dispatchEvent(new Event('resize')); await view.flush();
     expect(geometry(view.element).zoom).toBe(.6);
+    initial.viewport.scrollLeft = 40;
+    initial.viewport.scrollTop = 20;
     floor = '.30'; window.dispatchEvent(new Event('resize')); await view.flush();
-    expect(geometry(view.element).zoom).toBe(.6);
+    expect(geometry(view.element).zoom).toBe(initial.zoom);
+    expect(initial.viewport.scrollLeft).toBe(0);
+    expect(initial.viewport.scrollTop).toBe(0);
     view.dispose();
   });
   it('should reset numbered-flow font measurement and camera for a new document', async () => {

@@ -74,9 +74,8 @@ export interface SceneLayoutCache {
 }
 
 /**
- * `targetWidth` handed to the engine when the host supplies none. The
- * measured path never re-packs on it (D-3) and the host never reads the
- * layout fit report (Z-8), so a resize re-runs no layout.
+ * Default report width before the host can measure its frame (also used
+ * for server rendering). The measured path never re-packs on it (D-3).
  */
 export const DEFAULT_SCENE_TARGET_WIDTH = 1440;
 /**

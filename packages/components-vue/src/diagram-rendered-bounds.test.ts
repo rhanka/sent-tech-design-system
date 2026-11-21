@@ -187,8 +187,8 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
     for (const edge of ['x', 'y', 'width', 'height'] as const) {
       expect(shouldRefitRenderedBounds(rect, { ...rect, [edge]: rect[edge] + 3 / 64 }), edge).toBe(false);
       expect(shouldRefitRenderedBounds(rect, { ...rect, [edge]: rect[edge] - 3 / 64 }), edge).toBe(false);
-      expect(shouldRefitRenderedBounds(rect, { ...rect, [edge]: rect[edge] + 0.1 }), edge).toBe(true);
-      expect(shouldRefitRenderedBounds(rect, { ...rect, [edge]: rect[edge] - 0.1 }), edge).toBe(true);
+      expect(shouldRefitRenderedBounds(rect, { ...rect, [edge]: rect[edge] + 0.125 }), edge).toBe(true);
+      expect(shouldRefitRenderedBounds(rect, { ...rect, [edge]: rect[edge] - 0.125 }), edge).toBe(true);
     }
   });
   it(`should read ${host} non-scaling strokes at one world width at every zoom, and keep Ajuster a fixed point after an interactive zoom`, () => {

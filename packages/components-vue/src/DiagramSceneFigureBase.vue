@@ -42,15 +42,15 @@ const strings = computed(() => ({ ...defaults, ...props.labels }));
 const hostId = useId();
 const arrowId = 'diagram-arrow-' + hostId;
 const maskId = 'diagram-connector-mask-' + hostId;
-const { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
-    fit, zoom, readout, placement, viewportStyle, refitOnFold,
+const { frameEl, viewportEl, layoutWidth, measure, measureLines, effectiveMetrics, token,
+    fit, zoom, readout, placement, viewportStyle, resetToFit,
     setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
         props, () => scene.value, camera => emit('cameraChange', camera), undefined,
         { animating: () => animating.value, settle: () => settle() });
 defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 const folds = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? folds.value);
-watch(() => [...collapsedNow.value].sort().join('\0'), () => refitOnFold(), { flush: 'pre' });
+watch(() => [...collapsedNow.value].sort().join('\0'), resetToFit, { flush: 'pre' });
 let previousOrientation: SceneOrientations | undefined;
 let orientationDocument: string | undefined;
 const ownedCache = createLayoutCache();
@@ -72,7 +72,7 @@ const layoutResult = computed(() => {
         ...(props.hints === undefined ? {} : { hints: props.hints }),
         metrics: effectiveMetrics.value,
         ...(props.rowPack === undefined ? {} : { rowPack: props.rowPack }),
-        ...(props.targetWidth === undefined ? {} : { targetWidth: props.targetWidth }),
+        targetWidth: layoutWidth.value,
         ...(previousOrientation === undefined ? {} : { previousOrientation }),
     });
     if (result.status === 'laid-out' && result.orientations !== undefined)
