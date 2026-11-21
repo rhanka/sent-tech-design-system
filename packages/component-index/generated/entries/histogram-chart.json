@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/HistogramChart.svelte",
-      "version": "0.43.1"
+      "version": "0.43.2"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/HistogramChart.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.10"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Histogram for explicit or generated distribution bins.",
     "fr": "Histogramme pour afficher des classes explicites ou générées."
   },
-  "digest": "sha256:4a6da07ac43e2e01df1f22ad93c7b0cd94215dfb6a4cd839e5f833cfb4127bf2",
+  "digest": "sha256:766a10219bd7b252ad3ad4f6ca8451f193cf417d0de59f63b479f1a723c9502b",
   "displayName": "HistogramChart",
   "format": "component-entry/v1",
   "frameworks": [

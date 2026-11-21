@@ -1,8 +1,8 @@
 {
   "componentId": "table",
   "contractSource": "derived",
-  "digest": "sha256:99a2f9e7880c01cda09e66b079d09afd4e0ecb726021aa8a8eb61e66824417fd",
-  "entryDigest": "sha256:1aec476ff4bec319cb4ae29074d50a53b88ebbfd71f354e57e10c897bf72c478",
+  "digest": "sha256:a1aba29546dedaf3c357b795ed3dfa7908f085f249d36994c375eb18e3f4a5f5",
+  "entryDigest": "sha256:5199cfb551993759acbdedacd538fffb43e5233fcdd1a0100ec76b5c64bd6e2b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -273,7 +273,7 @@
         "declarationPath": "packages/components-svelte/dist/Table.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TableProps",
-        "version": "0.43.1"
+        "version": "0.43.2"
       },
       "status": "partial",
       "unresolved": [],
@@ -392,7 +392,7 @@
         "declarationPath": "packages/components-vue/dist/Table.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TableProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.10"
       },
       "status": "partial",
       "unresolved": [],
