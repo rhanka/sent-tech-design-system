@@ -15,4 +15,6 @@ export {
   A2UI_PROTOCOL_VERSION,
 } from "./contracts/index.js";
 export type { ContractModule } from "./contracts/index.js";
+export type { EpochMilliseconds, TimeSeries, TimeSeriesChartProps, TimeSeriesPoint } from "./contracts/index.js";
+export { formatTimeSeriesMarkdown, TIME_SERIES_FALLBACK_LIMIT_BYTES } from "./format-time-series-markdown.js";
 export * from "./validate/index.js";
