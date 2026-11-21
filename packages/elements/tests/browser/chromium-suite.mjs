@@ -1844,6 +1844,16 @@ for (const [label, url, offline] of [
   }
   await page.evaluate(() => document.querySelector('[href="#shared-input"]').click());
   await page.waitForFunction(() => document.activeElement?.dataset.anchorId === "shared-input", { timeout: 2000 });
+  const hasSourceLink = await page.evaluate(() => {
+    const link = document.querySelector('[data-anchor-id="single-build"] a[href="#build-log"]');
+    link?.click();
+    return link !== null;
+  });
+  if (assert(hasSourceLink, `${label}: citation links to its embedded source`, "missing #build-log link")) {
+    await page.waitForFunction(() => document.activeElement?.dataset.anchorId === "build-log" &&
+      document.activeElement.open, { timeout: 2000 });
+    ok(`${label}: citation opens and focuses its embedded source`);
+  }
   const network = observed.requests.filter((request) => /^https?:/.test(request));
   const external = network.filter((request) => offline || new URL(request).origin !== BASE);
   const violations = await observed.violations();

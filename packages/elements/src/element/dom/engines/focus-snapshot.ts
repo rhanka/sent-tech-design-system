@@ -1,6 +1,8 @@
 import { isEvidenceDossier, renderHtml, type FocusDocument } from "@sentropic/focus";
 import { DecisionDossierValidationError } from "@sentropic/focus/validate";
-import { appendDossierEvidence, dossierCitations, markDossierAnchor } from "./dossier-evidence.js";
+import {
+  appendDossierEvidence, dossierCitations, dossierReference, dossierSourceOrigin, markDossierAnchor,
+} from "./dossier-evidence.js";
 import { renderDossierOptionAnnotation } from "./focus-renderer.js";
 
 /** Render the pinned Focus snapshot, then wire the kit's controls and anchors. */
@@ -91,13 +93,20 @@ export function renderFocusSnapshot(
 
   if (isEvidenceDossier(doc)) {
     const ids = new Map<string, string>();
+    const sources = new Map(doc.sources.map((source) => [source.id, source]));
     const rows = article.querySelectorAll<HTMLElement>(":scope > .focus-sources > ol > li");
     if (rows.length !== doc.citations.length) throw new Error("Unexpected Focus citation count");
-    for (const [index, { id }] of doc.citations.entries()) {
+    for (const [index, { id, label, sourceId, locator }] of doc.citations.entries()) {
       const row = rows[index]!;
       ids.set(`#${row.id}`, id);
       row.removeAttribute("id");
       markDossierAnchor(row, id);
+      const source = sources.get(sourceId)!;
+      const origin = dossierSourceOrigin(source);
+      const location = locator.kind === "lines" ? `${origin}:${locator.start}–${locator.end}` : `${origin} · ${locator.caption}`;
+      const download = row.querySelector("a[download]");
+      row.replaceChildren(`${label} · `, dossierReference(sourceId, source.title), ` · ${location}`);
+      if (download !== null) row.append(" · ", download);
     }
     for (const link of article.querySelectorAll<HTMLAnchorElement>("a.focus-citation")) {
       const id = ids.get(link.getAttribute("href") ?? "");
