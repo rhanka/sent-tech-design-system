@@ -88,9 +88,9 @@ function paintOnLayoutGrid() {
   let ghosts = false;
   const sheet = document.createElement('style');
   sheet.textContent = `
-    .st-diagramSceneFigure-edge { fill: none; stroke: rgb(100, 116, 139); stroke-width: 2.5px; vector-effect: non-scaling-stroke; }
-    .st-diagramSceneFigure-edge[data-flow-state="primary"] { stroke-width: 3.5px !important; }
-    .st-diagramSceneFigure-edge[data-flow-state="related"] { stroke-width: 3px !important; }
+    .st-diagramSceneFigure-edge { fill: none; stroke: rgb(100, 116, 139); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+    .st-diagramSceneFigure-edge[data-flow-state="primary"] { stroke-width: 2.5px !important; }
+    .st-diagramSceneFigure-edge[data-flow-state="related"] { stroke-width: 2px !important; }
     .st-diagramSceneFigure-flowHit { fill: none; stroke: rgba(0, 0, 0, 0); stroke-width: 16px; }
     .st-diagramSceneFigure-flowNode { opacity: 0; }
     .st-diagramSceneFigure-flowDescription { position: absolute; clip-path: inset(50%); width: 0; height: 0; overflow: hidden; }`;
@@ -359,7 +359,7 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
         await view.flush();
         painted.restyle();
         const primary = view.element.querySelector('[data-scene-edge][data-flow-state="primary"]')!;
-        expect(getComputedStyle(primary).strokeWidth).toBe('3.5px');
+        expect(getComputedStyle(primary).strokeWidth).toBe('2.5px');
         const highlighted = state();
         expect([highlighted.zoom, highlighted.transform, highlighted.extent]).toEqual([settled.zoom, settled.transform, settled.extent]);
         await ajuster();
