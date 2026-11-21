@@ -481,8 +481,14 @@ export function createFixtureCommentsAdapter(
       if (toolCallId !== undefined) {
         const pending = pendingLiveSessions.get(toolCallId);
         if (pending !== undefined) {
+          // Pending entries are the lowest-priority registration: consume them at
+          // first bind, but never overwrite an explicit live session (scoped
+          // registration or the write-time caller session recorded above).
           pendingLiveSessions.delete(toolCallId);
-          liveSessions.set(liveSessionKey(tenant, toolCallId), pending);
+          const key = liveSessionKey(tenant, toolCallId);
+          if (!liveSessions.has(key)) {
+            liveSessions.set(key, pending);
+          }
         }
       }
       return cloneRawComment(row);
@@ -708,6 +714,8 @@ export function createFixtureCommentsAdapter(
       if (args.length === 3) {
         const [tenant, toolCallId, session] = args;
         liveSessions.set(liveSessionKey(tenant, toolCallId), session);
+        // Newest explicit registration wins: invalidate any stale pending entry.
+        pendingLiveSessions.delete(toolCallId.trim());
         return;
       }
 
@@ -731,7 +739,11 @@ export function createFixtureCommentsAdapter(
         scopeKey = key;
       }
       if (scopeKey === undefined) pendingLiveSessions.set(id, session);
-      else liveSessions.set(scopeKey, session);
+      else {
+        liveSessions.set(scopeKey, session);
+        // Newest explicit registration wins: invalidate any stale pending entry.
+        pendingLiveSessions.delete(id);
+      }
     },
     clearLiveSessions(): void {
       liveSessions.clear();
