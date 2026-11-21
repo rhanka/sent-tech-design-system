@@ -9,6 +9,7 @@ import { renderDossierOptionAnnotation } from "./focus-renderer.js";
 export function renderFocusSnapshot(
   doc: FocusDocument,
   renderMarkdown: (markdown: string) => string,
+  diagrams: ReadonlyMap<string, HTMLElement>,
 ): HTMLElement | undefined {
   const template = document.createElement("template");
   try {
@@ -57,6 +58,10 @@ export function renderFocusSnapshot(
     // badges inside the block so review capture inherits its anchor.
     while (block.nextElementSibling?.matches("sup:has(> a.focus-citation)")) {
       block.append(block.nextElementSibling);
+    }
+    if (section.kind === "diagram") {
+      block.setAttribute("data-st-diagram", section.id);
+      block.querySelector(":scope > pre")!.replaceWith(diagrams.get(section.id)!);
     }
     if (section.kind !== "optionSet") continue;
     block.setAttribute("data-st-option-set", section.id);

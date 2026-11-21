@@ -1,13 +1,20 @@
 import { assertFocusDocument } from "@sentropic/focus/validate";
 import { renderMarkdown } from "../markdown/minimal-markdown.js";
+import { createDossierDiagram } from "./engines/dossier-diagrams.js";
+import type { DossierViews } from "../../ports/dossier-views.js";
 import { connectDossier, renderDossierContent, renderMarkdownToSafeHtml } from "./engines/focus-renderer.js";
 import { renderFocusSnapshot } from "./engines/focus-snapshot.js";
 import { dispatchIntent } from "./intents.js";
 
 export interface DossierMount {
   readonly reviewRoot: HTMLElement | null;
-  render(document: unknown): void;
+  render(document: unknown, options?: DossierRenderOptions): void;
   destroy(): void;
+}
+
+export interface DossierRenderOptions {
+  readonly views?: unknown;
+  readonly manifest?: unknown;
 }
 
 export interface DossierReadyDetail {
@@ -63,7 +70,7 @@ export function mountDossier(host: HTMLElement): DossierMount {
     get reviewRoot() {
       return rendered?.reviewRoot ?? null;
     },
-    render(document) {
+    render(document, options) {
       if (destroyed) throw new Error("The dossier mount has been destroyed");
       const validated = assertFocusDocument(document);
       const { ref, sections } = validated;
@@ -74,11 +81,14 @@ export function mountDossier(host: HTMLElement): DossierMount {
       if (sectionCollision || evidence.some(({ id }) => id === ref)) {
         throw new Error(`focus-anchor-equals-document-ref: ${ref} is reserved for the header anchor`);
       }
-      const snapshot = renderFocusSnapshot(validated, (source) => renderMarkdownToSafeHtml(renderMarkdown(source, true), true));
+      const views = options?.views as DossierViews | undefined;
+      const diagrams = new Map(sections.filter((section) => section.kind === "diagram").map((section) =>
+        [section.id, createDossierDiagram(host.ownerDocument, section, views?.diagrams[section.id])]));
+      const snapshot = renderFocusSnapshot(validated, (source) => renderMarkdownToSafeHtml(renderMarkdown(source, true), true), diagrams);
       const dispatch = (id: string) => dispatchIntent(host, "choose-option", id);
       clear();
       const current = snapshot === undefined
-        ? renderDossierContent(host, validated, dispatch, "light")
+        ? renderDossierContent(host, validated, dispatch, "light", diagrams)
         : connectDossier(host, snapshot, dispatch);
       rendered = current;
       host.dispatchEvent(new CustomEvent<DossierReadyDetail>("st-dossier-ready", {

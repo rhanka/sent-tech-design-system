@@ -338,6 +338,7 @@ function sectionNode(
     readonly sections: readonly unknown[];
     readonly light: boolean;
     readonly citationCalls: ReturnType<typeof dossierCitations>;
+    readonly diagrams: ReadonlyMap<string, HTMLElement> | undefined;
   },
 ): HTMLElement {
   const kind = field(section.kind) ?? "";
@@ -445,6 +446,11 @@ function sectionNode(
     wrap.setAttribute("data-st-diagram", field(section.id) ?? "");
     const alt = field(section.alt);
     if (alt !== undefined) wrap.append(text("figcaption", "st-dossier__diagramAlt", alt));
+    const drawing = face.diagrams?.get(field(section.id) ?? "");
+    if (drawing !== undefined) {
+      wrap.append(drawing);
+      return wrap;
+    }
     const reference = [field(section.renderComponent), field(section.sourceRef)].filter(Boolean).join(": ");
     const pre = text("pre", "st-dossier__diagramSource", field(section.source) ?? reference);
     pre.setAttribute("data-st-diagram-source", "");
@@ -477,6 +483,7 @@ export function renderDossierContent(
   document_: unknown,
   dispatch: DossierDispatch,
   surface: "light" | "shadow",
+  diagrams?: ReadonlyMap<string, HTMLElement>,
 ): { reviewRoot: HTMLElement; destroy: () => void } {
   const doc = (document_ ?? {}) as Record<string, unknown>;
   const sections = Array.isArray(doc.sections) ? doc.sections : [];
@@ -528,7 +535,7 @@ export function renderDossierContent(
     if (context.hasChildNodes()) article.append(context);
   }
 
-  const face = { interactions, recommended, knownOptions, selected, expanded, sections, light: surface === "light", citationCalls };
+  const face = { interactions, recommended, knownOptions, selected, expanded, sections, light: surface === "light", citationCalls, diagrams };
   function renderSection(record: Record<string, unknown>): HTMLElement {
     const rendered = sectionNode(record, face);
     const id = field(record.id);
