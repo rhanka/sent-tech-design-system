@@ -305,14 +305,14 @@ Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position bef
 
 This release ships the Focus static artifact kit and the `st-dossier-ready`
 review root (FA-D1, #322), plus the `TimeSeriesChart` element, catalogue entry
-and transcript formatter (EZ-1, #321). Publish Elements before any Vue release
-that carries its updated optional BPMN peer pin.
+and transcript formatter (EZ-1, #321). It also publishes the `./bpmn` and
+`./bpmn-mount` exports for the first time (#267). Publish Elements before any
+Vue release that carries its updated optional BPMN peer pin.
 
 On the merged default-branch commit, push the `elements-v<version>` tag.
 The publish job grants `id-token: write` and uses npm 11 with the public npm
 registry. Confirm the package's npm Trusted Publisher names
-`rhanka/sent-tech-design-system` and `elements-publish.yml`. The workflow still
-contains a bootstrap step that configures token auth if `NPM_TOKEN` is present.
+`rhanka/sent-tech-design-system` and `elements-publish.yml`.
 
 ```bash
 git push origin main
@@ -336,7 +336,7 @@ node scripts/verify-jsdelivr-published.mjs --package @sentropic/diagram-canvas -
 
 A mismatch is reported and never fixed by republishing the same version — npm versions are immutable, so the correction is a new patch version.
 
-Follow-up, promptly after the owner's trusted-publisher declaration (npm marks a newly declared trusted publisher "pending validation" and expires it if no OIDC publish happens within ~48 h): remove the bootstrap step from `diagram-core-publish.yml` and its `DECLARED_TOKEN_BOOTSTRAPS` entry; delete the `NPM_TOKEN` secret only when no remaining bootstrap workflow needs it and revoke the temporary token; then tag `diagram-core-v0.1.1`, published through OIDC to validate the publisher (and an elements OIDC validation publish if its declaration completed in the same window). The same follow-up applies to `diagram-canvas-publish.yml` after its first publish: declare the trusted publisher, remove the bootstrap step and its `DECLARED_TOKEN_BOOTSTRAPS` entry, then validate with an OIDC patch publish.
+Follow-up, promptly after the owner's trusted-publisher declaration (npm marks a newly declared trusted publisher "pending validation" and expires it if no OIDC publish happens within ~48 h): remove the bootstrap step from `diagram-core-publish.yml` and its `DECLARED_TOKEN_BOOTSTRAPS` entry; delete the `NPM_TOKEN` secret only when no remaining bootstrap workflow needs it and revoke the temporary token; then tag `diagram-core-v0.1.1`, published through OIDC to validate the publisher. The same follow-up applies to `diagram-canvas-publish.yml` after its first publish: declare the trusted publisher, remove the bootstrap step and its `DECLARED_TOKEN_BOOTSTRAPS` entry, then validate with an OIDC patch publish.
 
 Do not move a published tag unless the npm publish failed before creating any package version. npm versions are immutable after publication.
 

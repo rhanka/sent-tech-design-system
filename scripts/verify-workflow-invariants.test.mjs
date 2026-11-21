@@ -270,12 +270,6 @@ const DECLARED_TOKEN_BOOTSTRAPS = {
     // successful `npm publish`. Measured 404 (never published) on 2026-10-30.
     removeWhen: "@sentropic/design-system-rich-text has had a first successful npm publish",
   },
-  "elements-publish.yml": {
-    // Remove this entry — and the bootstrap step/secret it names in the
-    // workflow — the day @sentropic/design-system-elements has a first
-    // successful `npm publish`. Measured 404 (never published) on 2026-11-01.
-    removeWhen: "@sentropic/design-system-elements has had a first successful npm publish",
-  },
   "diagram-core-publish.yml": {
     // Remove this entry — and the bootstrap step/secret it names in the
     // workflow — the day @sentropic/diagram-core has a first successful
