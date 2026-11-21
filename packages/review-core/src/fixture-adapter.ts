@@ -6,7 +6,6 @@ import {
   ReviewAdapterError,
   type CommentsAdapter,
   type CreateCommentInput,
-  type ReplyCommentInput,
 } from "./adapter.js";
 import {
   isNonEmptyToolCallId,
@@ -549,10 +548,17 @@ export function createFixtureCommentsAdapter(
     },
   };
 
-  async function addComment(input: CreateCommentInput | ReplyCommentInput): Promise<ReviewComment> {
-    const { tenant: workspaceId, ...comment } = input;
+  async function addComment(input: CreateCommentInput, threadId?: string): Promise<ReviewComment> {
+    const { tenant: workspaceId, target, body, provenance } = input;
     const tenant = workspaceTenant(workspaceId);
-    const row = await store.add(tenant, { ...comment, tenant, author: { id: currentCaller.userId } });
+    const row = await store.add(tenant, {
+      tenant,
+      target,
+      body,
+      author: { id: currentCaller.userId },
+      ...(provenance !== undefined ? { provenance } : {}),
+      ...(threadId !== undefined ? { threadId } : {}),
+    });
     const view = toReviewComment(row);
     for (const listener of createdListeners) listener(view);
     notifySubscribers(workspaceId, row.target);
@@ -588,8 +594,15 @@ export function createFixtureCommentsAdapter(
       }));
     },
 
-    create: addComment,
-    reply: addComment,
+    create: (input) => addComment(input),
+
+    async reply(input) {
+      const { threadId } = input;
+      if (typeof threadId !== "string" || threadId.length === 0) {
+        throw new ReviewAdapterError("NOT_FOUND", 404, "A reply requires an existing threadId.");
+      }
+      return addComment(input, threadId);
+    },
 
     async edit(workspaceId, commentId, body) {
       const row = await store.edit(workspaceTenant(workspaceId), commentId, { body });
