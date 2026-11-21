@@ -575,7 +575,7 @@ export function resolveScene(
   );
   const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
   const erd = input.document.profileRefs.length === 1 && input.document.profileRefs[0] === 'erd@1';
-  const r7Connectors = !erd && isR7ConnectorPresentation(input.presentation, view);
+  const r7Connectors = !erd && isR7ConnectorPresentation(input.presentation, view, input.document);
   // Non-scaling connector paint is widest in world units at the readability
   // floor. Existing v1, ERD, and numbered-flow scenes keep the 1.5 px main
   // clearance (`REQ-R7-28`); r7 scenes use `linkStrokeWidth` (2.5 px, REQ-R7-11)

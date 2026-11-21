@@ -53,7 +53,7 @@ export function useDiagramSceneViewport(
     function token(name: string) {
         return frameEl.value === undefined ? undefined : getComputedStyle(frameEl.value).getPropertyValue(name).trim();
     }
-    const r7Mode = computed(() => isR7ConnectorPresentation(props.presentation, props.view));
+    const r7Mode = computed(() => isR7ConnectorPresentation(props.presentation, props.view, props.document));
     function readCameraTokens() {
         const values: Record<string, number> = {};
         const baseKeys = ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding","edgeLabelSize"];

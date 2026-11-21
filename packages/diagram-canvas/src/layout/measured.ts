@@ -547,7 +547,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
   const read = readMeasuredGraph(document, options.registry);
   if ("refusals" in read) return { status: "refused", refusals: read.refusals, diagnostics: [] };
   const graph = read.graph;
-  const r7Routing = isR7ConnectorPresentation(presentation, sourceView);
+  const r7Routing = isR7ConnectorPresentation(presentation, sourceView, document);
   const routeSpacing = r7Routing ? (options.metrics?.routeSpacing ?? DEFAULT_ROUTE_SPACING) : 0;
   const borderClearance = r7Routing
     ? (options.metrics?.routeBorderClearance ?? DEFAULT_ROUTE_BORDER_CLEARANCE)
@@ -954,14 +954,20 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     if (flowOccurrences.has(edge.relation)) continue;
     const projectedEdge = projected.relationOccurrences[edge.occurrence]!;
     if (!projectedEdge.endpoints.some(end => end.sourceOccurrence !== undefined)) continue;
-    // Keep lifted cross-zone edges with distinct connector styles apart so
-    // bundling never silently drops a strokeStyle, arrowhead, or emphasis from
-    // the scene or its automatic link legend (REQ-R7-05 / REQ-R7-11 / REQ-R7-12).
-    const relStyle = relationPresentationFor(presentation.relations, projectedEdge.id, projectedEdge.relation);
-    const strokeStyle = resolveDashPattern(projectedEdge.strokeStyle ?? relStyle?.strokeStyle)?.style ?? "solid";
-    const arrowhead = resolveArrowhead(projectedEdge.arrowhead ?? relStyle?.arrowhead)?.canonicalKind ?? "arrow";
-    const emphasis = resolveLinkEmphasis(projectedEdge.emphasis ?? relStyle?.emphasis)?.emphasis ?? "default";
-    const key = JSON.stringify([edge.source.entity, edge.target.entity, strokeStyle, arrowhead, emphasis]);
+    let key: string;
+    if (r7Routing) {
+      // Keep lifted cross-zone edges with distinct connector styles apart so
+      // bundling never silently drops a strokeStyle, arrowhead, or emphasis from
+      // the scene or its automatic link legend (REQ-R7-05 / REQ-R7-11 / REQ-R7-12).
+      const relStyle = relationPresentationFor(presentation.relations, projectedEdge.id, projectedEdge.relation);
+      const strokeStyle = resolveDashPattern(projectedEdge.strokeStyle ?? relStyle?.strokeStyle)?.style ?? "solid";
+      const arrowhead = resolveArrowhead(projectedEdge.arrowhead ?? relStyle?.arrowhead)?.canonicalKind ?? "arrow";
+      const emphasis = resolveLinkEmphasis(projectedEdge.emphasis ?? relStyle?.emphasis)?.emphasis ?? "default";
+      key = JSON.stringify([edge.source.entity, edge.target.entity, strokeStyle, arrowhead, emphasis]);
+    } else {
+      // Legacy @1 path preserves main endpoint-pair bundling regardless of strokeStyle (REQ-R7-28).
+      key = JSON.stringify([edge.source.entity, edge.target.entity]);
+    }
     const pair = liftedPairs.get(key) ?? [];
     pair.push(edge);
     liftedPairs.set(key, pair);

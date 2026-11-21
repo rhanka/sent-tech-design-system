@@ -793,7 +793,7 @@ describe('scene host DOM and camera/fold behavior', () => {
       occurrence('ext'), occurrence('innerA'), occurrence('outerA'), occurrence('outerB'),
     ]);
     expect(rectOf(vue.element, 'a1')).toMatchObject({ width: 352, height: 154 });
-    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(6);
+    expect(vue.element.querySelectorAll('path[data-scene-edge][data-connector-mode="r7"]')).toHaveLength(6);
     expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('innerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
     const outerHeader = vue.element.querySelector<HTMLElement>(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone-header`)!;
     expect(outerHeader.style.left).toBe('calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))');
@@ -821,7 +821,7 @@ describe('scene host DOM and camera/fold behavior', () => {
       initialOuterB.x !== foldedOuterB.x || initialOuterB.y !== foldedOuterB.y ||
       initialExt.x !== foldedExt.x || initialExt.y !== foldedExt.y,
     ).toBe(true);
-    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(2);
+    expect(vue.element.querySelectorAll('path[data-scene-edge][data-connector-mode="r7"]')).toHaveLength(2);
     expect(vue.element.querySelectorAll('[data-bundle-relation]')).toHaveLength(3);
     expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
 
@@ -834,7 +834,7 @@ describe('scene host DOM and camera/fold behavior', () => {
       occurrence('a1'), occurrence('a2'), occurrence('aSibling'), occurrence('b1'),
       occurrence('ext'), occurrence('innerA'), occurrence('outerA'), occurrence('outerB'),
     ]);
-    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(6);
+    expect(vue.element.querySelectorAll('path[data-scene-edge][data-connector-mode="r7"]')).toHaveLength(6);
     expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('innerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
     for (const key of ['x', 'y', 'width', 'height'] as const) {
       expect(Math.abs(rectOf(vue.element, 'outerB')[key] - initialOuterB[key])).toBeLessThanOrEqual(1 / 64);
