@@ -70,10 +70,12 @@ import {
 import { dockEdges, sideToward, type Dock, type EdgeDocks } from "./dock.js";
 import {
   layoutGridScope,
+  layoutInheritedGridScope,
   layoutStackScope,
   type ComposedGridReport,
   type ComposedGutter,
   type GridLayoutResult,
+  type InheritedWidthContribution,
   type LayoutCompositionReport,
   type StackLayoutResult,
 } from "./compose.js";
@@ -1340,6 +1342,205 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const parent = graph.nodes.get(id)?.parent;
       return parent !== undefined ? cardWidthOf(representativeOf(parent)) : cardWidthOf(representativeOf(id));
     };
+    const entityIsContainer = (entity: EntityRef): boolean => kinds.get(entity) !== "leaf";
+    const headerFloorOf = (entity: EntityRef): number => {
+      const zg = anatomyZoneGeometry(occurrenceAnatomy(representativeOf(entity)));
+      const icon = presentation.entities[representativeOf(entity)]?.icon !== "none";
+      const reserve = zg.headerTextInset - (icon ? 0 : zg.iconSize + zg.iconTextGap);
+      return Math.max(zg.collapsedWidth, unwrappedHeaderWidth(entity) + reserve);
+    };
+    const isExpandedInheritingGrid = (entity: EntityRef): boolean =>
+      isStretchedBox(entity) && composition?.grids[entity]?.stage_columns === "inherit";
+    const solveStagedGridWithInherit = (
+      gridScope: string,
+      gridRunKey: string,
+      hostGrid: import("@sentropic/diagram-core").LayoutGrid,
+      visibleList: readonly EntityRef[],
+    ): GridLayoutResult => {
+      if (!Array.isArray(hostGrid.stage_columns)) {
+        return layoutGridScope({
+          scope: gridScope,
+          runKey: gridRunKey,
+          grid: hostGrid,
+          visibleChildren: visibleList,
+          sizeOf: sizeBox,
+          isContainer: entityIsContainer,
+          isExpandedContainer: isStretchedBox,
+          rowGaps,
+          zoneGutter,
+          widen: plan?.widen,
+        });
+      }
+      const hostStageCols = hostGrid.stage_columns;
+      const inheritedNodeMeta = new Map<EntityRef, {
+        readonly grid: import("@sentropic/diagram-core").LayoutGrid;
+        readonly firstDecl: number;
+        readonly lastDecl: number;
+        readonly containerSlotInset: number;
+        readonly childInheritors: EntityRef[];
+      }>();
+      const inheritedContributions: InheritedWidthContribution[] = [];
+      let contribOrder = 0;
+
+      const collectInheritor = (
+        containerId: EntityRef,
+        firstDecl: number,
+        lastDecl: number,
+        containerSlotInset: number,
+      ): void => {
+        const childGrid = composition!.grids[containerId]!;
+        const children = orderedChildrenOf(containerId);
+        const childVisible = new Set<EntityRef>(children);
+        const childInheritors: EntityRef[] = [];
+        const meta = { grid: childGrid, firstDecl, lastDecl, containerSlotInset, childInheritors };
+        inheritedNodeMeta.set(containerId, meta);
+
+        // Reserve header-driven floor width across this container's span.
+        inheritedContributions.push({
+          colStartDecl: firstDecl,
+          colEndDecl: lastDecl,
+          neededWidth: headerFloorOf(containerId) + 2 * containerSlotInset,
+          declOrder: contribOrder++,
+        });
+
+        const declared = new Set<EntityRef>();
+        for (const band of childGrid.transverse_bands) {
+          for (const item of band.items) {
+            declared.add(item);
+            if (!childVisible.has(item)) continue;
+            const cell = childGrid.cells?.[item];
+            if (cell?.column === undefined) continue;
+            const cFirst = hostStageCols.indexOf(cell.column);
+            const cLast = cell.to_column === undefined ? cFirst : hostStageCols.indexOf(cell.to_column);
+            if (cFirst < firstDecl || cLast > lastDecl || cLast < cFirst) continue;
+            const touchesEdge = cFirst === firstDecl || cLast === lastDecl;
+            const slotInset = touchesEdge ? containerSlotInset + contentInset : 0;
+            if (isExpandedInheritingGrid(item)) {
+              childInheritors.push(item);
+              collectInheritor(item, cFirst, cLast, slotInset);
+            } else {
+              const sz = sizeBox(item);
+              inheritedContributions.push({
+                colStartDecl: cFirst,
+                colEndDecl: cLast,
+                neededWidth: sz.width + 2 * slotInset,
+                declOrder: contribOrder++,
+              });
+            }
+          }
+        }
+        // Account for any unplaced trailing children inside an inheriting container.
+        const unplacedInner = children.filter((child) => !declared.has(child));
+        if (unplacedInner.length > 0) {
+          let trailingW = 0;
+          unplacedInner.forEach((child, idx) => {
+            const sz = sizeBox(child);
+            trailingW += sz.width;
+            if (idx + 1 < unplacedInner.length) {
+              const z = entityIsContainer(child) || entityIsContainer(unplacedInner[idx + 1]!);
+              trailingW += z ? zoneGutter : rowGaps.cardX;
+            }
+          });
+          inheritedContributions.push({
+            colStartDecl: firstDecl,
+            colEndDecl: lastDecl,
+            neededWidth: trailingW + 2 * contentInset + 2 * containerSlotInset,
+            declOrder: contribOrder++,
+          });
+        }
+      };
+
+      const hostVisible = new Set<EntityRef>(visibleList);
+      const topInheritors: EntityRef[] = [];
+      for (const band of hostGrid.transverse_bands) {
+        for (const item of band.items) {
+          if (!hostVisible.has(item) || !isExpandedInheritingGrid(item)) continue;
+          const cell = hostGrid.cells?.[item];
+          if (cell?.column === undefined) continue;
+          const cFirst = hostStageCols.indexOf(cell.column);
+          const cLast = cell.to_column === undefined ? cFirst : hostStageCols.indexOf(cell.to_column);
+          if (cFirst < 0 || cLast < cFirst) continue;
+          topInheritors.push(item);
+          collectInheritor(item, cFirst, cLast, 0);
+        }
+      }
+
+      const sizeForHost = (entity: EntityRef): { width: number; height: number } => {
+        if (inheritedNodeMeta.has(entity)) {
+          // Final width and height are computed in onStageColumnsResolved once shared columns are sized.
+          return { width: headerFloorOf(entity), height: 0 };
+        }
+        return sizeBox(entity);
+      };
+
+      return layoutGridScope({
+        scope: gridScope,
+        runKey: gridRunKey,
+        grid: hostGrid,
+        visibleChildren: visibleList,
+        sizeOf: sizeForHost,
+        isContainer: entityIsContainer,
+        isExpandedContainer: isStretchedBox,
+        rowGaps,
+        zoneGutter,
+        widen: plan?.widen,
+        inheritedContributions,
+        onStageColumnsResolved: topInheritors.length === 0 ? undefined : (resolvedCols) => {
+          const updatedSizes = new Map<EntityRef, { readonly width: number; readonly height: number }>();
+          const realizeInheritor = (containerId: EntityRef): { width: number; height: number } => {
+            const meta = inheritedNodeMeta.get(containerId)!;
+            for (const child of meta.childInheritors) realizeInheritor(child);
+            const firstActive = resolvedCols.declColToActive.get(meta.firstDecl)!;
+            const lastActive = resolvedCols.declColToActive.get(meta.lastDecl)!;
+            const containerRunKey = levelKeyOf(containerId);
+            const gridLayout = layoutInheritedGridScope({
+              scope: containerId,
+              runKey: containerRunKey,
+              grid: meta.grid,
+              visibleChildren: orderedChildrenOf(containerId),
+              inherited: {
+                colIds: resolvedCols.colIds,
+                colStarts: resolvedCols.colStarts,
+                colWidths: resolvedCols.colWidths,
+                colGaps: resolvedCols.colGaps,
+                firstColIdx: firstActive,
+                lastColIdx: lastActive,
+                containerSlotInset: meta.containerSlotInset,
+                contentInset,
+              },
+              sizeOf: (child) => packedSizes.get(child) ?? sizeBox(child),
+              isContainer: entityIsContainer,
+              isExpandedContainer: isStretchedBox,
+              rowGaps,
+              zoneGutter,
+              widen: plan?.widen,
+            });
+            composedGrids.set(containerRunKey, gridLayout);
+            if (gridLayout.unplaced.length > 0) composedUnplaced.set(containerRunKey, gridLayout.unplaced);
+            const spanWidth =
+              resolvedCols.colStarts[lastActive]! +
+              resolvedCols.colWidths[lastActive]! -
+              resolvedCols.colStarts[firstActive]! -
+              2 * meta.containerSlotInset;
+            const zg = anatomyZoneGeometry(occurrenceAnatomy(representativeOf(containerId)));
+            const outer = Math.max(headerFloorOf(containerId), spanWidth);
+            const hdrH = headerHeightOf(containerId, outer);
+            outerWidths.set(containerId, outer);
+            const size = {
+              width: outer,
+              height: zg.headerInset + hdrH + contentInset + gridLayout.height + contentInset
+                + sceneBoxAt(representativeOf(containerId), outer, false).footerReserve,
+            };
+            packedSizes.set(containerId, size);
+            updatedSizes.set(containerId, size);
+            return size;
+          };
+          for (const top of topInheritors) realizeInheritor(top);
+          return updatedSizes;
+        },
+      });
+    };
+
     const sizeBox = (id: EntityRef): { width: number; height: number } => {
       const kind = kinds.get(id)!;
       if (kind === "leaf" || kind === "container-collapsed" || kind === "legend-collapsed") {
@@ -1367,7 +1568,6 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         packedSizes.set(id, size);
         return size;
       }
-      const entityIsContainer = (entity: EntityRef): boolean => kinds.get(entity) !== "leaf";
       const composedGrid = composition?.grids[id];
       const composedStack = composition?.stacks[id];
       const runKey = levelKeyOf(id);
@@ -1396,18 +1596,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
         return size;
       }
       if (composedGrid !== undefined && composedGrid.stage_columns !== "inherit") {
-        const gridLayout = layoutGridScope({
-          scope: id,
-          runKey,
-          grid: composedGrid,
-          visibleChildren: ordered,
-          sizeOf: sizeBox,
-          isContainer: entityIsContainer,
-          isExpandedContainer: isStretchedBox,
-          rowGaps,
-          zoneGutter,
-          widen: plan?.widen,
-        });
+        const gridLayout = solveStagedGridWithInherit(id, runKey, composedGrid, ordered);
         composedGrids.set(runKey, gridLayout);
         if (gridLayout.unplaced.length > 0) composedUnplaced.set(runKey, gridLayout.unplaced);
         const outer = Math.max(floor, gridLayout.width + (ordered.length > 0 ? 2 * contentInset : 0));
@@ -1472,18 +1661,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       orientationRecord.clear();
       chosen.clear();
       if (composition?.grids.root !== undefined) {
-        const rootGrid = layoutGridScope({
-          scope: "root",
-          runKey: ROOT_LEVEL_KEY,
-          grid: composition.grids.root,
-          visibleChildren: rootOrder,
-          sizeOf: sizeBox,
-          isContainer: (entity) => kinds.get(entity) !== "leaf",
-          isExpandedContainer: isStretchedBox,
-          rowGaps,
-          zoneGutter,
-          widen: plan?.widen,
-        });
+        const rootGrid = solveStagedGridWithInherit("root", ROOT_LEVEL_KEY, composition.grids.root, rootOrder);
         composedGrids.set(ROOT_LEVEL_KEY, rootGrid);
         if (rootGrid.unplaced.length > 0) composedUnplaced.set(ROOT_LEVEL_KEY, rootGrid.unplaced);
         rootRun = { key: ROOT_LEVEL_KEY, mode: "auto", items: [], stretch: false };

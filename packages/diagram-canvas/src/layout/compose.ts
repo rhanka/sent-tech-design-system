@@ -87,6 +87,31 @@ export interface LayoutCompositionReport {
   readonly combFallbacks?: readonly { readonly hub: string; readonly members: readonly string[]; readonly reason: string }[];
 }
 
+export interface InheritedColumnSpec {
+  readonly colIds: readonly string[];
+  /** Column start coordinates relative to the host staged grid origin. */
+  readonly colStarts: readonly number[];
+  /** Column widths in the host staged grid. */
+  readonly colWidths: readonly number[];
+  /** Gutter width after each stage column index `i` (length `colIds.length - 1`). */
+  readonly colGaps: readonly number[];
+  /** Host active stage index of this container's first spanned column. */
+  readonly firstColIdx: number;
+  /** Host active stage index of this container's last spanned column. */
+  readonly lastColIdx: number;
+  /** Symmetric inset already applied to this container's own frame inside its parent slot. */
+  readonly containerSlotInset: number;
+  /** Horizontal content inset (`containerPadding`, 16 world units) of this container. */
+  readonly contentInset: number;
+}
+
+export interface InheritedWidthContribution {
+  readonly colStartDecl: number;
+  readonly colEndDecl: number;
+  readonly neededWidth: number;
+  readonly declOrder: number;
+}
+
 export interface GridLayoutInput {
   readonly scope: string;
   readonly runKey: string;
@@ -101,6 +126,33 @@ export interface GridLayoutInput {
   /** Optional plan slack per root track id (H2.6). */
   readonly sigmaCols?: ReadonlyMap<string, number> | undefined;
   readonly sigmaBands?: ReadonlyMap<string, number> | undefined;
+  /**
+   * Optional hook for staged host grids (H2.4 `inherit`): after resolving stage
+   * column widths and positions, lay out inheriting child containers on those
+   * shared column lines before finalizing band heights.
+   */
+  readonly inheritedContributions?: readonly InheritedWidthContribution[] | undefined;
+  readonly onStageColumnsResolved?: ((resolved: {
+    readonly colIds: readonly string[];
+    readonly colStarts: readonly number[];
+    readonly colWidths: readonly number[];
+    readonly colGaps: readonly number[];
+    readonly declColToActive: ReadonlyMap<number, number>;
+  }) => ReadonlyMap<EntityRef, { readonly width: number; readonly height: number }>) | undefined;
+}
+
+export interface InheritedGridLayoutInput {
+  readonly scope: string;
+  readonly runKey: string;
+  readonly grid: LayoutGrid;
+  readonly visibleChildren: readonly EntityRef[];
+  readonly inherited: InheritedColumnSpec;
+  readonly sizeOf: (entity: EntityRef) => { readonly width: number; readonly height: number };
+  readonly isContainer: (entity: EntityRef) => boolean;
+  readonly isExpandedContainer: (entity: EntityRef) => boolean;
+  readonly rowGaps: ResolvedRowGaps;
+  readonly zoneGutter: number;
+  readonly widen?: ReadonlyMap<string, number> | undefined;
 }
 
 export interface GridLayoutResult {
@@ -256,6 +308,8 @@ export function layoutGridScope(input: GridLayoutInput): GridLayoutResult {
     widen,
     sigmaCols,
     sigmaBands,
+    inheritedContributions,
+    onStageColumnsResolved,
   } = input;
 
   const visibleSet = new Set<EntityRef>(visibleChildren);
@@ -346,6 +400,8 @@ export function layoutGridScope(input: GridLayoutInput): GridLayoutResult {
       widen,
       sigmaCols,
       sigmaBands,
+      inheritedContributions,
+      onStageColumnsResolved,
     });
   }
 
@@ -505,6 +561,8 @@ function layoutStagedGrid(args: {
   readonly widen?: ReadonlyMap<string, number> | undefined;
   readonly sigmaCols?: ReadonlyMap<string, number> | undefined;
   readonly sigmaBands?: ReadonlyMap<string, number> | undefined;
+  readonly inheritedContributions?: readonly InheritedWidthContribution[] | undefined;
+  readonly onStageColumnsResolved?: GridLayoutInput["onStageColumnsResolved"];
 }): GridLayoutResult {
   const {
     scope,
@@ -524,6 +582,8 @@ function layoutStagedGrid(args: {
     widen,
     sigmaCols,
     sigmaBands,
+    inheritedContributions,
+    onStageColumnsResolved,
   } = args;
 
   const bandIds = grid.transverse_bands.map((b) => b.id);
@@ -556,12 +616,15 @@ function layoutStagedGrid(args: {
     }
   });
 
-  // Determine covered columns and covered bands (including I-13 span-only bands).
+  // Determine covered columns and covered bands (including I-13 span-only bands and inherited cells).
   const coveredCols = new Set<number>();
   const coveredBands = new Set<number>();
   for (const c of cells) {
     for (let col = c.colStartDecl; col <= c.colEndDecl; col += 1) coveredCols.add(col);
     for (let b = c.bandStartDecl; b <= c.bandEndDecl; b += 1) coveredBands.add(b);
+  }
+  for (const contrib of inheritedContributions ?? []) {
+    for (let col = contrib.colStartDecl; col <= contrib.colEndDecl; col += 1) coveredCols.add(col);
   }
 
   const activeStageDeclIndices = [...coveredCols].sort((a, b) => a - b);
@@ -646,19 +709,44 @@ function layoutStagedGrid(args: {
     bandBoundaryInfo.push({ id, gap, base, zone: z });
   }
 
-  // Single-span widths for stage columns (§4.3 step 2).
+  // Single-span widths for stage columns (§4.3 step 2), including inherited contributions.
   const stageWidths = Array.from({ length: stageCount }, () => 0);
   for (const c of activeCells) {
     if (c.colStart === c.colEnd) {
       stageWidths[c.colStart] = Math.max(stageWidths[c.colStart]!, c.width);
     }
   }
+  const activeInherited = (inheritedContributions ?? [])
+    .map((contrib) => ({
+      colStart: declColToActive.get(contrib.colStartDecl),
+      colEnd: declColToActive.get(contrib.colEndDecl),
+      neededWidth: contrib.neededWidth,
+      declOrder: contrib.declOrder,
+    }))
+    .filter((entry): entry is { colStart: number; colEnd: number; neededWidth: number; declOrder: number } =>
+      entry.colStart !== undefined && entry.colEnd !== undefined && entry.colEnd >= entry.colStart);
+  for (const entry of activeInherited) {
+    if (entry.colStart === entry.colEnd) {
+      stageWidths[entry.colStart] = Math.max(stageWidths[entry.colStart]!, entry.neededWidth);
+    }
+  }
   // Spanning widths for stage columns by increasing span length then declaration order (§4.3 step 3).
   const colOffset = startPeripherals.length;
-  const colSpanners = activeCells
-    .filter((c) => c.colEnd > c.colStart)
-    .sort((a, b) => (a.colEnd - a.colStart) - (b.colEnd - b.colStart) || a.declOrder - b.declOrder);
-  for (const c of colSpanners) {
+  const allColSpanners: { readonly colStart: number; readonly colEnd: number; readonly width: number; readonly declOrder: number }[] = [
+    ...activeCells.filter((c) => c.colEnd > c.colStart).map((c) => ({
+      colStart: c.colStart,
+      colEnd: c.colEnd,
+      width: c.width,
+      declOrder: c.declOrder,
+    })),
+    ...activeInherited.filter((entry) => entry.colEnd > entry.colStart).map((entry) => ({
+      colStart: entry.colStart,
+      colEnd: entry.colEnd,
+      width: entry.neededWidth,
+      declOrder: activeCells.length + entry.declOrder,
+    })),
+  ].sort((a, b) => (a.colEnd - a.colStart) - (b.colEnd - b.colStart) || a.declOrder - b.declOrder);
+  for (const c of allColSpanners) {
     let current = 0;
     for (let col = c.colStart; col <= c.colEnd; col += 1) {
       current += stageWidths[col]!;
@@ -674,15 +762,43 @@ function layoutStagedGrid(args: {
     });
   }
 
+  // Compute column coordinates before finalizing band heights so inheriting child grids
+  // lay out on the resolved column lines and report their final heights into this grid.
+  const colWidths = allCols.map((col) =>
+    col.kind === "stage" ? stageWidths[col.stageIndex!]! : col.peripheral!.width,
+  );
+  const colStarts: number[] = [];
+  let cursorX = 0;
+  for (let i = 0; i < allCols.length; i += 1) {
+    colStarts.push(cursorX);
+    cursorX += colWidths[i]!;
+    if (i < colBoundaryInfo.length) cursorX += colBoundaryInfo[i]!.gap;
+  }
+  const stageAndPeripheralWidth = cursorX;
+
+  const resolvedInheritedSizes = onStageColumnsResolved?.({
+    colIds: activeStageDeclIndices.map((declIdx) => stageCols[declIdx]!),
+    colStarts: activeStageDeclIndices.map((_, activeIdx) => colStarts[colOffset + activeIdx]!),
+    colWidths: [...stageWidths],
+    colGaps: Array.from({ length: Math.max(0, stageCount - 1) }, (_, idx) => colBoundaryInfo[colOffset + idx]!.gap),
+    declColToActive,
+  });
+  const finalCells = resolvedInheritedSizes === undefined
+    ? activeCells
+    : activeCells.map((c) => {
+        const updated = resolvedInheritedSizes.get(c.entity);
+        return updated === undefined ? c : { ...c, width: updated.width, height: updated.height };
+      });
+
   // Single-span heights for bands (§4.3 step 4).
   const bandHeights = Array.from({ length: bandCount }, () => 0);
-  for (const c of activeCells) {
+  for (const c of finalCells) {
     if (c.bandStart === c.bandEnd) {
       bandHeights[c.bandStart] = Math.max(bandHeights[c.bandStart]!, c.height);
     }
   }
   // Spanning heights for bands by increasing span length then declaration order (§4.3 steps 3–4).
-  const bandSpanners = activeCells
+  const bandSpanners = finalCells
     .filter((c) => c.bandEnd > c.bandStart)
     .sort((a, b) => (a.bandEnd - a.bandStart) - (b.bandEnd - b.bandStart) || a.declOrder - b.declOrder);
   for (const c of bandSpanners) {
@@ -701,19 +817,6 @@ function layoutStagedGrid(args: {
     });
   }
 
-  // Compute column coordinates.
-  const colWidths = allCols.map((col) =>
-    col.kind === "stage" ? stageWidths[col.stageIndex!]! : col.peripheral!.width,
-  );
-  const colStarts: number[] = [];
-  let cursorX = 0;
-  for (let i = 0; i < allCols.length; i += 1) {
-    colStarts.push(cursorX);
-    cursorX += colWidths[i]!;
-    if (i < colBoundaryInfo.length) cursorX += colBoundaryInfo[i]!.gap;
-  }
-  const stageAndPeripheralWidth = cursorX;
-
   // Compute band coordinates.
   const bandStarts: number[] = [];
   let cursorY = 0;
@@ -728,7 +831,7 @@ function layoutStagedGrid(args: {
   const gutterCollectors: ((originX: number, originY: number) => ComposedGutter)[] = [];
 
   // Place stage band cells (§4.3 step 7).
-  for (const c of activeCells) {
+  for (const c of finalCells) {
     const fullColStart = colOffset + c.colStart;
     const fullColEnd = colOffset + c.colEnd;
     const slotX = colStarts[fullColStart]!;
@@ -1331,6 +1434,374 @@ function layoutUnstagedGrid(args: {
   }));
   const bands: ComposedTrackLine[] = [
     ...activeBands.map((b, j) => ({ id: b.id, kind: "band" as const, start: bandStarts[j]!, size: b.height })),
+    ...extraBands,
+  ];
+
+  return {
+    scope,
+    runKey,
+    width: totalWidth,
+    height: maxBottom,
+    columns,
+    bands,
+    placements,
+    unplaced,
+    emitGutters: (originX, originY) => gutterCollectors.map((fn) => fn(originX, originY)),
+    toReport: (originX, originY) => ({
+      scope,
+      runKey,
+      columns: columns.map((c) => ({ ...c, start: clean(originX + c.start) })),
+      bands: bands.map((b) => ({ ...b, start: clean(originY + b.start) })),
+      cells: placements.map((p) => ({
+        entity: p.entity,
+        slotRect: {
+          x: clean(originX + p.slotRelRect.x),
+          y: clean(originY + p.slotRelRect.y),
+          width: p.slotRelRect.width,
+          height: p.slotRelRect.height,
+        },
+        boxRect: {
+          x: clean(originX + p.relX),
+          y: clean(originY + p.relY),
+          width: p.width,
+          height: p.height,
+        },
+        colStart: p.colStart,
+        colEnd: p.colEnd,
+        bandStart: p.bandStart,
+        bandEnd: p.bandEnd,
+      })),
+    }),
+  };
+}
+
+/**
+ * Lay out a container grid with `stage_columns: "inherit"` on its host's
+ * resolved column lines (H2.4, §1.4, §4.3 steps 2, 3 & 7).
+ *
+ * Every cell touching the container's first or last spanned column has its slot
+ * narrowed symmetrically by `containerSlotInset + contentInset` on both sides,
+ * preserving the shared column centre axis while staying inside the container's
+ * content box.
+ */
+export function layoutInheritedGridScope(input: InheritedGridLayoutInput): GridLayoutResult {
+  const {
+    scope,
+    runKey,
+    grid,
+    visibleChildren,
+    inherited,
+    sizeOf,
+    isContainer,
+    isExpandedContainer,
+    rowGaps,
+    zoneGutter,
+    widen,
+  } = input;
+
+  const visibleSet = new Set<EntityRef>(visibleChildren);
+  const declaredPlaced = new Set<EntityRef>();
+  for (const band of grid.transverse_bands) {
+    for (const item of band.items) declaredPlaced.add(item);
+  }
+  const unplaced = visibleChildren.filter((entity) => !declaredPlaced.has(entity));
+
+  const { colIds, colStarts, colWidths, colGaps, firstColIdx, lastColIdx, containerSlotInset, contentInset } = inherited;
+  const spanHostLeft = colStarts[firstColIdx]!;
+  const spanHostRight = colStarts[lastColIdx]! + colWidths[lastColIdx]!;
+  const frameWidth = Math.max(0, spanHostRight - spanHostLeft - 2 * containerSlotInset);
+  const contentWidth = Math.max(0, frameWidth - 2 * contentInset);
+  const contentOriginHostX = spanHostLeft + containerSlotInset + contentInset;
+
+  const bandIds = grid.transverse_bands.map((b) => b.id);
+  const cells: InternalCellSpec[] = [];
+  let declOrder = 0;
+  grid.transverse_bands.forEach((band, bandIdx) => {
+    for (const item of band.items) {
+      if (!visibleSet.has(item)) continue;
+      const cell = grid.cells?.[item];
+      if (cell?.column === undefined) continue;
+      const colStartHost = colIds.indexOf(cell.column);
+      const colEndHost = cell.to_column === undefined ? colStartHost : colIds.indexOf(cell.to_column);
+      const bandEndDecl = cell.to_band === undefined ? bandIdx : bandIds.indexOf(cell.to_band);
+      if (colStartHost < firstColIdx || colEndHost > lastColIdx || colEndHost < colStartHost || bandEndDecl < bandIdx) continue;
+      const sz = sizeOf(item);
+      cells.push({
+        entity: item,
+        declOrder,
+        colStartDecl: colStartHost,
+        colEndDecl: colEndHost,
+        bandStartDecl: bandIdx,
+        bandEndDecl,
+        cell,
+        width: sz.width,
+        height: sz.height,
+        isContainer: isContainer(item),
+        isExpanded: isExpandedContainer(item),
+      });
+      declOrder += 1;
+    }
+  });
+
+  const coveredBands = new Set<number>();
+  for (const c of cells) {
+    for (let b = c.bandStartDecl; b <= c.bandEndDecl; b += 1) coveredBands.add(b);
+  }
+  const activeBandDeclIndices = [...coveredBands].sort((a, b) => a - b);
+  const declBandToActive = new Map<number, number>(activeBandDeclIndices.map((decl, active) => [decl, active]));
+  const activeCells = cells.map((c) => ({
+    ...c,
+    colStart: c.colStartDecl - firstColIdx,
+    colEnd: c.colEndDecl - firstColIdx,
+    bandStart: declBandToActive.get(c.bandStartDecl)!,
+    bandEnd: declBandToActive.get(c.bandEndDecl)!,
+  }));
+
+  const localColCount = lastColIdx - firstColIdx + 1;
+  const bandCount = activeBandDeclIndices.length;
+  const bandHasContainer = Array.from({ length: bandCount }, () => false);
+  for (const c of activeCells) {
+    if (!c.isContainer) continue;
+    for (let b = c.bandStart; b <= c.bandEnd; b += 1) bandHasContainer[b] = true;
+  }
+
+  const bandBoundaryInfo: { readonly id: string; readonly gap: number; readonly base: number; readonly zone: boolean }[] = [];
+  for (let j = 0; j < bandCount - 1; j += 1) {
+    const upperId = grid.transverse_bands[activeBandDeclIndices[j]!]!.id;
+    const z = bandHasContainer[j]! || bandHasContainer[j + 1]!;
+    const id = `${runKey}|across|${upperId}`;
+    const { gap, base } = resolveBoundaryGap(id, z, rowGaps.cardY, zoneGutter, rowGaps.maxY, widen);
+    bandBoundaryInfo.push({ id, gap, base, zone: z });
+  }
+
+  const bandHeights = Array.from({ length: bandCount }, () => 0);
+  for (const c of activeCells) {
+    if (c.bandStart === c.bandEnd) {
+      bandHeights[c.bandStart] = Math.max(bandHeights[c.bandStart]!, c.height);
+    }
+  }
+  const bandSpanners = activeCells
+    .filter((c) => c.bandEnd > c.bandStart)
+    .sort((a, b) => (a.bandEnd - a.bandStart) - (b.bandEnd - b.bandStart) || a.declOrder - b.declOrder);
+  for (const c of bandSpanners) {
+    let current = 0;
+    for (let b = c.bandStart; b <= c.bandEnd; b += 1) {
+      current += bandHeights[b]!;
+      if (b < c.bandEnd) current += bandBoundaryInfo[b]!.gap;
+    }
+    distributeWholeExcess(bandHeights, c.bandStart, c.bandEnd, c.height - current);
+  }
+
+  const bandStarts: number[] = [];
+  let cursorY = 0;
+  for (let j = 0; j < bandCount; j += 1) {
+    bandStarts.push(cursorY);
+    cursorY += bandHeights[j]!;
+    if (j < bandBoundaryInfo.length) cursorY += bandBoundaryInfo[j]!.gap;
+  }
+  const declaredBandsBottom = cursorY;
+
+  const placements: ComposedCellPlacement[] = [];
+  const gutterCollectors: ((originX: number, originY: number) => ComposedGutter)[] = [];
+
+  for (const c of activeCells) {
+    const touchesEdge = c.colStartDecl === firstColIdx || c.colEndDecl === lastColIdx;
+    const slotInset = touchesEdge ? containerSlotInset + contentInset : 0;
+    const rawLeft = colStarts[c.colStartDecl]! - contentOriginHostX;
+    const rawRight = colStarts[c.colEndDecl]! + colWidths[c.colEndDecl]! - contentOriginHostX;
+    const slotX = rawLeft + slotInset;
+    const slotW = Math.max(0, rawRight - rawLeft - 2 * slotInset);
+    const slotY = bandStarts[c.bandStart]!;
+    const slotH = bandStarts[c.bandEnd]! + bandHeights[c.bandEnd]! - slotY;
+    const justify = effectiveAlign(c.cell?.justify, c.isExpanded);
+    const align = effectiveAlign(c.cell?.align, c.isExpanded);
+    const alignedX = alignWithin(slotX, slotW, c.width, justify, c.isExpanded);
+    const alignedY = alignWithin(slotY, slotH, c.height, align, c.isExpanded);
+    placements.push({
+      entity: c.entity,
+      relX: clean(alignedX.pos),
+      relY: clean(alignedY.pos),
+      width: alignedX.size,
+      height: alignedY.size,
+      slotRelRect: { x: clean(slotX), y: clean(slotY), width: slotW, height: slotH },
+      stretchX: alignedX.stretched,
+      stretchY: alignedY.stretched,
+      isPeripheral: false,
+      colStart: c.colStart,
+      colEnd: c.colEnd,
+      bandStart: c.bandStart,
+      bandEnd: c.bandEnd,
+    });
+  }
+
+  let maxBottom = declaredBandsBottom;
+  const extraBands: ComposedTrackLine[] = [];
+  let totalWidth = contentWidth;
+  if (unplaced.length > 0) {
+    const trailing = layoutTrailingBand(runKey, unplaced, sizeOf, isContainer, isExpandedContainer, rowGaps, zoneGutter, widen);
+    let trailingTop = maxBottom;
+    if (maxBottom > 0) {
+      const prevHasZone = bandCount > 0 ? bandHasContainer[bandCount - 1]! : false;
+      const z = prevHasZone || trailing.hasContainer;
+      const gapId = `${runKey}|across|__trailing__`;
+      const { gap, base } = resolveBoundaryGap(gapId, z, rowGaps.cardY, zoneGutter, rowGaps.maxY, widen);
+      const gy = maxBottom;
+      const stripW = Math.max(contentWidth, trailing.width);
+      gutterCollectors.push((originX, originY) => ({
+        id: gapId,
+        horizontal: true,
+        strips: stripW > 0 ? [{ x: originX, y: originY + gy, width: stripW, height: gap }] : [],
+        gap,
+        base,
+        authoredBase: false,
+        max: rowGaps.maxY,
+        zone: z,
+      }));
+      trailingTop += gap;
+    }
+    const trailingBandIdx = bandCount;
+    for (const item of trailing.items) {
+      const align = effectiveAlign(undefined, item.isExpanded);
+      const alignedY = alignWithin(trailingTop, trailing.height, item.height, align, item.isExpanded);
+      placements.push({
+        entity: item.entity,
+        relX: clean(item.relX),
+        relY: clean(alignedY.pos),
+        width: item.width,
+        height: alignedY.size,
+        slotRelRect: { x: clean(item.relX), y: clean(trailingTop), width: item.width, height: trailing.height },
+        stretchX: false,
+        stretchY: alignedY.stretched,
+        isPeripheral: false,
+        colStart: -1,
+        colEnd: -1,
+        bandStart: trailingBandIdx,
+        bandEnd: trailingBandIdx,
+      });
+    }
+    for (const g of trailing.gaps) {
+      gutterCollectors.push((originX, originY) => ({
+        id: g.id,
+        horizontal: false,
+        strips: [{ x: originX + g.startX, y: originY + trailingTop, width: g.gap, height: trailing.height }],
+        gap: g.gap,
+        base: g.base,
+        authoredBase: false,
+        max: rowGaps.maxX,
+        zone: g.zone,
+      }));
+    }
+    extraBands.push({ id: "__trailing__", kind: "trailing", start: trailingTop, size: trailing.height });
+    maxBottom = trailingTop + trailing.height;
+    totalWidth = Math.max(totalWidth, trailing.width);
+  }
+
+  // Emit inherited column boundary gutters (fixed zone gutters, §4.2 S-2 step 5 & §4.3 step 5).
+  for (let localIdx = 0; localIdx < localColCount - 1; localIdx += 1) {
+    const hostIdx = firstColIdx + localIdx;
+    const gx = colStarts[hostIdx]! + colWidths[hostIdx]! - contentOriginHostX;
+    const g = colGaps[hostIdx]!;
+    const id = `${runKey}|along|${colIds[hostIdx]!}`;
+    gutterCollectors.push((originX, originY) => {
+      const strips: Rect[] = [];
+      let runTop: number | undefined;
+      let runBottom: number | undefined;
+      const flush = () => {
+        if (runTop !== undefined && runBottom !== undefined && runBottom > runTop) {
+          strips.push({ x: originX + gx, y: originY + runTop, width: g, height: runBottom - runTop });
+        }
+        runTop = undefined;
+        runBottom = undefined;
+      };
+      for (let b = 0; b < bandCount; b += 1) {
+        const bh = bandHeights[b]!;
+        const crossed = activeCells.some(
+          (c) => c.colStart <= localIdx && c.colEnd >= localIdx + 1 && c.bandStart <= b && c.bandEnd >= b,
+        );
+        if (crossed) {
+          flush();
+          continue;
+        }
+        if (!(bh > 0)) continue;
+        if (runTop === undefined) runTop = bandStarts[b]!;
+        runBottom = bandStarts[b]! + bh;
+      }
+      flush();
+      return {
+        id,
+        horizontal: false,
+        strips,
+        gap: g,
+        base: zoneGutter,
+        authoredBase: false,
+        max: rowGaps.maxX,
+        zone: true,
+      };
+    });
+  }
+
+  // Emit local across-band gutters inside the inheriting container.
+  for (let j = 0; j < bandBoundaryInfo.length; j += 1) {
+    const info = bandBoundaryInfo[j]!;
+    const gy = bandStarts[j]! + bandHeights[j]!;
+    gutterCollectors.push((originX, originY) => {
+      const strips: Rect[] = [];
+      let runLeft: number | undefined;
+      let runRight: number | undefined;
+      const flush = () => {
+        if (runLeft !== undefined && runRight !== undefined && runRight > runLeft) {
+          strips.push({ x: originX + runLeft, y: originY + gy, width: runRight - runLeft, height: info.gap });
+        }
+        runLeft = undefined;
+        runRight = undefined;
+      };
+      for (let localIdx = 0; localIdx < localColCount; localIdx += 1) {
+        const hostIdx = firstColIdx + localIdx;
+        const crossed = activeCells.some(
+          (c) => c.bandStart <= j && c.bandEnd >= j + 1 && c.colStart <= localIdx && c.colEnd >= localIdx,
+        );
+        if (crossed) {
+          flush();
+          continue;
+        }
+        const cw = colWidths[hostIdx]!;
+        if (!(cw > 0)) continue;
+        const leftX = Math.max(0, colStarts[hostIdx]! - contentOriginHostX);
+        const rightX = Math.min(contentWidth, colStarts[hostIdx]! + cw - contentOriginHostX);
+        if (!(rightX > leftX)) continue;
+        if (runLeft === undefined) runLeft = leftX;
+        runRight = rightX;
+      }
+      flush();
+      return {
+        id: info.id,
+        horizontal: true,
+        strips,
+        gap: info.gap,
+        base: info.base,
+        authoredBase: false,
+        max: rowGaps.maxY,
+        zone: info.zone,
+      };
+    });
+  }
+
+  const columns: ComposedTrackLine[] = Array.from({ length: localColCount }, (_, localIdx) => {
+    const hostIdx = firstColIdx + localIdx;
+    return {
+      id: colIds[hostIdx]!,
+      kind: "stage" as const,
+      start: clean(colStarts[hostIdx]! - contentOriginHostX),
+      size: colWidths[hostIdx]!,
+    };
+  });
+  const bands: ComposedTrackLine[] = [
+    ...activeBandDeclIndices.map((declIdx, activeIdx) => ({
+      id: grid.transverse_bands[declIdx]!.id,
+      kind: "band" as const,
+      start: bandStarts[activeIdx]!,
+      size: bandHeights[activeIdx]!,
+    })),
     ...extraBands,
   ];
 

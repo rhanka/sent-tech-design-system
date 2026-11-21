@@ -71,6 +71,7 @@ export {
 export {
   distributeWholeExcess,
   layoutGridScope,
+  layoutInheritedGridScope,
   layoutStackScope,
   type ComposedCellPlacement,
   type ComposedGridReport,
@@ -79,6 +80,9 @@ export {
   type ComposedTrackLine,
   type GridLayoutInput,
   type GridLayoutResult,
+  type InheritedColumnSpec,
+  type InheritedGridLayoutInput,
+  type InheritedWidthContribution,
   type LayoutCompositionReport,
   type StackLayoutInput,
   type StackLayoutResult,
