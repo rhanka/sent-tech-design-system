@@ -3,7 +3,7 @@
 defineOptions({ name: 'DiagramCard' });
 import { computed, onMounted, watch, useId } from "vue";
 import DiagramCardHeader from "./DiagramCardHeader.vue";
-import { anatomyCardGeometry, cardFullText, defaultCardMeasure, layoutCard } from "./diagramCardModel.js";
+import { anatomyCardGeometry, cardFullText, defaultCardMeasure, layoutCard, resolveDiagramAlign } from "./diagramCardModel.js";
 import type { CardDiagnostic, CardLineMeasure, DiagramCardProps as DiagramCardData, } from "./diagramCardModel.js";
 /**
  * `DiagramCard` — the atomic diagram card (DC-1).
@@ -41,8 +41,8 @@ export interface DiagramCardProps extends DiagramCardData {
     onDiagnostic?: (diagnostic: CardDiagnostic) => void;
 }
 const { autoSize = true, height, entityId, kicker, title, body, detailCount, footer, icon, iconGlyph, tone, proposed, toggle, align, bodyMode, anatomy, surface, measure = defaultCardMeasure, } = defineProps<DiagramCardProps>();
-/** Owner addendum 1: a folded zone keeps its depth background. Only zone-collapsed cards carry `surface`. */
-const surfaceStyle = computed(() => surface === undefined ? "" : `;--st-component-diagramCard-surface:var(--st-component-diagramZone-${surface}, var(--st-semantic-surface-${surface === "surface1" ? "raised" : "subtle"}))`);
+/** Owner addendum 1: a folded zone keeps its depth background. Only zone-collapsed cards carry `surface`. W1-12: switch toggle hover token only on surface2. */
+const surfaceStyle = computed(() => surface === undefined ? "" : `;--st-component-diagramCard-surface:var(--st-component-diagramZone-${surface}, var(--st-semantic-surface-${surface === "surface1" ? "raised" : "subtle"}))${surface === "surface2" ? ";--st-component-control-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)));--st-component-iconButton-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)))" : ""}`);
 const emit = defineEmits<{
     select: [
         event: {
@@ -75,10 +75,10 @@ const layout = computed(() => layoutCard({
     ...(bodyMode === undefined ? {} : { bodyMode }),
     ...(anatomy === undefined ? {} : { anatomy }),
 }, measure));
-const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) => diagnostic.code === "card-overflow")?.slot);
+const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) => diagnostic.code === "card-overflow" && diagnostic.reason !== "fallback-v1")?.slot);
 const unknownIcon = computed(() => layout.value.diagnostics.some((diagnostic) => diagnostic.code === "card-icon-unknown"));
 const effectiveAnatomy = computed(() => layout.value.anatomyFallback ?? anatomy);
-const effectiveAlign = computed(() => align ?? (anatomy === "v2" ? "center" : "left"));
+const effectiveAlign = computed(() => resolveDiagramAlign(effectiveAnatomy.value, align));
 const cardGeometry = computed(() => anatomyCardGeometry(effectiveAnatomy.value));
 
 
