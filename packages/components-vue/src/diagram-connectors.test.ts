@@ -1,3 +1,6 @@
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent } from "@testing-library/dom";
 import { mount } from "@vue/test-utils";
@@ -218,5 +221,33 @@ describe("DiagramSceneFigure numbered flow connectors — Vue", () => {
     expect(order.nodes.get("occurrence:e.zone")!).toBeLessThan(order.connectors[0]!);
     for (const card of ["a", "b", "outside"]) expect(order.nodes.get(`occurrence:e.${card}`)!).toBeGreaterThan(order.connectors[0]!);
     expect(view.container.querySelectorAll("[data-scene-edge]").length).toBeGreaterThan(0);
+  });
+
+  it("keeps one single source for Vue src/dist styles.css edge stroke matching Svelte and arrowheads", () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const srcCss = readFileSync(resolve(here, "styles.css"), "utf8");
+    const vueBase = readFileSync(resolve(here, "DiagramSceneFigureBase.vue"), "utf8");
+    const vueNumbered = readFileSync(resolve(here, "DiagramNumberedScene.vue"), "utf8");
+    const svelte = readFileSync(resolve(here, "../../components-svelte/src/lib/DiagramSceneFigure.svelte"), "utf8");
+    const baseStyle = vueBase.split("<style>")[1]!.split("</style>")[0]!.trim();
+
+    expect(srcCss).toContain(baseStyle);
+    const edgeRules = (css: string) => [...css.matchAll(/\.st-diagramSceneFigure-edge\s*\{[^}]*\}/g)].map((m) => m[0]);
+    const srcEdgeRules = edgeRules(srcCss);
+    expect(srcEdgeRules).toHaveLength(1);
+    const svelteEdgeRules = edgeRules(svelte.split("<style>")[1]!.split("</style>")[0]!);
+    expect(svelteEdgeRules).toHaveLength(1);
+    expect(srcEdgeRules[0]).toBe(svelteEdgeRules[0]);
+    expect(srcEdgeRules[0]).toContain("stroke: var(--st-component-diagramScene-edgeStroke, var(--st-semantic-border-strong));");
+    expect(vueBase).toContain('fill="var(--st-component-diagramScene-edgeStroke, #64748b)"');
+    expect(vueNumbered).toContain('fill="var(--st-component-diagramScene-edgeStroke, #64748b)"');
+
+    const distPath = resolve(here, "../dist/styles.css");
+    if (existsSync(distPath)) {
+      const distCss = readFileSync(distPath, "utf8");
+      const distEdgeRules = edgeRules(distCss);
+      expect(distEdgeRules).toHaveLength(1);
+      expect(distEdgeRules[0]).toBe(srcEdgeRules[0]);
+    }
   });
 });
