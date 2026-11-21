@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Textarea.svelte",
-      "version": "0.43.0"
+      "version": "0.43.1"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Textarea.vue",
-      "version": "0.41.0-next.8"
+      "version": "0.41.0-next.9"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Multi-line text field.",
     "fr": "Champ texte multi-ligne."
   },
-  "digest": "sha256:a19a4234b02db5fb1e1aa115d31bca78d4dacca92014bb25546ce647034232f5",
+  "digest": "sha256:31b417482508d86dc71d1c372cb2d3cc2bde9c54214df808cf317db056da8a9d",
   "displayName": "Textarea",
   "format": "component-entry/v1",
   "frameworks": [
