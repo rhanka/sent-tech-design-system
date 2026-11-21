@@ -2125,12 +2125,20 @@ for (const [url, fixture, offline] of [
   } else {
     const snapshot = () => page.evaluate(() => Array.from(document.querySelectorAll("[data-st-diagram]"), (figure) => {
       const svg = figure.querySelector(".st-dossier__diagramViewport > svg");
+      const text = [...svg.querySelectorAll("text")];
+      const clipped = text.filter((node) => {
+        const box = node.getBoundingClientRect();
+        const frame = node.ownerSVGElement.getBoundingClientRect();
+        return box.left < frame.left - 1 || box.right > frame.right + 1 ||
+          box.top < frame.top - 1 || box.bottom > frame.bottom + 1;
+      }).map((node) => node.textContent);
       return {
         id: figure.dataset.stDiagram,
         nodes: svg.querySelectorAll("[data-scene-occurrence]").length,
         edges: svg.querySelectorAll("[data-scene-edge]").length,
         labels: svg.querySelectorAll("[data-scene-label]").length,
-        text: Array.from(svg.querySelectorAll("text"), (node) => node.textContent).join(" "),
+        text: text.map((node) => node.textContent).join(" "),
+        clipped,
         source: figure.querySelector("pre") !== null,
         overflow: svg.querySelector("[data-card-overflow], [data-zone-overflow]") !== null,
         painted: svg.getBoundingClientRect().width > 0 && svg.getBoundingClientRect().height > 0,
@@ -2145,13 +2153,13 @@ for (const [url, fixture, offline] of [
     assert(expanded.length === expected.length && expanded.every((drawing, index) => {
       const { id, nodes, edges, labels } = expected[index];
       return drawing.id === id && drawing.nodes === nodes && drawing.edges === edges && drawing.labels === labels &&
-        drawing.painted && !drawing.source && !drawing.overflow;
+        drawing.painted && !drawing.source && !drawing.overflow && drawing.clipped.length === 0;
     }), `Focus diagram expanded ${url}`, JSON.stringify(expanded));
     if (fixture.fold) {
       const button = await page.$('[data-st-diagram] button[aria-expanded="true"]');
       await button.click();
       const [folded] = await snapshot();
-      assert(folded.nodes === 2 && folded.edges === 1 && folded.labels === 1 && folded.painted && !folded.overflow &&
+      assert(folded.nodes === 2 && folded.edges === 1 && folded.labels === 1 && folded.painted && !folded.overflow && folded.clipped.length === 0 &&
         !folded.text.includes("Editor") && folded.text.includes("shares draft"),
       `Focus diagram folded ${url}`, JSON.stringify(folded));
       await button.click();

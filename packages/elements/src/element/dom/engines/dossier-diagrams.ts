@@ -7,11 +7,10 @@ let nextScene = 0;
 
 function sceneSvg(owner: Document, source: string, prefix: string): SVGSVGElement {
   const template = owner.createElement("template");
-  template.innerHTML = source;
+  // Chromium checks inline style attributes while parsing SVG in a template.
+  // Strip the pinned canvas renderer's inline CSS before handing it to the DOM.
+  template.innerHTML = source.replace(/<style>[\s\S]*?<\/style>| style="[^"]*"/g, "");
   const svg = template.content.querySelector("svg")!;
-  // The standalone canvas SVG supplies its own style. The kit uses external CSS.
-  for (const style of svg.querySelectorAll("style")) style.remove();
-  for (const element of svg.querySelectorAll("[style]")) element.removeAttribute("style");
   // The kit provides a single native fold control for the figure.
   for (const toggle of svg.querySelectorAll("[data-toggle]")) toggle.remove();
   for (const element of svg.querySelectorAll("[id]")) element.id = prefix + element.id;
