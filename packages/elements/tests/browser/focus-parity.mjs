@@ -23,11 +23,12 @@ export async function compareFocusMount(doc, ownerHtml) {
     ":scope > sup:has(> a.focus-citation), :scope > p:has(> sup > a.focus-citation)",
   )) calls.remove();
   const citationNumbers = new Map(doc.citations?.map(({ id }, index) => [id, index + 1]));
+  const fragment = (id) => `#${encodeURIComponent(id)}`;
   function appendCalls(element, refs = []) {
     for (const id of refs) {
       const badge = expected.ownerDocument.createElement("sup");
       const link = expected.ownerDocument.createElement("a");
-      link.setAttribute("href", `#${encodeURIComponent(id)}`);
+      link.setAttribute("href", fragment(id));
       link.textContent = `[${citationNumbers.get(id)}]`;
       badge.append(link);
       element.append(badge);
@@ -62,7 +63,16 @@ export async function compareFocusMount(doc, ownerHtml) {
   }
 
   for (const [index, row] of [...expected.querySelectorAll(":scope > .focus-sources > ol > li")].entries()) {
-    markDefinition(row, doc.citations[index].id);
+    const citation = doc.citations[index];
+    markDefinition(row, citation.id);
+    const source = doc.sources.find(({ id }) => id === citation.sourceId);
+    const htmlTextLength = (text) => text.replace(/\r\n?/g, "\n").length;
+    const title = row.firstChild.splitText(htmlTextLength(`${citation.label} · `));
+    title.splitText(htmlTextLength(source.title));
+    const link = expected.ownerDocument.createElement("a");
+    link.setAttribute("href", fragment(source.id));
+    link.textContent = title.data;
+    title.replaceWith(link);
   }
   // The report's annex contents appear once, in the kit's anchored disclosure.
   for (const annex of expected.querySelectorAll(":scope > .focus-annex")) annex.remove();
@@ -76,18 +86,20 @@ export async function compareFocusMount(doc, ownerHtml) {
     const definition = (id) => `data-anchor-id="${escape(id)}" data-commentable`;
     const sourceTitle = (id) => escape(doc.sources.find((source) => source.id === id).title);
     const calls = (refs) => refs.length ? `<span>${refs.map((ref) =>
-      `<a>[${doc.citations.findIndex((citation) => citation.id === ref) + 1}]</a>`).join("")}</span>` : "";
+      `<a href="${fragment(ref)}">[${citationNumbers.get(ref)}]</a>`).join("")}</span>` : "";
     const sources = doc.sources.map((source) => {
       const { origin } = source;
       const location = origin.uri ?? `${origin.repo}@${origin.revision}:${origin.path}`;
-      const download = doc.citations.some(({ sourceId }) => sourceId === source.id) ? "" : "<a>Download source</a>";
+      const filename = `evidence-${source.id.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+      const download = doc.citations.some(({ sourceId }) => sourceId === source.id) ? ""
+        : `<a href="data:application/octet-stream;base64,${escape(source.data)}" download="${filename}">Download source</a>`;
       const preview = source.mediaType.startsWith("image/")
         ? `<img alt="${escape(source.alt ?? source.title)}">`
         : `<pre>${escape(new TextDecoder().decode(Uint8Array.from(atob(source.data), (char) => char.charCodeAt(0))))}</pre>`;
       return `<details ${definition(source.id)}><summary>${escape(source.title)}</summary><p>${escape(location)} · ${escape(source.mediaType)} · ${source.size} bytes · SHA-256 ${escape(source.sha256)}</p>${download}${preview}</details>`;
     }).join("");
     const groups = doc.evidenceGroups.map((group) => `<p ${definition(group.id)}>${escape(group.summary)}${calls(group.citationRefs)}${group.sourceRefs
-      .map((id) => ` · <a>${sourceTitle(id)}</a>`).join("")}</p>`).join("");
+      .map((id) => ` · <a href="${fragment(id)}">${sourceTitle(id)}</a>`).join("")}</p>`).join("");
     const annexes = doc.annexes.map((annex) => {
       const blocks = annex.blocks.map((block) => {
         switch (block.kind) {
@@ -98,7 +110,8 @@ export async function compareFocusMount(doc, ownerHtml) {
           case "text": return `<p>${escape(block.text)}</p>`;
         }
       }).join("");
-      const backlinks = annex.backRefs.length ? `<p>Related blocks${annex.backRefs.map((id) => ` · <a>${escape(id)}</a>`).join("")}</p>` : "";
+      const backlinks = annex.backRefs.length ? `<p>Related blocks${annex.backRefs
+        .map((id) => ` · <a href="${fragment(id)}">${escape(id)}</a>`).join("")}</p>` : "";
       return `<details ${definition(annex.id)}><summary>${escape(annex.title)}</summary><p>${escape(annex.summary)}</p>${blocks}${backlinks}</details>`;
     }).join("");
     return `<section><h2>Embedded evidence</h2>${sources}${groups}${annexes}</section>`;
@@ -107,7 +120,7 @@ export async function compareFocusMount(doc, ownerHtml) {
 
   // A stylesheet has no rendered tree. Traverse every content node, including
   // closed disclosures, and also compare the visible text in the live page.
-  const attributes = ["alt", "aria-disabled", "data-anchor-id", "data-commentable", "hidden", "open"];
+  const attributes = ["alt", "aria-disabled", "data-anchor-id", "data-commentable", "download", "hidden", "href", "open"];
   function tree(node, captureAid) {
     if (node.nodeType === Node.TEXT_NODE) return node.data;
     if (node.nodeType !== Node.ELEMENT_NODE || node.localName === "style") return null;

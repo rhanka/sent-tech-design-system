@@ -11,11 +11,16 @@ function label(tag: string, value: string): HTMLElement {
   return element;
 }
 
-function reference(id: string, value: string): HTMLAnchorElement {
+export function dossierReference(id: string, value: string): HTMLAnchorElement {
   const link = document.createElement("a");
   link.setAttribute("href", `#${encodeURIComponent(id)}`);
   link.textContent = value;
   return link;
+}
+
+export function dossierSourceOrigin(source: EvidenceSource): string {
+  return "uri" in source.origin ? source.origin.uri
+    : `${source.origin.repo}@${source.origin.revision}:${source.origin.path}`;
 }
 
 type CitationCalls = (refs: unknown, container: HTMLElement) => void;
@@ -30,7 +35,7 @@ export function dossierCitations(doc: DecisionDossierDocumentV2 | undefined): Ci
     for (const id of refs) {
       const number = numbers.get(id);
       if (number === undefined) continue;
-      const link = reference(id, `[${number}]`);
+      const link = dossierReference(id, `[${number}]`);
       link.setAttribute("aria-label", `Citation ${number}`);
       calls.append(link);
     }
@@ -68,11 +73,9 @@ function annexBlock(block: AnnexBlock, calls: CitationCalls): HTMLElement {
 function sourceDefinition(source: EvidenceSource, hasBibliographyDownload: boolean): HTMLDetailsElement {
   const definition = document.createElement("details");
   markDossierAnchor(definition, source.id);
-  const origin = "uri" in source.origin ? source.origin.uri
-    : `${source.origin.repo}@${source.origin.revision}:${source.origin.path}`;
   definition.append(
     label("summary", source.title),
-    label("p", `${origin} · ${source.mediaType} · ${source.size} bytes · SHA-256 ${source.sha256}`),
+    label("p", `${dossierSourceOrigin(source)} · ${source.mediaType} · ${source.size} bytes · SHA-256 ${source.sha256}`),
   );
   if (!hasBibliographyDownload) {
     const download = document.createElement("a");
@@ -118,7 +121,7 @@ export function appendDossierEvidence(
       const source = sources.get(citation.sourceId);
       const locator = citation.locator.kind === "image" ? citation.locator.caption
         : `lines ${citation.locator.start}–${citation.locator.end}`;
-      if (source !== undefined) entry.append(" · ", reference(source.id, source.title));
+      if (source !== undefined) entry.append(" · ", dossierReference(source.id, source.title));
       entry.append(` · ${locator}`);
       index.append(entry);
     }
@@ -128,7 +131,7 @@ export function appendDossierEvidence(
     const block = label("p", group.summary);
     markDossierAnchor(block, group.id);
     calls(group.citationRefs, block);
-    for (const id of group.sourceRefs) block.append(" · ", reference(id, sources.get(id)?.title ?? id));
+    for (const id of group.sourceRefs) block.append(" · ", dossierReference(id, sources.get(id)?.title ?? id));
     evidence.append(block);
   }
   const anchors = new Set(Array.from(root.querySelectorAll<HTMLElement>("[data-anchor-id]"), (node) => node.dataset.anchorId));
@@ -139,7 +142,7 @@ export function appendDossierEvidence(
     for (const item of annex.blocks) block.append(annexBlock(item, calls));
     if (annex.backRefs.length > 0) {
       const back = label("p", "Related blocks");
-      for (const id of annex.backRefs) back.append(" · ", anchors.has(id) ? reference(id, id) : id);
+      for (const id of annex.backRefs) back.append(" · ", anchors.has(id) ? dossierReference(id, id) : id);
       block.append(back);
     }
     evidence.append(block);
