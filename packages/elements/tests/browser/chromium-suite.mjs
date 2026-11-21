@@ -400,7 +400,7 @@ function dossierL6Body() {
 }
 
 const PAGES = {
-  "/focus-mount-host.html": '<!doctype html><title>Focus mount host</title><main data-st-dossier-page></main>',
+  "/focus-mount-host.html": '<!doctype html><title>Focus mount host</title><link rel="stylesheet" href="/focus-kit/strict/renderer/dossier.css"><main data-st-dossier-page data-st-theme="sent-tech"></main>',
   "/pilot.html": pageHtml(PILOT_CSP, pilotBody()),
   "/dossier-l6.html": pageHtml(PILOT_CSP, dossierL6Body()),
   "/no-bpmn.html": pageHtml(
@@ -1793,10 +1793,14 @@ async function shadowSvg(page, elementSelector) {
     amendmentTrace: [{ at: "2026-11-03T12:34:00Z", author: "Camille Martin", summary: "Recorded the chosen contract." }],
   });
   for (const [name, doc] of fixtures) {
-    const ownerHtml = renderHtml(doc, { renderMarkdown: (source) => renderMarkdown(source, true), sanitizeHtml: (html) => html });
-    const differences = await observed.page.evaluate(compareFocusMount, doc, ownerHtml);
     const label = `Packaged Focus mount content matches Focus 0.6 for ${name}`;
-    if (assert(differences.length === 0, label, differences.join("\n"))) ok(label);
+    try {
+      const ownerHtml = renderHtml(doc, { renderMarkdown: (source) => renderMarkdown(source, true), sanitizeHtml: (html) => html });
+      const differences = await observed.page.evaluate(compareFocusMount, doc, ownerHtml);
+      if (assert(differences.length === 0, label, differences.join("\n"))) ok(label);
+    } catch (error) {
+      assert(false, label, String(error));
+    }
   }
   await observed.close();
 }

@@ -1,5 +1,7 @@
 import { assertFocusDocument } from "@sentropic/focus/validate";
-import { renderDossierContent } from "./engines/focus-renderer.js";
+import { renderMarkdown } from "../markdown/minimal-markdown.js";
+import { connectDossier, renderDossierContent, renderMarkdownToSafeHtml } from "./engines/focus-renderer.js";
+import { renderFocusSnapshot } from "./engines/focus-snapshot.js";
 import { dispatchIntent } from "./intents.js";
 
 export interface DossierMount {
@@ -72,8 +74,12 @@ export function mountDossier(host: HTMLElement): DossierMount {
       if (sectionCollision || evidence.some(({ id }) => id === ref)) {
         throw new Error(`focus-anchor-equals-document-ref: ${ref} is reserved for the header anchor`);
       }
+      const snapshot = renderFocusSnapshot(validated, (source) => renderMarkdownToSafeHtml(renderMarkdown(source, true), true));
+      const dispatch = (id: string) => dispatchIntent(host, "choose-option", id);
       clear();
-      const current = renderDossierContent(host, validated, (id) => dispatchIntent(host, "choose-option", id), "light");
+      const current = snapshot === undefined
+        ? renderDossierContent(host, validated, dispatch, "light")
+        : connectDossier(host, snapshot, dispatch);
       rendered = current;
       host.dispatchEvent(new CustomEvent<DossierReadyDetail>("st-dossier-ready", {
         detail: { reviewRoot: current.reviewRoot },

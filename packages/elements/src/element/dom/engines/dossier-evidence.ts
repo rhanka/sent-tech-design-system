@@ -65,7 +65,7 @@ function annexBlock(block: AnnexBlock, calls: CitationCalls): HTMLElement {
   return pre;
 }
 
-function sourceDefinition(source: EvidenceSource): HTMLDetailsElement {
+function sourceDefinition(source: EvidenceSource, hasBibliographyDownload: boolean): HTMLDetailsElement {
   const definition = document.createElement("details");
   markDossierAnchor(definition, source.id);
   const origin = "uri" in source.origin ? source.origin.uri
@@ -74,11 +74,13 @@ function sourceDefinition(source: EvidenceSource): HTMLDetailsElement {
     label("summary", source.title),
     label("p", `${origin} · ${source.mediaType} · ${source.size} bytes · SHA-256 ${source.sha256}`),
   );
-  const download = document.createElement("a");
-  download.href = `data:application/octet-stream;base64,${source.data}`;
-  download.download = `evidence-${source.id.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-  download.textContent = "Download source";
-  definition.append(download);
+  if (!hasBibliographyDownload) {
+    const download = document.createElement("a");
+    download.href = `data:application/octet-stream;base64,${source.data}`;
+    download.download = `evidence-${source.id.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+    download.textContent = "Download source";
+    definition.append(download);
+  }
   if (source.mediaType === "image/png" || source.mediaType === "image/jpeg") {
     const preview = document.createElement("img");
     preview.src = `data:${source.mediaType};base64,${source.data}`;
@@ -95,16 +97,20 @@ export function appendDossierEvidence(
   root: HTMLElement,
   doc: DecisionDossierDocumentV2,
   calls: CitationCalls,
+  snapshot = false,
 ): void {
   const evidence = document.createElement("section");
   evidence.className = "st-dossier__evidence";
-  evidence.append(label("h2", "Evidence"));
+  evidence.append(label("h2", snapshot ? "Embedded evidence" : "Evidence"));
   const sources = new Map(doc.sources.map((source) => [source.id, source]));
+  const downloadedSources = new Set(snapshot ? doc.citations.map(({ sourceId }) => sourceId) : []);
   if (sources.size > 0) {
-    evidence.append(label("h3", "Sources"));
-    for (const source of sources.values()) evidence.append(sourceDefinition(source));
+    if (!snapshot) evidence.append(label("h3", "Sources"));
+    for (const source of sources.values()) {
+      evidence.append(sourceDefinition(source, downloadedSources.has(source.id)));
+    }
   }
-  if (doc.citations.length > 0) {
+  if (!snapshot && doc.citations.length > 0) {
     const index = document.createElement("ol");
     for (const citation of doc.citations) {
       const entry = label("li", citation.label);
