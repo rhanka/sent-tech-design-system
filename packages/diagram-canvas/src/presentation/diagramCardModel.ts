@@ -752,6 +752,23 @@ export interface CardLineLayout {
 export function cardLineMeasurer(
   measure: CardLineMeasure = defaultCardMeasure,
 ): ((request: CardMeasureRequest) => CardLineLayout) & { readonly version?: string } {
+  const fallbackWidth = (
+    lines: readonly string[],
+    cardRole: "kicker" | "title" | "body" | "footer",
+    available: number,
+  ): number => {
+    // Bounded slot allocations keep their allocation fallback for legacy measurers
+    // that omit `lineWidths`, while unbounded queries (e.g. `Number.MAX_SAFE_INTEGER`
+    // from legend or badge sizing) fall back to the built-in advance estimate instead
+    // of leaking `Number.MAX_SAFE_INTEGER` as a measured width.
+    if (Number.isFinite(available) && available < 10_000) return available;
+    let widest = 0;
+    for (const line of lines) {
+      const est = defaultCardMeasure(line, cardRole, Number.MAX_SAFE_INTEGER).lineWidths?.[0] ?? 0;
+      if (est > widest) widest = est;
+    }
+    return widest;
+  };
   return Object.assign((request: CardMeasureRequest) => {
     const role: "kicker" | "title" | "body" | "footer" =
       request.role === "kicker" || request.role === "title" || request.role === "footer"
@@ -762,10 +779,15 @@ export function cardLineMeasurer(
       const labelHeight = request.role === "flow-badge" ? FLOW_BADGE_GEOMETRY.lineHeight : EDGE_LABEL_GEOMETRY.lineHeight;
       const scale = labelSize / CARD_GEOMETRY.body.size;
       const label = measure(request.text, "body", request.availableWidth / scale, request.allocatedLines);
+      const width =
+        label.lineWidths === undefined
+          ? Number.isFinite(request.availableWidth) && request.availableWidth < 10_000
+            ? request.availableWidth
+            : fallbackWidth(label.lines, "body", Number.POSITIVE_INFINITY) * scale
+          : Math.max(0, ...label.lineWidths) * scale;
       return {
         lines: label.lines,
-        width:
-          label.lineWidths === undefined ? request.availableWidth : Math.max(0, ...label.lineWidths) * scale,
+        width,
         height: label.lines.length * Math.max(labelHeight, (label.lineHeight ?? 0) * scale),
         overflow: label.tooWide || label.lines.length > request.allocatedLines,
       };
@@ -779,7 +801,7 @@ export function cardLineMeasurer(
           : CARD_GEOMETRY.body.size;
     const widest =
       measured.lineWidths === undefined
-        ? request.availableWidth
+        ? fallbackWidth(measured.lines, role, request.availableWidth)
         : Math.max(0, ...measured.lineWidths);
     return {
       lines: measured.lines,

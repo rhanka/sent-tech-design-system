@@ -331,7 +331,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
               </div>
               </template>
               </template>
-              <div v-for="edgeLabel in scene.labels" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="edgeLabel.occurrence" :title="edgeLabel.title" :data-erd-label="edgeLabel.erd || undefined"
+              <div v-for="edgeLabel in scene.labels" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="edgeLabel.occurrence" :data-connector-mode="scene.r7Connectors && !edgeLabel.erd ? 'r7' : undefined" :title="edgeLabel.title" :data-erd-label="edgeLabel.erd || undefined"
                 :style="`left:${edgeLabel.box.x}px;top:${edgeLabel.box.y}px;width:${edgeLabel.box.width}px;height:${edgeLabel.box.height}px${animating ? `;opacity:${eased}` : ''}`">
                 <template v-if="edgeLabel.bundle !== undefined">
                   <strong class="st-diagramSceneFigure-bundleHeader">{{ edgeLabel.bundle.header }}</strong>{{ ' ' }}<div v-for="(group, index) in edgeLabel.bundle.groups" :key="index" class="st-diagramSceneFigure-bundleRelation" :data-bundle-relation="index">
@@ -465,11 +465,11 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     vector-effect: non-scaling-stroke;
   }
   .st-diagramSceneFigure-edge[data-connector-mode="r7"] {
-    stroke-width: var(--st-component-diagramScene-linkStrokeWidth, 2.5px);
+    stroke-width: var(--st-diagram-link-stroke-width, var(--st-component-diagramScene-linkStrokeWidth, 2.5px));
   }
   .st-diagramSceneFigure-edge[data-edge-emphasis="emphasis"] {
     stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
-    stroke-width: var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px);
+    stroke-width: var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px));
   }
   .st-diagramSceneFigure-edge[data-edge-stroke="dashed"] {
     stroke-dasharray: var(--st-component-diagramScene-linkDashDashed, 8 6);
@@ -486,12 +486,15 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     display: flex;
     flex-direction: column;
     font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
-    font-size: var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px));
+    font-size: var(--st-diagram-edge-label-size, var(--st-component-diagramScene-edgeLabelFontSize, 18px));
     justify-content: center;
     line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
     pointer-events: none;
     position: absolute;
     white-space: nowrap;
+  }
+  .st-diagramSceneFigure-edgeLabel[data-connector-mode="r7"] {
+    font-size: var(--st-diagram-edge-label-size, var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px)));
   }
   .st-diagramSceneFigure-edgeLabel > span { display: block; flex: none; height: var(--st-diagram-label-line-height, 22px); }
   .st-diagramSceneFigure-bundleHeader { display: block; padding: var(--st-component-diagramScene-labelPadding, 4px); font-weight: 400; }

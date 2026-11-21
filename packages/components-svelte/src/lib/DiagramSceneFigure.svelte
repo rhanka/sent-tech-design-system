@@ -42,7 +42,10 @@
     connectorMarkerRef,
     connectorPath,
     DEFAULT_EDGE_CORNER_RADIUS,
+    DEFAULT_EDGE_LABEL_SIZE,
     DEFAULT_SCENE_LABELS,
+    parseCssLengthPx,
+    resolveEdgeLabelSizeToken,
     extraConnectorMarkers,
     sceneContentSize,
     type DiagramSceneSize,
@@ -583,6 +586,19 @@
     return value === "" ? undefined : value;
   }
 
+  function lengthTokenValue(name: string): number | undefined {
+    if (frameEl === undefined) return undefined;
+    const raw = tokenValue(name);
+    if (raw === undefined) return undefined;
+    const docEl = frameEl.ownerDocument?.documentElement;
+    const rootFontSize = docEl ? parseFloat(getComputedStyle(docEl).fontSize) : Number.NaN;
+    const elementFontSize = parseFloat(getComputedStyle(frameEl).fontSize);
+    return parseCssLengthPx(raw, {
+      ...(Number.isFinite(rootFontSize) && rootFontSize > 0 ? { rootFontSize } : {}),
+      ...(Number.isFinite(elementFontSize) && elementFontSize > 0 ? { elementFontSize } : {}),
+    });
+  }
+
   // The camera sits at the fit until an input moves it; a resize keeps a
   // camera that is still at the fit on the fit, and reclamps any other.
   let requestedZoom = $state<number>();
@@ -594,14 +610,19 @@
   // input, so a post-mount theme change applies without waiting for a resize.
   function readCameraTokens(): void {
     const values: Record<string, number> = {};
-    const baseKeys = ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding","edgeLabelSize"];
+    const baseKeys = ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding"];
     const r7Keys = ["zoneGutter","routeSpacing","routeBorderClearance","edgeCornerRadius","linkStrokeWidth","linkEmphasisStrokeWidth"];
     for (const key of r7Mode ? [...baseKeys, ...r7Keys] : baseKeys) {
-      const value = parseFloat(tokenValue('--st-component-diagramScene-' + key) ?? '');
-      if (Number.isFinite(value)) values[key] = value;
+      const value = lengthTokenValue('--st-component-diagramScene-' + key);
+      if (value !== undefined && Number.isFinite(value)) values[key] = value;
     }
-    const labelMargin = parseFloat(tokenValue('--st-component-diagramScene-labelPadding') ?? '');
-    if (Number.isFinite(labelMargin)) values.labelMargin = labelMargin;
+    const edgeLabelSize = resolveEdgeLabelSizeToken(
+      lengthTokenValue('--st-component-diagramScene-edgeLabelSize'),
+      lengthTokenValue('--st-component-diagramScene-edgeLabelFontSize'),
+    );
+    if (edgeLabelSize !== undefined) values.edgeLabelSize = edgeLabelSize;
+    const labelMargin = lengthTokenValue('--st-component-diagramScene-labelPadding');
+    if (labelMargin !== undefined && Number.isFinite(labelMargin)) values.labelMargin = labelMargin;
     if (JSON.stringify(values) !== JSON.stringify(tokenMetrics)) {
       ownedCache.clear();
       tokenMetrics = values;
@@ -989,8 +1010,16 @@
     points.map((point) => `${point.x},${point.y}`).join(" ");
 
   const edgeLabelLineHeight = $derived(scaleEdgeLabelMeasurer(lineMeasurer, effectiveMetrics.edgeLabelSize)({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
+  const metricPaintVars = $derived(
+    (metrics?.edgeLabelSize !== undefined ||
+      (effectiveMetrics.edgeLabelSize !== undefined && effectiveMetrics.edgeLabelSize !== DEFAULT_EDGE_LABEL_SIZE)
+      ? `;--st-diagram-edge-label-size:${effectiveMetrics.edgeLabelSize}px`
+      : "") +
+    (metrics?.linkStrokeWidth !== undefined ? `;--st-diagram-link-stroke-width:${metrics.linkStrokeWidth}px` : "") +
+    (metrics?.linkEmphasisStrokeWidth !== undefined ? `;--st-diagram-link-emphasis-stroke-width:${metrics.linkEmphasisStrokeWidth}px` : ""),
+  );
   const viewportStyle = $derived(
-    `height:${fit.fitHeight + scrollbarHeight}px;${fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
+    `height:${fit.fitHeight + scrollbarHeight}px;${fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${metricPaintVars}${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );
   const worldStyle = $derived(
     `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,
@@ -1157,6 +1186,7 @@
               <div
                 class="st-diagramSceneFigure-edgeLabel"
                 data-scene-label={edgeLabel.occurrence}
+                data-connector-mode={scene.r7Connectors && !edgeLabel.erd ? "r7" : undefined}
                 title={edgeLabel.title}
                 data-erd-label={edgeLabel.erd || undefined}
                 style={`left:${edgeLabel.box.x}px;top:${edgeLabel.box.y}px;width:${edgeLabel.box.width}px;height:${edgeLabel.box.height}px${animating ? `;opacity:${eased}` : ""}`}
@@ -1355,11 +1385,11 @@
     vector-effect: non-scaling-stroke;
   }
   .st-diagramSceneFigure-edge[data-connector-mode="r7"] {
-    stroke-width: var(--st-component-diagramScene-linkStrokeWidth, 2.5px);
+    stroke-width: var(--st-diagram-link-stroke-width, var(--st-component-diagramScene-linkStrokeWidth, 2.5px));
   }
   .st-diagramSceneFigure-edge[data-edge-emphasis="emphasis"] {
     stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
-    stroke-width: var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px);
+    stroke-width: var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px));
   }
   .st-diagramSceneFigure-edge[data-edge-stroke="dashed"] {
     stroke-dasharray: var(--st-component-diagramScene-linkDashDashed, 8 6);
@@ -1376,12 +1406,15 @@
     display: flex;
     flex-direction: column;
     font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
-    font-size: var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px));
+    font-size: var(--st-diagram-edge-label-size, var(--st-component-diagramScene-edgeLabelFontSize, 18px));
     justify-content: center;
     line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
     pointer-events: none;
     position: absolute;
     white-space: nowrap;
+  }
+  .st-diagramSceneFigure-edgeLabel[data-connector-mode="r7"] {
+    font-size: var(--st-diagram-edge-label-size, var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px)));
   }
   .st-diagramSceneFigure-edgeLabel > span { display: block; flex: none; height: var(--st-diagram-label-line-height, 22px); }
   .st-diagramSceneFigure-bundleHeader { display: block; padding: var(--st-component-diagramScene-labelPadding, 4px); font-weight: 400; }
