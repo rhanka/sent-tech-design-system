@@ -119,6 +119,7 @@ const datavizSvelteManifest = readJson("packages/dataviz-svelte/package.json");
 const datavizReactManifest = readJson("packages/dataviz-react/package.json");
 const datavizVueManifest = readJson("packages/dataviz-vue/package.json");
 const datavizAngularManifest = readJson("packages/dataviz-angular/package.json");
+const reviewCoreName = "@sentropic/design-system-review-core";
 
 // LAZY, and that is load-bearing. In CI this script runs per shard, and a shard
 // builds only its own workspaces — so a package outside the selection has no
@@ -214,6 +215,8 @@ const packages = [
       "dist/rich-text-editor/index.js",
       "dist/rich-text-editor/index.d.ts",
       "dist/rich-text-editor/rich-text-editor.css",
+      ...["CommentLayer", "ThreadPanel", "CommentPin", "CommentComposer", "CommentThread", "CommentAuthorship", "ReviewModeToggle", "OrphanList"]
+        .flatMap((name) => [`dist/${name}.svelte`, `dist/${name}.svelte.d.ts`]),
     ],
     absentFiles: [
       "dist/rich-text-editor.js",
@@ -240,9 +243,9 @@ const packages = [
     ],
   },
   {
-    name: "@sentropic/design-system-review-core",
+    name: reviewCoreName,
     // SPEC-r6 DS-7: framework-neutral zero-dependency review core.
-    requiredFiles: ["dist/index.js", "dist/index.d.ts"],
+    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/adapter.d.ts", "dist/fixture-adapter.js"],
     absentPatterns: ["\\.map$", "\\.srchash$", "\\.test\\."],
   },
   {
@@ -408,7 +411,7 @@ const deepVerify = {
     closure: [
       "@sentropic/graph",
       "@sentropic/design-system-rich-text",
-      "@sentropic/design-system-review-core",
+      reviewCoreName,
       "@sentropic/design-system-themes",
       "@sentropic/diagram-canvas",
     ],
@@ -440,7 +443,7 @@ const deepVerify = {
   // reclassification proof: with ajv still in devDependencies, importing the
   // installed "." entry would die on `ajv/dist/2020.js` with no workspace
   // to fall back on.
-  "@sentropic/design-system-review-core": { closure: [], peers: [] },
+  [reviewCoreName]: { closure: [], peers: [] },
   "@sentropic/design-system-elements": { closure: [], peers: [] },
   "@sentropic/design-system-react": {
     closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens"],
@@ -450,7 +453,7 @@ const deepVerify = {
     ],
   },
   "@sentropic/design-system-vue": {
-    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens", "@sentropic/diagram-canvas", "@sentropic/graph", "@sentropic/design-system-rich-text", "@sentropic/design-system-review-core"],
+    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens", "@sentropic/diagram-canvas", "@sentropic/graph", "@sentropic/design-system-rich-text", reviewCoreName],
     peers: [["vue", vueManifest.devDependencies.vue]],
   },
   "@sentropic/design-system-angular": {
@@ -733,6 +736,11 @@ function runLicensingGate() {
 try {
   console.log("Sent Tech package smoke test");
   console.log(`Temp dir: ${tmp}`);
+
+  if (!selectedNames || selectedNames.has(reviewCoreName)) {
+    assert(selectedPackages.some((pkg) => pkg.name === reviewCoreName) && deepVerify[reviewCoreName],
+      `${reviewCoreName} must be packed and installed by smoke-pack`);
+  }
 
   runLicensingGate();
 
