@@ -14,6 +14,21 @@ const listItems = (container: HTMLElement) =>
   Array.from(container.querySelectorAll(".st-chartDataList li")).map((n) => n.textContent?.trim());
 
 describe("LineChart analytical overlays", () => {
+  it("plots near-equal values at a large offset with distinct grid ticks", () => {
+    const { container } = render(LineChart, {
+      props: {
+        label: "Near-equal values",
+        data: [1000000000, 1000000000.0000002, 1000000000.0000005].map((y, x) => ({ x, y })),
+      },
+    });
+    const positions = [...container.querySelectorAll("circle[data-chart-index]")].map((point) =>
+      Number(point.getAttribute("cy")),
+    );
+    expect(positions).toHaveLength(3);
+    expect(positions[0]).toBeGreaterThan(positions[1]);
+    expect(positions[1]).toBeGreaterThan(positions[2]);
+  });
+
   it("preserves distinct plot positions across the finite numeric range", () => {
     const { container } = render(LineChart, {
       props: {

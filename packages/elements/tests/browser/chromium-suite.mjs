@@ -367,6 +367,11 @@ const PAGES = {
   "/pilot.html": pageHtml(PILOT_CSP, pilotBody()),
   "/time-series.html": pageHtml(STRICT_CSP, `
     ${TIME_SERIES_FIXTURES.map((name) => elementWithIsland("st-time-series-chart", name, name)).join("\n")}
+    ${mutatedIsland("st-time-series-chart", "near-equal-values", TIME_SERIES_FIXTURES[0], (envelope) => {
+      const values = [1000000000, 1000000000.0000002, 1000000000.0000005];
+      envelope.root.series[0].data = envelope.root.series[0].data.slice(0, values.length)
+        .map((point, index) => ({ ...point, y: values[index] }));
+    })}
     <script type="module" src="/bundle/elements.js"></script>
   `),
   "/dossier-l6.html": pageHtml(PILOT_CSP, dossierL6Body()),
@@ -997,6 +1002,11 @@ async function shadowSvg(page, elementSelector) {
   assert(east?.points[1]?.[0] !== undefined && east.points[1][0] === west?.points[0]?.[0] &&
     east.points[2][0] === west.points[2][0],
     "time-series: shared domain", `timestamps do not align: ${JSON.stringify(mounts[1].series)}`);
+  const nearEqual = mounts[TIME_SERIES_FIXTURES.length];
+  const nearEqualPoints = nearEqual.series[0]?.points ?? [];
+  assert(nearEqual.state === "rendered" && nearEqualPoints.length === 3 &&
+    nearEqualPoints[0][1] > nearEqualPoints[1][1] && nearEqualPoints[1][1] > nearEqualPoints[2][1],
+    "time-series: near-equal values", `plot differs: ${JSON.stringify(nearEqual)}`);
   assert(["Warning", "Deployment", "Expected range", "Goal"].every((label) => mounts[2].overlays.includes(label)),
     "time-series: overlays", `missing labels: ${JSON.stringify(mounts[2].overlays)}`);
   assert(observed.requests.every((url) => !url.includes("/chunks/bpmn-")), "time-series: isolated", "requested a BPMN chunk");

@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:b9f9e750609c5e1240767711e6554f7beb9113092108856a0004332e7a31902e",
+  "contractsRevision": "sha256:4cdfc8ae8ef21b86b4a967903a2a38172f09fc8edbe01bbc9c8e9031354db6f8",
   "counts": {
     "byFramework": {
       "angular": {
@@ -1399,8 +1399,8 @@
         "vue": "partial"
       },
       "componentId": "line-chart",
-      "contractDigest": "sha256:c46aeaffb07cb40404369b66c7273c8fb3273c7611e91a136852c75422b0cb9b",
-      "entryDigest": "sha256:a329df75f283d5e4f88522eba53c074ed3e7be08a8b5886f4435035676530ed8",
+      "contractDigest": "sha256:55c621c37144fd5078e7e14f36d40f86013f8eacb9889b24319eae5aa2890c32",
+      "entryDigest": "sha256:4c659878f1fe74670bf6dc92dc2d086867a23723500fe64dfd736bb4741174fd",
       "path": "contracts/line-chart.json",
       "producerId": "sentropic-ds"
     },
@@ -2863,5 +2863,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "5f30443f169b5bba2206112827dc4ce234324f0b"
+  "sourceCommit": "9e75cad2cf143a26b912eb469916d34547deff42"
 }

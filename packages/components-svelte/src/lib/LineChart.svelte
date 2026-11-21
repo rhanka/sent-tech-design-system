@@ -208,7 +208,9 @@
     for (let index = 0; index <= steps; index++) {
       const tick = start + index * step;
       if (!Number.isFinite(tick)) return [min, max];
-      ticks.push(step < 1e-10 ? tick : Number(tick.toFixed(10)));
+      const roundedTick = step < 1e-10 ? tick : Number(tick.toFixed(10));
+      // Near the precision limit, different steps can round to the same number.
+      if (roundedTick !== ticks[ticks.length - 1]) ticks.push(roundedTick);
     }
     return ticks;
   }
