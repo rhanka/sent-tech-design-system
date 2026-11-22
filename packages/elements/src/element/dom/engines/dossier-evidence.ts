@@ -8,12 +8,17 @@ export function markDossierAnchor(container: HTMLElement, id: string): void {
 function label(tag: string, value: string): HTMLElement {
   const element = document.createElement(tag);
   element.textContent = value;
+  // Disclosure toggles keep their native role in review mode.
+  if (tag === "summary") element.setAttribute("data-review-passthrough", "");
   return element;
 }
 
 export function dossierReference(id: string, value: string): HTMLAnchorElement {
   const link = document.createElement("a");
   link.setAttribute("href", `#${encodeURIComponent(id)}`);
+  // Citation pastilles navigate to their definition; the review layer must
+  // leave them alone instead of opening a comment composer on the block.
+  link.setAttribute("data-review-passthrough", "");
   link.textContent = value;
   return link;
 }
@@ -79,6 +84,7 @@ function sourceDefinition(source: EvidenceSource, hasBibliographyDownload: boole
   );
   if (!hasBibliographyDownload) {
     const download = document.createElement("a");
+    download.setAttribute("data-review-passthrough", "");
     download.href = `data:application/octet-stream;base64,${source.data}`;
     download.download = `evidence-${source.id.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
     download.textContent = "Download source";
@@ -141,6 +147,7 @@ export function appendDossierEvidence(
     const block = document.createElement("details");
     markDossierAnchor(block, annex.id);
     const summary = document.createElement("summary");
+    summary.setAttribute("data-review-passthrough", "");
     if (report) summary.append(label("h2", annex.title));
     else summary.textContent = annex.title;
     block.append(summary, label("p", annex.summary));
