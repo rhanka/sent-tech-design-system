@@ -10,9 +10,14 @@ const style = document.createElement('style');
 style.textContent = compileTheme(sentTechTheme);
 document.head.append(style);
 const params = new URLSearchParams(location.search);
-const props = { ...fixture(params.get('scene')),
+const sceneName = params.get('scene');
+const fitToWindow = params.has('fitToWindow')
+  ? params.get('fitToWindow') !== 'false'
+  : Boolean(sceneName?.startsWith('r7-'));
+const props = { ...fixture(sceneName),
+  fitToWindow,
   onCameraChange: camera => { window.__camera = camera; } };
-window.__relations = expectedRelations(params.get('scene'));
+window.__relations = expectedRelations(sceneName);
 const target = document.querySelector('#app');
 if (params.get('framework') === 'svelte') mount(Harness, { target, props: { props } });
 else if (params.get('framework') === 'vue') createApp({ render: () => h(VueFigure, props) }).mount(target);

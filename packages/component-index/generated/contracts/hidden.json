@@ -1,8 +1,8 @@
 {
   "componentId": "hidden",
   "contractSource": "derived",
-  "digest": "sha256:c63f56949b6d1d04d99976e73ed857ded4c90ce5a91144931b4a5d90547bdbc2",
-  "entryDigest": "sha256:6de99d81e5589da51299add17e4a1e0625f10920f6fe87aa538f952ddd58bfb4",
+  "digest": "sha256:2f10643f1d2879bb80b4332a01b802ef09a85aa2a490fc66af181508f0289657",
+  "entryDigest": "sha256:dfe08f3bd03239ae6db45ee026a3c2bcfdfd4532175afb5a2349aa2f5a8f9520",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -167,7 +167,7 @@
         "declarationPath": "packages/components-svelte/dist/Hidden.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HiddenProps",
-        "version": "0.43.2"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -221,7 +221,7 @@
         "declarationPath": "packages/components-vue/dist/Hidden.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HiddenProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "complete",
       "unresolved": [],

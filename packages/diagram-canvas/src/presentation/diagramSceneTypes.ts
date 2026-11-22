@@ -1,6 +1,7 @@
 import type { LayoutOptions, LayoutHints, LayoutMetrics, LayoutResult, LineMeasurer, RowPackOptions } from '../index.js';
 import type { CardLineMeasure, DiagramGlyphPaths } from './diagramCardModel.js';
 import type { StepChange, EffectiveTarget } from './flowModel.js';
+import type { LinkLegendAnchor } from './linkLegend.js';
 import type { SceneDocument, SceneView, ScenePresentation, SceneOccurrenceRef, SceneLayoutCache, DiagramSceneSize } from './diagramSceneModel.js';
   export interface DiagramSceneFigureLabels {
     "navigator": string;
@@ -25,6 +26,8 @@ import type { SceneDocument, SceneView, ScenePresentation, SceneOccurrenceRef, S
     collapse: (title: string) => string;
     /** Localized fallback label for containment relations without an explicit edge label (DE-1b). */
     contains?: string;
+    /** Heading for the automatic link-style legend strip (DE-2). */
+    legend?: string;
   }
 
   export interface DiagramSceneCamera {
@@ -66,6 +69,10 @@ import type { SceneDocument, SceneView, ScenePresentation, SceneOccurrenceRef, S
     strictIcons?: boolean;
     /** Selectable start parity for alternating zone depth surfaces (`0` default, `1` flipped). */
     depthParityStart?: 0 | 1;
+    /** Automatic link-style legend anchor (`"right"` default; `"none"` suppresses; single-style scenes never emit one). */
+    legend?: LinkLegendAnchor;
+    /** Optional custom labels for automatic link-style legend entries, keyed by `linkStyleKey(...)`. */
+    legendLabels?: Readonly<Record<string, string>>;
     /** Layout line measurer. Defaults to the bridge over `measure`. */
     measureLines?: LineMeasurer;
     /** Controlled fold state: collapsed occurrence ids. */
@@ -76,6 +83,8 @@ import type { SceneDocument, SceneView, ScenePresentation, SceneOccurrenceRef, S
     /** Accessible name of the figure. Defaults to `title`. */
     label?: string;
     compact?: boolean;
+    /** Opt-in fit-to-window host framing (`max-height: calc(100vh - 24px)`, `max-width: 100%`, centred; DE-2 ask 9). Default `false` preserves `Z-3 / AC-23`. */
+    fitToWindow?: boolean;
     labels?: Partial<DiagramSceneFigureLabels>;
     resolveGlyph?: (name: string) => DiagramGlyphPaths | undefined;
     onFoldChange?: (

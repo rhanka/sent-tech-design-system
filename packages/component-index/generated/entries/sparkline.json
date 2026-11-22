@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Sparkline.svelte",
-      "version": "0.43.2"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Sparkline.vue",
-      "version": "0.41.0-next.10"
+      "version": "0.41.0-next.11"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact inline line micro-chart for trends.",
     "fr": "Mini-graphique en ligne, inline, pour tendances compactes."
   },
-  "digest": "sha256:ba42f103e15dc502486f1fa75c294bfe291404faf4810afe96ad87a2fcbf21b6",
+  "digest": "sha256:6729a498a43ed5c095d8101ebe226b26b6139461ec9c13052064d2268f635d16",
   "displayName": "Sparkline",
   "format": "component-entry/v1",
   "frameworks": [

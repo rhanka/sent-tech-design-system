@@ -15,6 +15,7 @@ export * from "./bindings.js";
 export * from "./multiplicity.js";
 export * from "./archimate-cases.js";
 export * from "./profile-migrations.js";
+export * from "./connector-registry.js";
 export * from "./presentation.js";
 export * from "./presentation-relations.js";
 export * from "./presentation-apply.js";

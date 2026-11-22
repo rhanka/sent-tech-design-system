@@ -1,8 +1,8 @@
 {
   "componentId": "box-plot-chart",
   "contractSource": "derived",
-  "digest": "sha256:194cfb059b89d603d814e205e28c782ec7e02ee89f8d9159cc6cd39674716a55",
-  "entryDigest": "sha256:b1931b1395556f75b66608fc789e514d1a9494de320ef5fdebdb567bdce2e5ff",
+  "digest": "sha256:3ab6e00ffa30e35950f1e264bb0f237e2266927f1527855e7ef017ff62718b92",
+  "entryDigest": "sha256:34ccbeef48fadf4f6f95d952453afe8c916a2d6d0314626394685bec87420282",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -301,7 +301,7 @@
         "declarationPath": "packages/components-svelte/dist/BoxPlotChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BoxPlotChartProps",
-        "version": "0.43.2"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -402,7 +402,7 @@
         "declarationPath": "packages/components-vue/dist/BoxPlotChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BoxPlotChartProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "complete",
       "unresolved": [],

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SkeletonText.svelte",
-      "version": "0.43.2"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/SkeletonText.vue",
-      "version": "0.41.0-next.10"
+      "version": "0.41.0-next.11"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Placeholder text lines while loading.",
     "fr": "Placeholder lignes de texte en chargement."
   },
-  "digest": "sha256:4d27172f68cc4db05589ba3557d68a6e9abfd5b486c8c4230f4fd6500142d623",
+  "digest": "sha256:f81b6446bf3344b85655b5a2c1e5416e8dc41ccbbb4200344803b99dd0a45cf2",
   "displayName": "SkeletonText",
   "format": "component-entry/v1",
   "frameworks": [
