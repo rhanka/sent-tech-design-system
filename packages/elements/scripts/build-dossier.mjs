@@ -92,6 +92,22 @@ const outsideReview = svelteComponents.filter(([id]) => !inReviewClosure(id));
 if (outsideReview.length > 0) {
   throw new Error(`The dossier kit includes Svelte components outside the review layer: ${outsideReview.map(([id]) => id).join(", ")}`);
 }
+// The nested 0.1.0 copy of review-core (pulled in by the Svelte 0.43.2
+// dependency under design-system-svelte/node_modules) must not reach the
+// emitted graph: every review-core module has to come from the pinned
+// 0.1.1 entry the alias resolves to.
+const strayReviewCore = renderedModules.filter(([id]) =>
+  id.includes("design-system-review-core") && id.includes("design-system-svelte"));
+if (strayReviewCore.length > 0) {
+  throw new Error(`The dossier kit includes a nested review-core copy outside 0.1.1: ${strayReviewCore.map(([id]) => id).join(", ")}`);
+}
+// Behavioural marker complementing the module check: 0.1.1 emits three
+// "not-found" orphan returns (0.1.0 emits two and falls through to the
+// selector slot on a missing aid).
+const emittedJs = readFileSync(join(kitDir, "renderer", "dossier.js"), "utf8");
+if ((emittedJs.match(/not-found/g) ?? []).length < 3) {
+  throw new Error("The dossier kit is missing the 0.1.1 explicit-aid orphan path");
+}
 
 // The package import exposes mounting without running the static page bootstrap.
 await buildDossier("dossier-mount.ts", join(packageDir, "dist", "dossier"), "dossier-mount.js");

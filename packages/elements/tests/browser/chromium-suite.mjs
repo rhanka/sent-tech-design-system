@@ -2091,12 +2091,20 @@ for (const [mode, policy] of [["safe", FOCUS_SAFE_CSP], ["application", FOCUS_AP
 
 {
   const reviewJs = readFileSync(join(FOCUS_DIST, "renderer", "dossier.js"), "utf8");
+  const reviewCss = readFileSync(join(FOCUS_DIST, "renderer", "dossier.css"), "utf8");
+  const reviewHtml = readFileSync(join(FOCUS_DIST, "index.html"), "utf8");
   const label = "Focus kit ships CommentLayer with explicit-aid anchors";
+  const notFoundCount = (reviewJs.match(/not-found/g) ?? []).length;
+  // 0.1.1 emits three "not-found" orphan returns; 0.1.0 emits two and
+  // falls through to the selector slot on a missing aid.
   if (assert(reviewJs.includes("st-review-layer__hover-outline") && reviewJs.includes("a1:") &&
-    // The 0.1.1 orphan path; the bundler emits it as a template literal.
-    reviewJs.includes("not-found") && !reviewJs.includes("VennChart") && !reviewJs.includes("ConditionalFormatting"),
-    label, `${reviewJs.length} bytes`)) ok(label);
-  record("Focus review kit graph", "CommentLayer closure present, unrelated barrel components absent");
+    notFoundCount >= 3 && !reviewJs.includes("VennChart") && !reviewJs.includes("ConditionalFormatting"),
+    label, `${reviewJs.length} bytes, ${notFoundCount} not-found`)) ok(label);
+  // K is recalculated over every file of the review kit.
+  const kitBytes = Buffer.byteLength(reviewJs, "utf8") + Buffer.byteLength(reviewCss, "utf8") + Buffer.byteLength(reviewHtml, "utf8");
+  record("Focus review kit graph", `CommentLayer closure present, unrelated barrel components absent; K=${kitBytes} bytes (dossier.js ${reviewJs.length}, dossier.css ${reviewCss.length}, index.html ${reviewHtml.length})`);
+  const elementsPkg = JSON.parse(readFileSync(join(PACKAGE_DIR, "package.json"), "utf8"));
+  record("Focus review hover qualification", `svelte ${elementsPkg.dependencies["@sentropic/design-system-svelte"]} (plan names 0.43.0/0.43.1)`);
 }
 
 {
@@ -2133,25 +2141,137 @@ for (const [mode, policy] of [["safe", FOCUS_SAFE_CSP], ["application", FOCUS_AP
   const version = created[0]?.v ?? "";
   if (assert(created.every((row) => row.v === version && version.startsWith("sha256:")), `${label} version`, JSON.stringify(created))) ok(`${label} version`);
 
+  // Hover geometry across h1/p/li/table leaves: the outline must frame the
+  // anchored block (relative to the dossier root), never a bare pastille.
+  // Poll until the outline matches the target block (Svelte flushes async).
+  for (const [name, selector, anchorId] of [
+    ["h1", "h1", "focus-test"],
+    ["p", '[data-anchor-id="B"] p strong', "B"],
+    ["li", '[data-anchor-id="B"] li strong', "B"],
+    ["table", '[data-anchor-id="B"] table td strong', "B"],
+  ]) {
+    await page.evaluate((sel) => {
+      document.querySelector(sel).dispatchEvent(new PointerEvent("pointerover", { bubbles: true }));
+    }, selector);
+    await page.waitForFunction((anchor) => {
+      const outline = document.querySelector(".st-review-layer__hover-outline");
+      const block = document.querySelector(`[data-anchor-id="${anchor}"]`);
+      const root = document.querySelector("[data-st-dossier]");
+      if (outline === null || block === null || root === null) return false;
+      const b = block.getBoundingClientRect();
+      const r = root.getBoundingClientRect();
+      const close = (a, b) => Math.abs(a - b) <= 1;
+      return close(parseFloat(outline.style.top) || 0, b.top - r.top)
+        && close(parseFloat(outline.style.left) || 0, b.left - r.left)
+        && close(parseFloat(outline.style.width) || 0, b.width)
+        && close(parseFloat(outline.style.height) || 0, b.height);
+    }, { timeout: 5000 }, anchorId);
+    const hover = await page.evaluate((anchor) => {
+      const outline = document.querySelector(".st-review-layer__hover-outline");
+      const block = document.querySelector(`[data-anchor-id="${anchor}"]`);
+      const root = document.querySelector("[data-st-dossier]");
+      const pastilles = [...document.querySelectorAll("a")].filter((link) => /^\[\d+\]$/.test(link.textContent ?? ""));
+      const rootRect = root?.getBoundingClientRect();
+      return {
+        shown: outline !== null,
+        outline: outline === null ? null : {
+          top: parseFloat(outline.style.top) || 0,
+          left: parseFloat(outline.style.left) || 0,
+          width: parseFloat(outline.style.width) || 0,
+          height: parseFloat(outline.style.height) || 0,
+        },
+        expected: block === null || rootRect === undefined ? null : (() => {
+          const b = block.getBoundingClientRect();
+          return { top: b.top - rootRect.top, left: b.left - rootRect.left, width: b.width, height: b.height };
+        })(),
+        pastillesClean: pastilles.every((link) => !link.matches("[data-anchor-id], [data-commentable]")),
+      };
+    }, anchorId);
+    const close = (a, b) => Math.abs(a - b) <= 1;
+    const hoverLabel = `Focus review hover ${name} frames the anchored block, never a pastille`;
+    if (assert(hover.shown && hover.pastillesClean && hover.outline !== null && hover.expected !== null &&
+      close(hover.outline.top, hover.expected.top) && close(hover.outline.left, hover.expected.left) &&
+      close(hover.outline.width, hover.expected.width) && close(hover.outline.height, hover.expected.height),
+      hoverLabel, JSON.stringify(hover))) ok(hoverLabel);
+    record(`Focus review hover ${name}`, JSON.stringify(hover.outline));
+  }
+
+  // B5-2/3/4 on the live kit tree via DOM moves (the layer re-resolves on
+  // mutation): remove B (orphan, no pin on C), move B after C (aid), change
+  // the header (still resolved).
+  const b2 = await page.evaluate(() => {
+    const root = document.querySelector("[data-st-dossier]");
+    const block = root.querySelector('[data-anchor-id="B"]');
+    window.__b2Saved = block;
+    block.remove();
+    return root.querySelector('[data-anchor-id="B"]') === null;
+  });
+  assert(b2, "Focus review B5-2 fixture removed", "B still present");
+  await page.waitForFunction(() => document.querySelector(".st-review-orphans__count") !== null, { timeout: 5000 });
+  const orphanState = await page.evaluate(() => ({
+    orphans: document.querySelector(".st-review-orphans__count")?.textContent?.trim() ?? "",
+    pins: document.querySelectorAll(".st-review-layer__gutter-pin").length,
+    orphanItems: document.querySelectorAll(".st-review-orphans__item").length,
+    pinAids: [...document.querySelectorAll(".st-review-layer__pins [data-pin-section-key]")].map((pin) => {
+      const key = pin.getAttribute("data-pin-section-key") ?? "";
+      const bytes = Uint8Array.from(atob(key.slice(3).replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0));
+      try { return JSON.parse(new TextDecoder().decode(bytes)).aid; } catch { return "?"; }
+    }),
+  }));
+  // The header thread stays pinned; the three B threads orphan with no pin
+  // on C (the remaining pin decodes to the header aid).
+  if (assert(orphanState.orphans === "3" && orphanState.pins === 1 && orphanState.orphanItems === 3 &&
+    JSON.stringify(orphanState.pinAids) === JSON.stringify(["focus-test"]),
+    "Focus review B5-2 orphan without fallback onto C", JSON.stringify(orphanState))) ok("Focus review B5-2 orphan without fallback onto C");
   await page.evaluate(() => {
-    const leaf = document.querySelector('[data-anchor-id="B"] p strong');
-    leaf.dispatchEvent(new PointerEvent("pointerover", { bubbles: true }));
+    const root = document.querySelector("[data-st-dossier]");
+    const c = root.querySelector('[data-anchor-id="C"]');
+    const b = window.__b2Saved;
+    if (c && b) root.insertBefore(b, c.nextSibling);
   });
-  await page.waitForFunction(() => document.querySelector(".st-review-layer__hover-outline") !== null, { timeout: 5000 });
-  const hover = await page.evaluate(() => {
-    const outline = document.querySelector(".st-review-layer__hover-outline");
-    const block = document.querySelector('[data-anchor-id="B"]');
-    const pastilles = [...document.querySelectorAll("a")].filter((link) => /^\[\d+\]$/.test(link.textContent ?? ""));
-    return {
-      shown: outline !== null,
-      rect: outline === null ? null : { top: outline.style.top, left: outline.style.left, width: outline.style.width, height: outline.style.height },
-      blockRect: block === null ? null : block.getBoundingClientRect().toJSON(),
-      pastillesClean: pastilles.every((link) => !link.matches("[data-anchor-id], [data-commentable]")),
-    };
+  await page.waitForFunction(() => document.querySelectorAll(".st-review-layer__gutter-pin").length > 0, { timeout: 5000 });
+  const movedState = await page.evaluate(() => ({
+    orphans: document.querySelector(".st-review-orphans__count")?.textContent?.trim() ?? "none",
+    pins: document.querySelectorAll(".st-review-layer__gutter-pin").length,
+  }));
+  if (assert(movedState.orphans === "none" && movedState.pins > 0,
+    "Focus review B5-3 move resolves by aid", JSON.stringify(movedState))) ok("Focus review B5-3 move resolves by aid");
+  await page.evaluate(() => {
+    document.querySelector("header h1").textContent = "Revised review fixture";
   });
-  const hoverLabel = "Focus review hover frames the anchored block, never a pastille";
-  if (assert(hover.shown && hover.pastillesClean, hoverLabel, JSON.stringify(hover))) ok(hoverLabel);
-  record("Focus review hover", JSON.stringify(hover.rect));
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  const headerState = await page.evaluate(() => ({
+    orphans: document.querySelector(".st-review-orphans__count")?.textContent?.trim() ?? "none",
+  }));
+  if (assert(headerState.orphans === "none",
+    "Focus review B5-4 header never orphans", JSON.stringify(headerState))) ok("Focus review B5-4 header never orphans");
+
+  // B5-6 text through the layer (keyboard path, trigger never mounted).
+  await page.evaluate(() => {
+    const paragraph = document.querySelector('[data-anchor-id="B"] p');
+    const text = paragraph.firstChild;
+    const range = document.createRange();
+    range.setStart(text, 0);
+    range.setEnd(text, text.textContent.length);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    document.dispatchEvent(new KeyboardEvent("keydown", { altKey: true, shiftKey: true, key: "c", bubbles: true }));
+  });
+  await page.waitForSelector(".st-review-composer__textarea", { timeout: 5000 });
+  await page.type(".st-review-composer__textarea", "Text range note");
+  await page.click('.st-review-composer__actions button[type="submit"]');
+  await page.waitForFunction(() => !document.querySelector(".st-review-composer__textarea"), { timeout: 5000 });
+  const textRows = await page.evaluate(() => window.__reviewRows.length);
+  const textAnchor = await page.evaluate(() => {
+    const row = window.__reviewRows[window.__reviewRows.length - 1];
+    const key = row.target.sectionKey;
+    const bytes = Uint8Array.from(atob(key.slice(3).replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0));
+    const payload = JSON.parse(new TextDecoder().decode(bytes));
+    return { t: payload.t, length: key.length };
+  });
+  if (assert(textRows === 5 && textAnchor.t === "text" && textAnchor.length <= 2048,
+    "Focus review B5-6 text anchor within 2048", JSON.stringify({ textRows, textAnchor }))) ok("Focus review B5-6 text anchor within 2048");
 
   const violations = await observed.violations();
   await page.close();
@@ -2160,6 +2280,22 @@ for (const [mode, policy] of [["safe", FOCUS_SAFE_CSP], ["application", FOCUS_AP
   const otherErrors = observed.consoleErrors.filter((error) => !error.includes("frame-ancestors"));
   assert(violations.length === 0 && otherErrors.length === 0,
     "Focus review load is clean", JSON.stringify({ violations, errors: observed.consoleErrors }));
+}
+
+{
+  // Without review options the packaged mount shows no layer (reading unchanged).
+  const observed = await openPage("/focus-mount-host.html");
+  const page = observed.page;
+  const noLayer = await page.evaluate(async (hostDocument) => {
+    const host = document.querySelector("[data-st-dossier-page]");
+    const { mountDossier } = await import("/focus-mount.js");
+    const dossier = mountDossier(host);
+    dossier.render(hostDocument);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    return document.querySelector(".st-review-layer") === null && document.querySelector("[data-st-dossier]") !== null;
+  }, JSON.parse(readFileSync(join(FIXTURES, "focus-artifact", "b5.json"), "utf8")));
+  if (assert(noLayer, "Focus review without adapter mounts no layer", "layer present")) ok("Focus review without adapter mounts no layer");
+  await observed.close();
 }
 
 console.log("");

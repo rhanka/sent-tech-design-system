@@ -8,6 +8,8 @@ export function markDossierAnchor(container: HTMLElement, id: string): void {
 function label(tag: string, value: string): HTMLElement {
   const element = document.createElement(tag);
   element.textContent = value;
+  // Disclosure toggles keep their native role in review mode.
+  if (tag === "summary") element.setAttribute("data-review-passthrough", "");
   return element;
 }
 
@@ -145,6 +147,7 @@ export function appendDossierEvidence(
     const block = document.createElement("details");
     markDossierAnchor(block, annex.id);
     const summary = document.createElement("summary");
+    summary.setAttribute("data-review-passthrough", "");
     if (report) summary.append(label("h2", annex.title));
     else summary.textContent = annex.title;
     block.append(summary, label("p", annex.summary));
