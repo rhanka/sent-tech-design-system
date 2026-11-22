@@ -421,7 +421,7 @@
         "source",
         "element"
       ],
-      "digest": "sha256:f5f514ad41e20db78c66faba294643b504dea8ee72c7b37d3ab41d4fad135864",
+      "digest": "sha256:83c59592077a9de8fdcf290a847ec908d3989183c05730d02b9c4bf12db622fa",
       "frameworks": [
         "svelte",
         "react",
@@ -5868,6 +5868,6 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "registryRevision": "sha256:b22061b47d49d4faf2a16c0565b395c0f27e46d9b86113bc668878614e983d5a",
-  "sourceCommit": "b8a7dda16f3c148036dea5745d8a9ab5896a5f82"
+  "registryRevision": "sha256:3d6de2c3c5788c89ddea89d13631046126f07c6254a18064d0d24e3edb39557f",
+  "sourceCommit": "f5e6672fd9954880b3c0a3b125bade4ec7b22488"
 }

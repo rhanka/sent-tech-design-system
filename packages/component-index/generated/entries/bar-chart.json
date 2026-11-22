@@ -47,14 +47,14 @@
       "element": "st-bar-chart",
       "package": "@sentropic/design-system-elements",
       "path": "packages/elements/schemas/BarChart.v1.json",
-      "version": "0.2.0"
+      "version": "0.3.0"
     }
   ],
   "description": {
     "en": "Bar chart (vertical or horizontal) with categorical tones.",
     "fr": "Graphique en barres (vertical ou horizontal) avec tons catégoriels."
   },
-  "digest": "sha256:f5f514ad41e20db78c66faba294643b504dea8ee72c7b37d3ab41d4fad135864",
+  "digest": "sha256:83c59592077a9de8fdcf290a847ec908d3989183c05730d02b9c4bf12db622fa",
   "displayName": "BarChart",
   "format": "component-entry/v1",
   "frameworks": [

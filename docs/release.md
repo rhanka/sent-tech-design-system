@@ -190,13 +190,12 @@ Measured on 2026-09-25 against the registry (`npm view <name> version` for each 
 | `@sentropic/design-system-theme-latex` | 0.1.0 | E404 | bootstrap in `latex-publish.yml` |
 | `@sentropic/design-system-theme-quebec` | 0.1.0 | E404 | bootstrap in `quebec-publish.yml` |
 | `@sentropic/design-system-rich-text` | 0.1.0 | E404 (measured 2026-10-30) | bootstrap in `rich-text-publish.yml`, tag `rich-text-v<version>` |
-| `@sentropic/design-system-elements` | 0.1.0 | E404 (measured 2026-11-01) | bootstrap in `elements-publish.yml`, tag `elements-v<version>` |
 | `@sentropic/diagram-core` | 0.1.0 | E404 (measured 2026-11-03) | bootstrap in `diagram-core-publish.yml`, tag `diagram-core-v<version>` |
 | `@sentropic/diagram-canvas` | 0.1.0 | unverified (not measured; `private: true` in this repository until DC-2a L4, 2026-11-11, so no workflow here ever published it — run `npm view @sentropic/diagram-canvas version` before the first tag) | bootstrap in `diagram-canvas-publish.yml`, tag `diagram-canvas-v<version>` |
 | `@sentropic/design-system-review-core` | 0.1.0 | E404 (measured 2026-11-20) | bootstrap in `review-core-publish.yml`, tag `review-core-v<version>` |
 | `@sentropic/diagram-codecs` | 0.1.0 | unverified (new package, lot E2; `npm view @sentropic/diagram-codecs version` returns E404 until the first tag) | bootstrap in `diagram-codecs-publish.yml`, tag `diagram-codecs-v<version>` |
 
-For these nine (`@sentropic/diagram-canvas` and `@sentropic/diagram-codecs` pending their registry measurement), the bootstrap checklist above is the only order that works: the trusted publisher cannot be declared first, because npm has no package page to declare it on. The seven names whose registry version is behind the repository (`design-system-angular`, `dataviz-core`, `dataviz-react`, `dataviz-svelte`, `dataviz-vue`, `graph`, `design-system-skills`) exist on npm and need nothing but their tag, with the trusted publisher declared.
+For the packages in the table (`@sentropic/diagram-canvas` and `@sentropic/diagram-codecs` pending their registry measurement), follow the bootstrap checklist above. The seven names whose registry version is behind the repository (`design-system-angular`, `dataviz-core`, `dataviz-react`, `dataviz-svelte`, `dataviz-vue`, `graph`, `design-system-skills`) exist on npm and need nothing but their tag, with the trusted publisher declared.
 
 ### The eight whose version number is already taken
 
@@ -320,31 +319,53 @@ git push origin diagram-codecs-v0.1.0
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
-Then publish the elements package by pushing the `elements-v<version>` tag:
+### Elements 0.3.0
+
+This release ships the Focus static artifact kit and the `st-dossier-ready`
+review root (FA-D1, #322), the `TimeSeriesChart` element, catalogue entry and
+transcript formatter (EZ-1, #321), and the FA-D3 review layer in the compiled
+kit and `./dossier-mount` export (#332). It also publishes the `./bpmn` and
+`./bpmn-mount` exports for the first time (#267). Publish Elements before any
+Vue release that carries its updated optional BPMN peer pin.
+
+`@sentropic/design-system-review-core` is bumped to `0.1.2` in the same release
+prep because DS-7 (#320) changed `packages/review-core/src/fixture-adapter.ts`
+after `review-core-v0.1.1` was published. `@sentropic/design-system-elements`
+keeps its exact runtime pin on published `@sentropic/design-system-review-core@0.1.1`,
+so `elements-v0.3.0` and `review-core-v0.1.2` can be tagged independently on the
+merged default-branch commit.
+
+On the merged default-branch commit, push the `elements-v<version>` tag (and
+`review-core-v0.1.2` for the DS-7 fixture-adapter patch). The elements publish
+job grants `id-token: write` and uses npm 11 with the public npm registry.
+Confirm the package's npm Trusted Publisher names
+`rhanka/sent-tech-design-system` and `elements-publish.yml`.
 
 ```bash
 git push origin main
-git tag elements-v0.2.0
-git push origin elements-v0.2.0
+git tag elements-v0.3.0
+git push origin elements-v0.3.0
+git tag review-core-v0.1.2
+git push origin review-core-v0.1.2
 ```
 
 The browser bundle is served from the CDN base (exact version pinned, §7 — never a range, never `latest`):
 
 ```
-https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.2.0/dist/browser/
+https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.3.0/dist/browser/
 ```
 
 Once jsDelivr visibly serves the pinned version, run the post-publish CDN check (also wired into each publish workflow's `post-publish-check` job):
 
 ```bash
-node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.2.0
+node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.3.0
 node scripts/verify-jsdelivr-published.mjs --package @sentropic/diagram-core --version 0.1.0
 node scripts/verify-jsdelivr-published.mjs --package @sentropic/diagram-canvas --version 0.1.0
 ```
 
 A mismatch is reported and never fixed by republishing the same version — npm versions are immutable, so the correction is a new patch version.
 
-Follow-up, promptly after the owner's trusted-publisher declaration (npm marks a newly declared trusted publisher "pending validation" and expires it if no OIDC publish happens within ~48 h): remove the bootstrap step from `diagram-core-publish.yml` and its `DECLARED_TOKEN_BOOTSTRAPS` entry; delete the `NPM_TOKEN` secret only when no remaining bootstrap workflow needs it and revoke the temporary token; then tag `diagram-core-v0.1.1`, published through OIDC to validate the publisher (and an elements OIDC validation publish if its declaration completed in the same window). The same follow-up applies to `diagram-canvas-publish.yml` after its first publish: declare the trusted publisher, remove the bootstrap step and its `DECLARED_TOKEN_BOOTSTRAPS` entry, then validate with an OIDC patch publish.
+Follow-up, promptly after the owner's trusted-publisher declaration (npm marks a newly declared trusted publisher "pending validation" and expires it if no OIDC publish happens within ~48 h): remove the bootstrap step from `diagram-core-publish.yml` and its `DECLARED_TOKEN_BOOTSTRAPS` entry; delete the `NPM_TOKEN` secret only when no remaining bootstrap workflow needs it and revoke the temporary token; then tag `diagram-core-v0.1.1`, published through OIDC to validate the publisher. The same follow-up applies to `diagram-canvas-publish.yml` after its first publish: declare the trusted publisher, remove the bootstrap step and its `DECLARED_TOKEN_BOOTSTRAPS` entry, then validate with an OIDC patch publish.
 
 Do not move a published tag unless the npm publish failed before creating any package version. npm versions are immutable after publication.
 

@@ -61,9 +61,9 @@ test("collectSentropicDeps reads every exact @sentropic/* pin of the svelte mani
   assert.equal(byName.get("@sentropic/diagram-canvas"), canvasManifest.version);
   // Review kit: svelte pins review-core at its exact version so svelte-publish
   // fails closed while review-core is not yet on npm. The pin stays at 0.1.0
-  // while the workspace is at 0.1.1 (B5); the next svelte release moves the pin.
+  // while the workspace is at 0.1.2 (DS-7); the next svelte release moves the pin.
   assert.equal(byName.get("@sentropic/design-system-review-core"), "0.1.0");
-  assert.equal(reviewCoreManifest.version, "0.1.1");
+  assert.equal(reviewCoreManifest.version, "0.1.2");
   // sorted, and ranges/tags are ignored (only exact versions are gated)
   const names = deps.map((d) => d.name);
   assert.deepEqual(names, [...names].sort((a, b) => a.localeCompare(b)));
