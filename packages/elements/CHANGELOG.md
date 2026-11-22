@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+- 0.3.1 — same content as 0.3.0, publish workflow fix.
+
 ## 0.3.0
 
 ### Added

@@ -319,7 +319,13 @@ git push origin diagram-codecs-v0.1.0
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
-### Elements 0.3.0
+### Elements 0.3.1
+
+`0.3.1` carries the same package content as `0.3.0` (the `elements-v0.3.0` tag
+failed twice in the `verify` job before publishing because
+`elements-publish.yml` lacked the pinned `browser-actions/setup-chrome` step
+and `CHROME_BIN` env for `chromium-suite.mjs`, and the existing `0.3.0` tag
+cannot be republished with the fixed workflow).
 
 This release ships the Focus static artifact kit and the `st-dossier-ready`
 review root (FA-D1, #322), the `TimeSeriesChart` element, catalogue entry and
@@ -328,37 +334,34 @@ kit and `./dossier-mount` export (#332). It also publishes the `./bpmn` and
 `./bpmn-mount` exports for the first time (#267). Publish Elements before any
 Vue release that carries its updated optional BPMN peer pin.
 
-`@sentropic/design-system-review-core` is bumped to `0.1.2` in the same release
-prep because DS-7 (#320) changed `packages/review-core/src/fixture-adapter.ts`
+`@sentropic/design-system-review-core` was bumped to `0.1.2` in the `0.3.0`
+release prep because DS-7 (#320) changed `packages/review-core/src/fixture-adapter.ts`
 after `review-core-v0.1.1` was published. `@sentropic/design-system-elements`
 keeps its exact runtime pin on published `@sentropic/design-system-review-core@0.1.1`,
-so `elements-v0.3.0` and `review-core-v0.1.2` can be tagged independently on the
-merged default-branch commit.
+so `elements-v0.3.1` can be tagged independently on the merged default-branch
+commit.
 
-On the merged default-branch commit, push the `elements-v<version>` tag (and
-`review-core-v0.1.2` for the DS-7 fixture-adapter patch). The elements publish
-job grants `id-token: write` and uses npm 11 with the public npm registry.
-Confirm the package's npm Trusted Publisher names
+On the merged default-branch commit, push the `elements-v0.3.1` tag. The
+elements publish job grants `id-token: write` and uses npm 11 with the public
+npm registry. Confirm the package's npm Trusted Publisher names
 `rhanka/sent-tech-design-system` and `elements-publish.yml`.
 
 ```bash
 git push origin main
-git tag elements-v0.3.0
-git push origin elements-v0.3.0
-git tag review-core-v0.1.2
-git push origin review-core-v0.1.2
+git tag elements-v0.3.1
+git push origin elements-v0.3.1
 ```
 
 The browser bundle is served from the CDN base (exact version pinned, §7 — never a range, never `latest`):
 
 ```
-https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.3.0/dist/browser/
+https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.3.1/dist/browser/
 ```
 
 Once jsDelivr visibly serves the pinned version, run the post-publish CDN check (also wired into each publish workflow's `post-publish-check` job):
 
 ```bash
-node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.3.0
+node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.3.1
 node scripts/verify-jsdelivr-published.mjs --package @sentropic/diagram-core --version 0.1.0
 node scripts/verify-jsdelivr-published.mjs --package @sentropic/diagram-canvas --version 0.1.0
 ```

@@ -26,6 +26,12 @@ jobs:
         with:
           node-version: "22"
           cache: "npm"
+      - name: Set up Chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
+        with:
+          chrome-version: stable
+          install-dependencies: true
       - run: npm ci
       - name: Build local dependency closure for elements
         run: node scripts/ensure-theme-dists.mjs --workspaces=@sentropic/design-system-elements
@@ -40,6 +46,8 @@ jobs:
       # dossier-l6 rows, the selected-state computed-colour scan and the
       # dossier-track.json criterion-1 standalone row execute here.
       - name: Run Chromium suite (stable host)
+        env:
+          CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
         run: node packages/elements/tests/browser/chromium-suite.mjs
       # The tarball guard, against THIS runner's bytes: the `verify` job is
       # the only one that runs on `workflow_dispatch`, so without this step a
