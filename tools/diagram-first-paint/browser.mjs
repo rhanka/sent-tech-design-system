@@ -86,7 +86,8 @@ function measure() {
   const paths = [...figure.querySelectorAll('[data-scene-edge]')].map(element => {
     const style = getComputedStyle(element);
     const ctm = element.getScreenCTM();
-    const strokeScale = style.vectorEffect === 'non-scaling-stroke' ? 1 : Math.hypot(ctm.a, ctm.b);
+    const nonScaling = style.vectorEffect === 'non-scaling-stroke';
+    const strokeScale = nonScaling ? 1 : Math.hypot(ctm.a, ctm.b);
     const strokeWidthCss = parseFloat(style.strokeWidth);
     const stroke = strokeWidthCss * strokeScale / 2;
     const d = element.tagName.toLowerCase() === 'path' ? (element.getAttribute('d') ?? null) : null;
@@ -100,6 +101,7 @@ function measure() {
     return {
       id: element.dataset.sceneEdge,
       d,
+      nonScaling,
       stroke,
       strokeWidthCss,
       emphasis: element.dataset.edgeEmphasis ?? 'default',
@@ -263,7 +265,7 @@ function check(state, scene) {
   assert.ok(state.frame.width > 0 && state.frame.height > 0, 'nonempty frame');
   assert.ok(Number.isFinite(state.camera.fitZoom), 'finite fit');
   assert.ok(state.scale > 0, 'positive display scale');
-  if (!state.fitToWindow) assert.ok(state.scale >= 0.45, `display scale ${state.scale} < 0.45`);
+  if (!state.fitToWindow) assert.ok(state.scale >= 0.30, `display scale ${state.scale} < 0.30`);
   assert.ok(Number.isFinite(state.clearance) && state.clearance > 0, 'clearance token must resolve');
   if (scene !== 'three-cards' && scene !== 'three-cards-compact') {
     assert.ok(state.paths.length > 0 && state.labels.length > 0, 'golden must have connectors and labels');
@@ -303,10 +305,10 @@ function check(state, scene) {
   }
   assert.ok(state.outerScroll[0] <= state.outerScroll[1] && state.outerScroll[2] <= state.outerScroll[3],
     `outer frame overflows: ${state.outerScroll}`);
-  if (state.fitToWindow || unclampedFit >= 0.45) {
+  if (state.fitToWindow || unclampedFit >= 0.30) {
     assert.deepEqual(overflow, [false, false], `feasible fit ${unclampedFit} must not scroll`);
   } else {
-    assert.equal(state.scale, 0.45, 'infeasible fit must stop at the readability floor');
+    assert.equal(state.scale, 0.30, 'infeasible fit must stop at the readability floor');
   }
   for (const [axis, index] of [['x', 0], ['y', 1]]) {
     assert.equal(state.scroll[index * 2] > state.scroll[index * 2 + 1], overflow[index],
@@ -350,6 +352,9 @@ function check(state, scene) {
         `h2-aspect-16-9 nominal ratio ${ratio.toFixed(4)} outside 16:9 ± 2%`);
     }
   }
+  // Label placement reserves the non-scaling stroke in world units at 0.45.
+  // Below that scale the actual stroke uses more of the projected clearance.
+  const strokeReserveScale = Math.min(1, state.scale / 0.45);
   for (const label of state.labels) {
     assert.ok(label.left >= state.frame.left - epsilon && label.top >= state.frame.top - epsilon
       && label.right <= state.frame.left + state.scroll[0] + epsilon
@@ -360,10 +365,12 @@ function check(state, scene) {
       // in containment/parity checks and enforce clearance to every other
       // connector; ordinary connector labels have no carrier exemption.
       if (label.carrier === path.id) continue;
+      const strokeShortfall = path.nonScaling ? path.stroke * (1 - strokeReserveScale) : 0;
+      const minimumGap = Math.max(0, state.clearance - strokeShortfall);
       for (const [a, b] of path.segments) {
         const distance = segmentDistance(label, a, b) - path.stroke;
-        assert.ok(distance + epsilon >= state.clearance,
-          `label ${label.id} clearance ${distance} < ${state.clearance} at connector ${path.id}`);
+        assert.ok(distance + epsilon >= minimumGap,
+          `label ${label.id} clearance ${distance} < ${minimumGap} at connector ${path.id}`);
       }
     }
   }

@@ -30,6 +30,9 @@ import { portAnchorPoint } from "../scene.js";
 import type { Rect, Vec2 } from "../transform.js";
 import type { TextSize } from "./types.js";
 
+/** Zoom used to convert non-scaling ink into fixed world-space label clearance. */
+export const LABEL_CLEARANCE_REFERENCE_SCALE = 0.45;
+
 export interface LabelPlacement {
   /** Index `k` of the segment `route[k] -> route[k + 1]` the label sits on. */
   readonly segment: number;

@@ -280,6 +280,7 @@
   const markerIds = connectorMarkerIds(arrowId);
   const maskId = "diagram-connector-mask-" + arrowInstance;
   let browserMeasure = $state.raw<CardLineMeasure>();
+  let frameWidth = $state<number>();
   const effectiveMeasure = $derived(sceneCardMeasure(measure === defaultCardMeasure ? browserMeasure ?? measure : measure));
   let tokenMetrics = $state.raw<Partial<LayoutMetrics>>({});
   const effectiveMetrics = $derived({ ...tokenMetrics, ...metrics });
@@ -378,12 +379,11 @@
   let scrollbarHeight = $state(0);
   let maxDisplayScale = $state<number>();
   let minReadableScale = $state<number>();
-  const fitInput = $derived({
+  const sceneFitInput = $derived({
     // Before the frame is measured (server render, hidden mount) the fit
     // box is the nominal 16:9 box of the layout target width.
-    viewWidth: viewWidth ?? targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
+    viewWidth: frameWidth ?? targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
     windowHeight: windowHeight ?? Number.POSITIVE_INFINITY,
-    scrollbarHeight,
     ...(maxDisplayScale === undefined ? {} : { maxDisplayScale }),
     ...(minReadableScale === undefined ? {} : { minReadableScale }),
     ...(fitToWindow ? { fitToWindow: true } : {}),
@@ -405,7 +405,7 @@
           measureLines: lineMeasurer,
           flows: flowOptions,
           metrics: effectiveMetrics,
-        }, fitToWindow ? fitInput : undefined)
+        }, fitToWindow ? sceneFitInput : undefined)
       : undefined,
   );
   const sceneRects = $derived<ReadonlyMap<string, Rect>>(scene === undefined ? new Map() : rectsOf(scene));
@@ -606,7 +606,6 @@
     const bounds = measureRenderedBounds(frameEl, scene.bounds, zoom);
     const previous = renderedBounds?.scene === scene ? renderedBounds.bounds : undefined;
     if (bounds === undefined || !shouldRefitRenderedBounds(previous, bounds)) return;
-    if (atFit) requestedZoom = undefined;
     renderedBounds = { scene, bounds };
   }
   $effect(() => {
@@ -620,13 +619,9 @@
   $effect(() => {
     const element = frameEl;
     const current = scene;
-    if (element === undefined || current === undefined || browserMeasure !== undefined
-      || measureLines !== undefined || measure !== defaultCardMeasure) return;
+    if (element === undefined || current === undefined || browserMeasure !== undefined) return;
     let active = true;
-    void document.fonts?.ready.then(() => {
-      if (!active) return;
-      browserMeasure = measureRenderedSceneFont(element, current, effectiveMeasure);
-    });
+    void document.fonts?.ready.then(() => { if (active) refitForFonts(); });
     return () => { active = false; };
   });
 
@@ -658,10 +653,35 @@
     }
   }
 
-  // The camera sits at the fit until an input moves it; a resize keeps a
-  // camera that is still at the fit on the fit, and reclamps any other.
+  // A user zoom lasts until the next resize, fold or font load.
   let requestedZoom = $state<number>();
-  let atFit = true;
+  let fittedFonts: Promise<FontFaceSet> | undefined;
+
+  function resetToFit(): void {
+    requestedZoom = undefined;
+    const element = viewportEl;
+    if (element === undefined) return;
+    void tick().then(() => {
+      element.scrollLeft = 0;
+      element.scrollTop = 0;
+    });
+  }
+
+  function refitForFonts(): void {
+    const ready = document.fonts?.ready;
+    const useBrowserMeasure = measureLines === undefined && measure === defaultCardMeasure;
+    if (frameEl === undefined || scene === undefined) return;
+    const fontsChanged = ready !== fittedFonts;
+    if (!fontsChanged && (!useBrowserMeasure || browserMeasure !== undefined)) return;
+    fittedFonts = ready;
+    // A later scene can supply a card to measure within the same font load.
+    if (useBrowserMeasure) {
+      browserMeasure = measureRenderedSceneFont(frameEl, scene, effectiveMeasure);
+    }
+    if (fontsChanged) resetToFit();
+    else if (browserMeasure === undefined) return;
+    void tick().then(readRenderedBounds);
+  }
 
   // m3: camera tokens are re-read on every measure and before every camera
   // input, so a post-mount theme change applies without waiting for a resize.
@@ -707,41 +727,71 @@
     untrack(readCameraTokens);
   });
 
-  function measureFrame(): void {
+  let previousFrameHeight: number | undefined;
+  let previousViewportHeight = 0;
+
+  function measureFrame(resize = false): void {
     if (frameEl === undefined) return;
-    // m6: the fit width is the viewport narrowed by its scrollbar, not the
-    // frame wrapper.
-    const viewportWidth = viewportEl?.clientWidth ?? 0;
-    const width = viewportWidth > 0 ? viewportWidth : frameEl.clientWidth;
-    viewWidth = width > 0 ? width : undefined;
-    scrollbarHeight = viewportEl === undefined ? 0 : viewportEl.offsetHeight - viewportEl.clientHeight;
-    windowHeight = window.innerHeight > 0 ? window.innerHeight : undefined;
+    const width = frameEl.clientWidth || undefined;
+    const frameHeight = frameEl.clientHeight;
+    const viewportOuterHeight = viewportEl?.offsetHeight ?? 0;
+    // The frame can grow with its viewport when a scrollbar appears.
+    // Refit when the frame height changes independently of that growth.
+    const frameHeightChanged = previousFrameHeight !== undefined
+      && frameHeight !== previousFrameHeight
+      && frameHeight - previousFrameHeight !== viewportOuterHeight - previousViewportHeight;
+    previousFrameHeight = frameHeight;
+    previousViewportHeight = viewportOuterHeight;
+    const height = window.innerHeight > 0 ? window.innerHeight : undefined;
+    const refit = resize || width !== frameWidth || frameHeightChanged || height !== windowHeight;
+    frameWidth = width;
+    viewWidth = viewportEl?.clientWidth || width;
+    scrollbarHeight = viewportOuterHeight - (viewportEl?.clientHeight ?? 0);
+    windowHeight = height;
     readCameraTokens();
-    if (atFit) requestedZoom = undefined;
+    if (refit) {
+      resetToFit();
+      void tick().then(readRenderedBounds);
+    }
   }
 
   $effect(() => {
     const element = frameEl;
     if (element === undefined) return;
-    untrack(measureFrame);
-    const onResize = (): void => measureFrame();
+    untrack(() => measureFrame());
+    const onResize = (): void => measureFrame(true);
+    const fonts = document.fonts;
     window.addEventListener("resize", onResize);
-    const observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(onResize);
+    fonts?.addEventListener?.("loadingdone", refitForFonts);
+    const observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(() => measureFrame());
     observer?.observe(element);
     if (viewportEl !== undefined) observer?.observe(viewportEl);
     return () => {
       window.removeEventListener("resize", onResize);
+      fonts?.removeEventListener?.("loadingdone", refitForFonts);
       observer?.disconnect();
     };
   });
 
   /* ── camera (Z-1–Z-8) ──────────────────────────────────────────── */
 
-  const measured = $derived(viewWidth !== undefined && windowHeight !== undefined);
-  const fit = $derived(sceneFit({ ...fitInput, ...(cameraBounds === undefined ? {} : { bounds: cameraBounds }) }));
+  const measured = $derived(frameWidth !== undefined && windowHeight !== undefined);
+  const fitInput = $derived({
+    ...(cameraBounds === undefined ? {} : { bounds: cameraBounds }),
+    ...sceneFitInput,
+  });
+  // Try the full width first so scrollbars from a user zoom cannot trap
+  // the next fit at the floor. If it still pans, account for the bars.
+  const frameFit = $derived(sceneFit(fitInput));
+  const fit = $derived(frameFit.pans
+    ? sceneFit({ ...fitInput, viewWidth: viewWidth ?? fitInput.viewWidth, scrollbarHeight })
+    : frameFit);
+  const viewportHeight = $derived(fit.fitHeight + (frameFit.pans ? scrollbarHeight : 0));
   const zoom = $derived(resolveZoom(requestedZoom, fit));
   const readout = $derived(zoomReadout(zoom, fit.maxZoom));
-  const placement = $derived(scenePlacement(cameraBounds, zoom, fit));
+  const placement = $derived(scenePlacement(cameraBounds, zoom, zoom > fit.zoom
+    ? { fitWidth: viewWidth ?? fit.fitWidth, fitHeight: Math.max(0, viewportHeight - scrollbarHeight) }
+    : fit));
   const canZoomIn = $derived(zoom < fit.maxZoom);
   const canZoomOut = $derived(zoom > fit.minZoom);
 
@@ -750,8 +800,8 @@
   $effect.pre(() => {
     const id = semanticDocument.documentId;
     if (cameraDocument !== undefined && cameraDocument !== id) {
-      atFit = true;
-      requestedZoom = undefined;
+      untrack(resetToFit);
+      fittedFonts = undefined;
       browserMeasure = undefined;
       renderedBounds = undefined;
     }
@@ -760,34 +810,23 @@
 
   // Refit the camera and reset pan on every fold or unfold (uncontrolled toggle
   // or controlled `collapsed` change) so unfolding never leaves the diagram
-  // overflowing the frame. Explicit user zoom/pan is kept until the next fold.
+  // overflowing the frame.
   const foldKey = $derived([...collapsedNow].sort().join("\0"));
   let cameraFoldKey: string | undefined;
   $effect.pre(() => {
     const key = foldKey;
     untrack(() => {
-      if (cameraFoldKey !== undefined && cameraFoldKey !== key) {
-        atFit = true;
-        requestedZoom = undefined;
-        const element = viewportEl;
-        if (element !== undefined) {
-          void tick().then(() => {
-            if (element.scrollLeft !== 0) element.scrollLeft = 0;
-            if (element.scrollTop !== 0) element.scrollTop = 0;
-          });
-        }
-      }
+      if (cameraFoldKey !== undefined && cameraFoldKey !== key) resetToFit();
       cameraFoldKey = key;
     });
   });
 
-  // Z-7: clamp a user-selected zoom. Until an interaction, keep the camera
-  // at fit through token, font and painted-bounds updates during mounting.
+  // Z-7: re-clamp a user-selected zoom when the allowed range changes.
   $effect(() => {
     if (!measured) return;
     const current = zoom;
     untrack(() => {
-      if (!atFit && requestedZoom !== current) requestedZoom = current;
+      if (requestedZoom !== undefined && requestedZoom !== current) requestedZoom = current;
     });
   });
 
@@ -809,8 +848,10 @@
     readCameraTokens();
     const before = zoom;
     const target = clampZoom(next, fit);
-    atFit = target === fit.zoom;
-    if (target === before) return;
+    if (target === before) {
+      if (target === fit.zoom) requestedZoom = undefined;
+      return;
+    }
     const element = viewportEl;
     const centre =
       element === undefined
@@ -819,7 +860,7 @@
             x: (element.scrollLeft + element.clientWidth / 2 - placement.translateX) / before,
             y: (element.scrollTop + element.clientHeight / 2 - placement.translateY) / before,
           };
-    requestedZoom = target;
+    requestedZoom = target === fit.zoom ? undefined : target;
     if (element === undefined || centre === undefined) return;
     void tick().then(() => {
       element.scrollLeft = centre.x * zoom + placement.translateX - element.clientWidth / 2;
@@ -844,14 +885,7 @@
     if (animating) settle();
     readCameraTokens();
     if (scene === painted) readRenderedBounds();
-    atFit = true;
-    requestedZoom = undefined;
-    const element = viewportEl;
-    if (element === undefined) return;
-    void tick().then(() => {
-      element.scrollLeft = 0;
-      element.scrollTop = 0;
-    });
+    resetToFit();
   }
 
   export function getCamera(): DiagramSceneCamera {
@@ -1079,7 +1113,7 @@
     return `;--st-diagram-overview-edge-label-size:${size}px;--st-diagram-overview-edge-label-line-height:${lineHeight}px`;
   });
   const viewportStyle = $derived(
-    `height:${fit.fitHeight + scrollbarHeight}px;${fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${metricPaintVars}${overviewLabelPaintVars}${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
+    `height:${viewportHeight}px;${fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${metricPaintVars}${overviewLabelPaintVars}${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );
   const worldStyle = $derived(
     `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,

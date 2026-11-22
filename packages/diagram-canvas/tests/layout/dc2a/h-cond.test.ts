@@ -7,6 +7,30 @@ import { defaultCardMeasure, sceneCardMeasure, layoutCard, projectCardProps, pro
 import { hCondInput } from "./h-cond.js";
 
 describe("h-cond golden scenes", () => {
+  it.each(["architecture", "ontology"] as const)("should clear the painted connectors at the 0.30 floor in %s", name => {
+    const input = hCondInput(name, false);
+    const result = layoutScene(input);
+    if (result.status !== "laid-out") throw new Error("fixture refused");
+    const scene = resolveScene(result, input);
+    const fit = sceneFit({ bounds: scene.bounds!, viewWidth: 390, windowHeight: 844 });
+    expect(fit.zoom).toBe(0.30);
+    expect(scene.labels.length).toBeGreaterThan(0);
+
+    // Project the world-space padding and its stroke reserve at the fitted
+    // zoom, then subtract the actual non-scaling half-stroke.
+    const halfStroke = 0.75;
+    const minimumPaintedGap = (4 + halfStroke / 0.45) * fit.zoom - halfStroke;
+    for (const { occurrence, box } of scene.labels) {
+      for (const edge of scene.edges) for (let i = 1; i < edge.points.length; i++) {
+        const a = edge.points[i - 1]!, b = edge.points[i]!;
+        const dx = Math.max(box.x - Math.max(a.x, b.x), Math.min(a.x, b.x) - box.x - box.width, 0);
+        const dy = Math.max(box.y - Math.max(a.y, b.y), Math.min(a.y, b.y) - box.y - box.height, 0);
+        const paintedGap = Math.hypot(dx, dy) * fit.zoom - halfStroke;
+        expect(paintedGap, `${occurrence} vs ${edge.occurrence} segment ${i}`).toBeGreaterThanOrEqual(minimumPaintedGap - 1 / 64);
+      }
+    }
+  });
+
   it("should replace authored parallel routes with one visible bundle and a fresh bbox", () => {
     const source = hCondInput("architecture", true);
     const view = { ...source.view, relationOccurrences: Object.fromEntries(Object.entries(source.view.relationOccurrences)

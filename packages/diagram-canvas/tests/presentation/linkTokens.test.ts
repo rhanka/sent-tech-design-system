@@ -237,6 +237,63 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     expect(filtered.scene.edges).toHaveLength(3);
     expect(filtered.scene.badges).toEqual(baseline.scene.badges);
     expect(filtered.svg).toBe(baseline.svg);
+
+    // Also verify a link hidden via an entity attribute filter on its endpoint (endpoint-hidden)
+    // leaves compact numbered-flow badges fixed, and null/partial view inputs do not throw.
+    const auxEntity = entityRef("aux");
+    const auxOccurrence = occurrenceRef("e.aux");
+    const auxLink = relationRef("endpoint-filtered-link");
+    const auxLinkOccurrence = occurrenceRef("r.endpoint-filtered-link");
+    const entityFilteredView = {
+      ...initial.result.view,
+      presentation: { ...initial.result.view.presentation, anatomy: "v2" as const },
+      filters: [{ id: "exclude-aux-entity", kind: "attribute-equals", mode: "exclude", attribute: "name", value: "Aux" }] as const,
+    };
+    const entityBaseline = renderSceneSvg({ ...input, view: entityFilteredView });
+    const entityFiltered = renderSceneSvg({
+      ...input,
+      document: {
+        ...source.document,
+        entities: {
+          ...source.document.entities,
+          [auxEntity]: { id: auxEntity, type: "node", profile: "generic@2", attributes: { name: { kind: "text", value: "Aux" } } },
+        },
+        relations: {
+          ...source.document.relations,
+          [auxLink]: {
+            id: auxLink, type: "link", profile: "generic@2", attributes: {},
+            endpoints: [{ role: "source", target: entityRef("a") }, { role: "target", target: auxEntity }],
+          },
+        },
+      },
+      presentation: {
+        ...input.presentation,
+        entities: {
+          ...input.presentation.entities,
+          [auxOccurrence]: { form: "card", text: { title: "Aux" } },
+        },
+      },
+      view: {
+        ...entityFilteredView,
+        entityOccurrences: {
+          ...entityFilteredView.entityOccurrences,
+          [auxOccurrence]: { id: auxOccurrence, entity: auxEntity, geometry: { x: 0, y: 0, width: 200, height: 100 } },
+        },
+        relationOccurrences: {
+          ...entityFilteredView.relationOccurrences,
+          [auxLinkOccurrence]: {
+            id: auxLinkOccurrence, relation: auxLink, endpoints: [
+              { role: "source", occurrence: occurrenceRef("e.a") }, { role: "target", occurrence: auxOccurrence },
+            ],
+          },
+        },
+      },
+    });
+    expect(entityFiltered.scene.edges).toHaveLength(3);
+    expect(entityFiltered.scene.badges).toEqual(entityBaseline.scene.badges);
+    expect(entityFiltered.svg).toBe(entityBaseline.svg);
+    expect(isR7ConnectorPresentation(undefined, {} as never, source.document)).toBe(false);
+    expect(isR7ConnectorPresentation(undefined, null as never, source.document)).toBe(false);
   });
 
   it("reopens a mixed-anatomy @1 scene with the same cards and rounded connectors (REQ-R7-05 / REQ-R7-11)", () => {

@@ -6,14 +6,14 @@ import {
   type SemanticDocument,
   type ViewDocument,
 } from "@sentropic/diagram-core";
-import { relationVerdict } from "./visibility.js";
+import { entityVerdict, relationVerdict } from "./visibility.js";
 
 export type R7PresentationLike = Pick<DiagramPresentation, "contractPin" | "entities"> & {
   readonly relations?: Readonly<Record<string, RelationPresentation>>;
 };
 
 export type R7DocumentLike = Pick<SemanticDocument, "profileRefs" | "relations">
-  & Partial<Pick<SemanticDocument, "typeDefinitions">>;
+  & Partial<Pick<SemanticDocument, "typeDefinitions" | "entities">>;
 
 export function diagramAnatomyOf(
   presentation: R7PresentationLike,
@@ -38,10 +38,21 @@ export function isR7ConnectorPresentation(
   document?: R7DocumentLike,
 ): boolean {
   if (document?.profileRefs?.length === 1 && document.profileRefs[0] === "erd@1") return false;
-  const occurrences = view === undefined ? [] : Object.values(view.relationOccurrences).filter((occ) => {
+  const hasFilters = (view?.filters?.length ?? 0) > 0;
+  const occurrences = view == null ? [] : Object.values(view.relationOccurrences ?? {}).filter((occ) => {
     if (occ == null) return false;
+    if (!hasFilters) return true;
     const relation = document?.relations?.[occ.relation];
-    return relation === undefined || relationVerdict(view, relation, document).visible;
+    if (relation !== undefined && !relationVerdict(view, relation, document).visible) return false;
+    if (document?.entities != null && view.entityOccurrences != null) {
+      for (const endpoint of occ.endpoints ?? []) {
+        const ownerOccId = view.portOccurrences?.[endpoint.occurrence]?.ownerOccurrence ?? endpoint.occurrence;
+        const entityId = view.entityOccurrences[ownerOccId]?.entity;
+        const entity = entityId === undefined ? undefined : document.entities[entityId];
+        if (entity !== undefined && !entityVerdict(view, entity).visible) return false;
+      }
+    }
+    return true;
   });
   if (document != null) {
     const relations = view == null

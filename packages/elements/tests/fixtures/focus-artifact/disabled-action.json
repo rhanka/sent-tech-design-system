@@ -1,0 +1,84 @@
+{
+  "ref": "decision-short2",
+  "subject": "Shared rendering contract",
+  "title": "Decision with a disabled action",
+  "hash": "l6short2",
+  "cursor": "2026-11-02T00:00:00Z",
+  "sections": [
+    {
+      "id": "p1",
+      "kind": "prose",
+      "targetRef": "decision-short2",
+      "questionId": "q1",
+      "markdown": "In short: The choice turns on upkeep and consistency. See the [shared notes](https://example.com/notes) for background.",
+      "inputs": [
+        {
+          "ref": "inventory",
+          "kind": "note",
+          "label": "Current inventory"
+        }
+      ],
+      "completionCriterion": "Identify every existing rendering path."
+    },
+    {
+      "id": "q1",
+      "kind": "question",
+      "targetRef": "decision-short2",
+      "question": "Which rendering contract do we adopt for the shared pieces?",
+      "state": "open",
+      "context": "In short: Every screen keeps its own rendering path today, and small differences grow with each release. A shared contract lets every team ship from plain data while the design system owns layout and tone.",
+      "readingTimeMinutes": 2,
+      "recommendedAnswer": "Adopt the shared contract because it keeps every screen consistent with the least upkeep.",
+      "recommendedOptionId": "opt-a"
+    },
+    {
+      "id": "os1",
+      "kind": "optionSet",
+      "targetRef": "decision-short2",
+      "questionId": "q1",
+      "title": "Options",
+      "options": [
+        {
+          "id": "opt-a",
+          "kind": "option",
+          "targetRef": "q1",
+          "label": "Adopt the shared contract",
+          "consequence": "One contract to keep, and no drift across screens.",
+          "annotation": "none"
+        },
+        {
+          "id": "opt-b",
+          "kind": "option",
+          "targetRef": "q1",
+          "label": "Keep separate rendering paths",
+          "consequence": "Each team keeps its own upkeep and its own drift.",
+          "annotation": "none"
+        }
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "name": "choose-option",
+      "targetRef": "opt-b",
+      "label": "Keep the current approach",
+      "enabled": false
+    }
+  ],
+  "provenance": {
+    "source": "track",
+    "readAt": "2026-11-02T00:00:00Z"
+  },
+  "readability": {
+    "ownerRequestQuote": "Pick one shared way to render interface pieces from plain data.",
+    "stakes": "The choice decides how much effort the team spends keeping every screen consistent.",
+    "stakesLevel": "medium",
+    "readingBudgetMinutes": 3
+  },
+  "amendmentTrace": [],
+  "schemaVersion": 2,
+  "sources": [],
+  "citations": [],
+  "evidenceGroups": [],
+  "annexes": []
+}

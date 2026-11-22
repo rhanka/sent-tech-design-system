@@ -9,6 +9,7 @@ export {
   entityRef,
   m3ProfileRegistry,
   occurrenceRef,
+  relationRef,
   shippedExecutorBindings,
   viewRef,
 } from "@sentropic/diagram-core";

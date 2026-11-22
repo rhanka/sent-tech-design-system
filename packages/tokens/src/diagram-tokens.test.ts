@@ -119,7 +119,7 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     containerPadding: `${spacing.containerPadding}px`,
     zoneGutter: `${spacing.zoneGutter}px`,
     maxDisplayScale: "0.62",
-    minReadableScale: "0.45",
+    minReadableScale: "0.30",
     transitionDuration: "240ms",
     gapMin: `${spacing.gapMin}px`,
     gapBase: `${spacing.gapBase}px`,

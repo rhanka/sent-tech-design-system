@@ -3,7 +3,7 @@ import { validateFlows } from "@sentropic/diagram-core";
 import { relationVerdict } from "../visibility.js";
 import { DEFAULT_FLOW_TOKENS, planFlows, placeFlowMarks } from "./flows.js";
 import { layoutErd } from "./erd.js";
-import { DEFAULT_EDGE_LABEL_SIZE, DEFAULT_MIN_READABLE_SCALE } from "../camera.js";
+import { DEFAULT_EDGE_LABEL_SIZE } from "../camera.js";
 import { diagramAnatomyOf, isR7ConnectorPresentation } from "../r7Mode.js";
 /**
  * Measured diagram layout (M3 §4.6–§4.8, layout half of §5.6; placement by
@@ -119,7 +119,7 @@ import {
   type LinkLegendEdgeInput,
   type SceneLinkLegend,
 } from "../presentation/linkLegend.js";
-import { placePackedLabel } from "./labels.js";
+import { LABEL_CLEARANCE_REFERENCE_SCALE, placePackedLabel } from "./labels.js";
 import {
   CONTENT_INSET,
   DEFAULT_ALLOCATED_LINES,
@@ -2376,7 +2376,7 @@ function layoutMeasuredPass(
       const zoneGeo = anatomyZoneGeometry(occurrenceAnatomy(representativeOf(id)));
       const inner = innerWidthOf(size.width);
       rects.set(id, { x, y, width: size.width, height: size.height });
-      const ruleClearance = (zoneGeo.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
+      const ruleClearance = (zoneGeo.ruleHeight / 2 + 1) / LABEL_CLEARANCE_REFERENCE_SCALE;
       titleBands.set(id, { x, y, width: size.width, height: zoneGeo.headerInset + header.height });
       const footerReserve = sceneBoxAt(representativeOf(id), size.width, false).footerReserve;
       if (footerReserve > 0) footerBands.set(id, {
@@ -2507,9 +2507,9 @@ function layoutMeasuredPass(
     // Footer bands constrain text placement. Routes may cross a zone's
     // footer while leaving it; a label on that route still has to clear it.
     // Header measurement ends at the rule's top. Reserve its non-scaling
-    // paint plus one CSS px at the display floor for label placement.
+    // paint plus one CSS px at the fixed reference scale for label placement.
     // Routes may cross a rule while leaving their own zone.
-    const ruleClearance = (ZONE_GEOMETRY.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
+    const ruleClearance = (ZONE_GEOMETRY.ruleHeight / 2 + 1) / LABEL_CLEARANCE_REFERENCE_SCALE;
     const fixedShapes: Rect[] = [...routeShapes, ...[...titleBands.values()].map(band => ({
       x: band.x, y: band.y + band.height, width: band.width,
       height: ZONE_GEOMETRY.ruleHeight / 2 + ruleClearance,

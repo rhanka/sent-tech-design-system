@@ -45,7 +45,7 @@ const markerIds = connectorMarkerIds(arrowId);
 const maskId = 'diagram-connector-mask-' + hostId;
 const ownedCache = createLayoutCache();
 const { frameEl, viewportEl, measure, measureLines, effectiveMetrics, r7Mode, token,
-    fit, zoom, readout, placement, viewportStyle, fitInput, refitOnFold,
+    fit, zoom, readout, placement, viewportStyle, sceneFitInput, resetToFit,
     setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
         props, () => scene.value, camera => emit('cameraChange', camera), undefined,
         { animating: () => animating.value, settle: () => settle() },
@@ -53,7 +53,7 @@ const { frameEl, viewportEl, measure, measureLines, effectiveMetrics, r7Mode, to
 defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 const folds = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? folds.value);
-watch(() => [...collapsedNow.value].sort().join('\0'), () => refitOnFold(), { flush: 'pre' });
+watch(() => [...collapsedNow.value].sort().join('\0'), resetToFit, { flush: 'pre' });
 let previousOrientation: SceneOrientations | undefined;
 let orientationDocument: string | undefined;
 let orientationInputTuple: readonly unknown[] | undefined;
@@ -135,7 +135,7 @@ const scene = computed(() => layoutResult.value.status === 'laid-out'
         ...(props.legendLabels === undefined ? {} : { legendLabels: props.legendLabels }),
         resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
         metrics: effectiveMetrics.value,
-    }, props.fitToWindow ? fitInput.value : undefined) : undefined);
+    }, props.fitToWindow ? sceneFitInput.value : undefined) : undefined);
 const sceneRects = computed<ReadonlyMap<string, Rect>>(() => scene.value === undefined ? new Map() : rectsOf(scene.value));
 onMounted(() => {
     watch(layoutResult, result => emit('layout', result), { immediate: true });

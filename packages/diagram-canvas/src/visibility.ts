@@ -155,7 +155,7 @@ function combine(verdicts: readonly Verdict[]): Verdict {
 
 /** The filters of one kind, in the view's own order, which is content here (an array, not a record). */
 function filtersOfKind(view: ViewDocument, kind: ViewFilter["kind"]): readonly ViewFilter[] {
-  return view.filters.filter((filter) => filter.kind === kind);
+  return (view.filters ?? []).filter((filter) => filter.kind === kind);
 }
 
 export function entityVerdict(view: ViewDocument, entity: Entity): Verdict {
