@@ -83,17 +83,6 @@ export function mountDossier(host: HTMLElement, options?: DossierMountOptions): 
     render(document) {
       if (destroyed) throw new Error("The dossier mount has been destroyed");
       const validated = assertFocusDocument(document);
-      // The review layer tracks the rendered document version (baseDigest).
-      // An explicit artifactVersion wins on the first render; every render
-      // then refreshes the live layer without remounting it.
-      if (reviewOptions !== undefined) {
-        const version = reviewOptions.artifactVersion ?? baseDigest(document);
-        if (review === null) {
-          review = mountDossierReview(host, { ...reviewOptions, artifactVersion: version });
-        } else {
-          review.setArtifactVersion(version);
-        }
-      }
       const { ref, sections } = validated;
       const sectionCollision = sections.some((section) => section.id === ref ||
         (section.kind === "optionSet" && section.options.some(({ id }) => id === ref)));
@@ -109,6 +98,17 @@ export function mountDossier(host: HTMLElement, options?: DossierMountOptions): 
         ? renderDossierContent(host, validated, dispatch, "light")
         : connectDossier(host, snapshot, dispatch);
       rendered = current;
+      // Mount or refresh the review layer only after validation and DOM
+      // replacement succeed so a rejected document neither leaks a layer nor
+      // overwrites the live layer's artifactVersion.
+      if (reviewOptions !== undefined) {
+        const version = reviewOptions.artifactVersion ?? baseDigest(document);
+        if (review === null) {
+          review = mountDossierReview(host, { ...reviewOptions, artifactVersion: version });
+        } else {
+          review.setArtifactVersion(version);
+        }
+      }
       host.dispatchEvent(new CustomEvent<DossierReadyDetail>("st-dossier-ready", {
         detail: { reviewRoot: current.reviewRoot },
         bubbles: true,

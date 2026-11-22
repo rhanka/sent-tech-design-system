@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { copyFileSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
@@ -12,6 +12,8 @@ const themeFile = normalizePath(join(packageDir, "..", "themes", "css", "sent-te
 const reviewCore = "@sentropic/design-system-review-core";
 const packageManifest = JSON.parse(readFileSync(join(packageDir, "package.json"), "utf8"));
 const reviewCoreEntry = import.meta.resolve(reviewCore);
+const reviewCoreRealEntry = realpathSync(fileURLToPath(reviewCoreEntry));
+const reviewCoreDir = normalizePath(dirname(reviewCoreRealEntry));
 const installedReviewCore = JSON.parse(readFileSync(new URL("../package.json", reviewCoreEntry), "utf8"));
 if (installedReviewCore.version !== packageManifest.dependencies[reviewCore]) {
   throw new Error(`Focus kit resolved ${reviewCore}@${installedReviewCore.version}`);
@@ -71,46 +73,61 @@ if (output.length !== 2 || entry?.fileName !== "renderer/dossier.js" || css === 
     entry.imports.length > 0 || entry.dynamicImports.length > 0) {
   throw new Error("The dossier kit must emit one self-contained module and one external stylesheet");
 }
-const renderedModules = Object.entries(entry.modules).filter(([, module]) => module.renderedLength > 0);
-if (renderedModules.some(([id]) => /[\\/]dom[\\/]browser-entry\.ts$|[\\/]dom[\\/].+-element\.svelte$/.test(id))) {
-  throw new Error("The dossier kit includes a Shadow DOM element");
-}
-const svelteComponents = renderedModules.filter(([id]) => id.endsWith(".svelte"));
-// FA-D3: the review layer ships in the kit through the Svelte barrel import.
-// Only the CommentLayer closure is allowed in the emitted graph (plus the
-// lucide icons it names and dossier-review.svelte); every other barrel
-// component must have been shaken out of the dedicated build. The closure is
-// the transitive import set of CommentLayer: its thread panel pulls in
-// Header/Drawer/EmptyState, pins and threads pull in CommentAuthorship,
-// CommentThread, AvatarGroup and IconButton.
 const reviewClosure = /[\\/](?:CommentLayer|ThreadPanel|CommentComposer|CommentPin|Button|Badge|CommentAuthorship|CommentThread|OrphanList|Header|AvatarGroup|IconButton|Drawer|EmptyState)\.svelte$/;
 const inReviewClosure = (id) => reviewClosure.test(id) || id.includes("@lucide/svelte") || id.includes("dossier-review.svelte");
-if (!svelteComponents.some(([id]) => id.includes("dossier-review.svelte"))) {
-  throw new Error("The dossier kit is missing the review layer (dossier-review.svelte)");
-}
-const outsideReview = svelteComponents.filter(([id]) => !inReviewClosure(id));
-if (outsideReview.length > 0) {
-  throw new Error(`The dossier kit includes Svelte components outside the review layer: ${outsideReview.map(([id]) => id).join(", ")}`);
-}
-// The nested 0.1.0 copy of review-core (pulled in by the Svelte 0.43.2
-// dependency under design-system-svelte/node_modules) must not reach the
-// emitted graph: every review-core module has to come from the pinned
-// 0.1.1 entry the alias resolves to.
-const strayReviewCore = renderedModules.filter(([id]) =>
-  id.includes("design-system-review-core") && id.includes("design-system-svelte"));
-if (strayReviewCore.length > 0) {
-  throw new Error(`The dossier kit includes a nested review-core copy outside 0.1.1: ${strayReviewCore.map(([id]) => id).join(", ")}`);
-}
-// Behavioural marker complementing the module check: 0.1.1 emits three
-// "not-found" orphan returns (0.1.0 emits two and falls through to the
-// selector slot on a missing aid).
-const emittedJs = readFileSync(join(kitDir, "renderer", "dossier.js"), "utf8");
-if ((emittedJs.match(/not-found/g) ?? []).length < 3) {
-  throw new Error("The dossier kit is missing the 0.1.1 explicit-aid orphan path");
+
+function verifyEmittedGraph(chunk, emittedPath, label) {
+  const renderedModules = Object.entries(chunk.modules).filter(([, module]) => module.renderedLength > 0);
+  if (renderedModules.some(([id]) => /[\\/]dom[\\/]browser-entry\.ts$|[\\/]dom[\\/].+-element\.svelte$/.test(id))) {
+    throw new Error(`${label} includes a Shadow DOM element`);
+  }
+  const svelteComponents = renderedModules.filter(([id]) => id.endsWith(".svelte"));
+  if (!svelteComponents.some(([id]) => id.includes("dossier-review.svelte"))) {
+    throw new Error(`${label} is missing the review layer (dossier-review.svelte)`);
+  }
+  const outsideReview = svelteComponents.filter(([id]) => !inReviewClosure(id));
+  if (outsideReview.length > 0) {
+    throw new Error(`${label} includes Svelte components outside the review layer: ${outsideReview.map(([id]) => id).join(", ")}`);
+  }
+  // Every rendered review-core module must come strictly from the pinned 0.1.1
+  // entry directory — never from Svelte's nested 0.1.0 copy or any other path.
+  const normalizedIds = renderedModules.map(([id]) => normalizePath(id));
+  if (!normalizedIds.some((id) => id.startsWith(`${reviewCoreDir}/`) && id.includes("anchor-dom"))) {
+    throw new Error(`${label} is missing pinned ${reviewCore}@${installedReviewCore.version} anchor-dom modules`);
+  }
+  const strayReviewCore = normalizedIds.filter(
+    (id) => (id.includes("design-system-review-core") || id.includes("/review-core/")) && !id.startsWith(`${reviewCoreDir}/`),
+  );
+  if (strayReviewCore.length > 0) {
+    throw new Error(`${label} includes a review-core copy outside ${reviewCoreDir}: ${strayReviewCore.join(", ")}`);
+  }
+  // Behavioural marker complementing the module check: 0.1.1 emits three
+  // "not-found" orphan returns (0.1.0 emits two and falls through to the
+  // selector slot on a missing aid).
+  const emittedJs = readFileSync(emittedPath, "utf8");
+  if ((emittedJs.match(/not-found/g) ?? []).length < 3) {
+    throw new Error(`${label} is missing the 0.1.1 explicit-aid orphan path`);
+  }
+  return { renderedModules, svelteComponents };
 }
 
+const { renderedModules, svelteComponents } = verifyEmittedGraph(
+  entry,
+  join(kitDir, "renderer", "dossier.js"),
+  "The dossier kit",
+);
+
 // The package import exposes mounting without running the static page bootstrap.
-await buildDossier("dossier-mount.ts", join(packageDir, "dist", "dossier"), "dossier-mount.js");
+const { output: mountOutput } = await buildDossier("dossier-mount.ts", join(packageDir, "dist", "dossier"), "dossier-mount.js");
+const mountEntry = mountOutput.find((file) => file.type === "chunk" && file.isEntry);
+if (mountEntry === undefined || mountEntry.imports.length > 0 || mountEntry.dynamicImports.length > 0) {
+  throw new Error("The dossier-mount export must emit one self-contained entry chunk");
+}
+verifyEmittedGraph(
+  mountEntry,
+  join(packageDir, "dist", "dossier", "dossier-mount.js"),
+  "The dossier-mount export",
+);
 
 const entrypoint = "index.html";
 copyFileSync(join(domDir, "dossier-shell.html"), join(kitDir, entrypoint));

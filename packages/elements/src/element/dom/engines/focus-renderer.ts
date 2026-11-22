@@ -526,7 +526,9 @@ export function renderDossierContent(
       for (const { term, definition } of glossary) {
         definitions.append(text("dt", undefined, term), text("dd", undefined, definition));
       }
-      details.append(text("summary", undefined, `Glossary (${glossary.length} ${glossary.length === 1 ? "term" : "terms"})`), definitions);
+      const glossarySummary = text("summary", undefined, `Glossary (${glossary.length} ${glossary.length === 1 ? "term" : "terms"})`);
+      glossarySummary.setAttribute("data-review-passthrough", "");
+      details.append(glossarySummary, definitions);
       context.append(details);
     }
     if (context.hasChildNodes()) article.append(context);
@@ -687,7 +689,17 @@ export function connectDossier(
   node.addEventListener("click", onClick);
   node.addEventListener("keydown", onKeyDown);
   node.addEventListener("click", onFold);
-  node.replaceChildren(article);
+  // Keep a mounted review layer attached across root replacements so its
+  // panel, focus and state do not detach/reattach on every render.
+  const reviewLayer = node.querySelector<HTMLElement>(":scope > [data-st-dossier-review]");
+  if (reviewLayer === null) {
+    node.replaceChildren(article);
+  } else {
+    for (const child of Array.from(node.childNodes)) {
+      if (child !== reviewLayer) child.remove();
+    }
+    reviewLayer.before(article);
+  }
 
   function destroy(): void {
     node.removeEventListener("click", onClick);
