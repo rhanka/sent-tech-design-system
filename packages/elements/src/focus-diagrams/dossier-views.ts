@@ -1,12 +1,12 @@
 import { baseDigest, canonicalJson } from "@sentropic/focus/editing";
 import { assertFocusDocument } from "@sentropic/focus/validate";
-import type { SemanticDocument, ViewDocument } from "@sentropic/diagram-core";
+import type { SceneDocument, SceneView } from "@sentropic/diagram-canvas/diagramSceneModel";
 import { prepareDossierDiagram } from "./diagram-layout.js";
 import { isRecord, resolveDossierScene } from "./diagram-source.js";
 
 export interface DossierDiagramViews {
-  readonly scene: SemanticDocument;
-  readonly views: { readonly expanded: ViewDocument; readonly folded: ViewDocument };
+  readonly scene: SceneDocument;
+  readonly views: { readonly expanded: SceneView; readonly folded: SceneView };
 }
 
 export interface DossierViews {
@@ -22,7 +22,7 @@ export function buildDossierViews(input: unknown, kitManifest: unknown): Dossier
   const sections = dossier.sections.filter((section) => section.kind === "diagram");
   if (sections.length === 0) return undefined;
   const diagrams = Object.fromEntries(sections.map((section) => {
-    const scene = JSON.parse(canonicalJson(resolveDossierScene(section))) as SemanticDocument;
+    const scene = JSON.parse(canonicalJson(resolveDossierScene(section))) as SceneDocument;
     const { expanded, folded } = prepareDossierDiagram(section.id, section.alt, scene);
     return [section.id, { scene, views: { expanded: expanded.result.view, folded: folded.result.view } }];
   }));

@@ -1,5 +1,5 @@
 import type { DiagramNode } from "@sentropic/focus";
-import type { SemanticDocument } from "@sentropic/diagram-core";
+import type { SceneDocument } from "@sentropic/diagram-canvas/diagramSceneModel";
 import ecosystem from "./ecosystem.json" with { type: "json" };
 
 export class DossierDiagramError extends Error {
@@ -132,9 +132,9 @@ export function resolveDossierScene(section: DiagramNode): Record<string, unknow
   return scene;
 }
 
-export function readDossierScene(sectionId: string, scene: unknown): SemanticDocument {
+export function readDossierScene(sectionId: string, scene: unknown): SceneDocument {
   const refuse: Refuse = (message) => { throw new DossierDiagramError(sectionId, "diagram-source-unsupported", message); };
   if (!isRecord(scene)) return refuse("Expected a semantic scene object");
   checkScene(scene, refuse);
-  return scene as unknown as SemanticDocument;
+  return scene as unknown as SceneDocument;
 }
