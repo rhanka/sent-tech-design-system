@@ -21,7 +21,8 @@ export interface PresentationPin {
   readonly contentDigest: string;
 }
 
-export type StrokeStyle = "solid" | "dashed";
+import type { StrokeStyle } from "./connector-registry.js";
+export type { StrokeStyle };
 export type DiagramForm = "card" | "container" | "legend" | "legend-key";
 /** Text/header alignment governed by `diagram-presentation@2` (DE-1). */
 export type PresentationAlign = "left" | "center";

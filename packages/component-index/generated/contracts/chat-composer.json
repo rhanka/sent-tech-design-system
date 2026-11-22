@@ -1,8 +1,8 @@
 {
   "componentId": "chat-composer",
   "contractSource": "derived",
-  "digest": "sha256:fbca5f736d4ca4165d76d1b67b2fd35907b3f7ce8090554262e7d3a57eba5096",
-  "entryDigest": "sha256:2491ceb4f05cfc886f2d7e7256cb138f33d2f7ff23db03c1187f2cb6c8309881",
+  "digest": "sha256:2e93f4b2f2d2d2f6f58c8cdecb701cf1f8cb37bbd4a72459b17283cb9beffc11",
+  "entryDigest": "sha256:38c5d73e3104bba388795119b726dded2278e7c9b959807ac0b733a1efcd90dc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -249,7 +249,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatComposer.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatComposerProps",
-        "version": "0.43.2"
+        "version": "0.44.0"
       },
       "status": "partial",
       "unresolved": [
@@ -345,7 +345,7 @@
         "declarationPath": "packages/components-vue/dist/ChatComposer.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatComposerProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "complete",
       "unresolved": [],

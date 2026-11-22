@@ -6,14 +6,76 @@ import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, DIAGRAM_PRES
   m3ProfileRegistry, shippedExecutorBindings } from '@sentropic/diagram-core';
 import { flowFixture } from '../../packages/diagram-canvas/test-support/flowFixture.ts';
 import { nestedZoneFixture } from '../../packages/diagram-canvas/test-support/nestedZoneFixture.ts';
+import { r7ConnectorsFixture } from '../../packages/diagram-canvas/test-support/r7ConnectorsFixture.ts';
 
-import { cases } from './scenes.js';
-export { cases } from './scenes.js';
+import { cases, expectedLegendStyles } from './scenes.js';
+export { cases, expectedLegendStyles } from './scenes.js';
+
+function r7NestedStylesFixture() {
+  const document = {
+    documentId: 'document:first-paint-r7-nested-styles',
+    schemaVersion: CURRENT_SCHEMA_VERSION,
+    revision: 1,
+    profileRefs: ['generic@2'],
+    typeDefinitions: {},
+    entities: {
+      'entity:zone-platform': { id: 'entity:zone-platform', profile: 'generic@2', type: 'container', attributes: { name: { kind: 'text', value: 'Platform' } } },
+      'entity:zone-core': { id: 'entity:zone-core', profile: 'generic@2', type: 'container', attributes: { name: { kind: 'text', value: 'Core' } } },
+      'entity:engine': { id: 'entity:engine', profile: 'generic@2', type: 'node', attributes: { name: { kind: 'text', value: 'Engine' } } },
+      'entity:store': { id: 'entity:store', profile: 'generic@2', type: 'node', attributes: { name: { kind: 'text', value: 'Store' } } },
+      'entity:gateway': { id: 'entity:gateway', profile: 'generic@2', type: 'node', attributes: { name: { kind: 'text', value: 'Gateway' } } },
+      'entity:client': { id: 'entity:client', profile: 'generic@2', type: 'node', attributes: { name: { kind: 'text', value: 'Client' } } },
+      'entity:monitor': { id: 'entity:monitor', profile: 'generic@2', type: 'node', attributes: { name: { kind: 'text', value: 'Monitor' } } },
+    },
+    relations: {
+      'relation:c.core': { id: 'relation:c.core', profile: 'generic@2', type: 'contains', endpoints: [{ role: 'parent', target: 'entity:zone-platform' }, { role: 'child', target: 'entity:zone-core' }], attributes: {} },
+      'relation:c.gateway': { id: 'relation:c.gateway', profile: 'generic@2', type: 'contains', endpoints: [{ role: 'parent', target: 'entity:zone-platform' }, { role: 'child', target: 'entity:gateway' }], attributes: {} },
+      'relation:c.engine': { id: 'relation:c.engine', profile: 'generic@2', type: 'contains', endpoints: [{ role: 'parent', target: 'entity:zone-core' }, { role: 'child', target: 'entity:engine' }], attributes: {} },
+      'relation:c.store': { id: 'relation:c.store', profile: 'generic@2', type: 'contains', endpoints: [{ role: 'parent', target: 'entity:zone-core' }, { role: 'child', target: 'entity:store' }], attributes: {} },
+      'relation:r-solid': { id: 'relation:r-solid', profile: 'generic@2', type: 'link', endpoints: [{ role: 'source', target: 'entity:engine' }, { role: 'target', target: 'entity:store' }], attributes: { label: { kind: 'text', value: 'persists' } } },
+      'relation:r-emph': { id: 'relation:r-emph', profile: 'generic@2', type: 'link', endpoints: [{ role: 'source', target: 'entity:store' }, { role: 'target', target: 'entity:gateway' }], attributes: { label: { kind: 'text', value: 'publishes' } } },
+      'relation:r-dotted': { id: 'relation:r-dotted', profile: 'generic@2', type: 'link', endpoints: [{ role: 'source', target: 'entity:engine' }, { role: 'target', target: 'entity:gateway' }], attributes: { label: { kind: 'text', value: 'metrics' } } },
+      'relation:r-dashed': { id: 'relation:r-dashed', profile: 'generic@2', type: 'link', endpoints: [{ role: 'source', target: 'entity:gateway' }, { role: 'target', target: 'entity:client' }], attributes: { label: { kind: 'text', value: 'streams' } } },
+      'relation:r-dashed-2': { id: 'relation:r-dashed-2', profile: 'generic@2', type: 'link', endpoints: [{ role: 'source', target: 'entity:client' }, { role: 'target', target: 'entity:monitor' }], attributes: { label: { kind: 'text', value: 'reports' } } },
+    },
+    ports: {},
+    resources: {},
+    extensions: [],
+  };
+  const presentation = {
+    contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+    entities: {
+      'occurrence:e.zone-platform': { form: 'container', anatomy: 'v2', text: { title: 'Platform', subtitle: 'System' } },
+      'occurrence:e.zone-core': { form: 'container', anatomy: 'v2', text: { title: 'Core', subtitle: 'Domain' } },
+      'occurrence:e.engine': { form: 'card', anatomy: 'v2', text: { title: 'Engine', body: 'Worker' } },
+      'occurrence:e.store': { form: 'card', anatomy: 'v2', text: { title: 'Store', body: 'State' } },
+      'occurrence:e.gateway': { form: 'card', anatomy: 'v2', text: { title: 'Gateway', body: 'Edge' } },
+      'occurrence:e.client': { form: 'card', anatomy: 'v2', text: { title: 'Client', body: 'Consumer' } },
+      'occurrence:e.monitor': { form: 'card', anatomy: 'v2', text: { title: 'Monitor', body: 'Telemetry' } },
+    },
+    relations: {
+      'relation:r-solid': { strokeStyle: 'solid', arrowhead: 'arrow' },
+      'relation:r-emph': { strokeStyle: 'solid', arrowhead: 'none', emphasis: 'emphasis' },
+      'relation:r-dotted': { strokeStyle: 'dotted', arrowhead: 'arrow' },
+      'relation:r-dashed': { strokeStyle: 'dashed', arrowhead: 'arrow' },
+      'relation:r-dashed-2': { strokeStyle: 'dashed', arrowhead: 'arrow' },
+    },
+    legends: {},
+    categoryTokens: [],
+  };
+  return { document, presentation, defaultFolds: [] };
+}
 
 export function fixture(name) {
   if (!cases.includes(name)) throw new Error(`Unknown scene: ${name}`);
   const common = { registry: m3ProfileRegistry, bindings: shippedExecutorBindings,
     labels: { fit: 'Ajuster' }, title: name };
+  if (name === 'r7-connectors' || name === 'r7-connectors-folded') {
+    return { ...common, ...r7ConnectorsFixture(name.endsWith('-folded')) };
+  }
+  if (name === 'r7-nested-styles') {
+    return { ...common, ...r7NestedStylesFixture() };
+  }
   if (name.startsWith('numbered-flows')) {
     const source = flowFixture(name.endsWith('-bundled') ? 6 : 3, { labels: true, folded: true, reverse: true });
     return { ...common, document: source.document, presentation: source.presentation, flows: { fanOutMax: 4 } };

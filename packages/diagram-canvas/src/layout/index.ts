@@ -1,5 +1,31 @@
+export {
+  ARROW_DIRECTION_CONVENTION,
+  DEFAULT_ZONE_TAG_ACRONYM_ALLOWLIST,
+  isOpaqueAcronymZoneTag,
+  lintArrowDirection,
+  lintDiagramConventions,
+  lintZoneTagAcronyms,
+  type ArrowDirectionEdgeInput,
+  type DiagramConventionLintOptions,
+  type LintArrowDirectionInput,
+  type LintDiagramConventionsInput,
+  type LintZoneTagAcronymsInput,
+  type ZoneTagLintEntry,
+} from "./conventions.js";
 export { measureBundleLabel, type BundleLabelGroup } from "./bundleLabel.js";
-export { channelMetrics, channelGap, type LayoutChannel, type ChannelMetrics } from "./channels.js";
+export { channelMetrics, channelGap, channelCapacity, type LayoutChannel, type ChannelMetrics } from "./channels.js";
+export {
+  checkRouteSpacing,
+  DEFAULT_ROUTE_BORDER_CLEARANCE,
+  DEFAULT_ROUTE_SPACING,
+  segmentToRectDistance,
+  type ChannelCapacitySummary,
+  type CheckedRoute,
+  type CheckRouteSpacingInput,
+  type RouteSpacingConflict,
+  type RouteSpacingConflictKind,
+  type RouteSpacingReport,
+} from "./routeSpacing.js";
 /**
  * The layout engine (SPEC §10.5, rules L-R1–L-R11): a `generic@1`
  * `SemanticDocument` in, a `diagram-core` `ViewDocument` out. Pure computation,
@@ -68,6 +94,7 @@ export {
   LEGEND_KEY_HEIGHT,
   measureHeader,
   RULE_GAP,
+  scaleEdgeLabelMeasurer,
   SWATCH_ALLOCATION,
   TOGGLE_ALLOCATION,
   UNWRAPPED_PROBE_WIDTH,
@@ -96,7 +123,7 @@ export {
   type LabelPlacement,
   type PackedLabelEntry,
 } from "./labels.js";
-export { bendCount, routeEdges, simplifyRoute, type RouteOutcome, type RouteRequest } from "./route.js";
+export { bendCount, routeEdges, simplifyRoute, subdivideChannelTracks, type RouteOutcome, type RouteRequest } from "./route.js";
 export * from "./types.js";
 
 export { FLOW_BADGE_FONT_SIZE, FLOW_BADGE_LINE_HEIGHT, DEFAULT_FLOW_TOKENS, type FlowTokens, type FlowArrow, type FlowBundle, type FlowVisibleTarget } from "./flows.js";

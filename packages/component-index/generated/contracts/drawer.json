@@ -1,8 +1,8 @@
 {
   "componentId": "drawer",
   "contractSource": "derived",
-  "digest": "sha256:1150c577d485099facf097aae33d45294392fbbff90a0d365d575d7373eb4a06",
-  "entryDigest": "sha256:f93ddbe36ad5603c314e57554b1cc47b3d2c0c891c0b9640d1fb2c6287946c18",
+  "digest": "sha256:6276a4ab571012abf87336b5a23b3ff859146f035539eaf859fe2f427efcb0d2",
+  "entryDigest": "sha256:1f3fd6bc5b32d4e76bd899714ff65023f0907e4b4a63e2ba3d219551827bd85a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -202,7 +202,7 @@
         "declarationPath": "packages/components-svelte/dist/Drawer.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DrawerProps",
-        "version": "0.43.2"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -264,7 +264,7 @@
         "declarationPath": "packages/components-vue/dist/Drawer.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DrawerProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "complete",
       "unresolved": [],

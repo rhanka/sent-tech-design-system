@@ -8,8 +8,8 @@ const { mkdir, writeFile, mkdtemp, rm } = await import('node:fs/promises');
 const { tmpdir } = await import('node:os');
 const { join } = await import('node:path');
 const { buildHarness, root } = await import('./build.mjs');
-const { cases } = await import('./scenes.js');
-const { segmentInterval, exposedSegments, centredBodyFindings, compactCardFindings, connectorFindings } = await import('./geometry.mjs');
+const { cases, expectedLegendStyles } = await import('./scenes.js');
+const { segmentInterval, exposedSegments, centredBodyFindings, compactCardFindings, connectorFindings, roundedElbowFindings, linkStrokeWidthFindings, legendFindings } = await import('./geometry.mjs');
 const { preview } = await import('vite');
 const { default: puppeteer } = await import('puppeteer-core');
 const assert = (await import('node:assert/strict')).default;
@@ -62,17 +62,54 @@ function measure() {
       left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height,
       ...(carrier === undefined ? {} : { carrier }) });
   }
+  const parsePathPoints = d => {
+    const tokens = (d ?? '').match(/[MLQ]|[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?/gi) ?? [];
+    const pts = [];
+    let i = 0, cmd = '', curr;
+    while (i < tokens.length) {
+      const tok = tokens[i];
+      if (/^[MLQ]$/i.test(tok)) { cmd = tok.toUpperCase(); i += 1; continue; }
+      if (cmd === 'M' || cmd === 'L') {
+        curr = { x: Number(tokens[i]), y: Number(tokens[i + 1]) }; i += 2;
+        pts.push(curr);
+        if (cmd === 'M') cmd = 'L';
+      } else if (cmd === 'Q') {
+        const cx = Number(tokens[i]), cy = Number(tokens[i + 1]);
+        const ex = Number(tokens[i + 2]), ey = Number(tokens[i + 3]); i += 4;
+        if (curr) pts.push({ x: 0.25 * curr.x + 0.5 * cx + 0.25 * ex, y: 0.25 * curr.y + 0.5 * cy + 0.25 * ey });
+        curr = { x: ex, y: ey };
+        pts.push(curr);
+      } else break;
+    }
+    return pts;
+  };
   const paths = [...figure.querySelectorAll('[data-scene-edge]')].map(element => {
     const style = getComputedStyle(element);
     const ctm = element.getScreenCTM();
     const nonScaling = style.vectorEffect === 'non-scaling-stroke';
     const strokeScale = nonScaling ? 1 : Math.hypot(ctm.a, ctm.b);
-    const stroke = parseFloat(style.strokeWidth) * strokeScale / 2;
-    const points = Array.from(element.points, point => {
+    const strokeWidthCss = parseFloat(style.strokeWidth);
+    const stroke = strokeWidthCss * strokeScale / 2;
+    const d = element.tagName.toLowerCase() === 'path' ? (element.getAttribute('d') ?? null) : null;
+    const raw = d !== null
+      ? parsePathPoints(d)
+      : Array.from(element.points ?? [], point => ({ x: point.x, y: point.y }));
+    const points = raw.map(point => {
       const p = new DOMPoint(point.x, point.y).matrixTransform(ctm);
       return { x: p.x, y: p.y };
     });
-    return { id: element.dataset.sceneEdge, nonScaling, stroke, points };
+    return {
+      id: element.dataset.sceneEdge,
+      d,
+      nonScaling,
+      stroke,
+      strokeWidthCss,
+      emphasis: element.dataset.edgeEmphasis ?? 'default',
+      arrowhead: element.dataset.edgeArrowhead ?? 'arrow',
+      flow: Boolean(element.dataset.flowStep || element.dataset.flowBundle),
+      erd: false,
+      points,
+    };
   });
   // Only a surface painted AFTER the connector layer hides a connector: no
   // layer of the scene sets a z-index, so document order is paint order.
@@ -92,7 +129,7 @@ function measure() {
     const a = new DOMPoint(x, y).matrixTransform(groupMatrix), b = new DOMPoint(x + width, y + height).matrixTransform(groupMatrix);
     return { left: Math.min(a.x, b.x), top: Math.min(a.y, b.y), right: Math.max(a.x, b.x), bottom: Math.max(a.y, b.y) };
   });
-  const surfaces = [...world.querySelectorAll('.st-diagramCard,.st-diagramZone,.st-diagramSceneFigure-flowBadge')].filter(above).flatMap(element => {
+  const surfaces = [...world.querySelectorAll('.st-diagramCard,.st-diagramZone,.st-diagramSceneFigure-flowBadge,.st-diagramSceneFigure-legend')].filter(above).flatMap(element => {
     const style = getComputedStyle(element);
     if (!/^rgb\([^/]+\)$/.test(style.backgroundColor) || style.opacity !== '1') return [];
     const r = box(element);
@@ -115,7 +152,7 @@ function measure() {
   const occluders = [...surfaces, ...cutouts];
   const frameBox = box(frame);
   const scrollbars = [frame.offsetWidth - frame.clientWidth, frame.offsetHeight - frame.clientHeight];
-  return { camera: window.__camera, scale, transform, world: box(world), frame: frameBox, scrollbars,
+  return { camera: window.__camera, fitToWindow: figure.hasAttribute('data-fit-to-window'), scale, transform, world: box(world), frame: frameBox, scrollbars,
     viewport: { ...frameBox, right: frameBox.right - scrollbars[0], bottom: frameBox.bottom - scrollbars[1],
       width: frameBox.width - scrollbars[0], height: frameBox.height - scrollbars[1] },
     // The rendered extent includes all scene bounds and the two 1 px paint
@@ -143,6 +180,18 @@ function measure() {
       }];
     }),
     connectorLabels: [...figure.querySelectorAll('[data-scene-label]')].map(element => element.dataset.sceneLabel),
+    r7LabelSizes: [...figure.querySelectorAll('[data-scene-label][data-connector-mode="r7"]')]
+      .map(element => parseFloat(getComputedStyle(element).fontSize) * scale),
+    legend: (() => {
+      const el = figure.querySelector('[data-scene-legend]');
+      if (!el) return null;
+      return {
+        id: 'legend',
+        ...box(el),
+        anchor: el.dataset.legendAnchor ?? null,
+        styles: [...el.querySelectorAll('[data-legend-style]')].map(row => row.dataset.legendStyle),
+      };
+    })(),
     relations: window.__relations ?? null,
     labels, paths, occluders };
 }
@@ -204,6 +253,7 @@ function parityGeometry(state) {
     viewport: { width: state.viewport.width, height: state.viewport.height },
     origin: { x: state.world.left - state.viewport.left, y: state.world.top - state.viewport.top },
     nodes: state.nodes.map(bounds), labels: state.labels.map(bounds),
+    legend: state.legend === null ? null : { ...bounds(state.legend), anchor: state.legend.anchor, styles: state.legend.styles },
     edges: state.paths.map(path => ({ id: path.id, stroke: path.stroke / state.scale,
       points: path.points.map(point => ({ x: (point.x - state.world.left) / state.scale,
         y: (point.y - state.world.top) / state.scale })) })) };
@@ -214,7 +264,8 @@ function check(state, scene) {
   assert.ok(state.nodes.length >= 3, 'must render at least three cards');
   assert.ok(state.frame.width > 0 && state.frame.height > 0, 'nonempty frame');
   assert.ok(Number.isFinite(state.camera.fitZoom), 'finite fit');
-  assert.ok(state.scale >= 0.30, `display scale ${state.scale} < 0.30`);
+  assert.ok(state.scale > 0, 'positive display scale');
+  if (!state.fitToWindow) assert.ok(state.scale >= 0.30, `display scale ${state.scale} < 0.30`);
   assert.ok(Number.isFinite(state.clearance) && state.clearance > 0, 'clearance token must resolve');
   if (scene !== 'three-cards' && scene !== 'three-cards-compact') {
     assert.ok(state.paths.length > 0 && state.labels.length > 0, 'golden must have connectors and labels');
@@ -243,7 +294,7 @@ function check(state, scene) {
   if (overflow[0]) assert.ok(state.scrollbars[1] > 0, 'horizontal scrolling must exercise a visible classic scrollbar');
   const reachableRight = state.viewport.right + (state.overflow[0] === 'auto' ? state.scroll[0] - state.scroll[1] : 0);
   const reachableBottom = state.viewport.bottom + (state.overflow[1] === 'auto' ? state.scroll[2] - state.scroll[3] : 0);
-  const drawing = [...state.nodes, ...state.labels, ...state.paths.flatMap(path => path.points.map(point => ({
+  const drawing = [...state.nodes, ...state.labels, ...(state.legend === null ? [] : [state.legend]), ...state.paths.flatMap(path => path.points.map(point => ({
     id: path.id, left: point.x - path.stroke, right: point.x + path.stroke,
     top: point.y - path.stroke, bottom: point.y + path.stroke,
   })))];
@@ -254,7 +305,7 @@ function check(state, scene) {
   }
   assert.ok(state.outerScroll[0] <= state.outerScroll[1] && state.outerScroll[2] <= state.outerScroll[3],
     `outer frame overflows: ${state.outerScroll}`);
-  if (unclampedFit >= 0.30) {
+  if (state.fitToWindow || unclampedFit >= 0.30) {
     assert.deepEqual(overflow, [false, false], `feasible fit ${unclampedFit} must not scroll`);
   } else {
     assert.equal(state.scale, 0.30, 'infeasible fit must stop at the readability floor');
@@ -275,6 +326,17 @@ function check(state, scene) {
   // joins: a label never floats between two cards without its line.
   assert.deepEqual(connectorFindings({ paths: state.paths, labels: state.connectorLabels, nodes: state.nodes,
     occluders: state.occluders, relations: state.relations ?? undefined, tolerance: 1 }), [], 'connectors');
+  if (scene.startsWith('r7-')) {
+    assert.deepEqual(roundedElbowFindings({ paths: state.paths, maxRadius: 12 }), [], 'r7 rounded elbow radius cap');
+    assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths }), [], 'r7 link stroke widths');
+    assert.ok(state.r7LabelSizes.length > 0, 'r7 edge labels must render');
+    for (const size of state.r7LabelSizes) {
+      assert.ok(size + epsilon >= 8, `r7 edge label renders at ${size} CSS px (< 8)`);
+    }
+    const expectedStyles = expectedLegendStyles(scene);
+    assert.deepEqual(legendFindings({ legend: state.legend, nodes: state.nodes, expectedAnchor: 'right',
+      ...(expectedStyles === null ? {} : { expectedStyles }) }), [], 'r7 link legend order and anchor');
+  }
   // Label placement reserves the non-scaling stroke in world units at 0.45.
   // Below that scale the actual stroke uses more of the projected clearance.
   const strokeReserveScale = Math.min(1, state.scale / 0.45);
@@ -349,6 +411,44 @@ try {
           else {
             assert.ok(parity.has(key), `Svelte baseline must exist for ${key}`);
             equalGeometry(current, parity.get(key), `Svelte/Vue ${key}`);
+          }
+          if (scene === 'r7-connectors' || scene === 'r7-nested-styles') {
+            const toggle = await page.$('button[aria-expanded="true"]');
+            assert.ok(toggle, `${name} must expose an expanded zone fold toggle`);
+            await toggle.click();
+            await settle(page);
+            const folded = await page.evaluate(measure);
+            check(folded, `${scene}--folded`);
+            const expand = await page.$('button[aria-expanded="false"]');
+            assert.ok(expand, `${name} folded zone toggle must remain interactive`);
+            await expand.click();
+            await settle(page);
+            const unfolded = await page.evaluate(measure);
+            // REQ-R7-18 / REQ-R7-30: verify automatic refit on unfold BEFORE any Ajuster click.
+            check(unfolded, scene);
+            equalGeometry(parityGeometry(unfolded), current, `${name} automatic unfold refit`);
+            const refit = await page.$('button::-p-text(Ajuster)');
+            assert.ok(refit, 'Ajuster button must exist after unfold');
+            await refit.click();
+            await settle(page);
+            const restored = await page.evaluate(measure);
+            assert.deepEqual(restored.camera, unfolded.camera, `${name} unfold camera must equal state after Ajuster`);
+            equalGeometry(restored, unfolded, `${name} unfold Ajuster idempotence`);
+          }
+          if (scene === 'r7-connectors') {
+            await page.addStyleTag({ content: 'html{font-size:16px}.st-diagramSceneFigure{--st-component-diagramScene-edgeLabelFontSize:calc(1rem + 8px);--st-component-diagramScene-linkDashDashed:11px 7px}' });
+            await page.evaluate(() => window.dispatchEvent(new Event('resize')));
+            await settle(page);
+            assert.deepEqual(await page.evaluate(() => {
+              const figure = document.querySelector('.st-diagramSceneFigure');
+              const styleOf = selector => getComputedStyle(figure.querySelector(selector));
+              return [
+                styleOf('.st-diagramSceneFigure-viewport').getPropertyValue('--st-diagram-edge-label-size').trim(),
+                styleOf('[data-scene-edge][data-edge-stroke="dashed"]').strokeDasharray,
+                styleOf('[data-edge-stroke="dashed"] [data-legend-swatch]').strokeDasharray,
+              ];
+            }), ['24px', '11px, 7px', '11px, 7px'], 'resolved label size and shared dash theme override');
+            check(await page.evaluate(measure), scene);
           }
           completed++;
           console.log(`PASS ${name}`);

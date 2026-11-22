@@ -1,8 +1,8 @@
 {
   "componentId": "code-snippet",
   "contractSource": "derived",
-  "digest": "sha256:84b4cbbed1968d1be657faf2e178e9117afa60c98e209958f14224cba85d9002",
-  "entryDigest": "sha256:53df0f8f3fc1e1547a7b3f657f443828adc35ada7fb43dd4108803a70f77d21f",
+  "digest": "sha256:682890c2d266d793d19ac99c99f4bf539e02b7813f2ca6b1dd8a3b19a012b50e",
+  "entryDigest": "sha256:bc60c3576399ea3b2c8b96c8c439c5f779398eda3003be4d6a6b095856cdb6a4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -151,7 +151,7 @@
         "declarationPath": "packages/components-svelte/dist/CodeSnippet.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CodeSnippetProps",
-        "version": "0.43.2"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -202,7 +202,7 @@
         "declarationPath": "packages/components-vue/dist/CodeSnippet.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CodeSnippetProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "complete",
       "unresolved": [],
