@@ -438,15 +438,18 @@ const deepVerify = {
       ["svelte", rootManifest.devDependencies.svelte],
     ],
   },
-  // L7a: the elements package. No local closure: its runtime dependencies
-  // (ajv, dompurify, svelte, @sentropic/bpmn-canvas, @sentropic/focus) all
-  // exist on the registry at the pinned versions, so the throwaway install
-  // resolves them from the registry for real. That resolution IS the
-  // reclassification proof: with ajv still in devDependencies, importing the
-  // installed "." entry would die on `ajv/dist/2020.js` with no workspace
-  // to fall back on.
+  // L7a: the elements package. Its runtime dependencies (ajv, dompurify,
+  // svelte, @sentropic/bpmn-canvas, @sentropic/focus) all exist on the
+  // registry at the pinned versions, so the throwaway install resolves them
+  // from the registry for real. That resolution IS the reclassification
+  // proof: with ajv still in devDependencies, importing the installed "."
+  // entry would die on `ajv/dist/2020.js` with no workspace to fall back on.
+  // FA-D3 adds the review layer, which imports CommentLayer from
+  // @sentropic/design-system-svelte at the workspace version — unpublished
+  // until release (ETARGET otherwise) — so that tarball is packed locally;
+  // the walk pulls its own local closure (incl. review-core) with it.
   [reviewCoreName]: { closure: [], peers: [] },
-  "@sentropic/design-system-elements": { closure: [], peers: [] },
+  "@sentropic/design-system-elements": { closure: ["@sentropic/design-system-svelte"], peers: [] },
   "@sentropic/design-system-react": {
     closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens"],
     peers: [
