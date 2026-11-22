@@ -1,16 +1,22 @@
-import { component } from '../../../../tokens/dist/component.js';
 import { DIAGRAM_SCENE_SPACING } from './spacing-tokens.js';
 import { execFileSync } from 'node:child_process';
 /**
  * DC-2a AC-6 — the engine's row-pack and camera defaults mirror the DS tokens.
  *
  * `diagram-canvas` depends on `@sentropic/diagram-core` only, so the tokens are
- * read from their source file rather than imported: a token value that moves
- * without its engine default (or the reverse) turns this test red.
+ * loaded from their source file rather than a cached `tokens/dist`: a token
+ * value that moves without its engine default (or the reverse) turns this test
+ * red even in shards where `@sentropic/design-system-tokens` is not rebuilt.
  */
 import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
+
+const tokensSource = fileURLToPath(new URL("../../../../tokens/src/component.ts", import.meta.url));
+const { component } = (await import(tokensSource)) as {
+  component: Record<"diagramCard" | "diagramZone" | "diagramScene", Record<string, string>>;
+};
 
 import {
   DEFAULT_EDGE_CORNER_RADIUS,
