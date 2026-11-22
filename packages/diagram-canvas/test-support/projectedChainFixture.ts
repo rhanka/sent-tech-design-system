@@ -1,23 +1,26 @@
 import {
   CURRENT_SCHEMA_VERSION,
   DIAGRAM_PRESENTATION_V2_CONTRACT_PIN,
+  DS_LAYOUT_VOCABULARY,
+  lowerLayoutHints,
   m3ProfileRegistry,
   shippedExecutorBindings,
-  type DiagramPresentation,
+  type DsLayoutHints,
   type Entity,
   type EntityRef,
+  type LoweredLayoutHints,
   type OccurrenceRef,
   type Relation,
   type SemanticDocument,
 } from "@sentropic/diagram-core";
-import type { LineMeasurer } from "@sentropic/diagram-canvas";
+import type { LayoutOptions, LineMeasurer } from "@sentropic/diagram-canvas";
 
 /**
  * E1 projected-model fixture (REQ-R7-19): a static generic scene in the
  * projected-model shape a `projectArchiCards`-style projection emits —
  * a `generic@2` semantic document, a typed presentation (compact `v2`
- * anatomy, `icon: "none"`), DE-2 link-style words, and a declaration
- * ordering — with no dependency on any upstream model owner.
+ * anatomy, `icon: "none"`), DE-2 link-style words, and a `ds-layout-hints@1`
+ * `auto-pack` ordering payload — with no dependency on any upstream model owner.
  *
  * Shape: outer zone `project` holds inner zone `workstream` beside card
  * `handoff`; inner zone holds cards `parser`, `planner`, `renderer`.
@@ -27,6 +30,10 @@ import type { LineMeasurer } from "@sentropic/diagram-canvas";
 export const PROJECTED_CHAIN_ZONES = ["project", "workstream"] as const;
 export const PROJECTED_CHAIN_CARDS = ["parser", "planner", "renderer", "handoff"] as const;
 export const PROJECTED_CHAIN_IDS = ["project", "workstream", ...PROJECTED_CHAIN_CARDS] as const;
+
+/** Shared width and height basis for every E1 target (engine, Svelte, Vue, Vapor, SVG). */
+export const PROJECTED_CHAIN_TARGET_WIDTH = 1440;
+export const PROJECTED_CHAIN_WINDOW_HEIGHT = 900;
 
 /**
  * Pinned fixture measurer: fixed advance per character, no font metrics.
@@ -49,18 +56,26 @@ const entityId = (id: string) => (`entity:${id}`) as Entity["id"];
 const occurrenceId = (id: string) => (`occurrence:e.${id}`) as OccurrenceRef;
 const relationId = (id: string) => (`relation:${id}`) as Relation["id"];
 
+export type ProjectedChainPresentation = NonNullable<LayoutOptions["presentation"]>;
+
 export interface ProjectedChainFixture {
   readonly document: SemanticDocument;
-  readonly presentation: DiagramPresentation;
+  readonly presentation: ProjectedChainPresentation;
   readonly registry: typeof m3ProfileRegistry;
   readonly bindings: typeof shippedExecutorBindings;
   readonly measureLines: LineMeasurer;
-  /** Root declaration order: outer zone first, then the beside card. */
+  /** Validated `ds-layout-hints@1` `auto-pack` declaration for the projected scene. */
+  readonly layoutHints: DsLayoutHints;
+  /** Lowered engine hints produced by `lowerLayoutHints(layoutHints)`. */
+  readonly hints: LoweredLayoutHints;
+  /** Root declaration order: the outer zone `project` is the sole root. */
   readonly rootOrder: readonly EntityRef[];
   /** Per-zone child declaration order, keyed by zone entity id. */
   readonly ordering: Readonly<Record<EntityRef, readonly EntityRef[]>>;
-  /** The foldable inner zone occurrence. */
-  readonly foldOccurrence: string;
+  /** The foldable outer zone occurrence (`occurrence:e.project`). */
+  readonly outerFoldOccurrence: OccurrenceRef;
+  /** The foldable inner zone occurrence (`occurrence:e.workstream`). */
+  readonly foldOccurrence: OccurrenceRef;
 }
 
 export function projectedChainFixture(): ProjectedChainFixture {
@@ -147,7 +162,7 @@ export function projectedChainFixture(): ProjectedChainFixture {
     return { title: "Handoff", body: "Passes it on" };
   };
 
-  const presentation: DiagramPresentation = {
+  const presentation: ProjectedChainPresentation = {
     contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
     legends: {},
     categoryTokens: [],
@@ -172,7 +187,20 @@ export function projectedChainFixture(): ProjectedChainFixture {
       },
       [relationId("lnk-handoff")]: { strokeStyle: "dotted", arrowhead: "none" },
     },
-  } as unknown as DiagramPresentation;
+  };
+
+  const rootOrder: readonly EntityRef[] = [entityId("project")];
+  const ordering: Readonly<Record<EntityRef, readonly EntityRef[]>> = {
+    [entityId("project")]: [entityId("workstream"), entityId("handoff")],
+    [entityId("workstream")]: [entityId("parser"), entityId("planner"), entityId("renderer")],
+  };
+  const layoutHints: DsLayoutHints = {
+    vocabulary: DS_LAYOUT_VOCABULARY,
+    mode: "auto-pack",
+    rootOrder,
+    ordering,
+  };
+  const hints = lowerLayoutHints(layoutHints, rootOrder);
 
   return {
     document,
@@ -180,11 +208,11 @@ export function projectedChainFixture(): ProjectedChainFixture {
     registry: m3ProfileRegistry,
     bindings: shippedExecutorBindings,
     measureLines: projectedChainMeasure,
-    rootOrder: ["entity:project"] as EntityRef[],
-    ordering: {
-      "entity:project": ["entity:workstream", "entity:handoff"],
-      "entity:workstream": ["entity:parser", "entity:planner", "entity:renderer"],
-    } as Record<EntityRef, EntityRef[]>,
-    foldOccurrence: "occurrence:e.workstream",
+    layoutHints,
+    hints,
+    rootOrder,
+    ordering,
+    outerFoldOccurrence: occurrenceId("project"),
+    foldOccurrence: occurrenceId("workstream"),
   };
 }

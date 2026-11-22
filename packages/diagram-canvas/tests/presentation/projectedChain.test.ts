@@ -1,20 +1,43 @@
 import { describe, expect, it } from "vitest";
+import {
+  DS_LAYOUT_VOCABULARY,
+  validateDocument,
+  validateLayoutHints,
+  validateView,
+} from "@sentropic/diagram-core";
 import { layoutMeasured } from "../../src/layout/measured.js";
 import {
+  connectorPath,
+  DEFAULT_EDGE_CORNER_RADIUS,
   layoutScene,
   resolveScene,
+  resolveScenePresentation,
   type SceneLaidOut,
   type SceneLayoutInput,
 } from "../../src/presentation/diagramSceneModel.js";
-import { renderSceneSvg } from "../../src/presentation/renderSceneSvg.js";
-import { projectedChainFixture } from "../../test-support/projectedChainFixture.js";
+import { renderSceneSvg } from "../../src/presentation/index.js";
+import {
+  PROJECTED_CHAIN_TARGET_WIDTH,
+  PROJECTED_CHAIN_WINDOW_HEIGHT,
+  projectedChainFixture,
+} from "../../test-support/projectedChainFixture.js";
 
 /**
- * E1 three-target parity (REQ-R7-19): one projected fixture yields one
- * SceneModel, rendered identically by the direct `layoutMeasured` chain,
- * the shared `layoutScene` seam the Svelte and Vue hosts call, and the
- * `renderSceneSvg` serialisation. Geometry is compared exactly; the same
- * measurer and the same code path must produce the same numbers.
+ * E1 headless engine, schema/hints validation, and `renderSceneSvg` contract
+ * (REQ-R7-19). Verifies that the projected fixture conforms to DS schemas and
+ * `ds-layout-hints@1`, that the direct `resolveScenePresentation` ->
+ * `layoutMeasured` -> `resolveScene` chain agrees identically with the shared
+ * `layoutScene` seam and `renderSceneSvg`, and that the serialised SVG carries
+ * compact `352x154` boxes, `icon: "none"`, alternating depth surfaces, DE-2
+ * connector `<path d>` / dash / arrowhead / emphasis paint, and the automatic
+ * right-anchored `[data-scene-legend]`.
+ *
+ * Full three-target DOM parity mounting the real Svelte `DiagramSceneFigure`,
+ * Vue `DiagramSceneFigure` (classic and Vapor), and `renderSceneSvg` side by
+ * side is pinned via `tests/host-support/projectedChainHostContract.ts` in
+ * `packages/components-svelte/src/lib/DiagramSceneFigure.projectedChain.test.ts`,
+ * `packages/components-vue/src/diagram-projected-chain.test.ts`, and
+ * `packages/components-vue/src/vapor-runtime.test.ts`.
  */
 function inputOf(): SceneLayoutInput {
   const f = projectedChainFixture();
@@ -25,13 +48,22 @@ function inputOf(): SceneLayoutInput {
     bindings: f.bindings,
     measureLines: f.measureLines,
     collapsed: [],
-    hints: { ordering: f.ordering, rootOrder: f.rootOrder },
-    targetWidth: 1440,
+    hints: f.hints,
+    targetWidth: PROJECTED_CHAIN_TARGET_WIDTH,
   };
 }
 
-/** The direct chain: `layoutMeasured` (`@1`) -> `resolveScene`. */
+/** The direct documented chain: `resolveScenePresentation` -> `layoutMeasured` (`@1`) -> `resolveScene`. */
 function directScene(input: SceneLayoutInput) {
+  const resolved = resolveScenePresentation(
+    input.document,
+    input.presentation,
+    input.iconBindings,
+    input.strictIcons,
+    input.view,
+    input.resolveGlyph,
+    input.depthParityStart === undefined ? {} : { depthParityStart: input.depthParityStart },
+  );
   const laid = layoutMeasured(input.document, {
     registry: input.registry,
     ...(input.bindings === undefined ? {} : { bindings: input.bindings }),
@@ -45,17 +77,23 @@ function directScene(input: SceneLayoutInput) {
       });
       return { width: layout.width, height: layout.height };
     },
-    presentation: input.presentation,
+    presentation: resolved.presentation,
     measureLines: input.measureLines,
     collapsed: input.collapsed,
     ...(input.hints === undefined ? {} : { hints: input.hints }),
     ...(input.metrics === undefined ? {} : { metrics: input.metrics }),
     ...(input.rowPack === undefined ? {} : { rowPack: input.rowPack }),
-    targetWidth: input.targetWidth ?? 1440,
+    targetWidth: input.targetWidth ?? PROJECTED_CHAIN_TARGET_WIDTH,
     ...(input.previousOrientation === undefined ? {} : { previousOrientation: input.previousOrientation }),
   });
   if (laid.status !== "laid-out") throw new Error("direct refused: " + JSON.stringify(laid.refusals));
-  return { laid: laid as SceneLaidOut, scene: resolveScene(laid, input) };
+  return {
+    laid: laid as SceneLaidOut,
+    scene: resolveScene(laid, input, {
+      viewWidth: input.targetWidth ?? PROJECTED_CHAIN_TARGET_WIDTH,
+      windowHeight: PROJECTED_CHAIN_WINDOW_HEIGHT,
+    }),
+  };
 }
 
 /** Node rects as `occurrence -> rect` for a geometry diff. */
@@ -68,22 +106,49 @@ function routesOf(scene: ReturnType<typeof directScene>["scene"]) {
   return Object.fromEntries(scene.edges.map((e) => [e.occurrence, [...e.points]]));
 }
 
-describe("projected model chain E1 parity", () => {
-  it("should render one SceneModel with identical geometry on all three targets", () => {
+describe("projected model chain E1 engine & SVG contract", () => {
+  it("should validate against DS document, view and ds-layout-hints@1 schemas and refuse layered-flow on a typed view", () => {
+    const f = projectedChainFixture();
+    const docDiagnostics = validateDocument(f.document, {
+      registry: f.registry,
+      bindings: f.bindings,
+    });
+    expect(docDiagnostics).toEqual([]);
+
+    const hintContext = { profiles: f.document.profileRefs, diagramPresentation: true };
+    expect(validateLayoutHints(f.layoutHints, hintContext)).toEqual([]);
+
+    // Under ds-layout-hints@1, layered-flow is refused on typed projected views (generic@1 without presentation only).
+    const layeredDiagnostics = validateLayoutHints(
+      { vocabulary: DS_LAYOUT_VOCABULARY, mode: "layered-flow" },
+      hintContext,
+    );
+    expect(layeredDiagnostics.length).toBeGreaterThan(0);
+
+    const { laid } = directScene(inputOf());
+    const viewDiagnostics = validateView(laid.view, f.document, {
+      registry: f.registry,
+      bindings: f.bindings,
+    });
+    expect(viewDiagnostics).toEqual([]);
+  });
+
+  it("should produce identical SceneModel and full SVG geometry, DE-2 paint and legend across direct, layoutScene and renderSceneSvg", () => {
     const input = inputOf();
 
-    // Target 1: the direct documented chain.
     const direct = directScene(input);
 
-    // Target 2: the shared seam both hosts call (`layoutScene` + `resolveScene`).
     const shared = layoutScene(input);
     if (shared.status !== "laid-out") throw new Error("shared refused: " + JSON.stringify(shared.refusals));
-    const sharedScene = resolveScene(shared, input);
+    const sharedScene = resolveScene(shared, input, {
+      viewWidth: PROJECTED_CHAIN_TARGET_WIDTH,
+      windowHeight: PROJECTED_CHAIN_WINDOW_HEIGHT,
+    });
 
-    // Target 3: the SVG serialisation runs the same pair.
-    const { result: svgResult, scene: svgScene, svg } = renderSceneSvg(input);
+    const { result: svgResult, scene: svgScene, svg } = renderSceneSvg(input, {
+      windowHeight: PROJECTED_CHAIN_WINDOW_HEIGHT,
+    });
 
-    // Same model, same bounds, same geometry.
     expect(rectsOf(sharedScene)).toEqual(rectsOf(direct.scene));
     expect(rectsOf(svgScene)).toEqual(rectsOf(direct.scene));
     expect(routesOf(sharedScene)).toEqual(routesOf(direct.scene));
@@ -91,32 +156,47 @@ describe("projected model chain E1 parity", () => {
     expect(svgResult.status).toBe("laid-out");
     expect(svgScene.bounds).toEqual(direct.scene.bounds);
     expect(sharedScene.bounds).toEqual(direct.scene.bounds);
+    expect(svgResult.routeSpacing?.conflictCount).toBe(0);
 
-    // The serialised SVG carries the same occurrences and the same routes.
+    // Serialised SVG checks: compact 352x154 cards, no icon glyph, alternating depth surface, DE-2 paths, right legend.
+    expect(svg).not.toContain("<polyline");
+    expect(svg).not.toContain("data-diagram-icon");
     for (const node of direct.scene.nodes) {
       expect(svg, node.occurrence).toContain(`data-scene-occurrence="${node.occurrence}"`);
       expect(svg, node.occurrence).toContain(`translate(${node.rect.x} ${node.rect.y})`);
+      if (node.kind === "card") {
+        expect([node.rect.width, node.rect.height], node.occurrence).toEqual([352, 154]);
+        expect(svg, `${node.occurrence} compact box`).toContain(`width="352" height="154"`);
+      }
     }
+    expect(svg, "depth-1 inner zone uses surface2").toContain("var(--st-component-diagramZone-surface2");
+
     for (const edge of direct.scene.edges) {
-      expect(svg, edge.occurrence).toContain(`data-scene-edge="${edge.occurrence}"`);
+      const expectedD = connectorPath(edge.points, DEFAULT_EDGE_CORNER_RADIUS);
+      expect(svg, `${edge.occurrence} id`).toContain(`data-scene-edge="${edge.occurrence}"`);
+      expect(svg, `${edge.occurrence} path d`).toContain(`d="${expectedD}"`);
+    }
+    expect(svg, "dashed emphasis edge").toContain('stroke-dasharray="8 6"');
+    expect(svg, "dotted edge").toContain('stroke-dasharray="2 5"');
+    expect(svg, "emphasis marker").toContain('data-arrowhead-emphasis="emphasis"');
+    expect(svg, "right legend").toContain('data-scene-legend="" data-legend-anchor="right"');
+    for (const key of ["solid:arrow:default", "dashed:arrow:emphasis", "dotted:none:default"]) {
+      expect(svg, `legend entry ${key}`).toContain(`data-legend-style="${key}"`);
     }
   });
 
-  it("should keep compact ancestry, depth surfaces and icon-none semantics on the model", () => {
+  it("should keep compact anatomy, depth surfaces and icon-none semantics on the model", () => {
     const input = inputOf();
     const { scene } = directScene(input);
     const byOccurrence: Map<string, (typeof scene.nodes)[number]> = new Map(
       scene.nodes.map((n) => [String(n.occurrence), n] as const),
     );
 
-    // Compact cards: `v2` pinned anatomy everywhere.
     for (const node of scene.nodes) {
       expect(node.presentation?.anatomy, String(node.occurrence)).toBe("v2");
       expect(node.presentation?.icon, String(node.occurrence)).toBe("none");
     }
 
-    // Depth surfaces: two levels stamped with alternating parity (lean
-    // stamps: the top level needs no key, absent means `0`).
     const outer = byOccurrence.get("occurrence:e.project")!;
     const inner = byOccurrence.get("occurrence:e.workstream")!;
     expect(outer.kind).toBe("zone");
@@ -130,9 +210,6 @@ describe("projected model chain E1 parity", () => {
     const styles: Map<string, (typeof scene.edges)[number]> = new Map(
       scene.edges.map((e) => [String(e.occurrence), e] as const),
     );
-    // Closed-word defaults are omitted from the model (`solid` /
-    // `arrow` / `default` are the resolved defaults), so the
-    // legend keys are the exact proof of the three presentation words.
     expect(styles.get("occurrence:r.lnk-feed")?.strokeStyle).toBeUndefined();
     expect(styles.get("occurrence:r.lnk-drive")).toMatchObject({
       strokeStyle: "dashed",

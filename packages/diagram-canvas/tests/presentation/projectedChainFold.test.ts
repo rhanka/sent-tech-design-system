@@ -1,19 +1,26 @@
 import { describe, expect, it } from "vitest";
+import { validateView } from "@sentropic/diagram-core";
 import {
   layoutScene,
   resolveScene,
+  type SceneLaidOut,
   type SceneLayoutInput,
   type SceneModel,
+  type SceneOccurrenceRef,
 } from "../../src/presentation/diagramSceneModel.js";
-import { projectedChainFixture } from "../../test-support/projectedChainFixture.js";
+import {
+  PROJECTED_CHAIN_TARGET_WIDTH,
+  projectedChainFixture,
+} from "../../test-support/projectedChainFixture.js";
 
 /**
  * E1 fold/unfold pin (REQ-R7-19, REQ-R7-05): the projected chain folds and
- * unfolds with relayout and link recompute on the shared seam the Svelte and
- * Vue hosts call, depth surfaces and the legend are restamped, and unfold
- * restores the unfolded geometry exactly.
+ * unfolds both the inner zone (`occurrence:e.workstream`) and the outer zone
+ * (`occurrence:e.project`) with relayout, link recompute, `0` route-spacing
+ * conflicts across every fold state, depth and legend restamping, valid views,
+ * and exact unfold symmetry.
  */
-function inputOf(collapsed: readonly string[]): SceneLayoutInput {
+function inputOf(collapsed: readonly SceneOccurrenceRef[]): SceneLayoutInput {
   const f = projectedChainFixture();
   return {
     document: f.document,
@@ -21,24 +28,28 @@ function inputOf(collapsed: readonly string[]): SceneLayoutInput {
     registry: f.registry,
     bindings: f.bindings,
     measureLines: f.measureLines,
-    collapsed: collapsed as SceneLayoutInput["collapsed"],
-    hints: { ordering: f.ordering, rootOrder: f.rootOrder },
-    targetWidth: 1440,
+    collapsed,
+    hints: f.hints,
+    targetWidth: PROJECTED_CHAIN_TARGET_WIDTH,
   };
 }
 
-function sceneOf(collapsed: readonly string[]): SceneModel {
+function layoutAndSceneOf(collapsed: readonly SceneOccurrenceRef[]): {
+  laid: SceneLaidOut;
+  scene: SceneModel;
+} {
   const input = inputOf(collapsed);
   const result = layoutScene(input);
   if (result.status !== "laid-out") throw new Error("refused: " + JSON.stringify(result.refusals));
-  return resolveScene(result, input);
+  return { laid: result, scene: resolveScene(result, input) };
 }
 
 describe("projected model chain E1 fold", () => {
   it("should hide the inner members and re-route the cross link when the inner zone folds", () => {
-    const folded = sceneOf(["occurrence:e.workstream"]);
+    const f = projectedChainFixture();
+    const unfolded = layoutAndSceneOf([]).scene;
+    const { scene: folded } = layoutAndSceneOf([f.foldOccurrence]);
     const occurrences = new Set(folded.nodes.map((n) => n.occurrence));
-    // Collapsed zone is still drawn (as a box); its members are hidden.
     expect(occurrences).toContain("occurrence:e.workstream");
     expect(occurrences).toContain("occurrence:e.project");
     expect(occurrences).toContain("occurrence:e.handoff");
@@ -46,24 +57,51 @@ describe("projected model chain E1 fold", () => {
     expect(occurrences).not.toContain("occurrence:e.planner");
     expect(occurrences).not.toContain("occurrence:e.renderer");
 
-    const workstream = folded.nodes.find((n) => n.occurrence === "occurrence:e.workstream")!;
+    const workstream = folded.nodes.find((n) => n.occurrence === f.foldOccurrence)!;
     expect(workstream.collapsed).toBe(true);
+    expect([workstream.rect.width, workstream.rect.height]).toEqual([352, 154]);
+    expect(workstream.presentation?.depth).toBe(1);
 
-    // Links internal to the folded zone are gone; the cross link projects
-    // onto the collapsed representative.
+    // Internal links disappear; the cross link projects onto the collapsed representative with a recomputed route.
     expect(folded.edges.map((e) => e.occurrence)).toEqual(["occurrence:r.lnk-handoff"]);
+    expect(folded.edges[0]!.points).not.toEqual(
+      unfolded.edges.find((e) => e.occurrence === "occurrence:r.lnk-handoff")!.points,
+    );
   });
 
-  it("should shrink the painted bounds on fold and restore them on unfold", () => {
-    const unfolded = sceneOf([]);
-    const folded = sceneOf(["occurrence:e.workstream"]);
+  it("should hide all descendants, edges and legend when the outer zone folds and restore exact geometry on unfold", () => {
+    const f = projectedChainFixture();
+    const unfolded = layoutAndSceneOf([]).scene;
+    const { scene: outerFolded } = layoutAndSceneOf([f.outerFoldOccurrence]);
+
+    expect(outerFolded.nodes.map((n) => n.occurrence)).toEqual([f.outerFoldOccurrence]);
+    const project = outerFolded.nodes[0]!;
+    expect(project.collapsed).toBe(true);
+    expect([project.rect.width, project.rect.height]).toEqual([352, 154]);
+    expect("depth" in (project.presentation as object), "outer depth stays top-level").toBe(false);
+    expect(outerFolded.edges).toEqual([]);
+    expect(outerFolded.linkLegend).toBeUndefined();
+    expect(outerFolded.bounds!.height).toBeLessThan(unfolded.bounds!.height);
+    expect(outerFolded.bounds!.width).toBeLessThan(unfolded.bounds!.width);
+
+    const reopened = layoutAndSceneOf([]).scene;
+    expect(reopened.bounds).toEqual(unfolded.bounds);
+    expect(
+      Object.fromEntries(reopened.nodes.map((n) => [n.occurrence, { ...n.rect }])),
+    ).toEqual(Object.fromEntries(unfolded.nodes.map((n) => [n.occurrence, { ...n.rect }])));
+    expect(reopened.edges).toEqual(unfolded.edges);
+    expect(reopened.linkLegend).toEqual(unfolded.linkLegend);
+  });
+
+  it("should shrink the painted bounds on inner fold and restore them on unfold", () => {
+    const f = projectedChainFixture();
+    const unfolded = layoutAndSceneOf([]).scene;
+    const folded = layoutAndSceneOf([f.foldOccurrence]).scene;
     expect(folded.bounds).toBeDefined();
     expect(unfolded.bounds).toBeDefined();
     expect(folded.bounds!.height).toBeLessThan(unfolded.bounds!.height);
 
-    // Unfold restores the exact unfolded geometry (engine + host agreement
-    // within 1/64 px is pinned by the host contracts; here equality holds).
-    const again = sceneOf([]);
+    const again = layoutAndSceneOf([]).scene;
     expect(again.bounds).toEqual(unfolded.bounds);
     expect(
       Object.fromEntries(again.nodes.map((n) => [n.occurrence, { ...n.rect }])),
@@ -72,32 +110,47 @@ describe("projected model chain E1 fold", () => {
   });
 
   it("should restamp depth surfaces and the legend across fold/unfold", () => {
-    const unfolded = sceneOf([]);
-    const folded = sceneOf(["occurrence:e.workstream"]);
-    // Outer zone depth is unchanged by the inner fold (lean stamps: the
-    // top level carries no key, absent means `0`).
+    const f = projectedChainFixture();
+    const unfolded = layoutAndSceneOf([]).scene;
+    const folded = layoutAndSceneOf([f.foldOccurrence]).scene;
     expect(
-      "depth" in (unfolded.nodes.find((n) => n.occurrence === "occurrence:e.project")!.presentation as object),
+      "depth" in (unfolded.nodes.find((n) => n.occurrence === f.outerFoldOccurrence)!.presentation as object),
     ).toBe(false);
     expect(
-      "depth" in (folded.nodes.find((n) => n.occurrence === "occurrence:e.project")!.presentation as object),
+      "depth" in (folded.nodes.find((n) => n.occurrence === f.outerFoldOccurrence)!.presentation as object),
     ).toBe(false);
-    // The folded bounds still cover the outer zone and the beside card.
+    expect(folded.nodes.find((n) => n.occurrence === f.foldOccurrence)!.presentation?.depth).toBe(1);
     expect(folded.bounds!.width).toBeGreaterThan(0);
     expect(folded.bounds!.height).toBeGreaterThan(0);
 
-    // The legend follows the visible styles: three states unfolded, the
-    // single projected cross style folded (legend disappears).
     expect(unfolded.linkLegend).toBeDefined();
     expect(unfolded.linkLegend!.entries).toHaveLength(3);
     expect(folded.linkLegend).toBeUndefined();
   });
 
-  it("should keep the cross link attached after fold and unfold", () => {
-    for (const scene of [sceneOf([]), sceneOf(["occurrence:e.workstream"])]) {
-      const cross = scene.edges.find((e) => e.occurrence === "occurrence:r.lnk-handoff");
-      expect(cross).toBeDefined();
-      expect(cross!.points.length).toBeGreaterThan(1);
+  it("should enforce zero route-spacing conflicts and valid views across every fold state", () => {
+    const f = projectedChainFixture();
+    const states: readonly (readonly SceneOccurrenceRef[])[] = [
+      [],
+      [f.foldOccurrence],
+      [f.outerFoldOccurrence],
+      [f.outerFoldOccurrence, f.foldOccurrence],
+    ];
+    for (const collapsed of states) {
+      const { laid, scene } = layoutAndSceneOf(collapsed);
+      expect(laid.routeSpacing, `routeSpacing for [${collapsed.join(", ")}]`).toBeDefined();
+      expect(
+        laid.routeSpacing!.conflictCount,
+        `conflicts for [${collapsed.join(", ")}]: ${JSON.stringify(laid.routeSpacing!.conflicts)}`,
+      ).toBe(0);
+      const viewDiagnostics = validateView(laid.view, f.document, {
+        registry: f.registry,
+        bindings: f.bindings,
+      });
+      expect(viewDiagnostics, `validateView for [${collapsed.join(", ")}]`).toEqual([]);
+      for (const edge of scene.edges) {
+        expect(edge.points.length).toBeGreaterThan(1);
+      }
     }
   });
 });

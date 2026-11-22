@@ -466,28 +466,40 @@ with no dependency on the upstream model owner (REQ-R7-19). The input is a
 static generic fixture in the projected-model shape (`test-support/
 projectedChainFixture.ts`): a `generic@2` semantic document, a typed
 presentation (compact `v2` anatomy, `icon: "none"`), DE-2 link-style words,
-and a declaration ordering. Under the current placement the chain is:
+and a validated `ds-layout-hints@1` `auto-pack` payload lowered via
+`lowerLayoutHints`. Under `ds-layout-hints@1`, only `auto-pack` executes on
+a typed projected view (`layered-flow` is refused on typed views and limited
+to `generic@1` without a typed presentation). The chain is:
 
 ```
-projected model  →  layoutMeasured (row-pack @1)  →  resolveScene  →  SceneModel
+projected model  →  layoutMeasured (auto-pack @1)  →  resolveScene  →  SceneModel
                                                        ├─ Svelte DiagramSceneFigure (latest)
-                                                       ├─ Vue DiagramSceneFigure (next)
+                                                       ├─ Vue DiagramSceneFigure (next / vapor)
                                                        └─ renderSceneSvg (@sentropic/diagram-canvas/diagram-render)
 ```
 
 - `layoutMeasured` / `layoutFolded` (`layout/measured.ts`) lays the
-  projected document out; `layoutScene` (`presentation/diagramSceneModel.ts`)
-  is the shared seam both hosts call before `resolveScene`.
+  projected document out after `resolveScenePresentation`; `layoutScene`
+  (`presentation/diagramSceneModel.ts`) is the shared seam both hosts call
+  before `resolveScene`.
 - `resolveScene` (`presentation/diagramSceneModel.ts`) turns a laid-out
   result into the one `SceneModel` every target renders: same nodes, same
   edges, same geometry, same bounds, same link legend.
-- `renderSceneSvg` (`presentation/renderSceneSvg.ts`) runs the same
-  `layoutScene` + `resolveScene` pair and serialises the model; the
-  Svelte and Vue hosts wrap the same pair and paint it live, including
-  fold/unfold with relayout and link recompute.
-- Parity and fold behaviour over the fixture are pinned by
-  `tests/presentation/projectedChain.test.ts` (three-target parity:
-  direct `layoutMeasured`, the shared `layoutScene` seam, and the SVG
-  serialisation) and
-  `tests/presentation/projectedChainFold.test.ts` (fold/unfold relayout,
-  link recompute, legend and depth restamping, unfold symmetry).
+- `renderSceneSvg` (`@sentropic/diagram-canvas/diagram-render`) runs the same
+  `layoutScene` + `resolveScene` pair and serialises the model; the Svelte
+  and Vue hosts (classic and `/vapor`) wrap the same pair and paint it live,
+  including inner and outer zone fold/unfold with relayout, link re-routing,
+  depth restamping, and legend updates.
+- Verification gates over the fixture:
+  - Headless schema, `ds-layout-hints@1` validation/`layered-flow` refusal,
+    engine + `renderSceneSvg` geometry/paint/legend contract, and fold/route-spacing
+    (`conflictCount === 0` across every fold state):
+    `tests/presentation/projectedChain.test.ts` and
+    `tests/presentation/projectedChainFold.test.ts`.
+  - Three-target rendered parity (Svelte `DiagramSceneFigure` DOM, Vue
+    `DiagramSceneFigure` DOM, and parsed `renderSceneSvg` SVG at the same
+    `1440 × 900` viewport basis) plus live inner/outer fold/unfold contract:
+    shared in `tests/host-support/projectedChainHostContract.ts` and executed
+    by `packages/components-svelte/src/lib/DiagramSceneFigure.projectedChain.test.ts`,
+    `packages/components-vue/src/diagram-projected-chain.test.ts`, and
+    `packages/components-vue/src/vapor-runtime.test.ts`.

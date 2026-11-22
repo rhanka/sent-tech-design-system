@@ -1,58 +1,61 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render } from "@testing-library/svelte";
+import { cleanup, render } from "@testing-library/svelte";
 import { tick } from "svelte";
-import { projectedChainFixture } from "../../../diagram-canvas/test-support/projectedChainFixture.js";
-import DiagramSceneFigure, { type DiagramSceneFigureProps } from "./DiagramSceneFigure.svelte";
+import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
+import {
+  PROJECTED_CHAIN_TARGET_WIDTH,
+  PROJECTED_CHAIN_WINDOW_HEIGHT,
+} from "../../../diagram-canvas/test-support/projectedChainFixture.js";
+import {
+  runProjectedChainFoldContract,
+  type ProjectedHostMount,
+} from "../../../diagram-canvas/tests/host-support/projectedChainHostContract.js";
+import DiagramSceneFigure from "./DiagramSceneFigure.svelte";
+import VueDiagramSceneFigure from "../../../components-vue/src/DiagramSceneFigure.vue";
+
+const mountedVue: { unmount: () => void; container: HTMLElement }[] = [];
 
 beforeEach(() => {
   vi.stubGlobal("ResizeObserver", class { observe() {} disconnect() {} });
   vi.stubGlobal("MutationObserver", class { observe() {} disconnect() {} takeRecords() { return []; } });
   vi.stubGlobal("matchMedia", () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
-  Object.defineProperty(HTMLElement.prototype, "clientWidth", { configurable: true, get: () => 1280 });
+  vi.stubGlobal("innerHeight", PROJECTED_CHAIN_WINDOW_HEIGHT);
+  Object.defineProperty(HTMLElement.prototype, "clientWidth", {
+    configurable: true,
+    get: () => PROJECTED_CHAIN_TARGET_WIDTH,
+  });
 });
-afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); delete (HTMLElement.prototype as { clientWidth?: number }).clientWidth; });
 
-function propsOf(): DiagramSceneFigureProps {
-  const f = projectedChainFixture();
-  return {
-    document: f.document,
-    registry: f.registry,
-    bindings: f.bindings,
-    presentation: f.presentation,
-    measureLines: f.measureLines,
-    hints: { ordering: f.ordering, rootOrder: f.rootOrder },
-  } as DiagramSceneFigureProps;
-}
+afterEach(() => {
+  cleanup();
+  for (const view of mountedVue.splice(0)) {
+    view.unmount();
+    view.container.remove();
+  }
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+  delete (HTMLElement.prototype as { clientWidth?: number }).clientWidth;
+});
 
-describe("DiagramSceneFigure projected chain E1 — Svelte fold", () => {
-  it("should fold and unfold the inner zone live with relayout and link recompute", async () => {
-    const view = render(DiagramSceneFigure, propsOf());
-    await tick();
+const mountSvelte: ProjectedHostMount = (props) => render(DiagramSceneFigure, props);
 
-    const toggle = () =>
-      view.container.querySelector<HTMLButtonElement>(
-        `[data-scene-occurrence="occurrence:e.workstream"] button[aria-expanded]`,
-      )!;
-    const openEdges = [...view.container.querySelectorAll("[data-scene-edge]")].map(
-      (e) => e.getAttribute("data-scene-edge"),
-    );
-    expect(openEdges.sort()).toEqual(
-      ["occurrence:r.lnk-drive", "occurrence:r.lnk-feed", "occurrence:r.lnk-handoff"].sort(),
-    );
-    expect(toggle().getAttribute("aria-expanded")).toBe("true");
+const mountVue: ProjectedHostMount = (props) => {
+  const container = document.createElement("div");
+  document.body.append(container);
+  const view = mount(VueDiagramSceneFigure, { props, attachTo: container });
+  mountedVue.push({ unmount: () => view.unmount(), container });
+  return { container };
+};
 
-    await fireEvent.click(toggle());
-    await tick();
-    expect(toggle().getAttribute("aria-expanded")).toBe("false");
-    const foldedEdges = [...view.container.querySelectorAll("[data-scene-edge]")].map(
-      (e) => e.getAttribute("data-scene-edge"),
-    );
-    expect(foldedEdges).toEqual(["occurrence:r.lnk-handoff"]);
-    expect(view.container.querySelector('[data-scene-occurrence="occurrence:e.parser"]')).toBeNull();
+describe("DiagramSceneFigure projected chain E1 — three-target parity (Svelte, Vue, renderSceneSvg) and live fold", () => {
+  it("should render identical geometry, compact v2 boxes, depth surfaces, DE-2 paths and legend across Svelte, Vue and renderSceneSvg, across inner and outer live fold/unfold", async () => {
+    const svelteSnapshots = await runProjectedChainFoldContract(mountSvelte, tick, "Svelte");
+    cleanup();
+    const vueSnapshots = await runProjectedChainFoldContract(mountVue, nextTick, "Vue");
 
-    await fireEvent.click(toggle());
-    await tick();
-    expect(toggle().getAttribute("aria-expanded")).toBe("true");
-    expect(view.container.querySelector('[data-scene-occurrence="occurrence:e.parser"]')).not.toBeNull();
+    expect(vueSnapshots.unfolded).toEqual(svelteSnapshots.unfolded);
+    expect(vueSnapshots.innerFolded).toEqual(svelteSnapshots.innerFolded);
+    expect(vueSnapshots.outerFolded).toEqual(svelteSnapshots.outerFolded);
   });
 });
