@@ -18579,8 +18579,55 @@
   .st-diagramSceneFigure-controls {
     align-items: center;
     display: inline-flex;
+    flex-wrap: wrap;
     gap: var(--st-spacing-1, 0.25rem);
     grid-column: 2;
+    justify-content: flex-end;
+  }
+  .st-diagramSceneFigure-controls .st-diagramSceneFigure-viewAll {
+    gap: var(--st-component-diagramScene-controlGap, var(--st-spacing-1, 0.25rem));
+  }
+  .st-diagramSceneFigure-controls .st-diagramSceneFigure-viewAll[aria-pressed="true"],
+  .st-diagramSceneFigure-controls .st-diagramSceneFigure-fullscreen[aria-pressed="true"],
+  .st-diagramSceneFigure-controls .st-diagramSceneFigure-viewAll[aria-pressed="true"]:not(:disabled):hover,
+  .st-diagramSceneFigure-controls .st-diagramSceneFigure-fullscreen[aria-pressed="true"]:not(:disabled):hover {
+    background: var(--st-component-diagramScene-controlActiveBackground, var(--st-semantic-action-primary));
+    border-color: var(--st-component-diagramScene-controlActiveBorder, var(--st-semantic-action-primary));
+    color: var(--st-component-diagramScene-controlActiveText, var(--st-semantic-action-primaryText));
+  }
+  .st-diagramSceneFigure--fullscreen,
+  .st-diagramSceneFigure:fullscreen {
+    align-content: stretch;
+    background: var(--st-component-diagramScene-fullscreenBackground, var(--st-semantic-surface-default));
+    box-sizing: border-box;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100vh;
+    height: 100dvh;
+    inset: 0;
+    padding: var(--st-component-diagramScene-fullscreenPadding, var(--st-spacing-4, 1rem));
+    width: 100vw;
+  }
+  .st-diagramSceneFigure--fullscreen:has(.st-diagramSceneFigure-flowNavigator),
+  .st-diagramSceneFigure:fullscreen:has(.st-diagramSceneFigure-flowNavigator) {
+    grid-template-rows: auto auto minmax(0, 1fr);
+  }
+  .st-diagramSceneFigure--fullscreenFallback {
+    position: fixed;
+    z-index: var(--st-component-diagramScene-fullscreenZIndex, var(--st-component-overlay-zIndex, 90));
+  }
+  .st-diagramSceneFigure--fullscreen .st-diagramSceneFigure-frame,
+  .st-diagramSceneFigure:fullscreen .st-diagramSceneFigure-frame {
+    height: 100%;
+    min-height: 0;
+  }
+  .st-diagramSceneFigure--fullscreen .st-diagramSceneFigure-viewport,
+  .st-diagramSceneFigure:fullscreen .st-diagramSceneFigure-viewport {
+    max-height: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .st-diagramSceneFigure-controls button {
+      transition: none;
+    }
   }
   .st-diagramSceneFigure-readout {
     color: var(--st-semantic-text-secondary);

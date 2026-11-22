@@ -1,8 +1,8 @@
 {
   "componentId": "selectable-row",
   "contractSource": "derived",
-  "digest": "sha256:9748925bebcb35f33bff8ea15f90dc7403731b9498edc3e211fa5b9e33872f76",
-  "entryDigest": "sha256:43ae6d353dab5ef91099cfbf25cc427150702f13635da074d4d2da1b07758599",
+  "digest": "sha256:df9fc5e8b3f21b733a340fe98cf9e3082ab8b67d1d0dbc219b7a53e9d9e2b763",
+  "entryDigest": "sha256:62907735bf99a263d84ee151d3c437402d4d769a4d6dadc0b471046b0368d00f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -239,7 +239,7 @@
         "declarationPath": "packages/components-svelte/dist/SelectableRow.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SelectableRowProps",
-        "version": "0.44.0"
+        "version": "0.44.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -325,7 +325,7 @@
         "declarationPath": "packages/components-vue/dist/SelectableRow.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectableRowProps",
-        "version": "0.41.0-next.11"
+        "version": "0.41.0-next.12"
       },
       "status": "partial",
       "unresolved": [],

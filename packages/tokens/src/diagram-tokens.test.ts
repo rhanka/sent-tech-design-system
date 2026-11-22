@@ -142,6 +142,9 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     edgeLabelSize: "18px",
     edgeLabelFontSize: "18px",
     edgeLabelLineHeight: "22px",
+    controlIconSize: "var(--st-component-button-anatomy-density-sm-fontSize)",
+    controlGap: "var(--st-spacing-1)",
+    fullscreenPadding: "var(--st-spacing-4)",
     flowStrokeWidth: "1.5px",
     flowRelatedStrokeWidth: "2px",
     flowPrimaryStrokeWidth: "2.5px",
@@ -183,6 +186,14 @@ describe("diagram tokens — frozen Appendix A values", () => {
     expect(component.diagramZone.text).toBe(semantic.text.primary);
     expect(component.diagramZone.secondaryText).toBe(semantic.text.secondary);
     expect(component.diagramZone.rule).toBe(semantic.border.subtle);
+    expect(component.diagramScene.controlActiveBackground).toBe(semantic.action.primary);
+    expect(component.diagramScene.controlActiveText).toBe(semantic.action.primaryText);
+    expect(component.diagramScene.controlActiveBorder).toBe(semantic.action.primary);
+    expect(component.diagramScene.fullscreenBackground).toBe(semantic.surface.default);
+    expect(component.diagramScene.fullscreenZIndex).toBe(foundation.z.modal);
+    expect(componentDark.diagramScene.controlActiveBackground).toBe(semanticDark.action.primary);
+    expect(componentDark.diagramScene.controlActiveText).toBe(semanticDark.action.primaryText);
+    expect(componentDark.diagramScene.fullscreenBackground).toBe(semanticDark.surface.default);
   });
 
   it("exposes dedicated DE-2 link emphasis colour + width distinct from resting links in both themes", () => {

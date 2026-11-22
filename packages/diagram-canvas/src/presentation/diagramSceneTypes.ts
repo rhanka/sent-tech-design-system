@@ -18,6 +18,10 @@ import type { SceneDocument, SceneView, ScenePresentation, SceneOccurrenceRef, S
     zoomOut: string;
     /** Visible text of the fit / reset control (« Ajuster »). */
     fit: string;
+    /** Visible text of the whole-scene fit control (« Tout voir »). */
+    viewAll?: string;
+    /** Accessible name of the fullscreen control (« Plein écran »). */
+    fullscreen?: string;
     /** Accessible name of the readout, e.g. « Zoom 85 % ». */
     zoomLevel: (percent: number) => string;
     /** Accessible name of the scrollable drawing region. */

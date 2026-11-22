@@ -12,6 +12,11 @@ import { BpmnCanvas } from '../dist/vapor/bpmn/index.js';
 import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, DIAGRAM_PRESENTATION_V2_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '../../diagram-canvas/tests/scene-host-fixtures.js';
 
 import { flowFixture, flowMeasure } from '../../diagram-canvas/test-support/flowFixture.js';
+import {
+  PROJECTED_CHAIN_TARGET_WIDTH,
+  PROJECTED_CHAIN_WINDOW_HEIGHT,
+} from '../../diagram-canvas/test-support/projectedChainFixture.js';
+import { runProjectedChainFoldContract } from '../../diagram-canvas/tests/host-support/projectedChainHostContract.js';
 
 const engine = vi.hoisted(() => ({ create: vi.fn(), destroy: vi.fn() }));
 const { createdCores } = vi.hoisted(() => ({ createdCores: [] as CoreEditor[] }));
@@ -186,6 +191,23 @@ it('should preserve numbered flow navigation through the published Vapor scene e
   next.click(); await nextTick();
   expect(onStepChange).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ relation: 'relation:z' }));
   scene.vm.setZoom(1); expect(scene.vm.getCamera().zoom).toBeGreaterThan(0);
+  expect(typeof scene.vm.toggleViewAll).toBe('function');
+  expect(typeof scene.vm.toggleFullscreen).toBe('function');
+  const viewAllBtn = scene.root.querySelector<HTMLButtonElement>('.st-diagramSceneFigure-viewAll')!;
+  const fullscreenBtn = scene.root.querySelector<HTMLButtonElement>('.st-diagramSceneFigure-fullscreen')!;
+  expect(viewAllBtn.getAttribute('aria-pressed')).toBe('false');
+  expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('false');
+  viewAllBtn.click(); await nextTick();
+  expect(viewAllBtn.getAttribute('aria-pressed')).toBe('true');
+  expect(scene.root.querySelector('figure')?.getAttribute('data-view-all')).toBe('true');
+  fullscreenBtn.click(); await nextTick(); await nextTick();
+  expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('true');
+  expect(scene.root.querySelector('figure')?.getAttribute('data-fullscreen')).toBe('fallback');
+  viewAllBtn.click(); await nextTick(); await nextTick();
+  expect(viewAllBtn.getAttribute('aria-pressed')).toBe('false');
+  expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('false');
+  expect(scene.root.querySelector('figure')?.getAttribute('data-view-all')).toBeNull();
+  expect(scene.root.querySelector('figure')?.getAttribute('data-fullscreen')).toBeNull();
 });
 
 it('should render DE-2 connectors, right-anchored link legend, and live fold/unfold updates in native Vapor', async () => {
@@ -259,4 +281,27 @@ it('should render DE-2 connectors, right-anchored link legend, and live fold/unf
   await nextTick();
   expect(scene.root.querySelectorAll('path[data-scene-edge]')).toHaveLength(3);
   expect(legendStyles()).toEqual(['solid:none:emphasis', 'dashed:arrow:default', 'dotted:arrow:default']);
+});
+
+it('should match renderSceneSvg and fold/unfold inner and outer zones live on the E1 projected chain in native Vapor (REQ-R7-19, REQ-R7-26)', async () => {
+  vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+  vi.stubGlobal('MutationObserver', class { observe() {} disconnect() {} takeRecords() { return []; } });
+  vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+  vi.stubGlobal('innerHeight', PROJECTED_CHAIN_WINDOW_HEIGHT);
+  Object.defineProperty(HTMLElement.prototype, 'clientWidth', {
+    configurable: true,
+    get: () => PROJECTED_CHAIN_TARGET_WIDTH,
+  });
+  try {
+    await runProjectedChainFoldContract(
+      (props) => {
+        const view = mount(DiagramSceneFigure, { ...props });
+        return { container: view.root };
+      },
+      nextTick,
+      'Vue Vapor',
+    );
+  } finally {
+    delete (HTMLElement.prototype as { clientWidth?: number }).clientWidth;
+  }
 });
