@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:8ad4ac42bf4d4088c50ee4ce219021126c650eae9b38e9c9d8899b310e0136d9",
-  "entryDigest": "sha256:f99ecc0358453fe0b11e2f295093081e40e0fd9c0f38c4c3cab3d254c4880ce6",
+  "digest": "sha256:6ddca55e0a3e39fc9917aea0077c8b344296faf2f0befc61973fcbec5596a823",
+  "entryDigest": "sha256:a89b40a1e3f372348f1cf2daf1d6a368fbfba1965e0ca7eb46bc652fdd318d19",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1879,7 +1879,7 @@
             "additionalProperties": false,
             "properties": {
               "anatomy": {
-                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). New views default to `\"v2\"`.",
+                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). Absent means legacy `\"v1\"`; `\"v2\"` is opt-in.",
                 "enum": [
                   "v1",
                   "v2"
@@ -1908,6 +1908,17 @@
               "diagram": {
                 "$ref": "#/$defs/DiagramPresentation",
                 "description": "Typed presentation fragment (M3 §3.2.2). Absent means no presentation contract."
+              },
+              "entityAnatomy": {
+                "additionalProperties": {
+                  "enum": [
+                    "v1",
+                    "v2"
+                  ]
+                },
+                "description": "Per-occurrence anatomy overrides for mixed full-size and compact scenes.",
+                "properties": {},
+                "type": "object"
               },
               "grid": {
                 "additionalProperties": false,
@@ -2449,12 +2460,10 @@
             "additionalProperties": false,
             "properties": {
               "arrowhead": {
-                "description": "Arrowhead registry word (`arrow | filled-triangle | open-triangle | none`, DE-2).\nAbsent means default filled triangle and is preserved byte-for-byte.",
+                "description": "Arrowhead registry word (`arrow | none`, DE-2; further heads reserved for N2).\nAbsent means default arrow and is preserved byte-for-byte.",
                 "enum": [
                   "none",
-                  "arrow",
-                  "filled-triangle",
-                  "open-triangle"
+                  "arrow"
                 ]
               },
               "emphasis": {
@@ -2535,9 +2544,7 @@
               "arrowhead": {
                 "enum": [
                   "none",
-                  "arrow",
-                  "filled-triangle",
-                  "open-triangle"
+                  "arrow"
                 ]
               },
               "emphasis": {
@@ -4253,6 +4260,12 @@
           "sourceType": "OccurrenceRef"
         },
         {
+          "name": "PresentationState.entityAnatomy",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"enum\":[\"v1\",\"v2\"]}",
+          "sourceType": "Readonly<Record<string, DiagramAnatomyVersion>>"
+        },
+        {
           "name": "RouteSpacingReport.channelCapacity",
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"$ref\":\"#/$defs/ChannelCapacitySummary\"}",
@@ -4477,7 +4490,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:4d1689a4a0cfd537739c0ca8140a3d52b408bb91c15800eb1e301673acc5820e",
+        "declarationDigest": "sha256:8d80bfe1dc64a76692275fcb64b6322ae7b27d1d198371332a809b239a32a194",
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
@@ -6892,7 +6905,7 @@
             "additionalProperties": false,
             "properties": {
               "anatomy": {
-                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). New views default to `\"v2\"`.",
+                "description": "Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). Absent means legacy `\"v1\"`; `\"v2\"` is opt-in.",
                 "enum": [
                   "v1",
                   "v2"
@@ -6921,6 +6934,17 @@
               "diagram": {
                 "$ref": "#/$defs/DiagramPresentation",
                 "description": "Typed presentation fragment (M3 §3.2.2). Absent means no presentation contract."
+              },
+              "entityAnatomy": {
+                "additionalProperties": {
+                  "enum": [
+                    "v1",
+                    "v2"
+                  ]
+                },
+                "description": "Per-occurrence anatomy overrides for mixed full-size and compact scenes.",
+                "properties": {},
+                "type": "object"
               },
               "grid": {
                 "additionalProperties": false,
@@ -7462,12 +7486,10 @@
             "additionalProperties": false,
             "properties": {
               "arrowhead": {
-                "description": "Arrowhead registry word (`arrow | filled-triangle | open-triangle | none`, DE-2).\nAbsent means default filled triangle and is preserved byte-for-byte.",
+                "description": "Arrowhead registry word (`arrow | none`, DE-2; further heads reserved for N2).\nAbsent means default arrow and is preserved byte-for-byte.",
                 "enum": [
                   "none",
-                  "arrow",
-                  "filled-triangle",
-                  "open-triangle"
+                  "arrow"
                 ]
               },
               "emphasis": {
@@ -7548,9 +7570,7 @@
               "arrowhead": {
                 "enum": [
                   "none",
-                  "arrow",
-                  "filled-triangle",
-                  "open-triangle"
+                  "arrow"
                 ]
               },
               "emphasis": {
@@ -9279,6 +9299,12 @@
           "sourceType": "OccurrenceRef"
         },
         {
+          "name": "PresentationState.entityAnatomy",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"enum\":[\"v1\",\"v2\"]}",
+          "sourceType": "Readonly<Record<string, DiagramAnatomyVersion>>"
+        },
+        {
           "name": "RouteSpacingReport.channelCapacity",
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"$ref\":\"#/$defs/ChannelCapacitySummary\"}",
@@ -9549,7 +9575,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.11"
       },
       "status": "partial",
       "unresolved": [

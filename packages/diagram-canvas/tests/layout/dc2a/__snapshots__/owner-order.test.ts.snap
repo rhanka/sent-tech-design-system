@@ -13,13 +13,15 @@ exports[`should compare memory/false grouping, reading order and channel geometr
       ],
       [
         "sys-h2a",
+      ],
+      [
         "sys-engram",
       ],
       [
-        "act-memctl",
+        "sys-track",
       ],
       [
-        "sys-track",
+        "act-memctl",
       ],
     ],
     "oldColumns": [
@@ -379,16 +381,14 @@ exports[`should compare vue-globale/false grouping, reading order and channel ge
     "newColumns": [
       [
         "pkg-mesh",
-        "svc-artifacts",
-      ],
-      [
-        "api-mcp-registry",
-      ],
-      [
         "pkg-artifacts",
       ],
       [
         "svc-memory-access",
+        "svc-artifacts",
+      ],
+      [
+        "api-mcp-registry",
       ],
     ],
     "oldColumns": [

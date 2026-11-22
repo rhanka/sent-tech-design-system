@@ -488,7 +488,7 @@
             }
           ]
         },
-        "fallback": "svg",
+        "fallback": "text",
         "parity": {
           "angular": {
             "comparedProps": 17,

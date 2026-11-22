@@ -14,7 +14,7 @@
  * refuse. It implements exactly the keyword surface the committed documents
  * use (measured: `$ref`, `type`, `enum`, `const`, `pattern`, `properties`,
  * `required`, `additionalProperties`, `unevaluatedProperties`, `items`,
- * `minItems`, `maxItems`, `allOf`, `anyOf`, `oneOf`, `not`) and REFUSES
+ * `minItems`, `maxItems`, `minLength`, `minimum`, `maximum`, `allOf`, `anyOf`, `oneOf`, `not`) and REFUSES
  * CONSTRUCTION when a registered document grows a standard 2020-12 keyword
  * outside that set, or any UNKNOWN keyword at all, so a catalogue change
  * cannot silently weaken the browser validation. The only allowed
@@ -51,6 +51,9 @@ const IMPLEMENTED_KEYWORDS = new Set([
   "enum",
   "const",
   "pattern",
+  "minLength",
+  "minimum",
+  "maximum",
   "properties",
   "required",
   "additionalProperties",
@@ -95,12 +98,9 @@ const ANNOTATION_KEYWORDS = new Set([
 /** Standard 2020-12 VALIDATION keywords this interpreter does not implement. */
 const UNSUPPORTED_STANDARD_KEYWORDS = new Set([
   "multipleOf",
-  "maximum",
   "exclusiveMaximum",
-  "minimum",
   "exclusiveMinimum",
   "maxLength",
-  "minLength",
   "maxProperties",
   "minProperties",
   "uniqueItems",
@@ -378,6 +378,16 @@ function validateNode(
   // astral code points and \p{...} escapes behave identically here.
   if (typeof pattern === "string" && typeof data === "string" && !new RegExp(pattern, "u").test(data)) {
     fail({ pointer, message: `must match pattern "${pattern}"`, keyword: "pattern" });
+  }
+  const { minLength, minimum, maximum } = schema;
+  if (typeof data === "string" && typeof minLength === "number" && [...data].length < minLength) {
+    fail({ pointer, message: `must NOT have fewer than ${minLength} characters`, keyword: "minLength" });
+  }
+  if (typeof data === "number" && typeof maximum === "number" && data > maximum) {
+    fail({ pointer, message: `must be <= ${maximum}`, keyword: "maximum" });
+  }
+  if (typeof data === "number" && typeof minimum === "number" && data < minimum) {
+    fail({ pointer, message: `must be >= ${minimum}`, keyword: "minimum" });
   }
 
   // Object keywords run only for plain objects (ajv's applicability guards).

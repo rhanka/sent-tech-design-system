@@ -1,7 +1,7 @@
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
-import { clampZoom, FIT_ASPECT, zoomReadout, type Rect } from '@sentropic/diagram-canvas';
+import { clampZoom, FIT_ASPECT, isR7ConnectorPresentation, zoomReadout, type Rect } from '@sentropic/diagram-canvas';
 import { sceneCardMeasure, cardLineMeasurer, defaultCardMeasure, type CardLineMeasure } from './diagramCardModel.js';
-import { DEFAULT_SCENE_TARGET_WIDTH, parseScale, resolveZoom, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneModel } from './diagramSceneModel.js';
+import { DEFAULT_EDGE_LABEL_SIZE, DEFAULT_SCENE_TARGET_WIDTH, parseCssLengthPx, parseScale, resolveEdgeLabelSizeToken, resolveZoom, scaleEdgeLabelMeasurer, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneModel } from './diagramSceneModel.js';
 import { measureRenderedBounds, shouldRefitRenderedBounds } from './diagramRenderedBounds.js';
 import { measureRenderedSceneFont } from './diagramFontMeasure.js';
 import type { DiagramSceneFigureProps, DiagramSceneCamera } from './DiagramSceneFigure.types.js';
@@ -12,6 +12,7 @@ export function useDiagramSceneViewport(
     onCameraChange: (camera: DiagramSceneCamera) => void,
     readExtraTokens?: (token: (name: string) => string | undefined) => void,
     transition?: { animating: () => boolean; settle: () => void },
+    onTokenMetricsChange?: () => void,
 ) {
     const scene = computed(getScene);
     const browserMeasure = shallowRef<CardLineMeasure>();
@@ -22,13 +23,14 @@ export function useDiagramSceneViewport(
 
     const frameEl = shallowRef<HTMLElement>();
     const viewportEl = shallowRef<HTMLElement>();
+    const frameWidth = shallowRef<number>();
     const viewWidth = shallowRef<number>();
     const windowHeight = shallowRef<number>();
     const scrollbarHeight = shallowRef(0);
     const maxDisplayScale = shallowRef<number>();
     const minReadableScale = shallowRef<number>();
     const requestedZoom = shallowRef<number>();
-    let atFit = true;
+    let fittedFonts: Promise<FontFaceSet> | undefined;
     const renderedBounds = shallowRef<{ scene: SceneModel; bounds: Rect }>();
     const cameraBounds = computed(() => renderedBounds.value?.scene === scene.value ? renderedBounds.value?.bounds : scene.value?.bounds);
     // `zoom` is the scale the world is painted at: the fit is quantised once,
@@ -45,62 +47,132 @@ export function useDiagramSceneViewport(
         const bounds = measureRenderedBounds(frameEl.value, scene.value.bounds, zoom.value);
         const previous = renderedBounds.value?.scene === scene.value ? renderedBounds.value.bounds : undefined;
         if (bounds === undefined || !shouldRefitRenderedBounds(previous, bounds)) return;
-        if (atFit) requestedZoom.value = undefined;
         renderedBounds.value = { scene: scene.value, bounds };
     }
     onMounted(() => { watch([scene, animating], () => readRenderedBounds(), { immediate: true, flush: 'post' }); });
     function token(name: string) {
         return frameEl.value === undefined ? undefined : getComputedStyle(frameEl.value).getPropertyValue(name).trim();
     }
+    function lengthToken(name: string): number | undefined {
+        if (frameEl.value === undefined) return undefined;
+        const raw = token(name);
+        if (raw === undefined || raw === '') return undefined;
+        const docEl = frameEl.value.ownerDocument?.documentElement;
+        const rootFontSize = docEl ? parseFloat(getComputedStyle(docEl).fontSize) : Number.NaN;
+        const elementFontSize = parseFloat(getComputedStyle(frameEl.value).fontSize);
+        const context = { rootFontSize, elementFontSize };
+        const parsed = parseCssLengthPx(raw, context);
+        if (parsed !== undefined || !/^(calc|min|max|clamp)\(/i.test(raw)) return parsed;
+        const probe = frameEl.value.ownerDocument.createElement("span");
+        probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none";
+        probe.style.fontSize = raw;
+        if (probe.style.fontSize === "") return undefined;
+        frameEl.value.appendChild(probe);
+        try {
+          return parseCssLengthPx(getComputedStyle(probe).fontSize, context);
+        } finally {
+          probe.remove();
+        }
+    }
+    const r7Mode = computed(() => isR7ConnectorPresentation(props.presentation, props.view, props.document));
     function readCameraTokens() {
         const values: Record<string, number> = {};
-        for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","zoneGutter","routeSpacing","routeBorderClearance","labelBand","gapMax","bundleLabelMaxWidth","containerPadding","edgeCornerRadius","linkStrokeWidth","linkEmphasisStrokeWidth","edgeLabelSize"]) {
-            const value = parseFloat(token('--st-component-diagramScene-' + key) ?? '');
-            if (Number.isFinite(value)) values[key] = value;
+        const baseKeys = ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding"];
+        const r7Keys = ["zoneGutter","routeSpacing","routeBorderClearance","edgeCornerRadius","linkStrokeWidth","linkRelatedStrokeWidth","linkEmphasisStrokeWidth"];
+        for (const key of baseKeys) {
+          const value = parseFloat(token("--st-component-diagramScene-" + key) ?? "");
+          if (Number.isFinite(value)) values[key] = value;
         }
-        const labelMargin = parseFloat(token('--st-component-diagramScene-labelPadding') ?? '');
+        const labelMargin = parseFloat(token("--st-component-diagramScene-labelPadding") ?? "");
         if (Number.isFinite(labelMargin)) values.labelMargin = labelMargin;
-        if (JSON.stringify(values) !== JSON.stringify(tokenMetrics.value)) tokenMetrics.value = values;
+        if (r7Mode.value) {
+          for (const key of r7Keys) {
+            const value = lengthToken("--st-component-diagramScene-" + key);
+            if (value !== undefined && Number.isFinite(value)) values[key] = value;
+          }
+          const edgeLabelSize = resolveEdgeLabelSizeToken(
+            lengthToken("--st-component-diagramScene-edgeLabelSize"),
+            lengthToken("--st-component-diagramScene-edgeLabelFontSize"),
+          );
+          if (edgeLabelSize !== undefined) values.edgeLabelSize = edgeLabelSize;
+        }
+
+        if (JSON.stringify(values) !== JSON.stringify(tokenMetrics.value)) {
+            onTokenMetricsChange?.();
+            tokenMetrics.value = values;
+        }
         readExtraTokens?.(token);
         maxDisplayScale.value = parseScale(token('--st-component-diagramScene-maxDisplayScale'));
         minReadableScale.value = parseScale(token('--st-component-diagramScene-minReadableScale'));
     }
-    function measureFrame() {
-        if (frameEl.value === undefined)
-            return;
-        const width = viewportEl.value?.clientWidth || frameEl.value.clientWidth;
-        viewWidth.value = width > 0 ? width : undefined;
-        scrollbarHeight.value = viewportEl.value === undefined ? 0 : viewportEl.value.offsetHeight - viewportEl.value.clientHeight;
-        windowHeight.value = window.innerHeight > 0 ? window.innerHeight : undefined;
+    let previousFrameHeight: number | undefined;
+    let previousViewportHeight = 0;
+
+    function measureFrame(resize = false) {
+        if (frameEl.value === undefined) return;
+        const width = frameEl.value.clientWidth || undefined;
+        const frameHeight = frameEl.value.clientHeight;
+        const viewportOuterHeight = viewportEl.value?.offsetHeight ?? 0;
+        // The frame can grow with its viewport when a scrollbar appears.
+        // Refit when the frame height changes independently of that growth.
+        const frameHeightChanged = previousFrameHeight !== undefined
+            && frameHeight !== previousFrameHeight
+            && frameHeight - previousFrameHeight !== viewportOuterHeight - previousViewportHeight;
+        previousFrameHeight = frameHeight;
+        previousViewportHeight = viewportOuterHeight;
+        const height = window.innerHeight > 0 ? window.innerHeight : undefined;
+        const refit = resize || width !== frameWidth.value || frameHeightChanged || height !== windowHeight.value;
+        frameWidth.value = width;
+        viewWidth.value = viewportEl.value?.clientWidth || width;
+        scrollbarHeight.value = viewportOuterHeight - (viewportEl.value?.clientHeight ?? 0);
+        windowHeight.value = height;
         readCameraTokens();
-        if (atFit)
-            requestedZoom.value = undefined;
+        if (refit) {
+            resetToFit();
+            void nextTick(readRenderedBounds);
+        }
     }
-    const measured = computed(() => viewWidth.value !== undefined && windowHeight.value !== undefined);
-    const fit = computed(() => sceneFit({
-        ...(cameraBounds.value === undefined ? {} : { bounds: cameraBounds.value }),
-        viewWidth: viewWidth.value ?? props.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
+    const measured = computed(() => frameWidth.value !== undefined && windowHeight.value !== undefined);
+    const sceneFitInput = computed(() => ({
+        viewWidth: frameWidth.value ?? props.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
         windowHeight: windowHeight.value ?? Number.POSITIVE_INFINITY,
-        scrollbarHeight: scrollbarHeight.value,
         ...(maxDisplayScale.value === undefined ? {} : { maxDisplayScale: maxDisplayScale.value }),
         ...(minReadableScale.value === undefined ? {} : { minReadableScale: minReadableScale.value }),
         ...(props.fitToWindow ? { fitToWindow: true } : {}),
     }));
+    const fitInput = computed(() => ({
+        ...(cameraBounds.value === undefined ? {} : { bounds: cameraBounds.value }),
+        ...sceneFitInput.value,
+    }));
+    // Try the full width before reserving space for any scrollbar.
+    const frameFit = computed(() => sceneFit(fitInput.value));
+    const fit = computed(() => frameFit.value.pans ? sceneFit({ ...fitInput.value,
+        viewWidth: viewWidth.value ?? fitInput.value.viewWidth, scrollbarHeight: scrollbarHeight.value,
+    }) : frameFit.value);
+    const viewportHeight = computed(() => fit.value.fitHeight + (frameFit.value.pans ? scrollbarHeight.value : 0));
     const zoom = computed(() => resolveZoom(requestedZoom.value, fit.value));
     const readout = computed(() => zoomReadout(zoom.value, fit.value.maxZoom));
-    const placement = computed(() => scenePlacement(cameraBounds.value, zoom.value, fit.value));
+    const placement = computed(() => scenePlacement(cameraBounds.value, zoom.value, zoom.value > fit.value.zoom
+        ? { fitWidth: viewWidth.value ?? fit.value.fitWidth, fitHeight: Math.max(0, viewportHeight.value - scrollbarHeight.value) }
+        : fit.value));
     const camera = computed<DiagramSceneCamera>(() => ({
         zoom: zoom.value, readout: readout.value, minZoom: fit.value.minZoom,
         maxZoom: fit.value.maxZoom, fitZoom: fit.value.zoom,
         pans: placement.value.overflowX || placement.value.overflowY,
     }));
-    watch(() => props.document.documentId, () => { atFit = true; requestedZoom.value = undefined; browserMeasure.value = undefined; renderedBounds.value = undefined; });
+    watch(() => props.document.documentId, () => {
+        resetToFit();
+        fittedFonts = undefined;
+        browserMeasure.value = undefined;
+        renderedBounds.value = undefined;
+    });
     onMounted(() => {
         watch([measured, zoom, fit], () => {
             if (!measured.value) return;
-            if (!atFit) requestedZoom.value = zoom.value;
+            if (requestedZoom.value !== undefined) requestedZoom.value = zoom.value;
         });
         watch(camera, onCameraChange, { immediate: true });
+        watch(r7Mode, () => readCameraTokens());
     });
     function setZoom(next: number) {
         if (!Number.isFinite(next))
@@ -108,15 +180,16 @@ export function useDiagramSceneViewport(
         readCameraTokens();
         const before = zoom.value;
         const target = clampZoom(next, fit.value);
-        atFit = target === fit.value.zoom;
-        if (target === before)
+        if (target === before) {
+            if (target === fit.value.zoom) requestedZoom.value = undefined;
             return;
+        }
         const element = viewportEl.value;
         const centre = element === undefined ? undefined : {
             x: (element.scrollLeft + element.clientWidth / 2 - placement.value.translateX) / before,
             y: (element.scrollTop + element.clientHeight / 2 - placement.value.translateY) / before,
         };
-        requestedZoom.value = target;
+        requestedZoom.value = target === fit.value.zoom ? undefined : target;
         if (element !== undefined && centre !== undefined)
             void nextTick(() => {
                 element.scrollLeft = centre.x * zoom.value + placement.value.translateX - element.clientWidth / 2;
@@ -133,18 +206,36 @@ export function useDiagramSceneViewport(
         if (animating()) transition?.settle();
         readCameraTokens();
         if (scene.value === painted) readRenderedBounds();
-        atFit = true;
-        requestedZoom.value = undefined;
-        void nextTick(() => {
-            if (viewportEl.value) {
-                viewportEl.value.scrollLeft = 0;
-                viewportEl.value.scrollTop = 0;
-            }
-        });
+        resetToFit();
     }
     function getCamera() { return camera.value; }
 
-    function holdZoom() { requestedZoom.value = zoom.value; atFit = false; }
+    function resetToFit() {
+        requestedZoom.value = undefined;
+        const element = viewportEl.value;
+        if (element === undefined) return;
+        void nextTick(() => {
+            element.scrollLeft = 0;
+            element.scrollTop = 0;
+        });
+    }
+    function refitForFonts() {
+        const ready = document.fonts?.ready;
+        const frame = frameEl.value;
+        const current = scene.value;
+        const useBrowserMeasure = props.measureLines === undefined && (props.measure === undefined || props.measure === defaultCardMeasure);
+        if (frame === undefined || current === undefined) return;
+        const fontsChanged = ready !== fittedFonts;
+        if (!fontsChanged && (!useBrowserMeasure || browserMeasure.value !== undefined)) return;
+        fittedFonts = ready;
+        // A later scene can supply a card to measure within the same font load.
+        if (useBrowserMeasure) {
+            browserMeasure.value = measureRenderedSceneFont(frame, current, measure.value);
+        }
+        if (fontsChanged) resetToFit();
+        else if (browserMeasure.value === undefined) return;
+        void nextTick(readRenderedBounds);
+    }
     function onWheel(event: WheelEvent) {
         if (!event.ctrlKey && !event.metaKey) return;
         event.preventDefault();
@@ -152,41 +243,54 @@ export function useDiagramSceneViewport(
     }
     let observer: ResizeObserver | undefined;
     let mountedViewport: HTMLElement | undefined;
-    let fontsActive = true;
+    let fonts: FontFaceSet | undefined;
+    const onResize = () => measureFrame(true);
     onMounted(() => {
         measureFrame();
-        window.addEventListener('resize', measureFrame);
-        observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(measureFrame);
+        window.addEventListener('resize', onResize);
+        observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(() => measureFrame());
         if (frameEl.value)
             observer?.observe(frameEl.value);
         if (viewportEl.value)
             observer?.observe(viewportEl.value);
         mountedViewport = viewportEl.value;
         mountedViewport?.addEventListener('wheel', onWheel, { passive: false });
-        {
-            watch([scene, () => props.measure, () => props.measureLines], ([current], _previous, cleanup) => {
-                if ((props.measure !== undefined && props.measure !== defaultCardMeasure) || props.measureLines !== undefined) return;
-                if (current === undefined || browserMeasure.value !== undefined) return;
-                let active = true;
-                cleanup(() => { active = false; });
-                void document.fonts?.ready.then(() => {
-                    if (active && fontsActive && frameEl.value !== undefined)
-                        browserMeasure.value = measureRenderedSceneFont(frameEl.value, current, measure.value);
-                });
-            }, { immediate: true, flush: 'post' });
-        }
+        fonts = document.fonts;
+        fonts?.addEventListener?.('loadingdone', refitForFonts);
+        watch(scene, (current, _previous, cleanup) => {
+            if (current === undefined || browserMeasure.value !== undefined) return;
+            let active = true;
+            cleanup(() => { active = false; });
+            void fonts?.ready.then(() => { if (active) refitForFonts(); });
+        }, { immediate: true, flush: 'post' });
     });
     onUnmounted(() => {
-        fontsActive = false;
         observer?.disconnect();
-        window.removeEventListener('resize', measureFrame);
+        window.removeEventListener('resize', onResize);
+        fonts?.removeEventListener?.('loadingdone', refitForFonts);
         mountedViewport?.removeEventListener('wheel', onWheel);
         mountedViewport = undefined;
     });
 
-    const edgeLabelLineHeight = computed(() => measureLines.value({ text: 'Mg', role: 'edge-label', availableWidth: 400, allocatedLines: 1, folded: false }).height);
-    const viewportStyle = computed(() => `height:${fit.value.fitHeight + scrollbarHeight.value}px;${props.fitToWindow ? 'max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;' : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px`);
-    return { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
-        fit, zoom, readout, placement, viewportStyle, holdZoom,
+    const edgeLabelLineHeight = computed(() => scaleEdgeLabelMeasurer(measureLines.value, r7Mode.value ? effectiveMetrics.value.edgeLabelSize : undefined)({ text: 'Mg', role: 'edge-label', availableWidth: 400, allocatedLines: 1, folded: false }).height);
+    const metricPaintVars = computed(() =>
+        !r7Mode.value ? "" :
+        (props.metrics?.edgeLabelSize !== undefined ||
+            (effectiveMetrics.value.edgeLabelSize !== undefined && effectiveMetrics.value.edgeLabelSize !== DEFAULT_EDGE_LABEL_SIZE)
+            ? `;--st-diagram-edge-label-size:${effectiveMetrics.value.edgeLabelSize}px`
+            : '') +
+        (props.metrics?.linkStrokeWidth !== undefined ? `;--st-diagram-link-stroke-width:${props.metrics.linkStrokeWidth}px` : '') +
+        (props.metrics?.linkRelatedStrokeWidth !== undefined ? `;--st-diagram-link-related-stroke-width:${props.metrics.linkRelatedStrokeWidth}px` : "") +
+        (props.metrics?.linkEmphasisStrokeWidth !== undefined ? `;--st-diagram-link-emphasis-stroke-width:${props.metrics.linkEmphasisStrokeWidth}px` : ''),
+    );
+    const overviewLabelPaintVars = computed(() => {
+        const size = scene.value?.overviewEdgeLabelSize;
+        if (size === undefined) return "";
+        const lineHeight = edgeLabelLineHeight.value * size / (effectiveMetrics.value.edgeLabelSize ?? DEFAULT_EDGE_LABEL_SIZE);
+        return `;--st-diagram-overview-edge-label-size:${size}px;--st-diagram-overview-edge-label-line-height:${lineHeight}px`;
+    });
+    const viewportStyle = computed(() => `height:${viewportHeight.value}px;${props.fitToWindow ? 'max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;' : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px${metricPaintVars.value}${overviewLabelPaintVars.value}`);
+    return { frameEl, viewportEl, measure, measureLines, effectiveMetrics, r7Mode, token,
+        fit, zoom, readout, placement, viewportStyle, sceneFitInput, resetToFit,
         setZoom, zoomIn, zoomOut, fitToFrame, getCamera };
 }

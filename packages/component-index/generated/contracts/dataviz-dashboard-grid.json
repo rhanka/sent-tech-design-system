@@ -1,8 +1,8 @@
 {
   "componentId": "dataviz-dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:3439f19f0e7c46b085be4de82539b6af9827646f277e5d9c9ccc3ae3466ddbe7",
-  "entryDigest": "sha256:52fbbca3011f45b75b508f80a1ef6779155d8334dc8b54994a3031e1a784a120",
+  "digest": "sha256:0b899192a7c09692d8eeea5842fd821f88685a8db6a28fec120fbe49301bc7bf",
+  "entryDigest": "sha256:053f9590f1d1e839d45c9f682f932b67c3c4d5d0ae285df7961f91b39f2645f9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -434,7 +434,7 @@
         "declarationPath": "packages/components-vue/dist/DashboardGrid.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DashboardGridProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.11"
       },
       "status": "partial",
       "unresolved": [],

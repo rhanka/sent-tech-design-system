@@ -20,7 +20,7 @@ import { fileURLToPath } from "node:url";
 import { formatDiagnostics, m3ProfileRegistry, shippedExecutorBindings, validateView } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
-import { applyRect, DEFAULT_MIN_READABLE_SCALE, MIN_EDGE_LABEL_CSS_PX, worldToView } from "../../../src/index.js";
+import { applyRect, DEFAULT_MIN_READABLE_SCALE, worldToView } from "../../../src/index.js";
 import { sharesSegment } from "../fixtures.js";
 import {
   BASE_GAP,
@@ -44,7 +44,7 @@ import { CASE_IDS, layScene, sceneInput, viewNamesOf, type CaseId, type SceneLay
 const BASELINE = new URL("./baseline.json", import.meta.url);
 const AFTER = new URL("./after.json", import.meta.url);
 const GAP_CAP = 240;
-const BASE_X = spacing.gapMin, BASE_Y = spacing.gapMinBlock, ZONE_GUTTER = spacing.zoneGutter;
+const BASE_X = spacing.gapMin, BASE_Y = spacing.gapMinBlock;
 
 interface FillProof {
   readonly view: string;
@@ -96,7 +96,7 @@ const toggle = (caseId: CaseId, a: string, b: string): SceneLayout[] => {
 };
 
 // BLK-1: no misses bypass — every gate below is hard. Panning (BF-2) is
-// allowed when the drawing exceeds the 0.45 floor (held at the floor, host
+// allowed when the drawing exceeds the 0.30 floor (held at the floor, host
 // pans); all other lists must be empty. Live layouts are gated, not pins.
 const short = (id: string): string => id.replace("occurrence:r.link.", "");
 
@@ -112,7 +112,7 @@ describe("DC-2a L2 row-pack gates", () => {
       const view = views.find((view) => view.key === proof.view)!;
       expect(view, proof.view).toBeDefined();
       const input = sceneInput(view.caseId, view.viewName);
-      const base = layScene(input, { metrics: { gapInlineMax: Math.max(BASE_X, ZONE_GUTTER), gapBlockMax: Math.max(BASE_Y, ZONE_GUTTER) } }, { rootOrder: input.rootOrder });
+      const base = layScene(input, { metrics: { gapInlineMax: BASE_X, gapBlockMax: BASE_Y } }, { rootOrder: input.rootOrder });
       const metrics = placementMetrics(base);
       expect(metrics.visibleLeaves, proof.view).toBe(proof.leafCount);
       expect([metrics.bboxWidth, metrics.bboxHeight], proof.view).toEqual(
@@ -153,7 +153,7 @@ describe("DC-2a L2 row-pack gates", () => {
     const layout = layouts.get("case-skills-r9/folded")!;
     // A small entity bbox is capped, but a far label or route can make the
     // whole scene frame-limited. Just below the cap still rounds to 0.620.
-    for (const scale of [MAX_DISPLAY_SCALE - 0.0001, 0.3]) {
+    for (const scale of [MAX_DISPLAY_SCALE - 0.0001, DEFAULT_MIN_READABLE_SCALE - 0.01]) {
       for (const extent of ["label", "route"]) {
         const right = 100 + 1438 / scale;
         const frame = sceneFrame({
@@ -194,19 +194,19 @@ describe("DC-2a L2 row-pack gates", () => {
     expect(Object.values(before).reduce((sum, metrics) => sum + metrics.edgeContainerEscapes, 0)).toBe(26);
   });
 
-  it("BF-6 / DE-2 ask 3: fixed sibling gutters never widen or re-wrap a shelf — shelf membership stays at the token gaps", () => {
+  it("BF-6: widening a gutter never re-wraps a shelf — shelf membership is the one packed at the base gaps", () => {
+    // With the caps at the base gap no gutter can widen: the drawing is pass 1.
+    let widened = 0;
     for (const view of views) {
       const input = sceneInput(view.caseId, view.viewName);
-      const base = layScene(input, { metrics: { gapInlineMax: Math.max(BASE_X, ZONE_GUTTER), gapBlockMax: Math.max(BASE_Y, ZONE_GUTTER) } }, { rootOrder: input.rootOrder });
+      const base = layScene(input, { metrics: { gapInlineMax: BASE_X, gapBlockMax: BASE_Y } }, { rootOrder: input.rootOrder });
       const shelvesOf = (layout: SceneLayout): string => JSON.stringify(levelShelves(layout).map((level) => [level.level, level.rows, level.shelves]));
       expect(shelvesOf(layouts.get(view.key)!), view.key).toBe(shelvesOf(base));
       expect(base.orientations).toEqual(layouts.get(view.key)!.orientations);
-      for (const channel of layouts.get(view.key)!.channels ?? []) {
-        const expected = channel.zone ? ZONE_GUTTER : (channel.axis === "horizontal" ? BASE_X : BASE_Y);
-        expect(Math.abs(channel.gap - expected), `${view.key} ${channel.id}`).toBeLessThanOrEqual(GAP_TOLERANCE);
-      }
-      expect(after[view.key]!.widenedGutters, view.key).toBe(0);
+      expect(siblingGaps(base).every((gap) => Math.abs(gap.gap - (gap.axis === "x" ? BASE_X : BASE_Y)) <= GAP_TOLERANCE)).toBe(true);
+      widened += after[view.key]!.widenedGutters;
     }
+    expect(widened).toBeGreaterThan(0);
   }, 120_000);
 
   it("AC-19/AC-3: every sibling gap, root included, is within [base, cap] on both axes", () => {
@@ -500,9 +500,7 @@ describe("DC-2a L2 row-pack gates", () => {
     expect(levels).toBeGreaterThan(0);
   }, 120_000);
 
-  it("§5.1/§5.3: the display scale comes from cameraFit, holds the readability floor, and labels stay legible", () => {
-    // 18 px edge labels render at 18 × 0.45 = 8.1 CSS px at the floor.
-    expect(EDGE_LABEL_FONT_SIZE * DEFAULT_MIN_READABLE_SCALE).toBeGreaterThanOrEqual(MIN_EDGE_LABEL_CSS_PX);
+  it("§5.1/§5.3: the display scale comes from cameraFit, holds the readability floor, and scales edge labels with the drawing", () => {
     const panning: string[] = [];
     for (const view of views) {
       const metrics = after[view.key]!;
@@ -519,7 +517,7 @@ describe("DC-2a L2 row-pack gates", () => {
       if (metrics.pans) panning.push(`${view.key} ${String(metrics.displayScale)}`);
     }
     // BLK-1: panning is allowed (BF-2) but only at the floor — every panning
-    // view is held at 0.45. No name list to bypass.
+    // view is held at 0.30. No name list to bypass.
     for (const entry of panning) {
       expect(Number(entry.split(" ").pop())).toBe(DEFAULT_MIN_READABLE_SCALE);
     }

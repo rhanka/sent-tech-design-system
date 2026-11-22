@@ -31,11 +31,13 @@ import {
   resolveScene,
   resolveScenePresentation,
   sceneTextRows,
+  type DiagramSceneFigureLabels,
   type SceneDocument,
   type ScenePresentation,
   type SceneView,
 } from "../../src/presentation/diagramSceneModel.js";
 import { renderCardSvg } from "../../src/presentation/renderCardSvg.js";
+import { renderZoneSvg } from "../../src/presentation/renderZoneSvg.js";
 import { nestedZoneFixture } from "../../test-support/nestedZoneFixture.js";
 
 const CONTRACT = {
@@ -72,7 +74,7 @@ describe("diagram anatomy v2 (DE-1)", () => {
     expect(anatomyZoneGeometry(undefined)).toBe(ZONE_GEOMETRY);
   });
 
-  it("should lay out the compact 352x154 card with v2 insets and centred default alignment", () => {
+  it("should lay out the compact 352x154 card with v2 insets, left default alignment, and opt-in center alignment", () => {
     const layout = layoutCard({ ...COMPACT, anatomy: "v2" }, defaultCardMeasure);
     expect(layout.box).toEqual({ width: 352, height: 154 });
     expect(layout.anatomyFallback).toBeUndefined();
@@ -93,10 +95,11 @@ describe("diagram anatomy v2 (DE-1)", () => {
     // Folded header keeps the derived compact width (352 − 2 − 6 − 66 − 68).
     expect(layout.headerTextWidth).toBe(210);
     expect(layout.iconBox?.size).toBe(52);
-    // Compact-face default alignment is "center" (PLAN DE-1).
-    expect(layout.title[0]?.anchor).toBe("middle");
+    // Compact-face stays left-aligned unless align: "center" is explicitly requested.
+    expect(layout.title[0]?.anchor).toBe("start");
     expect(layout.body.map((line) => line.text)).toEqual(["Body"]);
-    // Explicit align: "left" overrides the compact default.
+    const centred = layoutCard({ ...COMPACT, anatomy: "v2", align: "center" }, defaultCardMeasure);
+    expect(centred.title[0]?.anchor).toBe("middle");
     const left = layoutCard({ ...COMPACT, anatomy: "v2", align: "left" }, defaultCardMeasure);
     expect(left.title[0]?.anchor).toBe("start");
   });
@@ -111,12 +114,20 @@ describe("diagram anatomy v2 (DE-1)", () => {
     expect(result.layout.box).toEqual({ width: 352, height: 154 });
   });
 
-  it("should fall back per box to frozen v1 keeping the full body when v2 overflows", () => {
+  it("should fall back per box to frozen v1 keeping the full body and 0.41.5 alignment when v2 overflows", () => {
     const layout = layoutCard({ ...CONTRACT, anatomy: "v2" }, defaultCardMeasure);
     expect(layout.anatomyFallback).toBe("v1");
     expect(layout.box).toEqual({ width: 460, height: 200 });
     expect(layout.body.map((line) => line.text)).toEqual(["Body", "Detail"]);
-    expect(layout.title[0]?.anchor).toBe("middle");
+    expect(layout.kicker[0]?.anchor).toBe("start");
+    expect(layout.title[0]?.anchor).toBe("start");
+    expect(layout.footerLines[0]?.anchor).toBe("start");
+    // Even with explicit align: "center", a fallback-v1 card keeps 0.41.5 left header/footer alignment.
+    const fallbackWithAlign = layoutCard({ ...CONTRACT, anatomy: "v2", align: "center" }, defaultCardMeasure);
+    expect(fallbackWithAlign.anatomyFallback).toBe("v1");
+    expect(fallbackWithAlign.kicker[0]?.anchor).toBe("start");
+    expect(fallbackWithAlign.title[0]?.anchor).toBe("start");
+    expect(fallbackWithAlign.footerLines[0]?.anchor).toBe("start");
     const overflow = layout.diagnostics.find((diagnostic) => diagnostic.code === "card-overflow");
     expect(overflow?.slot).toBe("body");
     expect(overflow?.reason).toBe("fallback-v1");
@@ -142,8 +153,10 @@ describe("diagram anatomy v2 (DE-1)", () => {
     expect(collapsed.collapsed).toBe(true);
     expect(collapsed.box).toEqual({ x: 0, y: 0, width: 352, height: 154 });
     expect(collapsed.card?.body.map((line) => line.text)).toEqual(["Subtitle"]);
-    expect(collapsed.card?.title[0]?.anchor).toBe("middle");
+    expect(collapsed.card?.title[0]?.anchor).toBe("start");
     expect(collapsed.diagnostics).toEqual([]);
+    const collapsedCentred = layoutZone({ ...compactZone, collapsed: true, align: "center" }, defaultCardMeasure);
+    expect(collapsedCentred.card?.title[0]?.anchor).toBe("middle");
 
     const fullZone = {
       ...compactZone,
@@ -154,13 +167,16 @@ describe("diagram anatomy v2 (DE-1)", () => {
     const collapsedFallback = layoutZone({ ...fullZone, collapsed: true }, defaultCardMeasure);
     expect(collapsedFallback.box).toEqual({ x: 0, y: 0, width: 460, height: 200 });
     expect(collapsedFallback.card?.anatomyFallback).toBe("v1");
+    expect(collapsedFallback.card?.title[0]?.anchor).toBe("start");
     expect(collapsedFallback.card?.body.map((line) => line.text)).toEqual(["Subtitle"]);
     expect(collapsedFallback.diagnostics.some((d) => d.code === "zone-overflow" && d.reason === "fallback-v1")).toBe(true);
 
     const expanded = layoutZone({ ...fullZone, collapsed: false }, defaultCardMeasure);
     expect(expanded.collapsed).toBe(false);
     expect(expanded.header?.headerTextX).toBe(12 + 52 + 4);
-    expect(expanded.header?.title[0]?.anchor).toBe("middle");
+    expect(expanded.header?.title[0]?.anchor).toBe("start");
+    const expandedCentred = layoutZone({ ...fullZone, collapsed: false, align: "center" }, defaultCardMeasure);
+    expect(expandedCentred.header?.title[0]?.anchor).toBe("middle");
     expect(ZONE_GEOMETRY_V2.collapsedWidth).toBe(352);
     expect(ZONE_GEOMETRY_V2.collapsedHeight).toBe(154);
   });
@@ -188,7 +204,7 @@ describe("diagram anatomy v2 (DE-1)", () => {
     expect(layoutCard(plain.props, defaultCardMeasure).box).toEqual({ width: 460, height: 200 });
   });
 
-  it("should propagate view-level anatomy v2 from createView to every card, zone, and legend", () => {
+  it("should keep createView on v1 (460x200) by default and propagate explicit opt-in anatomy v2 to every card, zone, and legend", () => {
     const document = {
       documentId: "document:v2-view",
       schemaVersion: CURRENT_SCHEMA_VERSION,
@@ -206,7 +222,52 @@ describe("diagram anatomy v2 (DE-1)", () => {
       resources: {},
       extensions: [],
     } as unknown as SceneDocument;
-    const baseView = createView({ viewId: viewRef("new-v2"), semanticDocumentId: document.documentId, revision: 1 });
+    // W1-02: createView() without explicit anatomy keeps v1 (0.3.0 / 0.41.5 contract).
+    const defaultView = createView({ viewId: viewRef("default-v1"), semanticDocumentId: document.documentId, revision: 1 });
+    expect(defaultView.presentation.anatomy).toBeUndefined();
+    const defaultSceneView = {
+      ...defaultView,
+      entityOccurrences: {
+        "occurrence:e.card": { id: occurrenceRef("e.card"), entity: entityRef("card"), geometry: { x: 0, y: 0, width: 460, height: 200 } },
+      },
+    } as unknown as SceneView;
+    const defaultPres = {
+      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      entities: {
+        "occurrence:e.card": { form: "card", text: { title: "Card", body: "Compact" } },
+      },
+      legends: {},
+      categoryTokens: [],
+    } as unknown as ScenePresentation;
+    const defaultLaidOut = layoutScene({
+      document,
+      view: defaultSceneView,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: defaultPres,
+      measureLines: cardLineMeasurer(defaultCardMeasure),
+      collapsed: [],
+    });
+    expect(defaultLaidOut.status).toBe("laid-out");
+    if (defaultLaidOut.status === "laid-out") {
+      const defaultScene = resolveScene(defaultLaidOut, {
+        document,
+        view: defaultSceneView,
+        presentation: defaultPres,
+        measureLines: cardLineMeasurer(defaultCardMeasure),
+      });
+      const defaultCard = defaultScene.nodes.find((node) => node.occurrence === "occurrence:e.card");
+      expect(defaultCard?.rect).toMatchObject({ width: 460, height: 200 });
+      expect(defaultCard?.presentation?.anatomy).toBeUndefined();
+    }
+
+    // Explicit opt-in anatomy: "v2" on createView propagates to unpinned cards, zones, and legends.
+    const baseView = createView({
+      viewId: viewRef("new-v2"),
+      semanticDocumentId: document.documentId,
+      revision: 1,
+      presentation: { camera: { x: 0, y: 0, zoom: 1 }, anatomy: "v2" },
+    });
     expect(baseView.presentation.anatomy).toBe("v2");
     const view = {
       ...baseView,
@@ -283,7 +344,12 @@ describe("diagram anatomy v2 (DE-1)", () => {
     // 68 left (12 + 52 + 4) + 86 right toggle reserve = 154 -> 446 header text width.
     expect(zoneWithIcon.header?.headerTextX).toBe(68);
     expect(zoneWithIcon.header?.headerTextWidth).toBe(600 - 154);
-    expect(zoneWithIcon.header?.title[0]?.x).toBe(68 + (600 - 154) / 2);
+    expect(zoneWithIcon.header?.title[0]?.x).toBe(68);
+    const zoneWithIconCentred = layoutZone(
+      { entityId: "z", title: "Platform Zone", collapsed: false, width: 600, toggleLabel: "Collapse", anatomy: "v2", align: "center" },
+      defaultCardMeasure,
+    );
+    expect(zoneWithIconCentred.header?.title[0]?.x).toBe(68 + (600 - 154) / 2);
 
     const longZoneTitle = "Customer Platform Gateway Cluster";
     const document = {
@@ -738,18 +804,199 @@ describe("diagram anatomy v2 (DE-1)", () => {
     } as unknown as SceneDocument;
 
     const scene = { nodes: [] } as unknown as ReturnType<typeof resolveScene>;
+    // W1-28: DiagramSceneFigureLabels without `contains` stays backward-compatible in TypeScript.
+    const legacyLabels: DiagramSceneFigureLabels = {
+      navigator: "Steps",
+      step: "Step",
+      scenario: "Scenario",
+      count: "{n}",
+      node: "Node",
+      previous: "Previous",
+      next: "Next",
+      allScenarios: "All",
+      controls: "Zoom",
+      zoomIn: "Zoom in",
+      zoomOut: "Zoom out",
+      fit: "Fit",
+      zoomLevel: (percent: number) => `Zoom ${percent} %`,
+      viewport: "Diagram",
+      expand: (title: string) => `Expand ${title}`,
+      collapse: (title: string) => `Collapse ${title}`,
+    };
+    expect(legacyLabels.contains).toBeUndefined();
+
+    // W1-28: plain "contains" is localized via labels.contains; refined subtype "owns" keeps its own type name.
     const defaultRows = sceneTextRows(scene, document);
     expect(defaultRows).toContain("System → Service · includes");
-    expect(defaultRows).toContain("System → Worker · includes");
+    expect(defaultRows).toContain("System → Worker · owns");
     expect(defaultRows).toContain("System → Store · hosts");
     expect(defaultRows).toContain("Service → Store · queries");
     expect(defaultRows.join("\n")).not.toContain("· contains");
 
     const localizedRows = sceneTextRows(scene, document, { contains: "contient" });
     expect(localizedRows).toContain("System → Service · contient");
-    expect(localizedRows).toContain("System → Worker · contient");
+    expect(localizedRows).toContain("System → Worker · owns");
     expect(localizedRows).toContain("System → Store · hosts");
     expect(localizedRows).toContain("Service → Store · queries");
     expect(localizedRows.join("\n")).not.toContain("· contains");
+  });
+
+  it("should align v2 bodyInsetFromBar (W1-10), collapsed subtitle insets (W1-23), fallback-v1 SVG overflow attr (W1-19), and v2 legend-key width (W1-31) while keeping v1 frozen", () => {
+    // W1-10: v1 keeps bodyInsetFromBar 14 (−2px from headerInset 16); v2 sets 10 (−2px from headerInset 12).
+    expect(CARD_GEOMETRY.bodyInsetFromBar).toBe(14);
+    expect(CARD_GEOMETRY_V2.bodyInsetFromBar).toBe(10);
+    const v1Card = layoutCard({ ...COMPACT }, defaultCardMeasure);
+    const v2Card = layoutCard({ ...COMPACT, anatomy: "v2" }, defaultCardMeasure);
+    expect(v1Card.bodyX - CARD_GEOMETRY.headerInset).toBe(-2);
+    expect(v2Card.bodyX - CARD_GEOMETRY_V2.headerInset).toBe(-2);
+
+    // W1-23: v1 keeps collapsedInset 16 / margin 16 (subtitleMeasure 396); v2 scales to 12 / 12 (subtitleMeasure 304).
+    expect(ZONE_GEOMETRY.collapsedInset).toBe(16);
+    expect(ZONE_GEOMETRY.collapsedSubtitleMarginInline).toBe(16);
+    expect(ZONE_GEOMETRY_V2.collapsedInset).toBe(12);
+    expect(ZONE_GEOMETRY_V2.collapsedSubtitleMarginInline).toBe(12);
+    const v2FoldedZone = layoutZone(
+      { entityId: "z-sub", title: "Zone", subtitle: "Subtitle", collapsed: true, toggleLabel: "Expand", anatomy: "v2" },
+      defaultCardMeasure,
+    );
+    expect(v2FoldedZone.card?.bodyWidth).toBe(304);
+
+    // W1-19: fallback-v1 without truncation keeps info diagnostic but omits data-card-overflow / data-zone-overflow on SVG.
+    const fbCardSvg = renderCardSvg({ ...CONTRACT, anatomy: "v2" }, defaultCardMeasure);
+    expect(fbCardSvg.kind).toBe("rendered");
+    if (fbCardSvg.kind === "rendered") {
+      expect(fbCardSvg.diagnostics.some((d) => d.code === "card-overflow" && d.reason === "fallback-v1")).toBe(true);
+      expect(fbCardSvg.svg).not.toContain("data-card-overflow=");
+    }
+    const truncatedFbSvg = renderCardSvg({ entityId: "trunc", title: "W".repeat(100), body: ["Body"], anatomy: "v2" }, defaultCardMeasure);
+    expect(truncatedFbSvg.kind).toBe("rendered");
+    if (truncatedFbSvg.kind === "rendered") {
+      expect(truncatedFbSvg.svg).toContain('data-card-overflow="title"');
+    }
+    const fbZoneSvg = renderZoneSvg(
+      { entityId: "z-fb-svg", kicker: "KICKER", title: "Zone", subtitle: "Subtitle", footer: "Footer", collapsed: true, toggleLabel: "Expand", anatomy: "v2" },
+      { measure: defaultCardMeasure },
+    );
+    expect(fbZoneSvg.kind).toBe("rendered");
+    if (fbZoneSvg.kind === "rendered") {
+      expect(fbZoneSvg.diagnostics.some((d) => d.code === "zone-overflow" && d.reason === "fallback-v1")).toBe(true);
+      expect(fbZoneSvg.svg).not.toContain("data-zone-overflow=");
+    }
+
+    // W1-31: v2 legend-key width tracks compact legend width (352 - 32 = 320); v1 keeps 428 (460 - 32).
+    const legendDoc = {
+      documentId: "document:legend-v2-key-width",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: {
+        "entity:lg": { id: entityRef("lg"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Legend" } } },
+        "entity:k1": { id: entityRef("k1"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Key" } } },
+        "entity:rootKey": { id: entityRef("rootKey"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "RootKey" } } },
+      },
+      relations: {
+        "relation:c.k1": {
+          id: relationRef("c.k1"),
+          profile: "generic@2",
+          type: "contains",
+          endpoints: [
+            { role: "parent", target: entityRef("lg") },
+            { role: "child", target: entityRef("k1") },
+          ],
+          attributes: {},
+        },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SceneDocument;
+    for (const [anatomy, expectedKeyWidth] of [
+      [undefined, 428],
+      ["v2", 320],
+    ] as const) {
+      const pres = {
+        contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+        entities: {
+          "occurrence:e.lg": { form: "legend", text: { title: "Legend" }, ...(anatomy === undefined ? {} : { anatomy }) },
+          "occurrence:e.k1": { form: "legend-key", text: { title: "Key" }, ...(anatomy === undefined ? {} : { anatomy }) },
+          "occurrence:e.rootKey": { form: "legend-key", text: { title: "RootKey" }, ...(anatomy === undefined ? {} : { anatomy }) },
+        },
+        legends: { "occurrence:e.lg": { order: [entityRef("k1")] } },
+        categoryTokens: [],
+      } as unknown as ScenePresentation;
+      const res = layoutMeasured(
+        legendDoc,
+        {
+          registry: m3ProfileRegistry,
+          bindings: shippedExecutorBindings,
+          presentation: pres,
+          measureText: (text) => ({ width: text.length * 10, height: 24 }),
+          measureLines: cardLineMeasurer(defaultCardMeasure),
+          collapsed: [],
+          targetWidth: 1440,
+          rowPack: {},
+        },
+      );
+      expect(res.status, String(anatomy)).toBe("laid-out");
+      if (res.status !== "laid-out") continue;
+      expect(res.view.entityOccurrences["occurrence:e.k1"]?.geometry.width).toBe(expectedKeyWidth);
+      expect(res.view.entityOccurrences["occurrence:e.rootKey"]?.geometry.width).toBe(expectedKeyWidth);
+    }
+  });
+
+  it("should pin v1 and fallback-v1 fold toggle size and placement to exact 0.2.5 / 0.41.5 geometry", () => {
+    expect(CARD_GEOMETRY.toggleBoxSize).toBe(32);
+    expect(CARD_GEOMETRY.toggleInset).toBe(8);
+    expect(CARD_GEOMETRY.toggleAllocation).toBe(66);
+    expect(CARD_GEOMETRY.foldedHeaderTextWidth).toBe(290);
+    expect(ZONE_GEOMETRY.headerInset).toBe(16);
+    expect(ZONE_GEOMETRY.toggleBoxSize).toBe(32);
+    expect(ZONE_GEOMETRY.toggleTopInset).toBe(8);
+    expect(ZONE_GEOMETRY.toggleInset).toBe(8);
+
+    // v1 card and fallback-v1 card share the exact 0.2.5 toggleBox (420, 8, 32) and SVG transform.
+    for (const anatomy of [undefined, "v1", "v2"] as const) {
+      const card = layoutCard({ ...CONTRACT, ...(anatomy === undefined ? {} : { anatomy }) }, defaultCardMeasure);
+      expect(card.box).toEqual({ width: 460, height: 200 });
+      expect(card.toggleBox).toEqual({ x: 420, y: 8, size: 32 });
+      expect(card.headerTextWidth).toBe(290);
+      const rendered = renderCardSvg({ ...CONTRACT, ...(anatomy === undefined ? {} : { anatomy }) }, defaultCardMeasure);
+      expect(rendered.kind).toBe("rendered");
+      if (rendered.kind === "rendered") {
+        expect(rendered.svg).toContain('transform="translate(420 8)"');
+        expect(rendered.svg).toContain('<rect width="32" height="32" fill="transparent"/>');
+      }
+    }
+
+    // Collapsed v1 / fallback-v1 zone and expanded v1 zone keep exact 0.2.5 toggleBox and SVG glyph placement.
+    const collapsedV1 = layoutZone(
+      { entityId: "z-v1", kicker: "KICKER", title: "Zone", subtitle: "Subtitle", footer: "Footer", collapsed: true, toggleLabel: "Expand", anatomy: "v1" },
+      defaultCardMeasure,
+    );
+    const collapsedFallback = layoutZone(
+      { entityId: "z-fb", kicker: "KICKER", title: "Zone", subtitle: "Subtitle", footer: "Footer", collapsed: true, toggleLabel: "Expand", anatomy: "v2" },
+      defaultCardMeasure,
+    );
+    expect(collapsedV1.card?.toggleBox).toEqual({ x: 420, y: 8, size: 32 });
+    expect(collapsedFallback.card?.anatomyFallback).toBe("v1");
+    expect(collapsedFallback.card?.toggleBox).toEqual({ x: 420, y: 8, size: 32 });
+
+    for (const anatomy of [undefined, "v1"] as const) {
+      const expanded = layoutZone(
+        { entityId: "z-exp", kicker: "KICKER", title: "Zone", subtitle: "Subtitle", footer: "Footer", collapsed: false, toggleLabel: "Collapse", x: 10, y: 20, width: 600, ...(anatomy === undefined ? {} : { anatomy }) },
+        defaultCardMeasure,
+      );
+      expect(expanded.header?.toggleBox).toEqual({ x: 10 + 600 - 40, y: 20 + 8, size: 32 });
+      const svg = renderZoneSvg(
+        { entityId: "z-exp", kicker: "KICKER", title: "Zone", subtitle: "Subtitle", footer: "Footer", collapsed: false, toggleLabel: "Collapse", x: 10, y: 20, width: 600, ...(anatomy === undefined ? {} : { anatomy }) },
+        { measure: defaultCardMeasure },
+      );
+      expect(svg.kind).toBe("rendered");
+      if (svg.kind === "rendered") {
+        expect(svg.svg).toContain('transform="translate(560 8)"');
+        expect(svg.svg).toContain('<rect width="32" height="32" fill="transparent"/>');
+      }
+    }
   });
 });

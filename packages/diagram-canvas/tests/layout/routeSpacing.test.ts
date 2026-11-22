@@ -5,6 +5,7 @@
 import {
   CURRENT_SCHEMA_VERSION,
   DIAGRAM_PRESENTATION_CONTRACT_PIN,
+  DIAGRAM_PRESENTATION_V2_CONTRACT_PIN,
   documentRef,
   entityRef,
   m3ProfileRegistry,
@@ -26,6 +27,7 @@ import {
   DEFAULT_ROUTE_SPACING,
   DEFAULT_ZONE_GUTTER,
   layoutDocument,
+  ROOT_LEVEL_KEY,
   subdivideChannelTracks,
   type CheckedRoute,
   type Rect,
@@ -34,6 +36,31 @@ import { layoutScene } from "../../src/presentation/diagramSceneModel.js";
 import { measure } from "./fixtures.js";
 import { hCondInput } from "./dc2a/h-cond.js";
 import { pinnedMeasurer } from "./dc2a/scenes.js";
+
+it("counts coincident straight routes even when both endpoints share ports (REQ-R7-13)", () => {
+  const route = {
+    source: "source", target: "target", sourcePort: "source-out", targetPort: "target-in",
+    points: [{ x: 0, y: 0 }, { x: 500, y: 0 }],
+  };
+  const result = checkRouteSpacing({ routes: [{ ...route, id: "left" }, { ...route, id: "right" }], rects: new Map() });
+  expect(result.conflicts).toContainEqual(expect.objectContaining({ kind: "segment-overlap", routes: ["left", "right"] }));
+});
+
+it("reports 12-unit approaches and arrow tips entering the same named port (REQ-R7-13)", () => {
+  const routes: CheckedRoute[] = [
+    {
+      id: "upper", source: "a", target: "b", targetPort: "in", arrowhead: "arrow",
+      points: [{ x: 267, y: -50 }, { x: 267, y: 0 }, { x: 300, y: 0 }],
+    },
+    {
+      id: "lower", source: "c", target: "b", targetPort: "in", arrowhead: "arrow",
+      points: [{ x: 293, y: 62 }, { x: 293, y: 12 }, { x: 300, y: 12 }],
+    },
+  ];
+  const result = checkRouteSpacing({ routes, rects: new Map(), routeSpacing: 24, borderClearance: 15 });
+  expect.soft(result.conflicts).toContainEqual(expect.objectContaining({ kind: "parallel-segment-spacing", actual: 12, required: 24 }));
+  expect.soft(result.conflicts).toContainEqual(expect.objectContaining({ kind: "arrowhead-spacing", actual: 12, required: 24 }));
+});
 
 describe("channelCapacity and subdivideChannelTracks", () => {
   it("computes finite channel capacity from gap, routeSpacing and borderClearance", () => {
@@ -77,7 +104,7 @@ describe("checkRouteSpacing built-in geometric check", () => {
           { x: 200, y: 30 },
           { x: 400, y: 30 },
         ],
-        arrowhead: "filled-triangle",
+        arrowhead: "arrow",
       },
       {
         id: "r2",
@@ -87,7 +114,7 @@ describe("checkRouteSpacing built-in geometric check", () => {
           { x: 200, y: 70 },
           { x: 400, y: 70 },
         ],
-        arrowhead: "filled-triangle",
+        arrowhead: "arrow",
       },
     ];
     const report = checkRouteSpacing({ rects, routes, routeSpacing: 24, borderClearance: 15 });
@@ -179,7 +206,7 @@ describe("checkRouteSpacing built-in geometric check", () => {
     expect(report.conflicts.some((c) => c.kind === "elbow-spacing")).toBe(true);
   });
 
-  it("detects ports and arrowheads closer than routeSpacing", () => {
+  it("detects ports and arrowheads closer than routeSpacing without double-counting same-entity arrowheads", () => {
     const routes: CheckedRoute[] = [
       {
         id: "r1",
@@ -193,7 +220,7 @@ describe("checkRouteSpacing built-in geometric check", () => {
           { x: 340, y: 45 },
           { x: 400, y: 45 },
         ],
-        arrowhead: "filled-triangle",
+        arrowhead: "arrow",
       },
       {
         id: "r2",
@@ -207,12 +234,71 @@ describe("checkRouteSpacing built-in geometric check", () => {
           { x: 340, y: 55 },
           { x: 400, y: 55 },
         ],
-        arrowhead: "open-triangle",
+        arrowhead: "arrow",
       },
     ];
     const report = checkRouteSpacing({ rects, routes, routeSpacing: 24, borderClearance: 15 });
-    expect(report.conflicts.some((c) => c.kind === "port-spacing")).toBe(true);
-    expect(report.conflicts.some((c) => c.kind === "arrowhead-spacing")).toBe(true);
+    // Source side (entity a, no arrowheads) reports port-spacing once; target side (entity b, both arrowed)
+    // reports arrowhead-spacing once instead of double-counting as both port-spacing and arrowhead-spacing.
+    expect(report.conflicts.filter((c) => c.kind === "port-spacing")).toHaveLength(1);
+    expect(report.conflicts.filter((c) => c.kind === "arrowhead-spacing")).toHaveLength(1);
+    expect(report.conflicts.find((c) => c.kind === "port-spacing")?.entity).toBe("a");
+    expect(report.conflicts.find((c) => c.kind === "arrowhead-spacing")?.entity).toBe("b");
+  });
+
+  it("checks startArrowhead tips on backward flow edges", () => {
+    const routes: CheckedRoute[] = [
+      {
+        id: "r1",
+        source: "a",
+        target: "b",
+        points: [
+          { x: 200, y: 45 },
+          { x: 400, y: 20 },
+        ],
+        arrowhead: "none",
+        startArrowhead: true,
+      },
+      {
+        id: "r2",
+        source: "a",
+        target: "b",
+        points: [
+          { x: 200, y: 55 },
+          { x: 400, y: 80 },
+        ],
+        arrowhead: "none",
+        startArrowhead: true,
+      },
+    ];
+    const report = checkRouteSpacing({ rects, routes, routeSpacing: 24, borderClearance: 15 });
+    expect(report.conflicts.some((c) => c.kind === "arrowhead-spacing" && c.entity === "a")).toBe(true);
+    expect(report.conflicts.some((c) => c.kind === "port-spacing" && c.entity === "a")).toBe(false);
+  });
+
+  it("audits passable expanded ancestor zone walls for 15 px link-to-border clearance", () => {
+    const zoneRects = new Map<string, Rect>([
+      ["z", { x: 0, y: 0, width: 600, height: 300 }],
+      ["a", { x: 40, y: 60, width: 160, height: 100 }],
+      ["b", { x: 700, y: 60, width: 160, height: 100 }],
+    ]);
+    // Segment runs parallel along y = 8, only 8 px inside passable ancestor zone z's top wall (y = 0).
+    const routes: CheckedRoute[] = [
+      {
+        id: "r1",
+        source: "a",
+        target: "b",
+        points: [
+          { x: 120, y: 60 },
+          { x: 120, y: 8 },
+          { x: 780, y: 8 },
+          { x: 780, y: 60 },
+        ],
+        passable: new Set(["z"]),
+      },
+    ];
+    const report = checkRouteSpacing({ rects: zoneRects, routes, routeSpacing: 24, borderClearance: 15 });
+    expect(report.conflicts.some((c) => c.kind === "link-to-border" && c.entity === "z" && c.actual === 8)).toBe(true);
   });
 
   it("detects link-to-border clearance violations against non-endpoint boxes", () => {
@@ -338,7 +424,8 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
       extensions: [],
     };
     const presentation = {
-      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+      relations: { [relationRef("l1")]: { arrowhead: "arrow" as const } },
       entities: {
         [occurrenceRef("e.z1")]: { form: "container" as const, text: { title: "Zone Alpha" } },
         [occurrenceRef("e.z2")]: { form: "container" as const, text: { title: "Zone Beta" } },
@@ -396,32 +483,74 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
     expect(spacingWarnings.every((w) => w.severity === "info")).toBe(true);
   });
 
-  it("enforces zero route-spacing conflicts on folded h-cond reference scenes and reports non-blocking diagnostics when capacity is exceeded", () => {
+  it("enforces zero route-spacing conflicts on ALL 84 visible fold states of the compact h-cond reference scenes under @1 (unfolded included, REQ-R7-13)", () => {
+    let totalStates = 0;
     for (const name of ["architecture", "ontology"] as const) {
-      const folded = layoutScene(hCondInput(name, true));
-      expect(folded.status).toBe("laid-out");
-      if (folded.status !== "laid-out") continue;
-      expect(folded.routeSpacing).toBeDefined();
-      expect(folded.routeSpacing!.conflictCount, `${name}/folded`).toBe(0);
+      const base = hCondInput(name, false);
+      const parentEntityOf = new Map<string, string>();
+      for (const rel of Object.values(base.document.relations)) {
+        if (rel.type !== "contains") continue;
+        const p = rel.endpoints.find((e) => e.role === "parent")?.target;
+        const c = rel.endpoints.find((e) => e.role === "child")?.target;
+        if (p !== undefined && c !== undefined) parentEntityOf.set(c, p);
+      }
+      const occByEntity = new Map<string, string>();
+      const entityByOcc = new Map<string, string>();
+      for (const [oid, occ] of Object.entries(base.view.entityOccurrences)) {
+        occByEntity.set(occ.entity, oid);
+        entityByOcc.set(oid, occ.entity);
+      }
+      const groups = Object.values(base.view.groups)
+        .flatMap((g) => (g.occurrence === undefined ? [] : [g.occurrence]))
+        .sort();
+      const seen = new Set<string>();
+      const totalMasks = 1 << groups.length;
+      let sceneStates = 0;
+      for (let mask = 0; mask < totalMasks; mask += 1) {
+        const raw = new Set(groups.filter((_, i) => (mask & (1 << i)) !== 0));
+        const isHidden = (oid: string): boolean => {
+          let ent = parentEntityOf.get(entityByOcc.get(oid) ?? "");
+          while (ent !== undefined) {
+            const pOcc = occByEntity.get(ent);
+            if (pOcc !== undefined && raw.has(pOcc as (typeof groups)[number])) return true;
+            ent = parentEntityOf.get(ent);
+          }
+          return false;
+        };
+        const collapsed = [...raw].filter((oid) => !isHidden(oid)).sort();
+        const key = collapsed.join(",");
+        if (seen.has(key)) continue;
+        seen.add(key);
+        sceneStates += 1;
 
-      const unfolded = layoutScene(hCondInput(name, false));
-      expect(unfolded.status).toBe("laid-out");
-      if (unfolded.status !== "laid-out") continue;
-      expect(unfolded.routeSpacing).toBeDefined();
-      const warnings = unfolded.warnings.filter(
-        (w) => w.code === "route-spacing-conflict" || w.code === "channel-capacity-exceeded",
-      );
-      expect(warnings.length).toBe(unfolded.routeSpacing!.conflictCount);
-      expect(warnings.every((w) => w.severity === "info")).toBe(true);
+        const res = layoutScene({
+          ...base,
+          view: { ...base.view, presentation: { ...base.view.presentation, anatomy: "v2" } },
+          collapsed,
+        });
+        expect(res.status, `${name} [${key || "unfolded"}]`).toBe("laid-out");
+        if (res.status !== "laid-out") continue;
+        expect(res.routeSpacing, `${name} [${key || "unfolded"}]`).toBeDefined();
+        expect(
+          res.routeSpacing!.conflictCount,
+          `${name} [${key || "unfolded"}] conflicts=${JSON.stringify(res.routeSpacing!.conflicts)}`,
+        ).toBe(0);
+        const obstructed = res.warnings.filter((w) => w.code === "route-obstructed");
+        expect(obstructed, `${name} [${key || "unfolded"}] route-obstructed`).toEqual([]);
+      }
+      expect(sceneStates, `${name} distinct fold states`).toBeGreaterThanOrEqual(32);
+      totalStates += sceneStates;
     }
-  });
+    // 52 architecture + 32 ontology = 84 distinct visible fold states (>= 38 required by plan).
+    expect(totalStates).toBe(84);
+  }, 60_000);
 
-  it("uses one fixed zoneGutter token (>= 96) between sibling zones on both axes and never widens it under traffic or fold (DE-2 ask 3)", () => {
+  it("uses one fixed zoneGutter token (>= 96) between sibling zones on both axes and never widens it under traffic or fold while preserving dynamic leaf-card channels (REQ-R7-14 / REQ-R7-28)", () => {
     expect(DEFAULT_ZONE_GUTTER).toBeGreaterThanOrEqual(96);
     const params = channelMetrics({}, true);
-    // channelGap never widens with route traffic or labels.
+    // Leaf-card channelGap keeps dynamic traffic/label widening from main; only sibling-zone gutters stay fixed.
     expect(channelGap(0, false, params)).toBe(params.gapMin);
-    expect(channelGap(8, true, params)).toBe(params.gapMin);
+    expect(channelGap(8, true, params)).toBeGreaterThan(params.gapMin);
 
     // 4 sibling zones packed in 2x2 have both horizontal and vertical zone gutters.
     const entities: Record<string, Entity> = {};
@@ -490,8 +619,9 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
       extensions: [],
     };
     const presentation = {
-      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
       entities: presEntities,
+      relations: { [Object.keys(relations).find((id) => relations[id]!.type === "link")!]: { arrowhead: "arrow" as const } },
       legends: {},
       categoryTokens: [],
     };
@@ -533,5 +663,155 @@ describe("measured layout route spacing enforcement and diagnostics", () => {
         expect(ch.gap, `custom ${ch.id} (${ch.axis})`).toBe(128);
       }
     }
+  });
+
+  it("keeps existing v1 scenes on main routing/port/gutter behaviour without r7 routeSpacing or corner-inset capacity loss (REQ-R7-28)", () => {
+    // Two 460x200 v1 cards side-by-side with 10 parallel links: main slotSpacing=14 & cornerInset=0 fit 15 ports on 200px (zero docking-overflow).
+    const entities: Record<string, Entity> = {
+      [entityRef("a")]: { id: entityRef("a"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "A" } } },
+      [entityRef("b")]: { id: entityRef("b"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "B" } } },
+    };
+    const relations: Record<string, Relation> = {};
+    for (let i = 0; i < 10; i += 1) {
+      const id = relationRef(`p${i}`);
+      relations[id] = {
+        id,
+        profile: "generic@2",
+        type: "link",
+        endpoints: [
+          { role: "source", target: entityRef("a") },
+          { role: "target", target: entityRef("b") },
+        ],
+        attributes: {},
+      };
+    }
+    const document: SemanticDocument = {
+      documentId: documentRef("v1-port-capacity"),
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities,
+      relations,
+      ports: {},
+      resources: {},
+      extensions: [],
+    };
+    const v1Presentation = {
+      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      entities: {
+        [occurrenceRef("e.a")]: { form: "card" as const, text: { title: "Card A" } },
+        [occurrenceRef("e.b")]: { form: "card" as const, text: { title: "Card B" } },
+      },
+      legends: {},
+      categoryTokens: [],
+    };
+    const v1Res = layoutDocument(document, {
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureText: measure,
+      measureLines: pinnedMeasurer,
+      presentation: v1Presentation,
+      targetWidth: 1440,
+    });
+    expect(v1Res.status).toBe("laid-out");
+    if (v1Res.status !== "laid-out") return;
+    expect(v1Res.routeSpacing).toBeUndefined();
+    expect(v1Res.warnings.filter((w) => w.code === "docking-overflow")).toEqual([]);
+    expect(v1Res.warnings.filter((w) => w.code === "route-spacing-conflict")).toEqual([]);
+
+    // Same architecture h-cond scene without r7 opt-in keeps dynamic widening and emits no routeSpacing report.
+    const hCondV1 = layoutScene(hCondInput("architecture", false));
+    expect(hCondV1.status).toBe("laid-out");
+    if (hCondV1.status !== "laid-out") return;
+    expect(hCondV1.routeSpacing).toBeUndefined();
+    expect(hCondV1.channels?.some((c) => c.gap > 96)).toBe(true);
+
+    // Compact v2 (anatomy: "v2" under @1 with default links) opts into DE-2 route spacing and fixed zone gutters across fold states (REQ-R7-05 / REQ-R7-11 / REQ-R7-13 / REQ-R7-14).
+    const hCondV2Base = hCondInput("ontology", false);
+    const v2View = {
+      ...hCondV2Base.view,
+      presentation: { ...hCondV2Base.view.presentation, anatomy: "v2" as const },
+    };
+    const v2Res = layoutScene({ ...hCondV2Base, view: v2View, collapsed: [] });
+    expect(v2Res.status).toBe("laid-out");
+    if (v2Res.status !== "laid-out") return;
+    expect(v2Res.routeSpacing).toBeDefined();
+    expect(v2Res.routeSpacing!.conflictCount).toBe(0);
+    expect(v2Res.channels?.filter((c) => c.zone).every((c) => c.gap === DEFAULT_ZONE_GUTTER)).toBe(true);
+  });
+
+  it("keeps leaf-to-leaf and zone-to-card gaps dynamic in mixed runs (REQ-R7-14 / REQ-R7-28)", () => {
+    // Mixed root run mirroring r7-connectors: one container (`zone-core`) plus two leaf siblings (`audit`, `gateway`).
+    const mixedDoc: SemanticDocument = {
+      documentId: documentRef("mixed-run-leaf-gap"),
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: {
+        [entityRef("zone-core")]: { id: entityRef("zone-core"), profile: "generic@2", type: "container", attributes: { name: { kind: "text", value: "Core" } } },
+        [entityRef("alpha")]: { id: entityRef("alpha"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Alpha" } } },
+        [entityRef("beta")]: { id: entityRef("beta"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Beta" } } },
+        [entityRef("gateway")]: { id: entityRef("gateway"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Gateway" } } },
+        [entityRef("audit")]: { id: entityRef("audit"), profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Audit" } } },
+      },
+      relations: {
+        [relationRef("c.alpha")]: { id: relationRef("c.alpha"), profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: entityRef("zone-core") }, { role: "child", target: entityRef("alpha") }], attributes: {} },
+        [relationRef("c.beta")]: { id: relationRef("c.beta"), profile: "generic@2", type: "contains", endpoints: [{ role: "parent", target: entityRef("zone-core") }, { role: "child", target: entityRef("beta") }], attributes: {} },
+        [relationRef("l.ag")]: { id: relationRef("l.ag"), profile: "generic@2", type: "link", endpoints: [{ role: "source", target: entityRef("audit") }, { role: "target", target: entityRef("gateway") }], attributes: { label: { kind: "text", value: "long audit gateway replication channel" } } },
+        [relationRef("l.za")]: { id: relationRef("l.za"), profile: "generic@2", type: "link", endpoints: [{ role: "source", target: entityRef("alpha") }, { role: "target", target: entityRef("audit") }], attributes: { label: { kind: "text", value: "audit" } } },
+        [relationRef("l.zb")]: { id: relationRef("l.zb"), profile: "generic@2", type: "link", endpoints: [{ role: "source", target: entityRef("beta") }, { role: "target", target: entityRef("gateway") }], attributes: { label: { kind: "text", value: "gateway" } } },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    };
+    const mixedPres = {
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+      entities: {
+        [occurrenceRef("e.zone-core")]: { form: "container" as const, anatomy: "v2" as const, text: { title: "Core" } },
+        [occurrenceRef("e.alpha")]: { form: "card" as const, anatomy: "v2" as const, text: { title: "Alpha" } },
+        [occurrenceRef("e.beta")]: { form: "card" as const, anatomy: "v2" as const, text: { title: "Beta" } },
+        [occurrenceRef("e.gateway")]: { form: "card" as const, anatomy: "v2" as const, text: { title: "Gateway" } },
+        [occurrenceRef("e.audit")]: { form: "card" as const, anatomy: "v2" as const, text: { title: "Audit" } },
+      },
+      legends: {},
+      categoryTokens: [],
+    };
+    const mixedRes = layoutDocument(mixedDoc, {
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureText: measure,
+      measureLines: pinnedMeasurer,
+      presentation: mixedPres,
+      hints: { zoneGapX: 32, zoneGapY: 48 },
+      targetWidth: 1440,
+    });
+    expect(mixedRes.status).toBe("laid-out");
+    if (mixedRes.status !== "laid-out") return;
+    const rootPrefix = `${ROOT_LEVEL_KEY}|`;
+    const rootChannels = (mixedRes.channels ?? []).filter((c) => c.id.startsWith(rootPrefix));
+    expect(rootChannels.length).toBeGreaterThan(1);
+    expect(rootChannels.every((c) => c.zone === false)).toBe(true);
+    expect(rootChannels.some((c) => c.gap === 32 || c.gap === 48)).toBe(true);
+    // Leaf-to-leaf gap in a mixed run responds to cardGapX/Y overrides (not frozen at 96).
+    const cardGapRes = layoutDocument(mixedDoc, {
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureText: measure,
+      measureLines: pinnedMeasurer,
+      presentation: mixedPres,
+      hints: { cardGapX: 56, cardGapY: 44, zoneGapX: 32, zoneGapY: 48 },
+      targetWidth: 1440,
+    });
+    expect(cardGapRes.status).toBe("laid-out");
+    if (cardGapRes.status !== "laid-out") return;
+    const leafAfterCardHint = (cardGapRes.channels ?? []).filter((c) => c.id.startsWith(rootPrefix) && c.zone === false);
+    expect(leafAfterCardHint.length).toBeGreaterThan(0);
+    expect(leafAfterCardHint.some((c) => c.gap !== DEFAULT_ZONE_GUTTER)).toBe(true);
+    const zoneAfterHint = (cardGapRes.channels ?? []).filter((c) => c.id.startsWith(rootPrefix) && c.zone === true);
+    expect(zoneAfterHint).toEqual([]);
+    expect(leafAfterCardHint.some((c) => c.gap === 56 || c.gap === 44)).toBe(true);
   });
 });

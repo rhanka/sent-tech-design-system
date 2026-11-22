@@ -138,9 +138,9 @@ export const DIAGRAM_VIEW_SCHEMA_V3_PIN: ViewSchemaPin = deepFreezeValue({
 
 /**
  * Additive successor (DE-2): closed connector presentation registries
- * (`strokeStyle: solid | dashed | dotted`, `arrowhead: arrow | filled-triangle | open-triangle | none`,
+ * (`strokeStyle: solid | dashed | dotted`, `arrowhead: arrow | none`,
  * `emphasis: default | emphasis`) plus DE-1 `presentation.anatomy` and `diagram-presentation@2`
- * (`align`). `@1/@2/@3` bytes and digests remain untouched.
+ * (`align`). `@1/@2/@3` bytes and digests remain untouched; additional arrowheads are reserved for N2.
  */
 const PRIVATE_V4_SCHEMA: Record<string, unknown> = (() => {
   const schema = deepCloneValue(PRIVATE_V3_SCHEMA);
@@ -148,6 +148,7 @@ const PRIVATE_V4_SCHEMA: Record<string, unknown> = (() => {
   const rootProps = schema["properties"] as Record<string, Record<string, unknown>>;
   const presentationProps = rootProps["presentation"]!["properties"] as Record<string, Record<string, unknown>>;
   presentationProps["anatomy"] = { enum: ["v1", "v2"] };
+  presentationProps["entityAnatomy"] = { type: "object", additionalProperties: { enum: ["v1", "v2"] } };
   const diagramProps = presentationProps["diagram"]!["properties"] as Record<string, Record<string, unknown>>;
   const pinProps = diagramProps["contractPin"]!["properties"] as Record<string, Record<string, unknown>>;
   pinProps["version"] = { enum: ["1", "2"] };
@@ -155,7 +156,7 @@ const PRIVATE_V4_SCHEMA: Record<string, unknown> = (() => {
   entityProps["align"] = { enum: ["left", "center"] };
   const relOccProps = (rootProps["relationOccurrences"]!["additionalProperties"] as Record<string, unknown>)["properties"] as Record<string, Record<string, unknown>>;
   relOccProps["strokeStyle"] = { enum: ["solid", "dashed", "dotted"] };
-  relOccProps["arrowhead"] = { enum: ["arrow", "filled-triangle", "open-triangle", "none"] };
+  relOccProps["arrowhead"] = { enum: ["arrow", "none"] };
   relOccProps["emphasis"] = { enum: ["default", "emphasis"] };
   const summaryProps = (rootProps["summaryLabels"]!["additionalProperties"] as Record<string, unknown>)["properties"] as Record<string, Record<string, unknown>>;
   summaryProps["strokeStyle"] = { enum: ["solid", "dashed", "dotted"] };

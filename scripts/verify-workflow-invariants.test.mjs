@@ -290,6 +290,12 @@ const DECLARED_TOKEN_BOOTSTRAPS = {
     // from that lot (docs/release.md).
     removeWhen: "@sentropic/diagram-canvas has had a first successful npm publish",
   },
+  "review-core-publish.yml": {
+    // Remove this entry — and the bootstrap step/secret it names in the
+    // workflow — the day @sentropic/design-system-review-core has a first
+    // successful `npm publish`. Measured E404 (never published) on 2026-11-20.
+    removeWhen: "@sentropic/design-system-review-core has had a first successful npm publish",
+  },
 };
 
 const BOOTSTRAP_COMMENT_PATTERN = /bootstrap|amor[cç]age/i;
@@ -504,6 +510,18 @@ test("the AC-L7a tarball guard runs in a built CI job and pack-smoke shards cove
       planner.includes(`"${name}"`),
       `scripts/ci-affected-workspaces.mjs must list ${name} in smokePackWorkspaces — otherwise its shards never run a pack-smoke task`,
     );
+  }
+});
+
+test("Verify keeps pack-smoke temporary files, runtime, and npm cache inside the checkout", () => {
+  const { strippedText } = scanWorkflow(readWorkflow("verify.yml"));
+  const step = strippedText.split(/^ {6}- name: /m).find((part) => part.startsWith("pack-smoke\n"));
+  assert.ok(step, "Verify must have a pack-smoke step");
+  assert.match(step, /node scripts\/smoke-pack\.mjs/);
+  for (const name of ["TMPDIR", "XDG_RUNTIME_DIR", "npm_config_cache"]) {
+    const binding = step.split("\n").find((line) => line.startsWith(`          ${name}: `));
+    assert.ok(binding?.startsWith(`          ${name}: \${{ github.workspace }}/.vite/`),
+      `${name} must point to the repository lane in the pack-smoke step`);
   }
 });
 

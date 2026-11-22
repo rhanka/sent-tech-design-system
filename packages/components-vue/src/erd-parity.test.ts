@@ -79,7 +79,7 @@ for (const source of scenes) it('should retain ERD overlays and accessible text 
   const vue = mount(VueFigure, { props: { ...props, flows: {} } });
   const svelte = render(SvelteFigure, { ...props, flows: {} });
   const selectors = ['.st-diagramSceneFigure-fallback', '.st-diagramErd-fallback', '.st-diagramErd-svg',
-    '.st-diagramErd-toggle', '[data-erd-marker]', '[data-erd-label]', '.st-diagramSceneFigure-edges path:not([data-scene-edge])'];
+    '.st-diagramErd-toggle', '[data-erd-marker]', '[data-erd-label]', '.st-diagramSceneFigure-edges > polyline:not([data-scene-edge])'];
   const compare = () => {
     for (const selector of selectors) {
       const expected = [...base.element.querySelectorAll(selector)].map(dom);

@@ -166,7 +166,7 @@ describe("structure interpreter: construction over the committed documents", () 
               allOf: [{ $ref: "https://a2ui.org/specification/v0_9_1/common_types.json#/$defs/ComponentCommon" }],
               properties: {
                 component: { const: "BarChart" },
-                name: { type: "string", minLength: 1 },
+                name: { type: "string", maxLength: 1 },
               },
               type: "object",
             },
@@ -175,7 +175,7 @@ describe("structure interpreter: construction over the committed documents", () 
         envelopeSchema: envelopeJson as never,
         commonTypes: a2uiCommonTypes as never,
       }),
-    ).toThrow(/minLength/);
+    ).toThrow(/maxLength/);
   });
 
   it("refuses the legacy tuple form of items", () => {

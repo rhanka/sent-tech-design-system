@@ -4,6 +4,7 @@
  * keeping the component default (`0.85 × windowH`, Z-3 / AC-23) untouched.
  */
 import { readFileSync } from "node:fs";
+import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_V2_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings, type SemanticDocument } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -14,7 +15,10 @@ import {
   FIT_WINDOW_MARGIN_PX,
   fitBox,
 } from "../../src/camera.js";
-import { sceneFit, scenePlacement } from "../../src/presentation/diagramSceneModel.js";
+import { cardLineMeasurer, defaultCardMeasure, sceneCardMeasure } from "../../src/presentation/diagramCardModel.js";
+import { sceneFit, scenePlacement, type ScenePresentation } from "../../src/presentation/diagramSceneModel.js";
+import { renderSceneSvg } from "../../src/presentation/renderSceneSvg.js";
+import { r7ConnectorsFixture } from "../../test-support/r7ConnectorsFixture.js";
 
 describe("fit-to-window host framing (DE-2 ask 9)", () => {
   it("preserves the Z-3 / AC-23 default fit box (0.85 × windowH capped at 16:9) when fitToWindow is omitted or false", () => {
@@ -48,14 +52,102 @@ describe("fit-to-window host framing (DE-2 ask 9)", () => {
     // Horizontal scrollbar thickness stays inside windowHeight - 24 so CSS max-height never clips.
     const withBar = cameraFit({ bounds, viewWidth: 1440, windowHeight: 900, scrollbarHeight: 16, fitToWindow: true });
     expect(withBar.fitHeight + 16).toBeLessThanOrEqual(900 - FIT_WINDOW_MARGIN_PX);
+
+    const phone = { bounds, viewWidth: 390, windowHeight: 844 };
+    const legacyPhone = sceneFit(phone);
+    expect(legacyPhone.zoom).toBe(0.30);
+    expect(legacyPhone.pans).toBe(true);
+    const overview = sceneFit({ ...phone, fitToWindow: true });
+    expect(overview.zoom).toBeLessThan(0.30);
+    expect(overview.pans).toBe(false);
+    expect(scenePlacement(bounds, overview.zoom, overview)).toMatchObject({ overflowX: false, overflowY: false });
   });
 
-  it("enables fit-to-window by default on the diagram-first-paint figure/comparison host", () => {
+  it("keeps default 0.85x framing on existing first-paint scenes while enabling fitToWindow on r7 comparison scenes", () => {
     const html = readFileSync(new URL("../../../../tools/diagram-first-paint/index.html", import.meta.url), "utf8");
     const main = readFileSync(new URL("../../../../tools/diagram-first-paint/main.js", import.meta.url), "utf8");
-    expect(html).toContain("max-height: calc(100vh - 24px)");
-    expect(html).toContain("max-width: 100%");
-    expect(html).toContain("margin-inline: auto");
+    const browser = readFileSync(new URL("../../../../tools/diagram-first-paint/browser.mjs", import.meta.url), "utf8");
+    expect(html).not.toContain("max-height: calc(100vh - 24px)");
     expect(main).toContain("fitToWindow");
+    expect(main).toContain("r7-");
+    // REQ-R7-18 / REQ-R7-30: unfold refit check must execute BEFORE any Ajuster click.
+    const unfoldCheckIdx = browser.indexOf("check(unfolded, scene);");
+    const unfoldParityIdx = browser.indexOf("equalGeometry(parityGeometry(unfolded), current");
+    const refitClickIdx = browser.indexOf("await refit.click();");
+    expect(unfoldCheckIdx).toBeGreaterThan(-1);
+    expect(unfoldParityIdx).toBeGreaterThan(unfoldCheckIdx);
+    expect(refitClickIdx).toBeGreaterThan(unfoldParityIdx);
+  });
+
+  it("forwards fitToWindow to sceneFit in renderSceneSvg", () => {
+    const ids = Array.from({ length: 12 }, (_, i) => `n${i}`);
+    const document = {
+      documentId: "document:svg-fit-to-window",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: Object.fromEntries(ids.map((id) => [`entity:${id}`, { id: `entity:${id}`, profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: id } } }])),
+      relations: {},
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SemanticDocument;
+    const presentation = {
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+      entities: Object.fromEntries(ids.map((id) => [`occurrence:e.${id}`, { form: "card", anatomy: "v2", text: { title: id, body: "Card" } }])),
+      legends: {},
+      categoryTokens: [],
+    } as unknown as ScenePresentation;
+    const input = {
+      document,
+      presentation,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines: cardLineMeasurer(sceneCardMeasure(defaultCardMeasure)),
+      collapsed: [] as never[],
+      targetWidth: 1440,
+    };
+    const normal = renderSceneSvg(input);
+    const windowed = renderSceneSvg(input, { fitToWindow: true });
+    const scaleOf = (svg: string) => Number(svg.match(/data-display-scale="([^"]+)"/)?.[1]);
+    expect(scaleOf(windowed.svg)).toBeGreaterThanOrEqual(scaleOf(normal.svg));
+    const expectedWindowFit = sceneFit({ bounds: windowed.scene.bounds!, viewWidth: 1440, windowHeight: 900, fitToWindow: true });
+    expect(scaleOf(windowed.svg)).toBeCloseTo(expectedWindowFit.zoom, 6);
+  });
+
+  it("fits r7-connectors at 390 × 844 with token-width strokes and readable edge labels (REQ-R7-11 / REQ-R7-18)", () => {
+    const { document, presentation } = r7ConnectorsFixture();
+    const { svg, scene } = renderSceneSvg({
+      document, presentation, registry: m3ProfileRegistry, bindings: shippedExecutorBindings,
+      measureLines: cardLineMeasurer(sceneCardMeasure(defaultCardMeasure)), collapsed: [], targetWidth: 390,
+    }, { fitToWindow: true, windowHeight: 844 });
+    const fit = sceneFit({ bounds: scene.bounds!, viewWidth: 390, windowHeight: 844, fitToWindow: true });
+    const zoom = Number(svg.match(/data-display-scale="([^"]+)"/)?.[1]);
+    expect(zoom).toBeCloseTo(fit.zoom);
+    expect(zoom).toBeLessThan(0.45);
+    expect(fit.pans).toBe(false);
+    const expectedWidths: readonly [string, number][] = [
+      ["occurrence:r.r-solid", 2.5],
+      ["occurrence:r.r-emph", 3.5],
+      ["occurrence:r.r-dashed", 2.5],
+      ["occurrence:r.r-dotted", 2.5],
+    ];
+    for (const [occurrence, expectedWidth] of expectedWidths) {
+      const shaft = svg.match(new RegExp(`<path data-scene-edge="${occurrence}"[^>]+>`))?.[0];
+      const label = svg.match(new RegExp(`<g data-scene-label="${occurrence}"[^>]+>`))?.[0];
+      expect.soft(Number(shaft?.match(/stroke-width="([^"]+)"/)?.[1]), occurrence).toBe(expectedWidth);
+      expect.soft(Number(label?.match(/font-size="([^"]+)"/)?.[1]) * zoom, occurrence).toBeGreaterThanOrEqual(8);
+    }
+    const expectedSwatchWidths: readonly [string, number][] = [
+      ["solid:arrow:default", 2.5],
+      ["solid:none:emphasis", 3.5],
+      ["dashed:arrow:default", 2.5],
+      ["dotted:arrow:default", 2.5],
+    ];
+    for (const [styleKey, expectedWidth] of expectedSwatchWidths) {
+      const swatch = svg.match(new RegExp(`<path data-legend-swatch="${styleKey}"[^>]+>`))?.[0];
+      expect.soft(Number(swatch?.match(/stroke-width="([^"]+)"/)?.[1]), styleKey).toBe(expectedWidth);
+    }
   });
 });

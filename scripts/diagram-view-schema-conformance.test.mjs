@@ -468,7 +468,7 @@ test("view-schema guard: @4 accepts DE-2 connector words and refuses raw geometr
       "occurrence:o1": {
         ...view.relationOccurrences["occurrence:o1"],
         strokeStyle: "dotted",
-        arrowhead: "open-triangle",
+        arrowhead: "arrow",
         emphasis: "emphasis",
       },
       "occurrence:o2": {

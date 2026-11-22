@@ -15,14 +15,12 @@ import type {
   StrokeStyle,
 } from "@sentropic/diagram-core";
 
-import {
-  DEFAULT_EDGE_LABEL_SIZE,
-  DEFAULT_LINK_EMPHASIS_STROKE_WIDTH,
-  DEFAULT_LINK_STROKE_WIDTH,
-} from "../camera.js";
+import { DEFAULT_EDGE_LABEL_SIZE } from "../camera.js";
 import type { LineMeasurer } from "../layout/measure.js";
+import type { LayoutMetrics } from "../layout/types.js";
 import type { Rect } from "../transform.js";
-import { connectorDashArray, connectorMarkerKind } from "./connectorStyle.js";
+import { connectorDashArray, connectorMarkerKind, connectorStrokeWidth, LINK_EMPHASIS_STROKE } from "./connectorStyle.js";
+import { cardLineMeasurer } from "./diagramCardModel.js";
 
 /** Where the automatic link-style legend strip sits relative to the functional drawing. */
 export type LinkLegendAnchor = "right" | "bottom" | "none";
@@ -40,8 +38,7 @@ export const LINK_LEGEND_EMPHASIS_ORDER: readonly LinkEmphasis[] = Object.freeze
 ]);
 
 export const LINK_LEGEND_ARROWHEAD_ORDER: readonly CanonicalArrowheadKind[] = Object.freeze([
-  "filled-triangle",
-  "open-triangle",
+  "arrow",
   "none",
 ]);
 
@@ -49,7 +46,9 @@ export const LINK_LEGEND_ARROWHEAD_ORDER: readonly CanonicalArrowheadKind[] = Ob
 export const LINK_LEGEND_GAP = 48;
 export const LINK_LEGEND_PADDING = 16;
 export const LINK_LEGEND_HEADER_HEIGHT = 30;
+export const LINK_LEGEND_HEADER_GAP = 8;
 export const LINK_LEGEND_SWATCH_WIDTH = 56;
+export const LINK_LEGEND_SWATCH_HEIGHT = 16;
 export const LINK_LEGEND_SWATCH_GAP = 14;
 export const LINK_LEGEND_ROW_HEIGHT = 28;
 export const LINK_LEGEND_ROW_GAP = 8;
@@ -92,7 +91,11 @@ export interface SceneLinkLegend {
   readonly entries: readonly LinkLegendEntry[];
   readonly padding: number;
   readonly headerHeight: number;
+  readonly headerGap: number;
+  readonly rowHeight: number;
+  readonly rowGap: number;
   readonly swatchWidth: number;
+  readonly swatchHeight: number;
   readonly swatchGap: number;
   readonly fontSize: number;
 }
@@ -112,8 +115,8 @@ export interface LinkLegendSwatchGeometry {
 }
 
 const EDGE_STROKE = "var(--st-component-diagramScene-edgeStroke, #64748b)";
-const EMPHASIS_STROKE = "var(--st-component-diagramScene-linkEmphasisStroke, #2563eb)";
-const OPEN_SURFACE_FILL = "var(--st-semantic-surface-raised, #ffffff)";
+const EMPHASIS_STROKE = LINK_EMPHASIS_STROKE;
+const measureLegendFallback = cardLineMeasurer();
 
 /** Stable canonical key for a connector style triple. */
 export function linkStyleKey(style: LinkLegendStyleKey): string {
@@ -131,9 +134,7 @@ export function defaultLinkStyleLabel(style: LinkLegendStyleKey): string {
   } else if (parts.length === 0) {
     parts.push("Link");
   }
-  if (style.arrowhead === "open-triangle") {
-    parts.push("Open arrow");
-  } else if (style.arrowhead === "none") {
+  if (style.arrowhead === "none") {
     parts.push("Undirected");
   }
   return parts.join(" · ");
@@ -143,7 +144,7 @@ function styleRank(style: LinkLegendStyleKey): number {
   const stroke = LINK_LEGEND_STROKE_ORDER.indexOf(style.strokeStyle);
   const emphasis = LINK_LEGEND_EMPHASIS_ORDER.indexOf(style.emphasis);
   const arrowhead = LINK_LEGEND_ARROWHEAD_ORDER.indexOf(style.arrowhead);
-  return stroke * 6 + emphasis * 3 + arrowhead;
+  return stroke * 4 + emphasis * 2 + arrowhead;
 }
 
 /**
@@ -208,47 +209,53 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
 
   const title = input.title ?? "Legend";
   const fontSize = input.fontSize ?? LINK_LEGEND_FONT_SIZE;
-  const titleLayout = input.measureLines({
-    text: title,
-    role: "edge-label",
-    availableWidth: Number.MAX_SAFE_INTEGER,
-    allocatedLines: 1,
-    folded: false,
-  });
+  const scale = fontSize > 0 && Number.isFinite(fontSize) ? fontSize / LINK_LEGEND_FONT_SIZE : 1;
+  const headerHeight = scale === 1 ? LINK_LEGEND_HEADER_HEIGHT : Math.ceil(LINK_LEGEND_HEADER_HEIGHT * scale);
+  const headerGap = scale === 1 ? LINK_LEGEND_HEADER_GAP : Math.ceil(LINK_LEGEND_HEADER_GAP * scale);
+  const rowHeight = Math.max(
+    LINK_LEGEND_SWATCH_HEIGHT,
+    scale === 1 ? LINK_LEGEND_ROW_HEIGHT : Math.ceil(LINK_LEGEND_ROW_HEIGHT * scale),
+  );
+  const rowGap = scale === 1 ? LINK_LEGEND_ROW_GAP : Math.ceil(LINK_LEGEND_ROW_GAP * scale);
+  const measureWidth = (text: string): number => {
+    const request = { text, role: "edge-label" as const, availableWidth: Number.MAX_SAFE_INTEGER, allocatedLines: 1, folded: false };
+    const layout = input.measureLines(request);
+    // CardLineMeasure without lineWidths reports the allocation as its width.
+    return (layout.width >= request.availableWidth || !Number.isFinite(layout.width)
+      ? measureLegendFallback(request).width
+      : layout.width) * scale;
+  };
+  const scaledTitleWidth = measureWidth(title);
 
   let maxLabelWidth = 0;
   const entries: LinkLegendEntry[] = collected.map((item, index) => {
     const label = input.labels?.[item.key] ?? defaultLinkStyleLabel(item);
-    const measured = input.measureLines({
-      text: label,
-      role: "edge-label",
-      availableWidth: Number.MAX_SAFE_INTEGER,
-      allocatedLines: 1,
-      folded: false,
-    });
-    if (measured.width > maxLabelWidth) maxLabelWidth = measured.width;
+    const scaledWidth = measureWidth(label);
+    if (scaledWidth > maxLabelWidth) maxLabelWidth = scaledWidth;
     const rowY =
       LINK_LEGEND_PADDING +
-      LINK_LEGEND_HEADER_HEIGHT +
-      index * (LINK_LEGEND_ROW_HEIGHT + LINK_LEGEND_ROW_GAP);
+      headerHeight +
+      headerGap +
+      index * (rowHeight + rowGap);
     return {
       ...item,
       label,
       rowY,
-      rowHeight: LINK_LEGEND_ROW_HEIGHT,
+      rowHeight,
     };
   });
 
   const contentWidth = Math.max(
-    titleLayout.width,
+    scaledTitleWidth,
     LINK_LEGEND_SWATCH_WIDTH + LINK_LEGEND_SWATCH_GAP + maxLabelWidth,
   );
   const width = Math.ceil(Math.max(LINK_LEGEND_MIN_WIDTH, 2 * LINK_LEGEND_PADDING + contentWidth));
   const height =
     2 * LINK_LEGEND_PADDING +
-    LINK_LEGEND_HEADER_HEIGHT +
-    entries.length * LINK_LEGEND_ROW_HEIGHT +
-    Math.max(0, entries.length - 1) * LINK_LEGEND_ROW_GAP;
+    headerHeight +
+    headerGap +
+    entries.length * rowHeight +
+    Math.max(0, entries.length - 1) * rowGap;
 
   const rect: Rect =
     anchor === "bottom"
@@ -271,11 +278,36 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
     rect,
     entries,
     padding: LINK_LEGEND_PADDING,
-    headerHeight: LINK_LEGEND_HEADER_HEIGHT,
+    headerHeight,
+    headerGap,
+    rowHeight,
+    rowGap,
     swatchWidth: LINK_LEGEND_SWATCH_WIDTH,
+    swatchHeight: LINK_LEGEND_SWATCH_HEIGHT,
     swatchGap: LINK_LEGEND_SWATCH_GAP,
     fontSize,
   };
+}
+
+/**
+ * Shared inline CSS positioning and geometry custom properties for HTML legend
+ * hosts (Svelte and Vue), keeping every box, header, gap, row and swatch pixel
+ * identical to `buildSceneLinkLegend` and `renderSceneSvg` at every `edgeLabelSize`.
+ */
+export function linkLegendBoxStyle(legend: SceneLinkLegend, opacity?: number): string {
+  return (
+    `left:${legend.rect.x}px;top:${legend.rect.y}px;width:${legend.rect.width}px;height:${legend.rect.height}px;` +
+    `--st-diagram-legend-padding:${legend.padding}px;` +
+    `--st-diagram-legend-header-height:${legend.headerHeight}px;` +
+    `--st-diagram-legend-header-gap:${legend.headerGap}px;` +
+    `--st-diagram-legend-row-height:${legend.rowHeight}px;` +
+    `--st-diagram-legend-row-gap:${legend.rowGap}px;` +
+    `--st-diagram-legend-swatch-width:${legend.swatchWidth}px;` +
+    `--st-diagram-legend-swatch-height:${legend.swatchHeight}px;` +
+    `--st-diagram-legend-swatch-gap:${legend.swatchGap}px;` +
+    `--st-diagram-legend-font-size:${legend.fontSize}px` +
+    (opacity === undefined ? "" : `;opacity:${opacity}`)
+  );
 }
 
 /**
@@ -285,39 +317,35 @@ export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLin
  */
 export function linkLegendSwatchGeometry(
   style: LinkLegendStyleKey,
-  widths?: { readonly linkStrokeWidth?: number; readonly linkEmphasisStrokeWidth?: number },
+  widths?: Pick<LayoutMetrics, "linkStrokeWidth" | "linkRelatedStrokeWidth" | "linkEmphasisStrokeWidth">,
 ): LinkLegendSwatchGeometry {
   const emphasized = style.emphasis === "emphasis";
   const stroke = emphasized ? EMPHASIS_STROKE : EDGE_STROKE;
-  const strokeWidth = emphasized
-    ? (widths?.linkEmphasisStrokeWidth ?? DEFAULT_LINK_EMPHASIS_STROKE_WIDTH)
-    : (widths?.linkStrokeWidth ?? DEFAULT_LINK_STROKE_WIDTH);
+  const strokeWidth = connectorStrokeWidth(style, widths);
   const dashArray = connectorDashArray(style.strokeStyle);
   const lineEnd = style.arrowhead === "none" ? 54 : 46;
   const linePath = `M2 8H${lineEnd}`;
 
   if (style.arrowhead === "none") {
     return {
-      viewBox: `0 0 ${LINK_LEGEND_SWATCH_WIDTH} 16`,
+      viewBox: `0 0 ${LINK_LEGEND_SWATCH_WIDTH} ${LINK_LEGEND_SWATCH_HEIGHT}`,
       width: LINK_LEGEND_SWATCH_WIDTH,
-      height: 16,
+      height: LINK_LEGEND_SWATCH_HEIGHT,
       linePath,
       stroke,
       strokeWidth,
       ...(dashArray === undefined ? {} : { dashArray }),
     };
   }
-  const open = style.arrowhead === "open-triangle";
   return {
-    viewBox: `0 0 ${LINK_LEGEND_SWATCH_WIDTH} 16`,
+    viewBox: `0 0 ${LINK_LEGEND_SWATCH_WIDTH} ${LINK_LEGEND_SWATCH_HEIGHT}`,
     width: LINK_LEGEND_SWATCH_WIDTH,
-    height: 16,
+    height: LINK_LEGEND_SWATCH_HEIGHT,
     linePath,
     arrowPath: "M44 3L54 8L44 13Z",
     stroke,
     strokeWidth,
     ...(dashArray === undefined ? {} : { dashArray }),
-    arrowFill: open ? OPEN_SURFACE_FILL : stroke,
-    ...(open ? { arrowStroke: stroke, arrowStrokeWidth: 1.5 } : {}),
+    arrowFill: stroke,
   };
 }

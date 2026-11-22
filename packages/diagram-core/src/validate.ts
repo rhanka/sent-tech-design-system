@@ -2333,7 +2333,30 @@ export function validateView(
     }
 
     if (view.presentation.diagram === undefined) {
+      const allowedKeys = new Set([
+        "id",
+        "relation",
+        "endpoints",
+        "waypoints",
+        "strokeStyle",
+        "arrowhead",
+        "emphasis",
+      ]);
       const raw = occurrence as unknown as Record<string, unknown>;
+      for (const field of Object.keys(raw).sort()) {
+        if (!allowedKeys.has(field)) {
+          diagnostics.push(
+            diagnostic({
+              code: "occurrence-endpoint-mismatch",
+              severity: "error",
+              path: `${path}.${field}`,
+              message: `relation occurrence field ${field} is not part of the closed connector vocabulary`,
+              refs: [occurrence.id],
+              details: { check: "presentation-shape-invalid" },
+            }),
+          );
+        }
+      }
       if (raw["strokeStyle"] !== undefined && !isStrokeStyle(raw["strokeStyle"])) {
         diagnostics.push(
           diagnostic({
@@ -2563,6 +2586,24 @@ export function validateView(
         details: { check: "presentation-shape-invalid" },
       }),
     );
+  }
+
+  const entityAnatomy = view.presentation.entityAnatomy;
+  if (entityAnatomy !== undefined && (entityAnatomy === null || typeof entityAnatomy !== "object" || Array.isArray(entityAnatomy))) {
+    diagnostics.push(diagnostic({
+      code: "occurrence-endpoint-mismatch",
+      path: "presentation.entityAnatomy",
+      message: "entity anatomy overrides must be keyed by occurrence",
+    }));
+  } else {
+    for (const [id, anatomy] of Object.entries(entityAnatomy ?? {})) {
+      if (Object.hasOwn(view.entityOccurrences, id) && (anatomy === "v1" || anatomy === "v2")) continue;
+      diagnostics.push(diagnostic({
+        code: "occurrence-endpoint-mismatch",
+        path: `presentation.entityAnatomy.${id}`,
+        message: "anatomy must be v1 or v2 and reference an entity occurrence",
+      }));
+    }
   }
 
   if (view.presentation.diagram !== undefined) {

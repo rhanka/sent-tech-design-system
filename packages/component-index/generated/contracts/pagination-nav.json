@@ -1,8 +1,8 @@
 {
   "componentId": "pagination-nav",
   "contractSource": "derived",
-  "digest": "sha256:d087ee8b8c3c3f02b9a2d6595fe37118834968f025489e2b04495ed6ef841fe5",
-  "entryDigest": "sha256:4898a9a478386fc700a9e633bcb5bc9197d94b71ced84c663e0b38cb5253112d",
+  "digest": "sha256:af1cbc0c291d0dfb39d605b2114ba5ba884d3ebcc318d27f85d9fe862d5a3cc1",
+  "entryDigest": "sha256:356a9c23efe84bffe0d4aaf1b7d648b31c051f78853c1e85a1f80623ab1b78a6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -263,7 +263,7 @@
         "declarationPath": "packages/components-vue/dist/PaginationNav.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PaginationNavProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.11"
       },
       "status": "complete",
       "unresolved": [],
