@@ -1,8 +1,8 @@
 {
   "componentId": "nav-section",
   "contractSource": "derived",
-  "digest": "sha256:f013b61fd4d8c67ae96a0256e89ac9d38c20ce0546ac2b98dcf6a514ea390c73",
-  "entryDigest": "sha256:03c60a70e676eefebf001b9bc39397626ed9f720c4cd269b32dc889381f1cbbe",
+  "digest": "sha256:3ac269ef2943d5d5a5d25cdb14c0f88010dc45f8b6842071ae1879b493fcbbf7",
+  "entryDigest": "sha256:a3561c6fd0e1fd0d292bb13ebec23296302837ada83e6c475cf529d0983d4c97",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -181,7 +181,7 @@
         "declarationPath": "packages/components-svelte/dist/NavSection.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "NavSectionProps",
-        "version": "0.44.0"
+        "version": "0.44.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -263,7 +263,7 @@
         "declarationPath": "packages/components-vue/dist/NavSection.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NavSectionProps",
-        "version": "0.41.0-next.11"
+        "version": "0.41.0-next.12"
       },
       "status": "partial",
       "unresolved": [],
