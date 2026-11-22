@@ -1,8 +1,8 @@
 {
   "componentId": "web-frame",
   "contractSource": "derived",
-  "digest": "sha256:917d59f594a3ceb44717b8e8480572db78700d1fb361861a624fc44298e8db3f",
-  "entryDigest": "sha256:47e56fe1bd8a7551a9786a8a6fb7595e24dcad80627118a9936b6d19fbcdc749",
+  "digest": "sha256:399323950cb09719cb48d401d75cebd4320ef859d20a13d8d066343727cfd630",
+  "entryDigest": "sha256:8bfbdb470d3d1f7fe64458575b911fed6059bf4bf4a57213cc3a1563bf891276",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -331,7 +331,7 @@
         "declarationPath": "packages/components-vue/dist/WebFrame.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "WebFrameProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "complete",
       "unresolved": [],

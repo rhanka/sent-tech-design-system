@@ -1,8 +1,8 @@
 {
   "componentId": "message-actions",
   "contractSource": "derived",
-  "digest": "sha256:568a5558086c684734f7d0a9911f579ced42ec576e8464b8e6baa37cc3a6d4dc",
-  "entryDigest": "sha256:4f1a0304b17a7fe05c10c7c4c7b91545e07d7cc633f0f7438307a1ae5be6b76c",
+  "digest": "sha256:59caa42385aeb366707a307e265f3c94fd716e20800ae8433e4f1d7b0a09d91a",
+  "entryDigest": "sha256:40ee3a6d385b16dab516e21ad823df366a5e784038fcb8b1ad296f547054ad96",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -264,7 +264,7 @@
         "declarationPath": "packages/components-svelte/dist/MessageActions.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MessageActionsProps",
-        "version": "0.43.2"
+        "version": "0.43.3"
       },
       "status": "partial",
       "unresolved": [],
@@ -394,7 +394,7 @@
         "declarationPath": "packages/components-vue/dist/MessageActions.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MessageActionsProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "partial",
       "unresolved": [],

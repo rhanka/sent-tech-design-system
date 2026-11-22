@@ -1,8 +1,8 @@
 {
   "componentId": "grid",
   "contractSource": "derived",
-  "digest": "sha256:e7a9236879e85c69294cb6a124a6bb845ac096ed3aa80b87bf3225db9c727c69",
-  "entryDigest": "sha256:cc5b272d82df1e34a78f5a0b944ec2134d823732892f3d30ac032966d56bc289",
+  "digest": "sha256:cddb2b73f26d8231bc5e7ae8cd1b4715b7c9453d3be64618322e9e3493422889",
+  "entryDigest": "sha256:f5b9319ed5f9f925a3e55c687da534909223c665527bae946e057f2a34fbfddb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -148,7 +148,7 @@
         "declarationPath": "packages/components-svelte/dist/Grid.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "GridProps",
-        "version": "0.43.2"
+        "version": "0.43.3"
       },
       "status": "complete",
       "unresolved": [],
@@ -196,7 +196,7 @@
         "declarationPath": "packages/components-vue/dist/Grid.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "GridProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "complete",
       "unresolved": [],

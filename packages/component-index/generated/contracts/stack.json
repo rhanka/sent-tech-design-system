@@ -1,8 +1,8 @@
 {
   "componentId": "stack",
   "contractSource": "derived",
-  "digest": "sha256:b933d7aaa92c9919de7c18b22c4835c1d94cf59c1617d6591407ad15610fea69",
-  "entryDigest": "sha256:e2a77ec96602c118817fcb27c1a546f84b4896d170acee7aab77ac1bf79d63bc",
+  "digest": "sha256:e7f13b9fae1b715aba2ee7841bcb3b0e18fa4e89cdf3e7e375b984bb895f0cd4",
+  "entryDigest": "sha256:20bd194bd1558865803f8b8a324a6b630231563e04761ea2417cfa87888f9060",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -183,7 +183,7 @@
         "declarationPath": "packages/components-svelte/dist/Stack.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StackProps",
-        "version": "0.43.2"
+        "version": "0.43.3"
       },
       "status": "complete",
       "unresolved": [],
@@ -242,7 +242,7 @@
         "declarationPath": "packages/components-vue/dist/Stack.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StackProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "complete",
       "unresolved": [],

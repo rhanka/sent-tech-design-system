@@ -1,8 +1,8 @@
 {
   "componentId": "radio",
   "contractSource": "derived",
-  "digest": "sha256:e3f855353f369ab1825de3b1311af94248cb419a018edfbaab2597999a42ea0f",
-  "entryDigest": "sha256:91ba6258a5528efb89115d797c557b855322fa7a37487580086e5ef2be86a4bf",
+  "digest": "sha256:16482b7e8988eb0d579700117aaf69198c3028aca77c35e7aa1b88c17b2467c7",
+  "entryDigest": "sha256:bd2934baf700388b7943669948595000328d48a102e6f16ad1a9782d7eb37506",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -184,7 +184,7 @@
         "declarationPath": "packages/components-svelte/dist/Radio.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RadioProps",
-        "version": "0.43.2"
+        "version": "0.43.3"
       },
       "status": "complete",
       "unresolved": [],
@@ -264,7 +264,7 @@
         "declarationPath": "packages/components-vue/dist/Radio.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RadioProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "partial",
       "unresolved": [

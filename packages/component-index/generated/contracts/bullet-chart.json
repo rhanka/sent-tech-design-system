@@ -1,8 +1,8 @@
 {
   "componentId": "bullet-chart",
   "contractSource": "derived",
-  "digest": "sha256:64a29cb999b4f7fc2715505403ca7db08ffb7a2a301fae0a51c1fb3bccf657a3",
-  "entryDigest": "sha256:2c9919a1f69b04f45ac61e2727d6a21a3d2ba14ebc315dcf515f0e17064f5cd0",
+  "digest": "sha256:508b0bc4715a7452c9f5801c44f2cbd9b1a2dd6d01d2780b202cf70b95ad7d20",
+  "entryDigest": "sha256:4ea40f4f0ac4054af4387d7b48b85dba4380e86e620c0fa72b28841bd1c71777",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -247,7 +247,7 @@
         "declarationPath": "packages/components-svelte/dist/BulletChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BulletChartProps",
-        "version": "0.43.2"
+        "version": "0.43.3"
       },
       "status": "complete",
       "unresolved": [],
@@ -330,7 +330,7 @@
         "declarationPath": "packages/components-vue/dist/BulletChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BulletChartProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "complete",
       "unresolved": [],

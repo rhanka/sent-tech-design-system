@@ -1,8 +1,8 @@
 {
   "componentId": "column-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:2d60756a5dc4680cf6d8c423d3ff60c676309178bef7a2366afad2d7c9d8357c",
-  "entryDigest": "sha256:2138db820a4a30ddce4ab1f25edb3c4c7e0a584f7f6eeeed70a60ae6eab49ec4",
+  "digest": "sha256:d80da22ea3a9745ab8df807b27568180786158037e187d5152aa269226c5e249",
+  "entryDigest": "sha256:18431feb0cc75bff0ed295abc7b7465bd85785d1c617c639e3db345680c861c4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -303,7 +303,7 @@
         "declarationPath": "packages/components-svelte/dist/ColumnRangeChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ColumnRangeChartProps",
-        "version": "0.43.2"
+        "version": "0.43.3"
       },
       "status": "complete",
       "unresolved": [],
@@ -405,7 +405,7 @@
         "declarationPath": "packages/components-vue/dist/ColumnRangeChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ColumnRangeChartProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "complete",
       "unresolved": [],

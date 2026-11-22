@@ -1,8 +1,8 @@
 {
   "componentId": "progress-bar",
   "contractSource": "derived",
-  "digest": "sha256:f9c8aec7f5e8d268b242f26242ca76b0656bf93debee54fe3f47722b3ba2bdd4",
-  "entryDigest": "sha256:7e7d61edf9477ba6f7f1d704f76b90c946e73d420ff9e76a772b92fd2761636b",
+  "digest": "sha256:3b473e26580b627bfaa7b34477f4e003dba058e17f20905c934fce8128ffa486",
+  "entryDigest": "sha256:641042c6f7ac9fea57d423c7c2f9bf5ddf8527389d8554e083b2d28d8efbade4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -215,7 +215,7 @@
         "declarationPath": "packages/components-svelte/dist/ProgressBar.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ProgressBarProps",
-        "version": "0.43.2"
+        "version": "0.43.3"
       },
       "status": "complete",
       "unresolved": [],
@@ -292,7 +292,7 @@
         "declarationPath": "packages/components-vue/dist/ProgressBar.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ProgressBarProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "complete",
       "unresolved": [],

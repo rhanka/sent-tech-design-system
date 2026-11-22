@@ -1,8 +1,8 @@
 {
   "componentId": "ribbon-chart",
   "contractSource": "derived",
-  "digest": "sha256:4ccce15de8c56da0d78d213429535e2d5481c1da163bbe87285e5dc9c0371db7",
-  "entryDigest": "sha256:c2556efabd9b66eceebb58a721b680182395570fc490dc107dc8018b098cb921",
+  "digest": "sha256:21eb4840f4f3d72ea480bb1470ef0b39ec50b96692264df292c433f7d024cc1b",
+  "entryDigest": "sha256:7524110d72a577d770b56d8875e80e7c02964b705f2276365a5ed79d3fbb6c02",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -275,7 +275,7 @@
         "declarationPath": "packages/components-svelte/dist/RibbonChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RibbonChartProps",
-        "version": "0.43.2"
+        "version": "0.43.3"
       },
       "status": "complete",
       "unresolved": [],
@@ -367,7 +367,7 @@
         "declarationPath": "packages/components-vue/dist/RibbonChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RibbonChartProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "complete",
       "unresolved": [],

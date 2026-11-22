@@ -1,8 +1,8 @@
 {
   "componentId": "menu-popover",
   "contractSource": "derived",
-  "digest": "sha256:07eb49c218f08959f5d315bb7966883b3ca9328003fe5532805b1545c9e1cbef",
-  "entryDigest": "sha256:74a52fc34afe0d7bd9bbc7864f801106e928dd24296116516d600e769b2ebaa8",
+  "digest": "sha256:79dcafbbfaf97442838512eec5041c31a1c09f7cdc12e9e6e199aaa5492188b8",
+  "entryDigest": "sha256:1c15885c223a69637ac6115dc75e056a5f251d57e7f9f6f2bc0f49a17cb7c1c1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -592,7 +592,7 @@
         "declarationPath": "packages/components-svelte/dist/MenuPopover.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MenuPopoverProps",
-        "version": "0.43.2"
+        "version": "0.43.3"
       },
       "status": "partial",
       "unresolved": [],
@@ -930,7 +930,7 @@
         "declarationPath": "packages/components-vue/dist/MenuPopover.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MenuPopoverProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "partial",
       "unresolved": [],

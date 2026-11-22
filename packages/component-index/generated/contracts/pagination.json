@@ -1,8 +1,8 @@
 {
   "componentId": "pagination",
   "contractSource": "derived",
-  "digest": "sha256:b9de2075ec7e689a847716a5498b4d2ad25dd54ff571a0c81a3eee7ec9e23ea4",
-  "entryDigest": "sha256:a105f6d8f901e1cc04ae003ee4a8ad0f99eb09a471323b9e5a8a81d61d9c7fa4",
+  "digest": "sha256:340443a6eef8fc77bcd8200b883220171a3b79a278894265be95aed0641bd283",
+  "entryDigest": "sha256:3729b73f5e8d3dc7c283afe133fbca5080aaa9eb4e8f37a3278e6334a43da3df",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -182,7 +182,7 @@
         "declarationPath": "packages/components-svelte/dist/Pagination.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PaginationProps",
-        "version": "0.43.2"
+        "version": "0.43.3"
       },
       "status": "complete",
       "unresolved": [],
@@ -249,7 +249,7 @@
         "declarationPath": "packages/components-vue/dist/Pagination.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PaginationProps",
-        "version": "0.41.0-next.10"
+        "version": "0.41.0-next.11"
       },
       "status": "complete",
       "unresolved": [],
