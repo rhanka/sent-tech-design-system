@@ -494,6 +494,8 @@ const WIDEN_ROUNDS = 1;
 export interface LayoutExecutionContext {
   readonly plan?: NominalCompositionPlan;
   readonly memo?: SubtreeMemo;
+  /** Optional pre-validated graph from an immediately preceding `computeNominalCompositionPlan` on the same inputs. */
+  readonly graph?: LayoutGraph;
 }
 
 interface PlanSizingReport {
@@ -516,6 +518,11 @@ interface PlanPassCapture {
   legendCell?: { readonly bandId: string; readonly colId: string };
 }
 
+interface PlanExecutionShared {
+  graph?: LayoutGraph;
+  readonly sceneBoxCache?: Map<string, ReturnType<typeof measureSceneBox>>;
+}
+
 interface PlanExecutionContext {
   readonly mode: "nominal-plan" | "state";
   readonly plan?: NominalCompositionPlan;
@@ -526,6 +533,7 @@ interface PlanExecutionContext {
   readonly legendCellOverride?: { readonly bandId: string; readonly colId: string };
   readonly sizingOnly?: boolean;
   readonly capture?: PlanPassCapture;
+  readonly shared?: PlanExecutionShared;
 }
 
 const sameRecord = (left: Readonly<Record<string, number>>, right: Readonly<Record<string, number>>): boolean => {
@@ -546,7 +554,7 @@ export function computeNominalCompositionPlan(
   document: SemanticDocument,
   options: LayoutOptions,
   sourceView?: ViewDocument,
-): { readonly status: "ok"; readonly plan: NominalCompositionPlan } | { readonly status: "refused"; readonly result: LayoutResult } {
+): { readonly status: "ok"; readonly plan: NominalCompositionPlan; readonly graph?: LayoutGraph } | { readonly status: "refused"; readonly result: LayoutResult } {
   const neutralView = sourceView === undefined ? undefined : foldNeutralView(sourceView);
   const { previousOrientation: _ignoredPrev, ...restOptions } = options;
   void _ignoredPrev;
@@ -554,6 +562,7 @@ export function computeNominalCompositionPlan(
     ...restOptions,
     collapsed: [],
   };
+  const shared: PlanExecutionShared = { sceneBoxCache: new Map() };
   const want16x9 = options.hints?.composition?.aspect === "16:9";
 
   if (!want16x9) {
@@ -563,6 +572,7 @@ export function computeNominalCompositionPlan(
       mode: "nominal-plan",
       tauOverride: tau,
       capture,
+      shared,
     });
     if (pass.status === "refused") {
       return { status: "refused", result: pass };
@@ -595,6 +605,7 @@ export function computeNominalCompositionPlan(
         sigmaBands,
         ...(legendCell === undefined ? {} : { legendCell }),
       },
+      ...(shared.graph === undefined ? {} : { graph: shared.graph }),
     };
   }
 
@@ -610,6 +621,7 @@ export function computeNominalCompositionPlan(
       tauOverride: tau,
       sizingOnly: true,
       capture: cap,
+      shared,
     });
     if (sizingPass.status === "refused") {
       return { status: "refused", result: sizingPass };
@@ -653,6 +665,7 @@ export function computeNominalCompositionPlan(
     sigmaBandsOverride: slack1.sigmaBands,
     ...(capturedLegendCell === undefined ? {} : { legendCellOverride: capturedLegendCell }),
     capture: capture1,
+    shared,
   });
   if (pass1.status === "refused") {
     return { status: "refused", result: pass1 };
@@ -691,6 +704,7 @@ export function computeNominalCompositionPlan(
         sigmaBandsOverride: slack2.sigmaBands,
         ...(capturedLegendCell === undefined ? {} : { legendCellOverride: capturedLegendCell }),
         capture: capture2,
+        shared,
       });
       if (pass2.status === "laid-out") {
         const painted2 = capture2.paintedBounds ?? painted1;
@@ -738,6 +752,7 @@ export function computeNominalCompositionPlan(
       postRouteCorrectionRounds,
       ...(unreached ? { aspectUnreached: { achieved: nominalAspect, target: ASPECT_16_9_TARGET } } : {}),
     },
+    ...(shared.graph === undefined ? {} : { graph: shared.graph }),
   };
 }
 
@@ -759,15 +774,18 @@ export function layoutMeasured(
   let stateCtx: PlanExecutionContext | undefined;
   if (options.hints?.composition !== undefined) {
     let nominalPlan = execution?.plan;
+    let prevalidatedGraph = execution?.graph;
     if (nominalPlan === undefined) {
       const built = computeNominalCompositionPlan(document, options, sourceView);
       if (built.status === "refused") return built.result;
       nominalPlan = built.plan;
+      prevalidatedGraph = built.graph;
     }
     stateCtx = {
       mode: "state",
       plan: nominalPlan,
       ...(execution?.memo === undefined ? {} : { memo: execution.memo }),
+      ...(prevalidatedGraph === undefined ? {} : { shared: { graph: prevalidatedGraph } }),
     };
   }
   const first = layoutMeasuredPass(document, options, sourceView, new Set(), stateCtx);
@@ -835,7 +853,7 @@ function layoutMeasuredPass(
     };
   }
   const measure = options.measureLines;
-  const sceneBoxCache = new Map<string, ReturnType<typeof measureSceneBox>>();
+  const sceneBoxCache = planCtx?.shared?.sceneBoxCache ?? new Map<string, ReturnType<typeof measureSceneBox>>();
   const sceneBoxAt = (id: OccurrenceRef, width: number, collapsed: boolean) => {
     const key = `${id}|${width}|${collapsed}`;
     let box = sceneBoxCache.get(key);
@@ -850,19 +868,23 @@ function layoutMeasuredPass(
     }
     return box;
   };
-  const validationOptions =
-    options.bindings === undefined ? { registry: options.registry } : { registry: options.registry, bindings: options.bindings };
-  const diagnostics = [...validateDocument(document, validationOptions), ...validateFlows(document)];
-  if (hasErrors(diagnostics)) {
-    return {
-      status: "refused",
-      refusals: [{ code: "document-invalid", path: "document", message: "diagram-core refuses this document" }],
-      diagnostics,
-    };
+  let graph = planCtx?.shared?.graph;
+  if (graph === undefined) {
+    const validationOptions =
+      options.bindings === undefined ? { registry: options.registry } : { registry: options.registry, bindings: options.bindings };
+    const diagnostics = [...validateDocument(document, validationOptions), ...validateFlows(document)];
+    if (hasErrors(diagnostics)) {
+      return {
+        status: "refused",
+        refusals: [{ code: "document-invalid", path: "document", message: "diagram-core refuses this document" }],
+        diagnostics,
+      };
+    }
+    const read = readMeasuredGraph(document, options.registry);
+    if ("refusals" in read) return { status: "refused", refusals: read.refusals, diagnostics: [] };
+    graph = read.graph;
+    if (planCtx?.shared !== undefined) planCtx.shared.graph = graph;
   }
-  const read = readMeasuredGraph(document, options.registry);
-  if ("refusals" in read) return { status: "refused", refusals: read.refusals, diagnostics: [] };
-  const graph = read.graph;
   const r7Routing = isR7ConnectorPresentation(presentation, sourceView, document);
   const routeSpacing = r7Routing ? (options.metrics?.routeSpacing ?? DEFAULT_ROUTE_SPACING) : 0;
   const borderClearance = r7Routing

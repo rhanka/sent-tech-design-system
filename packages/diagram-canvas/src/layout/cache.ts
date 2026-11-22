@@ -12,6 +12,7 @@ import { measureLegendProbe } from "../presentation/linkLegend.js";
 import { isR7ConnectorPresentation } from "../r7Mode.js";
 import { layoutDocument } from "./engine.js";
 import { digestOf, layoutFingerprint } from "./fingerprint.js";
+import type { LayoutGraph } from "./graph.js";
 import { computeNominalCompositionPlan, layoutFolded, layoutMeasured } from "./measured.js";
 import { DEFAULT_ALLOCATED_LINES } from "./measure.js";
 import {
@@ -255,7 +256,7 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
     document: SemanticDocument,
     options: LayoutOptions,
     sourceView?: ViewDocument,
-  ): { readonly status: "ok"; readonly entry: PlanCacheEntry } | { readonly status: "refused"; readonly result: LayoutResult } {
+  ): { readonly status: "ok"; readonly entry: PlanCacheEntry; readonly graph?: LayoutGraph } | { readonly status: "refused"; readonly result: LayoutResult } {
     const existing = plans.get(planKey);
     if (existing !== undefined) {
       planHits += 1;
@@ -279,7 +280,7 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
         planEvictions += 1;
       }
     }
-    return { status: "ok", entry };
+    return { status: "ok", entry, ...(built.graph === undefined ? {} : { graph: built.graph }) };
   }
 
   function layout(document: SemanticDocument, options: LayoutOptions, sourceView?: ViewDocument): LayoutResult {
@@ -304,6 +305,7 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
         result = layoutMeasured(document, options, sourceView, {
           plan: resolved.entry.plan,
           ...(resolved.entry.memo === undefined ? {} : { memo: resolved.entry.memo }),
+          ...(resolved.graph === undefined ? {} : { graph: resolved.graph }),
         });
       } else {
         result = layoutMeasured(document, options, sourceView);
