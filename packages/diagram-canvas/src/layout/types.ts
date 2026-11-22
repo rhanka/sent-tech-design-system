@@ -321,8 +321,8 @@ export interface LayoutWarning {
   readonly code: LayoutWarningCode;
   readonly refs: readonly string[];
   readonly message: string;
-  /** Structured overflow detail (needed/allocated sizes, side, required/fitted slots). */
-  readonly details?: Readonly<Record<string, string | number>>;
+  /** Structured overflow detail (needed/allocated sizes, side, required/fitted slots, comb members). */
+  readonly details?: Readonly<Record<string, string | number | readonly string[]>>;
 }
 
 /** Why a document was not laid out. `document-invalid` carries `diagram-core`'s own diagnostics. */
@@ -384,6 +384,8 @@ export type LayoutResult =
       readonly legendResolved?: boolean;
       /** Composition track lines, cell rects, plan digest and painted-gap report (H2.3+). */
       readonly composition?: import("./compose.js").LayoutCompositionReport;
+      /** Formed fan-in and fan-out comb groups (H2.7). */
+      readonly combGroups?: readonly import("./comb.js").LayoutCombGroup[];
     }
   | {
       readonly status: "refused";

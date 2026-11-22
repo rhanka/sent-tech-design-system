@@ -189,6 +189,11 @@ export function dockEdges(input: {
       readonly turn?: boolean;
     }
   >;
+  /**
+   * Optional reserved coordinates along an entity side (keyed `${entity}#${side}`),
+   * e.g. comb branch/hub docks, so ordinary edge slots stay spaced clear of them.
+   */
+  readonly reservedSlots?: ReadonlyMap<string, readonly number[]>;
 }): DockOutcome {
   const { graph, rects, direction, metrics, labelSizes, fixed } = input;
   const leftToRight = direction === "left-to-right";
@@ -324,7 +329,41 @@ export function dockEdges(input: {
               : { x: centre.x + offset, y: rect.y + rect.height };
       const anchorFor = (point: Vec2): number =>
         vertical ? (point.y - rect.y) / rect.height : (point.x - rect.x) / rect.width;
-      if (count <= capacity) {
+      const reserved = input.reservedSlots?.get(key);
+      if (reserved !== undefined && reserved.length > 0 && count <= capacity) {
+        const minCoord = (vertical ? rect.y : rect.x) + inset;
+        const maxCoord = (vertical ? rect.y + rect.height : rect.x + rect.width) - inset;
+        const usedCoords: number[] = [...reserved];
+        orderedKeys.forEach((slot, index) => {
+          const ideal = (vertical ? centre.y : centre.x) + (index - (count - 1) / 2) * wanted;
+          let chosen = Math.max(minCoord, Math.min(maxCoord, ideal));
+          const isFree = (c: number): boolean =>
+            c >= minCoord - 1e-4 && c <= maxCoord + 1e-4 && usedCoords.every((u) => Math.abs(u - c) >= wanted - 1e-4);
+          if (!isFree(chosen)) {
+            for (let step = 1; step <= 24; step += 1) {
+              const plus = chosen + step * wanted;
+              if (isFree(plus)) { chosen = plus; break; }
+              const minus = chosen - step * wanted;
+              if (isFree(minus)) { chosen = minus; break; }
+            }
+          }
+          usedCoords.push(chosen);
+          const point = pointFor(chosen - (vertical ? centre.y : centre.x));
+          const anchor = anchorFor(point);
+          for (const end of slots.get(slot)!) {
+            const normal = SIDE_NORMAL[side];
+            placed.set(`${end.edge}#${end.role}`, {
+              entity,
+              point,
+              side,
+              exit: end.inner ? { x: -normal.x, y: -normal.y } : normal,
+              order: index,
+              anchor,
+              ...(end.port === undefined ? {} : { port: end.port }),
+            });
+          }
+        });
+      } else if (count <= capacity) {
         orderedKeys.forEach((slot, index) => {
           const offset = (index - (count - 1) / 2) * wanted;
           const point = pointFor(offset);

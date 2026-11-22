@@ -549,6 +549,8 @@ export function routeEdges(input: {
   readonly avoidFallbackInteriors?: boolean;
   /** Optional priority subset routed before other requests (deterministic conflict repair). */
   readonly priority?: ReadonlySet<RelationRef>;
+  /** Pre-reserved orthogonal routes (e.g. comb trunks & branches) that plain routes stay `routeSpacing` clear of. */
+  readonly reservedRoutes?: readonly (readonly Vec2[])[];
 }): RouteOutcome {
   const { rects, requests, clearance } = input;
   const routeSpacing = input.routeSpacing !== undefined && input.routeSpacing > 0 ? input.routeSpacing : 0;
@@ -780,6 +782,9 @@ export function routeEdges(input: {
       fixedElbows.push(full[k]!);
     }
   };
+  for (const reserved of input.reservedRoutes ?? []) {
+    recordFixedRoute(reserved);
+  }
   let generation = 0;
   const heap = new LexHeap();
 

@@ -68,6 +68,7 @@ import {
 } from "@sentropic/diagram-core";
 
 import { dockEdges, sideToward, type Dock, type EdgeDocks } from "./dock.js";
+import { solveCombs, type CombEdgeCandidate, type SolvedCombPlan } from "./comb.js";
 import {
   layoutGridScope,
   layoutInheritedGridScope,
@@ -110,6 +111,7 @@ import {
 import { measureSceneBox } from "./sceneMeasure.js";
 import { anatomyCardGeometry, anatomyZoneGeometry, ZONE_GEOMETRY, zoneDepthSurface, type DiagramAnatomy } from "../presentation/diagramCardModel.js";
 import {
+  linkStyleKey,
   measureSceneLinkLegend,
   placeSceneLinkLegend,
   type LinkLegendEdgeInput,
@@ -2776,12 +2778,191 @@ function layoutMeasuredPass(
       }
     }
 
+    // Build shelf gutters helper (shared by comb trunk lookup and downstream channel audit).
+    const collectShelfGutters = (): ComposedGutter[] => {
+      const out: ComposedGutter[] = [];
+      for (const [key, packed] of [...packedRuns].sort(([left], [right]) => byString(left, right))) {
+        const boxes = seatedBoxes.get(key);
+        if (boxes === undefined || boxes.length < 2) continue;
+        const rows = packed.rows;
+        const zone = runHasZone(packed.run);
+        const cardAlongBase = rows ? rowGaps.cardX : rowGaps.cardY;
+        const cardAcrossBase = rows ? rowGaps.cardY : rowGaps.cardX;
+        const zoneAlongBase = rows ? rowGaps.zoneX : rowGaps.zoneY;
+        const zoneAcrossBase = rows ? rowGaps.zoneY : rowGaps.zoneX;
+        const gapAfter = (slot: number) => { const item = packed.run.items[slot]!; return "run" in item ? item.gapAfter : undefined; };
+        const alongOf = (rect: Rect): [number, number] => (rows ? [rect.x, rect.x + rect.width] : [rect.y, rect.y + rect.height]);
+        const acrossOf = (rect: Rect): [number, number] => (rows ? [rect.y, rect.y + rect.height] : [rect.x, rect.x + rect.width]);
+        const stripOf = (along: [number, number], across: [number, number]): Rect =>
+          rows
+            ? { x: along[0], y: across[0], width: along[1] - along[0], height: across[1] - across[0] }
+            : { x: across[0], y: along[0], width: across[1] - across[0], height: along[1] - along[0] };
+        const extent: [number, number] = [
+          Math.min(...boxes.map((rect) => alongOf(rect)[0])),
+          Math.max(...boxes.map((rect) => alongOf(rect)[1])),
+        ];
+        const alongStrips = new Map<number, { readonly shelf: number; readonly slot: number; readonly strip: Rect; readonly zone: boolean; readonly bordersZone: boolean }[]>();
+        packed.shelves.forEach((shelf, shelfIndex) => {
+          const start = acrossOf(boxes[shelf[0]!]!)[0];
+          const end = Math.max(...shelf.map((slot) => acrossOf(boxes[slot]!)[1]));
+          const next = packed.shelves[shelfIndex + 1];
+          if (next !== undefined) {
+            const nextStart = acrossOf(boxes[next[0]!]!)[0];
+            const currentZone = shelfHasZone(packed.run, shelf);
+            const nextZone = shelfHasZone(packed.run, next);
+            const acrossZone = zoneRule ? currentZone && nextZone : zone;
+            const bordersZone = currentZone || nextZone;
+            const base = zoneRule
+              ? (acrossZone ? zoneGutter : (gapAfter(shelf.at(-1)!) ?? (bordersZone ? zoneAcrossBase : cardAcrossBase)))
+              : (gapAfter(shelf.at(-1)!) ?? packed.acrossBase);
+            out.push({
+              id: `${key}|across|${String(shelfIndex)}`,
+              horizontal: rows,
+              strips: [stripOf(extent, [end, nextStart])],
+              gap: nextStart - end,
+              base,
+              authoredBase: false,
+              max: rows ? rowGaps.maxY : rowGaps.maxX,
+              zone: acrossZone,
+            });
+          }
+          shelf.forEach((slot, index) => {
+            const following = shelf[index + 1];
+            if (following === undefined) return;
+            const strip = stripOf([alongOf(boxes[slot]!)[1], alongOf(boxes[following]!)[0]], [start, end]);
+            const leftZone = itemHasZone(packed.run.items[slot]!);
+            const rightZone = itemHasZone(packed.run.items[following]!);
+            const pairZone = zoneRule ? leftZone && rightZone : zone;
+            (alongStrips.get(index) ?? alongStrips.set(index, []).get(index)!).push({
+              shelf: shelfIndex, slot, strip, zone: pairZone, bordersZone: zoneRule ? leftZone || rightZone : zone,
+            });
+          });
+        });
+        for (const [index, strips] of [...alongStrips].sort(([left], [right]) => left - right)) {
+          const thickness = (strip: Rect): number => (rows ? strip.width : strip.height);
+          const startOf = (strip: Rect): number => (rows ? strip.x : strip.y);
+          const lane = strips.every(({ strip, zone: stripZone, bordersZone }) =>
+            Math.abs(startOf(strip) - startOf(strips[0]!.strip)) <= LANE_TOLERANCE &&
+            stripZone === strips[0]!.zone && bordersZone === strips[0]!.bordersZone,
+          );
+          const max = rows ? rowGaps.maxX : rowGaps.maxY;
+          const baseFor = (slot: number, stripZone: boolean, bordersZone: boolean): number =>
+            zoneRule
+              ? (stripZone ? zoneGutter : (gapAfter(slot) ?? (bordersZone ? zoneAlongBase : cardAlongBase)))
+              : (gapAfter(slot) ?? packed.alongBase);
+          if (lane) {
+            out.push({
+              id: `${key}|along|${String(index)}`,
+              horizontal: !rows,
+              strips: strips.map(({ strip }) => strip),
+              gap: Math.max(...strips.map(({ strip }) => thickness(strip))),
+              base: Math.max(...strips.map(({ slot, zone: stripZone, bordersZone }) => baseFor(slot, stripZone, bordersZone))),
+              authoredBase: false,
+              max,
+              zone: strips[0]!.zone,
+            });
+          } else {
+            for (const { shelf, slot, strip, zone: stripZone, bordersZone } of strips) {
+              out.push({
+                id: `${key}|along|${String(index)}|${String(shelf)}`,
+                horizontal: !rows,
+                strips: [strip],
+                gap: thickness(strip),
+                base: baseFor(slot, stripZone, bordersZone),
+                authoredBase: false,
+                max,
+                zone: stripZone,
+              });
+            }
+          }
+        }
+      }
+      return out;
+    };
+
+    // H2.7: fan-in / fan-out comb grouping and trunk reservation BEFORE plain docking & routing (§4.6).
+    const sortedBarrierEntriesEarly = [...titleBands].sort(([left], [right]) => byString(left, right));
+    const earlyAuditBarriers = sortedBarrierEntriesEarly.map(([entity, rect]) => ({ entity: String(entity), rect }));
+    let combPlan: SolvedCombPlan | undefined;
+    if (composition !== undefined && (composition.fanIn === "comb" || composition.fanOut === "comb")) {
+      const combCandidates: CombEdgeCandidate[] = [];
+      for (const edge of drawnEdges) {
+        if (edge.source.entity === edge.target.entity) continue;
+        if (isAncestor(filteredGraph, edge.source.entity, edge.target.entity) || isAncestor(filteredGraph, edge.target.entity, edge.source.entity)) continue;
+        const occurrence = projected.relationOccurrences[edge.occurrence];
+        if (occurrence === undefined) continue;
+        const semantic = document.relations[occurrence.relation];
+        if (semantic?.profile === "erd@1" || semantic?.type === "flow-step") continue;
+        const relStyle = relationPresentationFor(presentation.relations, occurrence.id, occurrence.relation);
+        const resolvedStroke = resolveDashPattern(occurrence.strokeStyle ?? relStyle?.strokeStyle)?.style ?? "solid";
+        const resolvedArrow = resolveArrowhead(occurrence.arrowhead ?? relStyle?.arrowhead)?.canonicalKind ?? "arrow";
+        const resolvedEmphasis = resolveLinkEmphasis(occurrence.emphasis ?? relStyle?.emphasis)?.emphasis ?? "default";
+        const styleKey = linkStyleKey({ strokeStyle: resolvedStroke, arrowhead: resolvedArrow, emphasis: resolvedEmphasis });
+        const sourceRole = occurrence.endpoints.find((ep) => ep.role === "source");
+        const targetRole = occurrence.endpoints.find((ep) => ep.role === "target");
+        const passable = new Set<EntityRef>([
+          ...(sourceRole === undefined ? [] : projectedAncestorsOf(sourceRole.occurrence)),
+          ...(targetRole === undefined ? [] : projectedAncestorsOf(targetRole.occurrence)),
+        ]);
+        const occRelRef = edge.occurrence as unknown as RelationRef;
+        const within = withinOf.get(occRelRef);
+        const effLabel = edgeBundles[edge.occurrence]?.label ?? edgeLabelOf(document, edge.relation);
+        combCandidates.push({
+          occurrence: edge.occurrence,
+          relation: edge.relation,
+          source: edge.source,
+          target: edge.target,
+          styleKey,
+          arrowhead: resolvedArrow,
+          ...(effLabel === undefined ? {} : { label: effLabel }),
+          passable,
+          ...(within === undefined ? {} : { within }),
+        });
+      }
+      combPlan = solveCombs({
+        candidates: combCandidates,
+        fanIn: composition.fanIn,
+        fanOut: composition.fanOut,
+        r7Routing,
+        rects,
+        placementParentOf,
+        gridReports: composedGridReports,
+        gutters: [...composedEmittedGutters, ...collectShelfGutters()],
+        barriers: earlyAuditBarriers,
+        isNorthBlockedByTitle,
+        routeSpacing,
+        borderClearance,
+        cornerInset: dockCornerInset,
+      });
+      for (const fb of combPlan.fallbacks) {
+        warnings.push({
+          severity: "info",
+          code: "comb-fallback",
+          refs: fb.members,
+          message: `comb group at ${fb.hub} routed separately (${fb.reason})`,
+          details: { hub: fb.hub, members: fb.members, reason: fb.reason },
+        });
+      }
+    }
+    const combMemberSet = combPlan === undefined ? undefined : combPlan.memberCombId;
+    const plainEdges =
+      combMemberSet === undefined || combMemberSet.size === 0
+        ? drawnEdges
+        : drawnEdges.filter((edge) => !combMemberSet.has(String(edge.occurrence)));
+    const routingGraph: LayoutGraph =
+      combMemberSet === undefined || combMemberSet.size === 0
+        ? filteredGraph
+        : {
+            ...filteredGraph,
+            edges: filteredGraph.edges.filter((edge) => !combMemberSet.has(String(edge.id))),
+          };
+
     // Dock and route against fixed boxes (§4.6.4/§4.6.5). Slots keep the
     // declared spacing: a label sits in a lane, not at its dock, so a side
     // does not spread its slots by the label width.
     const docked = dockEdges({
       ...(hasFlows ? { flowBadgeSize: flowTokens.flowBadgeSize } : {}),
-      graph: filteredGraph,
+      graph: routingGraph,
       rects,
       direction: "top-to-bottom",
       metrics,
@@ -2789,8 +2970,12 @@ function layoutMeasuredPass(
       fixed: true,
       cornerInset: dockCornerInset,
       sideOverrides,
+      ...(combPlan !== undefined && combPlan.reservedSlots.size > 0 ? { reservedSlots: combPlan.reservedSlots } : {}),
     });
     const finalDocks = new Map<RelationRef, EdgeDocks>(docked.docks);
+    if (combPlan !== undefined) {
+      for (const [id, docks] of combPlan.memberDocks) finalDocks.set(id, docks);
+    }
     {
       const byEntity = new Map<EntityRef, { sides: PortSide[]; required: number; fitted: number }>();
       for (const overflow of docked.fixedOverflows) {
@@ -2818,7 +3003,7 @@ function layoutMeasuredPass(
       }
     }
     const buildRequests = (docksMap: ReadonlyMap<RelationRef, EdgeDocks>) =>
-      drawnEdges.map((edge) => {
+      plainEdges.map((edge) => {
         const occurrence = projected.relationOccurrences[edge.occurrence]!;
         const sourceRole = occurrence.endpoints.find((endpoint) => endpoint.role === "source")!;
         const targetRole = occurrence.endpoints.find((endpoint) => endpoint.role === "target")!;
@@ -2907,6 +3092,7 @@ function layoutMeasuredPass(
         barriers: sortedBarriers,
         lanes: { xs: outerLanesX, ys: outerLanes },
         ...(priority === undefined ? {} : { priority }),
+        ...(combPlan !== undefined && combPlan.reservedPolylines.length > 0 ? { reservedRoutes: combPlan.reservedPolylines } : {}),
       });
     let routed = runRouter(requests);
 
@@ -2921,13 +3107,15 @@ function layoutMeasuredPass(
         const checked: CheckedRoute[] = [];
         for (const edge of drawnEdges) {
           const id = edge.occurrence as unknown as RelationRef;
-          const pts = outcome.routes.get(id);
+          const pts = combPlan?.memberRoutes.get(id) ?? outcome.routes.get(id);
           if (pts === undefined) continue;
           const occ = projected.relationOccurrences[edge.occurrence]!;
           const sRole = occ.endpoints.find((ep) => ep.role === "source")!;
           const tRole = occ.endpoints.find((ep) => ep.role === "target")!;
           const style = relationPresentationFor(presentation.relations, occ.id, occ.relation);
-          const arrowhead = resolveArrowhead(occ.arrowhead ?? style?.arrowhead).canonicalKind;
+          const rawArrow = resolveArrowhead(occ.arrowhead ?? style?.arrowhead).canonicalKind;
+          const arrowhead = combPlan?.suppressedArrowheads.has(String(edge.occurrence)) ? "none" : rawArrow;
+          const combGroupId = combPlan?.memberCombId.get(String(edge.occurrence));
           const passable = new Set<string>([
             ...projectedAncestorsOf(sRole.occurrence),
             ...projectedAncestorsOf(tRole.occurrence),
@@ -2941,6 +3129,7 @@ function layoutMeasuredPass(
             ...(edge.target.port === undefined ? {} : { targetPort: String(edge.target.port) }),
             arrowhead,
             passable,
+            ...(combGroupId === undefined ? {} : { combGroupId }),
           });
         }
         return checkRouteSpacing({
@@ -3013,7 +3202,7 @@ function layoutMeasuredPass(
           }
           const rankedEdges = [...counts.entries()]
             .sort((a, b) => b[1] - a[1] || byString(a[0], b[0]))
-            .map(([id]) => drawnEdges.find((e) => String(e.occurrence) === id))
+            .map(([id]) => plainEdges.find((e) => String(e.occurrence) === id))
             .filter((e): e is DrawnEdge => {
               if (e === undefined) return false;
               if (e.source.entity === e.target.entity) return false;
@@ -3056,7 +3245,7 @@ function layoutMeasuredPass(
               candOverrides.set(id, { source: s, target: t, turn: false });
               const candDocked = dockEdges({
                 ...(hasFlows ? { flowBadgeSize: flowTokens.flowBadgeSize } : {}),
-                graph: filteredGraph,
+                graph: routingGraph,
                 rects,
                 direction: "top-to-bottom",
                 metrics,
@@ -3064,6 +3253,7 @@ function layoutMeasuredPass(
                 fixed: true,
                 cornerInset: dockCornerInset,
                 sideOverrides: candOverrides,
+                ...(combPlan !== undefined && combPlan.reservedSlots.size > 0 ? { reservedSlots: combPlan.reservedSlots } : {}),
               });
               if (candDocked.fixedOverflows.length > docked.fixedOverflows.length) continue;
               const candRequests = buildRequests(candDocked.docks);
@@ -3087,6 +3277,9 @@ function layoutMeasuredPass(
               for (const [k, v] of bestCandOverrides) sideOverrides.set(k, v);
               finalDocks.clear();
               for (const [k, v] of bestCandDocks) finalDocks.set(k, v);
+              if (combPlan !== undefined) {
+                for (const [k, v] of combPlan.memberDocks) finalDocks.set(k, v);
+              }
               requests = bestCandRequests;
               routed = bestCandOutcome;
               bestReport = bestCandReport;
@@ -3139,12 +3332,17 @@ function layoutMeasuredPass(
     // card and title-band interior (2 px grown boxes contain the raw boxes).
     // A retry that finds a clean A* route replaces the obstructed elbow.
     const retryRoutes = new Map(routed.routes);
+    if (combPlan !== undefined) {
+      for (const [id, pts] of combPlan.memberRoutes) retryRoutes.set(id, pts);
+    }
     const retryObstructed = new Set(routed.obstructed);
-    const otherRoutesOf = (id: RelationRef): (readonly Vec2[])[] =>
-      requests
+    const otherRoutesOf = (id: RelationRef): (readonly Vec2[])[] => [
+      ...requests
         .filter((candidate) => candidate.id !== id && !retryObstructed.has(candidate.id))
         .map((candidate) => retryRoutes.get(candidate.id)!)
-        .filter((route): route is readonly Vec2[] => route !== undefined);
+        .filter((route): route is readonly Vec2[] => route !== undefined),
+      ...(combPlan?.reservedPolylines ?? []),
+    ];
     // Parallel unlabelled bridges use a centred comb. Docks and the middle
     // legs share the same pitch. Preserve every constraint of the router.
     const parallel = new Map<string, typeof requests>();
@@ -3264,7 +3462,19 @@ function layoutMeasuredPass(
     // Edge labels on the final routes, in ascending occurrence id; an
     // unplaced label keeps its route (AC-25 2 px retry routes replace the
     // obstructed elbows before labels are placed).
+    // H2.7 (§4.6 step 5): comb members share ONE label on the longest free trunk segment.
+    const combCarrierPlaced = new Set<string>();
+    const labelBoxes = new Map<RelationRef, Rect>();
+    const marks = placeFlowMarks({ plan: flowPlan, routes: retryRoutes, shapes: [...fixedShapes, ...zoneShapes.flatMap(([,rect]) => [
+      { x: rect.x, y: rect.y, width: rect.width, height: metrics.labelMargin },
+      { x: rect.x, y: rect.y + rect.height - metrics.labelMargin, width: rect.width, height: metrics.labelMargin },
+      { x: rect.x, y: rect.y, width: metrics.labelMargin, height: rect.height },
+      { x: rect.x + rect.width - metrics.labelMargin, y: rect.y, width: metrics.labelMargin, height: rect.height },
+    ])], within: withinOf, ...(labelLimit === undefined ? {} : { limit: labelLimit }), measure, options, margin: metrics.labelMargin });
+    warnings.push(...marks.warnings);
+    const taken: Rect[] = [...marks.taken];
     const entries = [...edgeLayouts.entries()]
+      .filter(([id]) => !(combPlan?.suppressedLabels.has(String(id)) === true))
       .sort(([left], [right]) => byString(left, right))
       .map(([id, layout]) => {
         const within = withinOf.get(id);
@@ -3276,20 +3486,78 @@ function layoutMeasuredPass(
           ...(labelLimit === undefined ? {} : { limit: labelLimit }),
         };
       });
-    const frameWalls = zoneShapes.flatMap(([,rect]) => [
-      { x: rect.x, y: rect.y, width: rect.width, height: metrics.labelMargin },
-      { x: rect.x, y: rect.y + rect.height - metrics.labelMargin, width: rect.width, height: metrics.labelMargin },
-      { x: rect.x, y: rect.y, width: metrics.labelMargin, height: rect.height },
-      { x: rect.x + rect.width - metrics.labelMargin, y: rect.y, width: metrics.labelMargin, height: rect.height },
-    ]);
-    const marks = placeFlowMarks({ plan: flowPlan, routes: retryRoutes, shapes: [...fixedShapes,...frameWalls], within: withinOf, ...(labelLimit === undefined ? {} : { limit: labelLimit }), measure, options, margin: metrics.labelMargin });
-    warnings.push(...marks.warnings);
-    const labelBoxes = new Map<RelationRef, Rect>();
-    const taken: Rect[] = [...marks.taken];
     const unplaced: typeof entries = [];
+    if (combPlan !== undefined) {
+      for (const comb of combPlan.groups) {
+        if (comb.label === undefined) continue;
+        const carrierId = comb.carrier as unknown as RelationRef;
+        combCarrierPlaced.add(String(comb.carrier));
+        const existingLayout = edgeLayouts.get(carrierId);
+        const measuredCombLabel =
+          existingLayout ??
+          edgeLabelMeasure({
+            text: comb.label,
+            role: "edge-label",
+            availableWidth: EDGE_LABEL_WIDTH,
+            allocatedLines: DEFAULT_ALLOCATED_LINES["edge-label"],
+            folded: false,
+          });
+        if (existingLayout === undefined) {
+          recordSlot(comb.carrier, "edge-label", measuredCombLabel, false);
+        }
+        const size = { width: measuredCombLabel.width, height: measuredCombLabel.height };
+        const within = withinOf.get(carrierId);
+        let placedComb: ReturnType<typeof placePackedLabel>;
+        for (const seg of comb.trunkSegments) {
+          placedComb = placePackedLabel(
+            {
+              id: carrierId,
+              route: seg,
+              size,
+              ...(within === undefined ? {} : { within }),
+              ...(labelLimit === undefined ? {} : { limit: labelLimit }),
+            },
+            fixedShapes,
+            taken,
+            metrics.labelMargin,
+          );
+          if (placedComb !== undefined) break;
+        }
+        if (placedComb === undefined) {
+          const fullRoute = retryRoutes.get(carrierId);
+          if (fullRoute !== undefined) {
+            placedComb = placePackedLabel(
+              {
+                id: carrierId,
+                route: fullRoute,
+                size,
+                ...(within === undefined ? {} : { within }),
+                ...(labelLimit === undefined ? {} : { limit: labelLimit }),
+              },
+              fixedShapes,
+              taken,
+              metrics.labelMargin,
+            );
+          }
+        }
+        if (placedComb !== undefined) {
+          labelBoxes.set(carrierId, placedComb.box);
+          taken.push(placedComb.box);
+        } else {
+          unplaced.push({
+            id: carrierId,
+            route: retryRoutes.get(carrierId)!,
+            size,
+            ...(within === undefined ? {} : { within }),
+            ...(labelLimit === undefined ? {} : { limit: labelLimit }),
+          });
+        }
+      }
+    }
     const detourStep = routeSpacing > 0 ? borderClearance : 2;
     const detourClearance = routeSpacing > 0 ? borderClearance : 0;
     for (const entry of entries) {
+      if (combCarrierPlaced.has(String(entry.id))) continue;
       const edge = drawnEdges.find((candidate) => (candidate.occurrence as string) === entry.id)!;
       let choice = placePackedLabel(entry, fixedShapes, taken, metrics.labelMargin);
       if (flowPlan.ranks.has(entry.id)) {
@@ -3700,6 +3968,8 @@ function layoutMeasuredPass(
         flowArrows !== undefined &&
         startPt !== undefined &&
         flowArrows.some((a) => Math.hypot(a.tip.x - startPt.x, a.tip.y - startPt.y) <= 1e-4);
+      const combGroupId = combPlan?.memberCombId.get(String(edge.occurrence));
+      const effectiveAuditArrow = combPlan?.suppressedArrowheads.has(String(edge.occurrence)) ? "none" : arrowhead;
       checkedRoutes.push({
         id: String(edge.occurrence),
         source: String(edge.source.entity),
@@ -3707,9 +3977,10 @@ function layoutMeasuredPass(
         points,
         ...(edge.source.port === undefined ? {} : { sourcePort: String(edge.source.port) }),
         ...(edge.target.port === undefined ? {} : { targetPort: String(edge.target.port) }),
-        arrowhead,
+        arrowhead: effectiveAuditArrow,
         ...(startArrowhead ? { startArrowhead: true } : {}),
         passable,
+        ...(combGroupId === undefined ? {} : { combGroupId }),
       });
       if (options.conventions?.arrowDirection === true) {
         const semanticRelation = document.relations[occurrence.relation];
@@ -3951,6 +4222,7 @@ function layoutMeasuredPass(
                 : { postRouteCorrectionRounds: nominalPlan.postRouteCorrectionRounds }),
             }),
         paintedGapsAboveToken: paintedGaps.aboveToken,
+        ...(combPlan !== undefined && combPlan.fallbacks.length > 0 ? { combFallbacks: combPlan.fallbacks } : {}),
       };
     }
     const result: LayoutResult = {
@@ -3982,6 +4254,7 @@ function layoutMeasuredPass(
         legendResolved: true,
         ...(linkLegend === undefined ? {} : { linkLegend }),
         ...(compositionReport === undefined ? {} : { composition: compositionReport }),
+        ...(combPlan !== undefined && combPlan.groups.length > 0 ? { combGroups: combPlan.groups } : {}),
       }),
     };
     return { result, chosen, requested, unused, unplaced: unplaced.length };

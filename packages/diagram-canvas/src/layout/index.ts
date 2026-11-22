@@ -53,6 +53,17 @@ export {
   type LayoutCacheStats,
 } from "./cache.js";
 export {
+  groupCombCandidates,
+  solveCombs,
+  type CombCandidateGroup,
+  type CombEdgeCandidate,
+  type CombFallbackRecord,
+  type CombGroupingResult,
+  type LayoutCombGroup,
+  type SolveCombsInput,
+  type SolvedCombPlan,
+} from "./comb.js";
+export {
   ASPECT_16_9_TARGET,
   ASPECT_16_9_TOLERANCE,
   ASPECT_TAU_LADDER,
