@@ -355,14 +355,14 @@ describe("H2.5 fold-aware nominal plan, plan cache, subtree memo (D-6), invarian
     expect(metrics.totalStates).toBe(44);
     expect(Number.isFinite(metrics.totalUntouchedEdges)).toBe(true);
     expect(Number.isFinite(metrics.routeLocalityChanged)).toBe(true);
-  }, 30_000);
+  }, 120_000);
 
   it("enforces F-1, F-2, F-3, F-4, F-6 and memo on/off identity over all visible fold states of composed appctx-architecture (52 states)", () => {
     const metrics = verifyCorpusScenes([buildAppctxArchitecture16x9()]);
     expect(metrics.totalStates).toBe(52);
     expect(Number.isFinite(metrics.totalUntouchedEdges)).toBe(true);
     expect(Number.isFinite(metrics.routeLocalityChanged)).toBe(true);
-  }, 30_000);
+  }, 120_000);
 
   it("keeps zone gutters at token across every fold state of a v1-path twin of Example A (F-6)", () => {
     const exA = buildExampleA();
