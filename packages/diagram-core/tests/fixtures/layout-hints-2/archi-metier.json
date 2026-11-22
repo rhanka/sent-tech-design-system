@@ -1,0 +1,75 @@
+{
+  "carries": [
+    "T-54"
+  ],
+  "hints": {
+    "vocabulary": "ds-layout-hints@2",
+    "mode": "stage-columns",
+    "grids": {
+      "root": {
+        "transverse_bands": [
+          {
+            "id": "main",
+            "items": [
+              "entity:zone"
+            ]
+          }
+        ]
+      },
+      "entity:zone": {
+        "stage_columns": [
+          "c1",
+          "c2",
+          "c3"
+        ],
+        "transverse_bands": [
+          {
+            "id": "r1",
+            "items": [
+              "entity:a-1-c1",
+              "entity:a-1-c2",
+              "entity:a-1-c3"
+            ]
+          },
+          {
+            "id": "r2",
+            "items": [
+              "entity:a-2-c1",
+              "entity:a-2-c3"
+            ]
+          },
+          {
+            "id": "r3",
+            "items": [
+              "entity:a-3-c1",
+              "entity:a-3-c2"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:a-1-c1": {
+            "column": "c1"
+          },
+          "entity:a-1-c2": {
+            "column": "c2"
+          },
+          "entity:a-1-c3": {
+            "column": "c3"
+          },
+          "entity:a-2-c1": {
+            "column": "c1"
+          },
+          "entity:a-2-c3": {
+            "column": "c3"
+          },
+          "entity:a-3-c1": {
+            "column": "c1"
+          },
+          "entity:a-3-c2": {
+            "column": "c2"
+          }
+        }
+      }
+    }
+  }
+}

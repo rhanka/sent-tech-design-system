@@ -90,6 +90,7 @@ export {
   type ConnectorMarkerSpec,
 } from "./connectorStyle.js";
 export {
+  ALL_LINK_LEGEND_STYLES,
   buildSceneLinkLegend,
   collectLinkLegendStyles,
   defaultLinkStyleLabel,
@@ -110,13 +111,19 @@ export {
   linkLegendBoxStyle,
   linkLegendSwatchGeometry,
   linkStyleKey,
+  measureLegendProbe,
+  measureSceneLinkLegend,
+  placeSceneLinkLegend,
   type BuildSceneLinkLegendInput,
   type LinkLegendAnchor,
   type LinkLegendEdgeInput,
   type LinkLegendEntry,
   type LinkLegendStyleKey,
   type LinkLegendSwatchGeometry,
+  type MeasuredSceneLinkLegend,
+  type MeasureSceneLinkLegendInput,
   type SceneLinkLegend,
+  type SceneLinkLegendAnchor,
 } from "./linkLegend.js";
 export {
   DEFAULT_EDGE_LABEL_SIZE,
@@ -339,6 +346,9 @@ export function layoutScene(input: SceneLayoutInput): LayoutResult {
     ...(input.previousOrientation === undefined ? {} : { previousOrientation: input.previousOrientation }),
     ...(input.reportSurfaceSame === undefined ? {} : { reportSurfaceSame: input.reportSurfaceSame }),
     ...(input.conventions === undefined ? {} : { conventions: input.conventions }),
+    ...(input.hints?.composition !== undefined && input.legend !== undefined ? { legend: input.legend } : {}),
+    ...(input.hints?.composition !== undefined && input.legendTitle !== undefined ? { legendTitle: input.legendTitle } : {}),
+    ...(input.hints?.composition !== undefined && input.legendLabels !== undefined ? { legendLabels: input.legendLabels } : {}),
   };
   const result = input.cache !== undefined
     ? (input.view === undefined
@@ -675,6 +685,16 @@ function resolveSceneAtZoom(
   const edges: SceneEdgeModel[] = [];
   const entries: { id: string; route: readonly Vec2[]; size: { width: number; height: number } }[] = [];
   const labelLines = new Map<string, readonly string[]>();
+  const combSuppressedArrowheads = new Set<string>();
+  const combCarrierLabels = new Map<string, string>();
+  for (const comb of result.combGroups ?? []) {
+    if (comb.label !== undefined) combCarrierLabels.set(String(comb.carrier), comb.label);
+    if (comb.kind === "fan-in") {
+      for (const member of comb.members) {
+        if (member !== comb.carrier) combSuppressedArrowheads.add(String(member));
+      }
+    }
+  }
   for (const id of Object.keys(view.relationOccurrences).sort(byCodeUnit)) {
     if (!visibleEdges.has(id)) continue;
     const occurrence = view.relationOccurrences[id]!;
@@ -695,6 +715,9 @@ function resolveSceneAtZoom(
     const resolvedStrokeStyle = rawStrokeStyle === undefined ? undefined : resolveDashPattern(rawStrokeStyle)?.style;
     const rawArrowhead = occurrence.arrowhead ?? relStyle?.arrowhead;
     const resolvedArrowhead = rawArrowhead === undefined ? undefined : resolveArrowhead(rawArrowhead)?.canonicalKind;
+    // H2.7 + Review P2 #4: fan-in draws one arrowhead on the carrier (or zero when style is "none");
+    // fan-out draws one arrowhead per target (or zero when style is "none").
+    const effectiveArrowhead = combSuppressedArrowheads.has(occurrence.id) ? "none" : resolvedArrowhead;
     const rawEmphasis = occurrence.emphasis ?? relStyle?.emphasis;
     const resolvedEmphasis = rawEmphasis === undefined ? undefined : resolveLinkEmphasis(rawEmphasis)?.emphasis;
     const isR7Edge = r7Connectors && markers === undefined && flow === undefined;
@@ -708,11 +731,11 @@ function resolveSceneAtZoom(
       ...(flow === undefined ? {} : { flow }),
       ...(bundle === undefined ? {} : { bundle }),
       ...(isR7Edge && resolvedStrokeStyle !== undefined && resolvedStrokeStyle !== "solid" ? { strokeStyle: resolvedStrokeStyle } : {}),
-      ...(isR7Edge && resolvedArrowhead !== undefined && resolvedArrowhead !== "arrow" ? { arrowhead: resolvedArrowhead } : {}),
+      ...(isR7Edge && effectiveArrowhead !== undefined && effectiveArrowhead !== "arrow" ? { arrowhead: effectiveArrowhead } : {}),
       ...(isR7Edge && resolvedEmphasis === "emphasis" ? { emphasis: resolvedEmphasis } : {}),
     });
     if (result.labelBoxes !== undefined && result.labelBoxes[id] === undefined) continue;
-    const label = result.edgeBundles?.[id]?.label ?? (semantic?.profile === 'erd@1'
+    const label = result.edgeBundles?.[id]?.label ?? combCarrierLabels.get(id) ?? (semantic?.profile === 'erd@1'
       ? ['fromRole','toRole'].map(role => erdText(semantic.attributes,role)).filter(Boolean).join(' / ') || edgeLabelOf(input.document, occurrence.relation)
       : edgeLabelOf(input.document, occurrence.relation));
     if (label === undefined) continue;
@@ -828,15 +851,17 @@ function resolveSceneAtZoom(
     const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
     bounds = bounds === undefined ? padded : rectUnion(bounds, padded);
   }
-  const linkLegend = buildSceneLinkLegend({
-    edges,
-    contentBounds: bounds,
-    measureLines: input.measureLines,
-    ...(input.legend === undefined ? {} : { anchor: input.legend }),
-    ...(input.legendTitle === undefined ? {} : { title: input.legendTitle }),
-    ...(input.legendLabels === undefined ? {} : { labels: input.legendLabels }),
-    ...(input.metrics?.edgeLabelSize === undefined ? {} : { fontSize: input.metrics.edgeLabelSize }),
-  });
+  const linkLegend = result.legendResolved
+    ? result.linkLegend
+    : buildSceneLinkLegend({
+        edges,
+        contentBounds: bounds,
+        measureLines: input.measureLines,
+        ...(input.legend === undefined ? {} : { anchor: input.legend }),
+        ...(input.legendTitle === undefined ? {} : { title: input.legendTitle }),
+        ...(input.legendLabels === undefined ? {} : { labels: input.legendLabels }),
+        ...(input.metrics?.edgeLabelSize === undefined ? {} : { fontSize: input.metrics.edgeLabelSize }),
+      });
   if (linkLegend !== undefined) {
     bounds = bounds === undefined ? linkLegend.rect : rectUnion(bounds, linkLegend.rect);
   }

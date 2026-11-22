@@ -39,6 +39,7 @@ export {
   type ConnectorMarkerSpec,
 } from "./presentation/connectorStyle.js";
 export {
+  ALL_LINK_LEGEND_STYLES,
   buildSceneLinkLegend,
   collectLinkLegendStyles,
   defaultLinkStyleLabel,
@@ -59,11 +60,17 @@ export {
   linkLegendBoxStyle,
   linkLegendSwatchGeometry,
   linkStyleKey,
+  measureLegendProbe,
+  measureSceneLinkLegend,
+  placeSceneLinkLegend,
   type BuildSceneLinkLegendInput,
   type LinkLegendAnchor,
   type LinkLegendEdgeInput,
   type LinkLegendEntry,
   type LinkLegendStyleKey,
   type LinkLegendSwatchGeometry,
+  type MeasuredSceneLinkLegend,
+  type MeasureSceneLinkLegendInput,
   type SceneLinkLegend,
+  type SceneLinkLegendAnchor,
 } from "./presentation/linkLegend.js";

@@ -43,8 +43,49 @@ export {
   type ResidualReason,
   type SegmentResidual,
 } from "./engine.js";
-export { layoutFolded, layoutMeasured } from "./measured.js";
-export { createLayoutCache, type LayoutCache, type LayoutCacheConfig, type LayoutCacheOptions, type LayoutCacheStats } from "./cache.js";
+export { computeNominalCompositionPlan, layoutFolded, layoutMeasured, type LayoutExecutionContext } from "./measured.js";
+export {
+  createLayoutCache,
+  type LayoutCache,
+  type LayoutCacheConfig,
+  type LayoutCacheOptions,
+  type LayoutCachePlanStats,
+  type LayoutCacheStats,
+} from "./cache.js";
+export {
+  groupCombCandidates,
+  solveCombs,
+  type CombCandidateGroup,
+  type CombEdgeCandidate,
+  type CombFallbackRecord,
+  type CombGroupingResult,
+  type LayoutCombGroup,
+  type SolveCombsInput,
+  type SolvedCombPlan,
+} from "./comb.js";
+export {
+  ASPECT_16_9_TARGET,
+  ASPECT_16_9_TOLERANCE,
+  ASPECT_TAU_LADDER,
+  auditSiblingZonePaintedGaps,
+  buildLayoutKeyRecord,
+  chooseAspectTau,
+  combineRootWithLegendBounds,
+  computeAspectSlack,
+  computeCompositionPlanKey,
+  computePlanDigest,
+  createSubtreeMemo,
+  foldNeutralView,
+  type AspectSlackResult,
+  type AspectTauCandidate,
+  type ChosenAspectTau,
+  type FrozenAutoPackLevel,
+  type NominalCompositionPlan,
+  type SubtreeMemo,
+  type SubtreeMemoEntry,
+  type SubtreeMemoStats,
+  type SubtreeNodeSnapshot,
+} from "./plan.js";
 export {
   digestOf,
   LAYOUT_ENGINE_VERSION,
@@ -69,6 +110,27 @@ export {
   type SeatedShelves,
 } from "./pack.js";
 export {
+  distributeWholeExcess,
+  findFirstEmptyRootCell,
+  layoutGridScope,
+  layoutInheritedGridScope,
+  layoutStackScope,
+  type ComposedCellPlacement,
+  type ComposedGridReport,
+  type ComposedGutter,
+  type ComposedPaintedGap,
+  type ComposedTrackLine,
+  type FreeCellItemSpec,
+  type GridLayoutInput,
+  type GridLayoutResult,
+  type InheritedColumnSpec,
+  type InheritedGridLayoutInput,
+  type InheritedWidthContribution,
+  type LayoutCompositionReport,
+  type StackLayoutInput,
+  type StackLayoutResult,
+} from "./compose.js";
+export {
   effectiveStretch,
   groupLeaves,
   isLayoutGroup,
@@ -77,8 +139,15 @@ export {
   resolveRowGaps,
   validateHints,
   type HintScope,
+  type LayoutBand,
+  type LayoutCell,
+  type LayoutCellAlign,
+  type LayoutComposition,
+  type LayoutGrid,
   type LayoutGroup,
   type LayoutHints,
+  type LayoutPeripheralColumn,
+  type LayoutStack,
   type ResolvedGaps,
   type ResolvedRowGaps,
 } from "./hints.js";

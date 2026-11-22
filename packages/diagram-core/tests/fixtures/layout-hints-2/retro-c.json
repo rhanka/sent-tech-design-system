@@ -1,0 +1,156 @@
+{
+  "carries": [
+    "T-59"
+  ],
+  "hints": {
+    "vocabulary": "ds-layout-hints@2",
+    "mode": "stage-columns",
+    "grids": {
+      "root": {
+        "stage_columns": [
+          "s1",
+          "s2",
+          "s3",
+          "s4"
+        ],
+        "transverse_bands": [
+          {
+            "id": "upper",
+            "items": [
+              "entity:zone-k"
+            ]
+          },
+          {
+            "id": "lower",
+            "items": [
+              "entity:zone-s"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:zone-k": {
+            "column": "s1",
+            "to_column": "s4"
+          },
+          "entity:zone-s": {
+            "column": "s2",
+            "to_column": "s4"
+          }
+        }
+      },
+      "entity:zone-k": {
+        "stage_columns": "inherit",
+        "transverse_bands": [
+          {
+            "id": "k1",
+            "items": [
+              "entity:a",
+              "entity:nested-a"
+            ]
+          },
+          {
+            "id": "k2",
+            "items": [
+              "entity:nested-b",
+              "entity:stack"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:a": {
+            "column": "s1"
+          },
+          "entity:nested-a": {
+            "column": "s3",
+            "to_column": "s4"
+          },
+          "entity:nested-b": {
+            "column": "s1",
+            "to_column": "s2"
+          },
+          "entity:stack": {
+            "column": "s4"
+          }
+        }
+      },
+      "entity:zone-s": {
+        "stage_columns": "inherit",
+        "transverse_bands": [
+          {
+            "id": "r1",
+            "items": [
+              "entity:s-1-s2",
+              "entity:s-1-s3",
+              "entity:s-1-s4"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:s-1-s2": {
+            "column": "s2"
+          },
+          "entity:s-1-s3": {
+            "column": "s3"
+          },
+          "entity:s-1-s4": {
+            "column": "s4"
+          }
+        }
+      },
+      "entity:nested-a": {
+        "stage_columns": "inherit",
+        "transverse_bands": [
+          {
+            "id": "r1",
+            "items": [
+              "entity:a-1-s3",
+              "entity:a-1-s4"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:a-1-s3": {
+            "column": "s3"
+          },
+          "entity:a-1-s4": {
+            "column": "s4"
+          }
+        }
+      },
+      "entity:nested-b": {
+        "stage_columns": "inherit",
+        "transverse_bands": [
+          {
+            "id": "r1",
+            "items": [
+              "entity:b-1-s1",
+              "entity:b-1-s2"
+            ]
+          },
+          {
+            "id": "r2",
+            "items": [
+              "entity:b-2-s1"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:b-1-s1": {
+            "column": "s1"
+          },
+          "entity:b-1-s2": {
+            "column": "s2"
+          },
+          "entity:b-2-s1": {
+            "column": "s1"
+          }
+        }
+      }
+    },
+    "stacks": {
+      "entity:stack": {
+        "axis": "column"
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { borderDistance, centredBodyFindings, compactCardFindings, connectorFindings, exposedSegments, legendFindings, linkStrokeWidthFindings, roundedElbowFindings, segmentInterval } from '../tools/diagram-first-paint/geometry.mjs';
-import { cases, expectedLegendStyles } from '../tools/diagram-first-paint/scenes.js';
+import { cases, expectedLegendAnchor, expectedLegendStyles } from '../tools/diagram-first-paint/scenes.js';
 
 test('should clip a crossing connector against the stroke-inset badge disk', () => {
   const a = { x: -20, y: 0 }, b = { x: 20, y: 0 };
@@ -127,14 +127,23 @@ test('should verify compact 352x154 card centering within 1/64 px and slot conta
   assert.ok(compactCardFindings({ cardSlots: [slot], labels: leftTitle, scale: 1 }).some(f => f.includes('title ink off-centre')));
 });
 
-test('should include 3 r7 reference scenes and expected legend styles for unfolded and folded states', () => {
+test('should include 3 r7 reference scenes and 3 H2 composed scenes with expected legend styles and anchors', () => {
   assert.ok(cases.includes('r7-connectors'));
   assert.ok(cases.includes('r7-connectors-folded'));
   assert.ok(cases.includes('r7-nested-styles'));
-  assert.ok(cases.length >= 13);
+  assert.ok(cases.includes('h2-example-a'));
+  assert.ok(cases.includes('h2-example-b'));
+  assert.ok(cases.includes('h2-aspect-16-9'));
+  assert.ok(cases.length >= 16);
   assert.deepEqual(expectedLegendStyles('r7-connectors'), ['solid:arrow:default', 'solid:none:emphasis', 'dashed:arrow:default', 'dotted:arrow:default']);
   assert.deepEqual(expectedLegendStyles('r7-connectors--folded'), ['dashed:arrow:default', 'dotted:arrow:default']);
   assert.deepEqual(expectedLegendStyles('r7-nested-styles--folded'), []);
+  assert.deepEqual(expectedLegendStyles('h2-example-a'), ['solid:arrow:default', 'solid:arrow:emphasis', 'dashed:arrow:default']);
+  assert.deepEqual(expectedLegendStyles('h2-example-b'), ['solid:arrow:default', 'dashed:arrow:default']);
+  assert.deepEqual(expectedLegendStyles('h2-aspect-16-9'), ['solid:arrow:default', 'dashed:arrow:default']);
+  assert.equal(expectedLegendAnchor('h2-example-a'), 'free-cell');
+  assert.equal(expectedLegendAnchor('h2-example-b'), 'right');
+  assert.equal(expectedLegendAnchor('h2-aspect-16-9'), 'right');
 });
 
 test('should verify rounded elbow radius cap (<= 12 and <= half shorter leg)', () => {
@@ -188,4 +197,13 @@ test('should verify legend canonical order, right anchor, non-overlap, and omiss
     legend: { ...legend, left: 300, right: 540 },
     nodes,
   }).some(f => f.includes('overlaps')));
+  // H2 free-cell legend sits to the left of functional nodes without overlapping any box
+  const freeCellLegend = {
+    id: 'legend',
+    left: 0, top: 0, right: 240, bottom: 160,
+    anchor: 'free-cell',
+    styles: ['solid:arrow:default', 'solid:arrow:emphasis', 'dashed:arrow:default'],
+  };
+  const stageNode = [{ id: 'n1', left: 336, top: 0, right: 688, bottom: 154 }];
+  assert.deepEqual(legendFindings({ legend: freeCellLegend, nodes: stageNode, expectedAnchor: 'free-cell', expectedStyles: freeCellLegend.styles }), []);
 });

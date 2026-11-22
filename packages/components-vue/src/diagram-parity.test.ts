@@ -5,6 +5,7 @@ import type { DiagramSceneFigureProps } from './DiagramSceneFigure.types.js';
 import type { SceneDocument, ScenePresentation, SceneOccurrenceRef } from './diagramSceneModel.js';
 import { CURRENT_SCHEMA_VERSION, DEFAULT_PRESENTATION, DIAGRAM_PRESENTATION_CONTRACT_PIN, DIAGRAM_PRESENTATION_V2_CONTRACT_PIN, createView, entityRef, m3ProfileRegistry, occurrenceRef, shippedExecutorBindings, viewRef } from '../../diagram-canvas/tests/scene-host-fixtures.js';
 import { hCondInput } from '../../diagram-canvas/tests/layout/dc2a/h-cond.js';
+import { buildExampleA, buildExampleB } from '../../diagram-canvas/tests/layout/h2/fixtures/referenceSet.js';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
@@ -1268,6 +1269,110 @@ describe('scene host DOM and camera/fold behavior', () => {
       computedStyleSpy.mockRestore();
       vi.useRealTimers();
       sheet.remove();
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('matches Svelte and Vue rects within 1/64 px on H2 composed Examples A and B (folded & unfolded), free-cell legend, aria-expanded and focus (H2.8)', async () => {
+    const TOL = 1 / 64;
+    vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+    vi.stubGlobal('innerHeight', 900);
+    const widthSpy = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1440);
+    const readBox = (el: HTMLElement) => ({
+      x: parseFloat(el.style.left),
+      y: parseFloat(el.style.top),
+      w: parseFloat(el.style.width),
+      h: parseFloat(el.style.height),
+    });
+    const collectRects = (root: Element): Map<string, { x: number; y: number; w: number; h: number }> => {
+      const map = new Map<string, { x: number; y: number; w: number; h: number }>();
+      for (const el of root.querySelectorAll<HTMLElement>('[data-scene-occurrence]')) {
+        map.set(el.dataset['sceneOccurrence']!, readBox(el));
+      }
+      return map;
+    };
+    const assertParity = (vueRoot: Element, svelteRoot: Element, label: string, expectFreeCell: boolean) => {
+      const vRects = collectRects(vueRoot);
+      const sRects = collectRects(svelteRoot);
+      expect([...vRects.keys()].sort(), `${label}:keys`).toEqual([...sRects.keys()].sort());
+      for (const [id, v] of vRects) {
+        const s = sRects.get(id)!;
+        expect(Math.abs(v.x - s.x), `${label}:${id}:x`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(v.y - s.y), `${label}:${id}:y`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(v.w - s.w), `${label}:${id}:w`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(v.h - s.h), `${label}:${id}:h`).toBeLessThanOrEqual(TOL);
+      }
+      const vLeg = vueRoot.querySelector<HTMLElement>('[data-scene-legend]');
+      const sLeg = svelteRoot.querySelector<HTMLElement>('[data-scene-legend]');
+      if (expectFreeCell) {
+        expect(vLeg, `${label}:vue-legend`).not.toBeNull();
+        expect(sLeg, `${label}:svelte-legend`).not.toBeNull();
+        expect(vLeg!.dataset['legendAnchor']).toBe('free-cell');
+        expect(sLeg!.dataset['legendAnchor']).toBe('free-cell');
+        const vl = readBox(vLeg!);
+        const sl = readBox(sLeg!);
+        expect(Math.abs(vl.x - sl.x), `${label}:legend:x`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(vl.y - sl.y), `${label}:legend:y`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(vl.w - sl.w), `${label}:legend:w`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(vl.h - sl.h), `${label}:legend:h`).toBeLessThanOrEqual(TOL);
+      } else if (vLeg !== null || sLeg !== null) {
+        expect(vLeg).not.toBeNull();
+        expect(sLeg).not.toBeNull();
+        const vl = readBox(vLeg!);
+        const sl = readBox(sLeg!);
+        expect(Math.abs(vl.x - sl.x), `${label}:legend:x`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(vl.y - sl.y), `${label}:legend:y`).toBeLessThanOrEqual(TOL);
+      }
+    };
+    try {
+      for (const [label, builder, toggleOcc, expectFreeCell] of [
+        ['Example A', buildExampleA, 'occurrence:e.tools', true],
+        ['Example B', buildExampleB, 'occurrence:e.layer-b', false],
+      ] as const) {
+        const refScene = builder();
+        const sharedProps = {
+          document: refScene.document as unknown as SceneDocument,
+          registry: refScene.registry as unknown as DiagramSceneFigureProps['registry'],
+          bindings: refScene.bindings as unknown as DiagramSceneFigureProps['bindings'],
+          presentation: refScene.presentation as unknown as ScenePresentation,
+          hints: refScene.hints as unknown as DiagramSceneFigureProps['hints'],
+          measureLines: refScene.measureLines,
+          title: label,
+        };
+        const vue = mount(SceneFigure, { props: sharedProps, attachTo: document.body });
+        const svelte = render(SvelteScene, sharedProps);
+        await nextTick(); await tick(); await nextTick();
+
+        // Unfolded parity (including free-cell legend on Example A)
+        assertParity(vue.element, svelte.container, `${label}:unfolded`, expectFreeCell);
+
+        // Toggle fold via button click in both hosts; verify aria-expanded & focus kept
+        const vBtn = vue.element.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${toggleOcc}"] button[aria-expanded]`)!;
+        const sBtn = svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${toggleOcc}"] button[aria-expanded]`)!;
+        expect(vBtn.getAttribute('aria-expanded')).toBe('true');
+        expect(sBtn.getAttribute('aria-expanded')).toBe('true');
+        vBtn.focus();
+        vBtn.click();
+        await nextTick();
+        const vBtnAfter = vue.element.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${toggleOcc}"] button[aria-expanded]`)!;
+        expect(vBtnAfter.getAttribute('aria-expanded')).toBe('false');
+        expect(document.activeElement).toBe(vBtnAfter);
+
+        sBtn.focus();
+        sBtn.click();
+        await tick();
+        const sBtnAfter = svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${toggleOcc}"] button[aria-expanded]`)!;
+        expect(sBtnAfter.getAttribute('aria-expanded')).toBe('false');
+        expect(document.activeElement).toBe(sBtnAfter);
+
+        // Folded parity
+        assertParity(vue.element, svelte.container, `${label}:folded`, expectFreeCell);
+
+        vue.unmount();
+        svelte.unmount();
+      }
+    } finally {
+      widthSpy.mockRestore();
       vi.unstubAllGlobals();
     }
   });

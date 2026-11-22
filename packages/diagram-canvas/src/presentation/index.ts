@@ -26,6 +26,7 @@ export {
   type ConnectorMarkerSpec,
 } from "./connectorStyle.js";
 export {
+  ALL_LINK_LEGEND_STYLES,
   buildSceneLinkLegend,
   collectLinkLegendStyles,
   defaultLinkStyleLabel,
@@ -46,13 +47,19 @@ export {
   linkLegendBoxStyle,
   linkLegendSwatchGeometry,
   linkStyleKey,
+  measureLegendProbe,
+  measureSceneLinkLegend,
+  placeSceneLinkLegend,
   type BuildSceneLinkLegendInput,
   type LinkLegendAnchor,
   type LinkLegendEdgeInput,
   type LinkLegendEntry,
   type LinkLegendStyleKey,
   type LinkLegendSwatchGeometry,
+  type MeasuredSceneLinkLegend,
+  type MeasureSceneLinkLegendInput,
   type SceneLinkLegend,
+  type SceneLinkLegendAnchor,
 } from "./linkLegend.js";
 import {
   renderCardSvg,

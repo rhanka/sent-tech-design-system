@@ -1,0 +1,87 @@
+{
+  "carries": [
+    "T-56"
+  ],
+  "hints": {
+    "vocabulary": "ds-layout-hints@2",
+    "mode": "stage-columns",
+    "grids": {
+      "root": {
+        "stage_columns": [
+          "s1",
+          "s2",
+          "s3"
+        ],
+        "transverse_bands": [
+          {
+            "id": "upper",
+            "items": [
+              "entity:zone"
+            ]
+          },
+          {
+            "id": "lower",
+            "items": [
+              "entity:card"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:zone": {
+            "column": "s1",
+            "to_column": "s3"
+          },
+          "entity:card": {
+            "column": "s3"
+          }
+        }
+      },
+      "entity:zone": {
+        "stage_columns": "inherit",
+        "transverse_bands": [
+          {
+            "id": "r1",
+            "items": [
+              "entity:a-1-s1",
+              "entity:a-1-s2",
+              "entity:a-1-s3"
+            ]
+          },
+          {
+            "id": "r2",
+            "items": [
+              "entity:a-2-s1",
+              "entity:a-2-s3"
+            ]
+          },
+          {
+            "id": "r3",
+            "items": [
+              "entity:a-3-s2"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:a-1-s1": {
+            "column": "s1"
+          },
+          "entity:a-1-s2": {
+            "column": "s2"
+          },
+          "entity:a-1-s3": {
+            "column": "s3"
+          },
+          "entity:a-2-s1": {
+            "column": "s1"
+          },
+          "entity:a-2-s3": {
+            "column": "s3"
+          },
+          "entity:a-3-s2": {
+            "column": "s2"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "carries": [
+    "T-57"
+  ],
+  "hints": {
+    "vocabulary": "ds-layout-hints@2",
+    "mode": "stage-columns",
+    "grids": {
+      "root": {
+        "transverse_bands": [
+          {
+            "id": "main",
+            "items": [
+              "entity:stack",
+              "entity:zone"
+            ]
+          }
+        ]
+      },
+      "entity:zone": {
+        "stage_columns": [
+          "c1",
+          "c2"
+        ],
+        "transverse_bands": [
+          {
+            "id": "r1",
+            "items": [
+              "entity:a",
+              "entity:b"
+            ]
+          },
+          {
+            "id": "r2",
+            "items": [
+              "entity:nested",
+              "entity:c"
+            ]
+          },
+          {
+            "id": "r3",
+            "items": [
+              "entity:d",
+              "entity:e"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:a": {
+            "column": "c1"
+          },
+          "entity:b": {
+            "column": "c2"
+          },
+          "entity:nested": {
+            "column": "c1"
+          },
+          "entity:c": {
+            "column": "c2"
+          },
+          "entity:d": {
+            "column": "c1"
+          },
+          "entity:e": {
+            "column": "c2"
+          }
+        }
+      }
+    },
+    "stacks": {
+      "entity:stack": {
+        "axis": "column"
+      },
+      "entity:nested": {
+        "axis": "row"
+      }
+    }
+  }
+}

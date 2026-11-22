@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fireEvent, render } from "@testing-library/svelte";
 import { tick } from "svelte";
@@ -35,11 +36,16 @@ import {
   createView,
   CURRENT_SCHEMA_VERSION,
   DIAGRAM_PRESENTATION_CONTRACT_PIN,
+  DIAGRAM_PRESENTATION_V2_CONTRACT_PIN,
+  documentRef,
   entityRef,
+  lowerLayoutHintsV2,
   m3ProfileRegistry,
   occurrenceRef,
+  relationRef,
   shippedExecutorBindings,
   viewRef,
+  type DsLayoutHintsV2,
 } from "../../../diagram-core/dist/index.js";
 import DiagramSceneFigure from "./DiagramSceneFigure.svelte";
 import type { DiagramSceneCamera, DiagramSceneFigureProps } from "./DiagramSceneFigure.svelte";
@@ -1759,6 +1765,217 @@ describe("DC-2b cache and content size", () => {
     expect(targets.size).toBe(0);
     expect(remove.mock.calls.some(([type, handler], index) => type === "wheel" && handler === add.mock.calls[wheel]![1] && remove.mock.contexts[index] === view.viewport)).toBe(true);
     vi.unstubAllGlobals();
+  });
+});
+
+describe("H2.8 composed scenes (Examples A & B) and free-cell legend in Svelte host", () => {
+  function buildH2HostScene(
+    id: string,
+    fixtureName: "schema-13" | "schema-3",
+    entitiesSpec: readonly { readonly id: string; readonly container?: boolean; readonly parent?: string; readonly title: string; readonly kicker?: string }[],
+    relationsSpec: readonly { readonly id: string; readonly source: string; readonly target: string; readonly label?: string; readonly strokeStyle?: "solid" | "dashed" | "dotted"; readonly emphasis?: "default" | "emphasis" }[],
+  ) {
+    const thisDir = import.meta.url.startsWith("file://")
+      ? dirname(fileURLToPath(import.meta.url).replace(/^\/@fs(?=\/)/, ""))
+      : dirname(new URL(import.meta.url).pathname.replace(/^\/@fs(?=\/)/, ""));
+    const fixturePath = resolve(thisDir, `../../../diagram-core/tests/fixtures/layout-hints-2/${fixtureName}.json`);
+    const fixture = JSON.parse(readFileSync(fixturePath, "utf8")) as { hints: DsLayoutHintsV2 };
+    const entities: Record<string, unknown> = {};
+    const relations: Record<string, unknown> = {};
+    const entityPresentations: Record<string, unknown> = {};
+    const relationPresentations: Record<string, unknown> = {};
+    for (const item of entitiesSpec) {
+      const ref = entityRef(item.id);
+      entities[ref] = {
+        id: ref,
+        profile: "generic@2",
+        type: item.container ? "container" : "node",
+        attributes: { name: { kind: "text", value: item.title } },
+      };
+      entityPresentations[occurrenceRef(`e.${item.id}`)] = {
+        form: item.container ? "container" : "card",
+        anatomy: "v2",
+        text: { title: item.title, ...(item.kicker === undefined ? {} : { kicker: item.kicker }) },
+      };
+      if (item.parent !== undefined) {
+        const relId = relationRef(`contains.${item.parent}.${item.id}`);
+        relations[relId] = {
+          id: relId,
+          profile: "generic@2",
+          type: "contains",
+          endpoints: [
+            { role: "parent", target: entityRef(item.parent) },
+            { role: "child", target: ref },
+          ],
+          attributes: {},
+        };
+      }
+    }
+    for (const edge of relationsSpec) {
+      const relId = relationRef(edge.id);
+      relations[relId] = {
+        id: relId,
+        profile: "generic@2",
+        type: "link",
+        endpoints: [
+          { role: "source", target: entityRef(edge.source) },
+          { role: "target", target: entityRef(edge.target) },
+        ],
+        attributes: edge.label === undefined ? {} : { label: { kind: "text", value: edge.label } },
+      };
+      if (edge.strokeStyle !== undefined || edge.emphasis !== undefined) {
+        relationPresentations[relId] = {
+          ...(edge.strokeStyle === undefined ? {} : { strokeStyle: edge.strokeStyle }),
+          ...(edge.emphasis === undefined ? {} : { emphasis: edge.emphasis }),
+        };
+      }
+    }
+    return {
+      document: {
+        documentId: documentRef(`h2-svelte-${id}`),
+        schemaVersion: CURRENT_SCHEMA_VERSION,
+        revision: 1,
+        profileRefs: ["generic@2"],
+        typeDefinitions: {},
+        entities,
+        relations,
+        ports: {},
+        resources: {},
+        extensions: [],
+      } as unknown as SceneDocument,
+      presentation: {
+        contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+        entities: entityPresentations,
+        legends: {},
+        categoryTokens: [],
+        ...(Object.keys(relationPresentations).length === 0 ? {} : { relations: relationPresentations }),
+      } as unknown as ScenePresentation,
+      hints: lowerLayoutHintsV2(fixture.hints) as unknown as DiagramSceneFigureProps["hints"],
+      measureLines: cardLineMeasurer(sceneCardMeasure(defaultCardMeasure)),
+    };
+  }
+
+  const buildExampleAScene = () =>
+    buildH2HostScene(
+      "schema-13",
+      "schema-13",
+      [
+        { id: "p1", title: "Policy One", kicker: "Stage 1" },
+        { id: "p2", title: "Policy Two", kicker: "Stage 2" },
+        { id: "p3", title: "Policy Three", kicker: "Stage 3" },
+        { id: "j1", title: "Job Alpha", kicker: "Core" },
+        { id: "j2", title: "Job Beta", kicker: "Core" },
+        { id: "j3", title: "Job Gamma", kicker: "Core" },
+        { id: "m1", title: "Metric Store", kicker: "Data" },
+        { id: "m2", title: "Audit Trail", kicker: "Data" },
+        { id: "tools", container: true, title: "Agent Tools", kicker: "Peripheral" },
+        { id: "tool-1", parent: "tools", title: "Command CLI" },
+        { id: "tool-2", parent: "tools", title: "Agent One" },
+        { id: "tool-3", parent: "tools", title: "Agent Two" },
+        { id: "tool-4", parent: "tools", title: "Agent Three" },
+      ],
+      [
+        { id: "e1", source: "tool-1", target: "j1", label: "dispatch" },
+        { id: "e2", source: "j1", target: "j2", label: "route" },
+        { id: "e3", source: "j2", target: "j3", label: "mesh" },
+        { id: "e4", source: "p1", target: "j1", label: "policy", strokeStyle: "dashed" },
+        { id: "e5", source: "p2", target: "j2", label: "policy", strokeStyle: "dashed" },
+        { id: "e6", source: "p3", target: "j3", label: "policy", strokeStyle: "dashed" },
+        { id: "e7", source: "j1", target: "m1", label: "records" },
+        { id: "e8", source: "j2", target: "m2", label: "traces" },
+        { id: "e9", source: "j3", target: "tool-2", label: "accounts", strokeStyle: "solid", emphasis: "emphasis" },
+        { id: "e10", source: "j3", target: "tool-3", label: "accounts", strokeStyle: "solid", emphasis: "emphasis" },
+        { id: "e11", source: "j3", target: "tool-4", label: "accounts", strokeStyle: "solid", emphasis: "emphasis" },
+      ],
+    );
+
+  const buildExampleBScene = () =>
+    buildH2HostScene(
+      "schema-3",
+      "schema-3",
+      [
+        { id: "layer-a", container: true, title: "Upper Layer", kicker: "Control" },
+        { id: "ax", parent: "layer-a", title: "Coordinator" },
+        { id: "ay", parent: "layer-a", title: "Observer" },
+        { id: "layer-b", container: true, title: "Lower Layer", kicker: "Execution" },
+        { id: "b1", parent: "layer-b", title: "Stage One" },
+        { id: "b2", parent: "layer-b", title: "Stage Two" },
+        { id: "b3", parent: "layer-b", title: "Stage Three" },
+        { id: "b4", parent: "layer-b", title: "Stage Four" },
+        { id: "b5", parent: "layer-b", title: "Stage Five" },
+        { id: "c1", parent: "layer-b", title: "Step One" },
+        { id: "c2", parent: "layer-b", title: "Step Two" },
+        { id: "c3", parent: "layer-b", title: "Step Three" },
+        { id: "c4", parent: "layer-b", title: "Step Four" },
+      ],
+      [
+        { id: "r1", source: "ax", target: "b1", label: "governs", strokeStyle: "dashed" },
+        { id: "r2", source: "ax", target: "b2", label: "governs", strokeStyle: "dashed" },
+        { id: "r3", source: "ay", target: "b5", label: "monitors", strokeStyle: "dashed" },
+        { id: "r4", source: "b1", target: "c1", label: "feeds" },
+        { id: "r5", source: "b2", target: "c1", label: "feeds" },
+        { id: "r6", source: "b3", target: "c1", label: "feeds" },
+        { id: "r7", source: "b4", target: "c1", label: "feeds" },
+        { id: "r8", source: "c1", target: "c2", label: "next" },
+        { id: "r9", source: "c2", target: "c3", label: "next" },
+        { id: "r10", source: "c3", target: "c4", label: "next" },
+      ],
+    );
+
+  it("renders Example A free-cell legend in (top, tools), preserves aria-expanded and focus on fold toggle, and renders Example B inherited columns", async () => {
+    reducedMotion = true;
+    for (const [label, builder, toggleId, expectFreeCell] of [
+      ["Example A", buildExampleAScene, "tools", true],
+      ["Example B", buildExampleBScene, "layer-b", false],
+    ] as const) {
+      const refScene = builder();
+      const layouts: LayoutResult[] = [];
+      const rendered = render(DiagramSceneFigure, {
+        props: {
+          document: refScene.document,
+          registry: m3ProfileRegistry as unknown as DiagramSceneFigureProps["registry"],
+          bindings: shippedExecutorBindings as unknown as DiagramSceneFigureProps["bindings"],
+          presentation: refScene.presentation,
+          hints: refScene.hints,
+          measureLines: refScene.measureLines,
+          title: label,
+          onLayout: (layout: LayoutResult) => layouts.push(layout),
+        },
+      });
+      await tick();
+
+      const unfoldedLayout = layouts[layouts.length - 1]!;
+      expect(unfoldedLayout.status, label).toBe("laid-out");
+      if (expectFreeCell && unfoldedLayout.status === "laid-out") {
+        const legendEl = rendered.container.querySelector<HTMLElement>("[data-scene-legend]");
+        expect(legendEl, `${label}:legend`).not.toBeNull();
+        expect(legendEl!.dataset["legendAnchor"]).toBe("free-cell");
+        expect(Math.abs(parseFloat(legendEl!.style.left) - unfoldedLayout.linkLegend!.rect.x)).toBeLessThanOrEqual(1 / 64);
+        expect(Math.abs(parseFloat(legendEl!.style.top) - unfoldedLayout.linkLegend!.rect.y)).toBeLessThanOrEqual(1 / 64);
+        expect(Math.abs(parseFloat(legendEl!.style.width) - unfoldedLayout.linkLegend!.rect.width)).toBeLessThanOrEqual(1 / 64);
+        expect(Math.abs(parseFloat(legendEl!.style.height) - unfoldedLayout.linkLegend!.rect.height)).toBeLessThanOrEqual(1 / 64);
+      }
+
+      const toggleBtn = rendered.container.querySelector<HTMLButtonElement>(
+        `[data-scene-occurrence="${occurrence(toggleId)}"] button[aria-expanded]`,
+      );
+      expect(toggleBtn, `${label}:toggle`).not.toBeNull();
+      expect(toggleBtn!.getAttribute("aria-expanded")).toBe("true");
+      toggleBtn!.focus();
+      expect(document.activeElement).toBe(toggleBtn);
+
+      await fireEvent.click(toggleBtn!);
+      await tick();
+
+      const afterBtn = rendered.container.querySelector<HTMLButtonElement>(
+        `[data-scene-occurrence="${occurrence(toggleId)}"] button[aria-expanded]`,
+      );
+      expect(afterBtn, `${label}:afterToggle`).not.toBeNull();
+      expect(afterBtn!.getAttribute("aria-expanded")).toBe("false");
+      expect(document.activeElement).toBe(afterBtn);
+
+      rendered.unmount();
+    }
   });
 });
 

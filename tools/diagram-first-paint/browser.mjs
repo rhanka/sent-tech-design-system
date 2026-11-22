@@ -8,7 +8,7 @@ const { mkdir, writeFile, mkdtemp, rm } = await import('node:fs/promises');
 const { tmpdir } = await import('node:os');
 const { join } = await import('node:path');
 const { buildHarness, root } = await import('./build.mjs');
-const { cases, expectedLegendStyles } = await import('./scenes.js');
+const { cases, expectedLegendAnchor, expectedLegendStyles } = await import('./scenes.js');
 const { segmentInterval, exposedSegments, centredBodyFindings, compactCardFindings, connectorFindings, roundedElbowFindings, linkStrokeWidthFindings, legendFindings } = await import('./geometry.mjs');
 const { preview } = await import('vite');
 const { default: puppeteer } = await import('puppeteer-core');
@@ -334,8 +334,29 @@ function check(state, scene) {
       assert.ok(size + epsilon >= 8, `r7 edge label renders at ${size} CSS px (< 8)`);
     }
     const expectedStyles = expectedLegendStyles(scene);
-    assert.deepEqual(legendFindings({ legend: state.legend, nodes: state.nodes, expectedAnchor: 'right',
+    assert.deepEqual(legendFindings({ legend: state.legend, nodes: state.nodes, expectedAnchor: expectedLegendAnchor(scene) ?? 'right',
       ...(expectedStyles === null ? {} : { expectedStyles }) }), [], 'r7 link legend order and anchor');
+  }
+  if (scene.startsWith('h2-')) {
+    const expectedStyles = expectedLegendStyles(scene);
+    const expectedAnchor = expectedLegendAnchor(scene);
+    if (expectedStyles !== null && expectedAnchor !== null) {
+      assert.deepEqual(roundedElbowFindings({ paths: state.paths, maxRadius: 12 }), [], 'h2 rounded elbow radius cap');
+      assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths }), [], 'h2 link stroke widths');
+      assert.deepEqual(legendFindings({ legend: state.legend, nodes: state.nodes, expectedAnchor, expectedStyles }),
+        [], 'h2 link legend order and anchor');
+    }
+    if (scene === 'h2-aspect-16-9') {
+      // Measure actual painted drawing bounds rather than `.st-diagramSceneFigure-extent`,
+      // which carries `min-width: 100%; min-height: 100%` and includes centering margin.
+      const left = Math.min(...drawing.map(p => p.left));
+      const right = Math.max(...drawing.map(p => p.right));
+      const top = Math.min(...drawing.map(p => p.top));
+      const bottom = Math.max(...drawing.map(p => p.bottom));
+      const ratio = (right - left) / (bottom - top);
+      assert.ok(Math.abs(ratio / (16 / 9) - 1) <= 0.02,
+        `h2-aspect-16-9 nominal ratio ${ratio.toFixed(4)} outside 16:9 ± 2%`);
+    }
   }
   // Label placement reserves the non-scaling stroke in world units at 0.45.
   // Below that scale the actual stroke uses more of the projected clearance.

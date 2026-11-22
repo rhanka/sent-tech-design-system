@@ -69,6 +69,8 @@ export interface CheckedRoute {
   /** True when the route also carries a start-end arrowhead (e.g. bidirectional numbered flow bundle). */
   readonly startArrowhead?: boolean;
   readonly passable?: ReadonlySet<string>;
+  /** Shared comb group id: segments, elbows, and docks shared by members of one comb are exempt among themselves (§4.6 step 7). */
+  readonly combGroupId?: string;
 }
 
 export interface SpacingBarrier {
@@ -272,6 +274,8 @@ export function checkRouteSpacing(input: CheckRouteSpacingInput): RouteSpacingRe
 
     for (let j = i + 1; j < parsed.length; j += 1) {
       const right = parsed[j]!;
+      const sameComb =
+        left.route.combGroupId !== undefined && left.route.combGroupId === right.route.combGroupId;
       const rightLast = Math.max(0, right.route.points.length - 2);
       let reportedOverlap = false;
       let minParallelGap = Number.POSITIVE_INFINITY;
@@ -281,6 +285,8 @@ export function checkRouteSpacing(input: CheckRouteSpacingInput): RouteSpacingRe
           const overlap = Math.min(segA.hi, segB.hi) - Math.max(segA.lo, segB.lo);
           if (overlap <= EPS) continue;
           const sep = Math.abs(segA.coord - segB.coord);
+          // Segments shared by members of the same comb (trunk / hub segment) are exempt among themselves (§4.6 step 7).
+          if (sameComb && sep <= EPS) continue;
           // A shared port can have a short escape stub. Long overlaps and
           // coincident straight routes remain conflicts.
           if (
@@ -318,6 +324,8 @@ export function checkRouteSpacing(input: CheckRouteSpacingInput): RouteSpacingRe
       for (const e1 of left.elbows) {
         for (const e2 of right.elbows) {
           const dist = Math.hypot(e1.x - e2.x, e1.y - e2.y);
+          // Shared trunk/hub join elbows of the same comb are exempt among themselves (§4.6 step 7).
+          if (sameComb && dist <= EPS) continue;
           if (dist < minElbowDist) minElbowDist = dist;
         }
       }
@@ -340,6 +348,7 @@ export function checkRouteSpacing(input: CheckRouteSpacingInput): RouteSpacingRe
     readonly point: Vec2;
     readonly port: string | undefined;
     readonly isArrowhead: boolean;
+    readonly combGroupId: string | undefined;
   }
   const docksByEntity = new Map<string, DockPoint[]>();
   const arrowheads: DockPoint[] = [];
@@ -360,6 +369,7 @@ export function checkRouteSpacing(input: CheckRouteSpacingInput): RouteSpacingRe
       point: start,
       port: route.sourcePort,
       isArrowhead: hasStartArrow,
+      combGroupId: route.combGroupId,
     };
     const endEntry: DockPoint = {
       routeId: route.id,
@@ -367,6 +377,7 @@ export function checkRouteSpacing(input: CheckRouteSpacingInput): RouteSpacingRe
       point: end,
       port: route.targetPort,
       isArrowhead: hasEndArrow,
+      combGroupId: route.combGroupId,
     };
     pushDock(startEntry);
     pushDock(endEntry);
@@ -379,6 +390,8 @@ export function checkRouteSpacing(input: CheckRouteSpacingInput): RouteSpacingRe
       for (let j = i + 1; j < docks.length; j += 1) {
         const b = docks[j]!;
         if (a.port !== undefined && a.port === b.port && samePoint(a.point, b.point)) continue;
+        // Shared hub dock of members in the same comb is exempt among themselves (§4.6 step 7).
+        if (a.combGroupId !== undefined && a.combGroupId === b.combGroupId && samePoint(a.point, b.point)) continue;
         // Pairs of arrowhead tips on the same entity are counted once below as `arrowhead-spacing`.
         if (a.isArrowhead && b.isArrowhead) continue;
         const dist = Math.hypot(a.point.x - b.point.x, a.point.y - b.point.y);
@@ -517,6 +530,7 @@ export function checkRouteSpacing(input: CheckRouteSpacingInput): RouteSpacingRe
       }
       return merged;
     };
+    const combTrackIntervals = new Map<string, [number, number][]>();
     for (const strip of channel.strips) {
       const spans = boundedSpansOf(strip);
       for (const { route, segments } of parsed) {
@@ -531,10 +545,32 @@ export function checkRouteSpacing(input: CheckRouteSpacingInput): RouteSpacingRe
             const hi = Math.min(seg.hi, spanHi);
             if (hi - lo <= EPS) continue;
             longitudinalRoutes.add(route.id);
-            events.push({ pos: lo, delta: 1, routeId: route.id });
-            events.push({ pos: hi, delta: -1, routeId: route.id });
+            if (route.combGroupId !== undefined) {
+              // Merge overlapping longitudinal segments of one comb on one track line so its shared trunk counts as 1 track (§4.6 step 4).
+              const trackKey = `${route.combGroupId}|${String(Math.round(seg.coord * 100) / 100)}`;
+              const list = combTrackIntervals.get(trackKey) ?? [];
+              list.push([lo, hi]);
+              combTrackIntervals.set(trackKey, list);
+            } else {
+              events.push({ pos: lo, delta: 1, routeId: route.id });
+              events.push({ pos: hi, delta: -1, routeId: route.id });
+            }
           }
         }
+      }
+    }
+    for (const [trackKey, rawIntervals] of combTrackIntervals) {
+      rawIntervals.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+      const merged: [number, number][] = [rawIntervals[0]!];
+      for (let k = 1; k < rawIntervals.length; k += 1) {
+        const prev = merged[merged.length - 1]!;
+        const curr = rawIntervals[k]!;
+        if (curr[0] <= prev[1] + EPS) prev[1] = Math.max(prev[1], curr[1]);
+        else merged.push([curr[0], curr[1]]);
+      }
+      for (const [lo, hi] of merged) {
+        events.push({ pos: lo, delta: 1, routeId: trackKey });
+        events.push({ pos: hi, delta: -1, routeId: trackKey });
       }
     }
     events.sort((a, b) => a.pos - b.pos || a.delta - b.delta);

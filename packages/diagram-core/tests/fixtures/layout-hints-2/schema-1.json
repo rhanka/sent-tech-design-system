@@ -1,0 +1,124 @@
+{
+  "carries": [
+    "T-01",
+    "T-02",
+    "T-03",
+    "T-04",
+    "T-06"
+  ],
+  "hints": {
+    "vocabulary": "ds-layout-hints@2",
+    "mode": "stage-columns",
+    "grids": {
+      "root": {
+        "stage_columns": [
+          "left",
+          "right"
+        ],
+        "transverse_bands": [
+          {
+            "id": "panels",
+            "items": [
+              "entity:before",
+              "entity:after"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:before": {
+            "column": "left"
+          },
+          "entity:after": {
+            "column": "right"
+          }
+        }
+      },
+      "entity:before": {
+        "stage_columns": [
+          "c1",
+          "c2"
+        ],
+        "transverse_bands": [
+          {
+            "id": "r1",
+            "items": [
+              "entity:before-a"
+            ]
+          },
+          {
+            "id": "r2",
+            "items": [
+              "entity:before-b",
+              "entity:before-c"
+            ]
+          },
+          {
+            "id": "r3",
+            "items": [
+              "entity:before-d"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:before-a": {
+            "column": "c1"
+          },
+          "entity:before-b": {
+            "column": "c1"
+          },
+          "entity:before-c": {
+            "column": "c2"
+          },
+          "entity:before-d": {
+            "column": "c1"
+          }
+        }
+      },
+      "entity:after": {
+        "stage_columns": [
+          "c1",
+          "c2"
+        ],
+        "transverse_bands": [
+          {
+            "id": "r1",
+            "items": [
+              "entity:after-a",
+              "entity:after-b"
+            ]
+          },
+          {
+            "id": "r2",
+            "items": [
+              "entity:after-c"
+            ]
+          },
+          {
+            "id": "r3",
+            "items": [
+              "entity:after-d",
+              "entity:after-e"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:after-a": {
+            "column": "c1"
+          },
+          "entity:after-b": {
+            "column": "c2"
+          },
+          "entity:after-c": {
+            "column": "c2"
+          },
+          "entity:after-d": {
+            "column": "c1"
+          },
+          "entity:after-e": {
+            "column": "c2"
+          }
+        }
+      }
+    }
+  }
+}
