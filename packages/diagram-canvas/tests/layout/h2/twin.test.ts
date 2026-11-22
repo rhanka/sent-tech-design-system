@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import {
   canonicalise,
   CURRENT_SCHEMA_VERSION,
@@ -26,6 +27,7 @@ import { layoutScene } from "../../../src/presentation/diagramSceneModel.js";
 import { measure } from "../fixtures.js";
 import { hCondInput } from "../dc2a/h-cond.js";
 import { pinnedMeasurer } from "../dc2a/scenes.js";
+import { buildAppctxArchitecture16x9, enumerateVisibleFoldStates } from "./fixtures/referenceSet.js";
 
 function buildGroupedDoc(): {
   document: SemanticDocument;
@@ -162,4 +164,50 @@ describe("H2.2 @2 auto-pack twin byte-identity (REQ-R7-28)", () => {
       });
     }
   }
+
+  it("preserves DE-2 byte-identity on all 52 hints-free and @1/@2 auto-pack r7 fold states of appctx-architecture (REQ-R7-28)", () => {
+    const scene = buildAppctxArchitecture16x9();
+    const states = enumerateVisibleFoldStates(scene.document, scene.containers, scene.sourceView);
+    expect(states).toHaveLength(52);
+    const v1AutoPack = lowerLayoutHints({ vocabulary: DS_LAYOUT_VOCABULARY, mode: "auto-pack" });
+    const v2AutoPack = lowerLayoutHintsV2({ vocabulary: DS_LAYOUT_V2_VOCABULARY, mode: "auto-pack" });
+    const cache = createLayoutCache({ maxEntries: 128 });
+    const sha256 = (text: string): string => createHash("sha256").update(text).digest("hex");
+    const chunks: string[] = [];
+
+    for (const collapsed of states) {
+      const key = collapsed.join(",");
+      const baseOpts = {
+        registry: scene.registry,
+        bindings: scene.bindings,
+        presentation: scene.presentation,
+        measureLines: scene.measureLines,
+        measureText: () => ({ width: 80, height: 20 }),
+        targetWidth: 1440,
+        collapsed,
+      };
+      const hintsFree = cache.layout(scene.document, baseOpts, scene.sourceView);
+      expect(hintsFree.status, `hints-free[${key}]`).toBe("laid-out");
+      if (hintsFree.status !== "laid-out") continue;
+      expect(hintsFree.composition, `hints-free[${key}]`).toBeUndefined();
+      expect(hintsFree.routeSpacing, `hints-free[${key}]`).toBeDefined();
+
+      // @1 auto-pack and @2 auto-pack share the exact cache key with hints-free on the r7 path.
+      const hitsBefore = cache.stats().hits;
+      const r1 = cache.layout(scene.document, { ...baseOpts, hints: v1AutoPack }, scene.sourceView);
+      const r2 = cache.layout(scene.document, { ...baseOpts, hints: v2AutoPack }, scene.sourceView);
+      expect(r1.status).toBe("laid-out");
+      expect(r2.status).toBe("laid-out");
+      expect(cache.stats().hits).toBe(hitsBefore + 2);
+      if (r1.status === "laid-out" && r2.status === "laid-out") {
+        const canonical = canonicalise(hintsFree.view, "view");
+        expect(canonicalise(r1.view, "view")).toBe(canonical);
+        expect(canonicalise(r2.view, "view")).toBe(canonical);
+        chunks.push(`${key}:${sha256(canonical)}`);
+      }
+    }
+
+    // Pinned against shipped origin/main DE-2 (bdbddd859) across all 52 r7 fold states.
+    expect(sha256(chunks.join("\n"))).toBe("1e60c2ba4b00106f550139303d8606cba403b1547be988fd91d89e8a0c7c330c");
+  }, 60_000);
 });

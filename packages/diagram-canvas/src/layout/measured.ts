@@ -3693,21 +3693,28 @@ function layoutMeasuredPass(
           }
           const wideXs = new Set<number>([...xs, ...outerLanesX]);
           const wideYs = new Set<number>(ys);
-          for (const x of [request.start.x, request.end.x, ...outerLanesX, ...sortedXs]) {
+          const xSeeds = composition !== undefined
+            ? [request.start.x, request.end.x, ...outerLanesX, ...sortedXs]
+            : [request.start.x, request.end.x, ...outerLanesX];
+          for (const x of xSeeds) {
             wideXs.add(x - routeSpacing);
             wideXs.add(x + routeSpacing);
           }
-          for (let idx = 0; idx + 1 < sortedXs.length; idx += 1) {
-            wideXs.add((sortedXs[idx]! + sortedXs[idx + 1]!) / 2);
+          if (composition !== undefined) {
+            for (let idx = 0; idx + 1 < sortedXs.length; idx += 1) {
+              wideXs.add((sortedXs[idx]! + sortedXs[idx + 1]!) / 2);
+            }
           }
           for (const y of [request.start.y, request.end.y, ...outerLanes]) {
             wideYs.add(y - routeSpacing);
             wideYs.add(y + routeSpacing);
           }
-          const takenDy = Math.max(edgeClearance, entry.size.height / 2 + metrics.labelMargin);
-          for (const box of taken) {
-            wideYs.add(box.y - takenDy);
-            wideYs.add(box.y + box.height + takenDy);
+          if (composition !== undefined) {
+            const takenDy = Math.max(edgeClearance, entry.size.height / 2 + metrics.labelMargin);
+            for (const box of taken) {
+              wideYs.add(box.y - takenDy);
+              wideYs.add(box.y + box.height + takenDy);
+            }
           }
           sortedWideXs = [...wideXs].sort((a, b) => a - b);
           sortedWideYs = [...wideYs].sort((a, b) => a - b);
@@ -3766,7 +3773,7 @@ function layoutMeasuredPass(
           };
           const adjustDockAway = (dock: Dock, role: "source" | "target"): Dock => {
             const rect = rects.get(dock.entity);
-            if (rect === undefined || !(routeSpacing > 0)) return dock;
+            if (rect === undefined || dock.port !== undefined || !(routeSpacing > 0)) return dock;
             const vertical = dock.side === "east" || dock.side === "west";
             const startCoord = (vertical ? rect.y : rect.x) + dockCornerInset;
             const endCoord = (vertical ? rect.y + rect.height : rect.x + rect.width) - dockCornerInset;
@@ -3803,7 +3810,7 @@ function layoutMeasuredPass(
             overrides.set(entry.id, { source, target, turn: source === target });
             let pair = dockEdges({ graph: filteredGraph, rects, direction: "top-to-bottom", metrics,
               labelSizes: new Map(), fixed: true, cornerInset: dockCornerInset, sideOverrides: overrides }).docks.get(entry.id)!;
-            if (!docksClear(pair) && routeSpacing > 0) {
+            if (composition !== undefined && !docksClear(pair) && routeSpacing > 0) {
               pair = {
                 source: adjustDockAway(pair.source, "source"),
                 target: adjustDockAway(pair.target, "target"),
@@ -3816,7 +3823,7 @@ function layoutMeasuredPass(
               xs: sortedXs, ys: sortedYs,
               accepts: (points) => placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined,
             });
-            if (route === undefined && routeSpacing > 0) {
+            if (route === undefined && composition !== undefined && routeSpacing > 0) {
               const wide = ensureWideGrid();
               route = labelDetour({ request: alternative, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
                 xs: wide.xs, ys: wide.ys,
