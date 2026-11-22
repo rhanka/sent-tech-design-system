@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Header",
-  "sourceRevision": "fcba18229a8c921a74d5e1e21475d901695b206b",
+  "sourceRevision": "e7608df030eaab5c19a177b8c8d355321bea733d",
   "source": "src/Header.ts",
   "fixtures": [
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "PointAndFigureChart",
-  "sourceRevision": "dfcac0bcafa8bc0c6470a52266ad609f0ac5106b",
+  "sourceRevision": "ed94c869ff0734078f268795a89a15e68f3dccaf",
   "source": "src/PointAndFigureChart.ts",
   "fixtures": [
     {

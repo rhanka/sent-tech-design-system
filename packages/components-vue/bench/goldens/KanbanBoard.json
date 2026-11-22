@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "KanbanBoard",
-  "sourceRevision": "e40a14c633fe9f32d20b80c1eb6e06b50b502f61",
+  "sourceRevision": "c965e87f863e31efe161ef4bec82aea30c659c9b",
   "source": "src/KanbanBoard.ts",
   "fixtures": [
     {

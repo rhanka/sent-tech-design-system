@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "cellDecoration",
-  "sourceRevision": "9b57d6b7f892a0ff819c97546c9eb000b5a3b520",
+  "sourceRevision": "998de57136187b25a466097ca5b0b4e7c7d3ad92",
   "source": "src/cellDecoration.ts",
   "fixtures": [
     {

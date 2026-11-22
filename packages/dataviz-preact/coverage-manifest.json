@@ -6,7 +6,7 @@
   "reactEmission": ".react-emit/src",
   "totalReactFiles": 128,
   "reference": {
-    "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
+    "commit": "4144f9831a554026fbe21034fe49bee34a9ee456",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
   "ownershipNote": "Lot P6 complete (127/127 modules + index.ts = 128/128 files of dataviz-react ported, 0 remaining): scaffold + groups 1-3 (70 files) + group 4 batches 1-12 (57 files).",

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "OverflowMenu",
-  "sourceRevision": "a0a6379c12d7f1591404e8a68e5c0fb93581d90e",
+  "sourceRevision": "df620337869a66feb6925a56be9cf18beb9482ab",
   "source": "src/OverflowMenu.vue",
   "sourceSha256": "8a4bdc8017fd86406603e8215db48f2fb367eaf3abbb0895b2db2f0eb394fb71",
   "publicExports": [

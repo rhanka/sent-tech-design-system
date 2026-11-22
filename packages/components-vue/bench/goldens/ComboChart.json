@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ComboChart",
-  "sourceRevision": "bdbe42a8912633d5f0077a45ef46be25f8f03f77",
+  "sourceRevision": "abb24c59c3ee973693335d26709b5f022f817e18",
   "source": "src/ComboChart.ts",
   "fixtures": [
     {

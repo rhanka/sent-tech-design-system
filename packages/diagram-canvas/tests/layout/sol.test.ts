@@ -54,8 +54,8 @@ describe("sol finding 1 — repeated widening of a segment that stays fixed", ()
     links: [["r0", "n3", "n1"], ["r2", "n2", "n3", L(24)], ["r4", "n0", "n2", L(7)], ["r5", "n0", "n2", L(15)]],
   });
 
-  it("places every label in the lexicographic width (429c92a2)", () => {
-    // `429c92a2` routes lexicographically (bends, weighted length) instead of
+  it("places every label in the lexicographic width (cb553626)", () => {
+    // `cb553626` routes lexicographically (bends, weighted length) instead of
     // the `BEND = 10^7` scalar: the same labels now fit in 464 px, not 745.
     const { fit, warnings } = lay(document, 8000);
     expect(warnings).toEqual([]);

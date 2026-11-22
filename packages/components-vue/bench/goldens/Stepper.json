@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Stepper",
-  "sourceRevision": "4963c16432a4f9f458d4d51e58143a184bba94e4",
+  "sourceRevision": "adca66165b5abbb1dbb0c905068d6e5d4ce62079",
   "source": "src/Stepper.ts",
   "fixtures": [
     {

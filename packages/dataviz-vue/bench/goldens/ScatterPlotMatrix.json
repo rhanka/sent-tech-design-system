@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ScatterPlotMatrix",
-  "sourceRevision": "a3dfbad1bbde834ce448f4cbeed0a3a196dce17a",
+  "sourceRevision": "a121d1eaaed9373c9228fd26fdd2bf813486cda1",
   "source": "src/lib/ScatterPlotMatrix.ts",
   "fixtures": [
     {

@@ -1,5 +1,5 @@
 /**
- * Third-spec-amendment regressions (`429c92a2`, §10.5, AC-L8).
+ * Third-spec-amendment regressions (`cb553626`, §10.5, AC-L8).
  *
  * Each sol pass-3 scenario and each new AC-L8 fixture becomes a test that
  * fails on `90fedc2e` and passes after the fix. Every view is validated by
@@ -21,7 +21,7 @@ import {
   sharesSegment,
 } from "./fixtures.js";
 
-describe("429c92a2 port ids — sol pass-3 finding 1 (blocking collision)", () => {
+describe("cb553626 port ids — sol pass-3 finding 1 (blocking collision)", () => {
   // Nodes `a,b,c`, port `p` on `a`, port `p.r1.source` on `c`;
   // `r1:p→b`, `r2:p→b`, `r3:p.r1.source→b`. Before the injective encoding the
   // parallel end of `r1` and the shared occurrence of the second port both
@@ -66,7 +66,7 @@ describe("429c92a2 port ids — sol pass-3 finding 1 (blocking collision)", () =
   });
 });
 
-describe("429c92a2 lexicographic cost — a route beyond the old BEND threshold (sol pass-4 finding 3)", () => {
+describe("cb553626 lexicographic cost — a route beyond the old BEND threshold (sol pass-4 finding 3)", () => {
   // The previous version of this test passed with the old `BEND = 10^7`
   // scalar engine: `r1` detoured at `y=-8`, so `r2`'s corridor at `y=16`
   // carried no occupancy penalty and both routers agreed. Here `r1`'s ends
@@ -142,7 +142,7 @@ describe("429c92a2 lexicographic cost — a route beyond the old BEND threshold 
   });
 });
 
-describe("5da2d33a expected-fallback fixture — a,b:A→B c:A→D d:C→B at W=320 (sol pass-4 finding 5)", () => {
+describe("cbca2c6f expected-fallback fixture — a,b:A→B c:A→D d:C→B at W=320 (sol pass-4 finding 5)", () => {
   it("routes a cleanly and reports the sole route-obstructed fallback for b", () => {
     const document = buildDocument({
       nodes: ["A", "B", "C", "D"],
@@ -164,7 +164,7 @@ describe("5da2d33a expected-fallback fixture — a,b:A→B c:A→D d:C→B at W=
   });
 });
 
-describe("5da2d33a clean parallel pair — a,b:A→B c:A→C at W=320 (sol pass-4 finding 5)", () => {
+describe("cbca2c6f clean parallel pair — a,b:A→B c:A→C at W=320 (sol pass-4 finding 5)", () => {
   it("reports no warning and routes a and b exactly", () => {
     const document = buildDocument({
       nodes: ["A", "B", "C"],
@@ -280,7 +280,7 @@ describe("sol pass-4 finding 4 — strict tie-break, no tolerance", () => {
   });
 });
 
-describe("429c92a2 camera — loops at W=100", () => {
+describe("cb553626 camera — loops at W=100", () => {
   it("a lone self-loop starts the camera at (0,-8)", () => {
     const { view, warnings } = lay(buildDocument({ nodes: ["n0"], links: [["r0", "n0", "n0"]] }), 100);
     expect(warnings).toEqual([]);

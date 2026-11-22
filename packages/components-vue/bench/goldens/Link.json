@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Link",
-  "sourceRevision": "e3a62c86631e2f85437aa7afeeb905a8107b04a5",
+  "sourceRevision": "d85b83a31cc208c147969c8a1260dad6fa074224",
   "source": "src/Link.ts",
   "fixtures": [
     {

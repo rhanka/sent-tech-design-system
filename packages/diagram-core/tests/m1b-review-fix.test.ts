@@ -1073,7 +1073,7 @@ describe("fix 10: complete governed draft G0 record", () => {
     // The catalog now carries the qualified adapter; admission evidence stays unresolved.
     const compatibility = mod["DIAGRAM_PRESENTATION_COMPATIBILITY"] as Record<string, string>;
     expect(compatibility["adapter"]).toBe(
-      "ds:rhanka/sent-tech-design-system/packages/diagram-core/src/presentation-validate.ts@e3bc10cc9e59d48bb807afc41173ba83f6698940#sha256=488d8499b8f4e624af56d0c4f4c07496cc09863ec1e65e9f522c6fc05a4db06e",
+      "ds:rhanka/sent-tech-design-system/packages/diagram-core/src/presentation-validate.ts@ab7d1a7fd0142217672b5be6d40465b3e5309e50#sha256=488d8499b8f4e624af56d0c4f4c07496cc09863ec1e65e9f522c6fc05a4db06e",
     );
     // Contract bytes unchanged.
     expect((mod["DIAGRAM_PRESENTATION_CONTRACT_PIN"] as { contentDigest: string }).contentDigest).toBe(

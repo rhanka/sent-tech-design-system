@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "MessageStatusBadge",
-  "sourceRevision": "6c8d9329a6ce51840bfac5f9acb834412ed2f6da",
+  "sourceRevision": "68c8d61ebfcdc4a41cd42f34bc855cdecf0b1a06",
   "source": "src/MessageStatusBadge.ts",
   "fixtures": [
     {

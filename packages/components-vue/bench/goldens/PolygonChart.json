@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "PolygonChart",
-  "sourceRevision": "9deedd9ff4eada3c9664e2a8cc05cbb41e93f105",
+  "sourceRevision": "139c1564aaba2138a20522d6d8c835441a45cdab",
   "source": "src/PolygonChart.ts",
   "fixtures": [
     {

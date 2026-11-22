@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "TreemapChart",
-  "sourceRevision": "75018d8d4ebb21065c48c8dbcaf216e2570a79dc",
+  "sourceRevision": "a2241e2be99f1309a98b325e7931d4e7b6bbeee3",
   "source": "src/lib/TreemapChart.ts",
   "fixtures": [
     {

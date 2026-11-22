@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "FilterBar",
-  "sourceRevision": "da5ff6ca183950a8177819520fd6f7970bda7e2e",
+  "sourceRevision": "9daa872fdfa5f32e26c176748b52a9bf9958bf52",
   "source": "src/FilterBar.ts",
   "fixtures": [
     {

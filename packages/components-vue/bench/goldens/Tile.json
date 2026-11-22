@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Tile",
-  "sourceRevision": "6ea68b75df3d3630a7ae8e1d611043cedfabd8e8",
+  "sourceRevision": "c2a9944207eb706f17d2134e73cf08cd4833c165",
   "source": "src/Tile.ts",
   "fixtures": [
     {

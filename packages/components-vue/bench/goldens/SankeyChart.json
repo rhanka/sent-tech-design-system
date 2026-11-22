@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "SankeyChart",
-  "sourceRevision": "4076c606bfe56b5cc88d970b28579bb1d0ec5d22",
+  "sourceRevision": "7beb35897528968cd6eb23c391cdf991f4a0d157",
   "source": "src/SankeyChart.ts",
   "fixtures": [
     {

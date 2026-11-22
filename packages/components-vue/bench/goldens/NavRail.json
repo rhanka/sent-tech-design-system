@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "NavRail",
-  "sourceRevision": "e71b431a02ed4470086161aa6e2a8689aad64f8a",
+  "sourceRevision": "4ea47aa735e48c95fb3b7cc7e53b602c6de24dea",
   "source": "src/NavRail.ts",
   "fixtures": [
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "PalettePicker",
-  "sourceRevision": "69f95bc708772e5191c887d815fb95cb79b441e3",
+  "sourceRevision": "61590ebca78fcdc658c20849144241f641097389",
   "source": "src/lib/PalettePicker.ts",
   "fixtures": [
     {

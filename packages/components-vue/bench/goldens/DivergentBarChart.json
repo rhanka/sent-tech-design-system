@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "DivergentBarChart",
-  "sourceRevision": "f6d45be16adf5b4d1fd4e4886da39fb5675868bc",
+  "sourceRevision": "6226ea04283ba26ff44ace78f088f8b572ce2c91",
   "source": "src/DivergentBarChart.ts",
   "fixtures": [
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "TraceWaterfallChart",
-  "sourceRevision": "f61646077822cf3af7e51d8f583f2da30b5d1e1d",
+  "sourceRevision": "c6c94ba32b86e81ee09d896e37fd3010aa9f8488",
   "source": "src/TraceWaterfallChart.ts",
   "fixtures": [
     {

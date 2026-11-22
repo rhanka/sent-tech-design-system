@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "LollipopChart",
-  "sourceRevision": "c7163210e71c3078cf51424b31dc54bf82a1898d",
+  "sourceRevision": "33588b6be5a319617a29ae2368fe5ffc3e7e031d",
   "source": "src/lib/LollipopChart.ts",
   "fixtures": [
     {

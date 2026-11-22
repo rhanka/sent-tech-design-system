@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "DrillChart",
-  "sourceRevision": "dafb062346b47779aad3292456d31a3ea107a27e",
+  "sourceRevision": "4375b539cbcbbf538dbbbe56561fa476eba38288",
   "source": "src/lib/DrillChart.ts",
   "fixtures": [
     {

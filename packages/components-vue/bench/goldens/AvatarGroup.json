@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "AvatarGroup",
-  "sourceRevision": "8c1566ed425b6e15a6b9577a4091a301798c563d",
+  "sourceRevision": "8c6b30febb98841a40592a3f30471388d2318693",
   "source": "src/AvatarGroup.ts",
   "fixtures": [
     {

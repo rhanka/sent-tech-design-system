@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "StepLineChart",
-  "sourceRevision": "62c353c3eb2f0b83b122578b50217fcc8dca316e",
+  "sourceRevision": "0e140b8aafe1d19f4d1345adba37dd5e4078737d",
   "source": "src/StepLineChart.ts",
   "fixtures": [
     {

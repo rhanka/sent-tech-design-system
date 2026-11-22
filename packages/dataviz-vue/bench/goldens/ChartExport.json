@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ChartExport",
-  "sourceRevision": "43332117d2683251f4cfc9c565b6fb09ed65c2ca",
+  "sourceRevision": "24ffebdfbb533532d4b34164302a7d97299c6c21",
   "source": "src/lib/ChartExport.ts",
   "fixtures": [
     {

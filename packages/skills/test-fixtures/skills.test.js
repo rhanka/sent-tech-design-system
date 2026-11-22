@@ -1022,7 +1022,7 @@ test("rule csp-no-style-attr: sa source est citée depuis main (README), pas dep
   assert.match(rule.wp7Finding, /packages\/skills\/README\.md/);
   const readme = readFileSync(resolve(import.meta.dirname, "../README.md"), "utf8").replace(/\s*\n>\s*/g, " ");
   assert.match(readme, /ne reçoit pas ses jetons par propriété CSS personnalisée passée en attribut/);
-  assert.match(readme, /a0f789e3/);
+  assert.match(readme, /commit `[0-9a-f]{8}`/);
   assert.doesNotMatch(readme, /A0 §10\.1/);
 });
 

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "LineChart",
-  "sourceRevision": "5d5858ad03b8ff993d042f33ea00595d4c7f83d0",
+  "sourceRevision": "435ea11572585bb39804176d65b7643380484019",
   "source": "src/LineChart.ts",
   "fixtures": [
     {

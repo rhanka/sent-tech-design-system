@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "TreegraphChart",
-  "sourceRevision": "ab3ab49dbc085a0e0c49b131e53a45c9fcce4dee",
+  "sourceRevision": "ad715b0e47bff99db500a50fc29822de6fcce0fa",
   "source": "src/TreegraphChart.ts",
   "fixtures": [
     {

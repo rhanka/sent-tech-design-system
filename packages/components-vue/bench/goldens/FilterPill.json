@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "FilterPill",
-  "sourceRevision": "8e86801b00fdc681b25a965010cbf97efd1798dc",
+  "sourceRevision": "4132b63472e09d36945dc66ad805c35331d1ee07",
   "source": "src/FilterPill.ts",
   "fixtures": [
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "PanelStack",
-  "sourceRevision": "4384e9075ea14e309fb04375c7f23b92819840f7",
+  "sourceRevision": "d886e03f4a5309d6df3146e35c46b3d7ca164e46",
   "source": "src/PanelStack.ts",
   "fixtures": [
     {

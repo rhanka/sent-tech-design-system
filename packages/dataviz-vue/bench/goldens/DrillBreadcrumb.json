@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "DrillBreadcrumb",
-  "sourceRevision": "4aba21c009ef5e7a52720faa05f1e9fca2d3bdfc",
+  "sourceRevision": "3df86818d57cee4dcff0cf129f78cd7af52c8334",
   "source": "src/lib/DrillBreadcrumb.ts",
   "fixtures": [
     {

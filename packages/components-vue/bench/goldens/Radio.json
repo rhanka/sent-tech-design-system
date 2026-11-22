@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Radio",
-  "sourceRevision": "0a3458c7eab2a7c01962b3c161d0adfb7351e335",
+  "sourceRevision": "3e1143f64c3c11567e997fe495d4abd5bf4dcd0f",
   "source": "src/Radio.ts",
   "fixtures": [
     {

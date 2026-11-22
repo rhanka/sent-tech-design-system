@@ -137,11 +137,11 @@ describe("output", () => {
     }
   });
 
-  it("docks a link that targets a semantic port through an injective per-end occurrence (429c92a2)", () => {
+  it("docks a link that targets a semantic port through an injective per-end occurrence (cb553626)", () => {
     // The scene suites' own fixture: r1 joins port pa (on a) to port pb (on b).
     // `0b785150`: r1 and r2 share the unordered entity pair, so r1 is parallel
     // and each of its port ends takes its own occurrence identified by relation
-    // and role — never the shared port slot. `429c92a2` encodes the ids
+    // and role — never the shared port slot. `cb553626` encodes the ids
     // injectively: `p.e.<len>.<port>.<len>.<relation>.<role>`.
     const document = sampleDocument();
     const { view } = lay(document, WIDE);

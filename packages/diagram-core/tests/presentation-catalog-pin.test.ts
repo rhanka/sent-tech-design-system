@@ -13,9 +13,9 @@ const reference = JSON.parse(readFileSync(
   entry2: Record<string, unknown>;
   revision: Record<string, unknown>;
 };
-const ENTRY_DIGEST = "c430ff66df3b04e6d792dd1a60e40e01dbeaffa47b206da0021a937ca83fa4f9";
+const ENTRY_DIGEST = "1534e468fbb6fc74e94fc9dadaa633320f19b3e7bcdf07dcdb9aaf17f6b301e0";
 const PREDECESSOR_DIGEST = "a83e2c1d0ea9612d38a0b3ad1a0f0ae4e93e7f7a10fcee49ab57a6a06659da0a";
-const COMMIT = "e3bc10cc9e59d48bb807afc41173ba83f6698940";
+const COMMIT = "ab7d1a7fd0142217672b5be6d40465b3e5309e50";
 const ADAPTER_SHA = "488d8499b8f4e624af56d0c4f4c07496cc09863ec1e65e9f522c6fc05a4db06e";
 const ADAPTER_ID = "ds:rhanka/sent-tech-design-system/packages/diagram-core/src/presentation-validate.ts";
 const ADAPTER_REF = `${ADAPTER_ID}@${COMMIT}#sha256=${ADAPTER_SHA}`;

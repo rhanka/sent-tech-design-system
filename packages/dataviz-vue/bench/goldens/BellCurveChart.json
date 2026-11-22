@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "BellCurveChart",
-  "sourceRevision": "6723612d01f6350b88f796dc7825bcec29afedd1",
+  "sourceRevision": "d4f2fce8bac6cd821103216d1dc52b1706507c7d",
   "source": "src/lib/BellCurveChart.ts",
   "fixtures": [
     {

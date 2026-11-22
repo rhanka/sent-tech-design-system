@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "RangeSlider",
-  "sourceRevision": "a18afa340e7391b83074e7cfbc880808848fbe42",
+  "sourceRevision": "d47b336cd50bdc3e1bdd8693ac5166e0a6133764",
   "source": "src/RangeSlider.ts",
   "fixtures": [
     {

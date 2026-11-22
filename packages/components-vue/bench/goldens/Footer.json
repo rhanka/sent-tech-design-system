@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Footer",
-  "sourceRevision": "d163b24f7320c8c86158b8451a53bf26934df834",
+  "sourceRevision": "f0c9c85a47d03e946b3e88260e3317784a5091b9",
   "source": "src/Footer.ts",
   "fixtures": [
     {

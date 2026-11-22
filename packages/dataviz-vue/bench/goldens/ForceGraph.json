@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ForceGraph",
-  "sourceRevision": "e806002605cce7014069983d4cf1ef8f62282d05",
+  "sourceRevision": "7ceaf284b67a6d4c0f6fd696500d0cfce1d56217",
   "source": "src/lib/ForceGraph.ts",
   "fixtures": [
     {

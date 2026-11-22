@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Timeline",
-  "sourceRevision": "d693e61755f56097827f5a1a61cf2323d3320525",
+  "sourceRevision": "0bdebe42c750fefa2225ee43d2b4aced3f615faa",
   "source": "src/Timeline.ts",
   "fixtures": [
     {

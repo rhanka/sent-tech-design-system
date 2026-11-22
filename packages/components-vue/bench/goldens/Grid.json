@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Grid",
-  "sourceRevision": "4eb97fb0aafc3cce8c03bd86035a9000d6965d05",
+  "sourceRevision": "5c4c21563e77ac2b2ab360675e549c4cd861cf72",
   "source": "src/Grid.ts",
   "fixtures": [
     {

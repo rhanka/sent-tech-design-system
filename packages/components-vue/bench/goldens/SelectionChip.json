@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "SelectionChip",
-  "sourceRevision": "03896b397b03585f8fd37516700b22f09be064f6",
+  "sourceRevision": "c440aba2e848c913c889bd604705598a4018a4ed",
   "source": "src/SelectionChip.ts",
   "fixtures": [
     {

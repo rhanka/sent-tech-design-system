@@ -96,8 +96,8 @@ describe("DS-3: review-markdown helpers (safe markdown-lite, Ref chips, resoluti
 
   it("detects resolution replies matching 'Resolved in <version|commit>'", () => {
     expect(isResolutionReply("Resolved in v2.4.0")).toEqual({ version: "v2.4.0" });
-    expect(isResolutionReply("Resolved in 8a6923aa8\n\nFixed typo.")).toEqual({
-      version: "8a6923aa8",
+    expect(isResolutionReply("Resolved in 782cd2145\n\nFixed typo.")).toEqual({
+      version: "782cd2145",
     });
     expect(isResolutionReply("Still investigating this edge case.")).toBeNull();
   });

@@ -22,7 +22,7 @@
     },
     {
       "componentId": "geo-map",
-      "reason": "conductor Q8 OUT: branch feat/geo-adapter-svelte not landed; packages/components-geo-svelte absent on base 24f6f8e9; no digest fabricated"
+      "reason": "conductor Q8 OUT: branch feat/geo-adapter-svelte not landed; packages/components-geo-svelte absent on base 84fc7ca0; no digest fabricated"
     }
   ]
 }

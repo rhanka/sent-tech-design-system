@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "FieldPane",
-  "sourceRevision": "4563c99d23bac8f0c00953031b9072b036b1cf1b",
+  "sourceRevision": "3c008805fce7e8589113257bca2dc1c9647210b5",
   "source": "src/lib/FieldPane.ts",
   "fixtures": [
     {

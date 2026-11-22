@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ContourChart",
-  "sourceRevision": "637d74b8ae00777db4e82d227b96645c41a2fa43",
+  "sourceRevision": "3f2006b68b845364cb96eb2372bf6a6d17984f44",
   "source": "src/ContourChart.ts",
   "fixtures": [
     {

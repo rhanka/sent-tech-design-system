@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "StreamgraphChart",
-  "sourceRevision": "ae03a10284e39b225849a946c419da50c1d38681",
+  "sourceRevision": "480f55bbe66567d38c98af52cb49d1e1d62a60b8",
   "source": "src/lib/StreamgraphChart.ts",
   "fixtures": [
     {

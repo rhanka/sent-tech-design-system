@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "DateRangeFilter",
-  "sourceRevision": "14f3b72af8be3723db8d3c2cd8b16ba0e6c57d31",
+  "sourceRevision": "1f04dd6c79a4dd93ce46ccc9797c1911bd7989df",
   "source": "src/lib/DateRangeFilter.ts",
   "fixtures": [
     {

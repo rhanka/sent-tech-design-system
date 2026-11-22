@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "DatePicker",
-  "sourceRevision": "23ff22a7acbbe7d75a61e0c1e8f45852990408d9",
+  "sourceRevision": "71b49fc70d41dc7c075808a06d4589f57c6714e8",
   "source": "src/DatePicker.ts",
   "fixtures": [
     {

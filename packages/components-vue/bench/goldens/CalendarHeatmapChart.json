@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "CalendarHeatmapChart",
-  "sourceRevision": "2bf372e518f8a8ae09b76e5a49c3a2e47671e165",
+  "sourceRevision": "6d700c9d860cf2ace6e5e8fa4feeab92f15a0917",
   "source": "src/CalendarHeatmapChart.ts",
   "fixtures": [
     {

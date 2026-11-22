@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ButtonGroup",
-  "sourceRevision": "f8815e2d78e878d2ac8e861aea30be5246bd34c7",
+  "sourceRevision": "51f7057927d5fac21f321dd3149ae115db54a9db",
   "source": "src/ButtonGroup.ts",
   "fixtures": [
     {

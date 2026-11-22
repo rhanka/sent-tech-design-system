@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ChatThread",
-  "sourceRevision": "97cb1e57f8f3ef6906ec830d0c2cd1a2a918ebc1",
+  "sourceRevision": "f9c122a69521df5f4407c808e292bbb21f666ecd",
   "source": "src/ChatThread.ts",
   "fixtures": [
     {

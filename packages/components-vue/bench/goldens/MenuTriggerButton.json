@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "MenuTriggerButton",
-  "sourceRevision": "9ec33d19661a387918abcf362ccd8866a469e05b",
+  "sourceRevision": "a7b21e6bad8d03f445e7cd4a2e30220b9dca9563",
   "source": "src/MenuTriggerButton.ts",
   "fixtures": [
     {

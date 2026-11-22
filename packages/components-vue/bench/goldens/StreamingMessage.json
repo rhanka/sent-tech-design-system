@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "StreamingMessage",
-  "sourceRevision": "f32932f91ead4d4177778af24840ba2323ea128e",
+  "sourceRevision": "03d32a0150d3ac67d30a260c9db8ac8be7ccec4b",
   "source": "src/StreamingMessage.ts",
   "fixtures": [
     {

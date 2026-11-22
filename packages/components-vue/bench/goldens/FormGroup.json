@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "FormGroup",
-  "sourceRevision": "375cc47d1decc64403b794ef64dd0be34125b2b5",
+  "sourceRevision": "cbce6ad9017edab5603077787d45884ad284d27e",
   "source": "src/FormGroup.ts",
   "fixtures": [
     {

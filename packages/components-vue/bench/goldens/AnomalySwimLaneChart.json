@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "AnomalySwimLaneChart",
-  "sourceRevision": "8ad0bb0a62fcedca7780d946525516290f495acc",
+  "sourceRevision": "f87f9fd22107ed86971fa3e2ea08e8ebe4a1aa97",
   "source": "src/AnomalySwimLaneChart.ts",
   "fixtures": [
     {

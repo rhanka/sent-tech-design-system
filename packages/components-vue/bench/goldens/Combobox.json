@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Combobox",
-  "sourceRevision": "856d0d61536865951737ac36c3359defd0af9be9",
+  "sourceRevision": "e3bd905a5ac96fc6251e53ab17add27fe0f39f0a",
   "source": "src/Combobox.ts",
   "fixtures": [
     {

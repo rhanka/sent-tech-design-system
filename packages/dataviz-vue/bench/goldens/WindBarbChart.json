@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "WindBarbChart",
-  "sourceRevision": "e29630770ec2efbb6058acf10deca69c965339d5",
+  "sourceRevision": "240571338c385fd6bada52c45abb1d687f55bd36",
   "source": "src/lib/WindBarbChart.ts",
   "fixtures": [
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "EventFeedPanel",
-  "sourceRevision": "3e53293d1b350017af16c8b00787c5447116765f",
+  "sourceRevision": "f113006e3b1e08edbd64af537796617fc97f1e57",
   "source": "src/lib/EventFeedPanel.ts",
   "fixtures": [
     {

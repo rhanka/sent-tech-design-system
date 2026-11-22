@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Slider",
-  "sourceRevision": "d120bfa1b6668be25d4da3cf986e1d0c1ef78a7d",
+  "sourceRevision": "46d6b0cdf62bddd84a558a58b2aac203ce0b326d",
   "source": "src/Slider.ts",
   "fixtures": [
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "FieldCard",
-  "sourceRevision": "189eaa8c552a2ce426e89277e989f63c08b80336",
+  "sourceRevision": "aaf5ccab96f7f186da85a9a3ab4224607477baff",
   "source": "src/FieldCard.ts",
   "fixtures": [
     {

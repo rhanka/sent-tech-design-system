@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "RenkoChart",
-  "sourceRevision": "b5ea5764fbb2ace3cf010ce8a7c0b56b7498ca44",
+  "sourceRevision": "d48041da3ec5f209683a77b16876cb52853d2b45",
   "source": "src/RenkoChart.ts",
   "fixtures": [
     {

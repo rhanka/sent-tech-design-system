@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "GeoChart",
-  "sourceRevision": "07fdc1b6dfe5b649afb832d35a657f4158b4bf32",
+  "sourceRevision": "3218fb9fc1234a051c2c63469d3fc93c43eca573",
   "source": "src/GeoChart.ts",
   "fixtures": [
     {

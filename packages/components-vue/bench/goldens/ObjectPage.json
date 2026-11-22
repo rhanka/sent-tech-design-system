@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ObjectPage",
-  "sourceRevision": "16d43556ca163e1d23713e4ffb37a1de868e9bdf",
+  "sourceRevision": "a0f563d03d6acd5596f0c112ad77b275823b22b5",
   "source": "src/ObjectPage.ts",
   "fixtures": [
     {

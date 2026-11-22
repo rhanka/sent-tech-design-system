@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "SlideIndicator",
-  "sourceRevision": "ef3b5f227e8cffca3e916ae0a6e4e3d944b4dd86",
+  "sourceRevision": "a164447490e1d5fe5a1283360e4f842bc2de15bd",
   "source": "src/SlideIndicator.ts",
   "fixtures": [
     {

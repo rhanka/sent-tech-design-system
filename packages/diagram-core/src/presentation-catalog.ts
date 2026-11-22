@@ -223,8 +223,8 @@ const PRIVATE_ENTRY_2 = {
     "migrations": [],
     "consumers": [],
     "compatibility": {
-      "renderer": "ds:rhanka/sent-tech-design-system/packages/diagram-core/src/presentation-apply.ts@e3bc10cc9e59d48bb807afc41173ba83f6698940#sha256=28c3607e5c4868d44c137b66fe8e6f6ed99cb578fc52a52f67442cca41802cd8",
-      "adapter": "ds:rhanka/sent-tech-design-system/packages/diagram-core/src/presentation-validate.ts@e3bc10cc9e59d48bb807afc41173ba83f6698940#sha256=488d8499b8f4e624af56d0c4f4c07496cc09863ec1e65e9f522c6fc05a4db06e"
+      "renderer": "ds:rhanka/sent-tech-design-system/packages/diagram-core/src/presentation-apply.ts@ab7d1a7fd0142217672b5be6d40465b3e5309e50#sha256=28c3607e5c4868d44c137b66fe8e6f6ed99cb578fc52a52f67442cca41802cd8",
+      "adapter": "ds:rhanka/sent-tech-design-system/packages/diagram-core/src/presentation-validate.ts@ab7d1a7fd0142217672b5be6d40465b3e5309e50#sha256=488d8499b8f4e624af56d0c4f4c07496cc09863ec1e65e9f522c6fc05a4db06e"
     },
     "visibility": "public",
     "linkedTools": [],

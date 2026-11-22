@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ArcDiagramChart",
-  "sourceRevision": "27df42bec35f645720b3b89d09fa7d5980e595f0",
+  "sourceRevision": "d8716c47f48a7f2c9cf59bb377b7f1addb63a006",
   "source": "src/ArcDiagramChart.ts",
   "fixtures": [
     {

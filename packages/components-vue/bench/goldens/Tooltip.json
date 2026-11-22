@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Tooltip",
-  "sourceRevision": "213a81f8326cb481508190991d02dc763f123955",
+  "sourceRevision": "c65c24e5046dea61361f948309388fb76c5e8fa0",
   "source": "src/Tooltip.ts",
   "fixtures": [
     {
