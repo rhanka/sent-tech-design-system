@@ -2170,8 +2170,15 @@ for (const [url, fixture, offline] of [
       const clipped = text.filter((node) => {
         const box = node.getBoundingClientRect();
         const frame = node.ownerSVGElement.getBoundingClientRect();
-        return box.left < frame.left - 1 || box.right > frame.right + 1 ||
-          box.top < frame.top - 1 || box.bottom > frame.bottom + 1;
+        if (box.left < frame.left - 1 || box.right > frame.right + 1 ||
+            box.top < frame.top - 1 || box.bottom > frame.bottom + 1) return true;
+        const container = node.closest("[data-scene-occurrence], [data-scene-label]")?.querySelector("rect");
+        if (container !== undefined && container !== null) {
+          const containerBox = container.getBoundingClientRect();
+          if (box.left < containerBox.left - 1 || box.right > containerBox.right + 1 ||
+              box.top < containerBox.top - 1 || box.bottom > containerBox.bottom + 1) return true;
+        }
+        return false;
       }).map((node) => node.textContent);
       return {
         id: figure.dataset.stDiagram,

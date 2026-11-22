@@ -48,6 +48,7 @@ export function createDossierDiagram(
     button.type = "button";
     button.textContent = "Fold containers";
     button.setAttribute("aria-expanded", "true");
+    button.setAttribute("data-review-passthrough", "");
     viewport.id = `${prefix}viewport`;
     button.setAttribute("aria-controls", viewport.id);
     button.addEventListener("click", () => {
