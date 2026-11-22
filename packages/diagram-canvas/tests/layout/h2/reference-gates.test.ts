@@ -1,10 +1,10 @@
 import { readFileSync } from "node:fs";
+import { DS_LAYOUT_V2_VOCABULARY, lowerLayoutHintsV2 } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
 import {
   ASPECT_16_9_TARGET,
   ASPECT_16_9_TOLERANCE,
-  createLayoutCache,
   layoutMeasured,
   type LayoutOptions,
   type LayoutResult,
@@ -27,9 +27,11 @@ import {
 import {
   buildAll13ReferenceScenes,
   buildAppctxArchitecture16x9,
+  buildDeliberatelyConflictingComposedScene,
   buildExampleA,
   buildExampleB,
-  enumerateVisibleFoldStates,
+  buildGenericScene,
+  runZeroConflictGate,
   type H2ReferenceScene,
 } from "./fixtures/referenceSet.js";
 
@@ -91,40 +93,72 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
     }
   });
 
-  it("BLOCKING H2.9 GATE: conflicts === 0, label-unplaced === 0, and route-obstructed === 0 across ALL 14 reference scenes and ALL 108 visible fold states", () => {
+  it("BLOCKING H2.9 GATE: conflicts === 0, label-unplaced === 0, and route-obstructed === 0 across ALL 14 reference scenes and ALL 108 visible fold states on the @2 + r7 path", () => {
     const finalReferenceSet: readonly H2ReferenceScene[] = [
       ...buildAll13ReferenceScenes(),
       buildAppctxArchitecture16x9(),
     ];
-    let totalStates = 0;
-    const failures: string[] = [];
+    const gate = runZeroConflictGate(finalReferenceSet);
 
-    for (const scene of finalReferenceSet) {
-      const states = enumerateVisibleFoldStates(scene.document, scene.containers, scene.sourceView);
-      const cache = createLayoutCache({ maxEntries: 128 });
-      for (const collapsed of states) {
-        totalStates += 1;
-        const laid = mustLayOut(
-          cache.layout(scene.document, baseOptionsOf(scene, { collapsed }), scene.sourceView),
-          `${scene.id}[${collapsed.join(",")}]`,
-        );
-        const m = measureH2SceneResiduals(scene.id, laid);
-        if (m.conflictCount > 0 || m.unplacedLabelCount > 0 || m.obstructedCount > 0) {
-          failures.push(
-            `${scene.id}[${collapsed.join(",")}]: conflicts=${m.conflictCount} (${laid.routeSpacing?.conflicts.map((c) => `${c.kind}:${c.routes.join("+")}`).join("; ") ?? ""}) label-unplaced=${m.unplacedLabelCount} obstructed=${m.obstructedCount}`,
-          );
-        }
-      }
-    }
-
-    expect(totalStates).toBe(108);
-    expect(failures, failures.join("\n")).toEqual([]);
+    expect(gate.totalStates).toBe(108);
+    expect(gate.composedStates).toBe(108);
+    expect(gate.auditedStates).toBe(108);
+    expect(gate.combStates).toBeGreaterThan(0);
+    expect(gate.failures, gate.failures.join("\n")).toEqual([]);
   }, 90_000);
 
-  it("re-runs the H2.6 16:9 ratio gate on the final 16:9 reference scene (appctx-architecture, R-7)", () => {
+  it("proves non-vacuity of the zero-conflict gate (fails on deliberate @2 conflict, unaudited v1 path, and non-composed @1/auto-pack)", () => {
+    // 1. Deliberately conflicting @2 + r7 fixture MUST fail with real route-spacing conflicts.
+    const conflicting = buildDeliberatelyConflictingComposedScene();
+    const conflictGate = runZeroConflictGate([conflicting.scene], conflicting.extraOptions);
+    expect(conflictGate.composedStates).toBe(conflictGate.totalStates);
+    expect(conflictGate.auditedStates).toBe(conflictGate.totalStates);
+    expect(conflictGate.failures.length).toBeGreaterThan(0);
+    expect(conflictGate.failures.some((f) => f.includes("conflicts=") && !f.includes("conflicts=0"))).toBe(true);
+
+    // 2. A v1-path fixture where routeSpacing is undefined MUST fail as unaudited (never silently coerced to 0).
+    const exA = buildExampleA();
+    const v1Entities = Object.fromEntries(
+      Object.entries(exA.presentation.entities).map(([id, entry]) => [id, { form: entry.form, text: entry.text }]),
+    );
+    const v1Scene: H2ReferenceScene = {
+      ...exA,
+      presentation: {
+        contractPin: { id: "diagram-presentation", version: "diagram-presentation@1", contentDigest: "0".repeat(64) },
+        entities: v1Entities,
+        legends: {},
+        categoryTokens: [],
+      } as unknown as H2ReferenceScene["presentation"],
+    };
+    const v1Gate = runZeroConflictGate([v1Scene]);
+    expect(v1Gate.auditedStates).toBe(0);
+    expect(v1Gate.failures.some((f) => f.includes("routeSpacing-missing"))).toBe(true);
+
+    // 3. A non-composed auto-pack fixture MUST fail because the @2 composition path was not exercised.
+    const nonComposed = buildGenericScene({
+      id: "non-composed-probe",
+      carries: ["REQ-R7-28"],
+      hintsV2: { vocabulary: DS_LAYOUT_V2_VOCABULARY, mode: "auto-pack" },
+      entities: [{ id: "n1", title: "One" }, { id: "n2", title: "Two" }],
+      relations: [{ id: "e1", source: "n1", target: "n2" }],
+    });
+    const nonComposedGate = runZeroConflictGate([
+      { ...nonComposed, hints: lowerLayoutHintsV2({ vocabulary: DS_LAYOUT_V2_VOCABULARY, mode: "auto-pack" }) },
+    ]);
+    expect(nonComposedGate.composedStates).toBe(0);
+    expect(nonComposedGate.failures.some((f) => f.includes("composition-missing"))).toBe(true);
+  });
+
+  it("re-runs the H2.6 16:9 ratio gate on the final 16:9 reference scene (appctx-architecture, R-7) on the @2 + r7 path", () => {
     const scene = buildAppctxArchitecture16x9();
     const laid = mustLayOut(layoutMeasured(scene.document, baseOptionsOf(scene, { collapsed: [] }), scene.sourceView), "16:9");
     const m = measureH2SceneResiduals(scene.id, laid);
+    expect(laid.composition).toBeDefined();
+    expect(laid.routeSpacing).toBeDefined();
+    expect(m.routeSpacingAudited).toBe(true);
+    expect(laid.combGroups?.some((g) => g.kind === "fan-in" && g.members.length === 4)).toBe(true);
+    expect(laid.warnings.filter((w) => w.code === "comb-fallback" && w.details?.reason === "v1-path")).toHaveLength(0);
+    expect(laid.linkLegend).toBeDefined();
     expect(Math.abs(m.aspectRatio / ASPECT_16_9_TARGET - 1)).toBeLessThanOrEqual(ASPECT_16_9_TOLERANCE);
     expect(laid.warnings.filter((w) => w.code === "aspect-unreached")).toHaveLength(0);
     expect(m.conflictCount).toBe(0);
@@ -195,7 +229,9 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
       {
         name: "h2-aspect-16-9",
         scene: buildAppctxArchitecture16x9(),
-        expectR7: false,
+        expectR7: true,
+        expectedAnchor: "right",
+        expectedStyles: ["solid:arrow:default", "dashed:arrow:default"],
         expectAspect16x9: true,
       },
     ];

@@ -140,10 +140,10 @@ test('should include 3 r7 reference scenes and 3 H2 composed scenes with expecte
   assert.deepEqual(expectedLegendStyles('r7-nested-styles--folded'), []);
   assert.deepEqual(expectedLegendStyles('h2-example-a'), ['solid:arrow:default', 'solid:arrow:emphasis', 'dashed:arrow:default']);
   assert.deepEqual(expectedLegendStyles('h2-example-b'), ['solid:arrow:default', 'dashed:arrow:default']);
-  assert.equal(expectedLegendStyles('h2-aspect-16-9'), null);
+  assert.deepEqual(expectedLegendStyles('h2-aspect-16-9'), ['solid:arrow:default', 'dashed:arrow:default']);
   assert.equal(expectedLegendAnchor('h2-example-a'), 'free-cell');
   assert.equal(expectedLegendAnchor('h2-example-b'), 'right');
-  assert.equal(expectedLegendAnchor('h2-aspect-16-9'), null);
+  assert.equal(expectedLegendAnchor('h2-aspect-16-9'), 'right');
 });
 
 test('should verify rounded elbow radius cap (<= 12 and <= half shorter leg)', () => {

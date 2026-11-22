@@ -21,6 +21,8 @@ import {
   type LineMeasurer,
   type Rect,
 } from "../../../src/index.js";
+import { computeNominalCompositionPlan } from "../../../src/layout/measured.js";
+import { createSubtreeMemo } from "../../../src/layout/plan.js";
 import {
   buildAppctxArchitecture16x9,
   buildExampleA,
@@ -140,6 +142,292 @@ function descendantsOf(document: H2ReferenceScene["document"], entity: EntityRef
   return out;
 }
 
+/**
+ * Independent F-6 painted-gap verifier: measures every visible sibling container pair
+ * directly from `res.view.entityOccurrences` (never trusting `paintedGapsAboveToken`
+ * to validate itself), independently computes gutter and §4.3 slot slack from painted
+ * boxes and track lines, and asserts exact soundness + completeness against the report.
+ */
+function verifyF6PaintedGapsFromGeometry(
+  scene: H2ReferenceScene,
+  collapsed: readonly OccurrenceRef[],
+  res: Extract<LayoutResult, { status: "laid-out" }>,
+  label: string,
+  zoneGutter = 96,
+): void {
+  // 1. Every emitted zone channel must keep the token width.
+  for (const ch of res.channels ?? []) {
+    if (ch.zone === true) {
+      expect(ch.gap, `${label}:zone-gutter:${ch.id}`).toBe(zoneGutter);
+    }
+  }
+
+  // 2. Build semantic parent map and visible entity set directly from document + collapsed.
+  const parentOf = new Map<EntityRef, EntityRef>();
+  for (const rel of Object.values(scene.document.relations)) {
+    if (rel.type !== "contains") continue;
+    const p = rel.endpoints.find((e) => e.role === "parent")?.target as EntityRef | undefined;
+    const c = rel.endpoints.find((e) => e.role === "child")?.target as EntityRef | undefined;
+    if (p !== undefined && c !== undefined) parentOf.set(c, p);
+  }
+  const collapsedSet = new Set<OccurrenceRef>(collapsed);
+  for (const group of Object.values(res.view.groups)) {
+    if (group.collapsed === true && group.occurrence !== undefined) collapsedSet.add(group.occurrence);
+  }
+  const collapsedEntities = new Set<EntityRef>();
+  for (const occ of Object.values(res.view.entityOccurrences)) {
+    if (collapsedSet.has(occ.id)) collapsedEntities.add(occ.entity);
+  }
+  const isVisible = (entity: EntityRef): boolean => {
+    let cur = parentOf.get(entity);
+    while (cur !== undefined) {
+      if (collapsedEntities.has(cur)) return false;
+      cur = parentOf.get(cur);
+    }
+    return true;
+  };
+
+  // 3. Read actual painted rects directly from res.view.entityOccurrences.
+  const paintedRectByEntity = new Map<EntityRef, Rect>();
+  for (const occ of Object.values(res.view.entityOccurrences)) {
+    if (!isVisible(occ.entity)) continue;
+    if (occ.geometry.width > 0 && occ.geometry.height > 0) {
+      paintedRectByEntity.set(occ.entity, occ.geometry);
+    }
+  }
+
+  const containerSet = new Set<EntityRef>(scene.containers);
+  const grids = res.composition?.grids ?? {};
+  const expectedAboveToken = new Map<
+    string,
+    { readonly paintedGap: number; readonly fromSlack?: number; readonly toSlack?: number }
+  >();
+
+  // 4. Composed grid scopes: verify cell rects match painted occurrences, track zone gutters === token,
+  //    independently measure painted gaps & §4.3 slot slack for every adjacent sibling container pair.
+  for (const [scope, gridReport] of Object.entries(grids)) {
+    const gridSpec =
+      scope === "root"
+        ? scene.hints.composition?.grids.root
+        : scene.hints.composition?.grids[scope as EntityRef];
+    const isInherit = gridSpec?.stage_columns === "inherit";
+    const peripheralEntities = new Set<EntityRef>(
+      (gridSpec?.peripheral_columns ?? []).flatMap((col) => col.items),
+    );
+
+    for (const cell of gridReport.cells) {
+      const painted = paintedRectByEntity.get(cell.entity);
+      expect(painted, `${label}:painted-exists:${scope}:${cell.entity}`).toBeDefined();
+      if (painted !== undefined) {
+        expect(Math.abs(painted.x - cell.boxRect.x), `${label}:cell-x:${cell.entity}`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(painted.y - cell.boxRect.y), `${label}:cell-y:${cell.entity}`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(painted.width - cell.boxRect.width), `${label}:cell-w:${cell.entity}`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(painted.height - cell.boxRect.height), `${label}:cell-h:${cell.entity}`).toBeLessThanOrEqual(TOL);
+      }
+    }
+
+    const colHasContainer = gridReport.columns.map((_, idx) =>
+      gridReport.cells.some((c) => containerSet.has(c.entity) && c.colStart >= 0 && idx >= c.colStart && idx <= c.colEnd),
+    );
+    for (let i = 0; i + 1 < gridReport.columns.length; i += 1) {
+      if (colHasContainer[i] || colHasContainer[i + 1]) {
+        const g = gridReport.columns[i + 1]!.start - (gridReport.columns[i]!.start + gridReport.columns[i]!.size);
+        expect(Math.abs(g - zoneGutter), `${label}:col-track-gutter:${scope}:${i}`).toBeLessThanOrEqual(TOL);
+      }
+    }
+    // Per H2-STEP0 §4.3 step 5, a peripheral item counts in its own column only, never in bands.
+    const bandHasContainer = gridReport.bands.map((_, idx) =>
+      gridReport.cells.some(
+        (c) =>
+          containerSet.has(c.entity) &&
+          !peripheralEntities.has(c.entity) &&
+          c.bandStart >= 0 &&
+          idx >= c.bandStart &&
+          idx <= c.bandEnd,
+      ),
+    );
+    for (let j = 0; j + 1 < gridReport.bands.length; j += 1) {
+      if (bandHasContainer[j] || bandHasContainer[j + 1]) {
+        const g = gridReport.bands[j + 1]!.start - (gridReport.bands[j]!.start + gridReport.bands[j]!.size);
+        expect(Math.abs(g - zoneGutter), `${label}:band-track-gutter:${scope}:${j}`).toBeLessThanOrEqual(TOL);
+      }
+    }
+
+    const containerCells = gridReport.cells.filter((c) => containerSet.has(c.entity));
+    for (let i = 0; i < containerCells.length; i += 1) {
+      const a = containerCells[i]!;
+      const rectA = paintedRectByEntity.get(a.entity)!;
+      for (let j = 0; j < containerCells.length; j += 1) {
+        if (i === j) continue;
+        const b = containerCells[j]!;
+        const rectB = paintedRectByEntity.get(b.entity)!;
+
+        // Horizontal adjacency across a column boundary
+        if (
+          a.colEnd >= 0 &&
+          b.colStart >= 0 &&
+          a.colEnd + 1 === b.colStart &&
+          a.bandStart >= 0 &&
+          b.bandStart >= 0 &&
+          Math.max(a.bandStart, b.bandStart) <= Math.min(a.bandEnd, b.bandEnd)
+        ) {
+          const colA = gridReport.columns[a.colEnd]!;
+          const colB = gridReport.columns[b.colStart]!;
+          const trackGutter = colB.start - (colA.start + colA.size);
+          const paintedGap = rectB.x - (rectA.x + rectA.width);
+          const fromSlack = colA.start + colA.size - (rectA.x + rectA.width);
+          const toSlack = rectB.x - colB.start;
+          expect(Math.abs(trackGutter - zoneGutter), `${label}:h-gutter:${a.entity}->${b.entity}`).toBeLessThanOrEqual(TOL);
+          expect(fromSlack, `${label}:h-fromSlack>=0:${a.entity}`).toBeGreaterThanOrEqual(-TOL);
+          expect(toSlack, `${label}:h-toSlack>=0:${b.entity}`).toBeGreaterThanOrEqual(-TOL);
+          expect(Math.abs(paintedGap - (zoneGutter + fromSlack + toSlack)), `${label}:h-gap-sum`).toBeLessThanOrEqual(TOL);
+
+          // Independently verify §4.3 slot alignment slack on non-inheriting single-column stage cells
+          if (!isInherit && a.colStart === a.colEnd && colA.kind === "stage") {
+            const justifyA = gridSpec?.cells?.[a.entity]?.justify;
+            if (!collapsedEntities.has(a.entity) && (justifyA === undefined || justifyA === "stretch")) {
+              expect(fromSlack, `${label}:h-stretch-a:${a.entity}`).toBeLessThanOrEqual(TOL);
+            } else if (collapsedEntities.has(a.entity) && (justifyA === undefined || justifyA === "center")) {
+              expect(Math.abs(fromSlack - (colA.size - rectA.width) / 2), `${label}:h-center-a:${a.entity}`).toBeLessThanOrEqual(TOL);
+            }
+          }
+          if (!isInherit && b.colStart === b.colEnd && colB.kind === "stage") {
+            const justifyB = gridSpec?.cells?.[b.entity]?.justify;
+            if (!collapsedEntities.has(b.entity) && (justifyB === undefined || justifyB === "stretch")) {
+              expect(toSlack, `${label}:h-stretch-b:${b.entity}`).toBeLessThanOrEqual(TOL);
+            } else if (collapsedEntities.has(b.entity) && (justifyB === undefined || justifyB === "center")) {
+              expect(Math.abs(toSlack - (colB.size - rectB.width) / 2), `${label}:h-center-b:${b.entity}`).toBeLessThanOrEqual(TOL);
+            }
+          }
+
+          if (paintedGap > zoneGutter + 1e-6) {
+            expectedAboveToken.set(`${scope}|horizontal|${a.entity}|${b.entity}`, { paintedGap, fromSlack, toSlack });
+          }
+        }
+
+        // Vertical adjacency across a band boundary
+        if (a.bandEnd >= 0 && b.bandStart >= 0 && a.bandEnd + 1 === b.bandStart) {
+          const sameColRange =
+            a.colStart >= 0 && b.colStart >= 0
+              ? Math.max(a.colStart, b.colStart) <= Math.min(a.colEnd, b.colEnd)
+              : Math.min(rectA.x + rectA.width, rectB.x + rectB.width) > Math.max(rectA.x, rectB.x);
+          if (sameColRange) {
+            const bandA = gridReport.bands[a.bandEnd]!;
+            const bandB = gridReport.bands[b.bandStart]!;
+            const trackGutter = bandB.start - (bandA.start + bandA.size);
+            const paintedGap = rectB.y - (rectA.y + rectA.height);
+            const fromSlack = bandA.start + bandA.size - (rectA.y + rectA.height);
+            const toSlack = rectB.y - bandB.start;
+            expect(Math.abs(trackGutter - zoneGutter), `${label}:v-gutter:${a.entity}->${b.entity}`).toBeLessThanOrEqual(TOL);
+            expect(fromSlack, `${label}:v-fromSlack>=0:${a.entity}`).toBeGreaterThanOrEqual(-TOL);
+            expect(toSlack, `${label}:v-toSlack>=0:${b.entity}`).toBeGreaterThanOrEqual(-TOL);
+            expect(Math.abs(paintedGap - (zoneGutter + fromSlack + toSlack)), `${label}:v-gap-sum`).toBeLessThanOrEqual(TOL);
+
+            if (a.bandStart === a.bandEnd && bandA.kind === "band" && !peripheralEntities.has(a.entity)) {
+              const alignA = gridSpec?.cells?.[a.entity]?.align;
+              if (!collapsedEntities.has(a.entity) && (alignA === undefined || alignA === "stretch")) {
+                expect(fromSlack, `${label}:v-stretch-a:${a.entity}`).toBeLessThanOrEqual(TOL);
+              } else if (collapsedEntities.has(a.entity) && (alignA === undefined || alignA === "center")) {
+                expect(Math.abs(fromSlack - (bandA.size - rectA.height) / 2), `${label}:v-center-a:${a.entity}`).toBeLessThanOrEqual(TOL);
+              }
+            }
+            if (b.bandStart === b.bandEnd && bandB.kind === "band" && !peripheralEntities.has(b.entity)) {
+              const alignB = gridSpec?.cells?.[b.entity]?.align;
+              if (!collapsedEntities.has(b.entity) && (alignB === undefined || alignB === "stretch")) {
+                expect(toSlack, `${label}:v-stretch-b:${b.entity}`).toBeLessThanOrEqual(TOL);
+              } else if (collapsedEntities.has(b.entity) && (alignB === undefined || alignB === "center")) {
+                expect(Math.abs(toSlack - (bandB.size - rectB.height) / 2), `${label}:v-center-b:${b.entity}`).toBeLessThanOrEqual(TOL);
+              }
+            }
+
+            if (paintedGap > zoneGutter + 1e-6) {
+              expectedAboveToken.set(`${scope}|vertical|${a.entity}|${b.entity}`, { paintedGap, fromSlack, toSlack });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // 5. Non-grid scopes (auto-packed / stacked sibling containers): measure directly from painted rects.
+  const siblingsByScope = new Map<string, EntityRef[]>();
+  for (const entity of paintedRectByEntity.keys()) {
+    const scope = parentOf.get(entity) ?? "root";
+    const list = siblingsByScope.get(scope) ?? [];
+    list.push(entity);
+    siblingsByScope.set(scope, list);
+  }
+  for (const [scope, siblings] of siblingsByScope) {
+    if (grids[scope] !== undefined) continue;
+    const childContainers = siblings.filter((e) => containerSet.has(e));
+    if (childContainers.length < 2) continue;
+    for (const a of childContainers) {
+      const rectA = paintedRectByEntity.get(a)!;
+      for (const b of childContainers) {
+        if (a === b) continue;
+        const rectB = paintedRectByEntity.get(b)!;
+        // Horizontal neighbour with vertical overlap and no sibling between them
+        if (
+          rectB.x >= rectA.x + rectA.width - TOL &&
+          Math.min(rectA.y + rectA.height, rectB.y + rectB.height) > Math.max(rectA.y, rectB.y) + TOL
+        ) {
+          const blocked = siblings.some((mid) => {
+            if (mid === a || mid === b) return false;
+            const rm = paintedRectByEntity.get(mid)!;
+            const yOverlap = Math.min(rectA.y + rectA.height, rectB.y + rectB.height, rm.y + rm.height) >
+              Math.max(rectA.y, rectB.y, rm.y) + TOL;
+            return yOverlap && rm.x >= rectA.x + rectA.width - TOL && rm.x + rm.width <= rectB.x + TOL;
+          });
+          if (!blocked) {
+            const paintedGap = rectB.x - (rectA.x + rectA.width);
+            expect(paintedGap, `${label}:nongrid-h:${a}->${b}`).toBeGreaterThanOrEqual(zoneGutter - TOL);
+            if (paintedGap > zoneGutter + 1e-6) {
+              expectedAboveToken.set(`${scope}|horizontal|${a}|${b}`, { paintedGap });
+            }
+          }
+        }
+        // Vertical neighbour with horizontal overlap and no sibling between them
+        if (
+          rectB.y >= rectA.y + rectA.height - TOL &&
+          Math.min(rectA.x + rectA.width, rectB.x + rectB.width) > Math.max(rectA.x, rectB.x) + TOL
+        ) {
+          const blocked = siblings.some((mid) => {
+            if (mid === a || mid === b) return false;
+            const rm = paintedRectByEntity.get(mid)!;
+            const xOverlap = Math.min(rectA.x + rectA.width, rectB.x + rectB.width, rm.x + rm.width) >
+              Math.max(rectA.x, rectB.x, rm.x) + TOL;
+            return xOverlap && rm.y >= rectA.y + rectA.height - TOL && rm.y + rm.height <= rectB.y + TOL;
+          });
+          if (!blocked) {
+            const paintedGap = rectB.y - (rectA.y + rectA.height);
+            expect(paintedGap, `${label}:nongrid-v:${a}->${b}`).toBeGreaterThanOrEqual(zoneGutter - TOL);
+            if (paintedGap > zoneGutter + 1e-6) {
+              expectedAboveToken.set(`${scope}|vertical|${a}|${b}`, { paintedGap });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // 6. Soundness & completeness: reported `paintedGapsAboveToken` MUST match the exact set
+  //    independently discovered from painted occurrences, with matching geometry.
+  const reported = res.composition?.paintedGapsAboveToken ?? [];
+  const reportedKeys = reported.map((g) => `${g.scope}|${g.axis}|${g.left}|${g.right}`).sort();
+  const expectedKeys = [...expectedAboveToken.keys()].sort();
+  expect(reportedKeys, `${label}:paintedGapsAboveToken-keys`).toEqual(expectedKeys);
+  for (const gap of reported) {
+    const key = `${gap.scope}|${gap.axis}|${gap.left}|${gap.right}`;
+    const exp = expectedAboveToken.get(key)!;
+    expect(gap.token, `${label}:painted-token:${key}`).toBe(zoneGutter);
+    expect(Math.abs(gap.paintedGap - exp.paintedGap), `${label}:painted-gap:${key}`).toBeLessThanOrEqual(TOL);
+    if (exp.fromSlack !== undefined && exp.toSlack !== undefined) {
+      expect(Math.abs(gap.fromSlack - exp.fromSlack), `${label}:painted-fromSlack:${key}`).toBeLessThanOrEqual(TOL);
+      expect(Math.abs(gap.toSlack - exp.toSlack), `${label}:painted-toSlack:${key}`).toBeLessThanOrEqual(TOL);
+    }
+  }
+}
+
 describe("H2.5 fold-aware nominal plan, plan cache, subtree memo (D-6), invariants F-1…F-6", () => {
   function verifyCorpusScenes(corpus: readonly H2ReferenceScene[]): {
     totalStates: number;
@@ -168,6 +456,24 @@ describe("H2.5 fold-aware nominal plan, plan cache, subtree memo (D-6), invarian
       const nominalOrientations = nominal.orientations ?? {};
       const nominalGrids = nominal.composition!.grids;
       const inheritors = inheritingContainersOf(scene);
+      const flippedNominalPrev: Record<string, LevelOrientation> = {};
+      for (const [levelKey, orient] of Object.entries(nominalOrientations)) {
+        flippedNominalPrev[levelKey] = orient === "rows" ? "columns" : "rows";
+      }
+      const builtPlan = computeNominalCompositionPlan(scene.document, baseOptionsOf(scene), scene.sourceView);
+      expect(builtPlan.status, `${scene.id}:plan`).toBe("ok");
+      const nominalPlan = builtPlan.status === "ok" ? builtPlan.plan : undefined;
+
+      // F-2 (S-1): nominal plan computation ignores opposite previousOrientation (direct uncached call).
+      const nominalWithFlippedPrev = mustLayOut(
+        layoutMeasured(
+          scene.document,
+          baseOptionsOf(scene, { collapsed: [], previousOrientation: flippedNominalPrev }),
+          scene.sourceView,
+        ),
+        `${scene.id}:nominal:prev`,
+      );
+      expect(canonicalise(nominalWithFlippedPrev.view, "view")).toBe(canonicalise(nominal.view, "view"));
 
       for (const collapsed of states) {
         const key = collapsed.join(",");
@@ -218,32 +524,21 @@ describe("H2.5 fold-aware nominal plan, plan cache, subtree memo (D-6), invarian
           }
         }
 
-        // F-2: passing opposite previousOrientation produces byte-identical output and hits same cache entry
-        const flippedPrev: Record<string, LevelOrientation> = {};
-        for (const [levelKey, orient] of Object.entries(nominalOrientations)) {
-          flippedPrev[levelKey] = orient === "rows" ? "columns" : "rows";
-        }
+        // F-2 (S-2): passing opposite previousOrientation directly (uncached, reusing only the nominal plan)
+        // produces byte-identical output.
         const withFlippedPrev = mustLayOut(
-          cacheOn.layout(
+          layoutMeasured(
             scene.document,
-            baseOptionsOf(scene, { collapsed, previousOrientation: flippedPrev }),
+            baseOptionsOf(scene, { collapsed, previousOrientation: flippedNominalPrev }),
             scene.sourceView,
+            nominalPlan === undefined ? undefined : { plan: nominalPlan },
           ),
           `${scene.id}:prev:${key}`,
         );
         expect(canonicalise(withFlippedPrev.view, "view")).toBe(canonicalise(resOn.view, "view"));
 
-        // F-6 Gutters & painted gaps: every zone gutter is at the token (96); paintedGap === token + fromSlack + toSlack
-        for (const ch of resOn.channels ?? []) {
-          if (ch.zone === true) {
-            expect(ch.gap, `${scene.id}:${key}:zone-gutter:${ch.id}`).toBe(96);
-          }
-        }
-        for (const gap of resOn.composition?.paintedGapsAboveToken ?? []) {
-          expect(gap.token, `${scene.id}:${key}:painted-token`).toBe(96);
-          expect(Math.abs(gap.paintedGap - (gap.token + gap.fromSlack + gap.toSlack))).toBeLessThanOrEqual(TOL);
-          expect(gap.paintedGap).toBeGreaterThan(96);
-        }
+        // F-6 Gutters & painted gaps: independently measure painted geometry from resOn.view.entityOccurrences.
+        verifyF6PaintedGapsFromGeometry(scene, collapsed, resOn, `${scene.id}:${key}`);
       }
 
       // Plan cache reused the single nominal plan across all fold states
@@ -305,41 +600,84 @@ describe("H2.5 fold-aware nominal plan, plan cache, subtree memo (D-6), invarian
       }
 
       // F-4 Path independence: toggle sequences of length <= 3 feeding previousOrientation forward
-      // produce byte-identical canonical view bytes to computing the target state directly.
-      const sampleStates = states.slice(0, Math.min(states.length, 6));
-      const seqCache = createLayoutCache({ maxEntries: 64 });
-      for (const s1 of sampleStates) {
-        const r1 = mustLayOut(
-          seqCache.layout(scene.document, baseOptionsOf(scene, { collapsed: s1 }), scene.sourceView),
-          `${scene.id}:seq:1`,
-        );
-        for (const s2 of sampleStates.slice(0, 3)) {
+      // directly through layoutMeasured with a shared nominal plan + subtree memo (NEVER short-circuited
+      // by the result cache!) produce byte-identical canonical view bytes to computing each state cold.
+      if (nominalPlan !== undefined) {
+        const seqMemo = createSubtreeMemo();
+        const planExec = { plan: nominalPlan, memo: seqMemo };
+        // Cover EVERY state for scenes with <= 12 states; evenly cover 10 states across all fold depths for 52-state scenes.
+        const sampleStates =
+          states.length <= 12
+            ? states
+            : Array.from({ length: 10 }, (_, idx) => states[Math.floor((idx * (states.length - 1)) / 9)]!);
+        for (let i = 0; i < sampleStates.length; i += 1) {
+          const s1 = sampleStates[i]!;
+          const s2 = sampleStates[(i + 1) % sampleStates.length]!;
+          const s3 = sampleStates[(i + 2) % sampleStates.length]!;
+          // Step 1: start from adversarial flipped previousOrientation -> s1
+          const r1 = mustLayOut(
+            layoutMeasured(
+              scene.document,
+              baseOptionsOf(scene, { collapsed: s1, previousOrientation: flippedNominalPrev }),
+              scene.sourceView,
+              planExec,
+            ),
+            `${scene.id}:seq:1`,
+          );
+          expect(canonicalise(r1.view, "view"), `${scene.id}:F-4:step1:${s1.join(",")}`).toBe(
+            canonicalise(resultsByKey.get(s1.join(","))!.view, "view"),
+          );
+          // Step 2: s1 -> s2 feeding r1.orientations forward
           const r2 = mustLayOut(
-            seqCache.layout(
+            layoutMeasured(
               scene.document,
               baseOptionsOf(scene, {
                 collapsed: s2,
                 ...(r1.orientations === undefined ? {} : { previousOrientation: r1.orientations }),
               }),
               scene.sourceView,
+              planExec,
             ),
             `${scene.id}:seq:2`,
           );
-          const r3 = mustLayOut(
-            seqCache.layout(
+          expect(canonicalise(r2.view, "view"), `${scene.id}:F-4:step2:${s1.join(",")}->${s2.join(",")}`).toBe(
+            canonicalise(resultsByKey.get(s2.join(","))!.view, "view"),
+          );
+          // Step 3a (returning): s1 -> s2 -> s1 feeding r2.orientations forward
+          const r3Ret = mustLayOut(
+            layoutMeasured(
               scene.document,
               baseOptionsOf(scene, {
                 collapsed: s1,
                 ...(r2.orientations === undefined ? {} : { previousOrientation: r2.orientations }),
               }),
               scene.sourceView,
+              planExec,
             ),
-            `${scene.id}:seq:3`,
+            `${scene.id}:seq:3-ret`,
           );
-          expect(canonicalise(r3.view, "view"), `${scene.id}:F-4:${s1.join(",")}->${s2.join(",")}`).toBe(
+          expect(canonicalise(r3Ret.view, "view"), `${scene.id}:F-4:ret:${s1.join(",")}->${s2.join(",")}->${s1.join(",")}`).toBe(
             canonicalise(resultsByKey.get(s1.join(","))!.view, "view"),
           );
+          // Step 3b (non-returning): s1 -> s2 -> s3 feeding r2.orientations forward
+          const r3Next = mustLayOut(
+            layoutMeasured(
+              scene.document,
+              baseOptionsOf(scene, {
+                collapsed: s3,
+                ...(r2.orientations === undefined ? {} : { previousOrientation: r2.orientations }),
+              }),
+              scene.sourceView,
+              planExec,
+            ),
+            `${scene.id}:seq:3-next`,
+          );
+          expect(canonicalise(r3Next.view, "view"), `${scene.id}:F-4:next:${s1.join(",")}->${s2.join(",")}->${s3.join(",")}`).toBe(
+            canonicalise(resultsByKey.get(s3.join(","))!.view, "view"),
+          );
         }
+        // Confirm the subtree memo was genuinely exercised across the uncached sequence.
+        expect(seqMemo.stats().hits, `${scene.id}:F-4:memo-exercised`).toBeGreaterThan(0);
       }
     }
 
@@ -355,14 +693,14 @@ describe("H2.5 fold-aware nominal plan, plan cache, subtree memo (D-6), invarian
     expect(metrics.totalStates).toBe(44);
     expect(Number.isFinite(metrics.totalUntouchedEdges)).toBe(true);
     expect(Number.isFinite(metrics.routeLocalityChanged)).toBe(true);
-  }, 120_000);
+  }, 180_000);
 
   it("enforces F-1, F-2, F-3, F-4, F-6 and memo on/off identity over all visible fold states of composed appctx-architecture (52 states)", () => {
     const metrics = verifyCorpusScenes([buildAppctxArchitecture16x9()]);
     expect(metrics.totalStates).toBe(52);
     expect(Number.isFinite(metrics.totalUntouchedEdges)).toBe(true);
     expect(Number.isFinite(metrics.routeLocalityChanged)).toBe(true);
-  }, 120_000);
+  }, 180_000);
 
   it("keeps zone gutters at token across every fold state of a v1-path twin of Example A (F-6)", () => {
     const exA = buildExampleA();
@@ -388,13 +726,7 @@ describe("H2.5 fold-aware nominal plan, plan cache, subtree memo (D-6), invarian
         }),
         `v1-exA:${collapsed.join(",")}`,
       );
-      for (const ch of res.channels ?? []) {
-        if (ch.zone === true) expect(ch.gap).toBe(96);
-      }
-      for (const gap of res.composition?.paintedGapsAboveToken ?? []) {
-        expect(gap.token).toBe(96);
-        expect(Math.abs(gap.paintedGap - (gap.token + gap.fromSlack + gap.toSlack))).toBeLessThanOrEqual(TOL);
-      }
+      verifyF6PaintedGapsFromGeometry(exA, collapsed, res, `v1-exA:${collapsed.join(",")}`);
     }
   });
 

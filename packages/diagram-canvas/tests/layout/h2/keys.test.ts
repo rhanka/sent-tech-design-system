@@ -1,14 +1,15 @@
-import { entityRef, lowerLayoutHintsV2, type DsLayoutHintsV2 } from "@sentropic/diagram-core";
+import { canonicalise, entityRef, lowerLayoutHintsV2, type DsLayoutHintsV2 } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
 import {
   createLayoutCache,
   layoutFingerprint,
   linkStyleKey,
+  type LevelOrientation,
   type LineMeasurer,
 } from "../../../src/index.js";
 import { resolveScene } from "../../../src/presentation/diagramSceneModel.js";
-import { buildExampleA, h2Measurer } from "./fixtures/referenceSet.js";
+import { buildExampleA, buildGenericScene, h2Measurer } from "./fixtures/referenceSet.js";
 
 function makeUnversionedMeasurer(overrides: Readonly<Record<string, number>>): LineMeasurer {
   const base = h2Measurer();
@@ -156,5 +157,71 @@ describe("H2.2 result cache key and legend probe (S-1 / R1-2)", () => {
     };
     cache.layout(example.document, { ...shared, legendTitle: "Title A" });
     expect(cache.has(example.document, { ...shared, legendTitle: "Title B" })).toBe(true);
+  });
+
+  it("includes previousOrientation in composed result cache keys (F-4): flipped previousOrientation misses result cache, hits plan cache, and yields byte-identical view", () => {
+    const hintsV2: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      grids: {
+        root: {
+          stage_columns: ["s1"],
+          transverse_bands: [{ id: "r1", items: [entityRef("host")] }],
+          cells: { [entityRef("host")]: { column: "s1" } },
+        },
+      },
+    };
+    const scene = buildGenericScene({
+      id: "composed-prev-orient-key",
+      carries: ["F-2", "F-4"],
+      hintsV2,
+      entities: [
+        { id: "host", container: true, title: "Auto-Packed Host" },
+        { id: "c1", parent: "host", title: "Card 1" },
+        { id: "c2", parent: "host", title: "Card 2" },
+        { id: "c3", parent: "host", title: "Card 3" },
+        { id: "c4", parent: "host", title: "Card 4" },
+      ],
+      relations: [],
+    });
+    const baseOpts = {
+      registry: scene.registry,
+      bindings: scene.bindings,
+      presentation: scene.presentation,
+      measureLines: scene.measureLines,
+      measureText: () => ({ width: 80, height: 20 }),
+      targetWidth: 1440,
+      hints: scene.hints,
+    };
+
+    const cache = createLayoutCache();
+    const r1 = cache.layout(scene.document, baseOpts);
+    expect(r1.status).toBe("laid-out");
+    if (r1.status !== "laid-out") return;
+    expect(r1.orientations).toBeDefined();
+    const emitted = r1.orientations!;
+    expect(Object.keys(emitted).length).toBeGreaterThan(0);
+
+    // Fixed-point previousOrientation still hits the result cache.
+    expect(cache.has(scene.document, { ...baseOpts, previousOrientation: emitted })).toBe(true);
+    const same = cache.layout(scene.document, { ...baseOpts, previousOrientation: emitted });
+    expect(same).toBe(r1);
+    expect(cache.stats()).toMatchObject({ hits: 1, misses: 1 });
+
+    // Flipped previousOrientation MUST miss the composed result cache (never short-circuit F-4),
+    // reuse the nominal plan cache, and return byte-identical canonical view bytes (F-2).
+    const flipped: Record<string, LevelOrientation> = {};
+    for (const [k, v] of Object.entries(r1.orientations ?? {})) {
+      flipped[k] = v === "rows" ? "columns" : "rows";
+    }
+    expect(cache.has(scene.document, { ...baseOpts, previousOrientation: flipped })).toBe(false);
+    const r2 = cache.layout(scene.document, { ...baseOpts, previousOrientation: flipped });
+    expect(r2.status).toBe("laid-out");
+    expect(cache.stats()).toMatchObject({ hits: 1, misses: 2 });
+    expect(cache.planStats()).toMatchObject({ planEntries: 1, planMisses: 1, planHits: 1 });
+    if (r2.status === "laid-out") {
+      expect(canonicalise(r2.view, "view")).toBe(canonicalise(r1.view, "view"));
+      expect(r2.orientations).toEqual(r1.orientations);
+    }
   });
 });

@@ -203,8 +203,10 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
     const mDigest = measurerDigest(options, measured, Object.values(document.relations).some((r) => r.type === "flow-step"));
     const base = digestOf(input.text) + mDigest;
     const composed = measured && options.hints?.composition !== undefined;
-    // H2 F-2: planned/composed scenes ignore previousOrientation, so drop it from the exact key.
-    const exact = composed ? base : base + digestOf(canonicalise(options.previousOrientation ?? {}));
+    // Include previousOrientation in the exact result key for composed scenes too (F-4):
+    // fixed-point aliasing still hits via find(), while genuinely different previousOrientation
+    // misses the result cache and exercises the plan/memo path rather than short-circuiting.
+    const exact = base + digestOf(canonicalise(options.previousOrientation ?? {}));
     if (!composed) return { base, exact };
 
     // Derived nominal plan key (§4.2 S-1): same record without fold, previousOrientation, or targetWidth,

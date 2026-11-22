@@ -27,7 +27,12 @@ import {
   type ViewDocument,
 } from "@sentropic/diagram-core";
 
-import type { LayoutHints, LineMeasurer } from "../../../../src/index.js";
+import {
+  createLayoutCache,
+  type LayoutHints,
+  type LayoutOptions,
+  type LineMeasurer,
+} from "../../../../src/index.js";
 import type { AnatomyPinned, AlignPinned, DepthPinned } from "../../../../src/presentation/diagramCardModel.js";
 import { cardLineMeasurer, defaultCardMeasure, sceneCardMeasure } from "../../../../src/presentation/diagramCardModel.js";
 import { H2_APPCTX_16_9_HINTS_V2, H2_GENERIC_SCENE_SPECS } from "../../../../test-support/h2ReferenceFixtures.js";
@@ -284,6 +289,13 @@ export function buildStructureOnlyScenes(): readonly H2ReferenceScene[] {
 
 export function buildAppctxArchitecture16x9(): H2ReferenceScene {
   const base = hCondInput("architecture", false);
+  const r7View: ViewDocument = {
+    ...base.view,
+    presentation: {
+      ...base.view.presentation,
+      anatomy: "v2",
+    },
+  };
   const hintsV2 = H2_APPCTX_16_9_HINTS_V2;
   const diagnostics = validateLayoutHintsV2(hintsV2);
   if (diagnostics.length > 0) {
@@ -296,8 +308,8 @@ export function buildAppctxArchitecture16x9(): H2ReferenceScene {
   return {
     id: "appctx-architecture",
     document: base.document,
-    sourceView: base.view,
-    presentation: base.presentation as H2Presentation,
+    sourceView: r7View,
+    presentation: r7View.presentation.diagram as H2Presentation,
     hintsV2,
     hints: lowerLayoutHintsV2(hintsV2),
     registry: base.registry,
@@ -326,4 +338,141 @@ export function buildGatedReferenceCorpus(): readonly H2ReferenceScene[] {
     ...buildFigkitTwins(),
     buildAppctxArchitecture16x9(),
   ];
+}
+
+export interface ZeroConflictGateReport {
+  readonly totalStates: number;
+  readonly composedStates: number;
+  readonly auditedStates: number;
+  readonly combStates: number;
+  readonly failures: readonly string[];
+}
+
+/**
+ * Evaluate the blocking zero-conflict gate across every visible fold state of `scenes`.
+ * Every state MUST run on the `@2` composition path (`composition` defined) AND the DE-2
+ * route-spacing audit (`routeSpacing` defined, zero `v1-path` comb fallbacks) with
+ * `conflicts === 0`, `label-unplaced === 0`, and `route-obstructed === 0`.
+ */
+export function runZeroConflictGate(
+  scenes: readonly H2ReferenceScene[],
+  extraOptions?: Partial<LayoutOptions>,
+): ZeroConflictGateReport {
+  let totalStates = 0;
+  let composedStates = 0;
+  let auditedStates = 0;
+  let combStates = 0;
+  const failures: string[] = [];
+
+  for (const scene of scenes) {
+    const states = enumerateVisibleFoldStates(scene.document, scene.containers, scene.sourceView);
+    const cache = createLayoutCache({ maxEntries: 128 });
+    for (const collapsed of states) {
+      totalStates += 1;
+      const key = collapsed.join(",");
+      const res = cache.layout(
+        scene.document,
+        {
+          registry: scene.registry,
+          bindings: scene.bindings,
+          presentation: scene.presentation,
+          measureLines: scene.measureLines,
+          measureText: () => ({ width: 80, height: 20 }),
+          targetWidth: 1440,
+          hints: scene.hints,
+          collapsed,
+          ...extraOptions,
+        },
+        scene.sourceView,
+      );
+      if (res.status !== "laid-out") {
+        failures.push(`${scene.id}[${key}]: refused (${JSON.stringify(res.refusals)})`);
+        continue;
+      }
+      if (res.composition === undefined) {
+        failures.push(`${scene.id}[${key}]: composition-missing (not on @2 composition path)`);
+      } else {
+        composedStates += 1;
+      }
+      if (res.routeSpacing === undefined) {
+        failures.push(`${scene.id}[${key}]: routeSpacing-missing (v1 path — route-spacing audit did not run)`);
+      } else {
+        auditedStates += 1;
+      }
+      if ((res.combGroups?.length ?? 0) > 0) {
+        combStates += 1;
+      }
+      const v1CombFallbacks = res.warnings.filter(
+        (w) => w.code === "comb-fallback" && w.details?.reason === "v1-path",
+      );
+      if (v1CombFallbacks.length > 0) {
+        failures.push(`${scene.id}[${key}]: comb-v1-fallback=${v1CombFallbacks.length}`);
+      }
+      const conflicts = res.routeSpacing?.conflictCount ?? 0;
+      const unplaced = res.warnings.filter((w) => w.code === "label-unplaced").length;
+      const obstructed = res.warnings.filter((w) => w.code === "route-obstructed").length;
+      if (conflicts > 0 || unplaced > 0 || obstructed > 0) {
+        failures.push(
+          `${scene.id}[${key}]: conflicts=${conflicts} (${res.routeSpacing?.conflicts.map((c) => `${c.kind}:${c.routes.join("+")}`).join("; ") ?? ""}) label-unplaced=${unplaced} obstructed=${obstructed}`,
+        );
+      }
+    }
+  }
+
+  return { totalStates, composedStates, auditedStates, combStates, failures };
+}
+
+/**
+ * Deliberately conflicting `@2` + r7 fixture used to prove the zero-conflict gate
+ * is non-vacuous: 6 distinct-style links cross a fixed 96px zone gutter whose
+ * capacity is 1 under tight `routeSpacing`/`routeBorderClearance`, producing
+ * deterministic `channel-capacity-exceeded` conflicts in `res.routeSpacing`.
+ */
+export function buildDeliberatelyConflictingComposedScene(): {
+  readonly scene: H2ReferenceScene;
+  readonly extraOptions: Partial<LayoutOptions>;
+} {
+  const hintsV2: DsLayoutHintsV2 = {
+    vocabulary: "ds-layout-hints@2",
+    mode: "stage-columns",
+    grids: {
+      root: {
+        stage_columns: ["s1", "s2"],
+        transverse_bands: [{ id: "r1", items: [entityRef("left-zone"), entityRef("right-zone")] }],
+        cells: {
+          [entityRef("left-zone")]: { column: "s1" },
+          [entityRef("right-zone")]: { column: "s2" },
+        },
+      },
+    },
+    stacks: {
+      [entityRef("left-zone")]: { axis: "column" },
+      [entityRef("right-zone")]: { axis: "column" },
+    },
+  };
+  const scene = buildGenericScene({
+    id: "deliberate-conflict-probe",
+    carries: ["REQ-R7-13"],
+    hintsV2,
+    entities: [
+      { id: "left-zone", container: true, title: "Left Zone" },
+      { id: "l1", parent: "left-zone", title: "L1" },
+      { id: "l2", parent: "left-zone", title: "L2" },
+      { id: "right-zone", container: true, title: "Right Zone" },
+      { id: "r1", parent: "right-zone", title: "R1" },
+      { id: "r2", parent: "right-zone", title: "R2" },
+    ],
+    relations: [
+      { id: "c1", source: "l1", target: "r2", strokeStyle: "solid" },
+      { id: "c2", source: "l1", target: "r2", strokeStyle: "dashed" },
+      { id: "c3", source: "l1", target: "r2", strokeStyle: "dotted" },
+      { id: "c4", source: "l2", target: "r1", strokeStyle: "solid", emphasis: "emphasis" },
+      { id: "c5", source: "l2", target: "r1", strokeStyle: "dashed", emphasis: "emphasis" },
+      { id: "c6", source: "l2", target: "r1", arrowhead: "none" },
+    ],
+  });
+  return {
+    scene,
+    extraOptions: { metrics: { routeSpacing: 36, routeBorderClearance: 36 } },
+  };
 }

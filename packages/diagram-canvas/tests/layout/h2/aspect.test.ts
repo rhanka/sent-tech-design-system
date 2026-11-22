@@ -402,24 +402,64 @@ describe("H2.6 aspect: '16:9' (τ ladder, σ slack, legend bounds, post-route co
     );
     expect(pairZ1Z2).toBeDefined();
     expect(pairZ1Z2!.token).toBe(96);
+    const geomZ1 = allFolded.view.entityOccurrences[occurrenceRef("e.z1")]!.geometry;
+    const geomZ2 = allFolded.view.entityOccurrences[occurrenceRef("e.z2")]!.geometry;
+    const paintedZ1Z2 = geomZ2.x - (geomZ1.x + geomZ1.width);
+    expect(Math.abs(paintedZ1Z2 - (96 + sigmaS1 / 2 + sigmaS2 / 2))).toBeLessThanOrEqual(TOL);
+    expect(Math.abs(pairZ1Z2!.paintedGap - paintedZ1Z2)).toBeLessThanOrEqual(TOL);
     expect(Math.abs(pairZ1Z2!.fromSlack - sigmaS1 / 2)).toBeLessThanOrEqual(TOL);
     expect(Math.abs(pairZ1Z2!.toSlack - sigmaS2 / 2)).toBeLessThanOrEqual(TOL);
-    expect(Math.abs(pairZ1Z2!.paintedGap - (96 + sigmaS1 / 2 + sigmaS2 / 2))).toBeLessThanOrEqual(TOL);
   });
 
-  it("keeps aspect: 'free' byte-identical to H2.5 (no ladder search, no σ)", () => {
-    const exA = buildExampleA();
-    const freeHints = lowerLayoutHintsV2({
-      ...(exA.hintsV2 as Extract<DsLayoutHintsV2, { mode: "stage-columns" }>),
-      aspect: "free",
+  it("keeps aspect: 'free' byte-identical to DE-2 output (no ladder search, no σ) while aspect: '16:9' reshapes it", () => {
+    const baseGrid: Extract<DsLayoutHintsV2, { mode: "stage-columns" }> = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      grids: {
+        root: {
+          stage_columns: ["s1"],
+          transverse_bands: [{ id: "r1", items: [entityRef("pack-host")] }],
+          cells: { [entityRef("pack-host")]: { column: "s1" } },
+        },
+      },
+    };
+    const freeHints = lowerLayoutHintsV2({ ...baseGrid, aspect: "free" });
+    const aspect16x9Hints = lowerLayoutHintsV2({ ...baseGrid, aspect: "16:9" });
+    const scene = buildGenericScene({
+      id: "aspect-free-vs-de2",
+      carries: ["H2.6"],
+      hintsV2: { ...baseGrid, aspect: "free" },
+      entities: [
+        { id: "pack-host", container: true, title: "Auto-Packed Host" },
+        { id: "c1", parent: "pack-host", title: "Card 1" },
+        { id: "c2", parent: "pack-host", title: "Card 2" },
+        { id: "c3", parent: "pack-host", title: "Card 3" },
+        { id: "c4", parent: "pack-host", title: "Card 4" },
+        { id: "c5", parent: "pack-host", title: "Card 5" },
+        { id: "c6", parent: "pack-host", title: "Card 6" },
+      ],
+      relations: [],
     });
-    const defaultRes = mustLayOut(layoutMeasured(exA.document, baseOptionsOf(exA)), "default");
-    const freeRes = mustLayOut(layoutMeasured(exA.document, baseOptionsOf(exA, { hints: freeHints })), "free");
-    expect(canonicalise(freeRes.view, "view")).toBe(canonicalise(defaultRes.view, "view"));
-    expect(canonicalise(freeRes.composition)).toBe(canonicalise(defaultRes.composition));
+
+    // True DE-2 baseline: hints omitted (composition === undefined, default τ = 1.78, no σ).
+    const { hints: _noHints, ...de2Opts } = baseOptionsOf(scene);
+    void _noHints;
+    const de2Res = mustLayOut(layoutMeasured(scene.document, de2Opts), "de2");
+    expect(de2Res.composition).toBeUndefined();
+
+    // @2 stage-columns with aspect: "free" MUST produce DE-2's exact view bytes (no ladder search, no σ).
+    const freeRes = mustLayOut(layoutMeasured(scene.document, baseOptionsOf(scene, { hints: freeHints })), "free");
+    expect(freeRes.composition).toBeDefined();
+    expect(canonicalise(freeRes.view, "view")).toBe(canonicalise(de2Res.view, "view"));
     expect(freeRes.composition?.nominalAspect).toBeUndefined();
     expect(freeRes.composition?.sigmaCols).toBeUndefined();
     expect(freeRes.composition?.sigmaBands).toBeUndefined();
+
+    // Non-vacuity: aspect: "16:9" on the exact same scene searches τ / adds σ and diverges from DE-2 bytes.
+    const res16x9 = mustLayOut(layoutMeasured(scene.document, baseOptionsOf(scene, { hints: aspect16x9Hints })), "16:9");
+    expect(canonicalise(res16x9.view, "view")).not.toBe(canonicalise(de2Res.view, "view"));
+    expect(res16x9.composition?.nominalAspect).toBeDefined();
+    expect(Math.abs(paintedRatioOf(res16x9).ratio / ASPECT_16_9_TARGET - 1)).toBeLessThanOrEqual(ASPECT_16_9_TOLERANCE);
   });
 
   it("picks a non-default τ from the ladder on an auto-packed container to reach 16:9 without needing excessive σ", () => {

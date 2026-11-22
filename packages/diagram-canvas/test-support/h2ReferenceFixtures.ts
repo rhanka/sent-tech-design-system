@@ -842,6 +842,13 @@ export function buildH2Appctx16x9Fixture(
   architectureDocument: SemanticDocument,
   architectureView: ViewDocument,
 ): BrowserSafeH2Scene {
+  const r7View: ViewDocument = {
+    ...architectureView,
+    presentation: {
+      ...architectureView.presentation,
+      anatomy: "v2",
+    },
+  };
   const containers = Object.values(architectureDocument.entities)
     .filter((entity) => entity.type === "container")
     .map((entity) => entity.id)
@@ -849,8 +856,8 @@ export function buildH2Appctx16x9Fixture(
   return {
     id: "appctx-architecture",
     document: architectureDocument,
-    view: architectureView,
-    presentation: architectureView.presentation.diagram as BrowserSafeH2Scene["presentation"],
+    view: r7View,
+    presentation: r7View.presentation.diagram as BrowserSafeH2Scene["presentation"],
     hintsV2: H2_APPCTX_16_9_HINTS_V2,
     hints: lowerLayoutHintsV2(H2_APPCTX_16_9_HINTS_V2),
     containers,
@@ -863,6 +870,7 @@ export interface H2ResidualMeasurements {
   readonly paintedHeight: number;
   readonly aspectRatio: number;
   readonly deltaFrom16x9Pct: number;
+  readonly routeSpacingAudited: boolean;
   readonly conflictCount: number;
   readonly unplacedLabelCount: number;
   readonly obstructedCount: number;
@@ -1054,6 +1062,7 @@ export function measureH2SceneResiduals(
     paintedHeight,
     aspectRatio,
     deltaFrom16x9Pct,
+    routeSpacingAudited: laidOut.routeSpacing !== undefined,
     conflictCount: laidOut.routeSpacing?.conflictCount ?? 0,
     unplacedLabelCount: laidOut.warnings.filter((w) => w.code === "label-unplaced").length,
     obstructedCount: laidOut.warnings.filter((w) => w.code === "route-obstructed").length,

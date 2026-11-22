@@ -11,7 +11,6 @@ import {
   checkRouteSpacing,
   connectorMarkerIds,
   connectorMarkerRef,
-  createLayoutCache,
   layoutMeasured,
   type LayoutOptions,
   type LayoutResult,
@@ -19,11 +18,12 @@ import {
 import { resolveScene } from "../../../src/presentation/diagramSceneModel.js";
 import {
   buildAppctxArchitecture16x9,
+  buildDeliberatelyConflictingComposedScene,
   buildExampleA,
   buildExampleB,
   buildFigkitTwins,
   buildGenericScene,
-  enumerateVisibleFoldStates,
+  runZeroConflictGate,
   type H2ReferenceScene,
 } from "./fixtures/referenceSet.js";
 
@@ -447,48 +447,97 @@ describe("H2.7 fanIn / fanOut combs (§4.6 + Review P2 #4 & #5)", () => {
     expect(withIntruder.conflicts.some((c) => c.kind === "segment-overlap" && c.routes.includes("r3"))).toBe(true);
   });
 
-  it("keeps fanIn: 'separate' & fanOut: 'separate' byte-identical to non-comb output", () => {
-    const exB = buildExampleB();
-    const sepHints = lowerLayoutHintsV2({
-      ...(exB.hintsV2 as Extract<DsLayoutHintsV2, { mode: "stage-columns" }>),
-      fanIn: "separate",
-      fanOut: "separate",
-    });
-    const resA = mustLayOut(layoutMeasured(exB.document, baseOptionsOf(exB, { hints: sepHints })), "sep1");
-    const resB = mustLayOut(layoutMeasured(exB.document, baseOptionsOf(exB, { hints: sepHints })), "sep2");
-    expect(resA.combGroups).toBeUndefined();
-    expect(canonicalise(resA.view, "view")).toBe(canonicalise(resB.view, "view"));
+  it("keeps fanIn: 'separate' & fanOut: 'separate' byte-identical to DE-2 output while comb mode changes view bytes", () => {
+    for (const mode of ["fanIn", "fanOut"] as const) {
+      const baseGrid: Extract<DsLayoutHintsV2, { mode: "stage-columns" }> = {
+        vocabulary: "ds-layout-hints@2",
+        mode: "stage-columns",
+        grids: {
+          root: {
+            stage_columns: ["s1", "s2", "s3"],
+            transverse_bands: [
+              { id: "r1", items: [entityRef("z1"), entityRef("z2"), entityRef("z3")] },
+              { id: "r2", items: [entityRef("z4")] },
+            ],
+            cells: {
+              [entityRef("z1")]: { column: "s1" },
+              [entityRef("z2")]: { column: "s2" },
+              [entityRef("z3")]: { column: "s3" },
+              [entityRef("z4")]: { column: "s1" },
+            },
+          },
+        },
+      };
+      const sepHints = lowerLayoutHintsV2({ ...baseGrid, fanIn: "separate", fanOut: "separate" });
+      const combHints = lowerLayoutHintsV2({
+        ...baseGrid,
+        ...(mode === "fanIn" ? { fanIn: "comb" as const } : { fanOut: "comb" as const }),
+      });
+      const scene = buildGenericScene({
+        id: `de2-separate-${mode}`,
+        carries: ["H2.7"],
+        hintsV2: { ...baseGrid, fanIn: "separate", fanOut: "separate" },
+        entities: [
+          { id: "z1", container: true, title: "Zone 1" },
+          { id: "z1a", parent: "z1", title: "Node 1" },
+          { id: "z2", container: true, title: "Zone 2" },
+          { id: "z2a", parent: "z2", title: "Node 2" },
+          { id: "z3", container: true, title: "Zone 3" },
+          { id: "z3a", parent: "z3", title: "Node 3" },
+          { id: "z4", container: true, title: "Zone 4" },
+          { id: "z4a", parent: "z4", title: "Node 4" },
+        ],
+        relations:
+          mode === "fanIn"
+            ? [
+                { id: "e1", source: "z1a", target: "z4a", label: "Feed" },
+                { id: "e2", source: "z2a", target: "z4a", label: "Feed" },
+                { id: "e3", source: "z3a", target: "z4a", label: "Feed" },
+              ]
+            : [
+                { id: "e1", source: "z4a", target: "z1a", label: "Emit" },
+                { id: "e2", source: "z4a", target: "z2a", label: "Emit" },
+                { id: "e3", source: "z4a", target: "z3a", label: "Emit" },
+              ],
+      });
+
+      // True DE-2 baseline: hints omitted (composition === undefined, r7 path active).
+      const { hints: _noHints, ...de2Opts } = baseOptionsOf(scene);
+      void _noHints;
+      const de2Res = mustLayOut(layoutMeasured(scene.document, de2Opts), `${mode}:de2`);
+      expect(de2Res.composition, `${mode}:de2-no-comp`).toBeUndefined();
+      expect(de2Res.routeSpacing, `${mode}:de2-r7`).toBeDefined();
+
+      // @2 stage-columns with fanIn/fanOut: "separate" MUST match DE-2 view bytes byte-for-byte.
+      const sepRes = mustLayOut(layoutMeasured(scene.document, baseOptionsOf(scene, { hints: sepHints })), `${mode}:sep`);
+      expect(sepRes.composition, `${mode}:sep-comp`).toBeDefined();
+      expect(sepRes.combGroups, `${mode}:sep-no-comb`).toBeUndefined();
+      expect(canonicalise(sepRes.view, "view"), `${mode}:sep-eq-de2`).toBe(canonicalise(de2Res.view, "view"));
+
+      // Non-vacuity: enabling comb mode on the exact same scene forms a comb and changes view bytes vs DE-2.
+      const combRes = mustLayOut(layoutMeasured(scene.document, baseOptionsOf(scene, { hints: combHints })), `${mode}:comb`);
+      expect(combRes.combGroups, `${mode}:comb-formed`).toHaveLength(1);
+      expect(canonicalise(combRes.view, "view"), `${mode}:comb-differs-de2`).not.toBe(canonicalise(de2Res.view, "view"));
+    }
   });
 
-  it("BLOCKING GATE (with Review P2 #5): conflicts === 0, label-unplaced === 0, and route-obstructed === 0 across EVERY visible fold state of the H2.2 reference set (96 states)", () => {
+  it("BLOCKING GATE (with Review P2 #5): conflicts === 0, label-unplaced === 0, and route-obstructed === 0 across EVERY visible fold state of the H2.2 reference set (96 states on @2 + r7) and fails on a conflicting fixture", () => {
     const corpus: H2ReferenceScene[] = [
       buildExampleA(),
       buildExampleB(),
       ...buildFigkitTwins(),
       buildAppctxArchitecture16x9(),
     ];
-    let totalStates = 0;
-    const failures: string[] = [];
-    for (const scene of corpus) {
-      const states = enumerateVisibleFoldStates(scene.document, scene.containers, scene.sourceView);
-      const cache = createLayoutCache({ maxEntries: 128 });
-      for (const collapsed of states) {
-        totalStates += 1;
-        const res = mustLayOut(
-          cache.layout(scene.document, baseOptionsOf(scene, { collapsed }), scene.sourceView),
-          `${scene.id}:${collapsed.join(",")}`,
-        );
-        const conflicts = res.routeSpacing?.conflictCount ?? 0;
-        const unplacedLabels = res.warnings.filter((w) => w.code === "label-unplaced");
-        const obstructed = res.warnings.filter((w) => w.code === "route-obstructed");
-        if (conflicts > 0 || unplacedLabels.length > 0 || obstructed.length > 0) {
-          failures.push(
-            `${scene.id}[${collapsed.join(",")}]: conflicts=${conflicts} (${res.routeSpacing?.conflicts.map((c) => `${c.kind}:${c.routes.join("+")}`).join("; ") ?? ""}) label-unplaced=${unplacedLabels.length} obstructed=${obstructed.length}`,
-          );
-        }
-      }
-    }
-    expect(totalStates).toBe(96);
-    expect(failures, failures.join("\n")).toEqual([]);
+    const gate = runZeroConflictGate(corpus);
+    expect(gate.totalStates).toBe(96);
+    expect(gate.composedStates).toBe(96);
+    expect(gate.auditedStates).toBe(96);
+    expect(gate.combStates).toBeGreaterThan(0);
+    expect(gate.failures, gate.failures.join("\n")).toEqual([]);
+
+    // Non-vacuity: a deliberately conflicting @2 + r7 scene MUST fail the same gate.
+    const conflicting = buildDeliberatelyConflictingComposedScene();
+    const badGate = runZeroConflictGate([conflicting.scene], conflicting.extraOptions);
+    expect(badGate.failures.some((f) => f.includes("conflicts=") && !f.includes("conflicts=0"))).toBe(true);
   }, 60_000);
 });

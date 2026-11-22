@@ -3685,13 +3685,38 @@ function layoutMeasuredPass(
             return placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined;
           },
         });
-        if (detour === undefined && routeSpacing > 0) {
+        let sortedWideXs: number[] | undefined;
+        let sortedWideYs: number[] | undefined;
+        const ensureWideGrid = (): { readonly xs: readonly number[]; readonly ys: readonly number[] } => {
+          if (sortedWideXs !== undefined && sortedWideYs !== undefined) {
+            return { xs: sortedWideXs, ys: sortedWideYs };
+          }
           const wideXs = new Set<number>([...xs, ...outerLanesX]);
           const wideYs = new Set<number>(ys);
-          for (const x of [request.start.x, request.end.x, ...outerLanesX]) wideXs.add(x - routeSpacing), wideXs.add(x + routeSpacing);
-          for (const y of [request.start.y, request.end.y, ...outerLanes]) wideYs.add(y - routeSpacing), wideYs.add(y + routeSpacing);
+          for (const x of [request.start.x, request.end.x, ...outerLanesX, ...sortedXs]) {
+            wideXs.add(x - routeSpacing);
+            wideXs.add(x + routeSpacing);
+          }
+          for (let idx = 0; idx + 1 < sortedXs.length; idx += 1) {
+            wideXs.add((sortedXs[idx]! + sortedXs[idx + 1]!) / 2);
+          }
+          for (const y of [request.start.y, request.end.y, ...outerLanes]) {
+            wideYs.add(y - routeSpacing);
+            wideYs.add(y + routeSpacing);
+          }
+          const takenDy = Math.max(edgeClearance, entry.size.height / 2 + metrics.labelMargin);
+          for (const box of taken) {
+            wideYs.add(box.y - takenDy);
+            wideYs.add(box.y + box.height + takenDy);
+          }
+          sortedWideXs = [...wideXs].sort((a, b) => a - b);
+          sortedWideYs = [...wideYs].sort((a, b) => a - b);
+          return { xs: sortedWideXs, ys: sortedWideYs };
+        };
+        if (detour === undefined && routeSpacing > 0) {
+          const wide = ensureWideGrid();
           detour = labelDetour({ request, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
-            xs: [...wideXs].sort((a, b) => a - b), ys: [...wideYs].sort((a, b) => a - b),
+            xs: wide.xs, ys: wide.ys,
             accepts: (points) => {
               return placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined;
             },
@@ -3739,18 +3764,65 @@ function layoutMeasuredPass(
             }
             return true;
           };
+          const adjustDockAway = (dock: Dock, role: "source" | "target"): Dock => {
+            const rect = rects.get(dock.entity);
+            if (rect === undefined || !(routeSpacing > 0)) return dock;
+            const vertical = dock.side === "east" || dock.side === "west";
+            const startCoord = (vertical ? rect.y : rect.x) + dockCornerInset;
+            const endCoord = (vertical ? rect.y + rect.height : rect.x + rect.width) - dockCornerInset;
+            const spacing = Math.max(routeSpacing, metrics.slotSpacing);
+            const occupied: number[] = [];
+            for (const [otherId, otherDocks] of finalDocks) {
+              if (otherId === entry.id) continue;
+              for (const oDock of [otherDocks.source, otherDocks.target]) {
+                if (oDock.entity === dock.entity && oDock.side === dock.side) {
+                  occupied.push(vertical ? oDock.point.y : oDock.point.x);
+                }
+              }
+              if (role === "target" && otherDocks.target.entity === dock.entity && otherDocks.target.side === dock.side) {
+                occupied.push(vertical ? otherDocks.target.point.y : otherDocks.target.point.x);
+              }
+            }
+            const base = vertical ? dock.point.y : dock.point.x;
+            const isClearCoord = (c: number): boolean =>
+              c >= startCoord - 1e-4 && c <= endCoord + 1e-4 && occupied.every((u) => Math.abs(u - c) >= routeSpacing - 1e-4);
+            if (isClearCoord(base)) return dock;
+            for (let step = 1; step <= 16; step += 1) {
+              for (const delta of [-step * spacing, step * spacing]) {
+                const c = base + delta;
+                if (!isClearCoord(c)) continue;
+                const point = vertical ? { x: dock.point.x, y: c } : { x: c, y: dock.point.y };
+                const anchor = vertical ? (c - rect.y) / rect.height : (c - rect.x) / rect.width;
+                return { ...dock, point, anchor };
+              }
+            }
+            return dock;
+          };
           for (const [source, target] of facePairs) {
             const overrides = new Map(sideOverrides);
             overrides.set(entry.id, { source, target, turn: source === target });
-            const pair = dockEdges({ graph: filteredGraph, rects, direction: "top-to-bottom", metrics,
+            let pair = dockEdges({ graph: filteredGraph, rects, direction: "top-to-bottom", metrics,
               labelSizes: new Map(), fixed: true, cornerInset: dockCornerInset, sideOverrides: overrides }).docks.get(entry.id)!;
+            if (!docksClear(pair) && routeSpacing > 0) {
+              pair = {
+                source: adjustDockAway(pair.source, "source"),
+                target: adjustDockAway(pair.target, "target"),
+              };
+            }
             if (!docksClear(pair)) continue;
             const alternative = { ...request, start: pair.source.point, startExit: pair.source.exit,
               end: pair.target.point, endExit: pair.target.exit };
-            const route = labelDetour({ request: alternative, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
+            let route = labelDetour({ request: alternative, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
               xs: sortedXs, ys: sortedYs,
               accepts: (points) => placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined,
             });
+            if (route === undefined && routeSpacing > 0) {
+              const wide = ensureWideGrid();
+              route = labelDetour({ request: alternative, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
+                xs: wide.xs, ys: wide.ys,
+                accepts: (points) => placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined,
+              });
+            }
             if (route === undefined) continue;
             retryRoutes.set(entry.id, route);
             retryObstructed.delete(entry.id);

@@ -14,7 +14,7 @@ export function expectedLegendStyles(name) {
   if (name === 'h2-example-a') {
     return ['solid:arrow:default', 'solid:arrow:emphasis', 'dashed:arrow:default'];
   }
-  if (name === 'h2-example-b') {
+  if (name === 'h2-example-b' || name === 'h2-aspect-16-9') {
     return ['solid:arrow:default', 'dashed:arrow:default'];
   }
   return null;
@@ -23,6 +23,6 @@ export function expectedLegendStyles(name) {
 /** Expected legend anchor for scenes asserting a link-style legend in first-paint. */
 export function expectedLegendAnchor(name) {
   if (name === 'h2-example-a') return 'free-cell';
-  if (name === 'h2-example-b' || name.startsWith('r7-')) return 'right';
+  if (name === 'h2-example-b' || name === 'h2-aspect-16-9' || name.startsWith('r7-')) return 'right';
   return null;
 }
