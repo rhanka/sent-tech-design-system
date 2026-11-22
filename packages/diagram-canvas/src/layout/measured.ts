@@ -3929,7 +3929,16 @@ function layoutMeasuredPass(
         return rectsIntersect(strip, { x: Math.min(point.x, next.x), y: Math.min(point.y, next.y),
           width: Math.abs(point.x - next.x), height: Math.abs(point.y - next.y) });
       }))).map(([id]) => String(id)).sort(byString);
-      const n = edges.reduce((sum, id) => sum + (edgeBundles[id]?.members.length ?? 1), 0);
+      const seenCombs = new Set<string>();
+      const n = edges.reduce((sum, id) => {
+        const combId = combPlan?.memberCombId.get(id);
+        if (combId !== undefined) {
+          if (seenCombs.has(combId)) return sum;
+          seenCombs.add(combId);
+          return sum + 1;
+        }
+        return sum + (edgeBundles[id]?.members.length ?? 1);
+      }, 0);
       const intersecting = [...labelBoxes.values()].filter(box => gutter.strips.some(strip => rectsIntersect(strip, box)));
       const labelled = intersecting.length > 0;
       const axis = gutter.horizontal ? 'vertical' as const : 'horizontal' as const;

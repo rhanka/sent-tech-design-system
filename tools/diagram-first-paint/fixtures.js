@@ -2,14 +2,21 @@ import architecture from '../../packages/diagram-canvas/tests/layout/dc2a/fixtur
 import architectureView from '../../packages/diagram-canvas/tests/layout/dc2a/fixtures/h-cond/appctx-architecture.view-architecture.json';
 import ontology from '../../packages/diagram-canvas/tests/layout/dc2a/fixtures/h-cond/appctx-ontology.semantic.json';
 import ontologyView from '../../packages/diagram-canvas/tests/layout/dc2a/fixtures/h-cond/appctx-ontology.view-ontology.json';
+import schema13Fixture from '../../packages/diagram-core/tests/fixtures/layout-hints-2/schema-13.json';
+import schema3Fixture from '../../packages/diagram-core/tests/fixtures/layout-hints-2/schema-3.json';
 import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, DIAGRAM_PRESENTATION_V2_CONTRACT_PIN, createView, entityRef, occurrenceRef, viewRef,
   m3ProfileRegistry, shippedExecutorBindings } from '@sentropic/diagram-core';
 import { flowFixture } from '../../packages/diagram-canvas/test-support/flowFixture.ts';
+import {
+  H2_GENERIC_SCENE_SPECS,
+  buildBrowserSafeGenericScene,
+  buildH2Appctx16x9Fixture,
+} from '../../packages/diagram-canvas/test-support/h2ReferenceFixtures.ts';
 import { nestedZoneFixture } from '../../packages/diagram-canvas/test-support/nestedZoneFixture.ts';
 import { r7ConnectorsFixture } from '../../packages/diagram-canvas/test-support/r7ConnectorsFixture.ts';
 
-import { cases, expectedLegendStyles } from './scenes.js';
-export { cases, expectedLegendStyles } from './scenes.js';
+import { cases, expectedLegendAnchor, expectedLegendStyles } from './scenes.js';
+export { cases, expectedLegendAnchor, expectedLegendStyles } from './scenes.js';
 
 function r7NestedStylesFixture() {
   const document = {
@@ -75,6 +82,22 @@ export function fixture(name) {
   }
   if (name === 'r7-nested-styles') {
     return { ...common, ...r7NestedStylesFixture() };
+  }
+  if (name === 'h2-example-a' || name === 'h2-example-b') {
+    const id = name === 'h2-example-a' ? 'schema-13' : 'schema-3';
+    const payload = name === 'h2-example-a' ? schema13Fixture : schema3Fixture;
+    const spec = H2_GENERIC_SCENE_SPECS[id];
+    const built = buildBrowserSafeGenericScene({
+      id,
+      entities: spec.entities,
+      relations: spec.relations,
+      hintsV2: payload.hints,
+    });
+    return { ...common, document: built.document, presentation: built.presentation, hints: built.hints, collapsed: [] };
+  }
+  if (name === 'h2-aspect-16-9') {
+    const built = buildH2Appctx16x9Fixture(architecture, architectureView);
+    return { ...common, document: built.document, view: built.view, presentation: built.presentation, hints: built.hints, collapsed: [] };
   }
   if (name.startsWith('numbered-flows')) {
     const source = flowFixture(name.endsWith('-bundled') ? 6 : 3, { labels: true, folded: true, reverse: true });
