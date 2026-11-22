@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "BoxPlotChart",
-  "sourceRevision": "b45dcfdbab06b6708e662e6555d4181efe7552b2",
+  "sourceRevision": "fb517c6368bd59069f55d5453e91c643d5bdd58d",
   "source": "src/BoxPlotChart.ts",
   "fixtures": [
     {

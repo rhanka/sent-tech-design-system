@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "FileUploader",
-  "sourceRevision": "35b141971e24bd1c7e797fedb9db172f26b7c6af",
+  "sourceRevision": "49518e51be2870bd86ff09dde349436ab0e47b92",
   "source": "src/FileUploader.ts",
   "fixtures": [
     {

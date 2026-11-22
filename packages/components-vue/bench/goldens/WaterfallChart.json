@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "WaterfallChart",
-  "sourceRevision": "dcf3c7ce0b57238dd313409d1a6c4c292c360e98",
+  "sourceRevision": "6eadd1df1c0d191d44d285a2416871b2319a0a93",
   "source": "src/WaterfallChart.ts",
   "fixtures": [
     {

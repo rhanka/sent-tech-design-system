@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "TimelineChart",
-  "sourceRevision": "99fc35717c3385f4c2f16bb0cfc3dc78b381f326",
+  "sourceRevision": "fd257ce902446e4947e4315660502e9e36f404d8",
   "source": "src/lib/TimelineChart.ts",
   "fixtures": [
     {

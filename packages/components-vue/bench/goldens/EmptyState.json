@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "EmptyState",
-  "sourceRevision": "57a6d522b8940b59d7cbe0435b904145117356d5",
+  "sourceRevision": "d94cf3431266c7069a608245918147bea53bdb0d",
   "source": "src/EmptyState.ts",
   "fixtures": [
     {

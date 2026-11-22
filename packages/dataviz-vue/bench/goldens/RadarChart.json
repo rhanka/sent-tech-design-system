@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "RadarChart",
-  "sourceRevision": "d1d4edfc146a0d010efbfff15a65027c51fa546e",
+  "sourceRevision": "d8d7506ae2d9cca627348a546832173f602cc0ee",
   "source": "src/lib/RadarChart.ts",
   "fixtures": [
     {

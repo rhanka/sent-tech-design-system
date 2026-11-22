@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "OHLCChart",
-  "sourceRevision": "5de6ca979d191fbc21119203bb22a974db50453d",
+  "sourceRevision": "ee24aa8d5e8566f22716f93c2982318e1cd3bd2c",
   "source": "src/lib/OHLCChart.ts",
   "fixtures": [
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Table",
-  "sourceRevision": "bbc3a1f79f662f497a3fa0c04cfcf66dbfe88208",
+  "sourceRevision": "b319be2b68b049b91f791ebeaebd097cdd34c864",
   "source": "src/Table.ts",
   "fixtures": [
     {

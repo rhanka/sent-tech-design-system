@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "AppHeader",
-  "sourceRevision": "4f341b0ed8b8947f0de7169487afd20f23512479",
+  "sourceRevision": "667d8f7ad6842ae5e5b6547ea8f9fe0d8b248e56",
   "source": "src/AppHeader.ts",
   "fixtures": [
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ChatMessage",
-  "sourceRevision": "99f8cf43943f37acbfaba40b12d4539f364073fc",
+  "sourceRevision": "e28e8ab354fa839f8d075030a67b1cee33a712dd",
   "source": "src/ChatMessage.ts",
   "fixtures": [
     {

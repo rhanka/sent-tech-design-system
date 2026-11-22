@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Textarea",
-  "sourceRevision": "e5e0cc6d0a38693265433ba3eeaac6d8fb5cbafb",
+  "sourceRevision": "10216a8e99ca12a662176156ae82f04abd1cd215",
   "source": "src/Textarea.ts",
   "fixtures": [
     {

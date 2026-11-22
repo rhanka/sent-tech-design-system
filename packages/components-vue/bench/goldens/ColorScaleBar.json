@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ColorScaleBar",
-  "sourceRevision": "e1fd921d2507903c1d6ed9dec15d0d7bafb1d035",
+  "sourceRevision": "050613bf8e40fad40a6bbf39a2f33c7fbcd12ea1",
   "source": "src/ColorScaleBar.ts",
   "fixtures": [
     {

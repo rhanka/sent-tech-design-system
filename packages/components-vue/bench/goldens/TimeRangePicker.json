@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "TimeRangePicker",
-  "sourceRevision": "cd40029c6fe0cf8f221edc8f5f8c319e17336564",
+  "sourceRevision": "0b0be038c07a24a4f862c286ffcc4ae1ce0234d8",
   "source": "src/TimeRangePicker.ts",
   "fixtures": [
     {

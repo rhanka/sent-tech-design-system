@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "MasterDetail",
-  "sourceRevision": "150ac19d05724d0245c20c3dbf21e5e24eb8024e",
+  "sourceRevision": "5d77d90054f7a32a9e3b5f5a67c63c05530128b8",
   "source": "src/MasterDetail.ts",
   "fixtures": [
     {

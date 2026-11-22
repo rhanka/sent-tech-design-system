@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "VariablePieChart",
-  "sourceRevision": "3e922be38c1b9a24af848f319cc047c058775d45",
+  "sourceRevision": "0c05693288e8711c1bc526bb5c9ba9755fb66220",
   "source": "src/VariablePieChart.ts",
   "fixtures": [
     {

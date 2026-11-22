@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ColumnRangeChart",
-  "sourceRevision": "314e30b9573aa480fc72e0e30e5c4f7cfa6204e4",
+  "sourceRevision": "1afbb9623f1d082db2acc434f026ac6637a033ff",
   "source": "src/lib/ColumnRangeChart.ts",
   "fixtures": [
     {

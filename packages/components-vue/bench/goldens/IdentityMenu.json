@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "IdentityMenu",
-  "sourceRevision": "358c7b2f5f49556ccfca4bd1ecd0a9a641ddba96",
+  "sourceRevision": "7117864aa8ef29dbf8f29c0f7b459d9cb9105bf3",
   "source": "src/IdentityMenu.ts",
   "fixtures": [
     {

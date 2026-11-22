@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ObjectLayerPanel",
-  "sourceRevision": "2678243775ccaabee15f672276b4cdd2cd1b6e0f",
+  "sourceRevision": "dc01f5091d4ccdb98579f11164d89a3bc76d1e79",
   "source": "src/lib/ObjectLayers.ts",
   "fixtures": [
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "StructuredList",
-  "sourceRevision": "8771b8132b5210ec2b43893a490519cb7c644e28",
+  "sourceRevision": "bd3d414ca918f565445f0366aee92dbf49aa1cac",
   "source": "src/StructuredList.ts",
   "fixtures": [
     {

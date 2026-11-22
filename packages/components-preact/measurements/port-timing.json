@@ -2,8 +2,8 @@
   "description": "Raw timing log of the port of spike S1: one builder agent session, 2026-11-14, in the worktree of branch feat/preact-s1-spike. Input of scripts/port-metrics.mjs.",
   "sources": {
     "fileTimes": "Creation time (birth) and last modification time of every file the session authored, in seconds since the Unix epoch, read in the builder worktree with `stat -c '%W %Y %n'` (ext4) after the session and before any later edit. A file is created by the first tool call that writes it, so a birth time is the moment a step produced its first version of that file.",
-    "reportedSeconds": "Step durations the builder session reported in docs/preact-s1-spike.md at commit bdead56b6 (section 8.1), from timestamps it read between tool calls. Those timestamps were not retained: missing source. Kept for comparison only.",
-    "commit": "Committer time of bdead56b6, from `git log -1 --format=%ct bdead56b6`."
+    "reportedSeconds": "Step durations the builder session reported in docs/preact-s1-spike.md at commit 51db7f68a (section 8.1), from timestamps it read between tool calls. Those timestamps were not retained: missing source. Kept for comparison only.",
+    "commit": "Committer time of 51db7f68a, from `git log -1 --format=%ct 51db7f68a`."
   },
   "limits": [
     "n = 1: one session, one builder, eight modules ported in six grouped steps.",
@@ -12,7 +12,7 @@
     "src/Portal.tsx was modified once more 334 s after the last module test file was created; that correction is outside the eight-module span."
   ],
   "commit": {
-    "sha": "bdead56b6aa519c10d4f998f657389cab73e7140",
+    "sha": "51db7f68aa5a183483ca57b461db77f29fd1ea07",
     "committerTime": 1794679584
   },
   "steps": [

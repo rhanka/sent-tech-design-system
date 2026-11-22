@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Calendar",
-  "sourceRevision": "79dae79fe1cfbbe9159d23980ecfc27e2a516e25",
+  "sourceRevision": "474f885f5be137705b92e5e0481aeeea1857960d",
   "source": "src/Calendar.ts",
   "fixtures": [
     {

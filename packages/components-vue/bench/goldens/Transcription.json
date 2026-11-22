@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Transcription",
-  "sourceRevision": "ee8d57fc26d0b7d2410add29ba302d59f5ddffcf",
+  "sourceRevision": "50e706f281abf1356e3a14bb18ba2e7bdaf7c947",
   "source": "src/Transcription.ts",
   "fixtures": [
     {

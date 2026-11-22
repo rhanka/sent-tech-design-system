@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Wizard",
-  "sourceRevision": "06ebba192e72f06e1e17f77abb5f46fbb3b88c81",
+  "sourceRevision": "7a3d4cfcd31e4c840f54c356df79cc92b9ee9636",
   "source": "src/Wizard.ts",
   "fixtures": [
     {

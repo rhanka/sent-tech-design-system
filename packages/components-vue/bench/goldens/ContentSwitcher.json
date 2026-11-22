@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ContentSwitcher",
-  "sourceRevision": "e2762817d60e3885b6da3708859734fd58637e58",
+  "sourceRevision": "2eb7efd8c2ef05f75b2165a796ce8811c18eb526",
   "source": "src/ContentSwitcher.ts",
   "fixtures": [
     {

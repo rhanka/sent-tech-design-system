@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "GeoHexbinMap",
-  "sourceRevision": "564bda53b1a5c11800b0eda9bc205237648ce18b",
+  "sourceRevision": "2390c5b7e25aa565c3de6fc9b39a5cef08c5f5ec",
   "source": "src/lib/GeoHexbinMap.ts",
   "fixtures": [
     {

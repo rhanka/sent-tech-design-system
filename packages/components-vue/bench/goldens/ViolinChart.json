@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ViolinChart",
-  "sourceRevision": "81335b3e37e4ef074bc4c1c05adbd2b2d5ce4aa2",
+  "sourceRevision": "9350400ea1fa5eefa0d969600883a0ac061abbba",
   "source": "src/ViolinChart.ts",
   "fixtures": [
     {

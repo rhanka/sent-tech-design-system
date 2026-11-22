@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Search",
-  "sourceRevision": "479eb8d448c301ef77df1184aa571bb5b8ef5ec8",
+  "sourceRevision": "3dfda5edaefa83da8781582b49319ab4d42a4e96",
   "source": "src/Search.ts",
   "fixtures": [
     {

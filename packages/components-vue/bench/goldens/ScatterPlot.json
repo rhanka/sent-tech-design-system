@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ScatterPlot",
-  "sourceRevision": "9ee2167fab2777d758bc25a3687e48b33dc7b347",
+  "sourceRevision": "0636a42d598fc626e222139e91061559b7f8713c",
   "source": "src/ScatterPlot.ts",
   "fixtures": [
     {

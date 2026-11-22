@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "FormatPanel",
-  "sourceRevision": "f8cc22b7fba847a3c00c93a4505d805baf9f6fe9",
+  "sourceRevision": "7e542fbec43ed419996bfc3285cd3b5ff7121044",
   "source": "src/lib/FormatPanel.ts",
   "fixtures": [
     {

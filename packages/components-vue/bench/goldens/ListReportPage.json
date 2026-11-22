@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ListReportPage",
-  "sourceRevision": "cf6c4c5d8d745149bc0094c6ae2b23746868267e",
+  "sourceRevision": "e770e9299236a75684c88b2c6190051b1651a134",
   "source": "src/ListReportPage.ts",
   "fixtures": [
     {

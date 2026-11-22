@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Toggle",
-  "sourceRevision": "38b725d8590aaab707120b53003758fb45444052",
+  "sourceRevision": "c4ee2ad22ae86e3767a1a1edb32855cb348bdc5c",
   "source": "src/Toggle.ts",
   "fixtures": [
     {

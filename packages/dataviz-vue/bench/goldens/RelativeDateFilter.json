@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "RelativeDateFilter",
-  "sourceRevision": "c1c530ab448848c0a22a7d7a7e98473a4aee02f6",
+  "sourceRevision": "3ee95f51b9ae10b0e9fd808aa8ed17a7f4b1769d",
   "source": "src/lib/RelativeDateFilter.ts",
   "fixtures": [
     {

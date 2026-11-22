@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "DataImage",
-  "sourceRevision": "6725546b6faa73b2927c1cd37eda6b4ba1c2369d",
+  "sourceRevision": "8fb480754b2072dbf7f5dbd8fd08d0381ba0eab7",
   "source": "src/DataImage.ts",
   "fixtures": [
     {

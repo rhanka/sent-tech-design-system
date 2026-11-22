@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "OrganizationChart",
-  "sourceRevision": "9bf03bb14b1f10bb55d6f4ad862760ff8fe648c6",
+  "sourceRevision": "985b83eccb0299e4f5b002ccdb93074c2a65b75c",
   "source": "src/OrganizationChart.ts",
   "fixtures": [
     {

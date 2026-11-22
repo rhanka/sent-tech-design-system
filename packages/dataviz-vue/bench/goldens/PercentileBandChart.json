@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "PercentileBandChart",
-  "sourceRevision": "e1528074994fc2e39873bb7dc6306a37a1f5e55d",
+  "sourceRevision": "6a57132a0d4aaa1fe18ce99b19530d9ee21cc0e4",
   "source": "src/lib/PercentileBandChart.ts",
   "fixtures": [
     {

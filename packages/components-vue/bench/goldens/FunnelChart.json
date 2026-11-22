@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "FunnelChart",
-  "sourceRevision": "3005f025ba516644a656d0c073a79a0203388e8e",
+  "sourceRevision": "b1d5b9ad537efb7ec71c5a3ff8d8c616e7ca5fb7",
   "source": "src/FunnelChart.ts",
   "fixtures": [
     {

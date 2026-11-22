@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ColumnPyramidChart",
-  "sourceRevision": "b055a08b086331b91aa384afa9b1ff10a66fa8a6",
+  "sourceRevision": "80426f50c1cb6af858b76cc2b9d33f7abdaa058f",
   "source": "src/ColumnPyramidChart.ts",
   "fixtures": [
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "StackedBarChart",
-  "sourceRevision": "42c198ed4e50bc3e6166ad9e54d47dab3e422c73",
+  "sourceRevision": "8687b2c8e4ccd3262e1ab0a9996d840b62e138cd",
   "source": "src/StackedBarChart.ts",
   "fixtures": [
     {

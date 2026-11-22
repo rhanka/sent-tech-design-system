@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Notification",
-  "sourceRevision": "ee562847bdd1211469ceeebc01dc122ca139de24",
+  "sourceRevision": "fb3786801f5466c373713602932f332d3cb0c88a",
   "source": "src/Notification.ts",
   "fixtures": [
     {

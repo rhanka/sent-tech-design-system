@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Card",
-  "sourceRevision": "fb101b53d00b9426bc731be087f4c9e5b7b5c9ac",
+  "sourceRevision": "0f2ed232200d96b58ab2e07b552cd10339573237",
   "source": "src/Card.ts",
   "fixtures": [
     {

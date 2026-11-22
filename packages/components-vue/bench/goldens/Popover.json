@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Popover",
-  "sourceRevision": "83dc531c11c64de0ab13b36907c97e74b93f702a",
+  "sourceRevision": "0d765113d22687d54a657503aceb862ea7be5615",
   "source": "src/Popover.ts",
   "fixtures": [
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "NavShell",
-  "sourceRevision": "f093b7108103a8b146c43c711d10e285b1080400",
+  "sourceRevision": "3c1e5c55c36507a951b7c52ff84f291ef5eaeaaf",
   "source": "src/NavShell.ts",
   "fixtures": [
     {

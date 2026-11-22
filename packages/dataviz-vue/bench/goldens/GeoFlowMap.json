@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "GeoFlowMap",
-  "sourceRevision": "a50139c769216d397947df3be52dfc997adefd67",
+  "sourceRevision": "84ae9db5e0d4bf507459784d59a14c814641fb62",
   "source": "src/lib/GeoFlowMap.ts",
   "fixtures": [
     {

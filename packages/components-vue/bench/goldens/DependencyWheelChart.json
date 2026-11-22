@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "DependencyWheelChart",
-  "sourceRevision": "c39d1eba5ca351514516dcbbc71cba142e83e71a",
+  "sourceRevision": "fa3f6ec2e53b6e5b4719ba203e4fe39b76164c72",
   "source": "src/DependencyWheelChart.ts",
   "fixtures": [
     {

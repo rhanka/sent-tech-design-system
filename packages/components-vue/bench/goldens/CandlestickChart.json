@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "CandlestickChart",
-  "sourceRevision": "f865ba4e64670fe6c0dd37bc0a448e3f66933088",
+  "sourceRevision": "521c8576c0b1fbe91613546b2cf539614f0ebc5f",
   "source": "src/CandlestickChart.ts",
   "fixtures": [
     {

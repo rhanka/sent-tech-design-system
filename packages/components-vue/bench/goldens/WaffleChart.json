@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "WaffleChart",
-  "sourceRevision": "87277500410b20b5929aebcf3cafdb4078b72e6c",
+  "sourceRevision": "c65d4a11cdf4b123343a1abfcdf79d5bc3296604",
   "source": "src/WaffleChart.ts",
   "fixtures": [
     {

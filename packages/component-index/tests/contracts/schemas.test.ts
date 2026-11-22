@@ -57,7 +57,7 @@ function minimalContractIndex(): Record<string, unknown> {
     format: "component-contract-index/v1",
     producerId: "sentropic-ds",
     contractsRevision: "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-    sourceCommit: "6e6e66cfe42657e31a698fe4887d4e7381df2c73".slice(0, 40),
+    sourceCommit: "77c2b8e49dab9686929a818276a117195d249d94".slice(0, 40),
     generatedBy: { generator: "@sentropic/design-system-component-index", version: "0.2.0" },
     counts: {
       contracts: 1,

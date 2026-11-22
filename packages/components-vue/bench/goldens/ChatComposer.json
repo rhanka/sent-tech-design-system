@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ChatComposer",
-  "sourceRevision": "24f81e3bbbf90ddb2f6ae54c8ad3812f83b68e4e",
+  "sourceRevision": "b5979dca3dfe18d64ce92f2ace932e3358db69a4",
   "source": "src/ChatComposer.ts",
   "fixtures": [
     {

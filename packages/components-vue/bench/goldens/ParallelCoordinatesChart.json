@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ParallelCoordinatesChart",
-  "sourceRevision": "d2bfdc212bc5bf0ccb27da53f208afc3eec931ff",
+  "sourceRevision": "876fab265977b7b4411f5b91a1cf57c9b5e2a8e9",
   "source": "src/ParallelCoordinatesChart.ts",
   "fixtures": [
     {

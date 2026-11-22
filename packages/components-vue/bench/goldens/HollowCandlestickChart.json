@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "HollowCandlestickChart",
-  "sourceRevision": "3e90fadd6ccd97f27bb80a3d45cccf1d108b1db4",
+  "sourceRevision": "afe7d38782f5a5276c411bcc39342b40771f7868",
   "source": "src/HollowCandlestickChart.ts",
   "fixtures": [
     {

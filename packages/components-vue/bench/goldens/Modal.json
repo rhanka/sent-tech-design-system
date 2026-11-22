@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Modal",
-  "sourceRevision": "261323d56adc3bd4623637457bc9caa93f48607e",
+  "sourceRevision": "f913dc458f07b8ae9b9af227ce84f9fd92ced02e",
   "source": "src/Modal.ts",
   "fixtures": [
     {

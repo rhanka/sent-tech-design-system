@@ -24,7 +24,7 @@ const repoDir = dirname(dirname(packageDir));
 const measurementsDir = join(packageDir, "measurements");
 
 /** Same pinned reference commit as components-preact (zero dataviz-react drift to origin/main). */
-export const BASE_REF = "81083403e58dd1810bd1bd4f639882d226375d97";
+export const BASE_REF = "4144f9831a554026fbe21034fe49bee34a9ee456";
 
 const DATAVIZ_SRC = "packages/dataviz-react/src";
 

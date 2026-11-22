@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "HLCChart",
-  "sourceRevision": "9bf6a507bad90234e3c88a1de10579a821d26bc6",
+  "sourceRevision": "b4e51da2b4f756b5aebaa9d9e05418462560f22a",
   "source": "src/lib/HLCChart.ts",
   "fixtures": [
     {

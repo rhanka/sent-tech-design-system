@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "TileMapChart",
-  "sourceRevision": "b59992b383d8049c4e875e85a8eff97fe951a17a",
+  "sourceRevision": "71409e45694b6605dbde7fcf6541e1a97305682b",
   "source": "src/TileMapChart.ts",
   "fixtures": [
     {

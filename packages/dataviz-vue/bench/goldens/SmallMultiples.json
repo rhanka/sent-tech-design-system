@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "SmallMultiples",
-  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "sourceRevision": "1db23368a1bb065a28dee713785972d060c2702f",
   "source": "src/lib/SmallMultiples.ts",
   "fixtures": [
     {

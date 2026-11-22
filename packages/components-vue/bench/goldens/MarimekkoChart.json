@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "MarimekkoChart",
-  "sourceRevision": "3650ab470fe946cd043a293287cf30b18f4a88e5",
+  "sourceRevision": "9a61e907e5fa710b228eb143b64c495bcca906a8",
   "source": "src/MarimekkoChart.ts",
   "fixtures": [
     {

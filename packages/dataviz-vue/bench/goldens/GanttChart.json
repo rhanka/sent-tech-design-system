@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "GanttChart",
-  "sourceRevision": "d04c14e7688115c9b215d56552b1bfea1d5a54cf",
+  "sourceRevision": "b300c310104e3a5d254d56847baa8bb543076d01",
   "source": "src/lib/GanttChart.ts",
   "fixtures": [
     {

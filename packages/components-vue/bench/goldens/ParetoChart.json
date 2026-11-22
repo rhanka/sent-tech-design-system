@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ParetoChart",
-  "sourceRevision": "42b64a6542cbd8702a0693cd171539b7e292ba33",
+  "sourceRevision": "9f6353bf9f3528821a0908d9f62beca81dfcbc99",
   "source": "src/ParetoChart.ts",
   "fixtures": [
     {

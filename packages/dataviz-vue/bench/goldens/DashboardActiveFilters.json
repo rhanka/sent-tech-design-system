@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "DashboardActiveFilters",
-  "sourceRevision": "0be6a3108a16f6c50bf4635216ed4689a46ba369",
+  "sourceRevision": "91c392eab047c85e818686a6b7e852d6a29e1180",
   "source": "src/lib/DashboardActiveFilters.ts",
   "fixtures": [
     {

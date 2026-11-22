@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Rating",
-  "sourceRevision": "c9f7d91e9959f43e5d741b6f11aea4d0e061822e",
+  "sourceRevision": "529410a7b762fa2390b592e4181d7d614a5dba05",
   "source": "src/Rating.ts",
   "fixtures": [
     {

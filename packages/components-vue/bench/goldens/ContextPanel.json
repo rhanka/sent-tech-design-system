@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ContextPanel",
-  "sourceRevision": "a80589fdcec0f19841a2798a66c15fe3868cf4ef",
+  "sourceRevision": "ed3cc3f5f4948ef5b995519d7c8440ad45096dc3",
   "source": "src/ContextPanel.ts",
   "fixtures": [
     {

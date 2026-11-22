@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "PaginationNav",
-  "sourceRevision": "ee1acd5d0e1c3c9b2e5967df74c105de41613a77",
+  "sourceRevision": "208094353e3ed072c4b00a93792e7f34c597888f",
   "source": "src/PaginationNav.ts",
   "fixtures": [
     {

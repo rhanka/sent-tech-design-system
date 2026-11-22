@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ScoreCard",
-  "sourceRevision": "cfbf92fb1bb875c172c6a1e53aba7d744da76cc1",
+  "sourceRevision": "5fdeee6793c89542f168eb9a48a90b66969e63dc",
   "source": "src/ScoreCard.ts",
   "fixtures": [
     {

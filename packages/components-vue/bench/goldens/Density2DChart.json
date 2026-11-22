@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Density2DChart",
-  "sourceRevision": "40a8585696fb958c9cc690e62b53882744d829a0",
+  "sourceRevision": "34d846010334cfabd72fcfcecc04b631f8341436",
   "source": "src/Density2DChart.ts",
   "fixtures": [
     {

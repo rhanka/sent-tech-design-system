@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ErrorBarsChart",
-  "sourceRevision": "d2dcf201d04cc7c5754e1b978efc9c7765566049",
+  "sourceRevision": "a33d5ad2982a1561552db0642e5467bcfeca613f",
   "source": "src/lib/ErrorBarsChart.ts",
   "fixtures": [
     {

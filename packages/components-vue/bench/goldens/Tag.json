@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Tag",
-  "sourceRevision": "41e5f7808293e35cbfa6b6b0b5ee95e36efb3601",
+  "sourceRevision": "130280a1e1c6691f4466ba7b330dffb54eba33ab",
   "source": "src/Tag.ts",
   "fixtures": [
     {

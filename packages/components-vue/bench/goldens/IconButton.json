@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "IconButton",
-  "sourceRevision": "e3cab6d10cfa0df3db3c324428e9712a264cd195",
+  "sourceRevision": "6cbb8a33001f2f95eb22dbf0f14d93216978bf72",
   "source": "src/IconButton.ts",
   "fixtures": [
     {

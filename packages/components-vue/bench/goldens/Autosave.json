@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Autosave",
-  "sourceRevision": "82cda0258e5b09bcc2df7b68292d9012a808453a",
+  "sourceRevision": "1d5e1574d26df637c56dc5879773bfedc23eb880",
   "source": "src/Autosave.ts",
   "fixtures": [
     {

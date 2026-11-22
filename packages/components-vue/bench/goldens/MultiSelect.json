@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "MultiSelect",
-  "sourceRevision": "57284d34fd16ee589a9c57a9195c6cd53e77033f",
+  "sourceRevision": "63d4a0d2b04396bcb98dc6556c9f52a5148999cf",
   "source": "src/MultiSelect.ts",
   "fixtures": [
     {

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "reviewRound": 2,
-  "mergedMain": "47c996d8",
-  "mergeCommit": "fcddc800",
+  "mergedMain": "f94f388f",
+  "mergeCommit": "d124935e",
   "sourceSha256": "2605ea3dc5db19c452728d2626f8097aa87069f5bc9319bb65193d6dfbd35dd8",
   "sources": [
     {
@@ -1118,7 +1118,7 @@
     "publicExports": 885,
     "baselineSlotDeclarationFailures": {
       "NavShell": {
-        "baseline": "fcddc800",
+        "baseline": "d124935e",
         "errors": [
           "rendered slot search requires defineSlots",
           "rendered slot default requires defineSlots",
@@ -1127,7 +1127,7 @@
         "currentErrors": []
       },
       "Notification": {
-        "baseline": "fcddc800",
+        "baseline": "d124935e",
         "errors": [
           "rendered slot default requires defineSlots",
           "rendered slot actions requires defineSlots"

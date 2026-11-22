@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ProgressBar",
-  "sourceRevision": "60a08d4aa5c9ab19eb6fe29f5127de0efe64c5fa",
+  "sourceRevision": "18921ea69cc7eb0e49fc8b45bfc3dbe2249f1189",
   "source": "src/ProgressBar.ts",
   "fixtures": [
     {

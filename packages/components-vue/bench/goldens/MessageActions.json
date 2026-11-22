@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "MessageActions",
-  "sourceRevision": "a8201915d68d7d7a1f97397ec4ed3ca9ff1e90af",
+  "sourceRevision": "0668b873db8cab596f5123b39401e58abf5f5067",
   "source": "src/MessageActions.ts",
   "fixtures": [
     {
