@@ -1,8 +1,8 @@
 {
   "componentId": "side-nav",
   "contractSource": "derived",
-  "digest": "sha256:b74c7c11307990ab9bb6967c8842f980434a6dce3855ce27db4f041bb98ea9e8",
-  "entryDigest": "sha256:bfaffbee6d2c8d1e57ace2b70465d17e111f8f572e5a5a8e3272d7e6838b796f",
+  "digest": "sha256:cdb3fc5ae87da0163bcf72a1c08721450ab772cd00c57537503b2a38bf5dc231",
+  "entryDigest": "sha256:577306f0a454a8dcfcc2dcdac44998e10c61301de285ca1761a473d928f6d6b5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -209,7 +209,7 @@
         "declarationPath": "packages/components-svelte/dist/SideNav.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SideNavProps",
-        "version": "0.44.1"
+        "version": "0.45.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -299,7 +299,7 @@
         "declarationPath": "packages/components-vue/dist/SideNav.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SideNavProps",
-        "version": "0.41.0-next.12"
+        "version": "0.41.0-next.13"
       },
       "status": "complete",
       "unresolved": [],

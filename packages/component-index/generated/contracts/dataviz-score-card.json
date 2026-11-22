@@ -1,8 +1,8 @@
 {
   "componentId": "dataviz-score-card",
   "contractSource": "derived",
-  "digest": "sha256:b93946bfd6208bb0d1cb649bc88b04162a9664b52ea501311c5283b121f088f1",
-  "entryDigest": "sha256:1ba27869d7179fda38d7ea366f51aa1e9c08dfc36d1e8ae00feca5b26eb8922a",
+  "digest": "sha256:b1e07db28cddfb8c78dd0484b0c3144490d2018b33727fdaaad6be13158cf70f",
+  "entryDigest": "sha256:8f522f7257282cc0a24f01300b62d5f7764b30360174ae61ff3b0a0b43fcf917",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-svelte/dist/ScoreCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ScoreCardProps",
-        "version": "0.44.1"
+        "version": "0.45.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -267,7 +267,7 @@
         "declarationPath": "packages/components-vue/dist/ScoreCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ScoreCardProps",
-        "version": "0.41.0-next.12"
+        "version": "0.41.0-next.13"
       },
       "status": "complete",
       "unresolved": [],

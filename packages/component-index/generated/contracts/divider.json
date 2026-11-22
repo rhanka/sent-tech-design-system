@@ -1,8 +1,8 @@
 {
   "componentId": "divider",
   "contractSource": "derived",
-  "digest": "sha256:53e2a7dab4626d07f4408c07fa2ee592e6db3170a112326bc1483e0e51d58cfc",
-  "entryDigest": "sha256:04db0ddef0f038866f9903041053b8322951d11463bd836a3792cbb272b669b9",
+  "digest": "sha256:03dcfd2c79837aee7482b2b4c1d93028c39c650a10eeddd624d69b8de2b38982",
+  "entryDigest": "sha256:5136a50fc06b01519ca4b04fc5f030cdf3ee046901ff86d32186fd5a6004f70c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -156,7 +156,7 @@
         "declarationPath": "packages/components-svelte/dist/Divider.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DividerProps",
-        "version": "0.44.1"
+        "version": "0.45.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -206,7 +206,7 @@
         "declarationPath": "packages/components-vue/dist/Divider.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DividerProps",
-        "version": "0.41.0-next.12"
+        "version": "0.41.0-next.13"
       },
       "status": "complete",
       "unresolved": [],
