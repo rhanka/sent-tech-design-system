@@ -9,11 +9,12 @@ import { afterEach, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tick } from "svelte";
-import { baseDigest } from "@sentropic/focus/editing";
+import { baseDigest, canonicalJson } from "@sentropic/focus/editing";
 import { createAnchorFromElement, decodeAnchor, resolveAnchor } from "@sentropic/design-system-review-core";
 import { createFixtureCommentsAdapter } from "@sentropic/design-system-review-core";
 import { mountDossier } from "../src/element/dom/dossier-mount.js";
 import { mountDossierReview } from "../src/element/dom/dossier-review-mount.js";
+import { buildDossierViews } from "../src/ports/dossier-views.js";
 import b5 from "./fixtures/focus-artifact/b5.json";
 import decisionV2 from "./fixtures/focus-artifact/decision-v2.json";
 import report from "./fixtures/focus-artifact/report.json";
@@ -246,7 +247,15 @@ it("pastilles, markdown links, downloads and summaries pass through clicks and n
     },
   });
   cleanups.push(() => dossier.destroy());
-  dossier.render(decisionV2);
+  const views = buildDossierViews(decisionV2, {});
+  dossier.render(decisionV2, views === undefined ? undefined : {
+    views,
+    manifest: {
+      contract: "focus-dossier/1", document: { digest: views.documentDigest }, renderer: { digest: views.rendererDigest },
+      derived: [{ path: "views.json", digest: baseDigest(views),
+        bytes: new TextEncoder().encode(canonicalJson(views)).length, mimeType: "application/json" }],
+    },
+  });
   await tick();
   const root = dossier.reviewRoot!;
   const pastilles = [...root.querySelectorAll<HTMLAnchorElement>("a")].filter((link) =>

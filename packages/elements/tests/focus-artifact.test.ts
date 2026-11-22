@@ -1,8 +1,10 @@
 // @vitest-environment jsdom
 import { afterEach, expect, it, vi } from "vitest";
 import { renderHtml } from "@sentropic/focus";
+import { baseDigest, canonicalJson } from "@sentropic/focus/editing";
 import { assertFocusDocument, assertFocusForPresentation } from "@sentropic/focus/validate";
 import { mountDossier, type DossierReadyDetail } from "../src/element/dom/dossier-mount.js";
+import { buildDossierViews } from "../src/ports/dossier-views.js";
 import b5 from "./fixtures/focus-artifact/b5.json";
 import decisionV1 from "./fixtures/focus-artifact/decision-v1.json";
 import decisionV2 from "./fixtures/focus-artifact/decision-v2.json";
@@ -48,7 +50,15 @@ it.each([
   const node = host();
   const selected = vi.fn();
   node.addEventListener("st-intent", selected);
-  mount(node).render(doc);
+  const views = buildDossierViews(doc, {});
+  mount(node).render(doc, views === undefined ? undefined : {
+    views,
+    manifest: {
+      contract: "focus-dossier/1", document: { digest: views.documentDigest }, renderer: { digest: views.rendererDigest },
+      derived: [{ path: "views.json", digest: baseDigest(views),
+        bytes: new TextEncoder().encode(canonicalJson(views)).length, mimeType: "application/json" }],
+    },
+  });
   expect.soft(node.querySelector("header h1")?.textContent).toBe(doc.title);
   expect.soft(Array.from(node.querySelectorAll<HTMLElement>("[data-anchor-id]"), (element) => element.dataset.anchorId))
     .toEqual([doc.ref, ...ids]);
@@ -81,7 +91,7 @@ it.each([
   expect(controls).toHaveLength(actions);
   if (actions > 0) {
     expect(node.textContent).toContain("Identify every existing rendering path.");
-    expect(node.textContent).toContain("ecosystem:overview");
+    expect(node.querySelector('[data-anchor-id="diagram-1"] svg')?.textContent).toContain("h2a");
     const ownerLabels = Array.from(owner.querySelectorAll(".focus-option > strong"), (label) => label.textContent);
     expect(Array.from(controls, (control) => control.querySelector(".st-dossier__optionLabel")?.textContent))
       .toEqual(ownerLabels);

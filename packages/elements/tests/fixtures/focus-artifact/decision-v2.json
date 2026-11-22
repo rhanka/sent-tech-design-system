@@ -78,8 +78,8 @@
       "kind": "diagram",
       "id": "diagram-1",
       "targetRef": "decision-short2",
-      "renderComponent": "DiagramSceneFigure",
-      "sourceRef": "ecosystem:overview",
+      "syntax": "mermaid",
+      "source": "ecosystem:overview",
       "alt": "Shared rendering overview"
     }
   ],
