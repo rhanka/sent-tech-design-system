@@ -10,6 +10,7 @@ import { relationSchema } from "./relation-types.js";
  */
 
 import type { Diagnostic } from "./diagnostics.js";
+import type { StrokeStyle } from "./connector-registry.js";
 import type { Relation, SemanticDocument } from "./document.js";
 import { relationTypeOf } from "./profile.js";
 import type { ProfileRegistry } from "./profile.js";
@@ -245,6 +246,8 @@ export function projectRelationOccurrences(
           ? {}
           : { waypoints: occurrence.waypoints.map((point) => ({ ...point })) }),
         ...(occurrence.strokeStyle === undefined ? {} : { strokeStyle: occurrence.strokeStyle }),
+        ...(occurrence.arrowhead === undefined ? {} : { arrowhead: occurrence.arrowhead }),
+        ...(occurrence.emphasis === undefined ? {} : { emphasis: occurrence.emphasis }),
       };
       continue;
     }
@@ -278,6 +281,8 @@ export function projectRelationOccurrences(
         ? {}
         : { waypoints: occurrence.waypoints.map((point) => ({ ...point })) }),
       ...(occurrence.strokeStyle === undefined ? {} : { strokeStyle: occurrence.strokeStyle }),
+      ...(occurrence.arrowhead === undefined ? {} : { arrowhead: occurrence.arrowhead }),
+      ...(occurrence.emphasis === undefined ? {} : { emphasis: occurrence.emphasis }),
     };
   }
   return relationOccurrences;
@@ -514,7 +519,7 @@ function occurrenceScope(view: ViewDocument, root: OccurrenceRef): ReadonlySet<s
 interface SummaryCandidate {
   readonly occurrence: OccurrenceRef;
   readonly relation: RelationRef;
-  readonly style: "solid" | "dashed";
+  readonly style: StrokeStyle;
 }
 
 export interface SummaryResolutionOptions {
@@ -563,7 +568,7 @@ export function summaryCandidates(
   registry: ProfileRegistry,
   source: OccurrenceRef,
   target: OccurrenceRef,
-  style: "solid" | "dashed",
+  style: StrokeStyle,
 ): SummaryCandidate[] {
   const sourceScope = occurrenceScope(view, source);
   const targetScope = occurrenceScope(view, target);

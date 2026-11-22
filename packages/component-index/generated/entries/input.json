@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Input.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Standard text field, sm/md/lg sizes.",
     "fr": "Champ texte standard, tailles sm/md/lg."
   },
-  "digest": "sha256:a2a0659056b1cfbbd0fa6631a2f3a915da255b456243f1d584cd657ca06dff7c",
+  "digest": "sha256:305dd587ab1994d03c78ed328d8f1273f05647e328a5f58a010a399d5c20c03c",
   "displayName": "Input",
   "format": "component-entry/v1",
   "frameworks": [

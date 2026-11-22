@@ -1,8 +1,8 @@
 {
   "componentId": "badge",
   "contractSource": "derived",
-  "digest": "sha256:31b01ac303676240c659edab9a2c3eb185eb815d6c9eca1430ff01e753666009",
-  "entryDigest": "sha256:d2a99ca4c7a0042cad722e7f5acab8b1088aabe4eb059163890861ce84f1551f",
+  "digest": "sha256:20440de06ffbaeaa2ae69069433629ff9161aa1df5f3e20d9a4d5baf42b06105",
+  "entryDigest": "sha256:ec0f79457cc87796560fc58df165f333d0c51aed246695533c1b487d0e63083a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -174,7 +174,7 @@
         "declarationPath": "packages/components-svelte/dist/Badge.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BadgeProps",
-        "version": "0.43.3"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

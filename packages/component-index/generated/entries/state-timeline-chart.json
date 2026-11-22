@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/StateTimelineChart.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Discrete state bands over time: one lane per series, contiguous segments colored by state.",
     "fr": "Bandes d'états discrets dans le temps : une ligne par série, segments contigus colorés par état."
   },
-  "digest": "sha256:e20cb1c3d5364f890ba9bcc04e759eff69ea770a34ea52ceedd61b7a5a74d9de",
+  "digest": "sha256:baeb1f74158c3a5b9cc4c3649c47106a793cb49881ff7926307879c38e90b6f0",
   "displayName": "StateTimelineChart",
   "format": "component-entry/v1",
   "frameworks": [

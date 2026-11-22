@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Alert.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Info/success/warning/error banner.",
     "fr": "Bandeau d’information info/success/warning/error."
   },
-  "digest": "sha256:6af8d755f6d225d437830361778c30e94822c4de85efe58e75a52f71a8d49ce1",
+  "digest": "sha256:231eac999ce0eb470527db5864c8b236d271e3b226a008199f8b3c52129f917a",
   "displayName": "Alert",
   "format": "component-entry/v1",
   "frameworks": [

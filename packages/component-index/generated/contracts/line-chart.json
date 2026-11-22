@@ -1,8 +1,8 @@
 {
   "componentId": "line-chart",
   "contractSource": "derived",
-  "digest": "sha256:6b0181b419207fd4b9b0bcbd999c6a71a4d4459d8e48480778800d571dbf13ad",
-  "entryDigest": "sha256:c0707d9d73659c13a5a2f0a42e071cbcf4301fdc06661554b33658331a8e8dc4",
+  "digest": "sha256:aa9f7d2b806d1694b225a88e0ad13d70d9af35e380089effc7ef9fdc250b802f",
+  "entryDigest": "sha256:2419fc9d8ad694c4e9a3d59edce204907700acce55cc0733d5c45aaeb5e685f6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1394,7 +1394,7 @@
         "declarationPath": "packages/components-svelte/dist/LineChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LineChartProps",
-        "version": "0.43.3"
+        "version": "0.44.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -47,6 +47,19 @@ describe("compileTheme", () => {
     expect(css).toContain("--st-semantic-action-primary");
     expect(css).toContain("--st-component-dataTable-headerBackground");
   });
+
+  it("emits DE-2 link tokens and preserves DC-2c flow stroke widths on compiled themes", () => {
+    const css = compileTheme(sentTechTheme);
+    expect(css).toContain("--st-component-diagramScene-linkStrokeWidth: 2.5px;");
+    expect(css).toContain("--st-component-diagramScene-linkEmphasisStroke: #001f33;");
+    expect(css).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth: 3.5px;");
+    expect(css).toContain("--st-component-diagramScene-edgeCornerRadius: 12px;");
+    expect(css).toContain("--st-component-diagramScene-edgeLabelSize: 18px;");
+    expect(css).toContain("--st-component-diagramScene-zoneGutter: 96px;");
+    expect(css).toContain("--st-component-diagramScene-flowStrokeWidth: 1.5px;");
+    expect(css).toContain("--st-component-diagramScene-flowRelatedStrokeWidth: 2px;");
+    expect(css).toContain("--st-component-diagramScene-flowPrimaryStrokeWidth: 2.5px;");
+  });
 });
 
 describe("compileThemeWithModes", () => {

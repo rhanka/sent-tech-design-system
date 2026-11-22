@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/FileUploader.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "File upload with progress states.",
     "fr": "Téléversement de fichiers avec états de progression."
   },
-  "digest": "sha256:8f727225278c75360910afd375ab44e72253a566fc81cb35c40fd09f43a88caf",
+  "digest": "sha256:8042c793483503134a5de6d0cd022ecf1111492d43a18d733e10993dfd9ca7d7",
   "displayName": "FileUploader",
   "format": "component-entry/v1",
   "frameworks": [

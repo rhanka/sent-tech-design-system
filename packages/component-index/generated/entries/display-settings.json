@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DisplaySettings.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Display preferences controls (font size, contrast, line spacing, motion).",
     "fr": "Préférences d’affichage (taille de texte, contraste, interligne, animations)."
   },
-  "digest": "sha256:2ca7b966827b45ca43560e67c4606520c55a8ecb9481bd940777f115efc0b867",
+  "digest": "sha256:d7563cfe11d16641229a5884443799dd3958fa9743e762ccd38f18d0b5591e1f",
   "displayName": "DisplaySettings",
   "format": "component-entry/v1",
   "frameworks": [

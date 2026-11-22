@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Inline.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Wrapping horizontal flow with uniform gap.",
     "fr": "Flux horizontal qui passe à la ligne, gap homogène."
   },
-  "digest": "sha256:5829b5ae672efab43168e4d571e2822f52654a05fe205a518d46ee04be6c5e16",
+  "digest": "sha256:2474e44a39e728d9c4d32a276a21e9ce9374cf5cfbd9cbb474fcd068cd8a5c5e",
   "displayName": "Inline",
   "format": "component-entry/v1",
   "frameworks": [

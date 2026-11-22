@@ -1,8 +1,8 @@
 {
   "componentId": "lock-presence-badge",
   "contractSource": "derived",
-  "digest": "sha256:c274d6ba053623eb8f2e0d8e5bba4b56beb0f252d5165e275ac2693e0231da6e",
-  "entryDigest": "sha256:c6d9e12c8d5bf006f40be0479bc2fcff37a43f8ca9c3d45118db8d4035226947",
+  "digest": "sha256:ddb06749a6fb1c232f861c38bfb0a87235f899be3dc7aa7fa1d3fca35ac96bd2",
+  "entryDigest": "sha256:b8e13ca506e4394bb0829ed71fecc3de3d1ba650da6e18d03352566795934d39",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -425,7 +425,7 @@
         "declarationPath": "packages/components-svelte/dist/presence-badge/LockPresenceBadge.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LockPresenceBadgeProps",
-        "version": "0.43.3"
+        "version": "0.44.0"
       },
       "status": "partial",
       "unresolved": [],

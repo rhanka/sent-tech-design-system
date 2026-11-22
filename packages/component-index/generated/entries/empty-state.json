@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/EmptyState.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Empty state with a primary action.",
     "fr": "État vide avec action principale."
   },
-  "digest": "sha256:7a60fad927499621a1f6d50fd33d3c6c19abec88309d71899848ba0be688909c",
+  "digest": "sha256:8c4d4f4268973d7287d35f1556271283bc69cdd59ac983a4b68e3421d9425d82",
   "displayName": "EmptyState",
   "format": "component-entry/v1",
   "frameworks": [

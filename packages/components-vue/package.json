@@ -81,8 +81,8 @@
     "build:classic-3.5": "node ../../scripts/vue-sfc-build.mjs --stable"
   },
   "dependencies": {
-    "@sentropic/design-system-themes": "0.15.3",
-    "@sentropic/diagram-canvas": "0.3.3",
+    "@sentropic/design-system-themes": "0.16.0",
+    "@sentropic/diagram-canvas": "0.4.0",
     "@sentropic/graph": "0.3.1",
     "@sentropic/design-system-rich-text": "0.1.1"
   },

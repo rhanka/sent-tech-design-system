@@ -13,6 +13,8 @@ import {
   DIAGRAM_VIEW_SCHEMA_V1_PIN,
   DIAGRAM_VIEW_SCHEMA_V2,
   DIAGRAM_VIEW_SCHEMA_V2_PIN,
+  DIAGRAM_VIEW_SCHEMA_V4,
+  DIAGRAM_VIEW_SCHEMA_V4_PIN,
   resolveViewSchema,
 } from "../src/view-schema-pin.js";
 
@@ -38,6 +40,15 @@ describe("view-schema exact-pin resolution", () => {
     expect(result.pin).toEqual(DIAGRAM_VIEW_SCHEMA_V1_PIN);
     expect(result.schema).toEqual(DIAGRAM_VIEW_SCHEMA_V1);
     expect(result.schema).not.toEqual(DIAGRAM_VIEW_SCHEMA_V2);
+  });
+
+  it("resolves the exact @4 pin to the vendored @4 schema", () => {
+    const result = resolveViewSchema({ ...DIAGRAM_VIEW_SCHEMA_V4_PIN });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.version).toBe("4");
+    expect(result.pin).toEqual(DIAGRAM_VIEW_SCHEMA_V4_PIN);
+    expect(result.schema).toEqual(DIAGRAM_VIEW_SCHEMA_V4);
   });
 
   it("refuses an absent pin without throwing", () => {
@@ -125,7 +136,7 @@ describe("view-schema exact-pin resolution", () => {
   it.each([
     ["latest alias", "latest"],
     ["dotted version", "1.0"],
-    ["next major", "4"],
+    ["next major", "5"],
     ["empty version", ""],
   ])("refuses an unknown version (%s) with no fallback and no reverse migration", (_label, version) => {
     const pin =

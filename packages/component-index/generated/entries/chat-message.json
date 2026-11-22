@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ChatMessage.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Visual chat message bubble with role and status.",
     "fr": "Bulle de message visuelle avec rôles et statut."
   },
-  "digest": "sha256:a145b2c0fe83bf8cbd59687eb3633390a3b8279a75d683660e7088af63e9db06",
+  "digest": "sha256:f2ee127a45964a12eeb36b37ffd6b4046e68b0122bf2263518ac608d86c28bcc",
   "displayName": "ChatMessage",
   "format": "component-entry/v1",
   "frameworks": [

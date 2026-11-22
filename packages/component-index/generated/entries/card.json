@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Card.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Surface container with border and padding.",
     "fr": "Conteneur surface avec bordure et padding."
   },
-  "digest": "sha256:7331fbdc368112c5b7738cc7f2df56b52624d0db0aa89ecaf2e121027930d0a8",
+  "digest": "sha256:7f36cad41c0e098f86179af584c60ac6af133c139c45f10dc755e8db961fc106",
   "displayName": "Card",
   "format": "component-entry/v1",
   "frameworks": [

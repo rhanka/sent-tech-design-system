@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ContourChart.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Topographic contour: 2D grid painted as colour bands with isolines at level boundaries (data category1…8 scale).",
     "fr": "Contour topographique : grille 2D peinte en bandes de couleur avec isolignes aux ruptures de niveau (échelle data category1…8)."
   },
-  "digest": "sha256:c9fc21c6a14122c86459f118f0f29cd39196657bf3c3e6d97ced3c2d986b2346",
+  "digest": "sha256:ad296a6949872fc79835cb848060c26744990d47926527d80312fa655ac0cf87",
   "displayName": "ContourChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -20,8 +20,50 @@ export * from "./transform.js";
 export * from "./camera.js";
 export * from "./geometry.js";
 export * from "./visibility.js";
+export * from "./r7Mode.js";
 export * from "./scene.js";
 export * from "./hit.js";
 export * from "./layout/index.js";
 
 export * from "./presentation/erd.js";
+export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./presentation/connectorPath.js";
+export {
+  ARROWHEAD_MARKER_GEOMETRY,
+  connectorDashArray,
+  connectorMarkerIds,
+  connectorMarkerKind,
+  connectorMarkerRef,
+  extraConnectorMarkers,
+  type ConnectorMarkerEdgeInput,
+  type ConnectorMarkerIds,
+  type ConnectorMarkerSpec,
+} from "./presentation/connectorStyle.js";
+export {
+  buildSceneLinkLegend,
+  collectLinkLegendStyles,
+  defaultLinkStyleLabel,
+  LINK_LEGEND_ARROWHEAD_ORDER,
+  LINK_LEGEND_EMPHASIS_ORDER,
+  LINK_LEGEND_FONT_SIZE,
+  LINK_LEGEND_GAP,
+  LINK_LEGEND_HEADER_GAP,
+  LINK_LEGEND_HEADER_HEIGHT,
+  LINK_LEGEND_MIN_WIDTH,
+  LINK_LEGEND_PADDING,
+  LINK_LEGEND_ROW_GAP,
+  LINK_LEGEND_ROW_HEIGHT,
+  LINK_LEGEND_STROKE_ORDER,
+  LINK_LEGEND_SWATCH_GAP,
+  LINK_LEGEND_SWATCH_HEIGHT,
+  LINK_LEGEND_SWATCH_WIDTH,
+  linkLegendBoxStyle,
+  linkLegendSwatchGeometry,
+  linkStyleKey,
+  type BuildSceneLinkLegendInput,
+  type LinkLegendAnchor,
+  type LinkLegendEdgeInput,
+  type LinkLegendEntry,
+  type LinkLegendStyleKey,
+  type LinkLegendSwatchGeometry,
+  type SceneLinkLegend,
+} from "./presentation/linkLegend.js";

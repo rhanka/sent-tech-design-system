@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/StatusDot.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Status dot colored by tone (or arbitrary color), optional “live” halo and optional label.",
     "fr": "Pastille de statut colorée par tonalité (ou couleur arbitraire), halo « live » optionnel et libellé optionnel."
   },
-  "digest": "sha256:8be8558dd8934015546a9ee1420dc0c813d323cb4e94623ad982b5111d69d678",
+  "digest": "sha256:4a634c8e9c1254594a2d4529df2f36693fb69c13bc87869fc95d2783454a16b5",
   "displayName": "StatusDot",
   "format": "component-entry/v1",
   "frameworks": [

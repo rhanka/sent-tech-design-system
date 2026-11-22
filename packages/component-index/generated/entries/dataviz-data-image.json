@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DataImage.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Image resolved from a data row ({{field}} templates).",
     "fr": "Image résolue depuis une ligne de données (gabarits {{champ}})."
   },
-  "digest": "sha256:ad12df09b1d58fdbc07cd86a562598b433c6c25b5f7c9701938f485115f31c25",
+  "digest": "sha256:2981a66631f3b175b82276faa7c14fced814aef06f8ec87ca173e8fd5369e846",
   "displayName": "DataImage (dataviz)",
   "format": "component-entry/v1",
   "frameworks": [

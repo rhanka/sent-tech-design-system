@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DecompositionTreeChart.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Hierarchical decomposition tree: a total measure broken down level by level into columns of bars linked to their parent.",
     "fr": "Arbre de décomposition hiérarchique : une mesure totale éclatée niveau par niveau en colonnes de barres reliées au parent."
   },
-  "digest": "sha256:c0bc976dea393fc897810691f701379dc0dfe840bd784484a503adbbe5881359",
+  "digest": "sha256:1c68266d825b5aff63387dd46dec68c9e42a5110cdacafbe90a616ed7a3e83d1",
   "displayName": "DecompositionTreeChart",
   "format": "component-entry/v1",
   "frameworks": [

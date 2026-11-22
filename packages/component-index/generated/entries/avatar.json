@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Avatar.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Identity badge: colored initials or photo, multiple sizes.",
     "fr": "Vignette d'identité : initiales colorées ou photo, plusieurs tailles."
   },
-  "digest": "sha256:fac36a8612f6af81f119ad671feccc09fdb3335f272c5e8cb20b1853cec844c5",
+  "digest": "sha256:7db56c302106630dedc8e25ebcba790e253a8ac1b7bd5b9a7748e581e5466e85",
   "displayName": "Avatar",
   "format": "component-entry/v1",
   "frameworks": [

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TreegraphChart.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Horizontal tree/dendrogram (left→right): circular hierarchical nodes by depth, Bézier-curve links, leaves spread vertically.",
     "fr": "Arbre/dendrogramme horizontal (gauche→droite) : nœuds circulaires hiérarchiques par profondeur, liens en courbes de Bézier, feuilles réparties verticalement."
   },
-  "digest": "sha256:b5a07a76839868bb99f958894067fe52e9df1e69f8e6f45e2fca0c9d91771336",
+  "digest": "sha256:fcfc5637cb4efcd3cd6e1740e6731bc61fea92a4774ff4f5559e820deda68b11",
   "displayName": "TreegraphChart",
   "format": "component-entry/v1",
   "frameworks": [

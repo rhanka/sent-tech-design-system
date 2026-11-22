@@ -1,8 +1,8 @@
 {
   "componentId": "data-table",
   "contractSource": "derived",
-  "digest": "sha256:bfdfb19fc7fbbbbf3a657d11b65b72daf43c35a005c538c45a5f9133e5d1fb2b",
-  "entryDigest": "sha256:0474f44624cc4e9e02242bab9fa521d15f376b7793da0d12ddbbddb134ebce03",
+  "digest": "sha256:bd525cdf1c89fd5e42e144435f301a7f684bf69fffe4e462c5444eeb0b0118cd",
+  "entryDigest": "sha256:55b554c7b03136ce11c73882531c594ea8f0ac021e63f634a316dfad09e950db",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -859,7 +859,7 @@
         "declarationPath": "packages/components-svelte/dist/DataTable.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DataTableProps",
-        "version": "0.43.3"
+        "version": "0.44.0"
       },
       "status": "partial",
       "unresolved": [],

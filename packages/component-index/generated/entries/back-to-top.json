@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/BackToTop.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Quick-access button to return to the top after scrolling.",
     "fr": "Bouton d’accès rapide qui remonte vers le haut de la page au défilement."
   },
-  "digest": "sha256:4dda617506f22c96b75c13a627278b412e3b59fcfcf908b9ff5482377fbeaf6f",
+  "digest": "sha256:e028c5b7315607d3bcc678c661268d383659e3ed86711262fb1a0f3ece989e9a",
   "displayName": "BackToTop",
   "format": "component-entry/v1",
   "frameworks": [

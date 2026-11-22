@@ -209,12 +209,23 @@ export interface ResolvedRowGaps {
  * the token number passed as a metric, else the engine default mirroring the
  * token. The caps come from the metrics only: no hint raises a cap.
  */
-export function resolveRowGaps(hints: LayoutHints | undefined, metrics: LayoutMetrics): ResolvedRowGaps {
+export function resolveRowGaps(
+  hints: LayoutHints | undefined,
+  metrics: LayoutMetrics,
+  useZoneGutter = false,
+): ResolvedRowGaps {
+  // REQ-R7-14 (DE-2 ask 3): on the r7 path, sibling-zone gutters use one single
+  // fixed `zoneGutter` token (>= 96) on both axes; per-axis `zoneGapX/Y` hints
+  // cannot shrink or split it. On v1 (`useZoneGutter === false`), hints keep
+  // exact main behaviour.
+  const zoneGutter = useZoneGutter
+    ? Math.max(spacing.zoneGutter, metrics.zoneGutter ?? spacing.zoneGutter)
+    : undefined;
   return {
     cardX: hints?.cardGapX ?? metrics.rowGapInline ?? metrics.gapMin ?? DEFAULT_ROW_GAP,
     cardY: hints?.cardGapY ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? spacing.gapMinBlock,
-    zoneX: hints?.zoneGapX ?? metrics.rowGapInline ?? metrics.gapMin ?? DEFAULT_ROW_GAP,
-    zoneY: hints?.zoneGapY ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? spacing.gapMinBlock,
+    zoneX: zoneGutter ?? hints?.zoneGapX ?? metrics.rowGapInline ?? metrics.gapMin ?? DEFAULT_ROW_GAP,
+    zoneY: zoneGutter ?? hints?.zoneGapY ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? spacing.gapMinBlock,
     maxX: metrics.gapInlineMax ?? metrics.gapMax ?? DEFAULT_ROW_GAP_MAX,
     maxY: metrics.gapBlockMax ?? metrics.gapMax ?? DEFAULT_ROW_GAP_MAX,
   };

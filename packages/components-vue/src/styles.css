@@ -18620,6 +18620,10 @@
     height: 100%;
     min-height: 0;
   }
+  .st-diagramSceneFigure--fullscreen .st-diagramSceneFigure-viewport,
+  .st-diagramSceneFigure:fullscreen .st-diagramSceneFigure-viewport {
+    max-height: none;
+  }
   @media (prefers-reduced-motion: reduce) {
     .st-diagramSceneFigure-controls button {
       transition: none;

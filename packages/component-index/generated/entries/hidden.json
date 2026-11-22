@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Hidden.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Hides its content above/below a breakpoint.",
     "fr": "Masque son contenu au-dessus/en-dessous d'un breakpoint."
   },
-  "digest": "sha256:d082111effdcdaacbbbfefd5792c88f6694da6a0c09ca2ad65cc66997ec4d787",
+  "digest": "sha256:dfe08f3bd03239ae6db45ee026a3c2bcfdfd4532175afb5a2349aa2f5a8f9520",
   "displayName": "Hidden",
   "format": "component-entry/v1",
   "frameworks": [

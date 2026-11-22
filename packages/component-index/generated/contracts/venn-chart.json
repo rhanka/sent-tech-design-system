@@ -1,8 +1,8 @@
 {
   "componentId": "venn-chart",
   "contractSource": "derived",
-  "digest": "sha256:7a06a6272474c3a2b2af983b465997770a453c1af30e707f34fdab9e38980b86",
-  "entryDigest": "sha256:8ab646cc62bac744bce593d835b78d6087e43f4bfe01b2314052a38b71869d66",
+  "digest": "sha256:3b5ca81933cbdd8749961148d1b8a7c445a6fca203d91dc0f6e6ab9bff1fc9d6",
+  "entryDigest": "sha256:0f8fd9a783efc0974eeeb9097c564ec0f2f4a26e54de22efcbcd734997624ece",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -208,7 +208,7 @@
         "declarationPath": "packages/components-svelte/dist/VennChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "VennChartProps",
-        "version": "0.43.3"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

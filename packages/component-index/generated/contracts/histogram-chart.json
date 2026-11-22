@@ -1,8 +1,8 @@
 {
   "componentId": "histogram-chart",
   "contractSource": "derived",
-  "digest": "sha256:8dd90508984e0afdbd40423b133f7f9ae21d020b9e446672db1f91028e2452ac",
-  "entryDigest": "sha256:d9e2d07197edfd3e7a5aac180ccbe249dccf4431840320a987e351ba40db8b7b",
+  "digest": "sha256:1b166f8549e3f8142a289d5da3064933aa05cfe872c6131d8c5e05e93aa015fc",
+  "entryDigest": "sha256:f70e5c504b32eee3e326cafafb46417e013557e9d8d0d64e3bee46e7be469399",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -271,7 +271,7 @@
         "declarationPath": "packages/components-svelte/dist/HistogramChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HistogramChartProps",
-        "version": "0.43.3"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

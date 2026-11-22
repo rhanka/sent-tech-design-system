@@ -1,8 +1,8 @@
 {
   "componentId": "calendar-heatmap-chart",
   "contractSource": "derived",
-  "digest": "sha256:f061be07c3c66975cf10cc718ab23d89f6b8f4546a43ccc0bdb610fffab01015",
-  "entryDigest": "sha256:932e1049d99c6b7e0056ab1d6a2ce9018b950cbf2d744c79a8ca43ca26a6e69c",
+  "digest": "sha256:f678eb267f1a01e664cb84e8465179d4e580b3275d28e03aaff1375ae65aa6af",
+  "entryDigest": "sha256:767426732cb28c965e7c4d5415229e170f8cea3979762db44a1ba99625e10cab",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -217,7 +217,7 @@
         "declarationPath": "packages/components-svelte/dist/CalendarHeatmapChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CalendarHeatmapChartProps",
-        "version": "0.43.3"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/LanguageSelector.svelte",
-      "version": "0.43.3"
+      "version": "0.44.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact language switcher (i18n): current locale + menu.",
     "fr": "Sélecteur de langue compact (i18n) : langue courante + menu."
   },
-  "digest": "sha256:5af3d6d5a0449ad4ff5ef076ca932bd896289d4bdcc0f8239d1a0a8b77248b9a",
+  "digest": "sha256:efc3a1dd04dce9c6a9d7bf84a2c3c15ccb29926799dc64265236057f9fa6c857",
   "displayName": "LanguageSelector",
   "format": "component-entry/v1",
   "frameworks": [

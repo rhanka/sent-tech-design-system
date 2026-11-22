@@ -1,8 +1,8 @@
 {
   "componentId": "select",
   "contractSource": "derived",
-  "digest": "sha256:bc34714b2dcc97f4dfddf90cf7230476c3b97e6149cf1a53bd0634fa6651bd08",
-  "entryDigest": "sha256:bc0aa497684c87caf1484202ec4d4bb9a2c62ceaad1729e089378070d0654f9b",
+  "digest": "sha256:c34f27dca599edc5a8cc2e35161cd6be6de6293b882da42e70041c4e8c4c45b3",
+  "entryDigest": "sha256:dc45e452ad7710be8d8301352fdc61241ce13b06f962bec7ea2a2a93f742347b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -288,7 +288,7 @@
         "declarationPath": "packages/components-svelte/dist/Select.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SelectProps",
-        "version": "0.43.3"
+        "version": "0.44.0"
       },
       "status": "complete",
       "unresolved": [],
