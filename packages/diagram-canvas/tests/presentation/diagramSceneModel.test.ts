@@ -354,6 +354,19 @@ describe("shared scene presentation (DC-2b)", () => {
       overflowY: false,
     });
 
+    // Precedence of viewHeight vs fitToWindow vs unconstrained (DE-2 + « Tout voir »).
+    const tallBounds = { x: 0, y: 0, width: 1200, height: 1800 };
+    const fitWindowInline = sceneFit({ bounds: tallBounds, viewWidth: 800, windowHeight: 900, fitToWindow: true });
+    const fitWindowFullscreen = sceneFit({ bounds: tallBounds, viewWidth: 800, windowHeight: 900, viewHeight: 820, fitToWindow: true });
+    expect(fitWindowFullscreen.fitHeight).toBe(820);
+    expect(fitWindowFullscreen.zoom).toBeLessThanOrEqual(fitWindowInline.zoom);
+    expect(fitWindowFullscreen.pans).toBe(false);
+    const composed = sceneFit({ bounds: largeBounds, viewWidth: 390, windowHeight: 844, fitToWindow: true, unconstrained: true });
+    expect(composed.zoom).toBeLessThan(0.30);
+    expect(composed.zoom).toBeGreaterThan(0);
+    expect(composed.pans).toBe(false);
+    expect(scenePlacement(largeBounds, composed.zoom, composed)).toMatchObject({ overflowX: false, overflowY: false });
+
     // Extreme sub-quantum scene stays strictly positive (never collapses to scale 0).
     const extreme = sceneFit({ bounds: { x: 0, y: 0, width: 1_000_000, height: 500_000 }, viewWidth: 390, windowHeight: 844, unconstrained: true });
     expect(extreme.zoom).toBeGreaterThan(0);

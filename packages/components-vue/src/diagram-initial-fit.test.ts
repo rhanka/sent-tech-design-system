@@ -752,4 +752,120 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
       }
     });
   }
+
+  for (const targetScale of [0.23, 0.12] as const) {
+    it(`should keep painted-bounds fixed point and exact 0.30 exit-restore at « Tout voir » scale ${targetScale}`, async () => {
+      const snap = (px: number) => Math.round(px * 64) / 64;
+      const originalRect = Element.prototype.getBoundingClientRect;
+      const sheet = document.createElement('style');
+      sheet.textContent = '.st-diagramSceneFigure-edge { fill: none; stroke: rgb(100, 116, 139); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }';
+      document.head.append(sheet);
+      vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+        const world = this.closest<HTMLElement>('.st-diagramSceneFigure-world');
+        if (world === null) return originalRect.call(this);
+        const match = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/.exec(world.style.transform);
+        if (match === null) return new DOMRect();
+        const [tx, ty, scale] = match.slice(1).map(Number) as [number, number, number];
+        if (this === world) return new DOMRect(snap(tx), snap(ty), 0, 0);
+        if (this.matches('[data-scene-edge]')) {
+          const pts = (this.getAttribute('points') ?? '').trim().split(/\s+/).filter(Boolean).map(p => p.split(',').map(Number) as [number, number]);
+          if (pts.length === 0) return new DOMRect();
+          const xs = pts.map(([x]) => x), ys = pts.map(([, y]) => y);
+          const left = snap(tx + Math.min(...xs) * scale), top = snap(ty + Math.min(...ys) * scale);
+          return new DOMRect(left, top, snap(tx + Math.max(...xs) * scale) - left, snap(ty + Math.max(...ys) * scale) - top);
+        }
+        if (!(this instanceof HTMLElement) || !this.matches('[data-scene-occurrence],[data-scene-label]')) return new DOMRect();
+        const x = parseFloat(this.style.left), y = parseFloat(this.style.top);
+        const w = parseFloat(this.style.width), h = parseFloat(this.style.height);
+        const left = snap(tx + x * scale), top = snap(ty + y * scale);
+        return new DOMRect(left, top, snap(tx + (x + w) * scale) - left, snap(ty + (y + h) * scale) - top);
+      });
+      // ontology/unfolded spans ~5700 world units wide; size clientWidth so
+      // unconstrained « Tout voir » lands right at targetScale (0.23 or 0.12).
+      const probe = await host.mount({
+        ...cases.find(scene => scene.name === 'ontology/unfolded')!.input(),
+        labels: { fit: 'Ajuster', viewAll: 'Tout voir', fullscreen: 'Plein écran' },
+      });
+      await probe.flush();
+      const probeGeo = geometry(probe.element);
+      const sceneWidth = probeGeo.right - probeGeo.left;
+      const sceneHeight = probeGeo.bottom - probeGeo.top;
+      probe.dispose();
+
+      const frameWidth = Math.round(Math.max(sceneWidth * targetScale + 2, (sceneHeight * targetScale + 2) * (16 / 9)));
+      const winHeight = Math.max(900, Math.ceil((frameWidth * 9 / 16) / 0.85) + 100);
+      vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(frameWidth);
+      vi.stubGlobal('innerHeight', winHeight);
+      vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+      const view = await host.mount({
+        ...cases.find(scene => scene.name === 'ontology/unfolded')!.input(),
+        labels: { fit: 'Ajuster', viewAll: 'Tout voir', fullscreen: 'Plein écran' },
+      });
+      try {
+        await view.flush();
+        await view.flush();
+        const button = (name: string) =>
+          [...view.element.querySelectorAll('button')].find(el => el.getAttribute('aria-label') === name || el.textContent?.trim() === name) as HTMLButtonElement;
+        const viewAllBtn = button('Tout voir');
+        const fitBtn = button('Ajuster');
+        const zoomInBtn = button('Zoom in');
+        const snapshot = () => {
+          const geo = geometry(view.element);
+          return {
+            zoom: geo.zoom,
+            height: geo.height,
+            transform: geo.world.style.transform,
+            extent: geo.extent.style.cssText,
+            pans: geo.viewport.dataset.pans,
+            overflowX: geo.viewport.style.overflowX,
+            overflowY: geo.viewport.style.overflowY,
+          };
+        };
+
+        const initial = snapshot();
+        expect(initial.zoom).toBe(0.30);
+        expect(initial.pans).toBe('true');
+
+        // Enter « Tout voir » at sub-0.30 scale (0.23 or 0.12) and settle.
+        viewAllBtn.click();
+        await view.flush();
+        await view.flush();
+        fitBtn.click();
+        await view.flush();
+        await view.flush();
+        const settled = snapshot();
+        expect(settled.zoom).toBeCloseTo(targetScale, 2);
+        expect(settled.zoom).toBeLessThan(0.30);
+        expect(settled.pans).toBe('false');
+        expect(settled.overflowX).toBe('hidden');
+        expect(settled.overflowY).toBe('hidden');
+
+        // Repeated Ajuster and interactive zoom-in -> Ajuster stay at one fixed point.
+        for (let i = 0; i < 3; i++) {
+          fitBtn.click();
+          await view.flush();
+          await view.flush();
+          expect(snapshot(), `${host.name} repeat Ajuster ${i} at ${targetScale}`).toEqual(settled);
+        }
+        zoomInBtn.click();
+        await view.flush();
+        zoomInBtn.click();
+        await view.flush();
+        expect(snapshot().zoom).toBeGreaterThan(settled.zoom);
+        fitBtn.click();
+        await view.flush();
+        await view.flush();
+        expect(snapshot(), `${host.name} Ajuster after zoom-in at ${targetScale}`).toEqual(settled);
+
+        // Exiting « Tout voir » re-reads at 0.30 and restores exact initial height and transform.
+        viewAllBtn.click();
+        await view.flush();
+        await view.flush();
+        expect(snapshot(), `${host.name} exact 0.30 exit-restore from ${targetScale}`).toEqual(initial);
+      } finally {
+        sheet.remove();
+        view.dispose();
+      }
+    });
+  }
 });

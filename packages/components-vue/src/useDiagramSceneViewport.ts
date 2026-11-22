@@ -1,8 +1,8 @@
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
-import { clampZoom, FIT_ASPECT, isR7ConnectorPresentation, zoomReadout, type Rect } from '@sentropic/diagram-canvas';
+import { clampZoom, DEFAULT_MIN_READABLE_SCALE, FIT_ASPECT, isR7ConnectorPresentation, zoomReadout, type Rect } from '@sentropic/diagram-canvas';
 import { sceneCardMeasure, cardLineMeasurer, defaultCardMeasure, type CardLineMeasure } from './diagramCardModel.js';
 import { DEFAULT_EDGE_LABEL_SIZE, DEFAULT_SCENE_TARGET_WIDTH, parseCssLengthPx, parseScale, resolveEdgeLabelSizeToken, resolveZoom, scaleEdgeLabelMeasurer, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneModel } from './diagramSceneModel.js';
-import { measureRenderedBounds, shouldRefitRenderedBounds } from './diagramRenderedBounds.js';
+import { committedWorldScale, measureRenderedBounds, shouldRefitRenderedBounds } from './diagramRenderedBounds.js';
 import { measureRenderedSceneFont } from './diagramFontMeasure.js';
 import type { DiagramSceneFigureProps, DiagramSceneCamera } from './DiagramSceneFigure.types.js';
 
@@ -41,25 +41,36 @@ export function useDiagramSceneViewport(
     const fullscreenMode = computed<'native' | 'fallback' | undefined>(() =>
         nativeFullscreen.value ? 'native' : fallbackFullscreen.value ? 'fallback' : undefined);
     let fittedFonts: Promise<FontFaceSet> | undefined;
-    const renderedBounds = shallowRef<{ scene: SceneModel; bounds: Rect }>();
+    const renderedBounds = shallowRef<{ scene: SceneModel; bounds: Rect; scale: number }>();
     const cameraBounds = computed(() => renderedBounds.value?.scene === scene.value ? renderedBounds.value?.bounds : scene.value?.bounds);
     // `zoom` is the scale the world is painted at: the fit is quantised once,
     // in `sceneFit`, and printed as it is, so painted rects divide back by it.
     // The first read of a scene fits; a later one refits only when it differs
-    // from that read by more than the measurement granularity. A read that
-    // comes back as the model bounds is a read like any other: it replaces an
-    // earlier, larger one, and the next one is compared to it.
-    // A fold transition paints interpolated rectangles and fading layers: no
-    // read happens while it runs, one happens when it settles.
+    // from that read by more than the measurement granularity at the minimum
+    // scale of the two reads. A read that comes back as the model bounds is a
+    // read like any other: it replaces an earlier, larger one, and the next one
+    // is compared to it. A fold transition paints interpolated rectangles and
+    // fading layers: no read happens while it runs, one happens when it settles.
     const animating = () => transition?.animating() ?? false;
     function readRenderedBounds() {
         if (frameEl.value === undefined || scene.value === undefined || animating()) return;
-        const bounds = measureRenderedBounds(frameEl.value, scene.value.bounds, zoom.value);
-        const previous = renderedBounds.value?.scene === scene.value ? renderedBounds.value.bounds : undefined;
-        if (bounds === undefined || !shouldRefitRenderedBounds(previous, bounds)) return;
-        renderedBounds.value = { scene: scene.value, bounds };
+        const readScale = committedWorldScale(frameEl.value, zoom.value);
+        const strokeFloor = Math.min(DEFAULT_MIN_READABLE_SCALE, fit.value.minZoom, readScale);
+        const bounds = measureRenderedBounds(frameEl.value, scene.value.bounds, zoom.value, strokeFloor);
+        const previous = renderedBounds.value?.scene === scene.value ? renderedBounds.value : undefined;
+        const toleranceScale = previous === undefined ? readScale : Math.min(previous.scale, readScale);
+        if (bounds === undefined || !shouldRefitRenderedBounds(previous?.bounds, bounds, toleranceScale)) return;
+        renderedBounds.value = { scene: scene.value, bounds, scale: readScale };
     }
-    onMounted(() => { watch([scene, animating], () => readRenderedBounds(), { immediate: true, flush: 'post' }); });
+    onMounted(() => {
+        watch([scene, animating], () => {
+            const current = scene.value;
+            if (current === undefined || animating()) return;
+            void nextTick(() => {
+                if (scene.value === current && !animating()) readRenderedBounds();
+            });
+        }, { immediate: true, flush: 'post' });
+    });
     function token(name: string, style?: CSSStyleDeclaration) {
         return frameEl.value === undefined ? undefined : (style ?? getComputedStyle(frameEl.value)).getPropertyValue(name).trim();
     }
@@ -250,6 +261,7 @@ export function useDiagramSceneViewport(
     function enterFullscreen() {
         const target = figureEl.value;
         if (target === undefined) return;
+        if (renderedBounds.value !== undefined && renderedBounds.value.scale < DEFAULT_MIN_READABLE_SCALE) renderedBounds.value = undefined;
         const doc = target.ownerDocument;
         const canNative = typeof target.requestFullscreen === 'function' && doc.fullscreenEnabled !== false;
         if (canNative) {
@@ -293,6 +305,7 @@ export function useDiagramSceneViewport(
         const target = figureEl.value;
         const doc = target?.ownerDocument;
         const wasActive = nativeFullscreen.value || fallbackFullscreen.value;
+        if (wasActive && renderedBounds.value !== undefined && renderedBounds.value.scale < DEFAULT_MIN_READABLE_SCALE) renderedBounds.value = undefined;
         fallbackFullscreen.value = false;
         if (doc !== undefined && doc.fullscreenElement === target && typeof doc.exitFullscreen === 'function') {
             try {
@@ -319,19 +332,26 @@ export function useDiagramSceneViewport(
     }
     function toggleFullscreen() {
         readCameraTokens();
+        if (renderedBounds.value !== undefined && renderedBounds.value.scale < DEFAULT_MIN_READABLE_SCALE) renderedBounds.value = undefined;
         if (fullscreen.value) exitFullscreen();
         else enterFullscreen();
     }
     function setViewAll(enabled: boolean) {
         const next = Boolean(enabled);
         if (next === viewAll.value) return;
-        const painted = animating() ? undefined : scene.value;
         if (animating()) transition?.settle();
         readCameraTokens();
-        if (scene.value === painted) readRenderedBounds();
+        const exitingFullscreen = !next && fullscreen.value;
+        renderedBounds.value = undefined;
         viewAll.value = next;
-        if (!next && fullscreen.value) exitFullscreen();
+        if (exitingFullscreen) exitFullscreen();
         resetToFit();
+        if (!exitingFullscreen) {
+            const targetScene = scene.value;
+            void nextTick(() => {
+                if (scene.value === targetScene && viewAll.value === next) readRenderedBounds();
+            });
+        }
     }
     function toggleViewAll() { setViewAll(!viewAll.value); }
     function onFigureKeydown(event: KeyboardEvent) {
@@ -388,6 +408,7 @@ export function useDiagramSceneViewport(
         const target = figureEl.value;
         const active = target !== undefined && mountedDocument?.fullscreenElement === target;
         if (active !== nativeFullscreen.value) {
+            if (renderedBounds.value !== undefined && renderedBounds.value.scale < DEFAULT_MIN_READABLE_SCALE) renderedBounds.value = undefined;
             nativeFullscreen.value = active;
             if (active) fallbackFullscreen.value = false;
             void nextTick(() => measureFrame(true));

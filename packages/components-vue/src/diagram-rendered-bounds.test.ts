@@ -384,6 +384,101 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
     expect(within(measure(view.frame, model, 0.62)!, reference)).toBeLessThanOrEqual(RENDERED_BOUNDS_REFIT_TOLERANCE);
     view.dispose();
   });
+  it(`should keep scale-aware ${host} tolerance, non-scaling-stroke padding and fixed point at sub-0.30 « Tout voir » scales (0.12 and 0.23)`, () => {
+    const { renderedBoundsRefitTolerance } = bounds;
+    expect(renderedBoundsRefitTolerance()).toBe(RENDERED_BOUNDS_REFIT_TOLERANCE);
+    expect(renderedBoundsRefitTolerance(0.30)).toBe(RENDERED_BOUNDS_REFIT_TOLERANCE);
+    expect(renderedBoundsRefitTolerance(0.62)).toBe(RENDERED_BOUNDS_REFIT_TOLERANCE);
+    expect(renderedBoundsRefitTolerance(0.23)).toBe((2 / 0.23 + 1) / 64);
+    expect(renderedBoundsRefitTolerance(0.12)).toBe((2 / 0.12 + 1) / 64);
+
+    // Worst-case 1/64 CSS px LayoutUnit quantisation flip at 0.23 and 0.12
+    // exceeds the fixed 0.30 constant, but stays strictly within the
+    // scale-aware tolerance while remaining < 0.1 CSS px on screen.
+    const snap = (px: number) => Math.round(px * 64) / 64;
+    const readEdge = (edge: number, translate: number, zoom: number) =>
+      Math.floor(((snap(translate + edge * zoom) - snap(translate)) / zoom) * 64) / 64;
+    const widest = (zoomA: number, zoomB: number) => {
+      let flip = 0;
+      for (let i = 0; i < 4000; i++) {
+        const edge = -700 + i * 0.3713;
+        flip = Math.max(flip, Math.abs(readEdge(edge, 392.713 + i * 0.0131, zoomA) - readEdge(edge, 27.307 + i * 0.0173, zoomB)));
+      }
+      return flip;
+    };
+    // One LayoutUnit step at the same scale spans ceil(1 / zoom) world steps:
+    // 5/64 at 0.23, 9/64 at 0.12; two distinct transforms near 0.23 or at 0.12
+    // exceed the fixed 0.30 constant, while staying strictly within the
+    // scale-aware tolerance and < 0.1 CSS px on screen.
+    expect(widest(0.23, 0.23)).toBe(5 / 64);
+    expect(widest(0.12, 0.12)).toBe(9 / 64);
+    expect(widest(0.12, 0.12)).toBeGreaterThan(RENDERED_BOUNDS_REFIT_TOLERANCE);
+    expect(widest(0.23, 0.231)).toBeGreaterThan(RENDERED_BOUNDS_REFIT_TOLERANCE);
+    for (const [zoomA, zoomB] of [[0.23, 0.23], [0.23, 0.231], [0.12, 0.12], [0.23, 0.62], [0.12, 0.62], [0.12, 0.23]] as const) {
+      const tol = renderedBoundsRefitTolerance(Math.min(zoomA, zoomB));
+      expect(widest(zoomA, zoomB), `${zoomA}/${zoomB}`).toBeLessThan(tol);
+      expect(tol * Math.min(zoomA, zoomB), `${zoomA}/${zoomB} px`).toBeLessThan(0.1);
+    }
+
+    // Real ink growth (+1 world unit) still refits at 0.23 and 0.12, while
+    // LayoutUnit quantisation flips do not.
+    const rect = { x: -634.6, y: -44, width: 5876, height: 2284 };
+    for (const scale of [0.23, 0.12] as const) {
+      const tol = renderedBoundsRefitTolerance(scale);
+      expect(shouldRefitRenderedBounds(rect, { ...rect, x: rect.x - tol * 0.9 }, scale)).toBe(false);
+      expect(shouldRefitRenderedBounds(rect, { ...rect, width: rect.width + 1 }, scale)).toBe(true);
+    }
+
+    // Sub-0.30 non-scaling-stroke padding widens to width / 2 / minScale and
+    // stays fixed-point stable across repeated Ajuster and interactive zoom to 0.62.
+    const model = { x: 0, y: 0, width: 5876, height: 2284 };
+    const edge = 'class="st-diagramSceneFigure-edge" data-scene-edge="e" style="stroke:rgb(100, 116, 139);stroke-width:1.5px;vector-effect:non-scaling-stroke"';
+    const view = paintedWorld(`<div data-scene-occurrence="card"></div><svg><polyline ${edge}/></svg>`,
+      { '[data-scene-occurrence]': { x: 40, y: 40, width: 460, height: 200 }, 'polyline': model });
+    try {
+      for (const [viewWidth, targetScale] of [[1354, 0.23], [708, 0.12]] as const) {
+        const expectedPad = 0.75 / targetScale;
+        Object.assign(view.camera, { zoom: targetScale, tx: 12.3, ty: 45.6 });
+        (view.world as HTMLElement).style.transform = `translate(12.3px,45.6px) scale(${targetScale})`;
+        const directRead = measure(view.frame, model, targetScale)!;
+        expect(-directRead.x, `direct pad at ${targetScale}`).toBeGreaterThanOrEqual(expectedPad);
+        expect(directRead.x + directRead.width - model.width, `direct right pad at ${targetScale}`).toBeGreaterThanOrEqual(expectedPad);
+
+        // Full unconstrained host loop: settle, repeat Ajuster, zoom in to 0.62 + Ajuster, real ink growth.
+        let read: { bounds: Rect; scale: number } | undefined;
+        const state = () => {
+          const current = read?.bounds ?? model;
+          const fit = sceneFit({ bounds: current, viewWidth, windowHeight: 1600, unconstrained: true });
+          return { bounds: current, fit, placement: scenePlacement(current, fit.zoom, fit) };
+        };
+        const ajuster = (interactiveZoom?: number) => {
+          const { bounds: current, fit } = state();
+          const activeZoom = interactiveZoom ?? fit.zoom;
+          const placement = scenePlacement(current, activeZoom, fit);
+          Object.assign(view.camera, { zoom: activeZoom, tx: placement.translateX, ty: placement.translateY });
+          (view.world as HTMLElement).style.transform = `translate(${placement.translateX}px,${placement.translateY}px) scale(${activeZoom})`;
+          const strokeFloor = Math.min(0.30, fit.minZoom, activeZoom);
+          const next = measure(view.frame, model, activeZoom, strokeFloor)!;
+          const tolScale = read === undefined ? activeZoom : Math.min(read.scale, activeZoom);
+          if (shouldRefitRenderedBounds(read?.bounds, next, tolScale)) read = { bounds: next, scale: activeZoom };
+        };
+        ajuster();
+        ajuster();
+        const settled = state();
+        expect(settled.fit.zoom, `scale near ${targetScale}`).toBeCloseTo(targetScale, 2);
+        expect(settled.fit.pans).toBe(false);
+        // Half-stroke (0.75 CSS px) is framed within 1 LayoutUnit at the settled sub-0.30 scale (far wider than 0.75 / 0.30).
+        expect(-settled.bounds.x).toBeGreaterThan(0.75 / 0.30);
+        expect(-settled.bounds.x * settled.fit.zoom).toBeGreaterThanOrEqual(0.75 - 1 / 64);
+        for (const z of [undefined, undefined, 0.62, undefined, 0.45, undefined]) {
+          ajuster(z);
+          expect(state(), `${host}/${targetScale}/${z}`).toEqual(settled);
+        }
+      }
+    } finally {
+      view.dispose();
+    }
+  });
   it(`should frame ${host} circles, the optional ERD cardinality markers`, () => {
     const model = { x: 10, y: 20, width: 640, height: 320 };
     const far = { x: -400, y: -300, width: 1600, height: 1200 };

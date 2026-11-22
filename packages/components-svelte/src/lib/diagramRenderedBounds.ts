@@ -16,34 +16,54 @@ const GRID = RENDERED_BOUNDS_GRID_STEPS;
  * - a painted edge is read as `(edge − origin) / zoom`, both operands on the
  *   LayoutUnit grid, so a read places it within one LayoutUnit of screen
  *   space: `1 / (64 × zoom)` world unit;
- * - no read happens under the readability floor (the camera never applies
- *   a smaller zoom), where that step is at its widest: `1 / (64 × 0.30)`;
+ * - on the default path, no read happens under the readability floor (0.30),
+ *   where that step is at its widest: `1 / (64 × 0.30)`;
+ * - in unconstrained (« Tout voir ») or `fitToWindow` mode, zoom can drop
+ *   below 0.30, widening that step to `1 / (64 × zoom)`;
  * - the edge is then rounded outward to the 1/64 world-unit grid, which
  *   moves it by less than one more step;
  * - a stroke is added to its edge in world units, at one width for every
- *   zoom and interaction state (see `measureRenderedBounds`): it shifts
- *   both reads alike.
+ *   zoom and interaction state within the current fit mode (see
+ *   `measureRenderedBounds`): it shifts both reads alike.
  *
- * Two reads of an unchanged edge, through any two transforms, therefore
- * differ by less than `(2 / 0.30 + 1) / 64` ≈ 0.120 world unit. On screen
- * that is more than `(1 + zoom) / 64` CSS px at every zoom the camera
- * applies: one LayoutUnit step read back through the outward rounding,
- * which spans up to `ceil(1 / zoom) / 64` world unit (2/64 at 0.62, 4/64 at
- * 0.30). A bare 1/64 CSS px is under that step: it refits on a flip of the
- * last grid step, and a fit then alternates between two transforms. At the
- * 0.62 cap the tolerance is 0.075 CSS px, far under the 1 CSS px paint
- * inset, so it cannot hide a real overflow.
+ * Two reads of an unchanged edge, through any two transforms at or above
+ * `scale`, therefore differ by less than `(2 / min(0.30, scale) + 1) / 64`
+ * world units (`≈ 0.120` at the 0.30 floor, `≈ 0.151` at 0.23, `≈ 0.276` at
+ * 0.12). On screen at that scale this stays near `(2 + scale) / 64` CSS px
+ * (`≈ 0.035` CSS px), far under the 1 CSS px paint inset, so it cannot hide
+ * a real overflow while preventing LayoutUnit flip oscillation.
  */
 export const RENDERED_BOUNDS_REFIT_TOLERANCE = (2 / DEFAULT_MIN_READABLE_SCALE + 1) / GRID;
+
+/**
+ * Scale-aware refit tolerance, world units. Equals
+ * `RENDERED_BOUNDS_REFIT_TOLERANCE` for scales at or above
+ * `DEFAULT_MIN_READABLE_SCALE` (0.30), and widens proportionally below 0.30
+ * to match the 1/64 CSS px LayoutUnit quantisation at sub-floor scales.
+ */
+export function renderedBoundsRefitTolerance(scale: number = DEFAULT_MIN_READABLE_SCALE): number {
+  const floor = Number.isFinite(scale) && scale > 0
+    ? Math.min(DEFAULT_MIN_READABLE_SCALE, scale)
+    : DEFAULT_MIN_READABLE_SCALE;
+  return (2 / floor + 1) / GRID;
+}
+
+/** Scale committed on the world element's transform, falling back to `hostZoom`. */
+export function committedWorldScale(frame: HTMLElement, hostZoom: number): number {
+  const world = frame.querySelector<HTMLElement>('.st-diagramSceneFigure-world');
+  if (!world) return hostZoom;
+  const committed = Number(/\bscale\(\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)\s*\)/i.exec(world.style.transform)?.[1]);
+  return committed > 0 ? committed : hostZoom;
+}
 
 /**
  * Whether a painted-bounds read differs enough from the previous read of
  * the same scene to refit. The first read (`previous` absent) always fits:
  * the tolerance bounds the distance between two reads, not between a read
- * and the model geometry. From then on a fit is a fixed point: reading the
- * same paint again, through any transform, never moves it.
+ * and the model geometry. Pass the minimum painted scale of the two reads
+ * when comparing sub-0.30 fits so a fit remains a fixed point.
  */
-export function shouldRefitRenderedBounds(previous: Rect | undefined, next: Rect): boolean {
+export function shouldRefitRenderedBounds(previous: Rect | undefined, next: Rect, scale?: number): boolean {
   if (previous === undefined) return true;
   const delta = Math.max(
     Math.abs(next.x - previous.x),
@@ -51,7 +71,7 @@ export function shouldRefitRenderedBounds(previous: Rect | undefined, next: Rect
     Math.abs(next.x + next.width - previous.x - previous.width),
     Math.abs(next.y + next.height - previous.y - previous.height),
   );
-  return delta > RENDERED_BOUNDS_REFIT_TOLERANCE;
+  return delta > renderedBoundsRefitTolerance(scale);
 }
 
 /** Token default of a resting numbered-flow stroke, CSS px (DC-2c). */
@@ -131,21 +151,31 @@ function restingStrokeWidth(element: Element, style: CSSStyleDeclaration): numbe
  *
  * - a stroke that scales with the world has a constant world width;
  * - a `non-scaling-stroke` has a constant screen width, so its world width
- *   is `width / zoom`. It is framed at its widest, the one it has at the
- *   readability floor (`DEFAULT_MIN_READABLE_SCALE`, under which the camera
- *   never paints), at every zoom, and at its resting width;
+ *   is `width / zoom`. It is framed at its widest within the active fit mode
+ *   (`min(DEFAULT_MIN_READABLE_SCALE, minScale, zoom)`), at every zoom, and
+ *   at its resting width;
  * - geometry that paints nothing is left out: flow hit targets
  *   (`[data-flow-hit]`, a transparent 16 px stroke), flow focus targets
  *   (`[data-flow-node]`, hidden at rest and sized in screen px), transparent
  *   strokes and text, shapes with neither stroke nor fill, and hidden or
  *   clipped subtrees. What a fold transition is fading in stays in.
  */
-export function measureRenderedBounds(frame: HTMLElement, fallback: Rect | undefined, hostZoom: number): Rect | undefined {
+export function measureRenderedBounds(
+  frame: HTMLElement,
+  fallback: Rect | undefined,
+  hostZoom: number,
+  minScale: number = DEFAULT_MIN_READABLE_SCALE,
+): Rect | undefined {
   const world = frame.querySelector<HTMLElement>('.st-diagramSceneFigure-world');
   if (!world) return fallback;
   const committed = Number(/\bscale\(\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)\s*\)/i.exec(world.style.transform)?.[1]);
   const zoom = committed > 0 ? committed : hostZoom;
   if (!(zoom > 0)) return fallback;
+  const strokeScale = Math.min(
+    DEFAULT_MIN_READABLE_SCALE,
+    zoom,
+    Number.isFinite(minScale) && minScale > 0 ? minScale : DEFAULT_MIN_READABLE_SCALE,
+  );
   const first = world.querySelector('[data-scene-occurrence],[data-scene-label]')?.getBoundingClientRect();
   if (!first || first.width === 0 && first.height === 0) return fallback;
   const origin = world.getBoundingClientRect();
@@ -188,7 +218,7 @@ export function measureRenderedBounds(frame: HTMLElement, fallback: Rect | undef
     // A shape with neither a painted stroke nor a painted fill is geometry only.
     if (!stroked && element instanceof SVGElement && (style.fill === 'none' || isTransparent(style.fill || '') || parseFloat(style.fillOpacity) === 0)) continue;
     if (stroked) {
-      if (style.vectorEffect === 'non-scaling-stroke') pad = restingStrokeWidth(element, style) / 2 / DEFAULT_MIN_READABLE_SCALE;
+      if (style.vectorEffect === 'non-scaling-stroke') pad = restingStrokeWidth(element, style) / 2 / strokeScale;
       else {
         const matrix = (element as SVGGraphicsElement).getScreenCTM?.();
         const scale = matrix ? Math.max(Math.hypot(matrix.a, matrix.b), Math.hypot(matrix.c, matrix.d)) : zoom;

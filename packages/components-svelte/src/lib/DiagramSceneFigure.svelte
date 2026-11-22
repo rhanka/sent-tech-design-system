@@ -6,6 +6,7 @@
     renderErdCardSvg, renderErdTable,
     clampZoom,
     createLayoutCache,
+    DEFAULT_MIN_READABLE_SCALE,
     FIT_ASPECT,
     isR7ConnectorPresentation,
     zoomReadout,
@@ -21,7 +22,7 @@
   import DiagramCard from "./DiagramCard.svelte";
   import DiagramZone from "./DiagramZone.svelte";
   import IconButton from "./IconButton.svelte";
-  import { measureRenderedBounds, shouldRefitRenderedBounds } from "./diagramRenderedBounds.js";
+  import { committedWorldScale, measureRenderedBounds, shouldRefitRenderedBounds } from "./diagramRenderedBounds.js";
   import { measureRenderedSceneFont } from "./diagramFontMeasure.js";
   import Select from "./Select.svelte";
   import { DEFAULT_FLOW_TOKENS, type FlowTokens } from "@sentropic/diagram-canvas";
@@ -614,22 +615,25 @@
       if (select !== undefined && select !== null) select.value = filter === undefined ? "all" : `scenario:${filter}`;
     }
   });
-  let renderedBounds = $state.raw<{ scene: SceneModel; bounds: Rect }>();
+  let renderedBounds = $state.raw<{ scene: SceneModel; bounds: Rect; scale: number }>();
   const cameraBounds = $derived(renderedBounds?.scene === scene ? renderedBounds?.bounds : scene?.bounds);
   // `zoom` is the scale the world is painted at: the fit is quantised once,
   // in `sceneFit`, and printed as it is, so painted rects divide back by it.
   // The first read of a scene fits; a later one refits only when it differs
-  // from that read by more than the measurement granularity. A read that
-  // comes back as the model bounds is a read like any other: it replaces an
-  // earlier, larger one, and the next one is compared to it.
-  // A fold transition paints interpolated rectangles and fading layers: no
-  // read happens while it runs, one happens when it settles.
+  // from that read by more than the measurement granularity at the minimum
+  // scale of the two reads. A read that comes back as the model bounds is a
+  // read like any other: it replaces an earlier, larger one, and the next one
+  // is compared to it. A fold transition paints interpolated rectangles and
+  // fading layers: no read happens while it runs, one happens when it settles.
   function readRenderedBounds(): void {
     if (frameEl === undefined || scene === undefined || animating) return;
-    const bounds = measureRenderedBounds(frameEl, scene.bounds, zoom);
-    const previous = renderedBounds?.scene === scene ? renderedBounds.bounds : undefined;
-    if (bounds === undefined || !shouldRefitRenderedBounds(previous, bounds)) return;
-    renderedBounds = { scene, bounds };
+    const readScale = committedWorldScale(frameEl, zoom);
+    const strokeFloor = Math.min(DEFAULT_MIN_READABLE_SCALE, fit.minZoom, readScale);
+    const bounds = measureRenderedBounds(frameEl, scene.bounds, zoom, strokeFloor);
+    const previous = renderedBounds?.scene === scene ? renderedBounds : undefined;
+    const toleranceScale = previous === undefined ? readScale : Math.min(previous.scale, readScale);
+    if (bounds === undefined || !shouldRefitRenderedBounds(previous?.bounds, bounds, toleranceScale)) return;
+    renderedBounds = { scene, bounds, scale: readScale };
   }
   $effect(() => {
     const current = scene;
@@ -805,6 +809,7 @@
     const onFullscreenChange = (): void => {
       const active = figureEl !== undefined && doc.fullscreenElement === figureEl;
       if (active !== nativeFullscreen) {
+        if (renderedBounds !== undefined && renderedBounds.scale < DEFAULT_MIN_READABLE_SCALE) renderedBounds = undefined;
         nativeFullscreen = active;
         if (active) fallbackFullscreen = false;
         void tick().then(() => measureFrame(true));
@@ -950,6 +955,7 @@
   function enterFullscreen(): void {
     const target = figureEl;
     if (target === undefined) return;
+    if (renderedBounds !== undefined && renderedBounds.scale < DEFAULT_MIN_READABLE_SCALE) renderedBounds = undefined;
     const doc = target.ownerDocument;
     const canNative = typeof target.requestFullscreen === "function" && doc.fullscreenEnabled !== false;
     if (canNative) {
@@ -994,6 +1000,7 @@
     const target = figureEl;
     const doc = target?.ownerDocument;
     const wasActive = nativeFullscreen || fallbackFullscreen;
+    if (wasActive && renderedBounds !== undefined && renderedBounds.scale < DEFAULT_MIN_READABLE_SCALE) renderedBounds = undefined;
     fallbackFullscreen = false;
     if (doc !== undefined && doc.fullscreenElement === target && typeof doc.exitFullscreen === "function") {
       try {
@@ -1024,6 +1031,7 @@
   /** Toggle fullscreen using the Fullscreen API when available, with a fixed overlay fallback. */
   export function toggleFullscreen(): void {
     readCameraTokens();
+    if (renderedBounds !== undefined && renderedBounds.scale < DEFAULT_MIN_READABLE_SCALE) renderedBounds = undefined;
     if (fullscreen) exitFullscreen();
     else enterFullscreen();
   }
@@ -1032,13 +1040,19 @@
   export function setViewAll(enabled: boolean): void {
     const next = Boolean(enabled);
     if (next === viewAll) return;
-    const painted = animating ? undefined : scene;
     if (animating) settle();
     readCameraTokens();
-    if (scene === painted) readRenderedBounds();
+    const exitingFullscreen = !next && fullscreen;
+    renderedBounds = undefined;
     viewAll = next;
-    if (!next && fullscreen) exitFullscreen();
+    if (exitingFullscreen) exitFullscreen();
     resetToFit();
+    if (!exitingFullscreen) {
+      const targetScene = scene;
+      void tick().then(() => {
+        if (scene === targetScene && viewAll === next) readRenderedBounds();
+      });
+    }
   }
 
   export function toggleViewAll(): void {

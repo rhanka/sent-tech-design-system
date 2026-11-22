@@ -961,6 +961,23 @@ describe('scene host DOM and camera/fold behavior', () => {
       expect(viewport.style.maxWidth).toBe('100%');
       expect(viewport.style.marginInline).toBe('auto');
     }
+    // Entering fullscreen suppresses fitToWindow max-height identically on both hosts.
+    await vue.find('.st-diagramSceneFigure-fullscreen').trigger('click');
+    svelte.container.querySelector<HTMLButtonElement>('.st-diagramSceneFigure-fullscreen')!.click();
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    for (const root of [vue.element, svelte.container.firstElementChild!]) {
+      expect(root.getAttribute('data-fullscreen')).toBe('fallback');
+      expect(root.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!.style.maxHeight).toBe('');
+    }
+    await vue.find('.st-diagramSceneFigure-fullscreen').trigger('click');
+    svelte.container.querySelector<HTMLButtonElement>('.st-diagramSceneFigure-fullscreen')!.click();
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    for (const root of [vue.element, svelte.container.firstElementChild!]) {
+      expect(root.getAttribute('data-fullscreen')).toBeNull();
+      expect(root.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!.style.maxHeight).toBe('calc(100vh - 24px)');
+    }
     vue.unmount(); svelte.unmount();
     vi.unstubAllGlobals();
   });

@@ -1957,4 +1957,129 @@ describe("DiagramSceneFigure « Tout voir » mode (owner 21/11)", () => {
     delete (document as { fullscreenElement?: Element | null }).fullscreenElement;
     delete (document as { exitFullscreen?: () => Promise<void> }).exitFullscreen;
   });
+
+  it("suppresses fitToWindow max-height in fullscreen and restores it on exit", async () => {
+    setWindow(1280, 720);
+    const view = mount(WIDE, {
+      fitToWindow: true,
+      labels: { viewAll: "Tout voir", fullscreen: "Plein écran" },
+    });
+    await tick();
+
+    expect(view.figure.classList.contains("st-diagramSceneFigure--fitToWindow")).toBe(true);
+    expect(view.viewport.style.maxHeight).toBe("calc(100vh - 24px)");
+
+    await fireEvent.click(view.button("Plein écran"));
+    await tick();
+    await tick();
+    expect(view.figure.dataset["fullscreen"]).toBe("fallback");
+    expect(view.viewport.style.maxHeight).toBe("");
+
+    await fireEvent.click(view.button("Plein écran"));
+    await tick();
+    await tick();
+    expect(view.figure.dataset["fullscreen"]).toBeUndefined();
+    expect(view.viewport.style.maxHeight).toBe("calc(100vh - 24px)");
+  });
+
+  it("keeps painted-bounds fixed point and exact 0.30 exit-restore at sub-0.30 « Tout voir » scales (0.23 and 0.12)", async () => {
+    reducedMotion = true;
+    const snap = (px: number): number => Math.round(px * 64) / 64;
+    const originalRect = Element.prototype.getBoundingClientRect;
+    const sheet = document.createElement("style");
+    sheet.textContent = ".st-diagramSceneFigure-edge { fill: none; stroke: rgb(100, 116, 139); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }";
+    document.head.append(sheet);
+    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+      const world = this.closest<HTMLElement>(".st-diagramSceneFigure-world");
+      if (world === null) return originalRect.call(this);
+      const match = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/.exec(world.style.transform);
+      if (match === null) return new DOMRect();
+      const [tx, ty, scale] = match.slice(1).map(Number) as [number, number, number];
+      if (this === world) return new DOMRect(snap(tx), snap(ty), 0, 0);
+      if (this.matches("[data-scene-edge]")) {
+        const pts = (this.getAttribute("points") ?? "").trim().split(/\s+/).filter(Boolean).map((p) => p.split(",").map(Number) as [number, number]);
+        if (pts.length === 0) return new DOMRect();
+        const xs = pts.map(([x]) => x), ys = pts.map(([, y]) => y);
+        const left = snap(tx + Math.min(...xs) * scale), top = snap(ty + Math.min(...ys) * scale);
+        return new DOMRect(left, top, snap(tx + Math.max(...xs) * scale) - left, snap(ty + Math.max(...ys) * scale) - top);
+      }
+      if (!(this instanceof HTMLElement) || !this.matches("[data-scene-occurrence],[data-scene-label]")) return new DOMRect();
+      const x = parseFloat(this.style.left), y = parseFloat(this.style.top);
+      const w = parseFloat(this.style.width), h = parseFloat(this.style.height);
+      const left = snap(tx + x * scale), top = snap(ty + y * scale);
+      return new DOMRect(left, top, snap(tx + (x + w) * scale) - left, snap(ty + (y + h) * scale) - top);
+    });
+    try {
+      const wideScene = WIDE;
+      const probe = mount(wideScene, { labels: { fit: "Ajuster", viewAll: "Tout voir", fullscreen: "Plein écran" } });
+      await tick();
+      const boxes = [...probe.root.querySelectorAll<HTMLElement>("[data-scene-occurrence],[data-scene-label]")].map((el) => ({
+        x: parseFloat(el.style.left), y: parseFloat(el.style.top),
+        w: parseFloat(el.style.width), h: parseFloat(el.style.height),
+      }));
+      const edgePts = [...probe.root.querySelectorAll("[data-scene-edge]")].flatMap((edge) =>
+        (edge.getAttribute("points") ?? "").trim().split(/\s+/).filter(Boolean).map((p) => {
+          const [x, y] = p.split(",").map(Number) as [number, number];
+          return { x, y, w: 0, h: 0 };
+        }),
+      );
+      const all = [...boxes, ...edgePts];
+      const sceneWidth = Math.max(...all.map((b) => b.x + b.w)) - Math.min(...all.map((b) => b.x));
+      const sceneHeight = Math.max(...all.map((b) => b.y + b.h)) - Math.min(...all.map((b) => b.y));
+      probe.unmount();
+
+      for (const targetScale of [0.23, 0.12] as const) {
+        const frameWidth = Math.round(Math.max(sceneWidth * targetScale + 2, (sceneHeight * targetScale + 2) * (16 / 9)));
+        const winHeight = Math.max(900, Math.ceil((frameWidth * 9 / 16) / 0.85) + 100);
+        setWindow(frameWidth, winHeight);
+        const view = mount(wideScene, { labels: { fit: "Ajuster", viewAll: "Tout voir", fullscreen: "Plein écran" } });
+        await tick();
+        await tick();
+        const state = () => ({
+          zoom: view.zoom(),
+          height: view.viewport.style.height,
+          transform: view.world.style.transform,
+          extent: view.root.querySelector<HTMLElement>(".st-diagramSceneFigure-extent")!.style.cssText,
+          pans: view.viewport.dataset["pans"],
+        });
+        const initial = state();
+        expect(initial.zoom).toBe(DEFAULT_MIN_READABLE_SCALE);
+        expect(initial.pans).toBe("true");
+
+        await fireEvent.click(view.button("Tout voir"));
+        await tick();
+        await tick();
+        await fireEvent.click(view.button("Ajuster"));
+        await tick();
+        await tick();
+        const settled = state();
+        expect(settled.zoom).toBeCloseTo(targetScale, 2);
+        expect(settled.pans).toBe("false");
+
+        for (let i = 0; i < 3; i++) {
+          await fireEvent.click(view.button("Ajuster"));
+          await tick();
+          await tick();
+          expect(state(), `Svelte repeat Ajuster ${i} at ${targetScale}`).toEqual(settled);
+        }
+        await fireEvent.click(view.button("Zoom in"));
+        await tick();
+        await fireEvent.click(view.button("Zoom in"));
+        await tick();
+        expect(view.zoom()).toBeGreaterThan(settled.zoom);
+        await fireEvent.click(view.button("Ajuster"));
+        await tick();
+        await tick();
+        expect(state(), `Svelte Ajuster after zoom-in at ${targetScale}`).toEqual(settled);
+
+        await fireEvent.click(view.button("Tout voir"));
+        await tick();
+        await tick();
+        expect(state(), `Svelte exact 0.30 exit-restore from ${targetScale}`).toEqual(initial);
+        view.unmount();
+      }
+    } finally {
+      sheet.remove();
+    }
+  });
 });
