@@ -1,6 +1,8 @@
 import { baseDigest } from "@sentropic/focus/editing";
 import { assertFocusDocument } from "@sentropic/focus/validate";
 import { renderMarkdown } from "../markdown/minimal-markdown.js";
+import { createDossierDiagram } from "./engines/dossier-diagrams.js";
+import { validateDossierViews } from "../../focus-diagrams/dossier-views.js";
 import { connectDossier, renderDossierContent, renderMarkdownToSafeHtml } from "./engines/focus-renderer.js";
 import { renderFocusSnapshot } from "./engines/focus-snapshot.js";
 import { dispatchIntent } from "./intents.js";
@@ -18,8 +20,13 @@ export interface DossierMountOptions {
 export interface DossierMount {
   readonly reviewRoot: HTMLElement | null;
   readonly review: DossierReviewMount | null;
-  render(document: unknown): void;
+  render(document: unknown, options?: DossierRenderOptions): void;
   destroy(): void;
+}
+
+export interface DossierRenderOptions {
+  readonly views?: unknown;
+  readonly manifest?: unknown;
 }
 
 export interface DossierReadyDetail {
@@ -80,7 +87,7 @@ export function mountDossier(host: HTMLElement, options?: DossierMountOptions): 
     get review() {
       return review;
     },
-    render(document) {
+    render(document, renderOptions) {
       if (destroyed) throw new Error("The dossier mount has been destroyed");
       const validated = assertFocusDocument(document);
       const { ref, sections } = validated;
@@ -91,11 +98,15 @@ export function mountDossier(host: HTMLElement, options?: DossierMountOptions): 
       if (sectionCollision || evidence.some(({ id }) => id === ref)) {
         throw new Error(`focus-anchor-equals-document-ref: ${ref} is reserved for the header anchor`);
       }
-      const snapshot = renderFocusSnapshot(validated, (source) => renderMarkdownToSafeHtml(renderMarkdown(source, true), true));
+      const diagramSections = sections.filter((section) => section.kind === "diagram");
+      const views = validateDossierViews(document, renderOptions?.manifest, renderOptions?.views, new Set(diagramSections.map(({ id }) => id)));
+      const diagrams = new Map(diagramSections.map((section) =>
+        [section.id, createDossierDiagram(host.ownerDocument, section, views.get(section.id))]));
+      const snapshot = renderFocusSnapshot(validated, (source) => renderMarkdownToSafeHtml(renderMarkdown(source, true), true), diagrams);
       const dispatch = (id: string) => dispatchIntent(host, "choose-option", id);
       clear();
       const current = snapshot === undefined
-        ? renderDossierContent(host, validated, dispatch, "light")
+        ? renderDossierContent(host, validated, dispatch, "light", diagrams)
         : connectDossier(host, snapshot, dispatch);
       rendered = current;
       // Mount or refresh the review layer only after validation and DOM

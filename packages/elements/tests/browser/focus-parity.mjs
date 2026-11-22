@@ -1,5 +1,5 @@
 /** Compare the whole packaged review root with the complete owner render. */
-export async function compareFocusMount(doc, ownerHtml) {
+export async function compareFocusMount(doc, ownerHtml, diagramOptions) {
   const { mountDossier } = await import("/focus-mount.js");
   const { createAnchorFromElement } = await import("/focus-review-core/index.js");
   const host = document.querySelector("[data-st-dossier-page]");
@@ -37,6 +37,7 @@ export async function compareFocusMount(doc, ownerHtml) {
   for (const [index, section] of sections.entries()) {
     markDefinition(blocks[index], section.id);
     appendCalls(blocks[index], section.citationRefs);
+    if (section.kind === "diagram") blocks[index].querySelector(":scope > pre").remove();
   }
 
   // The mount provides real selection buttons on the read-only option list.
@@ -199,8 +200,13 @@ export async function compareFocusMount(doc, ownerHtml) {
   document.body.append(frame);
   try {
     frame.contentDocument.body.append(expected);
-    dossier.render(doc);
+    dossier.render(doc, diagramOptions);
     const root = dossier.reviewRoot;
+    for (const figure of root.querySelectorAll("[data-st-diagram]")) {
+      const drawing = figure.querySelector(".st-dossier__diagramDrawing");
+      if (!drawing?.querySelector("svg")) throw new Error("The kit did not draw the diagram");
+      drawing.remove();
+    }
     const captureAid = (node) => createAnchorFromElement(root, node, doc.hash)?.aid;
     const expectedAid = (node) => node.closest("[data-anchor-id]")?.getAttribute("data-anchor-id");
     compare(tree(root, captureAid), tree(expected, expectedAid), "article");

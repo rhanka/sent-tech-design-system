@@ -149,7 +149,7 @@ const { name, version } = packageManifest;
 // The manifest keys are in RFC 8785 order at both levels. The manifest lives
 // beside the kit payload and lists the bytes shipped to the artifact host.
 const manifest = {
-  capabilities: ["decision-v1", "decision-v2", "deep-links", "embedded-evidence", "report-v2"],
+  capabilities: ["decision-v1", "decision-v2", "deep-links", "embedded-evidence", "focus-views/1", "report-v2"],
   entrypoint,
   files,
   name,
