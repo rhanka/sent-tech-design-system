@@ -413,6 +413,46 @@ function dossierL6Body() {
 
 const PAGES = {
   "/focus-mount-host.html": '<!doctype html><title>Focus mount host</title><link rel="stylesheet" href="/focus-kit/strict/renderer/dossier.css"><main data-st-dossier-page data-st-theme="sent-tech"></main>',
+  "/focus-review.html": pageHtml(FOCUS_SAFE_CSP, `
+    <link rel="stylesheet" href="/focus-kit/safe/renderer/dossier.css">
+    <script type="application/octet-stream" data-st-dossier-document>${Buffer.from(focusB5).toString("base64")}</script>
+    <main data-st-dossier-page data-st-theme="sent-tech" aria-busy="true"></main>
+    <script type="module">
+      window.__reviewRows = [];
+      window.__reviewSeq = 0;
+      const adapter = {
+        async list() { return window.__reviewRows.map((row) => row.view); },
+        async create({ target, body }) {
+          const id = "c-" + (++window.__reviewSeq);
+          const threadId = "t-" + window.__reviewSeq;
+          const row = { id, threadId, target, body, state: "open" };
+          const view = { id, threadId, tenant: { workspaceId: "workspace-fixture" }, target,
+            author: { id: "user-alice" }, state: "open", body, createdAt: new Date().toISOString(),
+            authorship: { author: { actorId: "user-alice", kind: "human", displayLabel: "Alice", color: "#2563eb" } } };
+          row.view = view; window.__reviewRows.push(row); return view;
+        },
+        async reply({ threadId, body }) {
+          const id = "c-" + (++window.__reviewSeq);
+          const original = window.__reviewRows.find((row) => row.threadId === threadId);
+          const view = { id, threadId, tenant: { workspaceId: "workspace-fixture" }, target: original.target,
+            author: { id: "user-alice" }, state: "open", body, createdAt: new Date().toISOString(),
+            authorship: { author: { actorId: "user-alice", kind: "human", displayLabel: "Alice", color: "#2563eb" } } };
+          window.__reviewRows.push({ id, threadId, target: original.target, body, state: "open", view });
+          return view;
+        },
+        async setState(tenant, threadId, state) {
+          for (const row of window.__reviewRows) {
+            if (row.threadId === threadId) { row.state = state; row.view.state = state; }
+          }
+        },
+      };
+      window.__stDossierReview = { adapter, tenant: "workspace-fixture",
+        target: { kind: "artifact", id: "art-focus-test" },
+        currentUser: { actorId: "user-alice", kind: "human", displayLabel: "Alice", color: "#2563eb" },
+        mode: "review" };
+    </script>
+    <script type="module" src="/focus-kit/safe/renderer/dossier.js"></script>
+  `),
   "/pilot.html": pageHtml(PILOT_CSP, pilotBody()),
   "/time-series.html": pageHtml(STRICT_CSP, `
     ${TIME_SERIES_FIXTURES.map((name) => elementWithIsland("st-time-series-chart", name, name)).join("\n")}
@@ -2043,6 +2083,83 @@ for (const [mode, policy] of [["safe", FOCUS_SAFE_CSP], ["application", FOCUS_AP
     JSON.stringify({ external, violations, errors: observed.consoleErrors, blobs, workers: observed.workers }));
   record(`Focus ${mode} B5`, `${external.length} external requests, ${violations.length} CSP violations, ${observed.workers.length} workers`);
   await observed.close();
+}
+
+// ---------------------------------------------------------------------------
+// FA-D3 review layer in the compiled kit (B5-1..6 on the real kit page).
+// ---------------------------------------------------------------------------
+
+{
+  const reviewJs = readFileSync(join(FOCUS_DIST, "renderer", "dossier.js"), "utf8");
+  const label = "Focus kit ships CommentLayer with explicit-aid anchors";
+  if (assert(reviewJs.includes("st-review-layer__hover-outline") && reviewJs.includes("a1:") &&
+    // The 0.1.1 orphan path; the bundler emits it as a template literal.
+    reviewJs.includes("not-found") && !reviewJs.includes("VennChart") && !reviewJs.includes("ConditionalFormatting"),
+    label, `${reviewJs.length} bytes`)) ok(label);
+  record("Focus review kit graph", "CommentLayer closure present, unrelated barrel components absent");
+}
+
+{
+  const observed = await openPage("/focus-review.html");
+  const page = observed.page;
+  await page.waitForFunction(() => window.__focusReady.length > 0, { timeout: 5000 });
+
+  async function submitOn(selector, body) {
+    await page.evaluate((sel, text) => {
+      const clickable = document.querySelector(sel);
+      if (clickable === null) throw new Error(`missing ${sel}`);
+      clickable.click();
+    }, selector, body);
+    await page.waitForSelector(".st-review-composer__textarea", { timeout: 5000 });
+    await page.type(".st-review-composer__textarea", body);
+    await page.click('.st-review-composer__actions button[type="submit"]');
+    await page.waitForFunction(() => !document.querySelector(".st-review-composer__textarea"), { timeout: 5000 });
+  }
+
+  await submitOn("h1", "General header note");
+  await submitOn('[data-anchor-id="B"] p strong', "Paragraph note");
+  await submitOn('[data-anchor-id="B"] li strong', "List note");
+  await submitOn('[data-anchor-id="B"] table td strong', "Table note");
+
+  const created = await page.evaluate(() => window.__reviewRows.map((row) => {
+    const key = row.target.sectionKey;
+    const bytes = Uint8Array.from(atob(key.slice(3).replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0));
+    const payload = JSON.parse(new TextDecoder().decode(bytes));
+    return { aid: payload.aid, v: payload.v, length: key.length };
+  }));
+  const label = "Focus review B5-1 capture in compiled kit";
+  if (assert(JSON.stringify(created.map((row) => row.aid)) === JSON.stringify(["focus-test", "B", "B", "B"]) &&
+    created.every((row) => row.length <= 2048), label, JSON.stringify(created))) ok(label);
+  const version = created[0]?.v ?? "";
+  if (assert(created.every((row) => row.v === version && version.startsWith("sha256:")), `${label} version`, JSON.stringify(created))) ok(`${label} version`);
+
+  await page.evaluate(() => {
+    const leaf = document.querySelector('[data-anchor-id="B"] p strong');
+    leaf.dispatchEvent(new PointerEvent("pointerover", { bubbles: true }));
+  });
+  await page.waitForFunction(() => document.querySelector(".st-review-layer__hover-outline") !== null, { timeout: 5000 });
+  const hover = await page.evaluate(() => {
+    const outline = document.querySelector(".st-review-layer__hover-outline");
+    const block = document.querySelector('[data-anchor-id="B"]');
+    const pastilles = [...document.querySelectorAll("a")].filter((link) => /^\[\d+\]$/.test(link.textContent ?? ""));
+    return {
+      shown: outline !== null,
+      rect: outline === null ? null : { top: outline.style.top, left: outline.style.left, width: outline.style.width, height: outline.style.height },
+      blockRect: block === null ? null : block.getBoundingClientRect().toJSON(),
+      pastillesClean: pastilles.every((link) => !link.matches("[data-anchor-id], [data-commentable]")),
+    };
+  });
+  const hoverLabel = "Focus review hover frames the anchored block, never a pastille";
+  if (assert(hover.shown && hover.pastillesClean, hoverLabel, JSON.stringify(hover))) ok(hoverLabel);
+  record("Focus review hover", JSON.stringify(hover.rect));
+
+  const violations = await observed.violations();
+  await page.close();
+  // The page carries its CSP in a <meta> element here; browsers warn that
+  // frame-ancestors is ignored in that delivery — the directive is header-only.
+  const otherErrors = observed.consoleErrors.filter((error) => !error.includes("frame-ancestors"));
+  assert(violations.length === 0 && otherErrors.length === 0,
+    "Focus review load is clean", JSON.stringify({ violations, errors: observed.consoleErrors }));
 }
 
 console.log("");
