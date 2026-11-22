@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/AreaSplineRangeChart.vue",
-      "version": "0.41.0-next.13"
+      "version": "0.41.0-next.14"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Spline variant of AreaRange: filled band between a low and a high series along an X axis, always-smoothed contours (e.g. temperature range, confidence interval).",
     "fr": "Variante spline d'AreaRange : bande remplie entre une série basse et une série haute le long d'un axe X, contours toujours lissés (ex. fourchette de température, intervalle de confiance)."
   },
-  "digest": "sha256:162483c3c015ea157932bcf01ff4ee02e9ec830d54069f25ab656c80690334df",
+  "digest": "sha256:2eb91fbe05f349e6fada63f7050f5107e16d03cee6512d47a96aabe2fba3c265",
   "displayName": "AreaSplineRangeChart",
   "format": "component-entry/v1",
   "frameworks": [

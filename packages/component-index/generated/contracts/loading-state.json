@@ -1,8 +1,8 @@
 {
   "componentId": "loading-state",
   "contractSource": "derived",
-  "digest": "sha256:d0f3d1fe9b0dab48b642ac94ca366b72f89739f9c3a248fa00085553c35b5ede",
-  "entryDigest": "sha256:c2fe3b4b1723ce42912d08e63ad5c0b132fca1c313a4436538cb5aa2bda236fd",
+  "digest": "sha256:5b15a9c5e53600a2d7b3198dac4fbac37d680b0db42017fad3668fe3827ec67f",
+  "entryDigest": "sha256:b49693ba8ba96b49b836117fbe9c1880b3276e1fa4bdfcee2399f068dd0d5582",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -192,7 +192,7 @@
         "declarationPath": "packages/components-vue/dist/LoadingState.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LoadingStateProps",
-        "version": "0.41.0-next.13"
+        "version": "0.41.0-next.14"
       },
       "status": "complete",
       "unresolved": [],

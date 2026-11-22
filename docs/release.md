@@ -339,8 +339,18 @@ container folding (including in review mode) in the static kit, the new
 `./dossier-views` subpath export, and the new exact runtime dependency
 `@sentropic/diagram-canvas@0.5.0` (already published on npm). It also publishes
 the `./bpmn` and `./bpmn-mount` exports for the first time (#267). Publish
-Elements `0.3.1` before any Vue release that carries its updated optional BPMN
-peer pin (`0.3.1`).
+Elements `0.3.1` before tagging `@sentropic/design-system-vue` `0.41.0-next.14`,
+which carries its updated optional BPMN peer pin (`0.3.1`).
+
+#### Vue `0.41.0-next.14` (`0.41.0-next.13` tagged, never published)
+
+`@sentropic/design-system-vue` `0.41.0-next.13` was tagged (`vue-v0.41.0-next.13`)
+and never published on npm: at that tag the package pinned the optional peer
+`@sentropic/design-system-elements@0.3.0`, which never reached npm, so the
+publish gate refused publication. Because `vue-v0.41.0-next.13` already exists,
+the updated peer pin (`@sentropic/design-system-elements@0.3.1`, with no code
+change) ships as `0.41.0-next.14` (`vue-v0.41.0-next.14`, under `next`) once
+`elements-v0.3.1` is visible on npm.
 
 `@sentropic/design-system-review-core` was bumped to `0.1.2` in the `0.3.0`
 release prep because DS-7 (#320) changed `packages/review-core/src/fixture-adapter.ts`

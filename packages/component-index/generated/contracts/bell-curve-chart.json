@@ -1,8 +1,8 @@
 {
   "componentId": "bell-curve-chart",
   "contractSource": "derived",
-  "digest": "sha256:3053485e81fc583b5bff050ef2192b17ae187cdce06cd1e6b7e48876a6d9bcfb",
-  "entryDigest": "sha256:f2e48101fee9bb9e4a43c5b1dd991f1dcfa1f51aa32151ac9ece3a64680413f1",
+  "digest": "sha256:c1f6a825ae4cf329bb48846ac3fa271225d7cb5a6a25124e424780b27bc5496f",
+  "entryDigest": "sha256:40c7df9af00a36d7bf64cd97d3fb98a50f3bdb9e4e327d34489cc8ff91a03f91",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -266,7 +266,7 @@
         "declarationPath": "packages/components-vue/dist/BellCurveChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BellCurveChartProps",
-        "version": "0.41.0-next.13"
+        "version": "0.41.0-next.14"
       },
       "status": "complete",
       "unresolved": [],

@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Typography.vue",
-      "version": "0.41.0-next.13"
+      "version": "0.41.0-next.14"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Text component: variants, weight, tone, and alignment.",
     "fr": "Composant de texte : variantes, poids, ton, alignement."
   },
-  "digest": "sha256:f71d7071982cb0fbb89b9d83eb5dfd4cf2cfd2a61dc3b3cdb263adb00b8eea94",
+  "digest": "sha256:2340584248ba37126fb6c75d605b5e6881f0ededec7e14185a47c2a5d0aef21b",
   "displayName": "Typography",
   "format": "component-entry/v1",
   "frameworks": [

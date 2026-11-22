@@ -1,8 +1,8 @@
 {
   "componentId": "chat-composer",
   "contractSource": "derived",
-  "digest": "sha256:aa497923c82bb4e3cb69d0315e964ce8a979dcce2b6f84667253c9d5c9e3bb5e",
-  "entryDigest": "sha256:ddb86ef96cd6dc32567304db15866f4aa0b932c7ac5088241f773e157b80fcd7",
+  "digest": "sha256:215ad12d15bf8d20edd1620f2df657575c0b5a3496546ec4502ca91b12b0e56e",
+  "entryDigest": "sha256:acc2e0f9c182a10b5b79beccf4a3936ca0bdb3d7df0ae4d650df098def4d32a6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -345,7 +345,7 @@
         "declarationPath": "packages/components-vue/dist/ChatComposer.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatComposerProps",
-        "version": "0.41.0-next.13"
+        "version": "0.41.0-next.14"
       },
       "status": "complete",
       "unresolved": [],

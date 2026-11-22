@@ -1,8 +1,8 @@
 {
   "componentId": "line-chart",
   "contractSource": "derived",
-  "digest": "sha256:ea22e092f5bbc09225bfdda0cf28a3c07d05c68dc1f4914a12f822fce24a4746",
-  "entryDigest": "sha256:2fd1e10c33bdf14b9d5ef03fecd7e83a085d38916e004c34e7a05126cfcb46ec",
+  "digest": "sha256:e6a28b36b31c85a4585d95c7a5caa3a902fe3828e12741540ce7080857730d58",
+  "entryDigest": "sha256:411ae3209ebaf0eec4a9c93fe5f4c18f16f5a4aee8a31d95ea8678bf2991a90b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1870,7 +1870,7 @@
         "declarationPath": "packages/components-vue/dist/LineChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LineChartProps",
-        "version": "0.41.0-next.13"
+        "version": "0.41.0-next.14"
       },
       "status": "partial",
       "unresolved": [],
