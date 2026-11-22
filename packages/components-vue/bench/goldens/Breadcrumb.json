@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Breadcrumb",
-  "sourceRevision": "5c90d6f46b6748773b03974989140e5e399c5a9d",
+  "sourceRevision": "738b9d2a1b3ba19a436d0f9d6275937cc2ec41e6",
   "source": "src/Breadcrumb.ts",
   "fixtures": [
     {

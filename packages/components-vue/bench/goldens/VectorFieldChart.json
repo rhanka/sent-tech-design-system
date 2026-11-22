@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "VectorFieldChart",
-  "sourceRevision": "f14fc36191f45a2c84bd1954b31adb5c5cc76d49",
+  "sourceRevision": "9f09f31ad1bc1a7903712035edfff6cfde8de278",
   "source": "src/VectorFieldChart.ts",
   "fixtures": [
     {

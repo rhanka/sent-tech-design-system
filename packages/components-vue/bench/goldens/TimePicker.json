@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "TimePicker",
-  "sourceRevision": "0be814319c862401ffb429775481741313e30c7a",
+  "sourceRevision": "95703190c3d59a8598857ed43988c34809541b72",
   "source": "src/TimePicker.ts",
   "fixtures": [
     {

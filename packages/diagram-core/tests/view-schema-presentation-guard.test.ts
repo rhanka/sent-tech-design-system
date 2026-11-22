@@ -2,7 +2,7 @@
  * No presentation change beside the view-schema pin (item 5).
  *
  * Presentation entry 2 keeps the external digest
- * `c430ff66df3b04e6d792dd1a60e40e01dbeaffa47b206da0021a937ca83fa4f9`
+ * `1534e468fbb6fc74e94fc9dadaa633320f19b3e7bcdf07dcdb9aaf17f6b301e0`
  * and `presentation-apply.ts` / `presentation-validate.ts` bytes stay
  * unchanged. A change touching those bytes would require a presentation
  * catalog revision, so this test stops that drift here.
@@ -15,7 +15,7 @@ import { resolveGovernedCatalog } from "../src/presentation-catalog.js";
 import { canonicalBytes, sha256Hex } from "../src/sha256.js";
 import { DIAGRAM_VIEW_SCHEMA_V2_PIN } from "../src/view-schema-pin.js";
 
-const ENTRY_DIGEST = "c430ff66df3b04e6d792dd1a60e40e01dbeaffa47b206da0021a937ca83fa4f9";
+const ENTRY_DIGEST = "1534e468fbb6fc74e94fc9dadaa633320f19b3e7bcdf07dcdb9aaf17f6b301e0";
 const APPLY_SHA = "28c3607e5c4868d44c137b66fe8e6f6ed99cb578fc52a52f67442cca41802cd8";
 const VALIDATE_SHA = "488d8499b8f4e624af56d0c4f4c07496cc09863ec1e65e9f522c6fc05a4db06e";
 
@@ -39,8 +39,8 @@ describe("view-schema pin keeps presentation entry 2 untouched", () => {
     expect(createHash("sha256").update(applyBytes, "utf8").digest("hex")).toBe(APPLY_SHA);
     expect(createHash("sha256").update(validateBytes, "utf8").digest("hex")).toBe(VALIDATE_SHA);
     expect(core.DIAGRAM_PRESENTATION_COMPATIBILITY).toEqual({
-      adapter: `ds:rhanka/sent-tech-design-system/packages/diagram-core/src/presentation-validate.ts@e3bc10cc9e59d48bb807afc41173ba83f6698940#sha256=${VALIDATE_SHA}`,
-      renderer: `ds:rhanka/sent-tech-design-system/packages/diagram-core/src/presentation-apply.ts@e3bc10cc9e59d48bb807afc41173ba83f6698940#sha256=${APPLY_SHA}`,
+      adapter: `ds:rhanka/sent-tech-design-system/packages/diagram-core/src/presentation-validate.ts@ab7d1a7fd0142217672b5be6d40465b3e5309e50#sha256=${VALIDATE_SHA}`,
+      renderer: `ds:rhanka/sent-tech-design-system/packages/diagram-core/src/presentation-apply.ts@ab7d1a7fd0142217672b5be6d40465b3e5309e50#sha256=${APPLY_SHA}`,
     });
   });
 });

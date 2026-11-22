@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ProgressIndicator",
-  "sourceRevision": "f18d68c15ab000e904281fad1a0b17a01d528334",
+  "sourceRevision": "87f752b5504809e1e0d10246df80a9f517286c2e",
   "source": "src/ProgressIndicator.ts",
   "fixtures": [
     {

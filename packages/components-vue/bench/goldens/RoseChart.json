@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "RoseChart",
-  "sourceRevision": "004fc25b73a8c894f5bfc1a09708d2ee0927d074",
+  "sourceRevision": "a9370fb0a9ef8683a767cab89f9c3a049b76be53",
   "source": "src/RoseChart.ts",
   "fixtures": [
     {

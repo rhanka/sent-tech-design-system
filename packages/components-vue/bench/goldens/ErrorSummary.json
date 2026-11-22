@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ErrorSummary",
-  "sourceRevision": "5e31a9e7cc8757ba94498b299b8813a35ce91372",
+  "sourceRevision": "b92df6b7a51c142130344d1af0decd16387e3b34",
   "source": "src/ErrorSummary.ts",
   "fixtures": [
     {

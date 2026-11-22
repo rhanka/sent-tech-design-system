@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "FlamegraphChart",
-  "sourceRevision": "19d3342d1cded13d46d1fc80cedad90c027aa1fb",
+  "sourceRevision": "b2a534c7896261c2cddde8646baec9096bdd48cd",
   "source": "src/FlamegraphChart.ts",
   "fixtures": [
     {

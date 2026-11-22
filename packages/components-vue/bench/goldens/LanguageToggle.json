@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "LanguageToggle",
-  "sourceRevision": "8d0a320f877d137001f6a421df2d0a3e0fc5ea4c",
+  "sourceRevision": "603061db36f0cf65ff094ac6eae99050afcf887c",
   "source": "src/LanguageToggle.ts",
   "fixtures": [
     {

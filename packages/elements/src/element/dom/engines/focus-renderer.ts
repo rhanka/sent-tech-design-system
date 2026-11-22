@@ -99,6 +99,10 @@ function markdownBlock(source: string, tables: boolean): HTMLDivElement {
   const block = document.createElement("div");
   block.className = "st-dossier__prose";
   block.innerHTML = renderMarkdownToSafeHtml(renderMarkdown(source, tables), tables);
+  // Links keep their navigation role in review mode instead of opening a
+  // comment composer on the enclosing block (added after sanitizing, which
+  // carries no data attributes).
+  for (const link of block.querySelectorAll("a")) link.setAttribute("data-review-passthrough", "");
   return block;
 }
 
@@ -529,7 +533,9 @@ export function renderDossierContent(
       for (const { term, definition } of glossary) {
         definitions.append(text("dt", undefined, term), text("dd", undefined, definition));
       }
-      details.append(text("summary", undefined, `Glossary (${glossary.length} ${glossary.length === 1 ? "term" : "terms"})`), definitions);
+      const glossarySummary = text("summary", undefined, `Glossary (${glossary.length} ${glossary.length === 1 ? "term" : "terms"})`);
+      glossarySummary.setAttribute("data-review-passthrough", "");
+      details.append(glossarySummary, definitions);
       context.append(details);
     }
     if (context.hasChildNodes()) article.append(context);
@@ -690,7 +696,17 @@ export function connectDossier(
   node.addEventListener("click", onClick);
   node.addEventListener("keydown", onKeyDown);
   node.addEventListener("click", onFold);
-  node.replaceChildren(article);
+  // Keep a mounted review layer attached across root replacements so its
+  // panel, focus and state do not detach/reattach on every render.
+  const reviewLayer = node.querySelector<HTMLElement>(":scope > [data-st-dossier-review]");
+  if (reviewLayer === null) {
+    node.replaceChildren(article);
+  } else {
+    for (const child of Array.from(node.childNodes)) {
+      if (child !== reviewLayer) child.remove();
+    }
+    reviewLayer.before(article);
+  }
 
   function destroy(): void {
     node.removeEventListener("click", onClick);

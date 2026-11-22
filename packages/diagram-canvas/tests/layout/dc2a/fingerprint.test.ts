@@ -21,7 +21,7 @@ describe("DC-2a layout fingerprint (§6.6)", () => {
   it("resolves defaults in one place: absent options and the explicit DS defaults give one fingerprint", () => {
     const explicit: LayoutFingerprintInput["options"] = {
       rowPack: { targetAspect: 1.78, tallBias: 1.6, emptyPenaltyWeight: 0.4, orientationHysteresis: 0.08 },
-      metrics: { rowGapInline: 96, rowGapBlock: 72, gapInlineMax: 240, gapBlockMax: 240 },
+      metrics: { rowGapInline: 96, rowGapBlock: 72, gapInlineMax: 240, gapBlockMax: 240, edgeLabelSize: 18 },
       collapsed: [],
       previousOrientation: {},
       hints: {},
@@ -32,9 +32,16 @@ describe("DC-2a layout fingerprint (§6.6)", () => {
       engine: LAYOUT_ENGINE_VERSION,
       rowPack: { targetAspect: 1.78, tallBias: 1.6, emptyPenaltyWeight: 0.4, orientationHysteresis: 0.08 },
       gaps: { cardX: 96, cardY: 72, zoneX: 96, zoneY: 72, maxX: 240, maxY: 240 },
+      metrics: { routeSpacing: 0, routeBorderClearance: 8, slotSpacing: 14, edgeLabelSize: 18 },
       fold: [],
       previousOrientation: [],
     });
+    expect(layoutFingerprintInputs({ options: {}, r7Routing: true })).toMatchObject({
+      gaps: { cardX: 96, cardY: 72, zoneX: 96, zoneY: 72, maxX: 240, maxY: 240 },
+      zoneGutter: 96,
+      metrics: { routeSpacing: 24, routeBorderClearance: 15, slotSpacing: 24, edgeLabelSize: 18 },
+    });
+    expect(of({}, { r7Routing: true })).not.toBe(of({}));
   });
 
   it("changes with every input the placement depends on", () => {
@@ -46,6 +53,8 @@ describe("DC-2a layout fingerprint (§6.6)", () => {
       { rowPack: { emptyPenaltyWeight: 0.8 } },
       { rowPack: { orientationHysteresis: 0.04 } },
       { metrics: { rowGapInline: 16 } },
+      { metrics: { edgeLabelSize: 27 } },
+      { metrics: { edgeLabelSize: 12 } },
       { metrics: { gapBlockMax: 28 } },
       { hints: { cardGapY: 20 } },
       { previousOrientation: { root: "columns" } },
@@ -59,6 +68,7 @@ describe("DC-2a layout fingerprint (§6.6)", () => {
       expect(seen.has(fingerprint), JSON.stringify(variant)).toBe(false);
       seen.add(fingerprint);
     }
+    expect(of({ metrics: { zoneGutter: 120 } }, { r7Routing: true })).not.toBe(of({}, { r7Routing: true }));
   });
 
   it("ignores what never re-packs a measured view, and the order of its records", () => {
@@ -72,9 +82,9 @@ describe("DC-2a layout fingerprint (§6.6)", () => {
   });
 
   it("token version = digest of the resolved token numbers; measured sizes digest when a cache has them", () => {
-    const tokens = { "diagramScene.maxDisplayScale": 0.62, "diagramScene.minReadableScale": 0.45 };
+    const tokens = { "diagramScene.maxDisplayScale": 0.62, "diagramScene.minReadableScale": 0.30 };
     expect(of({}, { tokens })).not.toBe(of({}));
-    expect(of({}, { tokens })).toBe(of({}, { tokens: { "diagramScene.minReadableScale": 0.45, "diagramScene.maxDisplayScale": 0.62 } }));
+    expect(of({}, { tokens })).toBe(of({}, { tokens: { "diagramScene.minReadableScale": 0.30, "diagramScene.maxDisplayScale": 0.62 } }));
     expect(of({}, { tokens: { ...tokens, "diagramScene.maxDisplayScale": 0.6 } })).not.toBe(of({}, { tokens }));
     // A gap token reaches the engine as a metric: it changes the token digest in the same call.
     const inputs = layoutFingerprintInputs({ options: { metrics: { rowGapBlock: 20 } } });

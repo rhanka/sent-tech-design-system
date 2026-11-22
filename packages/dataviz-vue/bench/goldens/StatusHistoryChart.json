@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "StatusHistoryChart",
-  "sourceRevision": "dae49b0e57c2302938838f657947087a2c69a44b",
+  "sourceRevision": "3a2c6f20329e1b4507aec07a4adea64184f8b8d3",
   "source": "src/lib/StatusHistoryChart.ts",
   "fixtures": [
     {

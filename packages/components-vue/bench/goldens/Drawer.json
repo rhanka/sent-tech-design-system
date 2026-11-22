@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Drawer",
-  "sourceRevision": "62f4b0300f139f54f8218d8d2d945bd90d18f212",
+  "sourceRevision": "31190ab48b74815b4c431c50578aaa5ec1a32834",
   "source": "src/Drawer.ts",
   "fixtures": [
     {

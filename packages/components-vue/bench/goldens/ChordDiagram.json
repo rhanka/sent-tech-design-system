@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ChordDiagram",
-  "sourceRevision": "cdaed18fb13d3ebcf99c9f0fd80438f8bd1083e6",
+  "sourceRevision": "f548e5a8c19c085eeaaaeb23ba515ad24cc42c17",
   "source": "src/ChordDiagram.ts",
   "fixtures": [
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "SideNav",
-  "sourceRevision": "4a0e3ab04cb5cce077ed929e3e5e2942e422350a",
+  "sourceRevision": "475d378b3cedfb2d620dfd8f76492ede28072c08",
   "source": "src/SideNav.ts",
   "fixtures": [
     {

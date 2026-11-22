@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ItemChart",
-  "sourceRevision": "a5a55ab9f413c6f02fb62f00dc2234481f072844",
+  "sourceRevision": "9ccdc97cfd79f2556598051cab51ab3dd7e321d6",
   "source": "src/ItemChart.ts",
   "fixtures": [
     {

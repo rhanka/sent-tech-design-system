@@ -1,0 +1,126 @@
+{
+  "carries": [
+    "T-07",
+    "T-08",
+    "T-09",
+    "T-10",
+    "T-11",
+    "T-12",
+    "T-13",
+    "T-14"
+  ],
+  "hints": {
+    "vocabulary": "ds-layout-hints@2",
+    "mode": "stage-columns",
+    "fanIn": "comb",
+    "grids": {
+      "root": {
+        "stage_columns": [
+          "s1",
+          "s2",
+          "s3",
+          "s4",
+          "s5"
+        ],
+        "transverse_bands": [
+          {
+            "id": "upper",
+            "items": [
+              "entity:layer-a"
+            ]
+          },
+          {
+            "id": "lower",
+            "items": [
+              "entity:layer-b"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:layer-a": {
+            "column": "s1",
+            "to_column": "s5"
+          },
+          "entity:layer-b": {
+            "column": "s1",
+            "to_column": "s5"
+          }
+        }
+      },
+      "entity:layer-a": {
+        "stage_columns": "inherit",
+        "transverse_bands": [
+          {
+            "id": "a1",
+            "items": [
+              "entity:ax",
+              "entity:ay"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:ax": {
+            "column": "s1",
+            "to_column": "s2"
+          },
+          "entity:ay": {
+            "column": "s5"
+          }
+        }
+      },
+      "entity:layer-b": {
+        "stage_columns": "inherit",
+        "transverse_bands": [
+          {
+            "id": "b1",
+            "items": [
+              "entity:b1",
+              "entity:b2",
+              "entity:b3",
+              "entity:b4",
+              "entity:b5"
+            ]
+          },
+          {
+            "id": "b2",
+            "items": [
+              "entity:c1",
+              "entity:c2",
+              "entity:c3",
+              "entity:c4"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:b1": {
+            "column": "s1"
+          },
+          "entity:b2": {
+            "column": "s2"
+          },
+          "entity:b3": {
+            "column": "s3"
+          },
+          "entity:b4": {
+            "column": "s4"
+          },
+          "entity:b5": {
+            "column": "s5"
+          },
+          "entity:c1": {
+            "column": "s1"
+          },
+          "entity:c2": {
+            "column": "s2"
+          },
+          "entity:c3": {
+            "column": "s3"
+          },
+          "entity:c4": {
+            "column": "s4"
+          }
+        }
+      }
+    }
+  }
+}

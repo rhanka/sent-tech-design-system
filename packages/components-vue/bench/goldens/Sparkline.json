@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Sparkline",
-  "sourceRevision": "9e79bf4c23a00b16114198fc6c3e15663ebb3e1a",
+  "sourceRevision": "c3ac4bdaf0df7753e121408a747c2e0bfb4e6b3e",
   "source": "src/Sparkline.ts",
   "fixtures": [
     {

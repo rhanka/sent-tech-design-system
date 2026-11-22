@@ -4,19 +4,30 @@
 with Chrome for Testing and `puppeteer-core`, matching the graph golden setup.
 The runner refuses execution outside GitHub CI. Never run it locally.
 
-The 40 cases (`2 frameworks × 2 viewports × cases.length` from `scenes.js`) mount
+The 64 cases (`2 frameworks × 2 viewports × cases.length` from `scenes.js`) mount
 the actual Svelte and Vue `DiagramSceneFigure` sources with the production theme:
 architecture and ontology h-cond fixtures, each folded and unfolded, an ERD-style
 ontology whose class cards sit in two nested zones (with and without a route
-leaving the inner zone), three generic cards (v1 frozen and v2 compact 352×154), and numbered flows with and without bundles, at 1440×900 and 390×844. They
+leaving the inner zone), three generic cards (v1 frozen and v2 compact 352×154),
+numbered flows with and without bundles, three r7 reference scenes
+(`r7-connectors`, `r7-connectors-folded`, `r7-nested-styles`) exercising rounded
+elbows, link stroke widths, right-anchored link legends, and live fold/unfold
+legend updates, and three H2 `ds-layout-hints@2` composed scenes (`h2-example-a`
+with free-cell legend and fan-out comb, `h2-example-b` with inherited stage
+columns and fan-in comb, and `h2-aspect-16-9` targeting `16:9 ± 2%`), at
+1440×900 and 390×844. `overlay.html` in this harness presents all 14 H2
+reference scenes side-by-side with their tagged `T-` / `NE-` residuals and live
+T-09 / T-49 / T-50 / T-37 / T-45 offset readouts. They
 use browser font measurement and stable animation frames without interaction
 before the initial snapshot. The only interaction afterwards is the actual Ajuster button.
 
 Assertions read DOM scroll dimensions, text ranges, label rectangles,
 transformed connector segments (including stroke), and the numeric world
-transform. The clearance is the computed `diagramScene.labelPadding` token scaled into screen
-pixels. Display scale must reach 0.45. The unclamped fit is derived from the DOM
-extent and world scale; when feasible at 0.45, the viewport must have no scroll
+transform. The clearance uses the computed `diagramScene.labelPadding` token
+scaled into screen pixels. Below 0.45, the difference between the actual
+non-scaling stroke and its projected world-space reserve reduces the gap.
+Display scale must reach 0.30. The unclamped fit is derived from the DOM
+extent and world scale; when feasible at 0.30, the viewport must have no scroll
 overflow. Otherwise, only overflowing axes may scroll, starting at the origin,
 and all drawing content must remain reachable within the usable viewport,
 excluding scrollbar thickness. Chrome's default `--hide-scrollbars` is removed;

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Avatar",
-  "sourceRevision": "b6c083a51d683d86b15a253274a406b81297cf5d",
+  "sourceRevision": "d2abec1c3acb3af87876ea362afd1607be7d41ae",
   "source": "src/Avatar.ts",
   "fixtures": [
     {

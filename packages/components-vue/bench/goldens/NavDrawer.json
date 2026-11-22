@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "NavDrawer",
-  "sourceRevision": "7333dc9c7e16c845ebd301df84f8d09a64d7a83b",
+  "sourceRevision": "4387b559cfcf2ce1e183a2de12004cc2163217bf",
   "source": "src/NavDrawer.ts",
   "fixtures": [
     {

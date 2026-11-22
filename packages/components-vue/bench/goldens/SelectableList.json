@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "SelectableList",
-  "sourceRevision": "1838011e937338dc434b49cb08750e84bc376a65",
+  "sourceRevision": "be6e7c118583ccc5df706f7bac0cfdd376946230",
   "source": "src/SelectableList.ts",
   "fixtures": [
     {

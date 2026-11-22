@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "DisplaySettings",
-  "sourceRevision": "ec0ff65c92a6fd212cca5feac1744a9a53a1744c",
+  "sourceRevision": "4b6004dfe16b131366c398577b9eda1deb60e6fc",
   "source": "src/DisplaySettings.ts",
   "fixtures": [
     {

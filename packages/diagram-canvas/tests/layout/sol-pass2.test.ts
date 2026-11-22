@@ -114,7 +114,7 @@ describe("sol pass 2 finding 2 — parallel relations keep distinct slots on a s
     links: [["r1", "pa", "pb"], ["r2", "pa", "pb"]],
   });
 
-  it("emits one injective PortOccurrence per parallel end with distinct slots (429c92a2)", () => {
+  it("emits one injective PortOccurrence per parallel end with distinct slots (cb553626)", () => {
     const { fit, warnings, view } = lay(document, 8000);
     expect(warnings).toEqual([]);
     expect(fit.direction).toBe("left-to-right");
@@ -166,7 +166,7 @@ describe("AC-L8 L-R2 — a port shared by a parallel pair and a third relation",
     links: [["r1", "p", "q"], ["r2", "p", "q"], ["r3", "p", "C"], ["r4", "p", "D"]],
   });
 
-  it("splits the parallel ends and shares one slot for the rest (429c92a2 injective ids)", () => {
+  it("splits the parallel ends and shares one slot for the rest (cb553626 injective ids)", () => {
     const { warnings, view } = lay(document, 8000);
     expect(warnings).toEqual([]);
     expect(Object.keys(view.portOccurrences).sort()).toEqual(

@@ -1,5 +1,31 @@
+export {
+  ARROW_DIRECTION_CONVENTION,
+  DEFAULT_ZONE_TAG_ACRONYM_ALLOWLIST,
+  isOpaqueAcronymZoneTag,
+  lintArrowDirection,
+  lintDiagramConventions,
+  lintZoneTagAcronyms,
+  type ArrowDirectionEdgeInput,
+  type DiagramConventionLintOptions,
+  type LintArrowDirectionInput,
+  type LintDiagramConventionsInput,
+  type LintZoneTagAcronymsInput,
+  type ZoneTagLintEntry,
+} from "./conventions.js";
 export { measureBundleLabel, type BundleLabelGroup } from "./bundleLabel.js";
-export { channelMetrics, channelGap, type LayoutChannel, type ChannelMetrics } from "./channels.js";
+export { channelMetrics, channelGap, channelCapacity, type LayoutChannel, type ChannelMetrics } from "./channels.js";
+export {
+  checkRouteSpacing,
+  DEFAULT_ROUTE_BORDER_CLEARANCE,
+  DEFAULT_ROUTE_SPACING,
+  segmentToRectDistance,
+  type ChannelCapacitySummary,
+  type CheckedRoute,
+  type CheckRouteSpacingInput,
+  type RouteSpacingConflict,
+  type RouteSpacingConflictKind,
+  type RouteSpacingReport,
+} from "./routeSpacing.js";
 /**
  * The layout engine (SPEC §10.5, rules L-R1–L-R11): a `generic@1`
  * `SemanticDocument` in, a `diagram-core` `ViewDocument` out. Pure computation,
@@ -17,8 +43,49 @@ export {
   type ResidualReason,
   type SegmentResidual,
 } from "./engine.js";
-export { layoutFolded, layoutMeasured } from "./measured.js";
-export { createLayoutCache, type LayoutCache, type LayoutCacheConfig, type LayoutCacheOptions, type LayoutCacheStats } from "./cache.js";
+export { computeNominalCompositionPlan, layoutFolded, layoutMeasured, type LayoutExecutionContext } from "./measured.js";
+export {
+  createLayoutCache,
+  type LayoutCache,
+  type LayoutCacheConfig,
+  type LayoutCacheOptions,
+  type LayoutCachePlanStats,
+  type LayoutCacheStats,
+} from "./cache.js";
+export {
+  groupCombCandidates,
+  solveCombs,
+  type CombCandidateGroup,
+  type CombEdgeCandidate,
+  type CombFallbackRecord,
+  type CombGroupingResult,
+  type LayoutCombGroup,
+  type SolveCombsInput,
+  type SolvedCombPlan,
+} from "./comb.js";
+export {
+  ASPECT_16_9_TARGET,
+  ASPECT_16_9_TOLERANCE,
+  ASPECT_TAU_LADDER,
+  auditSiblingZonePaintedGaps,
+  buildLayoutKeyRecord,
+  chooseAspectTau,
+  combineRootWithLegendBounds,
+  computeAspectSlack,
+  computeCompositionPlanKey,
+  computePlanDigest,
+  createSubtreeMemo,
+  foldNeutralView,
+  type AspectSlackResult,
+  type AspectTauCandidate,
+  type ChosenAspectTau,
+  type FrozenAutoPackLevel,
+  type NominalCompositionPlan,
+  type SubtreeMemo,
+  type SubtreeMemoEntry,
+  type SubtreeMemoStats,
+  type SubtreeNodeSnapshot,
+} from "./plan.js";
 export {
   digestOf,
   LAYOUT_ENGINE_VERSION,
@@ -43,6 +110,27 @@ export {
   type SeatedShelves,
 } from "./pack.js";
 export {
+  distributeWholeExcess,
+  findFirstEmptyRootCell,
+  layoutGridScope,
+  layoutInheritedGridScope,
+  layoutStackScope,
+  type ComposedCellPlacement,
+  type ComposedGridReport,
+  type ComposedGutter,
+  type ComposedPaintedGap,
+  type ComposedTrackLine,
+  type FreeCellItemSpec,
+  type GridLayoutInput,
+  type GridLayoutResult,
+  type InheritedColumnSpec,
+  type InheritedGridLayoutInput,
+  type InheritedWidthContribution,
+  type LayoutCompositionReport,
+  type StackLayoutInput,
+  type StackLayoutResult,
+} from "./compose.js";
+export {
   effectiveStretch,
   groupLeaves,
   isLayoutGroup,
@@ -51,8 +139,15 @@ export {
   resolveRowGaps,
   validateHints,
   type HintScope,
+  type LayoutBand,
+  type LayoutCell,
+  type LayoutCellAlign,
+  type LayoutComposition,
+  type LayoutGrid,
   type LayoutGroup,
   type LayoutHints,
+  type LayoutPeripheralColumn,
+  type LayoutStack,
   type ResolvedGaps,
   type ResolvedRowGaps,
 } from "./hints.js";
@@ -68,6 +163,7 @@ export {
   LEGEND_KEY_HEIGHT,
   measureHeader,
   RULE_GAP,
+  scaleEdgeLabelMeasurer,
   SWATCH_ALLOCATION,
   TOGGLE_ALLOCATION,
   UNWRAPPED_PROBE_WIDTH,
@@ -96,7 +192,7 @@ export {
   type LabelPlacement,
   type PackedLabelEntry,
 } from "./labels.js";
-export { bendCount, routeEdges, simplifyRoute, type RouteOutcome, type RouteRequest } from "./route.js";
+export { bendCount, routeEdges, simplifyRoute, subdivideChannelTracks, type RouteOutcome, type RouteRequest } from "./route.js";
 export * from "./types.js";
 
 export { FLOW_BADGE_FONT_SIZE, FLOW_BADGE_LINE_HEIGHT, DEFAULT_FLOW_TOKENS, type FlowTokens, type FlowArrow, type FlowBundle, type FlowVisibleTarget } from "./flows.js";

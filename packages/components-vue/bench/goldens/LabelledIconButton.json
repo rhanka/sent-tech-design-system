@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "LabelledIconButton",
-  "sourceRevision": "a0a6379c12d7f1591404e8a68e5c0fb93581d90e",
+  "sourceRevision": "df620337869a66feb6925a56be9cf18beb9482ab",
   "source": "packages/components-svelte/src/lib/LabelledIconButton.svelte",
   "referenceFramework": "svelte",
   "sourceSha256": "4b2062acba35473b38b1583fbcfcb45676de38866b042438b98bdb1eff8173b6",

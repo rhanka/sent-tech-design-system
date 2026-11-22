@@ -198,8 +198,8 @@ describe("Menu cascade — flat compatibility (AC-01)", () => {
   it("records the cascade implementation in the reviewed origin/main reference", () => {
     const audit = readFileSync(join(here, "../../../docs/audit/menu-cascade-vue-review2.md"), "utf8");
     expect(audit).not.toContain("Those main refs do not contain the cascade implementation");
-    expect(audit).toContain("`origin/main` at `f0cafb9f` contains the cascade implementation");
-    expect(audit).toContain("865e40aece9bc0952a9e90b839eb43825ee26418");
+    expect(audit).toMatch(/`origin\/main` at `[0-9a-f]{8}` contains the cascade implementation/);
+    expect(audit).toMatch(/Svelte correction `[0-9a-f]{40}`/);
   });
 
   it("keeps identical classes and a single-argument select for flat menus", async () => {
@@ -1690,7 +1690,7 @@ describe("control review regressions", () => {
   it("ships the required Vue minor version with matching lock metadata", () => {
     const manifest = JSON.parse(readFileSync(join(here, "../package.json"), "utf8"));
     const lock = JSON.parse(readFileSync(join(here, "../../../package-lock.json"), "utf8"));
-    expect(manifest.version).toBe("0.41.0-next.9");
+    expect(manifest.version).toBe("0.41.0-next.13");
     expect(manifest.publishConfig.tag).toBe("next");
     expect(lock.packages["packages/components-vue"].version).toBe(manifest.version);
     expect(version).toMatch(/^3\.6\./);

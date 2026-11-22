@@ -1,0 +1,143 @@
+{
+  "carries": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-19",
+    "T-20",
+    "T-21"
+  ],
+  "hints": {
+    "vocabulary": "ds-layout-hints@2",
+    "mode": "stage-columns",
+    "grids": {
+      "root": {
+        "stage_columns": [
+          "s1",
+          "s2",
+          "s3"
+        ],
+        "transverse_bands": [
+          {
+            "id": "l1",
+            "items": [
+              "entity:notch-1"
+            ]
+          },
+          {
+            "id": "l2",
+            "items": [
+              "entity:notch-2",
+              "entity:tool-1"
+            ]
+          },
+          {
+            "id": "l3",
+            "items": [
+              "entity:tool-2"
+            ]
+          },
+          {
+            "id": "l4",
+            "items": [
+              "entity:notch-3",
+              "entity:tool-3"
+            ]
+          },
+          {
+            "id": "l5",
+            "items": [
+              "entity:notch-4",
+              "entity:tool-4",
+              "entity:target-a"
+            ]
+          },
+          {
+            "id": "l6",
+            "items": [
+              "entity:tool-5"
+            ]
+          },
+          {
+            "id": "l7",
+            "items": [
+              "entity:notch-5",
+              "entity:tool-6",
+              "entity:target-b"
+            ]
+          },
+          {
+            "id": "l8",
+            "items": [
+              "entity:notch-6",
+              "entity:tool-7"
+            ]
+          },
+          {
+            "id": "l9",
+            "items": [
+              "entity:notch-7",
+              "entity:tool-8"
+            ]
+          }
+        ],
+        "cells": {
+          "entity:notch-1": {
+            "column": "s1"
+          },
+          "entity:notch-2": {
+            "column": "s1",
+            "to_band": "l3"
+          },
+          "entity:tool-1": {
+            "column": "s2"
+          },
+          "entity:tool-2": {
+            "column": "s2"
+          },
+          "entity:notch-3": {
+            "column": "s1"
+          },
+          "entity:tool-3": {
+            "column": "s2"
+          },
+          "entity:notch-4": {
+            "column": "s1",
+            "to_band": "l6"
+          },
+          "entity:tool-4": {
+            "column": "s2"
+          },
+          "entity:target-a": {
+            "column": "s3"
+          },
+          "entity:tool-5": {
+            "column": "s2"
+          },
+          "entity:notch-5": {
+            "column": "s1"
+          },
+          "entity:tool-6": {
+            "column": "s2"
+          },
+          "entity:target-b": {
+            "column": "s3"
+          },
+          "entity:notch-6": {
+            "column": "s1"
+          },
+          "entity:tool-7": {
+            "column": "s2"
+          },
+          "entity:notch-7": {
+            "column": "s1"
+          },
+          "entity:tool-8": {
+            "column": "s2"
+          }
+        }
+      }
+    },
+    "fanIn": "comb"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "WordCloudChart",
-  "sourceRevision": "920814a6b8712043bdc52dccfc8c3b39c505e56c",
+  "sourceRevision": "d988d0f1e0fce09f5295d56627c3eb9fa2e5b6e4",
   "source": "src/WordCloudChart.ts",
   "fixtures": [
     {

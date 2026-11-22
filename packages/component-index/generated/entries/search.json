@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Search.svelte",
-      "version": "0.43.1"
+      "version": "0.45.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Search.vue",
-      "version": "0.41.0-next.9"
+      "version": "0.41.0-next.13"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Search field with icon and clear button.",
     "fr": "Champ de recherche avec icône et bouton clear."
   },
-  "digest": "sha256:d78c146f86e82a8dfa34ac361040bc29bda204e4c6a4313e97c5849c6ddc86e3",
+  "digest": "sha256:dd2efe2e042cadcadb7d550f3c0d2a9e7f3f931f41f0b8a432df834bf476d188",
   "displayName": "Search",
   "format": "component-entry/v1",
   "frameworks": [

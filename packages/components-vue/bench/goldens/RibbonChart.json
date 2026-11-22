@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "RibbonChart",
-  "sourceRevision": "daf4c9e116b672232acfaaaf491004491c7ecb72",
+  "sourceRevision": "43ae58808f6abe08dac0b78ee9089a0f906d26f5",
   "source": "src/RibbonChart.ts",
   "fixtures": [
     {

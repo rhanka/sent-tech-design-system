@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "KpiCard",
-  "sourceRevision": "5906f6421482eecbe82442f2ee4011796d894dae",
+  "sourceRevision": "a4b1ebd6ca68c1177494e3eaab7c636e9f94ce4d",
   "source": "src/KpiCard.ts",
   "fixtures": [
     {

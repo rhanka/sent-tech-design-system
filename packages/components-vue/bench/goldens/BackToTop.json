@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "BackToTop",
-  "sourceRevision": "02e96c65a48a2c683c5cc4e0fa18e29fd8c5e333",
+  "sourceRevision": "bbf3e3f61063608623e381ac4d4d89a82fa3ec49",
   "source": "src/BackToTop.ts",
   "fixtures": [
     {

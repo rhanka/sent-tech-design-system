@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <title>H2 Reference Scenes &amp; Residuals Overlay</title>
+    <style>
+      :root { color-scheme: light dark; font-family: Inter, system-ui, sans-serif; }
+      body { margin: 0; padding: 16px; background: var(--st-semantic-surface-canvas, #f8fafc); color: var(--st-semantic-text-primary, #0f172a); }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: var(--st-semantic-surface-raised, #ffffff); margin-bottom: 16px; }
+      .toolbar label { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; font-weight: 600; }
+      .toolbar select, .toolbar input { font-size: 13px; padding: 4px 8px; }
+      .grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(320px, 1fr); gap: 16px; align-items: start; }
+      @media (max-width: 1080px) { .grid { grid-template-columns: 1fr; } }
+      .panel { border: 1px solid #cbd5e1; border-radius: 8px; padding: 14px; background: var(--st-semantic-surface-raised, #ffffff); }
+      .panel h2 { margin: 0 0 8px 0; font-size: 16px; }
+      .panel h3 { margin: 14px 0 6px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: #475569; }
+      .stage-wrap { position: relative; border: 1px dashed #94a3b8; border-radius: 6px; overflow: hidden; margin-top: 8px; }
+      .stage-wrap[data-frame="1440"] { width: 100%; max-width: 1440px; }
+      .stage-wrap[data-frame="390"] { width: 390px; }
+      .stage-wrap[data-frame="16x9"] { width: 100%; aspect-ratio: 16 / 9; }
+      .overlay-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: none; }
+      .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 8px; }
+      .metric { border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; font-size: 12px; }
+      .metric strong { display: block; font-size: 15px; margin-top: 2px; }
+      table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }
+      th, td { border: 1px solid #e2e8f0; padding: 6px 8px; text-align: left; vertical-align: top; }
+      th { background: #f1f5f9; }
+      .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; background: #e2e8f0; color: #0f172a; margin: 2px 4px 2px 0; }
+      .tag-ne { background: #fef3c7; color: #92400e; }
+      .tag-ok { background: #dcfce7; color: #166534; }
+      pre { margin: 6px 0 0 0; padding: 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 12px; overflow-x: auto; }
+    </style>
+  </head>
+  <body data-st-theme="sent-tech">
+    <div class="toolbar">
+      <label>Scene
+        <select id="scene-select"></select>
+      </label>
+      <label>Framework
+        <select id="framework-select">
+          <option value="svelte">Svelte</option>
+          <option value="vue">Vue</option>
+        </select>
+      </label>
+      <label>Frame
+        <select id="frame-select">
+          <option value="1440">1440 x 900 (desktop)</option>
+          <option value="16x9">16:9 slide frame</option>
+          <option value="390">390 x 844 (phone)</option>
+        </select>
+      </label>
+      <label>Reference capture overlay (optional local PNG)
+        <input id="capture-file" type="file" accept="image/*">
+      </label>
+      <label>Opacity
+        <input id="capture-opacity" type="range" min="0" max="100" value="35">
+      </label>
+    </div>
+
+    <div class="grid">
+      <section class="panel">
+        <h2 id="scene-title"></h2>
+        <div id="stage-wrap" class="stage-wrap" data-frame="1440">
+          <div id="figure-mount"></div>
+          <img id="overlay-img" class="overlay-img" alt="Reference capture overlay">
+        </div>
+        <h3>Live Layout &amp; Residual Measurements</h3>
+        <div id="metrics" class="metrics"></div>
+        <pre id="offset-readout"></pre>
+      </section>
+
+      <aside class="panel">
+        <h2>Reference Specification &amp; Tagged Residuals</h2>
+        <div id="ref-meta"></div>
+        <h3>Carried T-Rows</h3>
+        <div id="carries"></div>
+        <h3>Tagged Residuals (T- / NE-)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Rows</th>
+              <th>Tag</th>
+              <th>Residual</th>
+              <th>Restored In</th>
+              <th>Track</th>
+            </tr>
+          </thead>
+          <tbody id="residuals-body"></tbody>
+        </table>
+      </aside>
+    </div>
+
+    <script type="module" src="/overlay.js"></script>
+  </body>
+</html>

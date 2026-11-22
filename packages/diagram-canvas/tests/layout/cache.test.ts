@@ -10,6 +10,7 @@ import * as measured from "../../src/layout/measured.js";
 import * as fingerprint from "../../src/layout/fingerprint.js";
 import { buildDocument, measure } from "./fixtures.js";
 import { pinnedMeasurer } from "./dc2a/scenes.js";
+import { nestedZoneFixture } from "../../test-support/nestedZoneFixture.js";
 
 const document = buildDocument({ nodes: ["a"], links: [] });
 const options: LayoutOptions = { registry: defaultProfileRegistry, measureText: measure, targetWidth: 1440 };
@@ -20,6 +21,17 @@ const mockPipeline = () => vi.spyOn(engine, "layoutDocument").mockImplementation
 afterEach(() => vi.restoreAllMocks());
 
 describe("layout cache", () => {
+  it("refuses an invalid zone-gap hint after caching a compact layout (REQ-R7-14)", () => {
+    const fixture = nestedZoneFixture({ outside: true });
+    const view = { ...fixture.view, presentation: { ...fixture.view.presentation, anatomy: "v2" as const } };
+    const input = { ...options, ...fixture, measureLines: pinnedMeasurer };
+    const cache = createLayoutCache();
+    expect(cache.layout(fixture.document, input, view).status).toBe("laid-out");
+    expect(cache.layout(fixture.document, { ...input, hints: { zoneGapX: 999 } }, view)).toMatchObject({
+      status: "refused", refusals: [{ code: "layout-hint-invalid", path: "hints.zoneGapX" }],
+    });
+  });
+
   it("should miss when the effective compatibility rank gap changes", () => {
     const cache = createLayoutCache();
     const first = cache.layout(document, { ...options, hints: { rankGap: 48 } });
@@ -58,7 +70,7 @@ describe("layout cache", () => {
     const first = cache.layout(document, options);
     expect(cache.layout(document, {
       ...options, rowPack: { targetAspect: 1.78, tallBias: 1.6, emptyPenaltyWeight: 0.4, orientationHysteresis: 0.08 },
-      metrics: { rowGapInline: 96, rowGapBlock: 72, gapInlineMax: 240, gapBlockMax: 240 },
+      metrics: { rowGapInline: 96, rowGapBlock: 72, gapInlineMax: 240, gapBlockMax: 240, edgeLabelSize: 18 },
     })).toBe(first);
     expect(run).toHaveBeenCalledTimes(1);
   });
@@ -74,7 +86,7 @@ describe("layout cache", () => {
       { ...options, rowPack: { targetAspect: 2 } },
       { ...options, rowPack: { orientationHysteresis: 0.2 } },
       { ...options, viewId: viewRef("other") },
-      ...(["nodePaddingX", "nodePaddingY", "nodeMinWidth", "nodeMinHeight", "containerPadding", "titlePaddingY", "rankGap", "clearance", "slotSpacing", "labelMargin", "rowGapInline", "rowGapBlock", "gapInlineMax", "gapBlockMax"] as const)
+      ...(["nodePaddingX", "nodePaddingY", "nodeMinWidth", "nodeMinHeight", "containerPadding", "titlePaddingY", "rankGap", "clearance", "slotSpacing", "labelMargin", "edgeLabelSize", "rowGapInline", "rowGapBlock", "gapInlineMax", "gapBlockMax"] as const)
         .map((metric) => ({ ...options, metrics: { [metric]: 99 } })),
       { ...options, bindings: { schemaVersion: "1", rows: [] } },
       { ...options, registry: createProfileRegistry(defaultProfileRegistry.list().map((id) => ({ ...defaultProfileRegistry.get(id)!, version: 42 }))) },

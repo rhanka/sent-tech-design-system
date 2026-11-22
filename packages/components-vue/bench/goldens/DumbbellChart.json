@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "DumbbellChart",
-  "sourceRevision": "e9f2ccc26255b784ec309dbcc9901a7385bc969d",
+  "sourceRevision": "113cc6e380934c4dcc384b2887b478b712e856fa",
   "source": "src/DumbbellChart.ts",
   "fixtures": [
     {

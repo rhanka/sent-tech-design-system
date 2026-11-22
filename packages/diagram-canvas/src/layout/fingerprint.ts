@@ -15,20 +15,25 @@
  * the engine as numbers (§6.2), so a token change changes the fingerprint in
  * the call that observes it, with no token-version export.
  */
+import { DEFAULT_EDGE_LABEL_SIZE } from "../camera.js";
+import { isR7ConnectorPresentation } from "../r7Mode.js";
 import { isLayoutGroup, resolveRowGaps, type LayoutGroup, type LayoutHints } from "./hints.js";
 import type { LayoutMeasurements } from "./measure.js";
 import { channelMetrics } from "./channels.js";
+import { DEFAULT_ROUTE_BORDER_CLEARANCE, DEFAULT_ROUTE_SPACING } from "./routeSpacing.js";
 import { DEFAULT_LAYOUT_METRICS, resolveRowPack, type LayoutMetrics, type LayoutOptions } from "./types.js";
 
 /** Bumped whenever measured placement changes for unchanged inputs. */
-export const LAYOUT_ENGINE_VERSION = "dc2c.owner.5";
+export const LAYOUT_ENGINE_VERSION = "de2.gutter.2";
 
 export interface LayoutFingerprintInput {
-  readonly options: Pick<LayoutOptions, "collapsed" | "hints" | "metrics" | "rowPack" | "previousOrientation" | "viewId" | "flows" | "flowTokens">;
+  readonly options: Pick<LayoutOptions, "collapsed" | "hints" | "metrics" | "presentation" | "rowPack" | "previousOrientation" | "viewId" | "flows" | "flowTokens">;
   /** Measured sizes of a previous call on the same document and measurer, when a cache has them. */
   readonly measurements?: LayoutMeasurements;
   /** Resolved token numbers the host read (gaps, caps, target aspect, display scales, …), by token name. */
   readonly tokens?: Readonly<Record<string, number>>;
+  /** Explicit override when the caller also inspects a retained source view for r7 connector attributes. */
+  readonly r7Routing?: boolean;
 }
 
 const byString = (left: string, right: string): number => (left < right ? -1 : left > right ? 1 : 0);
@@ -70,10 +75,25 @@ const groupOf = (group: LayoutGroup): unknown => ({
 /** The resolved inputs behind the fingerprint, for a cache that wants to compare or log them. */
 export function layoutFingerprintInputs(input: LayoutFingerprintInput): Readonly<Record<string, unknown>> {
   const { options } = input;
+  const r7Routing = input.r7Routing ?? isR7ConnectorPresentation(options.presentation);
   const metrics: LayoutMetrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics };
   const hints: LayoutHints = options.hints ?? {};
+  const zoneRule = r7Routing || hints.composition !== undefined;
   const gaps = resolveRowGaps(hints, metrics);
+  const zoneGutter = zoneRule ? resolveRowGaps(hints, metrics, true).zoneX : undefined;
   const tokens = input.tokens ?? {};
+  const routeSpacing = r7Routing ? (options.metrics?.routeSpacing ?? DEFAULT_ROUTE_SPACING) : 0;
+  const routeBorderClearance = r7Routing
+    ? (options.metrics?.routeBorderClearance ?? DEFAULT_ROUTE_BORDER_CLEARANCE)
+    : metrics.clearance;
+  const baseSlotSpacing = options.metrics?.trackSpacing ?? channelMetrics({}, true).trackSpacing;
+  const slotSpacing =
+    options.metrics?.slotSpacing ??
+    (r7Routing ? Math.max(routeSpacing, baseSlotSpacing) : baseSlotSpacing);
+  const edgeLabelSize =
+    metrics.edgeLabelSize !== undefined && Number.isFinite(metrics.edgeLabelSize) && metrics.edgeLabelSize > 0
+      ? metrics.edgeLabelSize
+      : DEFAULT_EDGE_LABEL_SIZE;
   return {
     engine: LAYOUT_ENGINE_VERSION,
     flows: options.flows,
@@ -81,14 +101,24 @@ export function layoutFingerprintInputs(input: LayoutFingerprintInput): Readonly
     fold: [...(options.collapsed ?? [])].map(String).sort(byString),
     rowPack: resolveRowPack(options.rowPack),
     gaps,
+    zoneGutter,
     channels: { inline: channelMetrics(metrics, true), block: channelMetrics(metrics, false), bundleLabelMaxWidth: metrics.bundleLabelMaxWidth ?? 320 },
-    metrics: { clearance: metrics.clearance, labelMargin: metrics.labelMargin, slotSpacing: options.metrics?.slotSpacing ?? options.metrics?.trackSpacing ?? 14, nodeGap: metrics.nodeGap },
+    metrics: {
+      clearance: metrics.clearance,
+      labelMargin: metrics.labelMargin,
+      routeSpacing,
+      routeBorderClearance,
+      slotSpacing,
+      nodeGap: metrics.nodeGap,
+      edgeLabelSize,
+    },
     previousOrientation: Object.entries(options.previousOrientation ?? {}).sort(([left], [right]) => byString(left, right)),
     hints: {
       ordering: hints.ordering,
       rootOrder: hints.rootOrder,
       grouping: (hints.grouping ?? []).map(groupOf),
       stretch: hints.stretch ?? false,
+      ...(hints.composition === undefined ? {} : { composition: hints.composition }),
     },
     viewId: options.viewId,
     measuredSizes: input.measurements === undefined ? undefined : digestOf(canonical(input.measurements)),

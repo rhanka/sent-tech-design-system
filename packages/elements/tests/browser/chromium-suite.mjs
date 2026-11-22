@@ -473,6 +473,46 @@ function dossierL6Body() {
 
 const PAGES = {
   "/focus-mount-host.html": '<!doctype html><title>Focus mount host</title><link rel="stylesheet" href="/focus-kit/strict/renderer/dossier.css"><main data-st-dossier-page data-st-theme="sent-tech"></main>',
+  "/focus-review.html": pageHtml(FOCUS_SAFE_CSP, `
+    <link rel="stylesheet" href="/focus-kit/safe/renderer/dossier.css">
+    <script type="application/octet-stream" data-st-dossier-document>${Buffer.from(focusB5).toString("base64")}</script>
+    <main data-st-dossier-page data-st-theme="sent-tech" aria-busy="true"></main>
+    <script type="module">
+      window.__reviewRows = [];
+      window.__reviewSeq = 0;
+      const adapter = {
+        async list() { return window.__reviewRows.map((row) => row.view); },
+        async create({ target, body }) {
+          const id = "c-" + (++window.__reviewSeq);
+          const threadId = "t-" + window.__reviewSeq;
+          const row = { id, threadId, target, body, state: "open" };
+          const view = { id, threadId, tenant: { workspaceId: "workspace-fixture" }, target,
+            author: { id: "user-alice" }, state: "open", body, createdAt: new Date().toISOString(),
+            authorship: { author: { actorId: "user-alice", kind: "human", displayLabel: "Alice", color: "#2563eb" } } };
+          row.view = view; window.__reviewRows.push(row); return view;
+        },
+        async reply({ threadId, body }) {
+          const id = "c-" + (++window.__reviewSeq);
+          const original = window.__reviewRows.find((row) => row.threadId === threadId);
+          const view = { id, threadId, tenant: { workspaceId: "workspace-fixture" }, target: original.target,
+            author: { id: "user-alice" }, state: "open", body, createdAt: new Date().toISOString(),
+            authorship: { author: { actorId: "user-alice", kind: "human", displayLabel: "Alice", color: "#2563eb" } } };
+          window.__reviewRows.push({ id, threadId, target: original.target, body, state: "open", view });
+          return view;
+        },
+        async setState(tenant, threadId, state) {
+          for (const row of window.__reviewRows) {
+            if (row.threadId === threadId) { row.state = state; row.view.state = state; }
+          }
+        },
+      };
+      window.__stDossierReview = { adapter, tenant: "workspace-fixture",
+        target: { kind: "artifact", id: "art-focus-test" },
+        currentUser: { actorId: "user-alice", kind: "human", displayLabel: "Alice", color: "#2563eb" },
+        mode: "review" };
+    </script>
+    <script type="module" src="/focus-kit/safe/renderer/dossier.js"></script>
+  `),
   "/pilot.html": pageHtml(PILOT_CSP, pilotBody()),
   "/time-series.html": pageHtml(STRICT_CSP, `
     ${TIME_SERIES_FIXTURES.map((name) => elementWithIsland("st-time-series-chart", name, name)).join("\n")}
@@ -2096,10 +2136,11 @@ for (const [mode, policy] of [["safe", FOCUS_SAFE_CSP], ["application", FOCUS_AP
       focused: document.activeElement === block,
       styled: getComputedStyle(block.querySelector("td")).borderTopWidth === "1px",
       styles: document.querySelectorAll("style").length,
+      noReviewLayer: document.querySelector(".st-review-layer") === null && document.querySelector("[data-st-dossier-review]") === null,
     };
   });
   assert(observed.response?.headers()["content-security-policy"] === policy, `Focus ${mode}: effective CSP`, "policy mismatch");
-  assert(state.ready === 1 && state.lightDom && state.focused && state.styled && state.styles === 0 &&
+  assert(state.ready === 1 && state.lightDom && state.focused && state.styled && state.styles === 0 && state.noReviewLayer &&
     state.ids.join(",") === "focus-test,A,B,C" && state.descendants.join(",") === "focus-test,B,B,B",
     `Focus ${mode}: B5 fixture`, JSON.stringify(state));
   const external = observed.requests.filter((request) => /^https?:/.test(request) && new URL(request).origin !== BASE);
@@ -2171,6 +2212,478 @@ for (const [url, fixture, offline] of [
   assert(external.length === 0 && observed.workers.length === 0 && violations.length === 0 && observed.consoleErrors.length === 0,
     `Focus diagram CSP ${url}`, JSON.stringify({ external, workers: observed.workers, violations, errors: observed.consoleErrors }));
   record(offline ? "Focus diagram standalone" : url, `${external.length} external requests, ${observed.workers.length} workers, ${violations.length} CSP violations`);
+  await observed.close();
+}
+
+// ---------------------------------------------------------------------------
+// FA-D3 review layer in the compiled kit (B5-1..6 on the real kit page).
+// ---------------------------------------------------------------------------
+
+{
+  const reviewJs = readFileSync(join(FOCUS_DIST, "renderer", "dossier.js"), "utf8");
+  const label = "Focus kit ships CommentLayer with explicit-aid anchors";
+  const notFoundCount = (reviewJs.match(/not-found/g) ?? []).length;
+  // 0.1.1 emits three "not-found" orphan returns; 0.1.0 emits two and
+  // falls through to the selector slot on a missing aid. Live B5-2 below
+  // exercises that branch directly in the compiled kit.
+  if (assert(reviewJs.includes("st-review-layer__hover-outline") && reviewJs.includes("a1:") &&
+    notFoundCount >= 3 && !reviewJs.includes("VennChart") && !reviewJs.includes("ConditionalFormatting"),
+    label, `${Buffer.byteLength(reviewJs, "utf8")} bytes, ${notFoundCount} not-found`)) ok(label);
+  // K is recalculated in exact UTF-8 bytes over every emitted file of the review kit.
+  const reviewKitSizes = [...kitFiles.keys()].sort().map((filePath) => {
+    const bytes = readFileSync(join(FOCUS_DIST, filePath)).length;
+    return { path: filePath, bytes };
+  });
+  const reviewKitTotal = reviewKitSizes.reduce((sum, entry) => sum + entry.bytes, 0);
+  if (assert(reviewKitTotal === kitBytes && reviewKitSizes.length === kitManifest.files.length,
+    "Focus review kit K matches all emitted kit files", JSON.stringify({ reviewKitTotal, kitBytes, reviewKitSizes }))) {
+    ok("Focus review kit K matches all emitted kit files");
+  }
+  record(
+    "Focus review kit graph",
+    `CommentLayer closure present, unrelated barrel components absent; K=${reviewKitTotal} bytes (${reviewKitSizes.map(({ path: p, bytes }) => `${p}: ${bytes}`).join(", ")})`,
+  );
+  const elementsPkg = JSON.parse(readFileSync(join(PACKAGE_DIR, "package.json"), "utf8"));
+  const installedSvelte = JSON.parse(
+    readFileSync(join(PACKAGE_DIR, "node_modules", "@sentropic", "design-system-svelte", "package.json"), "utf8"),
+  );
+  assert(
+    elementsPkg.dependencies["@sentropic/design-system-svelte"] === "0.43.2" &&
+      installedSvelte.version === "0.43.2" &&
+      installedSvelte.dependencies["@sentropic/design-system-review-core"] === "0.1.0",
+    "Focus review hover qualification pins svelte 0.43.2 with nested review-core 0.1.0",
+    JSON.stringify({ dep: elementsPkg.dependencies["@sentropic/design-system-svelte"], installed: installedSvelte.version, nestedCore: installedSvelte.dependencies["@sentropic/design-system-review-core"] }),
+  );
+  record(
+    "Focus review hover qualification",
+    `svelte ${installedSvelte.version} (plan names 0.43.0/0.43.1; identical closest('[data-commentable]') primary hover path; nested review-core ${installedSvelte.dependencies["@sentropic/design-system-review-core"]} overridden by 0.1.1 alias)`,
+  );
+}
+
+{
+  const observed = await openPage("/focus-review.html");
+  const page = observed.page;
+  await page.waitForFunction(() => window.__focusReady.length > 0, { timeout: 5000 });
+
+  async function submitOn(selector, body) {
+    await page.evaluate((sel) => {
+      const clickable = document.querySelector(sel);
+      if (clickable === null) throw new Error(`missing ${sel}`);
+      clickable.click();
+    }, selector);
+    await page.waitForSelector(".st-review-layer__composer .st-review-composer__textarea", { timeout: 5000 });
+    await page.type(".st-review-layer__composer .st-review-composer__textarea", body);
+    await page.click('.st-review-layer__composer .st-review-composer__actions button[type="submit"]');
+    await page.waitForFunction(() => !document.querySelector(".st-review-layer__composer .st-review-composer__textarea"), { timeout: 5000 });
+  }
+
+  // Initial hover geometry across h1/p/li/table leaves before any composer
+  // click parks the pointer over the dossier: the outline must frame the
+  // anchored block (relative to the dossier root) and NOT the smaller inner
+  // leaf element. (Pastilles are checked below on decision-v2.json where
+  // citations are non-empty.)
+  await page.mouse.move(0, 0);
+  for (const [name, selector, anchorId] of [
+    ["h1", "h1", "focus-test"],
+    ["p", '[data-anchor-id="B"] p strong', "B"],
+    ["li", '[data-anchor-id="B"] li strong', "B"],
+    ["table", '[data-anchor-id="B"] table td strong', "B"],
+  ]) {
+    await page.evaluate((sel) => {
+      document.querySelector(sel).dispatchEvent(new PointerEvent("pointerover", { bubbles: true }));
+    }, selector);
+    try {
+      await page.waitForFunction((anchor) => {
+        const outline = document.querySelector(".st-review-layer__hover-outline");
+        const block = document.querySelector(`[data-anchor-id="${anchor}"]`);
+        const root = document.querySelector("[data-st-dossier]");
+        if (outline === null || block === null || root === null) return false;
+        const b = block.getBoundingClientRect();
+        const r = root.getBoundingClientRect();
+        const close = (a, b) => Math.abs(a - b) <= 1;
+        return close(parseFloat(outline.style.top) || 0, b.top - r.top)
+          && close(parseFloat(outline.style.left) || 0, b.left - r.left)
+          && close(parseFloat(outline.style.width) || 0, b.width)
+          && close(parseFloat(outline.style.height) || 0, b.height);
+      }, { timeout: 5000 }, anchorId);
+    } catch { /* fall through to assertion with full hover diagnostics */ }
+    const hover = await page.evaluate((sel, anchor) => {
+      const outline = document.querySelector(".st-review-layer__hover-outline");
+      const leaf = document.querySelector(sel);
+      const block = document.querySelector(`[data-anchor-id="${anchor}"]`);
+      const root = document.querySelector("[data-st-dossier]");
+      const rootRect = root?.getBoundingClientRect();
+      const leafRect = leaf?.getBoundingClientRect();
+      return {
+        shown: outline !== null,
+        closestCommentableMatchesBlock: leaf?.closest("[data-commentable]") === block,
+        outline: outline === null ? null : {
+          top: parseFloat(outline.style.top) || 0,
+          left: parseFloat(outline.style.left) || 0,
+          width: parseFloat(outline.style.width) || 0,
+          height: parseFloat(outline.style.height) || 0,
+        },
+        expected: block === null || rootRect === undefined ? null : (() => {
+          const b = block.getBoundingClientRect();
+          return { top: b.top - rootRect.top, left: b.left - rootRect.left, width: b.width, height: b.height };
+        })(),
+        leafHeight: leafRect?.height ?? 0,
+      };
+    }, selector, anchorId);
+    const close = (a, b) => Math.abs(a - b) <= 1;
+    const hoverLabel = `Focus review hover ${name} frames the anchored block container`;
+    if (assert(hover.shown && hover.closestCommentableMatchesBlock && hover.outline !== null && hover.expected !== null &&
+      hover.expected.height > hover.leafHeight &&
+      close(hover.outline.top, hover.expected.top) && close(hover.outline.left, hover.expected.left) &&
+      close(hover.outline.width, hover.expected.width) && close(hover.outline.height, hover.expected.height),
+      hoverLabel, JSON.stringify(hover))) ok(hoverLabel);
+    record(`Focus review hover ${name}`, JSON.stringify(hover.outline));
+  }
+
+  await submitOn("h1", "General header note");
+  await submitOn('[data-anchor-id="B"] p strong', "Paragraph note");
+  await submitOn('[data-anchor-id="B"] li strong', "List note");
+  await submitOn('[data-anchor-id="B"] table td strong', "Table note");
+
+  const created = await page.evaluate(() => window.__reviewRows.map((row) => {
+    const key = row.target.sectionKey;
+    const bytes = Uint8Array.from(atob(key.slice(3).replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0));
+    const payload = JSON.parse(new TextDecoder().decode(bytes));
+    return { aid: payload.aid, v: payload.v, length: new TextEncoder().encode(key).length };
+  }));
+  const label = "Focus review B5-1 capture in compiled kit";
+  if (assert(JSON.stringify(created.map((row) => row.aid)) === JSON.stringify(["focus-test", "B", "B", "B"]) &&
+    created.every((row) => row.length <= 2048), label, JSON.stringify(created))) ok(label);
+  const version = created[0]?.v ?? "";
+  if (assert(created.every((row) => row.v === version && version.startsWith("sha256:")), `${label} version`, JSON.stringify(created))) ok(`${label} version`);
+
+  // B5-2/3 + Step 5 on the live compiled kit tree: remove B (orphan, no pin on
+  // C — live proof of review-core 0.1.1), reply and resolve from OrphanList,
+  // move B after C (aid, zero stored-anchor mutation), and reopen via panel.
+  const keysBeforeMove = await page.evaluate(() => window.__reviewRows.map((row) => row.target.sectionKey));
+  const b2 = await page.evaluate(() => {
+    const root = document.querySelector("[data-st-dossier]");
+    const block = root.querySelector('[data-anchor-id="B"]');
+    window.__b2Saved = block;
+    block.remove();
+    return root.querySelector('[data-anchor-id="B"]') === null;
+  });
+  assert(b2, "Focus review B5-2 fixture removed", "B still present");
+  await page.waitForFunction(() => document.querySelector(".st-review-orphans__count") !== null, { timeout: 5000 });
+  const orphanState = await page.evaluate(() => ({
+    orphans: document.querySelector(".st-review-orphans__count")?.textContent?.trim() ?? "",
+    pins: document.querySelectorAll(".st-review-layer__gutter-pin").length,
+    orphanItems: document.querySelectorAll(".st-review-orphans__item").length,
+    pinAids: [...document.querySelectorAll(".st-review-layer__pins [data-pin-section-key]")].map((pin) => {
+      const key = pin.getAttribute("data-pin-section-key") ?? "";
+      const bytes = Uint8Array.from(atob(key.slice(3).replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0));
+      try { return JSON.parse(new TextDecoder().decode(bytes)).aid; } catch { return "?"; }
+    }),
+  }));
+  // The header thread stays pinned; the three B threads orphan with no pin
+  // on C (the remaining pin decodes to the header aid).
+  if (assert(orphanState.orphans === "3" && orphanState.pins === 1 && orphanState.orphanItems === 3 &&
+    JSON.stringify(orphanState.pinAids) === JSON.stringify(["focus-test"]),
+    "Focus review B5-2 orphan without fallback onto C", JSON.stringify(orphanState))) ok("Focus review B5-2 orphan without fallback onto C");
+
+  // Reply to an orphan thread from OrphanList through the layer UI.
+  const repliedOrphanId = await page.evaluate(() => {
+    const item = document.querySelector(".st-review-orphans__item");
+    const id = item?.getAttribute("data-thread-id") ?? "";
+    item?.querySelector("button")?.click();
+    return id;
+  });
+  await page.waitForSelector(".st-review-thread__reply textarea, .st-review-composer__textarea", { timeout: 5000 });
+  await page.type(".st-review-thread__reply textarea, .st-review-composer__textarea", "Orphan follow-up");
+  await page.evaluate(() => {
+    const btn = [...document.querySelectorAll(".st-review-thread__reply button[type='submit'], .st-review-composer__actions button[type='submit']")]
+      .find((b) => /reply/i.test(b.textContent ?? "")) ??
+      document.querySelector(".st-review-thread__reply button[type='submit']");
+    btn?.click();
+  });
+  await page.waitForFunction(() => window.__reviewRows.length === 5, { timeout: 5000 });
+  const orphanReplyRow = await page.evaluate(() => window.__reviewRows[4]);
+  if (assert(orphanReplyRow.threadId === repliedOrphanId && orphanReplyRow.body === "Orphan follow-up",
+    "Focus review B5-2 reply from OrphanList", JSON.stringify({ repliedOrphanId, orphanReplyRow }))) {
+    ok("Focus review B5-2 reply from OrphanList");
+  }
+
+  // Return to thread list and resolve an orphan directly from OrphanList.
+  await page.evaluate(() => {
+    const back = [...document.querySelectorAll("button")].find((b) => /back|all threads/i.test(b.textContent ?? "") || b.getAttribute("aria-label")?.toLowerCase().includes("back"));
+    back?.click();
+  });
+  await page.waitForSelector(".st-review-orphans__item", { timeout: 5000 });
+  const resolvedOrphanId = await page.evaluate(() => {
+    const items = [...document.querySelectorAll(".st-review-orphans__item")];
+    const targetItem = items[1] ?? items[0];
+    const id = targetItem?.getAttribute("data-thread-id") ?? "";
+    const resolveBtn = [...(targetItem?.querySelectorAll("button") ?? [])].find((b) => (b.textContent ?? "").trim() === "Resolve");
+    resolveBtn?.click();
+    return id;
+  });
+  await page.waitForFunction((id) => window.__reviewRows.some((r) => r.threadId === id && r.state === "closed"), { timeout: 5000 }, resolvedOrphanId);
+  ok("Focus review B5-2 close from OrphanList");
+
+  // B5-3: move B after C — all B threads re-attach by aid with zero anchor rewrite.
+  await page.evaluate(() => {
+    const root = document.querySelector("[data-st-dossier]");
+    const c = root.querySelector('[data-anchor-id="C"]');
+    const b = window.__b2Saved;
+    if (c && b) root.insertBefore(b, c.nextSibling);
+  });
+  await page.waitForFunction(() => document.querySelector(".st-review-orphans__count") === null &&
+    document.querySelectorAll(".st-review-layer__gutter-pin").length === 2, { timeout: 5000 });
+  const movedState = await page.evaluate(() => ({
+    orphans: document.querySelector(".st-review-orphans__count")?.textContent?.trim() ?? "none",
+    pins: document.querySelectorAll(".st-review-layer__gutter-pin").length,
+    pinAids: [...document.querySelectorAll(".st-review-layer__pins [data-pin-section-key]")].map((pin) => {
+      const key = pin.getAttribute("data-pin-section-key") ?? "";
+      const bytes = Uint8Array.from(atob(key.slice(3).replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0));
+      try { return JSON.parse(new TextDecoder().decode(bytes)).aid; } catch { return "?"; }
+    }).sort(),
+    keysAfterMove: window.__reviewRows.slice(0, 4).map((row) => row.target.sectionKey),
+  }));
+  if (assert(movedState.orphans === "none" && movedState.pins === 2 &&
+    JSON.stringify(movedState.pinAids) === JSON.stringify(["B", "focus-test"]) &&
+    JSON.stringify(movedState.keysAfterMove) === JSON.stringify(keysBeforeMove),
+    "Focus review B5-3 move resolves by aid without rewriting sectionKey", JSON.stringify(movedState))) {
+    ok("Focus review B5-3 move resolves by aid without rewriting sectionKey");
+  }
+
+  // Step 5 reopen: open the closed B thread from the panel and reopen it.
+  await page.evaluate((id) => {
+    const allFilter = [...document.querySelectorAll("button")].find((b) => (b.textContent ?? "").trim().startsWith("All"));
+    allFilter?.click();
+    setTimeout(() => {
+      document.querySelector(`.st-review-panel__thread-card[data-thread-id="${id}"]`)?.click();
+    }, 50);
+  }, resolvedOrphanId);
+  await page.waitForFunction(() => [...document.querySelectorAll("button")].some((b) => (b.textContent ?? "").trim() === "Reopen" && !b.disabled), { timeout: 5000 });
+  await page.evaluate(() => {
+    const reopen = [...document.querySelectorAll("button")].find((b) => (b.textContent ?? "").trim() === "Reopen");
+    reopen?.click();
+  });
+  await page.waitForFunction((id) => window.__reviewRows.some((r) => r.threadId === id && r.state === "open"), { timeout: 5000 }, resolvedOrphanId);
+  ok("Focus review step 5 reopen in compiled kit");
+
+  // B5-6 text through the layer (keyboard path, trigger never mounted).
+  await page.evaluate(() => {
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+    const paragraph = document.querySelector('[data-anchor-id="B"] p');
+    const text = paragraph.firstChild;
+    const range = document.createRange();
+    range.setStart(text, 0);
+    range.setEnd(text, text.textContent.length);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    document.dispatchEvent(new KeyboardEvent("keydown", { altKey: true, shiftKey: true, key: "c", bubbles: true }));
+  });
+  await page.waitForSelector(".st-review-layer__composer .st-review-composer__textarea", { timeout: 5000 });
+  await page.type(".st-review-layer__composer .st-review-composer__textarea", "Text range note");
+  await page.click('.st-review-layer__composer .st-review-composer__actions button[type="submit"]');
+  await page.waitForFunction(() => !document.querySelector(".st-review-layer__composer .st-review-composer__textarea"), { timeout: 5000 });
+  const textRows = await page.evaluate(() => window.__reviewRows.length);
+  const textAnchor = await page.evaluate(() => {
+    const row = window.__reviewRows[window.__reviewRows.length - 1];
+    const key = row.target.sectionKey;
+    const bytes = Uint8Array.from(atob(key.slice(3).replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0));
+    const payload = JSON.parse(new TextDecoder().decode(bytes));
+    return { t: payload.t, length: new TextEncoder().encode(key).length };
+  });
+  if (assert(textRows === 6 && textAnchor.t === "text" && textAnchor.length <= 2048,
+    "Focus review B5-6 text anchor within 2048", JSON.stringify({ textRows, textAnchor }))) ok("Focus review B5-6 text anchor within 2048");
+
+  const violations = await observed.violations();
+  await page.close();
+  // The page carries its CSP in a <meta> element here; browsers warn that
+  // frame-ancestors is ignored in that delivery — the directive is header-only.
+  const otherErrors = observed.consoleErrors.filter((error) => !error.includes("frame-ancestors"));
+  assert(violations.length === 0 && otherErrors.length === 0,
+    "Focus review load is clean", JSON.stringify({ violations, errors: observed.consoleErrors }));
+}
+
+{
+  // Packaged dossier-mount export (Focus Web H1 path):
+  // 1) without review options mounts no layer;
+  // 2) with review options: B5-4 full root replacement (title + hash + block
+  //    order changed) never transients an orphan and updates artifactVersion;
+  // 3) citations document (decision-v2.json) in review mode: [n] pastilles
+  //    carry no anchor/commentable, hover stays clear, clicking [n], a
+  //    fragment link to collapsed annex and a collapsed <summary> navigate/
+  //    toggle without opening a composer.
+  const observed = await openPage("/focus-mount-host.html");
+  const page = observed.page;
+  const b5Doc = JSON.parse(readFileSync(join(FIXTURES, "focus-artifact", "b5.json"), "utf8"));
+  const decisionV2Doc = JSON.parse(readFileSync(join(FIXTURES, "focus-artifact", "decision-v2.json"), "utf8"));
+
+  const noLayer = await page.evaluate(async (hostDocument) => {
+    const host = document.querySelector("[data-st-dossier-page]");
+    const { mountDossier } = await import("/focus-mount.js");
+    const dossier = mountDossier(host);
+    dossier.render(hostDocument);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    const result = document.querySelector(".st-review-layer") === null && document.querySelector("[data-st-dossier]") !== null;
+    dossier.destroy();
+    return result;
+  }, b5Doc);
+  if (assert(noLayer, "Focus review without adapter mounts no layer", "layer present")) ok("Focus review without adapter mounts no layer");
+
+  await page.evaluate(async (hostDocument) => {
+    const host = document.querySelector("[data-st-dossier-page]");
+    const { mountDossier } = await import("/focus-mount.js");
+    window.__mountRows = [];
+    let seq = 0;
+    const adapter = {
+      async list() { return window.__mountRows.map((row) => row.view); },
+      async create({ target, body }) {
+        const id = "m-" + (++seq);
+        const threadId = "mt-" + seq;
+        const view = {
+          id, threadId, tenant: { workspaceId: "workspace-fixture" }, target,
+          author: { id: "user-alice" }, state: "open", body, createdAt: new Date().toISOString(),
+          authorship: { author: { actorId: "user-alice", kind: "human", displayLabel: "Alice", color: "#2563eb" } },
+        };
+        window.__mountRows.push({ id, threadId, target, body, state: "open", view });
+        return view;
+      },
+      async reply({ threadId, body }) {
+        const id = "m-" + (++seq);
+        const original = window.__mountRows.find((r) => r.threadId === threadId);
+        const view = {
+          id, threadId, tenant: { workspaceId: "workspace-fixture" }, target: original.target,
+          author: { id: "user-alice" }, state: "open", body, createdAt: new Date().toISOString(),
+          authorship: { author: { actorId: "user-alice", kind: "human", displayLabel: "Alice", color: "#2563eb" } },
+        };
+        window.__mountRows.push({ id, threadId, target: original.target, body, state: "open", view });
+        return view;
+      },
+      async setState(tenant, threadId, state) {
+        for (const r of window.__mountRows) if (r.threadId === threadId) { r.state = state; r.view.state = state; }
+      },
+    };
+    window.__dossierMount = mountDossier(host, {
+      review: {
+        adapter,
+        tenant: "workspace-fixture",
+        target: { kind: "artifact", id: "art-focus-mount" },
+        currentUser: { actorId: "user-alice", kind: "human", displayLabel: "Alice", color: "#2563eb" },
+        mode: "review",
+      },
+    });
+    window.__dossierMount.render(hostDocument);
+  }, b5Doc);
+  await page.waitForSelector(".st-review-layer", { timeout: 5000 });
+  await page.click("h1");
+  await page.waitForSelector(".st-review-composer__textarea", { timeout: 5000 });
+  await page.type(".st-review-composer__textarea", "Header thread across root replacement");
+  await page.click('.st-review-composer__actions button[type="submit"]');
+  await page.waitForFunction(() => !document.querySelector(".st-review-composer__textarea"), { timeout: 5000 });
+  await page.waitForSelector(".st-review-layer__gutter-pin", { timeout: 5000 });
+
+  const b54Result = await page.evaluate(async (revisedDoc) => {
+    const host = document.querySelector("[data-st-dossier-page]");
+    const versionBefore = window.__dossierMount.review.artifactVersion;
+    let sawOrphan = false;
+    let layerDetached = false;
+    const observer = new MutationObserver((records) => {
+      for (const record of records) {
+        for (const removed of record.removedNodes) {
+          if (removed instanceof Element && removed.matches("[data-st-dossier-review]")) layerDetached = true;
+        }
+      }
+      if (host.querySelector(".st-review-orphans, .st-review-orphans__count, .st-review-orphans__item") !== null) {
+        sawOrphan = true;
+      }
+    });
+    observer.observe(host, { childList: true, subtree: true });
+    window.__dossierMount.render(revisedDoc);
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    observer.disconnect();
+    return {
+      sawOrphan,
+      layerDetached,
+      layers: host.querySelectorAll("[data-st-dossier-review]").length,
+      versionChanged: window.__dossierMount.review.artifactVersion !== versionBefore,
+      order: [...host.querySelectorAll("[data-st-dossier] > [data-anchor-id]")].map((el) => el.dataset.anchorId),
+      pins: host.querySelectorAll(".st-review-layer__gutter-pin").length,
+      orphans: host.querySelector(".st-review-orphans__count")?.textContent?.trim() ?? "none",
+    };
+  }, { ...b5Doc, title: "Revised review fixture", hash: "b5-v2", sections: [b5Doc.sections[2], b5Doc.sections[1], b5Doc.sections[0]] });
+  if (assert(!b54Result.sawOrphan && !b54Result.layerDetached && b54Result.layers === 1 &&
+    b54Result.versionChanged && b54Result.pins === 1 && b54Result.orphans === "none" &&
+    JSON.stringify(b54Result.order) === JSON.stringify(["focus-test", "C", "B", "A"]),
+    "Focus review B5-4 full root replacement (title/revision/order) never orphans", JSON.stringify(b54Result))) {
+    ok("Focus review B5-4 full root replacement (title/revision/order) never orphans");
+  }
+
+  // Citations, pastilles, collapsed annex fragment link and <summary> passthrough in review mode.
+  await page.evaluate((doc, options) => {
+    window.__dossierMount.render(doc, options);
+  }, decisionV2Doc, diagramOptions(decisionV2Doc));
+  await page.waitForFunction(() => document.querySelector('[data-anchor-id="annex:measurements"]') !== null, { timeout: 5000 });
+  const passthroughState = await page.evaluate(async () => {
+    const root = document.querySelector("[data-st-dossier]");
+    const pastilles = [...root.querySelectorAll("a")].filter((link) => /^\[\d+\]$/.test(link.textContent ?? ""));
+    const pastillesNoAnchor = pastilles.every((link) => !link.matches("[data-anchor-id], [data-commentable]"));
+    const pastillesPassthrough = pastilles.every((link) => link.hasAttribute("data-review-passthrough"));
+    // Hover a [n] pastille: must not show a hover outline.
+    pastilles[0]?.dispatchEvent(new PointerEvent("pointerover", { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    const hoverOnPastille = document.querySelector(".st-review-layer__hover-outline") !== null;
+    // Click a [n] pastille: must focus citation and never open a composer.
+    const pastille = root.querySelector('a.focus-citation[href="#shared-input"]');
+    pastille?.click();
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    const focusedAfterPastille = document.activeElement?.dataset?.anchorId ?? null;
+    const composerAfterPastille = document.querySelector(".st-review-layer__composer .st-review-composer__textarea") !== null;
+    // Click a fragment link targeting collapsed annex: must open & focus annex without opening composer.
+    const annex = root.querySelector('[data-anchor-id="annex:measurements"]');
+    const annexWasClosed = annex?.open === false;
+    const annexLink = document.createElement("a");
+    annexLink.href = "#annex%3Ameasurements";
+    annexLink.setAttribute("data-review-passthrough", "");
+    annexLink.textContent = "Go to measurements annex";
+    root.querySelector('[data-anchor-id="p1"]')?.append(annexLink);
+    annexLink.click();
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    const annexOpened = annex?.open === true && document.activeElement === annex;
+    const composerAfterAnnexLink = document.querySelector(".st-review-layer__composer .st-review-composer__textarea") !== null;
+    // Click a collapsed source <summary>: must toggle details without opening composer.
+    const sourceDetails = root.querySelector('[data-anchor-id="build-log"]');
+    const sourceWasClosed = sourceDetails?.open === false;
+    sourceDetails?.querySelector("summary")?.click();
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    const sourceOpened = sourceDetails?.open === true;
+    const composerAfterSummary = document.querySelector(".st-review-layer__composer .st-review-composer__textarea") !== null;
+    window.__dossierMount.destroy();
+    return {
+      pastilleCount: pastilles.length,
+      pastillesNoAnchor,
+      pastillesPassthrough,
+      hoverOnPastille,
+      focusedAfterPastille,
+      composerAfterPastille,
+      annexWasClosed,
+      annexOpened,
+      composerAfterAnnexLink,
+      sourceWasClosed,
+      sourceOpened,
+      composerAfterSummary,
+    };
+  });
+  if (assert(passthroughState.pastilleCount > 0 && passthroughState.pastillesNoAnchor && passthroughState.pastillesPassthrough &&
+    !passthroughState.hoverOnPastille && passthroughState.focusedAfterPastille === "shared-input" && !passthroughState.composerAfterPastille &&
+    passthroughState.annexWasClosed && passthroughState.annexOpened && !passthroughState.composerAfterAnnexLink &&
+    passthroughState.sourceWasClosed && passthroughState.sourceOpened && !passthroughState.composerAfterSummary,
+    "Focus review passthrough: [n] pastilles, collapsed annex fragment and summary in review mode",
+    JSON.stringify(passthroughState))) {
+    ok("Focus review passthrough: [n] pastilles, collapsed annex fragment and summary in review mode");
+  }
+  const mountViolations = await observed.violations();
+  assert(mountViolations.length === 0 && observed.consoleErrors.length === 0,
+    "Focus mount host review page is clean", JSON.stringify({ violations: mountViolations, errors: observed.consoleErrors }));
   await observed.close();
 }
 

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Quote",
-  "sourceRevision": "a336ddd5ad141eb2eca5e3dcb85e4e36a04b59be",
+  "sourceRevision": "04f0aa817d3365ef06a533bae03556eb28bfb993",
   "source": "src/Quote.ts",
   "fixtures": [
     {

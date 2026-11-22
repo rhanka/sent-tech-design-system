@@ -1,8 +1,8 @@
 {
   "componentId": "filter-pill",
   "contractSource": "derived",
-  "digest": "sha256:42bc95f4500d08113dce27bf1b9ea459eab78f848ecc85771dd89b8df2ea875d",
-  "entryDigest": "sha256:624cb357709b11f00b67aa6f3b98d19f62ea89f1829c7cb2826b4c68833ae10e",
+  "digest": "sha256:0c5339093c176040720643c577e90381ce8ec4447ec784ad51cc60dcad41a627",
+  "entryDigest": "sha256:514c542b182418bd6b1324f8d030013d1c38cc8233b73588ce7521878a15a516",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-svelte/dist/FilterPill.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FilterPillProps",
-        "version": "0.43.1"
+        "version": "0.45.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -302,7 +302,7 @@
         "declarationPath": "packages/components-vue/dist/FilterPill.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FilterPillProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.13"
       },
       "status": "partial",
       "unresolved": [],

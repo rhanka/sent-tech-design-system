@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fireEvent, render } from "@testing-library/svelte";
 import { tick } from "svelte";
@@ -35,11 +36,16 @@ import {
   createView,
   CURRENT_SCHEMA_VERSION,
   DIAGRAM_PRESENTATION_CONTRACT_PIN,
+  DIAGRAM_PRESENTATION_V2_CONTRACT_PIN,
+  documentRef,
   entityRef,
+  lowerLayoutHintsV2,
   m3ProfileRegistry,
   occurrenceRef,
+  relationRef,
   shippedExecutorBindings,
   viewRef,
+  type DsLayoutHintsV2,
 } from "../../../diagram-core/dist/index.js";
 import DiagramSceneFigure from "./DiagramSceneFigure.svelte";
 import type { DiagramSceneCamera, DiagramSceneFigureProps } from "./DiagramSceneFigure.svelte";
@@ -568,7 +574,7 @@ describe("DiagramSceneFigure camera", () => {
         snap(ty + (y + parseFloat(this.style.height)) * scale) - top);
     });
     const zooms: number[] = [];
-    for (const [width, height] of [[1920, 1080], [1600, 900], [1280, 720]] as const) {
+    for (const [width, height] of [[1920, 1080], [1600, 900], [600, 720]] as const) {
       setWindow(width, height);
       const view = mount(WIDE);
       await tick();
@@ -630,7 +636,7 @@ describe("DiagramSceneFigure camera", () => {
     expect(view.button("Zoom out").disabled).toBe(true);
   });
 
-  it("Z-6 / AC-15 zoom, fit and reset run no layout and change no rectangle or orientation", async () => {
+  it("Z-6 / AC-15 zoom, fit, reset and resize run no layout and change no rectangle or orientation", async () => {
     const view = mount(WIDE);
     await tick();
     const layoutsBefore = view.layouts.length;
@@ -652,7 +658,7 @@ describe("DiagramSceneFigure camera", () => {
     expect(view.lastLayout().orientations).toEqual(orientations);
   });
 
-  it("Z-7 a fold relayout refits the camera to the new bounds; explicit user zoom/pan is kept until the next fold toggle", async () => {
+  it("Z-7 a fold or resize refits the whole figure and resets explicit zoom and pan", async () => {
     reducedMotion = true;
     setWindow(800, 600);
     const view = mount(WIDE, { defaultFolds: [occurrence("a"), occurrence("b")] });
@@ -677,7 +683,7 @@ describe("DiagramSceneFigure camera", () => {
     await tick();
     expect(view.zoom()).toBe(unfoldedFit);
 
-    // Explicit user zoom and pan are preserved while no fold toggle happens (including across a resize).
+    // The user can zoom and pan until the next resize.
     view.component.setZoom(DEFAULT_MAX_DISPLAY_SCALE);
     await tick();
     view.viewport.scrollLeft = 40;
@@ -685,9 +691,15 @@ describe("DiagramSceneFigure camera", () => {
     expect(view.zoom()).toBe(DEFAULT_MAX_DISPLAY_SCALE);
     expect(view.viewport.dataset["pans"]).toBe("true");
     await resize(820, 600);
-    expect(view.zoom()).toBe(DEFAULT_MAX_DISPLAY_SCALE);
-    expect(view.viewport.scrollLeft).toBe(40);
-    expect(view.viewport.scrollTop).toBe(20);
+    expect(view.zoom()).toBe(view.component.getCamera().fitZoom);
+    expect(view.zoom()).toBeLessThan(DEFAULT_MAX_DISPLAY_SCALE);
+    expect(view.viewport.scrollLeft).toBe(0);
+    expect(view.viewport.scrollTop).toBe(0);
+
+    view.component.setZoom(DEFAULT_MAX_DISPLAY_SCALE);
+    await tick();
+    view.viewport.scrollLeft = 40;
+    view.viewport.scrollTop = 20;
 
     // Next fold toggle (folding back) drops the user zoom/pan and refits back to the folded scene.
     await fireEvent.click(view.toggle("a"));
@@ -921,7 +933,7 @@ describe("DiagramSceneFigure camera", () => {
     }
   });
 
-  it("reclamps on resize: a camera at the fit follows the new fit box, any other zoom is clamped", async () => {
+  it("refits on resize using the new fit box", async () => {
     const view = mount(WIDE);
     await tick();
     const { model } = modelOf(WIDE);
@@ -945,7 +957,8 @@ describe("DiagramSceneFigure camera", () => {
     expect(view.readout()).toBe("100 %");
   });
 
-  it("pins v1 and fallback-v1 figure max size and zoom bounds (maxDisplayScale, minReadableScale, fit) to 0.41.5 values", async () => {
+  // Décision du 21/11. « L'utilisateur a les boutons de zoom et autolayout. Par défaut quand on redimensionne on autolayout zoom intégral + plancher à 30 % ».
+  it("pins v1 and fallback-v1 figure max size, cap and R7 zoom floor", async () => {
     // 1. Explicit v1 view and unpinned v1 scene produce identical 0.41.5 camera bounds and figure fit height.
     const completeSingle = sceneOf("complete-single", [{ id: "solo" }]);
     const completeEntity = {
@@ -1012,7 +1025,7 @@ describe("DiagramSceneFigure camera", () => {
     expect(defaultCreateViewMounted.component.getCamera()).toMatchObject({ zoom: 0.62, maxZoom: 0.62, readout: 100 });
     defaultCreateViewMounted.unmount();
 
-    // 2. Wide v1 scene at narrow viewport floors at 0.45 and caps at 0.62, with nested fold hiding descendants cleanly.
+    // 2. Wide v1 scene at narrow viewport floors at 0.30 and caps at 0.62, with nested fold hiding descendants cleanly.
     reducedMotion = true;
     const nested = sceneOf("nested-v1-zoom", [
       { id: "outer", container: true },
@@ -1025,8 +1038,8 @@ describe("DiagramSceneFigure camera", () => {
     await tick();
     const initialCam = view.component.getCamera();
     expect(initialCam.maxZoom).toBe(0.62);
-    expect(initialCam.minZoom).toBe(0.45);
-    expect(initialCam.zoom).toBe(0.45);
+    expect(initialCam.minZoom).toBe(0.30);
+    expect(initialCam.zoom).toBe(0.30);
     expect(initialCam.pans).toBe(true);
     expect(view.drawn()).toContain(occurrence("inner1"));
     // DE-1 nested fold fix stays intact: folding outer hides inner AND all 6 grandchildren,
@@ -1037,7 +1050,7 @@ describe("DiagramSceneFigure camera", () => {
     await fireEvent.click(view.button("Fit"));
     await tick();
     expect(view.component.getCamera().maxZoom).toBe(0.62);
-    expect(view.component.getCamera().minZoom).toBeGreaterThanOrEqual(0.45);
+    expect(view.component.getCamera().minZoom).toBeGreaterThanOrEqual(0.30);
     expect(view.zoom()).toBeLessThanOrEqual(0.62);
     view.unmount();
   });
@@ -1220,7 +1233,7 @@ describe("DiagramSceneFigure folds", () => {
       occurrence("outerB"),
     ]);
     expect(view.rectOf("a1")).toMatchObject({ width: 352, height: 154 });
-    expect(view.root.querySelectorAll("polyline[data-scene-edge]")).toHaveLength(6);
+    expect(view.root.querySelectorAll('path[data-scene-edge][data-connector-mode="r7"]')).toHaveLength(6);
     const innerExpandedStyle = view.root.querySelector(`[data-scene-occurrence="${occurrence("innerA")}"] .st-diagramZone`)?.getAttribute("style") ?? "";
     expect(innerExpandedStyle).toContain("--st-component-diagramZone-surface2");
     for (const node of initialModel.nodes) {
@@ -1242,7 +1255,7 @@ describe("DiagramSceneFigure folds", () => {
     expect(view.rectOf("innerA")).toMatchObject({ width: 352, height: 154 });
     const innerFoldedStyle = view.root.querySelector(`[data-scene-occurrence="${occurrence("innerA")}"] .st-diagramCard`)?.getAttribute("style") ?? "";
     expect(innerFoldedStyle).toContain("--st-component-diagramZone-surface2");
-    expect(view.root.querySelectorAll("polyline[data-scene-edge]")).toHaveLength(4);
+    expect(view.root.querySelectorAll('path[data-scene-edge][data-connector-mode="r7"]')).toHaveLength(4);
     expect(view.root.querySelectorAll("[data-bundle-relation]")).toHaveLength(2);
     for (const node of innerFoldModel.nodes) {
       expectWithinUnit(view.rectOf(node.occurrence.replace("occurrence:e.", "")), node.rect);
@@ -1272,7 +1285,7 @@ describe("DiagramSceneFigure folds", () => {
       outerBBefore.x !== outerBAfter.x || outerBBefore.y !== outerBAfter.y ||
       extBefore.x !== extAfter.x || extBefore.y !== extAfter.y,
     ).toBe(true);
-    expect(view.root.querySelectorAll("polyline[data-scene-edge]")).toHaveLength(2);
+    expect(view.root.querySelectorAll('path[data-scene-edge][data-connector-mode="r7"]')).toHaveLength(2);
     expect(view.root.querySelectorAll("[data-bundle-relation]")).toHaveLength(3);
     for (const node of outerFoldModel.nodes) {
       expectWithinUnit(view.rectOf(node.occurrence.replace("occurrence:e.", "")), node.rect);
@@ -1282,7 +1295,7 @@ describe("DiagramSceneFigure folds", () => {
     await fireEvent.click(view.toggle("outerA"));
     await tick();
     expect(view.drawn().sort()).toEqual(initialModel.nodes.map((n) => n.occurrence).sort());
-    expect(view.root.querySelectorAll("polyline[data-scene-edge]")).toHaveLength(6);
+    expect(view.root.querySelectorAll('path[data-scene-edge][data-connector-mode="r7"]')).toHaveLength(6);
     expect(view.root.querySelector(`[data-scene-occurrence="${occurrence("innerA")}"] .st-diagramZone`)?.getAttribute("style") ?? "").toContain("--st-component-diagramZone-surface2");
     for (const node of initialModel.nodes) {
       expectWithinUnit(view.rectOf(node.occurrence.replace("occurrence:e.", "")), node.rect);
@@ -1510,7 +1523,7 @@ describe("M1 production edge labels (BF-6) and readability floor", () => {
     expect(tokenSource()).toContain('edgeLabelLineHeight: "22px"');
     expect(edgeSample("ok").height).toBe(22);
     expect(edgeSample("ok").height + 2 * 4).toBeLessThanOrEqual(32);
-    expect(18 * DEFAULT_MIN_READABLE_SCALE).toBeGreaterThanOrEqual(8);
+    expect(18 * DEFAULT_MIN_READABLE_SCALE).toBeCloseTo(5.4);
   });
 
   it("LABELLED and WIDE draw the engine placed set with the default measurer, readable at fit and at 100%", async () => {
@@ -1661,13 +1674,13 @@ describe("DiagramSceneFigure cheap minors", () => {
     expect(view.root.querySelector('[role="alert"]')).not.toBeNull();
   });
 
-  it("m6 fit width uses the viewport narrowed by its scrollbar", async () => {
+  it("refits in the full frame even when the previous zoom left a scrollbar", async () => {
     const view = mount(WIDE);
     await tick();
     Object.defineProperty(view.viewport, "clientWidth", { configurable: true, value: 1000 });
     await resize(1280, 720);
     const { model } = modelOf(WIDE);
-    const expected = sceneFit({ bounds: model.bounds!, viewWidth: 1000, windowHeight: 720 });
+    const expected = sceneFit({ bounds: model.bounds!, viewWidth: 1280, windowHeight: 720 });
     expect(view.zoom()).toBe(expected.zoom);
   });
 
@@ -1712,15 +1725,16 @@ describe("DC-2b cache and content size", () => {
       await fireEvent.wheel(view.viewport, { ctrlKey: true, deltaY: step % 2 === 0 ? -10 : 10 });
       times.push(performance.now() - start);
     }
-    setWindow(1024, 768);
-    await fireEvent(window, new Event("resize"));
-    await tick();
     expect(cache.stats()).toEqual(before);
     expect(view.counting).toHaveBeenCalledTimes(measurements);
     expect(size).not.toHaveBeenCalled();
     const p95 = times.sort((a, b) => a - b)[113]!;
     console.info(`DC-2b Svelte mounted camera: 120 pan + 120 zoom events, p95 ${p95.toFixed(3)} ms <= 16.7 ms; 0 layout/measurement/size emissions`);
     expect(p95).toBeLessThanOrEqual(16.7);
+    await resize(1024, 768);
+    expect(cache.stats()).toEqual(before);
+    expect(view.counting).toHaveBeenCalledTimes(measurements);
+    expect(size).not.toHaveBeenCalled();
     await fireEvent.click(view.toggle("a"));
     await tick();
     expect(size).toHaveBeenLastCalledWith({ width: view.lastLayout().fit.width, height: view.lastLayout().fit.height });
@@ -1751,5 +1765,538 @@ describe("DC-2b cache and content size", () => {
     expect(targets.size).toBe(0);
     expect(remove.mock.calls.some(([type, handler], index) => type === "wheel" && handler === add.mock.calls[wheel]![1] && remove.mock.contexts[index] === view.viewport)).toBe(true);
     vi.unstubAllGlobals();
+  });
+});
+
+describe("H2.8 composed scenes (Examples A & B) and free-cell legend in Svelte host", () => {
+  function buildH2HostScene(
+    id: string,
+    fixtureName: "schema-13" | "schema-3",
+    entitiesSpec: readonly { readonly id: string; readonly container?: boolean; readonly parent?: string; readonly title: string; readonly kicker?: string }[],
+    relationsSpec: readonly { readonly id: string; readonly source: string; readonly target: string; readonly label?: string; readonly strokeStyle?: "solid" | "dashed" | "dotted"; readonly emphasis?: "default" | "emphasis" }[],
+  ) {
+    const thisDir = import.meta.url.startsWith("file://")
+      ? dirname(fileURLToPath(import.meta.url).replace(/^\/@fs(?=\/)/, ""))
+      : dirname(new URL(import.meta.url).pathname.replace(/^\/@fs(?=\/)/, ""));
+    const fixturePath = resolve(thisDir, `../../../diagram-core/tests/fixtures/layout-hints-2/${fixtureName}.json`);
+    const fixture = JSON.parse(readFileSync(fixturePath, "utf8")) as { hints: DsLayoutHintsV2 };
+    const entities: Record<string, unknown> = {};
+    const relations: Record<string, unknown> = {};
+    const entityPresentations: Record<string, unknown> = {};
+    const relationPresentations: Record<string, unknown> = {};
+    for (const item of entitiesSpec) {
+      const ref = entityRef(item.id);
+      entities[ref] = {
+        id: ref,
+        profile: "generic@2",
+        type: item.container ? "container" : "node",
+        attributes: { name: { kind: "text", value: item.title } },
+      };
+      entityPresentations[occurrenceRef(`e.${item.id}`)] = {
+        form: item.container ? "container" : "card",
+        anatomy: "v2",
+        text: { title: item.title, ...(item.kicker === undefined ? {} : { kicker: item.kicker }) },
+      };
+      if (item.parent !== undefined) {
+        const relId = relationRef(`contains.${item.parent}.${item.id}`);
+        relations[relId] = {
+          id: relId,
+          profile: "generic@2",
+          type: "contains",
+          endpoints: [
+            { role: "parent", target: entityRef(item.parent) },
+            { role: "child", target: ref },
+          ],
+          attributes: {},
+        };
+      }
+    }
+    for (const edge of relationsSpec) {
+      const relId = relationRef(edge.id);
+      relations[relId] = {
+        id: relId,
+        profile: "generic@2",
+        type: "link",
+        endpoints: [
+          { role: "source", target: entityRef(edge.source) },
+          { role: "target", target: entityRef(edge.target) },
+        ],
+        attributes: edge.label === undefined ? {} : { label: { kind: "text", value: edge.label } },
+      };
+      if (edge.strokeStyle !== undefined || edge.emphasis !== undefined) {
+        relationPresentations[relId] = {
+          ...(edge.strokeStyle === undefined ? {} : { strokeStyle: edge.strokeStyle }),
+          ...(edge.emphasis === undefined ? {} : { emphasis: edge.emphasis }),
+        };
+      }
+    }
+    return {
+      document: {
+        documentId: documentRef(`h2-svelte-${id}`),
+        schemaVersion: CURRENT_SCHEMA_VERSION,
+        revision: 1,
+        profileRefs: ["generic@2"],
+        typeDefinitions: {},
+        entities,
+        relations,
+        ports: {},
+        resources: {},
+        extensions: [],
+      } as unknown as SceneDocument,
+      presentation: {
+        contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+        entities: entityPresentations,
+        legends: {},
+        categoryTokens: [],
+        ...(Object.keys(relationPresentations).length === 0 ? {} : { relations: relationPresentations }),
+      } as unknown as ScenePresentation,
+      hints: lowerLayoutHintsV2(fixture.hints) as unknown as DiagramSceneFigureProps["hints"],
+      measureLines: cardLineMeasurer(sceneCardMeasure(defaultCardMeasure)),
+    };
+  }
+
+  const buildExampleAScene = () =>
+    buildH2HostScene(
+      "schema-13",
+      "schema-13",
+      [
+        { id: "p1", title: "Policy One", kicker: "Stage 1" },
+        { id: "p2", title: "Policy Two", kicker: "Stage 2" },
+        { id: "p3", title: "Policy Three", kicker: "Stage 3" },
+        { id: "j1", title: "Job Alpha", kicker: "Core" },
+        { id: "j2", title: "Job Beta", kicker: "Core" },
+        { id: "j3", title: "Job Gamma", kicker: "Core" },
+        { id: "m1", title: "Metric Store", kicker: "Data" },
+        { id: "m2", title: "Audit Trail", kicker: "Data" },
+        { id: "tools", container: true, title: "Agent Tools", kicker: "Peripheral" },
+        { id: "tool-1", parent: "tools", title: "Command CLI" },
+        { id: "tool-2", parent: "tools", title: "Agent One" },
+        { id: "tool-3", parent: "tools", title: "Agent Two" },
+        { id: "tool-4", parent: "tools", title: "Agent Three" },
+      ],
+      [
+        { id: "e1", source: "tool-1", target: "j1", label: "dispatch" },
+        { id: "e2", source: "j1", target: "j2", label: "route" },
+        { id: "e3", source: "j2", target: "j3", label: "mesh" },
+        { id: "e4", source: "p1", target: "j1", label: "policy", strokeStyle: "dashed" },
+        { id: "e5", source: "p2", target: "j2", label: "policy", strokeStyle: "dashed" },
+        { id: "e6", source: "p3", target: "j3", label: "policy", strokeStyle: "dashed" },
+        { id: "e7", source: "j1", target: "m1", label: "records" },
+        { id: "e8", source: "j2", target: "m2", label: "traces" },
+        { id: "e9", source: "j3", target: "tool-2", label: "accounts", strokeStyle: "solid", emphasis: "emphasis" },
+        { id: "e10", source: "j3", target: "tool-3", label: "accounts", strokeStyle: "solid", emphasis: "emphasis" },
+        { id: "e11", source: "j3", target: "tool-4", label: "accounts", strokeStyle: "solid", emphasis: "emphasis" },
+      ],
+    );
+
+  const buildExampleBScene = () =>
+    buildH2HostScene(
+      "schema-3",
+      "schema-3",
+      [
+        { id: "layer-a", container: true, title: "Upper Layer", kicker: "Control" },
+        { id: "ax", parent: "layer-a", title: "Coordinator" },
+        { id: "ay", parent: "layer-a", title: "Observer" },
+        { id: "layer-b", container: true, title: "Lower Layer", kicker: "Execution" },
+        { id: "b1", parent: "layer-b", title: "Stage One" },
+        { id: "b2", parent: "layer-b", title: "Stage Two" },
+        { id: "b3", parent: "layer-b", title: "Stage Three" },
+        { id: "b4", parent: "layer-b", title: "Stage Four" },
+        { id: "b5", parent: "layer-b", title: "Stage Five" },
+        { id: "c1", parent: "layer-b", title: "Step One" },
+        { id: "c2", parent: "layer-b", title: "Step Two" },
+        { id: "c3", parent: "layer-b", title: "Step Three" },
+        { id: "c4", parent: "layer-b", title: "Step Four" },
+      ],
+      [
+        { id: "r1", source: "ax", target: "b1", label: "governs", strokeStyle: "dashed" },
+        { id: "r2", source: "ax", target: "b2", label: "governs", strokeStyle: "dashed" },
+        { id: "r3", source: "ay", target: "b5", label: "monitors", strokeStyle: "dashed" },
+        { id: "r4", source: "b1", target: "c1", label: "feeds" },
+        { id: "r5", source: "b2", target: "c1", label: "feeds" },
+        { id: "r6", source: "b3", target: "c1", label: "feeds" },
+        { id: "r7", source: "b4", target: "c1", label: "feeds" },
+        { id: "r8", source: "c1", target: "c2", label: "next" },
+        { id: "r9", source: "c2", target: "c3", label: "next" },
+        { id: "r10", source: "c3", target: "c4", label: "next" },
+      ],
+    );
+
+  it("renders Example A free-cell legend in (top, tools), preserves aria-expanded and focus on fold toggle, and renders Example B inherited columns", async () => {
+    reducedMotion = true;
+    for (const [label, builder, toggleId, expectFreeCell] of [
+      ["Example A", buildExampleAScene, "tools", true],
+      ["Example B", buildExampleBScene, "layer-b", false],
+    ] as const) {
+      const refScene = builder();
+      const layouts: LayoutResult[] = [];
+      const rendered = render(DiagramSceneFigure, {
+        props: {
+          document: refScene.document,
+          registry: m3ProfileRegistry as unknown as DiagramSceneFigureProps["registry"],
+          bindings: shippedExecutorBindings as unknown as DiagramSceneFigureProps["bindings"],
+          presentation: refScene.presentation,
+          hints: refScene.hints,
+          measureLines: refScene.measureLines,
+          title: label,
+          onLayout: (layout: LayoutResult) => layouts.push(layout),
+        },
+      });
+      await tick();
+
+      const unfoldedLayout = layouts[layouts.length - 1]!;
+      expect(unfoldedLayout.status, label).toBe("laid-out");
+      if (expectFreeCell && unfoldedLayout.status === "laid-out") {
+        const legendEl = rendered.container.querySelector<HTMLElement>("[data-scene-legend]");
+        expect(legendEl, `${label}:legend`).not.toBeNull();
+        expect(legendEl!.dataset["legendAnchor"]).toBe("free-cell");
+        expect(Math.abs(parseFloat(legendEl!.style.left) - unfoldedLayout.linkLegend!.rect.x)).toBeLessThanOrEqual(1 / 64);
+        expect(Math.abs(parseFloat(legendEl!.style.top) - unfoldedLayout.linkLegend!.rect.y)).toBeLessThanOrEqual(1 / 64);
+        expect(Math.abs(parseFloat(legendEl!.style.width) - unfoldedLayout.linkLegend!.rect.width)).toBeLessThanOrEqual(1 / 64);
+        expect(Math.abs(parseFloat(legendEl!.style.height) - unfoldedLayout.linkLegend!.rect.height)).toBeLessThanOrEqual(1 / 64);
+      }
+
+      const toggleBtn = rendered.container.querySelector<HTMLButtonElement>(
+        `[data-scene-occurrence="${occurrence(toggleId)}"] button[aria-expanded]`,
+      );
+      expect(toggleBtn, `${label}:toggle`).not.toBeNull();
+      expect(toggleBtn!.getAttribute("aria-expanded")).toBe("true");
+      toggleBtn!.focus();
+      expect(document.activeElement).toBe(toggleBtn);
+
+      await fireEvent.click(toggleBtn!);
+      await tick();
+
+      const afterBtn = rendered.container.querySelector<HTMLButtonElement>(
+        `[data-scene-occurrence="${occurrence(toggleId)}"] button[aria-expanded]`,
+      );
+      expect(afterBtn, `${label}:afterToggle`).not.toBeNull();
+      expect(afterBtn!.getAttribute("aria-expanded")).toBe("false");
+      expect(document.activeElement).toBe(afterBtn);
+
+      rendered.unmount();
+    }
+  });
+});
+
+/* ── « Tout voir » whole-scene and fullscreen mode (owner 21/11) ─── */
+
+describe("DiagramSceneFigure « Tout voir » mode (owner 21/11)", () => {
+  it("fits the whole scene with no readability floor and no scroll, keeps pinch/zoom controls working, and restores the 0.30 default on exit", async () => {
+    setWindow(390, 844);
+    const view = mount(WIDE, {
+      labels: { fit: "Ajuster", viewAll: "Tout voir", fullscreen: "Plein écran" },
+    });
+    await tick();
+
+    const viewAllBtn = view.button("Tout voir");
+    const fullscreenBtn = view.button("Plein écran");
+    expect(viewAllBtn.getAttribute("aria-pressed")).toBe("false");
+    expect(fullscreenBtn.getAttribute("aria-pressed")).toBe("false");
+    expect(view.figure.dataset["viewAll"]).toBeUndefined();
+    expect(view.figure.dataset["fullscreen"]).toBeUndefined();
+
+    // Default behaviour without pressing the control keeps the 0.30 floor and scrolling (REQ-R7-28).
+    const defaultZoom = view.zoom();
+    const defaultHeight = view.viewport.style.height;
+    const defaultTransform = view.world.style.transform;
+    expect(defaultZoom).toBe(DEFAULT_MIN_READABLE_SCALE);
+    expect(view.viewport.dataset["pans"]).toBe("true");
+    expect(view.viewport.style.overflowX).toBe("auto");
+
+    // Activate « Tout voir »: no readability floor, no scroll, entire scene fits in the frame.
+    await fireEvent.click(viewAllBtn);
+    await tick();
+    expect(viewAllBtn.getAttribute("aria-pressed")).toBe("true");
+    expect(view.figure.dataset["viewAll"]).toBe("true");
+    const viewAllZoom = view.zoom();
+    expect(viewAllZoom).toBeLessThan(DEFAULT_MIN_READABLE_SCALE);
+    expect(viewAllZoom).toBeGreaterThan(0);
+    expect(view.viewport.dataset["pans"]).toBe("false");
+    expect(view.viewport.style.overflowX).toBe("hidden");
+    expect(view.viewport.style.overflowY).toBe("hidden");
+    expect(view.viewport.scrollLeft).toBe(0);
+    expect(view.viewport.scrollTop).toBe(0);
+    expect(view.button("Zoom out").disabled).toBe(true);
+    expect(view.button("Zoom in").disabled).toBe(false);
+
+    // Every rendered node fits inside the visible viewport without clipping.
+    const vpHeight = parseFloat(view.viewport.style.height);
+    const [tx, ty, scale] = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/
+      .exec(view.world.style.transform)!.slice(1).map(Number) as [number, number, number];
+    expect(scale).toBe(viewAllZoom);
+    for (const node of view.root.querySelectorAll<HTMLElement>("[data-scene-occurrence],[data-scene-label]")) {
+      const x = parseFloat(node.style.left), y = parseFloat(node.style.top);
+      const w = parseFloat(node.style.width), h = parseFloat(node.style.height);
+      expect(tx + x * scale).toBeGreaterThanOrEqual(-0.5);
+      expect(ty + y * scale).toBeGreaterThanOrEqual(-0.5);
+      expect(tx + (x + w) * scale).toBeLessThanOrEqual(390 + 0.5);
+      expect(ty + (y + h) * scale).toBeLessThanOrEqual(vpHeight + 0.5);
+    }
+
+    // Zoom buttons (+ / -) keep working for detail in « Tout voir » mode.
+    await fireEvent.click(view.button("Zoom in"));
+    await tick();
+    expect(view.zoom()).toBeGreaterThan(viewAllZoom);
+    expect(view.button("Zoom out").disabled).toBe(false);
+    await fireEvent.click(view.button("Zoom out"));
+    await tick();
+    expect(view.zoom()).toBeCloseTo(viewAllZoom, 10);
+
+    // Two-finger pinch zoom keeps working for detail from the unconstrained floor up to maxDisplayScale.
+    const touch = (type: string, pointerId: number, clientX: number): Event =>
+      Object.assign(new Event(type, { bubbles: true, cancelable: true }), { pointerId, pointerType: "touch", clientX, clientY: 0 });
+    view.viewport.dispatchEvent(touch("pointerdown", 1, 0));
+    view.viewport.dispatchEvent(touch("pointerdown", 2, 100));
+    view.viewport.dispatchEvent(touch("pointermove", 2, 250));
+    await tick();
+    expect(view.zoom()).toBeGreaterThan(viewAllZoom);
+    view.viewport.dispatchEvent(touch("pointerup", 2, 250));
+    view.viewport.dispatchEvent(touch("pointerup", 1, 0));
+
+    // Fit / 0 resets back to the whole-scene unconstrained fit without leaving « Tout voir ».
+    await fireEvent.click(view.button("Ajuster"));
+    await tick();
+    expect(view.zoom()).toBe(viewAllZoom);
+    expect(viewAllBtn.getAttribute("aria-pressed")).toBe("true");
+    expect(view.viewport.dataset["pans"]).toBe("false");
+
+    // Leaving « Tout voir » restores the exact default 0.30 floor fit.
+    await fireEvent.click(viewAllBtn);
+    await tick();
+    expect(viewAllBtn.getAttribute("aria-pressed")).toBe("false");
+    expect(view.figure.dataset["viewAll"]).toBeUndefined();
+    expect(view.zoom()).toBe(defaultZoom);
+    expect(view.viewport.style.height).toBe(defaultHeight);
+    expect(view.world.style.transform).toBe(defaultTransform);
+    expect(view.viewport.dataset["pans"]).toBe("true");
+    expect(view.viewport.style.overflowX).toBe("auto");
+  });
+
+  it("supports native Fullscreen API and fixed-overlay fallback, Escape keyboard exit, reduced motion, and listener cleanup", async () => {
+    reducedMotion = true;
+    setWindow(390, 844);
+    const addDoc = vi.spyOn(document, "addEventListener");
+    const removeDoc = vi.spyOn(document, "removeEventListener");
+    const view = mount(WIDE, {
+      labels: { viewAll: "Tout voir", fullscreen: "Plein écran" },
+    });
+    await tick();
+
+    const viewAllBtn = view.button("Tout voir");
+    const fullscreenBtn = view.button("Plein écran");
+
+    // Token-backed icon sizing on the controls.
+    expect(viewAllBtn.querySelector("svg")?.getAttribute("width")).toContain("--st-component-diagramScene-controlIconSize");
+    expect(fullscreenBtn.querySelector("svg")?.getAttribute("width")).toContain("--st-component-diagramScene-controlIconSize");
+
+    // 1. Native Fullscreen API path.
+    let activeFs: Element | null = null;
+    Object.defineProperty(document, "fullscreenEnabled", { configurable: true, get: () => true });
+    Object.defineProperty(document, "fullscreenElement", { configurable: true, get: () => activeFs });
+    const reqFs = vi.fn(async () => {
+      activeFs = view.figure;
+      document.dispatchEvent(new Event("fullscreenchange"));
+    });
+    const exitFs = vi.fn(async () => {
+      activeFs = null;
+      document.dispatchEvent(new Event("fullscreenchange"));
+    });
+    Object.defineProperty(view.figure, "requestFullscreen", { configurable: true, value: reqFs });
+    Object.defineProperty(document, "exitFullscreen", { configurable: true, value: exitFs });
+
+    await fireEvent.click(viewAllBtn);
+    await tick();
+    await fireEvent.click(fullscreenBtn);
+    await Promise.resolve();
+    await tick();
+    await tick();
+    expect(reqFs).toHaveBeenCalledTimes(1);
+    expect(fullscreenBtn.getAttribute("aria-pressed")).toBe("true");
+    expect(view.figure.dataset["fullscreen"]).toBe("native");
+    expect(view.figure.classList.contains("st-diagramSceneFigure--fullscreen")).toBe(true);
+    expect(fullscreenBtn.querySelector("svg")?.classList.contains("lucide-minimize-2")).toBe(true);
+
+    // Leaving « Tout voir » while in native fullscreen exits fullscreen and restores default 0.30 fit.
+    await fireEvent.click(viewAllBtn);
+    await Promise.resolve();
+    await tick();
+    await tick();
+    expect(exitFs).toHaveBeenCalledTimes(1);
+    expect(fullscreenBtn.getAttribute("aria-pressed")).toBe("false");
+    expect(view.figure.dataset["fullscreen"]).toBeUndefined();
+    expect(view.zoom()).toBe(DEFAULT_MIN_READABLE_SCALE);
+
+    // 2. Fallback path when requestFullscreen rejects.
+    const rejectingFs = vi.fn(() => Promise.reject(new Error("disallowed")));
+    Object.defineProperty(view.figure, "requestFullscreen", { configurable: true, value: rejectingFs });
+    await fireEvent.click(viewAllBtn);
+    await tick();
+    const inlineViewAllHeight = parseFloat(view.viewport.style.height);
+    await fireEvent.click(fullscreenBtn);
+    await Promise.resolve();
+    await tick();
+    await tick();
+    expect(rejectingFs).toHaveBeenCalledTimes(1);
+    expect(fullscreenBtn.getAttribute("aria-pressed")).toBe("true");
+    expect(view.figure.dataset["fullscreen"]).toBe("fallback");
+    expect(view.figure.classList.contains("st-diagramSceneFigure--fullscreenFallback")).toBe(true);
+    expect(parseFloat(view.viewport.style.height)).toBeGreaterThan(inlineViewAllHeight);
+    expect(view.viewport.dataset["pans"]).toBe("false");
+
+    // Reduced motion: folding a zone inside view-all/fullscreen runs zero RAF frames.
+    const frames = vi.spyOn(window, "requestAnimationFrame");
+    await fireEvent.click(view.toggle("a"));
+    await tick();
+    expect(frames).not.toHaveBeenCalled();
+    expect(view.viewport.getAttribute("aria-busy")).toBe("false");
+    expect(view.viewport.dataset["pans"]).toBe("false");
+
+    // Escape exits fallback fullscreen first, then a second Escape exits « Tout voir ».
+    await fireEvent.keyDown(fullscreenBtn, { key: "Escape" });
+    await tick();
+    expect(fullscreenBtn.getAttribute("aria-pressed")).toBe("false");
+    expect(view.figure.dataset["fullscreen"]).toBeUndefined();
+    expect(viewAllBtn.getAttribute("aria-pressed")).toBe("true");
+
+    await fireEvent.keyDown(viewAllBtn, { key: "Escape" });
+    await tick();
+    expect(viewAllBtn.getAttribute("aria-pressed")).toBe("false");
+    expect(view.zoom()).toBe(DEFAULT_MIN_READABLE_SCALE);
+
+    // Cleanup removes fullscreenchange listener on unmount.
+    const fsCalls = addDoc.mock.calls.filter(([type]) => type === "fullscreenchange");
+    expect(fsCalls.length).toBeGreaterThan(0);
+    view.unmount();
+    expect(removeDoc.mock.calls.some(([type, handler]) => type === "fullscreenchange" && handler === fsCalls[0]![1])).toBe(true);
+
+    delete (document as { fullscreenEnabled?: boolean }).fullscreenEnabled;
+    delete (document as { fullscreenElement?: Element | null }).fullscreenElement;
+    delete (document as { exitFullscreen?: () => Promise<void> }).exitFullscreen;
+  });
+
+  it("suppresses fitToWindow max-height in fullscreen and restores it on exit", async () => {
+    setWindow(1280, 720);
+    const view = mount(WIDE, {
+      fitToWindow: true,
+      labels: { viewAll: "Tout voir", fullscreen: "Plein écran" },
+    });
+    await tick();
+
+    expect(view.figure.classList.contains("st-diagramSceneFigure--fitToWindow")).toBe(true);
+    expect(view.viewport.style.maxHeight).toBe("calc(100vh - 24px)");
+
+    await fireEvent.click(view.button("Plein écran"));
+    await tick();
+    await tick();
+    expect(view.figure.dataset["fullscreen"]).toBe("fallback");
+    expect(view.viewport.style.maxHeight).toBe("");
+
+    await fireEvent.click(view.button("Plein écran"));
+    await tick();
+    await tick();
+    expect(view.figure.dataset["fullscreen"]).toBeUndefined();
+    expect(view.viewport.style.maxHeight).toBe("calc(100vh - 24px)");
+  });
+
+  it("keeps painted-bounds fixed point and exact 0.30 exit-restore at sub-0.30 « Tout voir » scales (0.23 and 0.12)", async () => {
+    reducedMotion = true;
+    const snap = (px: number): number => Math.round(px * 64) / 64;
+    const originalRect = Element.prototype.getBoundingClientRect;
+    const sheet = document.createElement("style");
+    sheet.textContent = ".st-diagramSceneFigure-edge { fill: none; stroke: rgb(100, 116, 139); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }";
+    document.head.append(sheet);
+    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+      const world = this.closest<HTMLElement>(".st-diagramSceneFigure-world");
+      if (world === null) return originalRect.call(this);
+      const match = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/.exec(world.style.transform);
+      if (match === null) return new DOMRect();
+      const [tx, ty, scale] = match.slice(1).map(Number) as [number, number, number];
+      if (this === world) return new DOMRect(snap(tx), snap(ty), 0, 0);
+      if (this.matches("[data-scene-edge]")) {
+        const pts = (this.getAttribute("points") ?? "").trim().split(/\s+/).filter(Boolean).map((p) => p.split(",").map(Number) as [number, number]);
+        if (pts.length === 0) return new DOMRect();
+        const xs = pts.map(([x]) => x), ys = pts.map(([, y]) => y);
+        const left = snap(tx + Math.min(...xs) * scale), top = snap(ty + Math.min(...ys) * scale);
+        return new DOMRect(left, top, snap(tx + Math.max(...xs) * scale) - left, snap(ty + Math.max(...ys) * scale) - top);
+      }
+      if (!(this instanceof HTMLElement) || !this.matches("[data-scene-occurrence],[data-scene-label]")) return new DOMRect();
+      const x = parseFloat(this.style.left), y = parseFloat(this.style.top);
+      const w = parseFloat(this.style.width), h = parseFloat(this.style.height);
+      const left = snap(tx + x * scale), top = snap(ty + y * scale);
+      return new DOMRect(left, top, snap(tx + (x + w) * scale) - left, snap(ty + (y + h) * scale) - top);
+    });
+    try {
+      const wideScene = WIDE;
+      const probe = mount(wideScene, { labels: { fit: "Ajuster", viewAll: "Tout voir", fullscreen: "Plein écran" } });
+      await tick();
+      const boxes = [...probe.root.querySelectorAll<HTMLElement>("[data-scene-occurrence],[data-scene-label]")].map((el) => ({
+        x: parseFloat(el.style.left), y: parseFloat(el.style.top),
+        w: parseFloat(el.style.width), h: parseFloat(el.style.height),
+      }));
+      const edgePts = [...probe.root.querySelectorAll("[data-scene-edge]")].flatMap((edge) =>
+        (edge.getAttribute("points") ?? "").trim().split(/\s+/).filter(Boolean).map((p) => {
+          const [x, y] = p.split(",").map(Number) as [number, number];
+          return { x, y, w: 0, h: 0 };
+        }),
+      );
+      const all = [...boxes, ...edgePts];
+      const sceneWidth = Math.max(...all.map((b) => b.x + b.w)) - Math.min(...all.map((b) => b.x));
+      const sceneHeight = Math.max(...all.map((b) => b.y + b.h)) - Math.min(...all.map((b) => b.y));
+      probe.unmount();
+
+      for (const targetScale of [0.23, 0.12] as const) {
+        const frameWidth = Math.round(Math.max(sceneWidth * targetScale + 2, (sceneHeight * targetScale + 2) * (16 / 9)));
+        const winHeight = Math.max(900, Math.ceil((frameWidth * 9 / 16) / 0.85) + 100);
+        setWindow(frameWidth, winHeight);
+        const view = mount(wideScene, { labels: { fit: "Ajuster", viewAll: "Tout voir", fullscreen: "Plein écran" } });
+        await tick();
+        await tick();
+        const state = () => ({
+          zoom: view.zoom(),
+          height: view.viewport.style.height,
+          transform: view.world.style.transform,
+          extent: view.root.querySelector<HTMLElement>(".st-diagramSceneFigure-extent")!.style.cssText,
+          pans: view.viewport.dataset["pans"],
+        });
+        const initial = state();
+        expect(initial.zoom).toBe(DEFAULT_MIN_READABLE_SCALE);
+        expect(initial.pans).toBe("true");
+
+        await fireEvent.click(view.button("Tout voir"));
+        await tick();
+        await tick();
+        await fireEvent.click(view.button("Ajuster"));
+        await tick();
+        await tick();
+        const settled = state();
+        expect(settled.zoom).toBeCloseTo(targetScale, 2);
+        expect(settled.pans).toBe("false");
+
+        for (let i = 0; i < 3; i++) {
+          await fireEvent.click(view.button("Ajuster"));
+          await tick();
+          await tick();
+          expect(state(), `Svelte repeat Ajuster ${i} at ${targetScale}`).toEqual(settled);
+        }
+        await fireEvent.click(view.button("Zoom in"));
+        await tick();
+        await fireEvent.click(view.button("Zoom in"));
+        await tick();
+        expect(view.zoom()).toBeGreaterThan(settled.zoom);
+        await fireEvent.click(view.button("Ajuster"));
+        await tick();
+        await tick();
+        expect(state(), `Svelte Ajuster after zoom-in at ${targetScale}`).toEqual(settled);
+
+        await fireEvent.click(view.button("Tout voir"));
+        await tick();
+        await tick();
+        expect(state(), `Svelte exact 0.30 exit-restore from ${targetScale}`).toEqual(initial);
+        view.unmount();
+      }
+    } finally {
+      sheet.remove();
+    }
   });
 });

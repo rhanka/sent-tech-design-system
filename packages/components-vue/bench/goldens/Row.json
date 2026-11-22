@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Row",
-  "sourceRevision": "c91b97eb83faef48b2c9c83b3392728e9570b978",
+  "sourceRevision": "b6ba75e35dcf5f19810feadf52727ec94ad81433",
   "source": "src/Row.ts",
   "fixtures": [
     {

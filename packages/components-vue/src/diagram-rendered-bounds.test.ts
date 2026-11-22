@@ -101,8 +101,8 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
     expect(bounds.y).toBe(-32.015625);
     // A screen-constant stroke is framed at the world width it has at the
     // readability floor, whatever the painted scale (.62 here).
-    expect(bounds.x + bounds.width).toBe(Math.ceil((627.001 + .75 / .45) * 64) / 64);
-    expect(bounds.y + bounds.height).toBe(Math.ceil((204.001 + .75 / .45) * 64) / 64);
+    expect(bounds.x + bounds.width).toBe(Math.ceil((627.001 + .75 / .30) * 64) / 64);
+    expect(bounds.y + bounds.height).toBe(Math.ceil((204.001 + .75 / .30) * 64) / 64);
     expect(bounds.x * 64).toBe(Math.floor(bounds.x * 64));
     expect(bounds.y * 64).toBe(Math.floor(bounds.y * 64));
   });
@@ -128,7 +128,7 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
     const model = { x: -634.6, y: -44, width: 1900, height: 300 };
     const zooms = new Set<number>();
     let widestFlipPx = 0;
-    for (const viewWidth of [1440, 1206, 1000, 900, 700]) for (let step = 0; step < 40; step++) {
+    for (const viewWidth of [1440, 1206, 1000, 900, 700, 500]) for (let step = 0; step < 40; step++) {
       const painted = { x: model.x - 3.2 - step * 0.37, y: model.y - 7.1 - step * 0.11,
         width: model.width + 9.3 + step * 0.53, height: model.height + 12.7 + step * 0.29 };
       const loop = hostLoop(shouldRefitRenderedBounds, model, painted, viewWidth);
@@ -151,8 +151,8 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
       expect(loop.state(), `${viewWidth}/${step}/grown`).toEqual(grown);
     }
     // The sweep covers the cap, the floor and uncapped fits between them…
-    expect(zooms.has(0.62) && zooms.has(0.45)).toBe(true);
-    expect([...zooms].some(zoom => zoom > 0.45 && zoom < 0.62)).toBe(true);
+    expect(zooms.has(0.62) && zooms.has(0.30)).toBe(true);
+    expect([...zooms].some(zoom => zoom > 0.30 && zoom < 0.62)).toBe(true);
     // …and reads that flip by more than 1/64 CSS px, the step a fit ignores.
     expect(widestFlipPx).toBeGreaterThan(1 / 64);
   });
@@ -169,26 +169,26 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
       return flip;
     };
     // One LayoutUnit step read back at the same scale spans ceil(1 / zoom)
-    // world steps: 2/64 at 0.62, 3/64 at 0.45, more than 1/64 CSS px.
+    // world steps: 2/64 at 0.62, 4/64 at 0.30, more than 1/64 CSS px.
     expect(widest(0.62, 0.62)).toBe(2 / 64);
-    expect(widest(0.45, 0.45)).toBe(3 / 64);
+    expect(widest(0.30, 0.30)).toBe(4 / 64);
     expect(widest(0.62, 0.62) * 0.62).toBeGreaterThan(1 / 64);
-    expect(widest(0.45, 0.45) * 0.45).toBeGreaterThan(1 / 64);
-    for (const [zoomA, zoomB] of [[0.45, 0.45], [0.5, 0.5], [0.521, 0.522], [0.62, 0.62], [0.45, 0.62], [0.62, 0.45]] as const) {
+    expect(widest(0.30, 0.30) * 0.30).toBeGreaterThan(1 / 64);
+    for (const [zoomA, zoomB] of [[0.30, 0.30], [0.5, 0.5], [0.521, 0.522], [0.62, 0.62], [0.30, 0.62], [0.62, 0.30]] as const) {
       expect(widest(zoomA, zoomB), `${zoomA}/${zoomB}`).toBeLessThan(RENDERED_BOUNDS_REFIT_TOLERANCE);
       // At least one LayoutUnit step after the outward rounding, in CSS px.
       expect(RENDERED_BOUNDS_REFIT_TOLERANCE * zoomB).toBeGreaterThan((1 + zoomB) / RENDERED_BOUNDS_GRID_STEPS);
     }
     expect(RENDERED_BOUNDS_GRID_STEPS).toBe(64);
-    expect(RENDERED_BOUNDS_REFIT_TOLERANCE).toBe((2 / 0.45 + 1) / 64);
+    expect(RENDERED_BOUNDS_REFIT_TOLERANCE).toBe((2 / 0.30 + 1) / 64);
     const rect = { x: -634.6, y: -44, width: 1900, height: 300 };
     expect(shouldRefitRenderedBounds(undefined, rect)).toBe(true);
     expect(shouldRefitRenderedBounds(rect, { ...rect })).toBe(false);
     for (const edge of ['x', 'y', 'width', 'height'] as const) {
       expect(shouldRefitRenderedBounds(rect, { ...rect, [edge]: rect[edge] + 3 / 64 }), edge).toBe(false);
       expect(shouldRefitRenderedBounds(rect, { ...rect, [edge]: rect[edge] - 3 / 64 }), edge).toBe(false);
-      expect(shouldRefitRenderedBounds(rect, { ...rect, [edge]: rect[edge] + 0.1 }), edge).toBe(true);
-      expect(shouldRefitRenderedBounds(rect, { ...rect, [edge]: rect[edge] - 0.1 }), edge).toBe(true);
+      expect(shouldRefitRenderedBounds(rect, { ...rect, [edge]: rect[edge] + 0.125 }), edge).toBe(true);
+      expect(shouldRefitRenderedBounds(rect, { ...rect, [edge]: rect[edge] - 0.125 }), edge).toBe(true);
     }
   });
   it(`should read ${host} non-scaling strokes at one world width at every zoom, and keep Ajuster a fixed point after an interactive zoom`, () => {
@@ -198,8 +198,8 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
     const edge = 'class="st-diagramSceneFigure-edge" data-scene-edge="e" data-flow-step="r" style="stroke:rgb(100, 116, 139);stroke-width:1.5px;vector-effect:non-scaling-stroke"';
     const view = paintedWorld(`<div data-scene-occurrence="card"></div><svg><polyline ${edge}/></svg>`,
       { '[data-scene-occurrence]': { x: 40, y: 40, width: 460, height: 200 }, 'polyline': model });
-    const pad = 0.75 / 0.45;
-    const reads = [0.45, 0.499, 0.5, 0.54, 0.62].map(zoom => {
+    const pad = 0.75 / 0.30;
+    const reads = [0.30, 0.499, 0.5, 0.54, 0.62].map(zoom => {
       Object.assign(view.camera, { zoom, tx: 12.3 + zoom, ty: 45.6 - zoom });
       return measure(view.frame, model, zoom)!;
     });
@@ -233,7 +233,7 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
       ajuster();
       const settled = state();
       expect(settled.bounds).not.toBe(model);
-      for (const zoom of [0.54, 0.62, settled.zoom * 1.2, 0.62, undefined, 0.45]) {
+      for (const zoom of [0.54, 0.62, settled.zoom * 1.2, 0.62, undefined, 0.30]) {
         ajuster(zoom);
         expect(state(), `${viewWidth}/${zoom}`).toEqual(settled);
       }
@@ -242,7 +242,7 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
       for (const [flowState, width] of [['primary', '2.5px'], ['related', '2px']] as const) {
         polyline.setAttribute('data-flow-state', flowState);
         polyline.style.strokeWidth = width;
-        for (const zoom of [undefined, 0.62, 0.45]) {
+        for (const zoom of [undefined, 0.62, 0.30]) {
           ajuster(zoom);
           expect(state(), `${viewWidth}/${flowState}/${zoom}`).toEqual(settled);
         }
@@ -252,7 +252,7 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
       // A resting stroke that really is wider still refits.
       polyline.style.strokeWidth = '6px';
       ajuster();
-      expect(state().bounds.width).toBeGreaterThan(settled.bounds.width + 2 * (3 - 0.75) / 0.45 - 0.1);
+      expect(state().bounds.width).toBeGreaterThan(settled.bounds.width + 2 * (3 - 0.75) / 0.30 - 0.1);
       polyline.style.strokeWidth = '1.5px';
     }
     // Highlighted, the read is the resting read itself.
@@ -290,7 +290,7 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
     const toggle = 'color:rgba(0, 0, 0, 0)';
     // Nothing of the above paints: the model bounds come back, by identity,
     // at every zoom.
-    for (const zoom of [0.45, 0.54, 0.62]) expect(read(html(hit, node, clipped, toggle), zoom), String(zoom)).toBe(model);
+    for (const zoom of [0.30, 0.54, 0.62]) expect(read(html(hit, node, clipped, toggle), zoom), String(zoom)).toBe(model);
     // Each exclusion on its own, through the computed style and not the
     // flow attributes or class names.
     const plain = html(hit, node, clipped, toggle);
@@ -344,13 +344,14 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
       vi.restoreAllMocks();
       return bounds!;
     };
-    const pad = 1.5 / 2 / 0.45;
+    const pad = 1.5 / 2 / 0.30;
     // The first frame of a transition: the eased opacity is exactly 0.
     for (const [name, markup, stroked] of [
       ['connector layer', `<svg class="st-diagramSceneFigure-edges" style="opacity:0"><polyline class="probe st-diagramSceneFigure-edge" data-scene-edge="e" ${stroke}/></svg>`, true],
       ['edge label', '<div class="probe st-diagramSceneFigure-edgeLabel" data-scene-label="l" style="opacity:0"><span>label</span></div>', false],
       ['entering node', '<div class="probe st-diagramSceneFigure-node" data-scene-occurrence="entering" style="opacity:0"></div>', false],
       ['card of an entering node', '<div class="st-diagramSceneFigure-node" data-scene-occurrence="entering" style="opacity:0"><div class="probe st-diagramCard"></div></div>', false],
+      ['link legend', '<aside class="probe st-diagramSceneFigure-legend" data-scene-legend="" style="opacity:0"><span>Legend</span></aside>', false],
     ] as const) {
       const bounds = read(markup);
       expect(bounds, name).not.toBe(model);
@@ -376,12 +377,107 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
     (view.world as HTMLElement).style.transform = 'translate(100px,200px) scale(0.62)';
     expect(measure(view.frame, model, 0.62)).toEqual(reference);
     // A camera input moved the host's zoom; the world still paints 0.62.
-    for (const stale of [0.45, 0.5, 1, 1.4]) expect(measure(view.frame, model, stale), String(stale)).toEqual(reference);
+    for (const stale of [0.30, 0.5, 1, 1.4]) expect(measure(view.frame, model, stale), String(stale)).toEqual(reference);
     // The DOM follows: the read is the same bounds through the new scale.
     view.camera.zoom = 0.5;
     (view.world as HTMLElement).style.transform = 'translate(100px,200px) scale(0.5)';
     expect(within(measure(view.frame, model, 0.62)!, reference)).toBeLessThanOrEqual(RENDERED_BOUNDS_REFIT_TOLERANCE);
     view.dispose();
+  });
+  it(`should keep scale-aware ${host} tolerance, non-scaling-stroke padding and fixed point at sub-0.30 « Tout voir » scales (0.12 and 0.23)`, () => {
+    const { renderedBoundsRefitTolerance } = bounds;
+    expect(renderedBoundsRefitTolerance()).toBe(RENDERED_BOUNDS_REFIT_TOLERANCE);
+    expect(renderedBoundsRefitTolerance(0.30)).toBe(RENDERED_BOUNDS_REFIT_TOLERANCE);
+    expect(renderedBoundsRefitTolerance(0.62)).toBe(RENDERED_BOUNDS_REFIT_TOLERANCE);
+    expect(renderedBoundsRefitTolerance(0.23)).toBe((2 / 0.23 + 1) / 64);
+    expect(renderedBoundsRefitTolerance(0.12)).toBe((2 / 0.12 + 1) / 64);
+
+    // Worst-case 1/64 CSS px LayoutUnit quantisation flip at 0.23 and 0.12
+    // exceeds the fixed 0.30 constant, but stays strictly within the
+    // scale-aware tolerance while remaining < 0.1 CSS px on screen.
+    const snap = (px: number) => Math.round(px * 64) / 64;
+    const readEdge = (edge: number, translate: number, zoom: number) =>
+      Math.floor(((snap(translate + edge * zoom) - snap(translate)) / zoom) * 64) / 64;
+    const widest = (zoomA: number, zoomB: number) => {
+      let flip = 0;
+      for (let i = 0; i < 4000; i++) {
+        const edge = -700 + i * 0.3713;
+        flip = Math.max(flip, Math.abs(readEdge(edge, 392.713 + i * 0.0131, zoomA) - readEdge(edge, 27.307 + i * 0.0173, zoomB)));
+      }
+      return flip;
+    };
+    // One LayoutUnit step at the same scale spans ceil(1 / zoom) world steps:
+    // 5/64 at 0.23, 9/64 at 0.12; two distinct transforms near 0.23 or at 0.12
+    // exceed the fixed 0.30 constant, while staying strictly within the
+    // scale-aware tolerance and < 0.1 CSS px on screen.
+    expect(widest(0.23, 0.23)).toBe(5 / 64);
+    expect(widest(0.12, 0.12)).toBe(9 / 64);
+    expect(widest(0.12, 0.12)).toBeGreaterThan(RENDERED_BOUNDS_REFIT_TOLERANCE);
+    expect(widest(0.23, 0.231)).toBeGreaterThan(RENDERED_BOUNDS_REFIT_TOLERANCE);
+    for (const [zoomA, zoomB] of [[0.23, 0.23], [0.23, 0.231], [0.12, 0.12], [0.23, 0.62], [0.12, 0.62], [0.12, 0.23]] as const) {
+      const tol = renderedBoundsRefitTolerance(Math.min(zoomA, zoomB));
+      expect(widest(zoomA, zoomB), `${zoomA}/${zoomB}`).toBeLessThan(tol);
+      expect(tol * Math.min(zoomA, zoomB), `${zoomA}/${zoomB} px`).toBeLessThan(0.1);
+    }
+
+    // Real ink growth (+1 world unit) still refits at 0.23 and 0.12, while
+    // LayoutUnit quantisation flips do not.
+    const rect = { x: -634.6, y: -44, width: 5876, height: 2284 };
+    for (const scale of [0.23, 0.12] as const) {
+      const tol = renderedBoundsRefitTolerance(scale);
+      expect(shouldRefitRenderedBounds(rect, { ...rect, x: rect.x - tol * 0.9 }, scale)).toBe(false);
+      expect(shouldRefitRenderedBounds(rect, { ...rect, width: rect.width + 1 }, scale)).toBe(true);
+    }
+
+    // Sub-0.30 non-scaling-stroke padding widens to width / 2 / minScale and
+    // stays fixed-point stable across repeated Ajuster and interactive zoom to 0.62.
+    const model = { x: 0, y: 0, width: 5876, height: 2284 };
+    const edge = 'class="st-diagramSceneFigure-edge" data-scene-edge="e" style="stroke:rgb(100, 116, 139);stroke-width:1.5px;vector-effect:non-scaling-stroke"';
+    const view = paintedWorld(`<div data-scene-occurrence="card"></div><svg><polyline ${edge}/></svg>`,
+      { '[data-scene-occurrence]': { x: 40, y: 40, width: 460, height: 200 }, 'polyline': model });
+    try {
+      for (const [viewWidth, targetScale] of [[1354, 0.23], [708, 0.12]] as const) {
+        const expectedPad = 0.75 / targetScale;
+        Object.assign(view.camera, { zoom: targetScale, tx: 12.3, ty: 45.6 });
+        (view.world as HTMLElement).style.transform = `translate(12.3px,45.6px) scale(${targetScale})`;
+        const directRead = measure(view.frame, model, targetScale)!;
+        expect(-directRead.x, `direct pad at ${targetScale}`).toBeGreaterThanOrEqual(expectedPad);
+        expect(directRead.x + directRead.width - model.width, `direct right pad at ${targetScale}`).toBeGreaterThanOrEqual(expectedPad);
+
+        // Full unconstrained host loop: settle, repeat Ajuster, zoom in to 0.62 + Ajuster, real ink growth.
+        let read: { bounds: Rect; scale: number } | undefined;
+        const state = () => {
+          const current = read?.bounds ?? model;
+          const fit = sceneFit({ bounds: current, viewWidth, windowHeight: 1600, unconstrained: true });
+          return { bounds: current, fit, placement: scenePlacement(current, fit.zoom, fit) };
+        };
+        const ajuster = (interactiveZoom?: number) => {
+          const { bounds: current, fit } = state();
+          const activeZoom = interactiveZoom ?? fit.zoom;
+          const placement = scenePlacement(current, activeZoom, fit);
+          Object.assign(view.camera, { zoom: activeZoom, tx: placement.translateX, ty: placement.translateY });
+          (view.world as HTMLElement).style.transform = `translate(${placement.translateX}px,${placement.translateY}px) scale(${activeZoom})`;
+          const strokeFloor = Math.min(0.30, fit.minZoom, activeZoom);
+          const next = measure(view.frame, model, activeZoom, strokeFloor)!;
+          const tolScale = read === undefined ? activeZoom : Math.min(read.scale, activeZoom);
+          if (shouldRefitRenderedBounds(read?.bounds, next, tolScale)) read = { bounds: next, scale: activeZoom };
+        };
+        ajuster();
+        ajuster();
+        const settled = state();
+        expect(settled.fit.zoom, `scale near ${targetScale}`).toBeCloseTo(targetScale, 2);
+        expect(settled.fit.pans).toBe(false);
+        // Half-stroke (0.75 CSS px) is framed within 1 LayoutUnit at the settled sub-0.30 scale (far wider than 0.75 / 0.30).
+        expect(-settled.bounds.x).toBeGreaterThan(0.75 / 0.30);
+        expect(-settled.bounds.x * settled.fit.zoom).toBeGreaterThanOrEqual(0.75 - 1 / 64);
+        for (const z of [undefined, undefined, 0.62, undefined, 0.45, undefined]) {
+          ajuster(z);
+          expect(state(), `${host}/${targetScale}/${z}`).toEqual(settled);
+        }
+      }
+    } finally {
+      view.dispose();
+    }
   });
   it(`should frame ${host} circles, the optional ERD cardinality markers`, () => {
     const model = { x: 10, y: 20, width: 640, height: 320 };
@@ -395,7 +491,7 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
     };
     const circle = read('<circle class="probe" style="fill:rgb(255, 255, 255);stroke:rgb(0, 0, 0);stroke-width:1.5px;vector-effect:non-scaling-stroke"/>');
     expect(circle).toEqual(read('<rect class="probe" style="fill:rgb(255, 255, 255);stroke:rgb(0, 0, 0);stroke-width:1.5px;vector-effect:non-scaling-stroke"/>'));
-    expect(far.x - circle.x).toBeGreaterThanOrEqual(1.5 / 2 / 0.45);
+    expect(far.x - circle.x).toBeGreaterThanOrEqual(1.5 / 2 / 0.30);
     // Unpainted, it is geometry only.
     expect(read('<circle class="probe" style="fill:none"/>')).toBe(model);
   });

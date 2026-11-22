@@ -47,10 +47,10 @@ const API_DIGEST =
   "sha256:2bfcf5c301f92f1f0bb804f3b26508cc80bc5bd10d7e85ef02409b984f1fbd76";
 // Host acceptance by sentropic (canvas-live host): all 17 manifest rules
 // accepted without amendment, host W1 run on both bridges against DS main
-// 18070a76.
+// 4a606c81.
 const HOST_ACCEPTANCE = "accepted";
 const HOST_ACCEPTANCE_EVIDENCE = {
-  dsRevision: "18070a76",
+  dsRevision: "4a606c81",
   hostRevision: "97fe9f53e8079694e35771227c11544ce8658316",
   record: "rhanka/sentropic .tmp/canvas-live/W1-host-acceptance.md",
   recordDigest:

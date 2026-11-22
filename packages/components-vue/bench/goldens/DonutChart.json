@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "DonutChart",
-  "sourceRevision": "7c011647442e18258ed31d66642bc4554e7ee36c",
+  "sourceRevision": "f2dd729618d37638796f3a07f7085655b41e37ca",
   "source": "src/DonutChart.ts",
   "fixtures": [
     {

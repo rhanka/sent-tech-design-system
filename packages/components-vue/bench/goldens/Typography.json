@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Typography",
-  "sourceRevision": "bd378612f5ccb0d0a279c95ce48e94c36fd75116",
+  "sourceRevision": "ce93c2fa3e846723c78b238cfa33eb24e6b73b40",
   "source": "src/Typography.ts",
   "fixtures": [
     {

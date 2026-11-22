@@ -1,8 +1,8 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:504c9c51f329e782a80c6108a8c313772c3bba47b5b22c672323ab466b0a5a83",
-  "entryDigest": "sha256:88eea74c0561c4122e3c2984269986f760efc218548b20c4d3134058bfa67cc6",
+  "digest": "sha256:87977b8ca9ffd106a4a4b4504900ffec7696970536e3b8aee811fe00961f5eb7",
+  "entryDigest": "sha256:21caeea451e0adb45375a6797fe5b9ce47a61f39f564ea415ca60bd126b48025",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -722,7 +722,7 @@
         "declarationPath": "packages/components-svelte/dist/OverflowMenu.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OverflowMenuProps",
-        "version": "0.43.1"
+        "version": "0.45.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -1034,7 +1034,7 @@
         "declarationPath": "packages/components-vue/dist/OverflowMenu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OverflowMenuProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.13"
       },
       "status": "partial",
       "unresolved": [],

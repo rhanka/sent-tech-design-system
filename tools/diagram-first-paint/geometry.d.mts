@@ -12,3 +12,29 @@ export function connectorFindings(input: {
   readonly relations?: readonly { readonly occurrence: string; readonly ends: readonly [string, string] }[] | undefined;
   readonly tolerance: number;
 }): string[];
+export function roundedElbowFindings(input: {
+  readonly paths: readonly { readonly id: string; readonly d: string | null }[];
+  readonly maxRadius?: number;
+  readonly tolerance?: number;
+}): string[];
+export function linkStrokeWidthFindings(input: {
+  readonly paths: readonly {
+    readonly id: string;
+    readonly strokeWidthCss: number;
+    readonly emphasis?: string;
+    readonly arrowhead?: string;
+    readonly flow?: boolean;
+    readonly erd?: boolean;
+  }[];
+  readonly defaultWidth?: number;
+  readonly relatedWidth?: number;
+  readonly emphasisWidth?: number;
+  readonly tolerance?: number;
+}): string[];
+export function legendFindings(input: {
+  readonly legend: (PaintBox & { readonly id: string; readonly anchor: string | null; readonly styles: readonly string[] }) | null;
+  readonly nodes: readonly (PaintBox & { readonly id: string })[];
+  readonly expectedAnchor?: string;
+  readonly expectedStyles?: readonly string[];
+  readonly tolerance?: number;
+}): string[];

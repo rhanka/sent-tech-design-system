@@ -490,7 +490,7 @@ describe("L-R10 — one fixture per proof reason (a)–(d), one per budget exit"
     expect(node.width).toBeGreaterThan(size.width);
   });
 
-  it("(d) the lane and the blocker share one member, so no sibling gap separates them (429c92a2 geometry)", () => {
+  it("(d) the lane and the blocker share one member, so no sibling gap separates them (cb553626 geometry)", () => {
     // The pre-amendment fixture paired `r0,r1` on one entity dock, so the
     // full-route rule now obstructs `r1` and the (d) closure moved. This
     // geometry keeps every obstructable pair apart — the only parallel pair
@@ -624,7 +624,7 @@ describe("L-R10 — one fixture per proof reason (a)–(d), one per budget exit"
     expect(stalled.reasons).toEqual([]);
   });
 
-  it("budget exit 3 — a request outstanding after 12 rounds is budget, never unplaced (429c92a2 geometry)", () => {
+  it("budget exit 3 — a request outstanding after 12 rounds is budget, never unplaced (cb553626 geometry)", () => {
     // The pre-amendment 9-link Zeno fixture now places every label under
     // lexicographic routing, so it no longer exits through the budget. This
     // smaller geometry still does: `r2`'s need halves every round — strict

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "InlineLoading",
-  "sourceRevision": "6600a761af54fb30a13668d59ac143592d5a31be",
+  "sourceRevision": "194d8a578ed3fde6acdb305a7b9492744b654e27",
   "source": "src/InlineLoading.ts",
   "fixtures": [
     {

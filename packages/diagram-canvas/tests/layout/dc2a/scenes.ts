@@ -326,6 +326,7 @@ export interface SceneLayout {
   readonly view: ViewDocument;
   readonly warnings: readonly LayoutWarning[];
   readonly channels?: readonly import("../../../src/layout/channels.js").LayoutChannel[];
+  readonly routeSpacing?: import("../../../src/layout/routeSpacing.js").RouteSpacingReport;
   readonly bundles?: Readonly<Record<string, { readonly members: readonly string[] }>>;
   /** Emitted rectangles of the visible cards, keyed by card id. */
   readonly rects: ReadonlyMap<string, Rect>;
@@ -406,6 +407,7 @@ export function layScene(input: SceneInput, extra: Partial<LayoutOptions> = {}, 
     view,
     warnings: result.warnings,
     channels: result.channels ?? [],
+    ...(result.routeSpacing === undefined ? {} : { routeSpacing: result.routeSpacing }),
     ...(result.edgeBundles === undefined ? {} : { bundles: result.edgeBundles }),
     rects,
     parentOf,

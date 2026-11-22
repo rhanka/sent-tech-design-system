@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "GaugeChart",
-  "sourceRevision": "8663671c38b2f6b16fbc208122560639c6174f83",
+  "sourceRevision": "7f0a20476cc65248f56cf298917b4bb3c57a00f9",
   "source": "src/lib/GaugeChart.ts",
   "fixtures": [
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "UtilityPanel",
-  "sourceRevision": "98f2e9168d56d9c362c8b4e9fb4661bec87c62e7",
+  "sourceRevision": "21578b0595e822517c98688f99f22f11e2ad54a4",
   "source": "src/UtilityPanel.ts",
   "fixtures": [
     {

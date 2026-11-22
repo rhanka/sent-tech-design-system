@@ -3,26 +3,7 @@ name: Elements Publish
 # Publication du catalogue d'éléments (@sentropic/design-system-elements),
 # sur sa propre ligne de version. Déclenchée par un tag `elements-v<version>`.
 #
-# Publication via npm Trusted Publishing (OIDC), avec le chemin d'amorçage au
-# jeton temporaire pour la PREMIÈRE publication, comme rich-text-publish.yml.
-#
-# Pourquoi un amorçage : @sentropic/design-system-elements n'existe pas au
-# registre (mesuré le 2026-11-01 : `npm view` rend E404), et npm ne permet de
-# déclarer un trusted publisher que sur un paquet qui existe déjà — docs/release.md :
-# « The first publication used a temporary bootstrap token because npm Trusted
-# Publishing can only be configured after each package exists. »
-#
-# ACTION PROPRIÉTAIRE, dans cet ordre (checklist docs/release.md) :
-#   1. créer un jeton npm granulaire temporaire, en écriture sur le scope @sentropic ;
-#   2. le stocker dans le secret de dépôt NPM_TOKEN ;
-#   3. poser le tag `elements-v<version>` — l'étape d'amorçage du job `publish`
-#      s'active seule quand le secret est présent et reste inerte quand il est
-#      absent, donc ce fichier ne change rien tant que l'étape 2 n'a pas eu lieu ;
-#   4. déclarer le trusted publisher (rhanka/sent-tech-design-system +
-#      elements-publish.yml) sur le paquet désormais créé ;
-#   5. supprimer le secret (seulement quand plus aucun workflow d'amorçage n'en a
-#      besoin), révoquer le jeton, puis retirer l'étape d'amorçage ici et son
-#      entrée dans scripts/verify-workflow-invariants.test.mjs.
+# Publication via npm Trusted Publishing (OIDC), configurée pour ce workflow.
 #
 # Côté consommateur (contexte seul, aucun changement h2a dans ce lot) : le
 # module de rendu h2a chargera les gros chunks depuis les coordonnées CDN
@@ -46,8 +27,8 @@ jobs:
           node-version: "22"
           cache: "npm"
       - run: npm ci
-      - name: Build workspace for package smoke
-        run: npm run build
+      - name: Build local dependency closure for elements
+        run: node scripts/ensure-theme-dists.mjs --workspaces=@sentropic/design-system-elements
       - name: Verify elements package
         run: |
           npm --workspace @sentropic/design-system-elements run build:browser
@@ -68,6 +49,10 @@ jobs:
         run: node --test scripts/elements-publish-tarball.test.mjs
       - name: Verify publishable licensing
         run: npm run licensing:check
+      # pack:smoke packs every publishable package, not just the elements
+      # closure built above, so its dist/ must exist before the smoke guard.
+      - name: Build all workspaces for package smoke
+        run: npm run build
       - name: Smoke packed packages
         run: npm run pack:smoke
 
@@ -106,9 +91,6 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    env:
-      # Amorçage de la première publication uniquement (voir l'en-tête, étapes 1-5).
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -120,6 +102,7 @@ jobs:
       - name: Install and build
         run: |
           npm ci
+          node scripts/ensure-theme-dists.mjs --no-hash --workspaces=@sentropic/design-system-elements
           npm --workspace @sentropic/design-system-elements run build
           npm --workspace @sentropic/design-system-elements run build:browser
           # The tarball guard, against THIS runner's bytes, right before publish:
@@ -127,9 +110,6 @@ jobs:
           node --test scripts/elements-publish-tarball.test.mjs
       - name: Dist import closure (packed package with registry dependencies)
         run: npm run dist:import-closure -- --workspaces=@sentropic/design-system-elements
-      - name: Bootstrap npm auth for first publish (inactive without secret)
-        if: ${{ env.NPM_TOKEN != '' }}
-        run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
       - name: Publish elements package
         env:
           TAG: ${{ github.ref_name }}

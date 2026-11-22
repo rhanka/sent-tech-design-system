@@ -39,12 +39,12 @@ const DEFAULT_DELAY_MS = 15000;
 const FETCH_TIMEOUT_MS = 15000;
 // Packages verified by the dist-only leg (package.json version + dist entry
 // points + npm view); every other package takes the elements leg.
-const DIST_ONLY_PACKAGES = new Set(["@sentropic/diagram-core", "@sentropic/diagram-canvas"]);
+const DIST_ONLY_PACKAGES = new Set(["@sentropic/diagram-core", "@sentropic/diagram-canvas", "@sentropic/diagram-codecs"]);
 
 function usage() {
   return [
     "usage: node scripts/verify-jsdelivr-published.mjs --package <name> --version <version> [--attempts N] [--delay-ms MS] [--base-url URL]",
-    "example: node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.2.0",
+    "example: node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.3.0",
   ].join("\n");
 }
 

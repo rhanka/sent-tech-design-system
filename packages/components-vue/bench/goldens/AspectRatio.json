@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "AspectRatio",
-  "sourceRevision": "72bf12c2b21c66c288069d3e743f87ab205b481c",
+  "sourceRevision": "c25cb2afa84f4e85029724a24d03250315243ce2",
   "source": "src/AspectRatio.ts",
   "fixtures": [
     {

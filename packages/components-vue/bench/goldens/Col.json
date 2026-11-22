@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Col",
-  "sourceRevision": "afc1e2242e0146878b1c506ab5a1bcca08de4c83",
+  "sourceRevision": "f832d6bb2e90fe28deac5950fb07514dfe4c7d0b",
   "source": "src/Col.ts",
   "fixtures": [
     {

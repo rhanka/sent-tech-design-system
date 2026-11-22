@@ -1,0 +1,94 @@
+{
+  "carries": [
+    "T-25",
+    "T-26",
+    "T-27",
+    "T-28",
+    "T-29",
+    "T-31",
+    "T-32",
+    "T-33"
+  ],
+  "hints": {
+    "vocabulary": "ds-layout-hints@2",
+    "mode": "stage-columns",
+    "fanIn": "comb",
+    "fanOut": "comb",
+    "legend": "free-cell",
+    "grids": {
+      "root": {
+        "stage_columns": [
+          "s1",
+          "s2",
+          "s3"
+        ],
+        "transverse_bands": [
+          {
+            "id": "top",
+            "items": [
+              "entity:p1",
+              "entity:p2",
+              "entity:p3"
+            ]
+          },
+          {
+            "id": "mid",
+            "items": [
+              "entity:j1",
+              "entity:j2",
+              "entity:j3"
+            ]
+          },
+          {
+            "id": "low",
+            "items": [
+              "entity:m1",
+              "entity:m2"
+            ]
+          }
+        ],
+        "peripheral_columns": [
+          {
+            "id": "tools",
+            "side": "start",
+            "items": [
+              "entity:tools"
+            ],
+            "from_band": "mid"
+          }
+        ],
+        "cells": {
+          "entity:p1": {
+            "column": "s1"
+          },
+          "entity:p2": {
+            "column": "s2"
+          },
+          "entity:p3": {
+            "column": "s3"
+          },
+          "entity:j1": {
+            "column": "s1"
+          },
+          "entity:j2": {
+            "column": "s2"
+          },
+          "entity:j3": {
+            "column": "s3"
+          },
+          "entity:m1": {
+            "column": "s1"
+          },
+          "entity:m2": {
+            "column": "s2"
+          }
+        }
+      }
+    },
+    "stacks": {
+      "entity:tools": {
+        "axis": "column"
+      }
+    }
+  }
+}

@@ -35,7 +35,7 @@ type VaporContracts = [Vapor.CardDiagnostic, Vapor.CardLineMeasure, Vapor.Diagra
 type Parity = Assert<Equal<Contracts, VaporContracts>>;
 type LabelRequired = Assert<Equal<{} extends Pick<ForceGraphProps, 'label'> ? true : false, false>>;
 declare const scene: InstanceType<typeof VaporScene>;
-scene.setZoom(1); scene.getCamera(); scene.fitToFrame();
+scene.setZoom(1); scene.getCamera(); scene.fitToFrame(); scene.setViewAll(true); scene.toggleViewAll(); scene.toggleFullscreen();
 declare const graph: InstanceType<typeof VaporGraph>;
 graph.invalidateGraph();
 declare const bpmn: InstanceType<typeof VaporBpmn>;

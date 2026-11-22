@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "PriorityMatrix",
-  "sourceRevision": "f8e0bba84b32704bfac2efb533e7c5a4ddb3db87",
+  "sourceRevision": "aaa1d1fb61852ef757ff2079a6a9641977ff0b99",
   "source": "src/PriorityMatrix.ts",
   "fixtures": [
     {

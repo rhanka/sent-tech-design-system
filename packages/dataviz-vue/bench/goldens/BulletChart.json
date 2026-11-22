@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "BulletChart",
-  "sourceRevision": "bc46642fd9317d8a205d46a23a492ae8e361ec1b",
+  "sourceRevision": "0962d1cfa45d84bf36fff631cbb8c59d05d017b7",
   "source": "src/lib/BulletChart.ts",
   "fixtures": [
     {

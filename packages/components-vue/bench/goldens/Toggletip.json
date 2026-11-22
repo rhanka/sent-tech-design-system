@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Toggletip",
-  "sourceRevision": "72c8f24785464dad57c95e610e4334732634816a",
+  "sourceRevision": "df4fb724e754f28a1927d7502c1bc39566fd6152",
   "source": "src/Toggletip.ts",
   "fixtures": [
     {

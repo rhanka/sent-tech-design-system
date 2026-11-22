@@ -1,8 +1,8 @@
 {
   "componentId": "rich-text-editor",
   "contractSource": "derived",
-  "digest": "sha256:a3ad745418a360accf7a0b9d988a673faeeee125dfc6dd50d9dc124692f14827",
-  "entryDigest": "sha256:d34f0b3e6a097d9b38e9f56b134201b492927c9301d722dfa99bdce7e3206e4c",
+  "digest": "sha256:a25d600c47211cb2f17791cf88a715aa689e14a157e6a1db612996f3a2ea8b6d",
+  "entryDigest": "sha256:593a16b481a5236979987b02f5743ad4f8704ff1093d442aa61fe2a383130fad",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1708,7 +1708,7 @@
         "declarationPath": "packages/components-svelte/dist/rich-text-editor/RichTextEditor.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RichTextEditorProps",
-        "version": "0.43.1"
+        "version": "0.45.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -3453,7 +3453,7 @@
         "declarationPath": "packages/components-vue/dist/rich-text-editor/RichTextEditor.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RichTextEditorProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.13"
       },
       "status": "partial",
       "unresolved": [],

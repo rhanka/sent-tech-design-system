@@ -88,7 +88,7 @@ const READ_GRANULARITY = (2 / DEFAULT_MIN_READABLE_SCALE + 1) / 64;
 /**
  * The same fit, reached from a read through another transform: the same
  * scale, the same overflow, and every length within the two edge reads a
- * length spans. A connector half-stroke (1.5 / 2 / 0.45 world unit a side)
+ * length spans. A connector half-stroke (1.5 / 2 / 0.30 world unit a side)
  * is twenty times that.
  */
 function expectSameFit(actual: FitState, expected: FitState, message: string): void {

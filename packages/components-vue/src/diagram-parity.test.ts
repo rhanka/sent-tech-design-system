@@ -3,8 +3,9 @@ import SceneFigure from './DiagramSceneFigure.vue';
 import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svelte';
 import type { DiagramSceneFigureProps } from './DiagramSceneFigure.types.js';
 import type { SceneDocument, ScenePresentation, SceneOccurrenceRef } from './diagramSceneModel.js';
-import { CURRENT_SCHEMA_VERSION, DEFAULT_PRESENTATION, DIAGRAM_PRESENTATION_CONTRACT_PIN, createView, entityRef, m3ProfileRegistry, occurrenceRef, shippedExecutorBindings, viewRef } from '../../diagram-canvas/tests/scene-host-fixtures.js';
+import { CURRENT_SCHEMA_VERSION, DEFAULT_PRESENTATION, DIAGRAM_PRESENTATION_CONTRACT_PIN, DIAGRAM_PRESENTATION_V2_CONTRACT_PIN, createView, entityRef, m3ProfileRegistry, occurrenceRef, shippedExecutorBindings, viewRef } from '../../diagram-canvas/tests/scene-host-fixtures.js';
 import { hCondInput } from '../../diagram-canvas/tests/layout/dc2a/h-cond.js';
+import { buildExampleA, buildExampleB } from '../../diagram-canvas/tests/layout/h2/fixtures/referenceSet.js';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
@@ -792,7 +793,7 @@ describe('scene host DOM and camera/fold behavior', () => {
       occurrence('ext'), occurrence('innerA'), occurrence('outerA'), occurrence('outerB'),
     ]);
     expect(rectOf(vue.element, 'a1')).toMatchObject({ width: 352, height: 154 });
-    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(6);
+    expect(vue.element.querySelectorAll('path[data-scene-edge][data-connector-mode="r7"]')).toHaveLength(6);
     expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('innerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
     const outerHeader = vue.element.querySelector<HTMLElement>(`[data-scene-occurrence="${occurrence('outerA')}"] .st-diagramZone-header`)!;
     expect(outerHeader.style.left).toBe('calc(12px - var(--st-component-diagramZone-borderWidth, 1.5px))');
@@ -820,7 +821,7 @@ describe('scene host DOM and camera/fold behavior', () => {
       initialOuterB.x !== foldedOuterB.x || initialOuterB.y !== foldedOuterB.y ||
       initialExt.x !== foldedExt.x || initialExt.y !== foldedExt.y,
     ).toBe(true);
-    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(2);
+    expect(vue.element.querySelectorAll('path[data-scene-edge][data-connector-mode="r7"]')).toHaveLength(2);
     expect(vue.element.querySelectorAll('[data-bundle-relation]')).toHaveLength(3);
     expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
 
@@ -833,13 +834,89 @@ describe('scene host DOM and camera/fold behavior', () => {
       occurrence('a1'), occurrence('a2'), occurrence('aSibling'), occurrence('b1'),
       occurrence('ext'), occurrence('innerA'), occurrence('outerA'), occurrence('outerB'),
     ]);
-    expect(vue.element.querySelectorAll('polyline[data-scene-edge]')).toHaveLength(6);
+    expect(vue.element.querySelectorAll('path[data-scene-edge][data-connector-mode="r7"]')).toHaveLength(6);
     expect(vue.element.querySelector(`[data-scene-occurrence="${occurrence('innerA')}"] .st-diagramZone`)?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
     for (const key of ['x', 'y', 'width', 'height'] as const) {
       expect(Math.abs(rectOf(vue.element, 'outerB')[key] - initialOuterB[key])).toBeLessThanOrEqual(1 / 64);
       expect(Math.abs(rectOf(vue.element, 'ext')[key] - initialExt[key])).toBeLessThanOrEqual(1 / 64);
     }
     expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+
+    vue.unmount(); svelte.unmount();
+    vi.unstubAllGlobals();
+  });
+  it('should match dash patterns, arrowheads and emphasis identically on Svelte and Vue across fold and unfold (DE-2)', async () => {
+    frame();
+    const base = sceneOf(
+      'de2-connector-parity',
+      [
+        { id: 'zone', container: true },
+        { id: 'a', parent: 'zone' },
+        { id: 'b', parent: 'zone' },
+        { id: 'ext' },
+      ],
+      [
+        { from: 'a', to: 'b', label: 'dotted-open' },
+        { from: 'b', to: 'ext', label: 'emphasis-none' },
+        { from: 'a', to: 'ext', label: 'proposed-emphasis' },
+      ],
+    );
+    const presentation = {
+      ...base.presentation,
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+      relations: {
+        'relation:link.a.b': { strokeStyle: 'dotted', arrowhead: 'arrow' },
+        'relation:link.b.ext': { arrowhead: 'none', emphasis: 'emphasis' },
+        'relation:link.a.ext': { strokeStyle: 'dashed', arrowhead: 'arrow', emphasis: 'emphasis' },
+      },
+    } as unknown as ScenePresentation;
+    const props = { ...host, ...base, presentation };
+    const vue = mount(SceneFigure, { props, attachTo: document.body });
+    const svelte = render(SvelteScene, { props });
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+
+    for (const root of [vue.element, svelte.container]) {
+      const ab = root.querySelector('path[data-scene-edge="occurrence:r.link.a.b"]')!;
+      const be = root.querySelector('path[data-scene-edge="occurrence:r.link.b.ext"]')!;
+      const ae = root.querySelector('path[data-scene-edge="occurrence:r.link.a.ext"]')!;
+      expect(ab.getAttribute('stroke-dasharray')).toBe('2 5');
+      expect(ab.getAttribute('marker-end')).toMatch(/^url\(#diagram-arrow-[^)]+\)$/);
+      expect(be.getAttribute('stroke-dasharray')).toBeNull();
+      expect(be.getAttribute('marker-end')).toBeNull();
+      expect(be.getAttribute('data-edge-emphasis')).toBe('emphasis');
+      expect(ae.getAttribute('stroke-dasharray')).toBe('8 6');
+      expect(ae.getAttribute('marker-end')).toMatch(/-emphasis\)$/);
+      expect(ae.getAttribute('data-edge-emphasis')).toBe('emphasis');
+      const legend = root.querySelector('[data-scene-legend]');
+      expect(legend).not.toBeNull();
+      expect(legend!.getAttribute('data-legend-anchor')).toBe('right');
+      expect([...root.querySelectorAll('[data-legend-style]')].map((el) => el.getAttribute('data-legend-style'))).toEqual([
+        'solid:none:emphasis',
+        'dashed:arrow:emphasis',
+        'dotted:arrow:default',
+      ]);
+    }
+
+    await vue.find(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`).trigger('click');
+    svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`)!.click();
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    // Lifted cross-zone edges with distinct styles stay separate instead of bundling into one style (REQ-R7-05 / REQ-R7-11 / REQ-R7-12).
+    for (const root of [vue.element, svelte.container]) {
+      expect(root.querySelectorAll('path[data-scene-edge]')).toHaveLength(2);
+      expect([...root.querySelectorAll('[data-legend-style]')].map((el) => el.getAttribute('data-legend-style'))).toEqual([
+        'solid:none:emphasis',
+        'dashed:arrow:emphasis',
+      ]);
+    }
+
+    await vue.find(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`).trigger('click');
+    svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${occurrence('zone')}"] button[aria-expanded]`)!.click();
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    expect(vue.element.querySelectorAll('[data-legend-style]')).toHaveLength(3);
+    expect(svelte.container.querySelectorAll('[data-legend-style]')).toHaveLength(3);
 
     vue.unmount(); svelte.unmount();
     vi.unstubAllGlobals();
@@ -870,7 +947,44 @@ describe('scene host DOM and camera/fold behavior', () => {
     }
     vi.unstubAllGlobals();
   });
-  it('should pin v1 figure max size and zoom bounds (maxDisplayScale 0.62, minReadableScale 0.45, fit) to 0.41.5 / next.7 on Svelte and Vue', async () => {
+  it('should apply opt-in fitToWindow identically on Svelte and Vue across fold/unfold (DE-2 ask 9)', async () => {
+    frame();
+    const props = { ...host, ...WIDE, fitToWindow: true };
+    const vue = mount(SceneFigure, { props });
+    const svelte = render(SvelteScene, { props });
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    for (const root of [vue.element, svelte.container.firstElementChild!]) {
+      expect(root.classList.contains('st-diagramSceneFigure--fitToWindow')).toBe(true);
+      expect(root.getAttribute('data-fit-to-window')).toBe('true');
+      const viewport = root.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!;
+      expect(viewport.style.maxHeight).toBe('calc(100vh - 24px)');
+      expect(viewport.style.maxWidth).toBe('100%');
+      expect(viewport.style.marginInline).toBe('auto');
+    }
+    // Entering fullscreen suppresses fitToWindow max-height identically on both hosts.
+    await vue.find('.st-diagramSceneFigure-fullscreen').trigger('click');
+    svelte.container.querySelector<HTMLButtonElement>('.st-diagramSceneFigure-fullscreen')!.click();
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    for (const root of [vue.element, svelte.container.firstElementChild!]) {
+      expect(root.getAttribute('data-fullscreen')).toBe('fallback');
+      expect(root.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!.style.maxHeight).toBe('');
+    }
+    await vue.find('.st-diagramSceneFigure-fullscreen').trigger('click');
+    svelte.container.querySelector<HTMLButtonElement>('.st-diagramSceneFigure-fullscreen')!.click();
+    await nextTick(); await tick(); await nextTick();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+    for (const root of [vue.element, svelte.container.firstElementChild!]) {
+      expect(root.getAttribute('data-fullscreen')).toBeNull();
+      expect(root.querySelector<HTMLElement>('.st-diagramSceneFigure-viewport')!.style.maxHeight).toBe('calc(100vh - 24px)');
+    }
+    vue.unmount(); svelte.unmount();
+    vi.unstubAllGlobals();
+  });
+
+  // Décision du 21/11. « L'utilisateur a les boutons de zoom et autolayout. Par défaut quand on redimensionne on autolayout zoom intégral + plancher à 30 % ».
+  it('should pin v1 figure max size, cap and R7 zoom floor on Svelte and Vue', async () => {
     vi.stubGlobal('matchMedia', () => ({ matches: true }));
     vi.stubGlobal('innerHeight', 720);
     // Single v1 complete card and fallback-v1 card both cap at 0.62 (readout 100%, viewport height 126px).
@@ -934,7 +1048,7 @@ describe('scene host DOM and camera/fold behavior', () => {
     expect(svelteDef.container.querySelector('.st-diagramCard')?.classList.contains('st-diagramCard--v2')).toBe(false);
     vueDef.unmount(); svelteDef.unmount();
 
-    // Wide v1 scene at phone width floors at 0.45 and caps at 0.62 identically on Svelte and Vue.
+    // Wide v1 scene at phone width floors at 0.30 and caps at 0.62 identically on Svelte and Vue.
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(390);
     vi.stubGlobal('innerHeight', 844);
     const wideProps = { ...host, ...WIDE, title: 'Wide zoom bounds' };
@@ -942,16 +1056,16 @@ describe('scene host DOM and camera/fold behavior', () => {
     const svelteWide = render(SvelteScene, { props: wideProps });
     await nextTick(); await tick(); await nextTick();
     expect(dom(vueWide.element)).toEqual(dom(withControlIconTokens(svelteWide.container.firstElementChild!)));
-    expect(vueWide.vm.getCamera()).toMatchObject({ zoom: 0.45, minZoom: 0.45, maxZoom: 0.62, fitZoom: 0.45, pans: true, readout: 73 });
+    expect(vueWide.vm.getCamera()).toMatchObject({ zoom: 0.30, minZoom: 0.30, maxZoom: 0.62, fitZoom: 0.30, pans: true, readout: 48 });
     vueWide.vm.setZoom(10);
     await nextTick();
     expect(vueWide.vm.getCamera().zoom).toBe(0.62);
     vueWide.vm.setZoom(0.1);
     await nextTick();
-    expect(vueWide.vm.getCamera().zoom).toBe(0.45);
+    expect(vueWide.vm.getCamera().zoom).toBe(0.30);
     vueWide.vm.fitToFrame();
     await nextTick();
-    expect(vueWide.vm.getCamera().zoom).toBe(0.45);
+    expect(vueWide.vm.getCamera().zoom).toBe(0.30);
     vueWide.unmount(); svelteWide.unmount();
     vi.unstubAllGlobals();
   });
@@ -1008,7 +1122,7 @@ describe('scene host DOM and camera/fold behavior', () => {
       const height = parseFloat(viewport.style.height);
       const [tx, ty, scale] = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/.exec(world.style.transform)!.slice(1).map(Number) as [number, number, number];
       expect(scale).toBe(zoom);
-      expect(zoom).toBeGreaterThanOrEqual(0.45);
+      expect(zoom).toBeGreaterThanOrEqual(0.30);
       expect(zoom).toBeLessThanOrEqual(0.62);
       expect(height).toBeLessThanOrEqual(maxFrameH + 1 / 64);
       expect(viewport.dataset['pans']).toBe('false');
@@ -1155,6 +1269,160 @@ describe('scene host DOM and camera/fold behavior', () => {
       computedStyleSpy.mockRestore();
       vi.useRealTimers();
       sheet.remove();
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('matches Svelte and Vue rects within 1/64 px on H2 composed Examples A and B (folded & unfolded), free-cell legend, aria-expanded and focus (H2.8)', async () => {
+    const TOL = 1 / 64;
+    vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+    vi.stubGlobal('innerHeight', 900);
+    const widthSpy = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1440);
+    const readBox = (el: HTMLElement) => ({
+      x: parseFloat(el.style.left),
+      y: parseFloat(el.style.top),
+      w: parseFloat(el.style.width),
+      h: parseFloat(el.style.height),
+    });
+    const collectRects = (root: Element): Map<string, { x: number; y: number; w: number; h: number }> => {
+      const map = new Map<string, { x: number; y: number; w: number; h: number }>();
+      for (const el of root.querySelectorAll<HTMLElement>('[data-scene-occurrence]')) {
+        map.set(el.dataset['sceneOccurrence']!, readBox(el));
+      }
+      return map;
+    };
+    const assertParity = (vueRoot: Element, svelteRoot: Element, label: string, expectFreeCell: boolean) => {
+      const vRects = collectRects(vueRoot);
+      const sRects = collectRects(svelteRoot);
+      expect([...vRects.keys()].sort(), `${label}:keys`).toEqual([...sRects.keys()].sort());
+      for (const [id, v] of vRects) {
+        const s = sRects.get(id)!;
+        expect(Math.abs(v.x - s.x), `${label}:${id}:x`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(v.y - s.y), `${label}:${id}:y`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(v.w - s.w), `${label}:${id}:w`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(v.h - s.h), `${label}:${id}:h`).toBeLessThanOrEqual(TOL);
+      }
+      const vLeg = vueRoot.querySelector<HTMLElement>('[data-scene-legend]');
+      const sLeg = svelteRoot.querySelector<HTMLElement>('[data-scene-legend]');
+      if (expectFreeCell) {
+        expect(vLeg, `${label}:vue-legend`).not.toBeNull();
+        expect(sLeg, `${label}:svelte-legend`).not.toBeNull();
+        expect(vLeg!.dataset['legendAnchor']).toBe('free-cell');
+        expect(sLeg!.dataset['legendAnchor']).toBe('free-cell');
+        const vl = readBox(vLeg!);
+        const sl = readBox(sLeg!);
+        expect(Math.abs(vl.x - sl.x), `${label}:legend:x`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(vl.y - sl.y), `${label}:legend:y`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(vl.w - sl.w), `${label}:legend:w`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(vl.h - sl.h), `${label}:legend:h`).toBeLessThanOrEqual(TOL);
+      } else if (vLeg !== null || sLeg !== null) {
+        expect(vLeg).not.toBeNull();
+        expect(sLeg).not.toBeNull();
+        const vl = readBox(vLeg!);
+        const sl = readBox(sLeg!);
+        expect(Math.abs(vl.x - sl.x), `${label}:legend:x`).toBeLessThanOrEqual(TOL);
+        expect(Math.abs(vl.y - sl.y), `${label}:legend:y`).toBeLessThanOrEqual(TOL);
+      }
+    };
+    try {
+      for (const [label, builder, toggleOcc, expectFreeCell] of [
+        ['Example A', buildExampleA, 'occurrence:e.tools', true],
+        ['Example B', buildExampleB, 'occurrence:e.layer-b', false],
+      ] as const) {
+        const refScene = builder();
+        const sharedProps = {
+          document: refScene.document as unknown as SceneDocument,
+          registry: refScene.registry as unknown as DiagramSceneFigureProps['registry'],
+          bindings: refScene.bindings as unknown as DiagramSceneFigureProps['bindings'],
+          presentation: refScene.presentation as unknown as ScenePresentation,
+          hints: refScene.hints as unknown as DiagramSceneFigureProps['hints'],
+          measureLines: refScene.measureLines,
+          title: label,
+        };
+        const vue = mount(SceneFigure, { props: sharedProps, attachTo: document.body });
+        const svelte = render(SvelteScene, sharedProps);
+        await nextTick(); await tick(); await nextTick();
+
+        // Unfolded parity (including free-cell legend on Example A)
+        assertParity(vue.element, svelte.container, `${label}:unfolded`, expectFreeCell);
+
+        // Toggle fold via button click in both hosts; verify aria-expanded & focus kept
+        const vBtn = vue.element.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${toggleOcc}"] button[aria-expanded]`)!;
+        const sBtn = svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${toggleOcc}"] button[aria-expanded]`)!;
+        expect(vBtn.getAttribute('aria-expanded')).toBe('true');
+        expect(sBtn.getAttribute('aria-expanded')).toBe('true');
+        vBtn.focus();
+        vBtn.click();
+        await nextTick();
+        const vBtnAfter = vue.element.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${toggleOcc}"] button[aria-expanded]`)!;
+        expect(vBtnAfter.getAttribute('aria-expanded')).toBe('false');
+        expect(document.activeElement).toBe(vBtnAfter);
+
+        sBtn.focus();
+        sBtn.click();
+        await tick();
+        const sBtnAfter = svelte.container.querySelector<HTMLButtonElement>(`[data-scene-occurrence="${toggleOcc}"] button[aria-expanded]`)!;
+        expect(sBtnAfter.getAttribute('aria-expanded')).toBe('false');
+        expect(document.activeElement).toBe(sBtnAfter);
+
+        // Folded parity
+        assertParity(vue.element, svelte.container, `${label}:folded`, expectFreeCell);
+
+        vue.unmount();
+        svelte.unmount();
+      }
+    } finally {
+      widthSpy.mockRestore();
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('should match Svelte and Vue DOM and camera across resting, « Tout voir », fullscreen fallback, and exit states', async () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+    vi.stubGlobal('innerHeight', 844);
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(390);
+    const props = {
+      ...host,
+      ...WIDE,
+      title: 'Wide parity',
+      labels: { fit: 'Ajuster', viewAll: 'Tout voir', fullscreen: 'Plein écran' },
+    };
+    const vue = mount(SceneFigure, { props });
+    const svelte = render(SvelteScene, { props });
+    try {
+      await nextTick(); await tick(); await nextTick();
+      // 1. Resting default state (0.30 floor).
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      expect(vue.vm.getCamera().zoom).toBe(0.30);
+      expect(svelte.component.getCamera().zoom).toBe(0.30);
+
+      // 2. Activate « Tout voir » on both hosts.
+      await vue.find('.st-diagramSceneFigure-viewAll').trigger('click');
+      svelte.container.querySelector<HTMLButtonElement>('.st-diagramSceneFigure-viewAll')!.click();
+      await nextTick(); await tick(); await nextTick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      expect(vue.vm.getCamera().zoom).toBeLessThan(0.30);
+      expect(vue.vm.getCamera()).toEqual(svelte.component.getCamera());
+      expect(vue.vm.getCamera().pans).toBe(false);
+
+      // 3. Toggle fullscreen fallback on both hosts.
+      await vue.find('.st-diagramSceneFigure-fullscreen').trigger('click');
+      svelte.container.querySelector<HTMLButtonElement>('.st-diagramSceneFigure-fullscreen')!.click();
+      await nextTick(); await tick(); await nextTick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      expect(vue.element.getAttribute('data-fullscreen')).toBe('fallback');
+      expect(svelte.container.firstElementChild?.getAttribute('data-fullscreen')).toBe('fallback');
+
+      // 4. Exit « Tout voir » on both hosts -> restores default 0.30 floor identically.
+      await vue.find('.st-diagramSceneFigure-viewAll').trigger('click');
+      svelte.container.querySelector<HTMLButtonElement>('.st-diagramSceneFigure-viewAll')!.click();
+      await nextTick(); await tick(); await nextTick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      expect(vue.vm.getCamera().zoom).toBe(0.30);
+      expect(vue.vm.getCamera()).toEqual(svelte.component.getCamera());
+    } finally {
+      vue.unmount();
+      svelte.unmount();
       vi.unstubAllGlobals();
     }
   });

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "CheckboxGroup",
-  "sourceRevision": "acf7aef266d21e5acde8c1de195edb598e6aae8c",
+  "sourceRevision": "36cdbb9bc735faa544af15aed2b4fd5cf57c4f63",
   "source": "src/CheckboxGroup.ts",
   "fixtures": [
     {

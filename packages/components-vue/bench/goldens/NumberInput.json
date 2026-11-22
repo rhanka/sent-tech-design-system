@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "NumberInput",
-  "sourceRevision": "543db9fd57822badeabb09a48e3378ab95f79247",
+  "sourceRevision": "aad3074efbd4347454fed48d56be22e149be46f0",
   "source": "src/NumberInput.ts",
   "fixtures": [
     {

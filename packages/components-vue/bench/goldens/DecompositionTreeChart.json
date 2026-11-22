@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "DecompositionTreeChart",
-  "sourceRevision": "7c0589ae12bec55e31d6d0728d65f9c5fc6dc88a",
+  "sourceRevision": "fd1783add90dead1f11df1065c6f34bc1c497b3e",
   "source": "src/DecompositionTreeChart.ts",
   "fixtures": [
     {

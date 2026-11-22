@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "AreaChart",
-  "sourceRevision": "a439bafa7e60074766918fe37876739ab9b303da",
+  "sourceRevision": "f475b788296cc6d4f5035004d1afaf6995249d9d",
   "source": "src/AreaChart.ts",
   "fixtures": [
     {

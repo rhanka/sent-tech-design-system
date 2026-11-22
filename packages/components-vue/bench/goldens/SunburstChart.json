@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "SunburstChart",
-  "sourceRevision": "80603ebd56e5cf67812e231eff429f271bfb5f26",
+  "sourceRevision": "db907b4514527301a29c19f6654f9cae9ec1fb90",
   "source": "src/SunburstChart.ts",
   "fixtures": [
     {

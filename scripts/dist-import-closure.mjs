@@ -38,14 +38,6 @@ function registryManifest(name, range, cwd) {
   return manifest;
 }
 
-function pinnedTarballVersion(name, spec) {
-  const basename = name.split('/').at(-1);
-  const prefix = `https://registry.npmjs.org/${name}/-/${basename}-`;
-  if (!spec.startsWith(prefix)) return undefined;
-  const pin = /^(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)\.tgz$/.exec(spec.slice(prefix.length));
-  return pin?.[1];
-}
-
 export function packWorkspace(workspace, destination) {
   const result = JSON.parse(run('npm', ['pack', '--json', '--ignore-scripts', '--pack-destination', destination], workspace.dir));
   return join(destination, result[0].filename);
@@ -68,13 +60,7 @@ export async function checkPackage(workspace, { workspaces = [], tarball, log = 
         if (/^(?:file:|link:|workspace:|\.\.?\/)/.test(range)) throw new Error(`Non-registry dependency ${identity}: ${name}@${range}`);
         const sibling = byName.get(name);
         if (sibling) {
-          // A tarball pin prevents npm from substituting a same-version workspace.
-          // Prove it is the published archive before testing the packed import.
-          const pin = pinnedTarballVersion(name, range);
-          const published = registryManifest(name, pin ?? range, temp);
-          if (pin !== undefined && published?.dist?.tarball !== range) {
-            throw new Error(`No matching published archive for ${name}@${range}`);
-          }
+          const published = registryManifest(name, range, temp);
           if (published) {
             visit(published);
             continue;

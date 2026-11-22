@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineOptions({ name: "DiagramSceneFigure" });
-import { computed, nextTick, onBeforeUnmount, shallowRef, useId, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useId, watch } from "vue";
 import { getDiagramGlyph } from './diagram-icons/registry.js';
 import { createLayoutCache, DEFAULT_FLOW_TOKENS, type FlowTokens, type Rect } from "@sentropic/diagram-canvas";
 import { useDiagramSceneViewport } from "./useDiagramSceneViewport.js";
@@ -10,9 +10,9 @@ import {
   type FlowState, type FlowAction, type Visible,
 } from "@sentropic/diagram-canvas/flowModel";
 import {
-  collapsedOccurrencesOf, DEFAULT_SCENE_LABELS, sceneContentSize, layoutScene, resolveScene,
+  collapsedOccurrencesOf, connectorDashArray, connectorDashPaint, connectorMarkerIds, connectorMarkerRef, connectorPath, DEFAULT_EDGE_CORNER_RADIUS, DEFAULT_SCENE_LABELS, extraConnectorMarkers, sceneContentSize, layoutScene, linkLegendBoxStyle, linkLegendSwatchGeometry, resolveScene,
   parseScale, sceneConnectorMask, sceneNodesOnPlane,
-  type SceneModel, type SceneNodeModel, type SceneOrientations, type SceneOccurrenceRef,
+  type DiagramSceneSize, type SceneModel, type SceneNodeModel, type SceneOrientations, type SceneOccurrenceRef,
 } from "@sentropic/diagram-canvas/diagramSceneModel";
 import DiagramSceneFallback from "./DiagramSceneFallback.vue";
 import SceneNode from "./DiagramFlowNode.vue";
@@ -21,27 +21,71 @@ import type { DiagramSceneFigureProps as SharedSceneFigureProps, DiagramSceneFig
 export interface DiagramSceneFigureProps extends SharedSceneFigureProps {}
 export type { DiagramSceneFigureLabels, DiagramSceneCamera } from "@sentropic/diagram-canvas/diagramSceneModel";
 
-const DEFAULT_LABELS: DiagramSceneFigureLabels = DEFAULT_SCENE_LABELS;
+const DEFAULT_LABELS = DEFAULT_SCENE_LABELS;
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { compact: false });
-const emit = defineEmits<{ "update:contentSize": [size: { width: number; height: number }] }>();
+const emit = defineEmits<{ "update:contentSize": [size: DiagramSceneSize] }>();
 const ownedCache = createLayoutCache(), hostId = useId();
 const arrowId = 'diagram-arrow-' + hostId;
+const markerIds = connectorMarkerIds(arrowId);
 const maskId = 'diagram-connector-mask-' + hostId;
 const strings = computed(() => ({ ...DEFAULT_LABELS, ...props.labels }));
 const flowOptions = computed(() => ({ ...props.flows, countTemplate: strings.value.count }));
 const tokens = shallowRef<FlowTokens>(DEFAULT_FLOW_TOKENS);
-const { frameEl: frame, viewportEl: viewport, measure, measureLines, effectiveMetrics,
-  fit, zoom, readout, placement, viewportStyle, refitOnFold,
-  setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
-    props, () => scene.value, camera => props.onCameraChange?.(camera), readFlowTokens);
-defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
+const { figureEl, controlsEl, frameEl: frame, viewportEl: viewport, measure, measureLines, effectiveMetrics, r7Mode,
+  fit, zoom, readout, placement, viewportStyle, sceneFitInput, resetToFit,
+  viewAll, fullscreen, fallbackFullscreen, fullscreenMode,
+  setZoom, zoomIn, zoomOut, fitToFrame, setViewAll, toggleViewAll, toggleFullscreen, exitFullscreen, onFigureKeydown, getCamera } = useDiagramSceneViewport(
+    props, () => scene.value, camera => props.onCameraChange?.(camera), readFlowTokens,
+    undefined, () => ownedCache.clear());
+defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, setViewAll, toggleViewAll, toggleFullscreen, getCamera });
 const foldState = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? foldState.value);
-watch(() => [...collapsedNow.value].sort().join('\0'), () => refitOnFold(), { flush: 'pre' });
+watch(() => [...collapsedNow.value].sort().join('\0'), resetToFit, { flush: 'pre' });
 let previousOrientation: SceneOrientations | undefined, orientationDocument: string | undefined;
+let orientationInputTuple: readonly unknown[] | undefined;
+const orientationSeedByFold = new Map<string, SceneOrientations | undefined>();
 const layout = computed(() => {
-  if (orientationDocument !== props.document.documentId) { orientationDocument = props.document.documentId; previousOrientation = undefined; }
+  if (orientationDocument !== props.document.documentId) {
+    orientationDocument = props.document.documentId;
+    previousOrientation = undefined;
+    orientationInputTuple = undefined;
+    orientationSeedByFold.clear();
+  }
+  let orientationSeed: SceneOrientations | undefined = previousOrientation;
+  if (r7Mode.value) {
+    const nextInputs: readonly unknown[] = [
+      props.document,
+      props.document.revision,
+      props.view,
+      props.presentation,
+      JSON.stringify(props.hints ?? null),
+      JSON.stringify(effectiveMetrics.value),
+      JSON.stringify(props.rowPack ?? null),
+      props.targetWidth,
+      measureLines.value,
+      measureLines.value.version,
+      JSON.stringify(flowOptions.value),
+      JSON.stringify(tokens.value),
+      props.iconBindings,
+      props.strictIcons ?? true,
+      props.depthParityStart,
+    ];
+    const sameNonFoldInputs =
+      orientationInputTuple !== undefined &&
+      orientationInputTuple.length === nextInputs.length &&
+      nextInputs.every((value, index) => Object.is(value, orientationInputTuple![index]));
+    if (!sameNonFoldInputs) {
+      orientationInputTuple = nextInputs;
+      orientationSeedByFold.clear();
+    }
+    const foldKey = [...collapsedNow.value].sort().join("\0");
+    orientationSeed = orientationSeedByFold.has(foldKey) ? orientationSeedByFold.get(foldKey) : previousOrientation;
+    if (!orientationSeedByFold.has(foldKey)) orientationSeedByFold.set(foldKey, orientationSeed);
+  } else if (orientationSeedByFold.size > 0 || orientationInputTuple !== undefined) {
+    orientationInputTuple = undefined;
+    orientationSeedByFold.clear();
+  }
   const result = layoutScene({
     cache: props.layoutCache ?? ownedCache, document: props.document, registry: props.registry, presentation: props.presentation,
     ...(props.iconBindings === undefined ? {} : { iconBindings: props.iconBindings }),
@@ -50,9 +94,14 @@ const layout = computed(() => {
     resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
     measureLines: measureLines.value, collapsed: collapsedNow.value, flows: flowOptions.value, flowTokens: tokens.value,
     ...(props.view === undefined ? {} : { view: props.view }), ...(props.bindings === undefined ? {} : { bindings: props.bindings }),
-    ...(props.hints === undefined ? {} : { hints: props.hints }), metrics: effectiveMetrics.value,
-    ...(props.rowPack === undefined ? {} : { rowPack: props.rowPack }), ...(props.targetWidth === undefined ? {} : { targetWidth: props.targetWidth }),
-    ...(previousOrientation === undefined ? {} : { previousOrientation }),
+    ...(props.hints === undefined ? {} : { hints: props.hints }),
+    ...(props.legend === undefined ? {} : { legend: props.legend }),
+    ...(strings.value.legend === undefined ? {} : { legendTitle: strings.value.legend }),
+    ...(props.legendLabels === undefined ? {} : { legendLabels: props.legendLabels }),
+    metrics: effectiveMetrics.value,
+    ...(props.rowPack === undefined ? {} : { rowPack: props.rowPack }),
+    ...(props.targetWidth === undefined ? {} : { targetWidth: props.targetWidth }),
+    ...(orientationSeed === undefined ? {} : { previousOrientation: orientationSeed }),
   });
   if (result.status === "laid-out") previousOrientation = result.orientations;
   return result;
@@ -62,8 +111,11 @@ const scene = computed<SceneModel | undefined>(() => layout.value.status !== "la
   ...(props.iconBindings === undefined ? {} : { iconBindings: props.iconBindings }),
   strictIcons: props.strictIcons ?? true,
   ...(props.depthParityStart === undefined ? {} : { depthParityStart: props.depthParityStart }),
+  ...(props.legend === undefined ? {} : { legend: props.legend }),
+  ...(strings.value.legend === undefined ? {} : { legendTitle: strings.value.legend }),
+  ...(props.legendLabels === undefined ? {} : { legendLabels: props.legendLabels }),
   resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
-}));
+}, props.fitToWindow ? sceneFitInput.value : undefined));
 // Paint order (diagram-canvas `scenePaintPlane`): expanded zone frames, the
 // connectors, then every box. A zone frame is opaque: painted after the
 // connectors it would hide every route that runs inside it.
@@ -74,8 +126,22 @@ const paintLayers = computed(() => [
 ]);
 // The connector layer is masked over the footer text a frame paints itself.
 const connectorMask = computed(() => scene.value === undefined ? undefined : sceneConnectorMask(scene.value));
-watch(layout, (result) => props.onLayout?.(result), { immediate: true });
-watch(() => sceneContentSize(layout.value), (size) => { props.onSizeChange?.(size); emit("update:contentSize", size); }, { immediate: true });
+const extraMarkers = computed(() => scene.value === undefined ? [] : extraConnectorMarkers(scene.value.edges, markerIds));
+const legendEntries = computed(() => scene.value?.linkLegend?.entries.map((entry) => ({
+  entry,
+  swatch: linkLegendSwatchGeometry(entry, effectiveMetrics.value),
+})) ?? []);
+onMounted(() => {
+  watch(layout, (result) => props.onLayout?.(result), { immediate: true });
+  let publishedSize: DiagramSceneSize | undefined;
+  watch(layout, (result) => {
+    const size = sceneContentSize(result);
+    if (publishedSize?.width === size.width && publishedSize?.height === size.height) return;
+    publishedSize = size;
+    props.onSizeChange?.(size);
+    emit("update:contentSize", size);
+  }, { immediate: true });
+});
 
 const local = shallowRef<FlowState>({ ...INITIAL_FLOW_STATE, selection: props.defaultActiveStep === undefined ? null : { kind: "step", relation: props.defaultActiveStep }, ...(props.defaultScenario === undefined ? {} : { scenario: props.defaultScenario }) });
 const state = computed<FlowState>(() => {
@@ -164,8 +230,12 @@ function keydown(event: KeyboardEvent): void {
   if (event.ctrlKey || event.metaKey || event.altKey) return;
   const target = event.target as HTMLElement;
   if (target !== event.currentTarget && target.closest("input,textarea,select,[contenteditable]")) return;
+  if (!event.shiftKey && event.key === "Escape" && fallbackFullscreen.value) { exitFullscreen(); event.preventDefault(); return; }
   if (!event.shiftKey && rove(event)) return;
-  if (!event.shiftKey && steps.value.length > 0 && ["]", "[", "Escape"].includes(event.key)) { dispatch({ type: event.key === "]" ? "next" : event.key === "[" ? "previous" : "escape" }); event.preventDefault(); return; }
+  if (!event.shiftKey && steps.value.length > 0 && ["]", "[", "Escape"].includes(event.key)) {
+    if (event.key === "Escape" && state.value.selection === null && viewAll.value && !fullscreen.value) { setViewAll(false); event.preventDefault(); return; }
+    dispatch({ type: event.key === "]" ? "next" : event.key === "[" ? "previous" : "escape" }); event.preventDefault(); return;
+  }
   if (event.key === "+" || event.key === "=") zoomIn(); else if (event.key === "-" || event.key === "_") zoomOut(); else if (event.key === "0") fitToFrame(); else return;
   event.preventDefault();
 }
@@ -212,7 +282,9 @@ function pointerMove(event: PointerEvent): void { if (!touches.has(event.pointer
 const pointerEnd = (event: PointerEvent) => { touches.delete(event.pointerId); pinch = undefined; };
 onBeforeUnmount(() => { touches.clear(); ownedCache.dispose(); });
 
-const points = (items: readonly { x: number; y: number }[]) => items.map((p) => `${p.x},${p.y}`).join(" ");
+const edgeCornerRadius = computed(() => effectiveMetrics.value.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS);
+const pathOf = (items: readonly { readonly x: number; readonly y: number }[]) => connectorPath(items, edgeCornerRadius.value);
+const pointsOf = (items: readonly { readonly x: number; readonly y: number }[]) => items.map((point) => `${point.x},${point.y}`).join(" ");
 const boxStyle = (rect: Rect) => `left:${rect.x}px;top:${rect.y}px;width:${rect.width}px;height:${rect.height}px`;
 
 function selectNode(node: SceneNodeModel): void {
@@ -228,13 +300,15 @@ const scenarioId = useId();
 </script>
 
 <template>
-  <figure :class="['st-diagramSceneFigure', props.compact ? 'st-diagramSceneFigure--compact' : undefined]" :aria-label="props.label ?? props.title" :data-zoom="zoom" :data-zoom-readout="readout" :data-scene-refused="layout.status === 'refused' ? layout.refusals[0]?.code : undefined">
+  <figure ref="figureEl" :class="['st-diagramSceneFigure', props.compact ? 'st-diagramSceneFigure--compact' : undefined, props.fitToWindow ? 'st-diagramSceneFigure--fitToWindow' : undefined, fullscreen ? 'st-diagramSceneFigure--fullscreen' : undefined, fallbackFullscreen ? 'st-diagramSceneFigure--fullscreenFallback' : undefined]" :aria-label="props.label ?? props.title" :data-zoom="zoom" :data-zoom-readout="readout" :data-fit-to-window="props.fitToWindow ? 'true' : undefined" :data-view-all="viewAll ? 'true' : undefined" :data-fullscreen="fullscreenMode" :data-scene-refused="layout.status === 'refused' ? layout.refusals[0]?.code : undefined" @keydown="onFigureKeydown">
     <figcaption v-if="props.title !== undefined" class="st-diagramSceneFigure-title">{{ props.title }}</figcaption>
-    <div class="st-diagramSceneFigure-controls" role="group" :aria-label="strings.controls">
+    <div ref="controlsEl" class="st-diagramSceneFigure-controls" role="group" :aria-label="strings.controls">
       <button type="button" class="st-iconButton st-iconButton--sm st-iconButton--secondary" :aria-label="strings.zoomOut" :disabled="zoom <= fit.minZoom" @click="zoomOut"><DiagramControlGlyph size="var(--st-component-button-anatomy-density-sm-fontSize)" /></button>
       <output class="st-diagramSceneFigure-readout" aria-live="polite" :aria-label="strings.zoomLevel(readout)">{{ readout }} %</output>
       <button type="button" class="st-iconButton st-iconButton--sm st-iconButton--secondary" :aria-label="strings.zoomIn" :disabled="zoom >= fit.maxZoom" @click="zoomIn"><DiagramControlGlyph plus size="var(--st-component-button-anatomy-density-sm-fontSize)" /></button>
       <button type="button" class="st-button st-button--secondary st-button--sm" @click="fitToFrame">{{ strings.fit }}</button>
+      <button type="button" class="st-button st-button--secondary st-button--sm st-diagramSceneFigure-viewAll" :aria-pressed="viewAll" @click="toggleViewAll"><DiagramControlGlyph kind="view-all" size="var(--st-component-diagramScene-controlIconSize, var(--st-component-button-anatomy-density-sm-fontSize))" /><span>{{ strings.viewAll }}</span></button>
+      <button type="button" class="st-iconButton st-iconButton--sm st-iconButton--secondary st-diagramSceneFigure-fullscreen" :aria-label="strings.fullscreen" :aria-pressed="fullscreen" @click="toggleFullscreen"><DiagramControlGlyph :kind="fullscreen ? 'exit-fullscreen' : 'fullscreen'" size="var(--st-component-diagramScene-controlIconSize, var(--st-component-button-anatomy-density-sm-fontSize))" /></button>
     </div>
     <div v-if="steps.length > 0" class="st-diagramSceneFigure-flowNavigator" role="group" :aria-label="strings.navigator">
       <button type="button" class="st-button st-button--secondary st-button--sm" @click="dispatch({ type: 'previous' })">{{ strings.previous }}</button>
@@ -262,17 +336,21 @@ const scenarioId = useId();
             <template v-if="scene !== undefined">
               <template v-for="layer in paintLayers" :key="layer.plane">
               <svg v-if="layer.plane === 'connectors'" class="st-diagramSceneFigure-edges" aria-hidden="true">
-                <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker><mask v-if="connectorMask !== undefined" :id="maskId" maskUnits="userSpaceOnUse" :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height"><rect :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height" fill="#fff" /><rect v-for="(cutout, index) in connectorMask.cutouts" :key="index" :data-scene-cutout="index" :x="cutout.x" :y="cutout.y" :width="cutout.width" :height="cutout.height" fill="#000" /></mask></defs>
+                <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" :markerUnits="scene.r7Connectors ? 'userSpaceOnUse' : undefined" :markerWidth="scene.r7Connectors ? '10.5' : '7'" :markerHeight="scene.r7Connectors ? '10.5' : '7'" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker><marker v-for="marker in extraMarkers" :key="marker.id" :id="marker.id" :data-arrowhead-kind="marker.kind" :data-arrowhead-emphasis="marker.emphasis" :viewBox="marker.viewBox" :refX="marker.refX" :refY="marker.refY" :markerUnits="marker.markerUnits" :markerWidth="marker.markerWidth" :markerHeight="marker.markerHeight" :orient="marker.orient"><path :d="marker.path" :fill="marker.fill" :stroke="marker.stroke" :stroke-width="marker.strokeWidth" /></marker><mask v-if="connectorMask !== undefined" :id="maskId" maskUnits="userSpaceOnUse" :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height"><rect :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height" fill="#fff" /><rect v-for="(cutout, index) in connectorMask.cutouts" :key="index" :data-scene-cutout="index" :x="cutout.x" :y="cutout.y" :width="cutout.width" :height="cutout.height" fill="#000" /></mask></defs>
                 <g data-scene-connectors="" :mask="connectorMask === undefined ? undefined : `url(#${maskId})`">
                 <template v-for="edge in scene.edges" :key="edge.occurrence">
-                  <polyline :marker-end="edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :data-flow-step="edge.flow?.relation" :data-flow-bundle="edge.bundle?.id" :data-flow-state="stateOf(edge.occurrence)" :points="points(edge.points)" />
+                  <path v-if="edge.r7" :marker-end="connectorMarkerRef(edge, markerIds)" :stroke-dasharray="connectorDashArray(edge.strokeStyle)" :style="connectorDashPaint(edge.strokeStyle)" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" data-connector-mode="r7" :data-edge-stroke="edge.strokeStyle" :data-edge-arrowhead="edge.arrowhead" :data-edge-emphasis="edge.emphasis" :data-flow-step="edge.flow?.relation" :data-flow-bundle="edge.bundle?.id" :data-flow-state="stateOf(edge.occurrence)" :d="pathOf(edge.points)" />
+                  <polyline v-else :marker-end="edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :data-flow-step="edge.flow?.relation" :data-flow-bundle="edge.bundle?.id" :data-flow-state="stateOf(edge.occurrence)" :points="pointsOf(edge.points)" />
                   <template v-if="edge.directed">
-                    <polyline class="st-diagramSceneFigure-flowHit" :data-flow-hit="edge.occurrence" :points="points(edge.points)" />
+                    <polyline class="st-diagramSceneFigure-flowHit" :data-flow-hit="edge.occurrence" :points="pointsOf(edge.points)" />
                     <path v-for="(arrow, index) in edge.arrows" :key="index" class="st-diagramSceneFigure-flowArrow" :data-flow-arrow="edge.occurrence" :data-flow-state="stateOf(edge.occurrence)" :d="tokens.flowArrowPath" :transform="`translate(${arrow.tip.x} ${arrow.tip.y}) rotate(${arrow.angle}) translate(${-tokens.flowArrowLength} ${-tokens.flowArrowWidth / 2})`" />
                   </template>
                 </template>
                 <g v-for="edge in scene.edges.filter(edge => edge.markers)" :key="edge.occurrence" v-html="edge.markers" />
-                <polyline v-for="label in scene.labels.filter(label => label.leader)" :key="label.occurrence" class="st-diagramSceneFigure-edge" :points="points(label.leader!)" />
+                <template v-for="label in scene.labels.filter(label => label.leader)" :key="label.occurrence">
+                  <path v-if="scene.r7Connectors && !label.erd" class="st-diagramSceneFigure-edge" data-connector-mode="r7" :d="pathOf(label.leader!)" />
+                  <polyline v-else class="st-diagramSceneFigure-edge" :points="pointsOf(label.leader!)" />
+                </template>
                 </g>
               </svg>
               <template v-else>
@@ -289,7 +367,7 @@ const scenarioId = useId();
                 <button type="button" class="st-diagramSceneFigure-flowNode" :data-flow-node="target.occurrence" :data-flow-state="stateOf(target.occurrence)" :aria-label="description(boxTarget(target.occurrence))" :aria-pressed="selected?.kind === 'box' && selected.occurrence === target.occurrence" :aria-describedby="descriptionId('node', target.occurrence)" :tabindex="nodeTab === target.occurrence ? 0 : -1" :style="`left:${target.anchor.x}px;top:${target.anchor.y}px`">{{ strings.node }}</button>
                 <span class="st-diagramSceneFigure-flowDescription" :id="descriptionId('node', target.occurrence)">{{ description(boxTarget(target.occurrence)) }}</span>
               </template>
-              <div v-for="label in scene.labels" :key="label.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="label.occurrence" :title="label.title" :data-erd-label="label.erd || undefined" :style="boxStyle(label.box)">
+              <div v-for="label in scene.labels" :key="label.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="label.occurrence" :data-connector-mode="scene.r7Connectors && !label.erd ? 'r7' : undefined" :title="label.title" :data-erd-label="label.erd || undefined" :style="boxStyle(label.box)">
                 <template v-if="label.bundle !== undefined">
                   <strong class="st-diagramSceneFigure-bundleHeader">{{ label.bundle.header }}</strong>{{ ' ' }}<div v-for="(group, index) in label.bundle.groups" :key="index" class="st-diagramSceneFigure-bundleRelation" :data-bundle-relation="index">
                     <span aria-hidden="true">•</span><div><span v-for="(line, i) in group.lines" :key="i">{{ line }}</span></div>
@@ -297,6 +375,18 @@ const scenarioId = useId();
                 </template>
                 <template v-else><span v-for="(line, index) in label.lines" :key="index">{{ line }}</span></template>
               </div>
+              <aside v-if="scene.linkLegend !== undefined" class="st-diagramSceneFigure-legend" role="region" :aria-label="scene.linkLegend.title" data-scene-legend="" :data-legend-anchor="scene.linkLegend.anchor" :style="linkLegendBoxStyle(scene.linkLegend)">
+                <div class="st-diagramSceneFigure-legendTitle">{{ scene.linkLegend.title }}</div>
+                <ul class="st-diagramSceneFigure-legendList">
+                  <li v-for="{ entry, swatch } in legendEntries" :key="entry.key" class="st-diagramSceneFigure-legendItem" :data-legend-style="entry.key" :data-edge-stroke="entry.strokeStyle" :data-edge-arrowhead="entry.arrowhead" :data-edge-emphasis="entry.emphasis">
+                    <svg class="st-diagramSceneFigure-legendSwatch" :viewBox="swatch.viewBox" aria-hidden="true">
+                      <path :data-legend-swatch="entry.key" :d="swatch.linePath" fill="none" :stroke="swatch.stroke" :stroke-width="swatch.strokeWidth" :stroke-dasharray="swatch.dashArray" :style="connectorDashPaint(entry.strokeStyle)" vector-effect="non-scaling-stroke" />
+                      <path v-if="swatch.arrowPath !== undefined" :d="swatch.arrowPath" :fill="swatch.arrowFill" :stroke="swatch.arrowStroke" :stroke-width="swatch.arrowStrokeWidth" />
+                    </svg>
+                    <span class="st-diagramSceneFigure-legendLabel">{{ entry.label }}</span>
+                  </li>
+                </ul>
+              </aside>
             </template>
           </div>
         </div>

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "BumpChart",
-  "sourceRevision": "fcd021eb33196b6dafcbefb11e2272d4cad9a568",
+  "sourceRevision": "5feec4d28ab2927ba1a01d05b60a4aa55812b1af",
   "source": "src/BumpChart.ts",
   "fixtures": [
     {

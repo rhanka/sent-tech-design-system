@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "HeatmapChart",
-  "sourceRevision": "dba08afa75ed1c497d2715b01bf622b7b80b11e2",
+  "sourceRevision": "83b0a64be1c923778a6593a01edf42ce598d4803",
   "source": "src/HeatmapChart.ts",
   "fixtures": [
     {

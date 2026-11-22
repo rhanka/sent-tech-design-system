@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "HeikinAshiChart",
-  "sourceRevision": "8d5a461e8e807a79c747ccd4c2e6e33d3e3768ba",
+  "sourceRevision": "cd99689c930485016c0387763ad423a7a03a8e3a",
   "source": "src/HeikinAshiChart.ts",
   "fixtures": [
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "HistogramChart",
-  "sourceRevision": "d89b2686f00b72051d8384b659f4e1145db2874d",
+  "sourceRevision": "20e42b521ea8f70ce96f9d5afcbedd6a6fb19cd1",
   "source": "src/lib/HistogramChart.ts",
   "fixtures": [
     {

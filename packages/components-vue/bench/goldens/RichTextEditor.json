@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "RichTextEditor",
-  "sourceRevision": "3e53293d1b350017af16c8b00787c5447116765f",
+  "sourceRevision": "f113006e3b1e08edbd64af537796617fc97f1e57",
   "source": "packages/components-svelte/src/lib/rich-text-editor/RichTextEditor.svelte",
   "referenceFramework": "svelte",
   "sourceSha256": "596dbcc748dd8b956b8a11e5e518382cba97bff2020bba95c13c28d4ae12a12e",

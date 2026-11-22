@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "RadioGroup",
-  "sourceRevision": "ed9acf53d2c0fe0f12d81a6a33b1c2093ef7235d",
+  "sourceRevision": "b3ae68f5309856d8b70d647a5c7ba24b7d5e0ff3",
   "source": "src/RadioGroup.ts",
   "fixtures": [
     {

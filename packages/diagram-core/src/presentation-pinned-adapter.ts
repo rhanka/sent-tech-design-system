@@ -1,5 +1,5 @@
 /**
- * Exact adapter entry bytes at e3bc10cc9e59d48bb807afc41173ba83f6698940.
+ * Exact adapter entry bytes at ab7d1a7fd0142217672b5be6d40465b3e5309e50.
  * Data for catalog authentication, never evaluated or imported as code.
  * SHA-256: 488d8499b8f4e624af56d0c4f4c07496cc09863ec1e65e9f522c6fc05a4db06e.
  */

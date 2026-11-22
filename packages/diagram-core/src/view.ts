@@ -18,7 +18,8 @@
  */
 
 import type { DocumentRef, EntityRef, OccurrenceRef, PortRef, RelationRef, ViewRef } from "./refs.js";
-import type { DiagramPresentation, StrokeStyle } from "./presentation.js";
+import type { ArrowheadKind, LinkEmphasis, StrokeStyle } from "./connector-registry.js";
+import type { DiagramPresentation } from "./presentation.js";
 
 export interface Point {
   readonly x: number;
@@ -83,10 +84,20 @@ export interface RelationOccurrence {
   /** Persisted route hints. An empty/absent list means "the renderer routes it". */
   readonly waypoints?: readonly Point[];
   /**
-   * The only stroke carrier (M3 §3.2.2/§3.5), default solid. Absent is distinct
-   * from explicit solid and is preserved byte-for-byte.
+   * Dash-pattern registry word (`solid | dashed | dotted`; `dashed` means "proposed").
+   * Absent is distinct from explicit solid and is preserved byte-for-byte.
    */
   readonly strokeStyle?: StrokeStyle;
+  /**
+   * Arrowhead registry word (`arrow | none`, DE-2; further heads reserved for N2).
+   * Absent means default arrow and is preserved byte-for-byte.
+   */
+  readonly arrowhead?: ArrowheadKind;
+  /**
+   * Link emphasis word (`default | emphasis`, DE-2): distinct colour + width,
+   * never a dash style. Absent is preserved byte-for-byte.
+   */
+  readonly emphasis?: LinkEmphasis;
 }
 
 export type PortSide = "north" | "east" | "south" | "west";
@@ -141,8 +152,8 @@ export interface SummaryDefinition {
   readonly label: string;
   /** Sorted, distinct, non-empty semantic relation ids of the selected set. */
   readonly relationIds: readonly RelationRef[];
-  /** Absent selects solid only. Solid and dashed never aggregate together. */
-  readonly strokeStyle?: "solid" | "dashed";
+  /** Absent selects solid only. Distinct dash styles never aggregate together. */
+  readonly strokeStyle?: StrokeStyle;
   /**
    * Complete selected candidate occurrence set for the scope/style. Absent
    * means the scope/style must select at most one occurrence per relation
@@ -186,6 +197,8 @@ export interface PresentationState {
   readonly theme?: string;
   /** Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). Absent means legacy `"v1"`; `"v2"` is opt-in. */
   readonly anatomy?: DiagramAnatomyVersion;
+  /** Per-occurrence anatomy overrides for mixed full-size and compact scenes. */
+  readonly entityAnatomy?: Readonly<Record<string, DiagramAnatomyVersion>>;
   /** Typed presentation fragment (M3 §3.2.2). Absent means no presentation contract. */
   readonly diagram?: DiagramPresentation;
 }

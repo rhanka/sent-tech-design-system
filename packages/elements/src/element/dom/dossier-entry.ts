@@ -1,9 +1,10 @@
 import "../../../../themes/css/sent-tech.css";
 import "./dossier-page.css";
-import { canonicalJson } from "@sentropic/focus/editing";
+import { baseDigest, canonicalJson } from "@sentropic/focus/editing";
 import { dossierManifestViews } from "../../focus-diagrams/dossier-views.js";
 import { isRecord } from "../../focus-diagrams/diagram-source.js";
 import { mountDossier } from "./dossier-mount.js";
+import { mountDossierReview } from "./dossier-review-mount.js";
 
 function readEmbedded(host: HTMLElement, name: "document" | "manifest" | "views"): string | undefined {
   const script = host.ownerDocument.querySelector<HTMLScriptElement>(`script[data-st-dossier-${name}]`);
@@ -25,31 +26,56 @@ function parseViews(source: string | undefined): unknown {
   return parsed;
 }
 
-async function renderPage(host: HTMLElement, dossier: ReturnType<typeof mountDossier>): Promise<void> {
+async function renderPage(host: HTMLElement, dossier: ReturnType<typeof mountDossier>): Promise<unknown> {
   const embedded = readEmbedded(host, "document");
   if (embedded !== undefined) {
+    const input: unknown = JSON.parse(embedded);
     const manifest = readEmbedded(host, "manifest");
-    dossier.render(JSON.parse(embedded), {
+    dossier.render(input, {
       manifest: manifest === undefined ? undefined : JSON.parse(manifest),
       views: parseViews(readEmbedded(host, "views")),
     });
-    return;
+    return input;
   }
   const input: unknown = JSON.parse(await readFile(host, "dossier.json"));
   if (!isRecord(input) || !Array.isArray(input.sections) ||
       !input.sections.some((section: unknown) => isRecord(section) && section.kind === "diagram")) {
     dossier.render(input);
-    return;
+    return input;
   }
   const manifest: unknown = JSON.parse(await readFile(host, "focus.manifest.json"));
   const views = dossierManifestViews(manifest) === undefined ? undefined : parseViews(await readFile(host, "views.json"));
   dossier.render(input, { manifest, views });
+  return input;
+}
+
+interface ReviewGlobal {
+  readonly adapter: import("@sentropic/design-system-review-core").CommentsAdapter;
+  readonly tenant: string;
+  readonly target: { readonly kind: "artifact"; readonly id: string };
+  readonly currentUser: import("@sentropic/design-system-review-core").CollaborationActor;
+  readonly mode?: "view" | "review";
 }
 
 async function start(host: HTMLElement): Promise<void> {
   const dossier = mountDossier(host);
   try {
-    await renderPage(host, dossier);
+    const document = await renderPage(host, dossier);
+    // The host (Focus Web) may expose an adapter before this module runs.
+    // Without one no review layer is mounted and reading is unchanged.
+    const review = (globalThis as { __stDossierReview?: unknown }).__stDossierReview as
+      | ReviewGlobal
+      | undefined;
+    if (review !== undefined && review.adapter !== undefined) {
+      mountDossierReview(host, {
+        adapter: review.adapter,
+        tenant: review.tenant,
+        target: review.target,
+        artifactVersion: baseDigest(document),
+        currentUser: review.currentUser,
+        ...(review.mode === undefined ? {} : { mode: review.mode }),
+      });
+    }
   } catch {
     dossier.destroy();
     const notice = host.ownerDocument.createElement("p");

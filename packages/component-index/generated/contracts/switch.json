@@ -1,8 +1,8 @@
 {
   "componentId": "switch",
   "contractSource": "derived",
-  "digest": "sha256:a647f7d65f9ae2bc18ec02e5149c8f8d6fd737e52768395d068975f4346150a1",
-  "entryDigest": "sha256:6479fe3877ab924622bdaf7bcbdadba1c17f499557487b6e29a1aea056223e6a",
+  "digest": "sha256:5beabef0ff3c693ceb1f87c08bd589f57b63f2ec963b8f3b06e3bc0216da5358",
+  "entryDigest": "sha256:2926bda62d535ce1c93b1da257a35bd047b3b4ca9a2a68567a4d280e23da1434",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -148,7 +148,7 @@
         "declarationPath": "packages/components-svelte/dist/Switch.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SwitchProps",
-        "version": "0.43.1"
+        "version": "0.45.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -242,7 +242,7 @@
         "declarationPath": "packages/components-vue/dist/Switch.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SwitchProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.13"
       },
       "status": "partial",
       "unresolved": [

@@ -1,6 +1,6 @@
 # Release
 
-Sent Tech Design System publishes twenty-three public npm packages from this private workspace root:
+Sent Tech Design System publishes twenty-four public npm packages from this private workspace root:
 
 - `@sentropic/design-system-tokens`, `@sentropic/design-system-themes` (tag `core-v<version>`, published tokens first, then themes, via the `core-v` run of `npm-publish.yml`)
 - `@sentropic/design-system-svelte`
@@ -20,6 +20,7 @@ Sent Tech Design System publishes twenty-three public npm packages from this pri
 - `@sentropic/design-system-elements` (tag `elements-v<version>`)
 - `@sentropic/diagram-core` (tag `diagram-core-v<version>`)
 - `@sentropic/diagram-canvas` (tag `diagram-canvas-v<version>`, after `diagram-core`, before `svelte`)
+- `@sentropic/diagram-codecs` (tag `diagram-codecs-v<version>`, after `svelte`)
 
 The release model follows Graphify: GitHub Actions verifies the repo, packs the npm artifacts, guards the tag, publishes through npm Trusted Publishing, waits until npm registry propagation is visible, then installs the published packages back from npm.
 
@@ -72,6 +73,13 @@ Plus, for the diagram-canvas package:
 - Workflow: `.github/workflows/diagram-canvas-publish.yml`
 - Registry: `https://registry.npmjs.org`
 
+Plus, for the diagram-codecs package:
+
+- Package: `@sentropic/diagram-codecs`
+- Repository: `rhanka/sent-tech-design-system`
+- Workflow: `.github/workflows/diagram-codecs-publish.yml`
+- Registry: `https://registry.npmjs.org`
+
 Plus, for the review-core package:
 
 - Package: `@sentropic/design-system-review-core`
@@ -109,7 +117,7 @@ git diff --check
 git status --short --branch
 ```
 
-`npm run pack:smoke` verifies eighteen package tarballs (the design-system ports including `rich-text`, `review-core` and `elements`, `graph`, `diagram-core`, `diagram-canvas` and the five `dataviz-*`) and installs them together in a clean temporary project.
+`npm run pack:smoke` verifies nineteen package tarballs (the design-system ports including `rich-text`, `review-core` and `elements`, `graph`, `diagram-core`, `diagram-canvas`, `diagram-codecs` and the five `dataviz-*`) and installs them together in a clean temporary project.
 
 `npm run dist:import-closure` additionally packs **every publishable workspace** and installs each candidate in its own temporary consumer outside the repository. Dependencies come from npm, including already-published siblings. Only an exact sibling version missing from the registry may use a local tarball, reported as `UNPUBLISHED SIBLING`; authentication or network failures fail the gate. `--workspaces=<comma-separated package names>` selects release candidates. Every `*-publish.yml` runs this gate in the publish job before publication; CI verify runs it for all publishable packages.
 
@@ -182,12 +190,12 @@ Measured on 2026-09-25 against the registry (`npm view <name> version` for each 
 | `@sentropic/design-system-theme-latex` | 0.1.0 | E404 | bootstrap in `latex-publish.yml` |
 | `@sentropic/design-system-theme-quebec` | 0.1.0 | E404 | bootstrap in `quebec-publish.yml` |
 | `@sentropic/design-system-rich-text` | 0.1.0 | E404 (measured 2026-10-30) | bootstrap in `rich-text-publish.yml`, tag `rich-text-v<version>` |
-| `@sentropic/design-system-elements` | 0.1.0 | E404 (measured 2026-11-01) | bootstrap in `elements-publish.yml`, tag `elements-v<version>` |
 | `@sentropic/diagram-core` | 0.1.0 | E404 (measured 2026-11-03) | bootstrap in `diagram-core-publish.yml`, tag `diagram-core-v<version>` |
 | `@sentropic/diagram-canvas` | 0.1.0 | unverified (not measured; `private: true` in this repository until DC-2a L4, 2026-11-11, so no workflow here ever published it — run `npm view @sentropic/diagram-canvas version` before the first tag) | bootstrap in `diagram-canvas-publish.yml`, tag `diagram-canvas-v<version>` |
 | `@sentropic/design-system-review-core` | 0.1.0 | E404 (measured 2026-11-20) | bootstrap in `review-core-publish.yml`, tag `review-core-v<version>` |
+| `@sentropic/diagram-codecs` | 0.1.0 | unverified (new package, lot E2; `npm view @sentropic/diagram-codecs version` returns E404 until the first tag) | bootstrap in `diagram-codecs-publish.yml`, tag `diagram-codecs-v<version>` |
 
-For these eight (`@sentropic/diagram-canvas` pending its registry measurement), the bootstrap checklist above is the only order that works: the trusted publisher cannot be declared first, because npm has no package page to declare it on. The seven names whose registry version is behind the repository (`design-system-angular`, `dataviz-core`, `dataviz-react`, `dataviz-svelte`, `dataviz-vue`, `graph`, `design-system-skills`) exist on npm and need nothing but their tag, with the trusted publisher declared.
+For the packages in the table (`@sentropic/diagram-canvas` and `@sentropic/diagram-codecs` pending their registry measurement), follow the bootstrap checklist above. The seven names whose registry version is behind the repository (`design-system-angular`, `dataviz-core`, `dataviz-react`, `dataviz-svelte`, `dataviz-vue`, `graph`, `design-system-skills`) exist on npm and need nothing but their tag, with the trusted publisher declared.
 
 ### The eight whose version number is already taken
 
@@ -291,6 +299,14 @@ git tag diagram-canvas-v0.1.0
 git push origin diagram-canvas-v0.1.0
 ```
 
+Publish the diagram-codecs package by pushing the `diagram-codecs-v<version>` tag, once `@sentropic/diagram-canvas` at the version its manifest pins is visible on npm (its `publish` job runs `node scripts/verify-deps-published.mjs --workspace packages/diagram-codecs` and fails closed otherwise):
+
+```bash
+git push origin main
+git tag diagram-codecs-v0.1.0
+git push origin diagram-codecs-v0.1.0
+```
+
 ### Release order for the scene host (DC-2a)
 
 `@sentropic/design-system-svelte` pins `@sentropic/diagram-canvas` exactly (the `DiagramSceneFigure` host), and `@sentropic/diagram-canvas` pins `@sentropic/diagram-core` exactly. Publication goes through CI only — no local `npm publish` — in this order, each tag pushed only after the previous run's `post-publish-check` is green:
@@ -299,34 +315,57 @@ git push origin diagram-canvas-v0.1.0
 2. `diagram-canvas-v<version>` — `diagram-canvas-publish.yml`; refuses while the pinned `diagram-core` version is absent from the registry.
 3. `core-v<version>` — only if tokens/themes changed (DC-2a adds tokens, so the svelte pin moves with them); tokens first, then themes, via `npm-publish.yml`.
 4. `svelte-v<version>` — `svelte-publish.yml`; its fail-closed step refuses while any pinned `@sentropic/*` version, `@sentropic/diagram-canvas` included, is absent from the registry. Pushing the svelte tag early therefore fails the run instead of shipping an unresolvable dependency.
+5. `diagram-codecs-v<version>` — `diagram-codecs-publish.yml`; refuses while the pinned `@sentropic/diagram-canvas` version is absent from the registry (lot E2, wave 2; first publish bootstraps with the temporary token, then the OIDC validation patch follows).
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
-Then publish the elements package by pushing the `elements-v<version>` tag:
+### Elements 0.3.0
+
+This release ships the Focus static artifact kit and the `st-dossier-ready`
+review root (FA-D1, #322), the `TimeSeriesChart` element, catalogue entry and
+transcript formatter (EZ-1, #321), and the FA-D3 review layer in the compiled
+kit and `./dossier-mount` export (#332). It also publishes the `./bpmn` and
+`./bpmn-mount` exports for the first time (#267). Publish Elements before any
+Vue release that carries its updated optional BPMN peer pin.
+
+`@sentropic/design-system-review-core` is bumped to `0.1.2` in the same release
+prep because DS-7 (#320) changed `packages/review-core/src/fixture-adapter.ts`
+after `review-core-v0.1.1` was published. `@sentropic/design-system-elements`
+keeps its exact runtime pin on published `@sentropic/design-system-review-core@0.1.1`,
+so `elements-v0.3.0` and `review-core-v0.1.2` can be tagged independently on the
+merged default-branch commit.
+
+On the merged default-branch commit, push the `elements-v<version>` tag (and
+`review-core-v0.1.2` for the DS-7 fixture-adapter patch). The elements publish
+job grants `id-token: write` and uses npm 11 with the public npm registry.
+Confirm the package's npm Trusted Publisher names
+`rhanka/sent-tech-design-system` and `elements-publish.yml`.
 
 ```bash
 git push origin main
-git tag elements-v0.2.0
-git push origin elements-v0.2.0
+git tag elements-v0.3.0
+git push origin elements-v0.3.0
+git tag review-core-v0.1.2
+git push origin review-core-v0.1.2
 ```
 
 The browser bundle is served from the CDN base (exact version pinned, §7 — never a range, never `latest`):
 
 ```
-https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.2.0/dist/browser/
+https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.3.0/dist/browser/
 ```
 
 Once jsDelivr visibly serves the pinned version, run the post-publish CDN check (also wired into each publish workflow's `post-publish-check` job):
 
 ```bash
-node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.2.0
+node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.3.0
 node scripts/verify-jsdelivr-published.mjs --package @sentropic/diagram-core --version 0.1.0
 node scripts/verify-jsdelivr-published.mjs --package @sentropic/diagram-canvas --version 0.1.0
 ```
 
 A mismatch is reported and never fixed by republishing the same version — npm versions are immutable, so the correction is a new patch version.
 
-Follow-up, promptly after the owner's trusted-publisher declaration (npm marks a newly declared trusted publisher "pending validation" and expires it if no OIDC publish happens within ~48 h): remove the bootstrap step from `diagram-core-publish.yml` and its `DECLARED_TOKEN_BOOTSTRAPS` entry; delete the `NPM_TOKEN` secret only when no remaining bootstrap workflow needs it and revoke the temporary token; then tag `diagram-core-v0.1.1`, published through OIDC to validate the publisher (and an elements OIDC validation publish if its declaration completed in the same window). The same follow-up applies to `diagram-canvas-publish.yml` after its first publish: declare the trusted publisher, remove the bootstrap step and its `DECLARED_TOKEN_BOOTSTRAPS` entry, then validate with an OIDC patch publish.
+Follow-up, promptly after the owner's trusted-publisher declaration (npm marks a newly declared trusted publisher "pending validation" and expires it if no OIDC publish happens within ~48 h): remove the bootstrap step from `diagram-core-publish.yml` and its `DECLARED_TOKEN_BOOTSTRAPS` entry; delete the `NPM_TOKEN` secret only when no remaining bootstrap workflow needs it and revoke the temporary token; then tag `diagram-core-v0.1.1`, published through OIDC to validate the publisher. The same follow-up applies to `diagram-canvas-publish.yml` after its first publish: declare the trusted publisher, remove the bootstrap step and its `DECLARED_TOKEN_BOOTSTRAPS` entry, then validate with an OIDC patch publish.
 
 Do not move a published tag unless the npm publish failed before creating any package version. npm versions are immutable after publication.
 

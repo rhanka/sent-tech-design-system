@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Hidden",
-  "sourceRevision": "c220159fd56a2596e4c56fbf35aaad8168b95447",
+  "sourceRevision": "6e47f59f85a97bd009c92fc92f5260f486c9d8bc",
   "source": "src/Hidden.ts",
   "fixtures": [
     {

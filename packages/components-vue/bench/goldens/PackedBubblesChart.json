@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "PackedBubblesChart",
-  "sourceRevision": "13a399c0004e3ca1305d08787db001b183a835f8",
+  "sourceRevision": "ccf9d1b449a318d277d7bb2cd2135ca035b45003",
   "source": "src/PackedBubblesChart.ts",
   "fixtures": [
     {

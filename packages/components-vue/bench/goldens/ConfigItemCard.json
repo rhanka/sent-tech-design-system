@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "ConfigItemCard",
-  "sourceRevision": "341faf3b557fbc384abb7452a8264da9aa1284e6",
+  "sourceRevision": "1e2939bf2131c15e347303f76e069269ce7d9065",
   "source": "src/ConfigItemCard.ts",
   "fixtures": [
     {

@@ -25,16 +25,16 @@ sources à l'amont installé : il ne peut pas se désynchroniser en silence.
 
 **Ce qui est copié.** Des chaînes de tracé SVG (attribut `d`) identiques octet pour octet aux données d'icônes lucide, écrites directement dans nos fichiers source et compilées dans le `dist/` publié.
 
-**Étendue mesurée.** 21 chaîne(s) de tracé distincte(s),
-24 occurrence(s), dans 2 fichier(s) source de ce paquet :
+**Étendue mesurée.** 29 chaîne(s) de tracé distincte(s),
+32 occurrence(s), dans 2 fichier(s) source de ce paquet :
 
 | Fichier source | Occurrences |
 |---|---|
 | `src/lib/cellDecoration.ts` | 21 |
-| `src/lib/flow-fixtures/before.html` | 3 |
+| `src/lib/flow-fixtures/before.html` | 11 |
 
 Glyphes amont concernés (une chaîne partagée par plusieurs glyphes les nomme tous) :
-`arrow-down`, `arrow-right`, `arrow-up`, `badge-percent`, `barcode`, `check`, `circle-check-big`, `circle-percent`, `circle-question-mark`, `circle-x`, `cloud-snow`, `file-exclamation-point`, `file-question-mark`, `flame`, `house-wifi`, `info`, `message-circle-question-mark`, `message-circle-x`, `minus`, `octagon-x`, `plus`, `shield-question-mark`, `square-check-big`, `square-percent`, `square-x`, `ticket-percent`, `trending-down`, `trending-up`, `triangle-alert`, `x`.
+`arrow-down`, `arrow-right`, `arrow-up`, `badge-percent`, `barcode`, `check`, `circle-check-big`, `circle-percent`, `circle-question-mark`, `circle-x`, `cloud-snow`, `external-link`, `file-exclamation-point`, `file-question-mark`, `flame`, `focus`, `fullscreen`, `house-wifi`, `info`, `maximize-2`, `message-circle-question-mark`, `message-circle-x`, `minimize-2`, `minus`, `octagon-x`, `plus`, `scan`, `scan-barcode`, `scan-eye`, `scan-face`, `scan-heart`, `scan-line`, `scan-qr-code`, `scan-search`, `scan-text`, `shield-question-mark`, `square-arrow-out-down-left`, `square-arrow-out-up-right`, `square-check-big`, `square-percent`, `square-x`, `ticket-percent`, `trending-down`, `trending-up`, `triangle-alert`, `x`.
 
 **Pourquoi c'est une redistribution.** Le jeu d'icônes du design system est lucide : `packages/components-angular/src/Icon.ts` le dit explicitement (« the same lucide (stroke-24) path data the other frameworks wrap — the single visual source of truth »). Inliner les données plutôt que dépendre du paquet ne supprime pas l'obligation : cela la déplace du `node_modules` du consommateur vers notre propre tarball. Le port Angular ne déclare aucune dépendance lucide et n'embarque que des copies ; les ports React, Vue et Svelte dépendent du paquet lucide ET en recopient une partie.
 

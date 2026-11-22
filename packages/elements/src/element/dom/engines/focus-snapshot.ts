@@ -121,5 +121,12 @@ export function renderFocusSnapshot(
     for (const annex of article.querySelectorAll(":scope > .focus-annex")) annex.remove();
     appendDossierEvidence(article, doc, dossierCitations(doc), true);
   }
+  // Focus pastilles ([n]), fragment links, citation downloads and annex
+  // summaries keep their navigation/toggle role in review mode instead of
+  // opening a comment composer on the enclosing block (mirrors
+  // focus-renderer markdown links and dossier-evidence references).
+  for (const element of article.querySelectorAll<HTMLElement>("a, summary")) {
+    element.setAttribute("data-review-passthrough", "");
+  }
   return article;
 }

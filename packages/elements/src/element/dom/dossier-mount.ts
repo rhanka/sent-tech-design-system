@@ -1,3 +1,4 @@
+import { baseDigest } from "@sentropic/focus/editing";
 import { assertFocusDocument } from "@sentropic/focus/validate";
 import { renderMarkdown } from "../markdown/minimal-markdown.js";
 import { createDossierDiagram } from "./engines/dossier-diagrams.js";
@@ -5,9 +6,20 @@ import { validateDossierViews } from "../../focus-diagrams/dossier-views.js";
 import { connectDossier, renderDossierContent, renderMarkdownToSafeHtml } from "./engines/focus-renderer.js";
 import { renderFocusSnapshot } from "./engines/focus-snapshot.js";
 import { dispatchIntent } from "./intents.js";
+import { mountDossierReview } from "./dossier-review-mount.js";
+import type { DossierReviewMount, DossierReviewOptions } from "./dossier-review-mount.js";
+
+export { mountDossierReview };
+export type { DossierReviewMount, DossierReviewOptions, DossierReviewMode } from "./dossier-review-mount.js";
+
+export interface DossierMountOptions {
+  /** Optional review layer: mounted by the kit for the host (same tree). */
+  review?: Omit<DossierReviewOptions, "artifactVersion"> & { artifactVersion?: string };
+}
 
 export interface DossierMount {
   readonly reviewRoot: HTMLElement | null;
+  readonly review: DossierReviewMount | null;
   render(document: unknown, options?: DossierRenderOptions): void;
   destroy(): void;
 }
@@ -22,10 +34,12 @@ export interface DossierReadyDetail {
 }
 
 /** Mount in the host's light DOM. Load the dossier stylesheet in the host page. */
-export function mountDossier(host: HTMLElement): DossierMount {
+export function mountDossier(host: HTMLElement, options?: DossierMountOptions): DossierMount {
   let rendered: ReturnType<typeof renderDossierContent> | undefined;
+  let review: DossierReviewMount | null = null;
   let destroyed = false;
   const view = host.ownerDocument.defaultView;
+  const reviewOptions = options?.review;
 
   function followFragment(): void {
     const root = rendered?.reviewRoot;
@@ -70,7 +84,10 @@ export function mountDossier(host: HTMLElement): DossierMount {
     get reviewRoot() {
       return rendered?.reviewRoot ?? null;
     },
-    render(document, options) {
+    get review() {
+      return review;
+    },
+    render(document, renderOptions) {
       if (destroyed) throw new Error("The dossier mount has been destroyed");
       const validated = assertFocusDocument(document);
       const { ref, sections } = validated;
@@ -82,7 +99,7 @@ export function mountDossier(host: HTMLElement): DossierMount {
         throw new Error(`focus-anchor-equals-document-ref: ${ref} is reserved for the header anchor`);
       }
       const diagramSections = sections.filter((section) => section.kind === "diagram");
-      const views = validateDossierViews(document, options?.manifest, options?.views, new Set(diagramSections.map(({ id }) => id)));
+      const views = validateDossierViews(document, renderOptions?.manifest, renderOptions?.views, new Set(diagramSections.map(({ id }) => id)));
       const diagrams = new Map(diagramSections.map((section) =>
         [section.id, createDossierDiagram(host.ownerDocument, section, views.get(section.id))]));
       const snapshot = renderFocusSnapshot(validated, (source) => renderMarkdownToSafeHtml(renderMarkdown(source, true), true), diagrams);
@@ -92,6 +109,17 @@ export function mountDossier(host: HTMLElement): DossierMount {
         ? renderDossierContent(host, validated, dispatch, "light", diagrams)
         : connectDossier(host, snapshot, dispatch);
       rendered = current;
+      // Mount or refresh the review layer only after validation and DOM
+      // replacement succeed so a rejected document neither leaks a layer nor
+      // overwrites the live layer's artifactVersion.
+      if (reviewOptions !== undefined) {
+        const version = reviewOptions.artifactVersion ?? baseDigest(document);
+        if (review === null) {
+          review = mountDossierReview(host, { ...reviewOptions, artifactVersion: version });
+        } else {
+          review.setArtifactVersion(version);
+        }
+      }
       host.dispatchEvent(new CustomEvent<DossierReadyDetail>("st-dossier-ready", {
         detail: { reviewRoot: current.reviewRoot },
         bubbles: true,
@@ -102,6 +130,8 @@ export function mountDossier(host: HTMLElement): DossierMount {
       destroyed = true;
       view?.removeEventListener("hashchange", followFragment);
       host.removeEventListener("click", followCurrentLink);
+      review?.destroy();
+      review = null;
       clear();
     },
   };

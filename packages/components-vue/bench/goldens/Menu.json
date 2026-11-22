@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Menu",
-  "sourceRevision": "a0a6379c12d7f1591404e8a68e5c0fb93581d90e",
+  "sourceRevision": "df620337869a66feb6925a56be9cf18beb9482ab",
   "source": "src/Menu.vue",
   "sourceSha256": "288dfc02d71826b2431e6cfd89a34d9320845b3566f14dcb233c6aa1fc4dc2ed",
   "publicExports": [

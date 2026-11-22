@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "AnalyticsClusterPlot",
-  "sourceRevision": "6ee4701ecd0ce7b3de8eb3791e1e24e046eebdb7",
+  "sourceRevision": "f3b65b9c89f26bf267c89c20e3a682dbfaa5cc3f",
   "source": "src/lib/AnalyticsClusterPlot.ts",
   "fixtures": [
     {

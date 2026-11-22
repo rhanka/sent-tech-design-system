@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Dashboard",
-  "sourceRevision": "f1d8f806f2d428c2e7b3471795eb77c598a5bd1c",
+  "sourceRevision": "3f4799f51e08188351355289007c07503d69c4db",
   "source": "src/Dashboard.ts",
   "fixtures": [
     {

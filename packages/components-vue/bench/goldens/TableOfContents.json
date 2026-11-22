@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "TableOfContents",
-  "sourceRevision": "379ac7cb7e1b96ef3be6410c74177d9c17e50386",
+  "sourceRevision": "ebe1608438d5e55314fad4d1e4c5945f12702f87",
   "source": "src/TableOfContents.ts",
   "fixtures": [
     {

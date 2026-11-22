@@ -1,8 +1,8 @@
 {
   "componentId": "container",
   "contractSource": "derived",
-  "digest": "sha256:4a301097354f6e8c1e0a0f1aac05d6cfdfef4e54e8cad8f8766968fc4dec0b86",
-  "entryDigest": "sha256:b01322e045bb708946d66f5cb9dfc4dbe756e83d093efe510a9a860b761e81b2",
+  "digest": "sha256:f8c7a75332aa664bf40f3aa0a40630e02c5be3a20f040f569d4931e045095a9b",
+  "entryDigest": "sha256:fcceba07d21fa663061458233a3d5b6773fde9f394e6955308344b0d2f22ba4d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -153,7 +153,7 @@
         "declarationPath": "packages/components-svelte/dist/Container.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ContainerProps",
-        "version": "0.43.1"
+        "version": "0.45.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -202,7 +202,7 @@
         "declarationPath": "packages/components-vue/dist/Container.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ContainerProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.13"
       },
       "status": "complete",
       "unresolved": [],

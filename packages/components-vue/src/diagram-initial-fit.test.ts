@@ -3,8 +3,10 @@ import { cleanup, render } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { createLayoutCache } from '@sentropic/diagram-canvas';
 import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svelte';
 import VueScene from './DiagramSceneFigure.vue';
+import { erdFixture } from '../../diagram-canvas/tests/host-support/erdFixture.js';
 import { hCondInput } from '../../diagram-canvas/tests/layout/dc2a/h-cond.js';
 import { flowFixture } from '../../diagram-canvas/test-support/flowFixture.js';
 
@@ -48,6 +50,16 @@ const cases = [
   }))),
   { name: 'ontology through the flow host', input: () => ({ ...hCondInput('ontology', false), measureLines: undefined, flows: {} }) },
 ];
+const cardlessCases = [
+  { name: 'ERD', input: erdFixture, selector: '[data-scene-kind="erd"]' },
+  { name: 'ERD with explicit flows', input: () => ({ ...erdFixture(), flows: {} }), selector: '[data-scene-kind="erd"]' },
+  { name: 'label-only numbered flow', input: () => {
+    const input = cases.find(scene => scene.name === 'numbered flows')!.input();
+    const entities = Object.fromEntries(Object.entries(input.presentation.entities).map(([id, entry]) =>
+      [id, { ...entry, text: { body: entry.text.title } }]));
+    return { ...input, presentation: { ...input.presentation, entities } };
+  }, selector: '[data-scene-kind="label"]' },
+];
 const rect = (el: HTMLElement) => ({ x: parseFloat(el.style.left), y: parseFloat(el.style.top), width: parseFloat(el.style.width), height: parseFloat(el.style.height) });
 function geometry(element: Element) {
   const figure = element.matches('figure') ? element as HTMLElement : element.querySelector<HTMLElement>('figure')!;
@@ -67,6 +79,41 @@ function geometry(element: Element) {
 }
 const undo: (() => void)[] = [];
 afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); delete (document as Partial<Document>).fonts; for (const step of undo.splice(0)) step(); });
+
+it('should publish numbered-flow content size once per change in world dimensions', async () => {
+  const width = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(900);
+  vi.stubGlobal('innerHeight', 900);
+  const input = cases.find(scene => scene.name === 'numbered flows/container')!.input();
+  const notifications: string[] = [];
+  const view = mount(VueScene, { props: { ...input,
+    onLayout: () => notifications.push('layout'),
+    onSizeChange: () => notifications.push('sizeChange'),
+  } });
+  try {
+    await nextTick();
+    expect(notifications).toEqual(['layout', 'sizeChange']);
+    const emitted = () => view.emitted('sizeChange');
+    const initial = emitted()?.[0];
+    expect(initial?.[0]).toMatchObject({ width: expect.any(Number), height: expect.any(Number) });
+    expect.soft(emitted()).toEqual([initial]);
+    expect.soft(view.emitted('update:contentSize')).toEqual([initial]);
+
+    width.mockReturnValue(500);
+    window.dispatchEvent(new Event('resize'));
+    await nextTick();
+    expect.soft(emitted()).toEqual([initial]);
+    expect.soft(view.emitted('update:contentSize')).toEqual([initial]);
+
+    await view.setProps({ collapsed: ['occurrence:e.zone'] });
+    const folded = emitted()?.at(-1);
+    expect(folded).not.toEqual(initial);
+    expect(emitted()).toEqual([initial, folded]);
+    expect(view.emitted('update:contentSize')).toEqual([initial, folded]);
+    expect(notifications).toEqual(['layout', 'sizeChange', 'layout', 'sizeChange']);
+  } finally {
+    view.unmount();
+  }
+});
 
 /**
  * Painted rects for the jsdom hosts, derived from the rendered world
@@ -137,7 +184,7 @@ function paintOnLayoutGrid() {
     // of the document only; the Vue host renders detached from it.
     restyle() { document.head.append(sheet); } };
 }
-/** A frame width whose painted fit is neither capped at 0.62 nor floored at 0.45, for both scenes below. */
+/** A frame width whose painted fit is neither capped at 0.62 nor floored at 0.30, for both scenes below. */
 const UNCAPPED_WIDTH = 550;
 
 function snapshot(element: Element) {
@@ -204,6 +251,36 @@ it('should apply all scene spacing tokens, metric overrides and bundle markup eq
 });
 
 for (const host of hosts) describe(`${host.name} load without interaction`, () => {
+  for (const name of ['three cards', 'numbered flows']) {
+    it(`should layout ${name} once and fit on resize without touching the layout cache`, async () => {
+      const width = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(900);
+      vi.stubGlobal('innerHeight', 900);
+      const layoutCache = createLayoutCache();
+      const onLayout = vi.fn();
+      const input = cases.find(scene => scene.name === name)!.input();
+      const view = await host.mount({ ...input, layoutCache, onLayout });
+      try {
+        await view.flush();
+        expect.soft(onLayout).toHaveBeenCalledTimes(1);
+        expect.soft(layoutCache.stats()).toMatchObject({ entries: 1, misses: 1 });
+        const initial = geometry(view.element).zoom;
+        const stats = layoutCache.stats();
+
+        width.mockReturnValue(340);
+        window.dispatchEvent(new Event('resize'));
+        await view.flush();
+        expect(geometry(view.element).zoom).toBeLessThan(initial);
+        expect.soft(onLayout).toHaveBeenCalledTimes(1);
+        expect.soft(layoutCache.stats()).toEqual(stats);
+
+        await view.update({ targetWidth: 1024 });
+        await view.flush();
+        expect(onLayout).toHaveBeenCalledTimes(2);
+      } finally {
+        view.dispose();
+      }
+    });
+  }
   it('should use numbered-flow icon bindings and the supplied glyph resolver', async () => {
     const glyph = { face: 'M1 1H63V63H1Z' };
     const resolveGlyph = vi.fn(() => glyph);
@@ -221,7 +298,7 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
     view.dispose();
   });
   for (const scene of cases.filter(scene => ['numbered flows', 'ontology/unfolded'].includes(scene.name))) it(`should follow the fitted ${scene.name} bounds when the initial font becomes ready`, async () => {
-    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1800);
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(scene.name === 'numbered flows' ? 500 : 1800);
     vi.stubGlobal('innerHeight', 1000);
     let ready!: () => void;
     Object.defineProperty(document, 'fonts', { configurable: true, value: { ready: new Promise<void>(resolve => { ready = resolve; }) } });
@@ -230,9 +307,17 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
     const view = await host.mount({ ...scene.input(),
       onCameraChange: (camera: { zoom: number; fitZoom: number }) => cameras.push(camera) });
     const initialFit = cameras.at(-1)!.fitZoom;
+    const { viewport } = geometry(view.element);
+    viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
+    await view.flush();
+    expect(geometry(view.element).zoom).toBeGreaterThan(initialFit);
+    viewport.scrollLeft = 40;
+    viewport.scrollTop = 20;
     ready(); await Promise.resolve(); await view.flush(); await view.flush();
     expect(cameras.at(-1)!.fitZoom).not.toBe(initialFit);
     expect(cameras.at(-1)!.zoom).toBe(cameras.at(-1)!.fitZoom);
+    expect(viewport.scrollLeft).toBe(0);
+    expect(viewport.scrollTop).toBe(0);
     const before = geometry(view.element).zoom;
     [...view.element.querySelectorAll('button')].find(button => button.textContent?.trim() === 'Fit')!.click();
     await view.flush();
@@ -247,14 +332,14 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
       const initial = geometry(view.element);
       const rawFit = Math.min(.62, (width - 2) / (initial.right - initial.left),
         (Math.min(width * 9 / 16, 900 * .85) - 2) / (initial.bottom - initial.top));
-      expect(initial.zoom).toBeGreaterThanOrEqual(.45);
+      expect(initial.zoom).toBeGreaterThanOrEqual(.30);
       expect(initial.zoom).toBeLessThanOrEqual(.62);
       const overX = (initial.right - initial.left) * initial.zoom > width + .5;
       const overY = (initial.bottom - initial.top) * initial.zoom > initial.height + .5;
-      if (rawFit >= .45) {
+      if (rawFit >= .30) {
         expect([overX, overY]).toEqual([false, false]);
         expect(initial.viewport.dataset.pans).toBe('false');
-      } else expect(initial.zoom).toBe(.45);
+      } else expect(initial.zoom).toBe(.30);
       expect(initial.viewport.style.overflowX).toBe(overX ? 'auto' : 'hidden');
       expect(initial.viewport.style.overflowY).toBe(overY ? 'auto' : 'hidden');
       expect(initial.height - (initial.bottom - initial.top) * initial.zoom).toBeLessThanOrEqual(2.1 + 8 * initial.zoom);
@@ -290,7 +375,7 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
   });
   // Both Vue hosts: `three cards` renders through the base scene host,
   // `numbered flows` through the numbered one. 1206 px caps the fit at 0.62;
-  // the narrower frame lands between the 0.45 floor and the cap.
+  // the narrower frame lands between the 0.30 floor and the cap.
   for (const [name, width, capped] of [['three cards', 1206, true], ['three cards', UNCAPPED_WIDTH, false],
     ['numbered flows', 1206, true], ['numbered flows', UNCAPPED_WIDTH, false]] as const) {
     it(`should keep one scale and a single fixed point across repeated Ajuster on ${name} at ${width}`, async () => {
@@ -315,7 +400,7 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
       expect(painted.reads()).toBeGreaterThan(0);
       if (capped) expect(settled.zoom).toBe(.62);
       else {
-        expect(settled.zoom).toBeGreaterThan(.45);
+        expect(settled.zoom).toBeGreaterThan(.30);
         expect(settled.zoom).toBeLessThan(.62);
       }
       for (let repeat = 0; repeat < 5; repeat++) {
@@ -370,10 +455,64 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
       view.dispose();
     });
   }
-  it('should retain the reclamped numbered-flow zoom when a resize restores the old range', async () => {
+  it.each(['width', 'height'] as const)('should keep a manual zoom through scrollbar changes and refit when the container %s changes', async dimension => {
+    let frameWidth = 500;
+    let frameHeight = 200;
+    let viewportOuterHeight = frameHeight;
+    let scrollbarSize = 0;
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.matches('.st-diagramSceneFigure-viewport') ? frameWidth - scrollbarSize : frameWidth;
+    });
+    vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockImplementation(function (this: HTMLElement) {
+      if (this.matches('.st-diagramSceneFigure-viewport')) return viewportOuterHeight - scrollbarSize;
+      return this.matches('.st-diagramSceneFigure-frame') ? frameHeight : 0;
+    });
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.matches('.st-diagramSceneFigure-viewport') ? viewportOuterHeight : 0;
+    });
+    vi.stubGlobal('innerHeight', 900);
+    let notifyResize = () => {};
+    vi.stubGlobal('ResizeObserver', class {
+      constructor(callback: () => void) { notifyResize = callback; }
+      observe() {}
+      disconnect() {}
+    });
+    const view = await host.mount(cases.find(scene => scene.name === 'numbered flows')!.input());
+    const initial = geometry(view.element);
+    initial.viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
+    await view.flush();
+    const userZoom = geometry(view.element).zoom;
+    expect(userZoom).toBeGreaterThan(initial.zoom);
+
+    initial.viewport.scrollLeft = 40;
+    initial.viewport.scrollTop = 20;
+    scrollbarSize = 15;
+    viewportOuterHeight += scrollbarSize;
+    frameHeight += scrollbarSize;
+    notifyResize();
+    await view.flush();
+    expect(geometry(view.element).zoom).toBe(userZoom);
+    expect(initial.viewport.scrollLeft).toBe(40);
+    expect(initial.viewport.scrollTop).toBe(20);
+
+    if (dimension === 'height') frameHeight = 150;
+    else frameWidth = 550;
+    notifyResize();
+    await view.flush();
+    const resized = geometry(view.element);
+    if (dimension === 'height') expect.soft(resized.zoom).toBe(initial.zoom);
+    else expect.soft(resized.zoom).not.toBe(userZoom);
+    expect.soft(resized.viewport.dataset.pans).toBe('false');
+    expect.soft(resized.tx + resized.right * resized.zoom).toBeLessThanOrEqual(frameWidth);
+    expect.soft(resized.viewport.scrollLeft).toBe(0);
+    expect.soft(resized.viewport.scrollTop).toBe(0);
+    view.dispose();
+  });
+
+  it('should refit numbered flows and reset scrolling on a window resize', async () => {
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(340);
     vi.stubGlobal('innerHeight', 900);
-    let floor = '.45';
+    let floor = '.30';
     const computedStyle = getComputedStyle;
     vi.spyOn(globalThis, 'getComputedStyle').mockImplementation(element => {
       const style = computedStyle(element);
@@ -381,14 +520,19 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
       return style;
     });
     const view = await host.mount(cases.find(scene => scene.name === 'numbered flows')!.input());
-    geometry(view.element).viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
+    const initial = geometry(view.element);
+    initial.viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
     await view.flush();
-    expect(geometry(view.element).zoom).toBeGreaterThan(.45);
+    expect(geometry(view.element).zoom).toBeGreaterThan(.30);
     expect(geometry(view.element).zoom).toBeLessThan(.6);
     floor = '.6'; window.dispatchEvent(new Event('resize')); await view.flush();
     expect(geometry(view.element).zoom).toBe(.6);
-    floor = '.45'; window.dispatchEvent(new Event('resize')); await view.flush();
-    expect(geometry(view.element).zoom).toBe(.6);
+    initial.viewport.scrollLeft = 40;
+    initial.viewport.scrollTop = 20;
+    floor = '.30'; window.dispatchEvent(new Event('resize')); await view.flush();
+    expect(geometry(view.element).zoom).toBe(initial.zoom);
+    expect(initial.viewport.scrollLeft).toBe(0);
+    expect(initial.viewport.scrollTop).toBe(0);
     view.dispose();
   });
   it('should reset numbered-flow font measurement and camera for a new document', async () => {
@@ -418,6 +562,45 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
     expect(cameras.at(-1)!.zoom).toBe(cameras.at(-1)!.fitZoom);
     view.dispose();
   });
+  for (const { name, input, selector } of cardlessCases) {
+    it(`should preserve manual zoom and pan on ${name} until a new font load`, async () => {
+      vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(200);
+      vi.stubGlobal('innerHeight', 900);
+      const fonts = Object.assign(new EventTarget(), { ready: Promise.resolve() });
+      Object.defineProperty(document, 'fonts', { configurable: true, value: fonts });
+      const props = input();
+      const view = await host.mount(props);
+      try {
+        await view.flush(); await view.flush();
+        expect(view.element.querySelector(selector)).not.toBeNull();
+        expect(view.element.querySelector('.st-diagramCard, .st-diagramZone--expanded')).toBeNull();
+        const initial = geometry(view.element);
+        const { viewport } = initial;
+        viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
+        await view.flush();
+        const manual = geometry(view.element).zoom;
+        expect(manual).toBeGreaterThan(initial.zoom);
+        viewport.scrollLeft = 40;
+        viewport.scrollTop = 20;
+        const camera = () => [geometry(view.element).zoom, viewport.scrollLeft, viewport.scrollTop];
+
+        await view.update({ metrics: { labelMargin: 7 } });
+        await view.flush(); await view.flush();
+        expect.soft(camera()).toEqual([manual, 40, 20]);
+
+        fonts.dispatchEvent(new Event('loadingdone'));
+        await view.flush(); await view.flush();
+        expect.soft(camera()).toEqual([manual, 40, 20]);
+
+        fonts.ready = Promise.resolve();
+        fonts.dispatchEvent(new Event('loadingdone'));
+        await view.flush(); await view.flush();
+        expect(camera()).toEqual([initial.zoom, 0, 0]);
+      } finally {
+        view.dispose();
+      }
+    });
+  }
   for (const scene of cases) it(`should initially clear every connector from every ${scene.name} label`, async () => {
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1440);
     const view = await host.mount(scene.input());
@@ -437,4 +620,252 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
     }
     view.dispose();
   });
+
+  // Owner 21/11: « Diag - je veux pour voir dit total sans limit pour vraiment tout voir sans scroll » (Track 01M7ZN6TME8E8V6BPKXXSA6SNS).
+  for (const sceneName of ['ontology/unfolded', 'ontology through the flow host'] as const) {
+    it(`should fit ${sceneName} in « Tout voir » mode with no floor, no scroll, pinch/zoom, fullscreen fallback/native and default restore`, async () => {
+      vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(390);
+      vi.stubGlobal('innerHeight', 844);
+      vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+      const view = await host.mount({
+        ...cases.find(scene => scene.name === sceneName)!.input(),
+        labels: { fit: 'Ajuster', viewAll: 'Tout voir', fullscreen: 'Plein écran' },
+      });
+      try {
+        const figure = (view.element.matches('figure') ? view.element : view.element.querySelector('figure')) as HTMLElement;
+        const button = (name: string) =>
+          [...view.element.querySelectorAll('button')].find(el => el.getAttribute('aria-label') === name || el.textContent?.trim() === name) as HTMLButtonElement;
+        const viewAllBtn = button('Tout voir');
+        const fullscreenBtn = button('Plein écran');
+        const fitBtn = button('Ajuster');
+        const zoomInBtn = button('Zoom in');
+        const zoomOutBtn = button('Zoom out');
+
+        // Default behaviour stays floored at 0.30 with scrolling (REQ-R7-28).
+        const initial = geometry(view.element);
+        expect(initial.zoom).toBe(0.30);
+        expect(initial.viewport.dataset.pans).toBe('true');
+        expect(initial.viewport.style.overflowX).toBe('auto');
+        expect(viewAllBtn.getAttribute('aria-pressed')).toBe('false');
+        expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('false');
+
+        // Enter « Tout voir »: fits the whole scene below 0.30 with overflow hidden and zero scroll.
+        viewAllBtn.click();
+        await view.flush();
+        const whole = geometry(view.element);
+        expect(viewAllBtn.getAttribute('aria-pressed')).toBe('true');
+        expect(figure.dataset.viewAll).toBe('true');
+        expect(whole.zoom).toBeLessThan(0.30);
+        expect(whole.zoom).toBeGreaterThan(0);
+        expect(whole.viewport.dataset.pans).toBe('false');
+        expect(whole.viewport.style.overflowX).toBe('hidden');
+        expect(whole.viewport.style.overflowY).toBe('hidden');
+        expect(whole.viewport.scrollLeft).toBe(0);
+        expect(whole.viewport.scrollTop).toBe(0);
+        expect(whole.tx + whole.left * whole.zoom).toBeGreaterThanOrEqual(-0.5);
+        expect(whole.ty + whole.top * whole.zoom).toBeGreaterThanOrEqual(-0.5);
+        expect(whole.tx + whole.right * whole.zoom).toBeLessThanOrEqual(390 + 0.5);
+        expect(whole.ty + whole.bottom * whole.zoom).toBeLessThanOrEqual(whole.height + 0.5);
+
+        // Zoom buttons and two-finger pinch zoom keep working for detail.
+        expect(zoomOutBtn.disabled).toBe(true);
+        zoomInBtn.click();
+        await view.flush();
+        expect(geometry(view.element).zoom).toBeGreaterThan(whole.zoom);
+        expect(zoomOutBtn.disabled).toBe(false);
+        zoomOutBtn.click();
+        await view.flush();
+        expect(geometry(view.element).zoom).toBeCloseTo(whole.zoom, 10);
+
+        const touch = (type: string, pointerId: number, clientX: number) =>
+          Object.assign(new Event(type, { bubbles: true, cancelable: true }), { pointerId, pointerType: 'touch', clientX, clientY: 0 });
+        whole.viewport.dispatchEvent(touch('pointerdown', 1, 0));
+        whole.viewport.dispatchEvent(touch('pointerdown', 2, 100));
+        whole.viewport.dispatchEvent(touch('pointermove', 2, 240));
+        await view.flush();
+        expect(geometry(view.element).zoom).toBeGreaterThan(whole.zoom);
+        whole.viewport.dispatchEvent(touch('pointerup', 2, 240));
+        whole.viewport.dispatchEvent(touch('pointerup', 1, 0));
+
+        fitBtn.click();
+        await view.flush();
+        expect(geometry(view.element).zoom).toBe(whole.zoom);
+        expect(geometry(view.element).viewport.dataset.pans).toBe('false');
+
+        // Fullscreen toggle (fallback overlay when Fullscreen API is unavailable in jsdom).
+        fullscreenBtn.click();
+        await view.flush();
+        await view.flush();
+        expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('true');
+        expect(figure.dataset.fullscreen).toBe('fallback');
+        expect(figure.classList.contains('st-diagramSceneFigure--fullscreenFallback')).toBe(true);
+        const fsGeo = geometry(view.element);
+        expect(fsGeo.height).toBeGreaterThan(whole.height);
+        expect(fsGeo.viewport.dataset.pans).toBe('false');
+        expect(fsGeo.viewport.style.overflowX).toBe('hidden');
+        expect(fsGeo.viewport.style.overflowY).toBe('hidden');
+
+        // Escape exits fallback fullscreen while keeping « Tout voir ».
+        figure.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        await view.flush();
+        await view.flush();
+        expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('false');
+        expect(figure.dataset.fullscreen).toBeUndefined();
+        expect(viewAllBtn.getAttribute('aria-pressed')).toBe('true');
+
+        // Native Fullscreen API path when available.
+        let activeFs: Element | null = null;
+        Object.defineProperty(document, 'fullscreenEnabled', { configurable: true, get: () => true });
+        Object.defineProperty(document, 'fullscreenElement', { configurable: true, get: () => activeFs });
+        const reqFs = vi.fn(async () => { activeFs = figure; document.dispatchEvent(new Event('fullscreenchange')); });
+        const exitFs = vi.fn(async () => { activeFs = null; document.dispatchEvent(new Event('fullscreenchange')); });
+        Object.defineProperty(figure, 'requestFullscreen', { configurable: true, value: reqFs });
+        Object.defineProperty(document, 'exitFullscreen', { configurable: true, value: exitFs });
+        fullscreenBtn.click();
+        await Promise.resolve();
+        await view.flush();
+        await view.flush();
+        expect(reqFs).toHaveBeenCalledTimes(1);
+        expect(figure.dataset.fullscreen).toBe('native');
+        expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('true');
+
+        // Leaving « Tout voir » exits fullscreen and restores default 0.30 fit identically.
+        viewAllBtn.click();
+        await Promise.resolve();
+        await view.flush();
+        await view.flush();
+        expect(exitFs).toHaveBeenCalledTimes(1);
+        expect(viewAllBtn.getAttribute('aria-pressed')).toBe('false');
+        expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('false');
+        expect(figure.dataset.viewAll).toBeUndefined();
+        expect(figure.dataset.fullscreen).toBeUndefined();
+        const restored = geometry(view.element);
+        expect(restored.zoom).toBe(initial.zoom);
+        expect(restored.height).toBe(initial.height);
+        expect(restored.viewport.dataset.pans).toBe('true');
+        expect(restored.viewport.style.overflowX).toBe('auto');
+      } finally {
+        delete (document as { fullscreenEnabled?: boolean }).fullscreenEnabled;
+        delete (document as { fullscreenElement?: Element | null }).fullscreenElement;
+        delete (document as { exitFullscreen?: () => Promise<void> }).exitFullscreen;
+        view.dispose();
+      }
+    });
+  }
+
+  for (const targetScale of [0.23, 0.12] as const) {
+    it(`should keep painted-bounds fixed point and exact 0.30 exit-restore at « Tout voir » scale ${targetScale}`, async () => {
+      const snap = (px: number) => Math.round(px * 64) / 64;
+      const originalRect = Element.prototype.getBoundingClientRect;
+      const sheet = document.createElement('style');
+      sheet.textContent = '.st-diagramSceneFigure-edge { fill: none; stroke: rgb(100, 116, 139); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }';
+      document.head.append(sheet);
+      vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+        const world = this.closest<HTMLElement>('.st-diagramSceneFigure-world');
+        if (world === null) return originalRect.call(this);
+        const match = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/.exec(world.style.transform);
+        if (match === null) return new DOMRect();
+        const [tx, ty, scale] = match.slice(1).map(Number) as [number, number, number];
+        if (this === world) return new DOMRect(snap(tx), snap(ty), 0, 0);
+        if (this.matches('[data-scene-edge]')) {
+          const pts = (this.getAttribute('points') ?? '').trim().split(/\s+/).filter(Boolean).map(p => p.split(',').map(Number) as [number, number]);
+          if (pts.length === 0) return new DOMRect();
+          const xs = pts.map(([x]) => x), ys = pts.map(([, y]) => y);
+          const left = snap(tx + Math.min(...xs) * scale), top = snap(ty + Math.min(...ys) * scale);
+          return new DOMRect(left, top, snap(tx + Math.max(...xs) * scale) - left, snap(ty + Math.max(...ys) * scale) - top);
+        }
+        if (!(this instanceof HTMLElement) || !this.matches('[data-scene-occurrence],[data-scene-label]')) return new DOMRect();
+        const x = parseFloat(this.style.left), y = parseFloat(this.style.top);
+        const w = parseFloat(this.style.width), h = parseFloat(this.style.height);
+        const left = snap(tx + x * scale), top = snap(ty + y * scale);
+        return new DOMRect(left, top, snap(tx + (x + w) * scale) - left, snap(ty + (y + h) * scale) - top);
+      });
+      // ontology/unfolded spans ~5700 world units wide; size clientWidth so
+      // unconstrained « Tout voir » lands right at targetScale (0.23 or 0.12).
+      const probe = await host.mount({
+        ...cases.find(scene => scene.name === 'ontology/unfolded')!.input(),
+        labels: { fit: 'Ajuster', viewAll: 'Tout voir', fullscreen: 'Plein écran' },
+      });
+      await probe.flush();
+      const probeGeo = geometry(probe.element);
+      const sceneWidth = probeGeo.right - probeGeo.left;
+      const sceneHeight = probeGeo.bottom - probeGeo.top;
+      probe.dispose();
+
+      const frameWidth = Math.round(Math.max(sceneWidth * targetScale + 2, (sceneHeight * targetScale + 2) * (16 / 9)));
+      const winHeight = Math.max(900, Math.ceil((frameWidth * 9 / 16) / 0.85) + 100);
+      vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(frameWidth);
+      vi.stubGlobal('innerHeight', winHeight);
+      vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+      const view = await host.mount({
+        ...cases.find(scene => scene.name === 'ontology/unfolded')!.input(),
+        labels: { fit: 'Ajuster', viewAll: 'Tout voir', fullscreen: 'Plein écran' },
+      });
+      try {
+        await view.flush();
+        await view.flush();
+        const button = (name: string) =>
+          [...view.element.querySelectorAll('button')].find(el => el.getAttribute('aria-label') === name || el.textContent?.trim() === name) as HTMLButtonElement;
+        const viewAllBtn = button('Tout voir');
+        const fitBtn = button('Ajuster');
+        const zoomInBtn = button('Zoom in');
+        const snapshot = () => {
+          const geo = geometry(view.element);
+          return {
+            zoom: geo.zoom,
+            height: geo.height,
+            transform: geo.world.style.transform,
+            extent: geo.extent.style.cssText,
+            pans: geo.viewport.dataset.pans,
+            overflowX: geo.viewport.style.overflowX,
+            overflowY: geo.viewport.style.overflowY,
+          };
+        };
+
+        const initial = snapshot();
+        expect(initial.zoom).toBe(0.30);
+        expect(initial.pans).toBe('true');
+
+        // Enter « Tout voir » at sub-0.30 scale (0.23 or 0.12) and settle.
+        viewAllBtn.click();
+        await view.flush();
+        await view.flush();
+        fitBtn.click();
+        await view.flush();
+        await view.flush();
+        const settled = snapshot();
+        expect(settled.zoom).toBeCloseTo(targetScale, 2);
+        expect(settled.zoom).toBeLessThan(0.30);
+        expect(settled.pans).toBe('false');
+        expect(settled.overflowX).toBe('hidden');
+        expect(settled.overflowY).toBe('hidden');
+
+        // Repeated Ajuster and interactive zoom-in -> Ajuster stay at one fixed point.
+        for (let i = 0; i < 3; i++) {
+          fitBtn.click();
+          await view.flush();
+          await view.flush();
+          expect(snapshot(), `${host.name} repeat Ajuster ${i} at ${targetScale}`).toEqual(settled);
+        }
+        zoomInBtn.click();
+        await view.flush();
+        zoomInBtn.click();
+        await view.flush();
+        expect(snapshot().zoom).toBeGreaterThan(settled.zoom);
+        fitBtn.click();
+        await view.flush();
+        await view.flush();
+        expect(snapshot(), `${host.name} Ajuster after zoom-in at ${targetScale}`).toEqual(settled);
+
+        // Exiting « Tout voir » re-reads at 0.30 and restores exact initial height and transform.
+        viewAllBtn.click();
+        await view.flush();
+        await view.flush();
+        expect(snapshot(), `${host.name} exact 0.30 exit-restore from ${targetScale}`).toEqual(initial);
+      } finally {
+        sheet.remove();
+        view.dispose();
+      }
+    });
+  }
 });

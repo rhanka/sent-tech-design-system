@@ -8,7 +8,16 @@ import { resolve } from 'node:path';
 export const root = fileURLToPath(new URL('.', import.meta.url));
 export async function buildHarness(outDir) {
   await build({ configFile: false, envFile: false, root, plugins: [svelte(), vue()],
-    build: { outDir, emptyOutDir: true },
+    build: {
+      outDir,
+      emptyOutDir: true,
+      rollupOptions: {
+        input: {
+          main: resolve(root, 'index.html'),
+          overlay: resolve(root, 'overlay.html'),
+        },
+      },
+    },
     define: { __VUE_OPTIONS_API__: true, __VUE_PROD_DEVTOOLS__: false,
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false } });
 }

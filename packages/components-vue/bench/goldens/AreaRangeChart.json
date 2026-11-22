@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "AreaRangeChart",
-  "sourceRevision": "4b1332d6175c4ff4b37723595ae933adda4178ee",
+  "sourceRevision": "6db6a0ba887f89714bdf1ce812bed4c3faa29f4e",
   "source": "src/AreaRangeChart.ts",
   "fixtures": [
     {

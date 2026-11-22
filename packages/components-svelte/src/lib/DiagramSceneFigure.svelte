@@ -1,12 +1,14 @@
 <script lang="ts">
   import { getDiagramGlyph } from "./diagram-icons/registry.js";
   import { tick, untrack } from "svelte";
-  import { Minus, Plus } from "@lucide/svelte";
+  import { Maximize2, Minimize2, Minus, Plus, Scan } from "@lucide/svelte";
   import {
     renderErdCardSvg, renderErdTable,
     clampZoom,
     createLayoutCache,
+    DEFAULT_MIN_READABLE_SCALE,
     FIT_ASPECT,
+    isR7ConnectorPresentation,
     zoomReadout,
     type LayoutHints,
     type LayoutMetrics,
@@ -20,7 +22,7 @@
   import DiagramCard from "./DiagramCard.svelte";
   import DiagramZone from "./DiagramZone.svelte";
   import IconButton from "./IconButton.svelte";
-  import { measureRenderedBounds, shouldRefitRenderedBounds } from "./diagramRenderedBounds.js";
+  import { committedWorldScale, measureRenderedBounds, shouldRefitRenderedBounds } from "./diagramRenderedBounds.js";
   import { measureRenderedSceneFont } from "./diagramFontMeasure.js";
   import Select from "./Select.svelte";
   import { DEFAULT_FLOW_TOKENS, type FlowTokens } from "@sentropic/diagram-canvas";
@@ -36,13 +38,24 @@
   } from "./diagramCardModel.js";
   import {
     collapsedOccurrencesOf,
+    connectorDashArray, connectorDashPaint,
+    connectorMarkerIds,
+    connectorMarkerRef,
+    connectorPath,
+    DEFAULT_EDGE_CORNER_RADIUS,
+    DEFAULT_EDGE_LABEL_SIZE,
     DEFAULT_SCENE_LABELS,
+    parseCssLengthPx,
+    resolveEdgeLabelSizeToken,
+    extraConnectorMarkers,
     sceneContentSize,
     type DiagramSceneSize,
     type SceneLayoutCache,
     DEFAULT_SCENE_TARGET_WIDTH,
     displayedRects,
     layoutScene,
+    linkLegendBoxStyle,
+    linkLegendSwatchGeometry,
     parseDurationMs,
     parseEasing,
     parseScale,
@@ -50,6 +63,7 @@
     resolveScene,
     resolveZoom,
     sameRects,
+    scaleEdgeLabelMeasurer,
     sceneConnectorMask,
     sceneFit,
     sceneNodesOnPlane,
@@ -58,6 +72,7 @@
     WHEEL_ZOOM_RATE,
     ZOOM_STEP_RATIO,
     type Easing,
+    type LinkLegendAnchor,
     type SceneDocument,
     type SceneModel,
     type SceneNodeModel,
@@ -116,6 +131,10 @@
     zoomOut: string;
     /** Visible text of the fit / reset control (« Ajuster »). */
     fit: string;
+    /** Visible text of the whole-scene fit control (« Tout voir »). */
+    viewAll?: string;
+    /** Accessible name of the fullscreen control (« Plein écran »). */
+    fullscreen?: string;
     /** Accessible name of the readout, e.g. « Zoom 85 % ». */
     zoomLevel: (percent: number) => string;
     /** Accessible name of the scrollable drawing region. */
@@ -124,6 +143,8 @@
     collapse: (title: string) => string;
     /** Localized fallback label for containment relations without an explicit edge label (DE-1b). */
     contains?: string;
+    /** Heading for the automatic link-style legend strip (DE-2). */
+    legend?: string;
   }
 
   export interface DiagramSceneCamera {
@@ -171,11 +192,17 @@
     /** Accessible name of the figure. Defaults to `title`. */
     label?: string;
     compact?: boolean;
+    /** Opt-in fit-to-window host framing (`max-height: calc(100vh - 24px)`, `max-width: 100%`, centred; DE-2 ask 9). Default `false` preserves `Z-3 / AC-23`. */
+    fitToWindow?: boolean;
     labels?: Partial<DiagramSceneFigureLabels>;
     iconBindings?: import("@sentropic/diagram-canvas/diagramSceneModel").SceneIconBindings;
     strictIcons?: boolean;
     /** Selectable start parity for alternating zone depth surfaces (`0` default, `1` flipped). */
     depthParityStart?: 0 | 1;
+    /** Automatic link-style legend anchor (`"right"` default; `"none"` suppresses). */
+    legend?: LinkLegendAnchor;
+    /** Optional custom labels for automatic link-style legend entries, keyed by `linkStyleKey(...)`. */
+    legendLabels?: Readonly<Record<string, string>>;
     resolveGlyph?: (name: string) => DiagramGlyphPaths | undefined;
     onFoldChange?: (
       collapsed: readonly SceneOccurrenceRef[],
@@ -190,7 +217,7 @@
     onSizeChange?: (size: DiagramSceneSize) => void;
   }
 
-  const DEFAULT_LABELS: DiagramSceneFigureLabels = DEFAULT_SCENE_LABELS;
+  const DEFAULT_LABELS = DEFAULT_SCENE_LABELS;
 
   const TOKEN_MAX_DISPLAY_SCALE = "--st-component-diagramScene-maxDisplayScale";
   const TOKEN_MIN_READABLE_SCALE = "--st-component-diagramScene-minReadableScale";
@@ -215,11 +242,14 @@
     title,
     label,
     compact = false,
+    fitToWindow = false,
     labels,
     resolveGlyph = getDiagramGlyph,
     iconBindings,
     strictIcons = true,
     depthParityStart,
+    legend,
+    legendLabels,
     onFoldChange,
     onSelect,
     onLayout,
@@ -252,23 +282,72 @@
   const collapsedNow = $derived(collapsed ?? foldState);
   const arrowInstance = $props.id();
   const arrowId = "diagram-arrow-" + arrowInstance;
+  const markerIds = connectorMarkerIds(arrowId);
   const maskId = "diagram-connector-mask-" + arrowInstance;
   let browserMeasure = $state.raw<CardLineMeasure>();
+  let frameWidth = $state<number>();
   const effectiveMeasure = $derived(sceneCardMeasure(measure === defaultCardMeasure ? browserMeasure ?? measure : measure));
   let tokenMetrics = $state.raw<Partial<LayoutMetrics>>({});
   const effectiveMetrics = $derived({ ...tokenMetrics, ...metrics });
   const lineMeasurer = $derived<LineMeasurer>(measureLines ?? cardLineMeasurer(effectiveMeasure));
+  const r7Mode = $derived(isR7ConnectorPresentation(presentation, view, semanticDocument));
 
   // O-4: the orientation record last emitted, fed back to the next layout
   // call. Deliberately not reactive state: it is an input of the next pass,
   // never a reason to run one. A different document starts with no record.
+  // On r7 scenes only, returning to a previously visited fold state within the
+  // same non-fold input revision reuses the orientation seed recorded on its
+  // first visit so unfolding restores initial geometry; any revision, hint,
+  // metric, or measurer change resets that map, and legacy scenes keep main O-4.
   let previousOrientation: SceneOrientations | undefined;
   let orientationDocument: string | undefined;
+  let orientationInputTuple: readonly unknown[] | undefined;
+  const orientationSeedByFold = new Map<string, SceneOrientations | undefined>();
 
   const layoutResult = $derived.by<LayoutResult>(() => {
     if (orientationDocument !== semanticDocument.documentId) {
       orientationDocument = semanticDocument.documentId;
       previousOrientation = undefined;
+      orientationInputTuple = undefined;
+      orientationSeedByFold.clear();
+    }
+    let orientationSeed: SceneOrientations | undefined = previousOrientation;
+    if (r7Mode) {
+      const nextInputs: readonly unknown[] = [
+        semanticDocument,
+        semanticDocument.revision,
+        view,
+        presentation,
+        JSON.stringify(hints ?? null),
+        JSON.stringify(effectiveMetrics),
+        JSON.stringify(rowPack ?? null),
+        targetWidth,
+        lineMeasurer,
+        lineMeasurer.version,
+        JSON.stringify(flowOptions),
+        JSON.stringify(flowTokens),
+        iconBindings,
+        strictIcons,
+        depthParityStart,
+      ];
+      const sameNonFoldInputs =
+        orientationInputTuple !== undefined &&
+        orientationInputTuple.length === nextInputs.length &&
+        nextInputs.every((value, index) => Object.is(value, orientationInputTuple![index]));
+      if (!sameNonFoldInputs) {
+        orientationInputTuple = nextInputs;
+        orientationSeedByFold.clear();
+      }
+      const foldKey = [...collapsedNow].sort().join("\0");
+      orientationSeed = orientationSeedByFold.has(foldKey)
+        ? orientationSeedByFold.get(foldKey)
+        : previousOrientation;
+      if (!orientationSeedByFold.has(foldKey)) {
+        orientationSeedByFold.set(foldKey, orientationSeed);
+      }
+    } else if (orientationSeedByFold.size > 0 || orientationInputTuple !== undefined) {
+      orientationInputTuple = undefined;
+      orientationSeedByFold.clear();
     }
     const result = layoutScene({
       cache: layoutCache ?? ownedCache,
@@ -286,15 +365,53 @@
       measureLines: lineMeasurer,
       collapsed: collapsedNow,
       ...(hints === undefined ? {} : { hints }),
+      ...(legend === undefined ? {} : { legend }),
+      ...(strings.legend === undefined ? {} : { legendTitle: strings.legend }),
+      ...(legendLabels === undefined ? {} : { legendLabels }),
       metrics: effectiveMetrics,
       ...(rowPack === undefined ? {} : { rowPack }),
       ...(targetWidth === undefined ? {} : { targetWidth }),
-      ...(previousOrientation === undefined ? {} : { previousOrientation }),
+      ...(orientationSeed === undefined ? {} : { previousOrientation: orientationSeed }),
     });
     if (result.status === "laid-out" && result.orientations !== undefined) {
       previousOrientation = result.orientations;
     }
     return result;
+  });
+
+  let viewWidth = $state<number>();
+  let windowHeight = $state<number>();
+  let measuredFrameHeight = $state<number>();
+  let controlsHeight = $state(0);
+  let scrollbarHeight = $state(0);
+  let maxDisplayScale = $state<number>();
+  let minReadableScale = $state<number>();
+  let viewAll = $state(false);
+  let nativeFullscreen = $state(false);
+  let fallbackFullscreen = $state(false);
+  const fullscreen = $derived(nativeFullscreen || fallbackFullscreen);
+  const fullscreenMode = $derived<"native" | "fallback" | undefined>(
+    nativeFullscreen ? "native" : fallbackFullscreen ? "fallback" : undefined,
+  );
+  const fullscreenViewHeight = $derived(
+    fullscreen
+      ? measuredFrameHeight !== undefined && measuredFrameHeight > 0
+        ? measuredFrameHeight
+        : windowHeight !== undefined
+          ? Math.max(0, windowHeight - controlsHeight)
+          : undefined
+      : undefined,
+  );
+  const sceneFitInput = $derived({
+    // Before the frame is measured (server render, hidden mount) the fit
+    // box is the nominal 16:9 box of the layout target width.
+    viewWidth: frameWidth ?? targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
+    windowHeight: windowHeight ?? Number.POSITIVE_INFINITY,
+    ...(fullscreenViewHeight === undefined ? {} : { viewHeight: fullscreenViewHeight }),
+    ...(viewAll ? { unconstrained: true } : {}),
+    ...(maxDisplayScale === undefined ? {} : { maxDisplayScale }),
+    ...(minReadableScale === undefined ? {} : { minReadableScale }),
+    ...(fitToWindow ? { fitToWindow: true } : {}),
   });
 
   const scene = $derived<SceneModel | undefined>(
@@ -306,11 +423,14 @@
       ...(iconBindings === undefined ? {} : { iconBindings }),
       strictIcons,
       ...(depthParityStart === undefined ? {} : { depthParityStart }),
+      ...(legend === undefined ? {} : { legend }),
+      ...(strings.legend === undefined ? {} : { legendTitle: strings.legend }),
+      ...(legendLabels === undefined ? {} : { legendLabels }),
       resolveGlyph,
           measureLines: lineMeasurer,
           flows: flowOptions,
           metrics: effectiveMetrics,
-        })
+        }, fitToWindow ? sceneFitInput : undefined)
       : undefined,
   );
   const sceneRects = $derived<ReadonlyMap<string, Rect>>(scene === undefined ? new Map() : rectsOf(scene));
@@ -487,6 +607,8 @@
 
   /* ── measured frame and tokens (client only) ───────────────────── */
 
+  let figureEl = $state<HTMLElement>();
+  let controlsEl = $state<HTMLElement>();
   let frameEl = $state<HTMLElement>();
   let viewportEl = $state<HTMLElement>();
   $effect(() => {
@@ -496,28 +618,25 @@
       if (select !== undefined && select !== null) select.value = filter === undefined ? "all" : `scenario:${filter}`;
     }
   });
-  let viewWidth = $state<number>();
-  let windowHeight = $state<number>();
-  let scrollbarHeight = $state(0);
-  let maxDisplayScale = $state<number>();
-  let minReadableScale = $state<number>();
-  let renderedBounds = $state.raw<{ scene: SceneModel; bounds: Rect }>();
+  let renderedBounds = $state.raw<{ scene: SceneModel; bounds: Rect; scale: number }>();
   const cameraBounds = $derived(renderedBounds?.scene === scene ? renderedBounds?.bounds : scene?.bounds);
   // `zoom` is the scale the world is painted at: the fit is quantised once,
   // in `sceneFit`, and printed as it is, so painted rects divide back by it.
   // The first read of a scene fits; a later one refits only when it differs
-  // from that read by more than the measurement granularity. A read that
-  // comes back as the model bounds is a read like any other: it replaces an
-  // earlier, larger one, and the next one is compared to it.
-  // A fold transition paints interpolated rectangles and fading layers: no
-  // read happens while it runs, one happens when it settles.
+  // from that read by more than the measurement granularity at the minimum
+  // scale of the two reads. A read that comes back as the model bounds is a
+  // read like any other: it replaces an earlier, larger one, and the next one
+  // is compared to it. A fold transition paints interpolated rectangles and
+  // fading layers: no read happens while it runs, one happens when it settles.
   function readRenderedBounds(): void {
     if (frameEl === undefined || scene === undefined || animating) return;
-    const bounds = measureRenderedBounds(frameEl, scene.bounds, zoom);
-    const previous = renderedBounds?.scene === scene ? renderedBounds.bounds : undefined;
-    if (bounds === undefined || !shouldRefitRenderedBounds(previous, bounds)) return;
-    if (atFit) requestedZoom = undefined;
-    renderedBounds = { scene, bounds };
+    const readScale = committedWorldScale(frameEl, zoom);
+    const strokeFloor = Math.min(DEFAULT_MIN_READABLE_SCALE, fit.minZoom, readScale);
+    const bounds = measureRenderedBounds(frameEl, scene.bounds, zoom, strokeFloor);
+    const previous = renderedBounds?.scene === scene ? renderedBounds : undefined;
+    const toleranceScale = previous === undefined ? readScale : Math.min(previous.scale, readScale);
+    if (bounds === undefined || !shouldRefitRenderedBounds(previous?.bounds, bounds, toleranceScale)) return;
+    renderedBounds = { scene, bounds, scale: readScale };
   }
   $effect(() => {
     const current = scene;
@@ -530,95 +649,212 @@
   $effect(() => {
     const element = frameEl;
     const current = scene;
-    if (element === undefined || current === undefined || browserMeasure !== undefined
-      || measureLines !== undefined || measure !== defaultCardMeasure) return;
+    if (element === undefined || current === undefined || browserMeasure !== undefined) return;
     let active = true;
-    void document.fonts?.ready.then(() => {
-      if (!active) return;
-      browserMeasure = measureRenderedSceneFont(element, current, effectiveMeasure);
-    });
+    void document.fonts?.ready.then(() => { if (active) refitForFonts(); });
     return () => { active = false; };
   });
 
-  function tokenValue(name: string): string | undefined {
+  function tokenValue(name: string, style?: CSSStyleDeclaration): string | undefined {
     if (frameEl === undefined) return undefined;
-    const value = getComputedStyle(frameEl).getPropertyValue(name).trim();
+    const value = (style ?? getComputedStyle(frameEl)).getPropertyValue(name).trim();
     return value === "" ? undefined : value;
   }
 
-  // The camera sits at the fit until an input moves it; a resize keeps a
-  // camera that is still at the fit on the fit, and reclamps any other.
+  function lengthTokenValue(
+    name: string,
+    style?: CSSStyleDeclaration,
+    context?: { readonly rootFontSize?: number; readonly elementFontSize?: number },
+  ): number | undefined {
+    if (frameEl === undefined) return undefined;
+    const raw = tokenValue(name, style);
+    if (raw === undefined) return undefined;
+    const resolvedContext = context ?? (() => {
+      const docEl = frameEl.ownerDocument?.documentElement;
+      const rootFontSize = docEl ? parseFloat(getComputedStyle(docEl).fontSize) : Number.NaN;
+      const elementFontSize = parseFloat((style ?? getComputedStyle(frameEl)).fontSize);
+      return { rootFontSize, elementFontSize };
+    })();
+    const parsed = parseCssLengthPx(raw, resolvedContext);
+    if (parsed !== undefined || !/^(calc|min|max|clamp)\(/i.test(raw)) return parsed;
+    const probe = frameEl.ownerDocument.createElement("span");
+    probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none";
+    probe.style.fontSize = raw;
+    if (probe.style.fontSize === "") return undefined;
+    frameEl.appendChild(probe);
+    try {
+      return parseCssLengthPx(getComputedStyle(probe).fontSize, resolvedContext);
+    } finally {
+      probe.remove();
+    }
+  }
+
+  // A user zoom lasts until the next resize, fold or font load.
   let requestedZoom = $state<number>();
-  let atFit = true;
+  let fittedFonts: Promise<FontFaceSet> | undefined;
+
+  function resetToFit(): void {
+    requestedZoom = undefined;
+    const element = viewportEl;
+    if (element === undefined) return;
+    void tick().then(() => {
+      element.scrollLeft = 0;
+      element.scrollTop = 0;
+    });
+  }
+
+  function refitForFonts(): void {
+    const ready = document.fonts?.ready;
+    const useBrowserMeasure = measureLines === undefined && measure === defaultCardMeasure;
+    if (frameEl === undefined || scene === undefined) return;
+    const fontsChanged = ready !== fittedFonts;
+    if (!fontsChanged && (!useBrowserMeasure || browserMeasure !== undefined)) return;
+    fittedFonts = ready;
+    // A later scene can supply a card to measure within the same font load.
+    if (useBrowserMeasure) {
+      browserMeasure = measureRenderedSceneFont(frameEl, scene, effectiveMeasure);
+    }
+    if (fontsChanged) resetToFit();
+    else if (browserMeasure === undefined) return;
+    void tick().then(readRenderedBounds);
+  }
 
   // m3: camera tokens are re-read on every measure and before every camera
   // input, so a post-mount theme change applies without waiting for a resize.
   function readCameraTokens(): void {
+    const style = frameEl === undefined ? undefined : getComputedStyle(frameEl);
     const values: Record<string, number> = {};
-    for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding"]) {
-      const value = parseFloat(tokenValue('--st-component-diagramScene-' + key) ?? '');
+    const baseKeys = ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding"];
+    const r7Keys = ["zoneGutter","routeSpacing","routeBorderClearance","edgeCornerRadius","linkStrokeWidth","linkRelatedStrokeWidth","linkEmphasisStrokeWidth"];
+    for (const key of baseKeys) {
+      const value = parseFloat(tokenValue("--st-component-diagramScene-" + key, style) ?? "");
       if (Number.isFinite(value)) values[key] = value;
     }
-    const labelMargin = parseFloat(tokenValue('--st-component-diagramScene-labelPadding') ?? '');
+    const labelMargin = parseFloat(tokenValue("--st-component-diagramScene-labelPadding", style) ?? "");
     if (Number.isFinite(labelMargin)) values.labelMargin = labelMargin;
-    if (JSON.stringify(values) !== JSON.stringify(tokenMetrics)) tokenMetrics = values;
+    if (r7Mode && frameEl !== undefined) {
+      const docEl = frameEl.ownerDocument?.documentElement;
+      const rootFontSize = docEl ? parseFloat(getComputedStyle(docEl).fontSize) : Number.NaN;
+      const elementFontSize = parseFloat((style ?? getComputedStyle(frameEl)).fontSize);
+      const lengthContext = { rootFontSize, elementFontSize };
+      for (const key of r7Keys) {
+        const value = lengthTokenValue("--st-component-diagramScene-" + key, style, lengthContext);
+        if (value !== undefined && Number.isFinite(value)) values[key] = value;
+      }
+      const edgeLabelSize = resolveEdgeLabelSizeToken(
+        lengthTokenValue("--st-component-diagramScene-edgeLabelSize", style, lengthContext),
+        lengthTokenValue("--st-component-diagramScene-edgeLabelFontSize", style, lengthContext),
+      );
+      if (edgeLabelSize !== undefined) values.edgeLabelSize = edgeLabelSize;
+    }
+
+    if (JSON.stringify(values) !== JSON.stringify(tokenMetrics)) {
+      ownedCache.clear();
+      tokenMetrics = values;
+    }
     const nextTokens = { ...DEFAULT_FLOW_TOKENS };
     for (const name of Object.keys(nextTokens) as (keyof FlowTokens)[]) {
-      const value = tokenValue(`--st-component-diagramScene-${name}`);
+      const value = tokenValue(`--st-component-diagramScene-${name}`, style);
       if (name === "flowArrowPath") { if (value?.trim()) nextTokens.flowArrowPath = value.trim(); }
       else { const number = parseScale(value); if (number !== undefined) (nextTokens as unknown as Record<string, number>)[name] = number; }
     }
     if (JSON.stringify(nextTokens) !== JSON.stringify(flowTokens)) flowTokens = nextTokens;
-    maxDisplayScale = parseScale(tokenValue(TOKEN_MAX_DISPLAY_SCALE));
-    minReadableScale = parseScale(tokenValue(TOKEN_MIN_READABLE_SCALE));
+    maxDisplayScale = parseScale(tokenValue(TOKEN_MAX_DISPLAY_SCALE, style));
+    minReadableScale = parseScale(tokenValue(TOKEN_MIN_READABLE_SCALE, style));
   }
 
-  function measureFrame(): void {
+  $effect(() => {
+    void r7Mode;
+    untrack(readCameraTokens);
+  });
+
+  let previousFrameHeight: number | undefined;
+  let previousViewportHeight = 0;
+
+  function measureFrame(resize = false): void {
     if (frameEl === undefined) return;
-    // m6: the fit width is the viewport narrowed by its scrollbar, not the
-    // frame wrapper.
-    const viewportWidth = viewportEl?.clientWidth ?? 0;
-    const width = viewportWidth > 0 ? viewportWidth : frameEl.clientWidth;
-    viewWidth = width > 0 ? width : undefined;
-    scrollbarHeight = viewportEl === undefined ? 0 : viewportEl.offsetHeight - viewportEl.clientHeight;
-    windowHeight = window.innerHeight > 0 ? window.innerHeight : undefined;
+    const rawWidth = frameEl.clientWidth;
+    const width = rawWidth > 0
+      ? rawWidth
+      : fullscreen && window.innerWidth > 0
+        ? window.innerWidth
+        : undefined;
+    const frameHeight = frameEl.clientHeight;
+    const viewportOuterHeight = viewportEl?.offsetHeight ?? 0;
+    // The frame can grow with its viewport when a scrollbar appears.
+    // Refit when the frame height changes independently of that growth.
+    const frameHeightChanged = previousFrameHeight !== undefined
+      && frameHeight !== previousFrameHeight
+      && frameHeight - previousFrameHeight !== viewportOuterHeight - previousViewportHeight;
+    previousFrameHeight = frameHeight;
+    previousViewportHeight = viewportOuterHeight;
+    const height = window.innerHeight > 0 ? window.innerHeight : undefined;
+    const refit = resize || width !== frameWidth || frameHeightChanged || height !== windowHeight;
+    frameWidth = width;
+    measuredFrameHeight = frameHeight > 0 ? frameHeight : undefined;
+    controlsHeight = controlsEl?.offsetHeight ?? 0;
+    viewWidth = viewportEl?.clientWidth || width;
+    scrollbarHeight = viewportOuterHeight - (viewportEl?.clientHeight ?? 0);
+    windowHeight = height;
     readCameraTokens();
-    if (atFit) requestedZoom = undefined;
+    if (refit) {
+      resetToFit();
+      void tick().then(readRenderedBounds);
+    }
   }
 
   $effect(() => {
     const element = frameEl;
     if (element === undefined) return;
-    untrack(measureFrame);
-    const onResize = (): void => measureFrame();
+    untrack(() => measureFrame());
+    const doc = element.ownerDocument;
+    const onResize = (): void => measureFrame(true);
+    const onFullscreenChange = (): void => {
+      const active = figureEl !== undefined && doc.fullscreenElement === figureEl;
+      if (active !== nativeFullscreen) {
+        if (renderedBounds !== undefined && renderedBounds.scale < DEFAULT_MIN_READABLE_SCALE) renderedBounds = undefined;
+        nativeFullscreen = active;
+        if (active) fallbackFullscreen = false;
+        void tick().then(() => measureFrame(true));
+      }
+    };
+    const fonts = doc.fonts;
     window.addEventListener("resize", onResize);
-    const observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(onResize);
+    doc.addEventListener("fullscreenchange", onFullscreenChange);
+    fonts?.addEventListener?.("loadingdone", refitForFonts);
+    const observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(() => measureFrame());
     observer?.observe(element);
     if (viewportEl !== undefined) observer?.observe(viewportEl);
     return () => {
       window.removeEventListener("resize", onResize);
+      doc.removeEventListener("fullscreenchange", onFullscreenChange);
+      fonts?.removeEventListener?.("loadingdone", refitForFonts);
       observer?.disconnect();
+      if (figureEl !== undefined && doc.fullscreenElement === figureEl && typeof doc.exitFullscreen === "function") {
+        try { void doc.exitFullscreen()?.catch?.(() => undefined); } catch { /* ignore */ }
+      }
     };
   });
 
   /* ── camera (Z-1–Z-8) ──────────────────────────────────────────── */
 
-  const measured = $derived(viewWidth !== undefined && windowHeight !== undefined);
-  const fit = $derived(
-    sceneFit({
-      ...(cameraBounds === undefined ? {} : { bounds: cameraBounds }),
-      // Before the frame is measured (server render, hidden mount) the fit
-      // box is the nominal 16:9 box of the layout target width.
-      viewWidth: viewWidth ?? targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
-      windowHeight: windowHeight ?? Number.POSITIVE_INFINITY,
-      scrollbarHeight,
-      ...(maxDisplayScale === undefined ? {} : { maxDisplayScale }),
-      ...(minReadableScale === undefined ? {} : { minReadableScale }),
-    }),
-  );
+  const measured = $derived(frameWidth !== undefined && windowHeight !== undefined);
+  const fitInput = $derived({
+    ...(cameraBounds === undefined ? {} : { bounds: cameraBounds }),
+    ...sceneFitInput,
+  });
+  // Try the full width first so scrollbars from a user zoom cannot trap
+  // the next fit at the floor. If it still pans, account for the bars.
+  const frameFit = $derived(sceneFit(fitInput));
+  const fit = $derived(frameFit.pans
+    ? sceneFit({ ...fitInput, viewWidth: viewWidth ?? fitInput.viewWidth, scrollbarHeight })
+    : frameFit);
+  const viewportHeight = $derived(fit.fitHeight + (frameFit.pans ? scrollbarHeight : 0));
   const zoom = $derived(resolveZoom(requestedZoom, fit));
   const readout = $derived(zoomReadout(zoom, fit.maxZoom));
-  const placement = $derived(scenePlacement(cameraBounds, zoom, fit));
+  const placement = $derived(scenePlacement(cameraBounds, zoom, zoom > fit.zoom
+    ? { fitWidth: viewWidth ?? fit.fitWidth, fitHeight: Math.max(0, viewportHeight - scrollbarHeight) }
+    : fit));
   const canZoomIn = $derived(zoom < fit.maxZoom);
   const canZoomOut = $derived(zoom > fit.minZoom);
 
@@ -627,8 +863,12 @@
   $effect.pre(() => {
     const id = semanticDocument.documentId;
     if (cameraDocument !== undefined && cameraDocument !== id) {
-      atFit = true;
-      requestedZoom = undefined;
+      untrack(() => {
+        viewAll = false;
+        if (fullscreen) exitFullscreen();
+        resetToFit();
+      });
+      fittedFonts = undefined;
       browserMeasure = undefined;
       renderedBounds = undefined;
     }
@@ -637,34 +877,23 @@
 
   // Refit the camera and reset pan on every fold or unfold (uncontrolled toggle
   // or controlled `collapsed` change) so unfolding never leaves the diagram
-  // overflowing the frame. Explicit user zoom/pan is kept until the next fold.
+  // overflowing the frame.
   const foldKey = $derived([...collapsedNow].sort().join("\0"));
   let cameraFoldKey: string | undefined;
   $effect.pre(() => {
     const key = foldKey;
     untrack(() => {
-      if (cameraFoldKey !== undefined && cameraFoldKey !== key) {
-        atFit = true;
-        requestedZoom = undefined;
-        const element = viewportEl;
-        if (element !== undefined) {
-          void tick().then(() => {
-            if (element.scrollLeft !== 0) element.scrollLeft = 0;
-            if (element.scrollTop !== 0) element.scrollTop = 0;
-          });
-        }
-      }
+      if (cameraFoldKey !== undefined && cameraFoldKey !== key) resetToFit();
       cameraFoldKey = key;
     });
   });
 
-  // Z-7: clamp a user-selected zoom. Until an interaction, keep the camera
-  // at fit through token, font and painted-bounds updates during mounting.
+  // Z-7: re-clamp a user-selected zoom when the allowed range changes.
   $effect(() => {
     if (!measured) return;
     const current = zoom;
     untrack(() => {
-      if (!atFit && requestedZoom !== current) requestedZoom = current;
+      if (requestedZoom !== undefined && requestedZoom !== current) requestedZoom = current;
     });
   });
 
@@ -686,8 +915,10 @@
     readCameraTokens();
     const before = zoom;
     const target = clampZoom(next, fit);
-    atFit = target === fit.zoom;
-    if (target === before) return;
+    if (target === before) {
+      if (target === fit.zoom) requestedZoom = undefined;
+      return;
+    }
     const element = viewportEl;
     const centre =
       element === undefined
@@ -696,7 +927,7 @@
             x: (element.scrollLeft + element.clientWidth / 2 - placement.translateX) / before,
             y: (element.scrollTop + element.clientHeight / 2 - placement.translateY) / before,
           };
-    requestedZoom = target;
+    requestedZoom = target === fit.zoom ? undefined : target;
     if (element === undefined || centre === undefined) return;
     void tick().then(() => {
       element.scrollLeft = centre.x * zoom + placement.translateX - element.clientWidth / 2;
@@ -721,14 +952,114 @@
     if (animating) settle();
     readCameraTokens();
     if (scene === painted) readRenderedBounds();
-    atFit = true;
-    requestedZoom = undefined;
-    const element = viewportEl;
-    if (element === undefined) return;
-    void tick().then(() => {
-      element.scrollLeft = 0;
-      element.scrollTop = 0;
-    });
+    resetToFit();
+  }
+
+  function enterFullscreen(): void {
+    const target = figureEl;
+    if (target === undefined) return;
+    if (renderedBounds !== undefined && renderedBounds.scale < DEFAULT_MIN_READABLE_SCALE) renderedBounds = undefined;
+    const doc = target.ownerDocument;
+    const canNative = typeof target.requestFullscreen === "function" && doc.fullscreenEnabled !== false;
+    if (canNative) {
+      try {
+        const pending = target.requestFullscreen();
+        if (pending !== undefined && typeof pending.then === "function") {
+          void pending.then(
+            () => {
+              if (doc.fullscreenElement === target) {
+                nativeFullscreen = true;
+                fallbackFullscreen = false;
+              } else {
+                nativeFullscreen = false;
+                fallbackFullscreen = true;
+              }
+              void tick().then(() => measureFrame(true));
+            },
+            () => {
+              nativeFullscreen = false;
+              fallbackFullscreen = true;
+              void tick().then(() => measureFrame(true));
+            },
+          );
+          return;
+        }
+        if (doc.fullscreenElement === target) {
+          nativeFullscreen = true;
+          fallbackFullscreen = false;
+          void tick().then(() => measureFrame(true));
+          return;
+        }
+      } catch {
+        // Fall through to the fixed-position overlay fallback.
+      }
+    }
+    nativeFullscreen = false;
+    fallbackFullscreen = true;
+    void tick().then(() => measureFrame(true));
+  }
+
+  function exitFullscreen(): void {
+    const target = figureEl;
+    const doc = target?.ownerDocument;
+    const wasActive = nativeFullscreen || fallbackFullscreen;
+    if (wasActive && renderedBounds !== undefined && renderedBounds.scale < DEFAULT_MIN_READABLE_SCALE) renderedBounds = undefined;
+    fallbackFullscreen = false;
+    if (doc !== undefined && doc.fullscreenElement === target && typeof doc.exitFullscreen === "function") {
+      try {
+        const pending = doc.exitFullscreen();
+        if (pending !== undefined && typeof pending.then === "function") {
+          void pending.then(
+            () => {
+              nativeFullscreen = doc.fullscreenElement === target;
+              void tick().then(() => measureFrame(true));
+            },
+            () => {
+              nativeFullscreen = false;
+              void tick().then(() => measureFrame(true));
+            },
+          );
+          return;
+        }
+      } catch {
+        // Clear local state below.
+      }
+    }
+    nativeFullscreen = false;
+    if (wasActive) {
+      void tick().then(() => measureFrame(true));
+    }
+  }
+
+  /** Toggle fullscreen using the Fullscreen API when available, with a fixed overlay fallback. */
+  export function toggleFullscreen(): void {
+    readCameraTokens();
+    if (renderedBounds !== undefined && renderedBounds.scale < DEFAULT_MIN_READABLE_SCALE) renderedBounds = undefined;
+    if (fullscreen) exitFullscreen();
+    else enterFullscreen();
+  }
+
+  /** Enable or leave « Tout voir » mode (whole scene, no readability floor, no scroll). */
+  export function setViewAll(enabled: boolean): void {
+    const next = Boolean(enabled);
+    if (next === viewAll) return;
+    if (animating) settle();
+    readCameraTokens();
+    const exitingFullscreen = !next && fullscreen;
+    renderedBounds = undefined;
+    viewAll = next;
+    if (exitingFullscreen) exitFullscreen();
+    resetToFit();
+    if (!exitingFullscreen) {
+      const targetScene = scene;
+      void tick().then(() => {
+        if (scene === targetScene && viewAll === next) readRenderedBounds();
+      });
+    }
+  }
+
+  export function toggleViewAll(): void {
+    setViewAll(!viewAll);
   }
 
   export function getCamera(): DiagramSceneCamera {
@@ -742,6 +1073,19 @@
     };
   }
 
+  function onFigureKeydown(event: KeyboardEvent): void {
+    if (event.key !== "Escape" || event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+    if (fallbackFullscreen) {
+      exitFullscreen();
+      event.preventDefault();
+      return;
+    }
+    if (viewAll && !fullscreen) {
+      setViewAll(false);
+      event.preventDefault();
+    }
+  }
+
   function onKeydown(event: KeyboardEvent): void {
     if (event.ctrlKey || event.metaKey || event.altKey) return;
     // m5: shortcuts work from non-input descendants (card buttons, nodes);
@@ -751,8 +1095,18 @@
       const tag = target.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || target.isContentEditable || target.closest("[contenteditable]")) return;
     }
+    if (!event.shiftKey && event.key === "Escape" && fallbackFullscreen) {
+      exitFullscreen();
+      event.preventDefault();
+      return;
+    }
     if (!event.shiftKey && roveFlow(event)) return;
     if (!event.shiftKey && flowSteps.length > 0 && ["]", "[", "Escape"].includes(event.key)) {
+      if (event.key === "Escape" && flowState.selection === null && viewAll && !fullscreen) {
+        setViewAll(false);
+        event.preventDefault();
+        return;
+      }
       dispatchFlow({ type: event.key === "]" ? "next" : event.key === "[" ? "previous" : "escape" }); event.preventDefault(); return;
     }
     if (event.key === "+" || event.key === "=") zoomIn();
@@ -932,29 +1286,54 @@
 
   const erdTable = $derived(semanticDocument.profileRefs.includes("erd@1") ? renderErdTable(semanticDocument) : "");
 
+  const edgeCornerRadius = $derived(effectiveMetrics.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS);
+  const pathOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
+    connectorPath(points, edgeCornerRadius);
   const pointsOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
     points.map((point) => `${point.x},${point.y}`).join(" ");
 
-  const edgeLabelLineHeight = $derived(lineMeasurer({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
+  const edgeLabelLineHeight = $derived(scaleEdgeLabelMeasurer(lineMeasurer, r7Mode ? effectiveMetrics.edgeLabelSize : undefined)({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
+  const metricPaintVars = $derived(
+    !r7Mode ? "" :
+    (metrics?.edgeLabelSize !== undefined ||
+      (effectiveMetrics.edgeLabelSize !== undefined && effectiveMetrics.edgeLabelSize !== DEFAULT_EDGE_LABEL_SIZE)
+      ? `;--st-diagram-edge-label-size:${effectiveMetrics.edgeLabelSize}px`
+      : "") +
+    (metrics?.linkStrokeWidth !== undefined ? `;--st-diagram-link-stroke-width:${metrics.linkStrokeWidth}px` : "") +
+    (metrics?.linkRelatedStrokeWidth !== undefined ? `;--st-diagram-link-related-stroke-width:${metrics.linkRelatedStrokeWidth}px` : "") +
+    (metrics?.linkEmphasisStrokeWidth !== undefined ? `;--st-diagram-link-emphasis-stroke-width:${metrics.linkEmphasisStrokeWidth}px` : ""),
+  );
+  const overviewLabelPaintVars = $derived.by(() => {
+    const size = scene?.overviewEdgeLabelSize;
+    if (size === undefined) return "";
+    const lineHeight = edgeLabelLineHeight * size / (effectiveMetrics.edgeLabelSize ?? DEFAULT_EDGE_LABEL_SIZE);
+    return `;--st-diagram-overview-edge-label-size:${size}px;--st-diagram-overview-edge-label-line-height:${lineHeight}px`;
+  });
   const viewportStyle = $derived(
-    `height:${fit.fitHeight + scrollbarHeight}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
+    `height:${viewportHeight}px;${fullscreen ? "" : fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${metricPaintVars}${overviewLabelPaintVars}${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );
   const worldStyle = $derived(
     `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,
   );
 </script>
 
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <figure
-  class="st-diagramSceneFigure{compact ? " st-diagramSceneFigure--compact" : ""}"
+  bind:this={figureEl}
+  class={`st-diagramSceneFigure${compact ? " st-diagramSceneFigure--compact" : ""}${fitToWindow ? " st-diagramSceneFigure--fitToWindow" : ""}${fullscreen ? " st-diagramSceneFigure--fullscreen" : ""}${fallbackFullscreen ? " st-diagramSceneFigure--fullscreenFallback" : ""}`}
   aria-label={label ?? title}
   data-zoom={zoom}
   data-zoom-readout={readout}
+  data-fit-to-window={fitToWindow ? "true" : undefined}
+  data-view-all={viewAll ? "true" : undefined}
+  data-fullscreen={fullscreenMode}
   data-scene-refused={layoutResult.status === "refused" ? layoutResult.refusals[0]?.code : undefined}
+  onkeydown={onFigureKeydown}
 >
   {#if title !== undefined}
     <figcaption class="st-diagramSceneFigure-title">{title}</figcaption>
   {/if}
-  <div class="st-diagramSceneFigure-controls" role="group" aria-label={strings.controls}>
+  <div class="st-diagramSceneFigure-controls" bind:this={controlsEl} role="group" aria-label={strings.controls}>
     <IconButton size="sm" variant="secondary" aria-label={strings.zoomOut} disabled={!canZoomOut} onclick={zoomOut}>
       <Minus size="var(--st-component-button-anatomy-density-sm-fontSize)" aria-hidden="true" />
     </IconButton>
@@ -965,6 +1344,17 @@
       <Plus size="var(--st-component-button-anatomy-density-sm-fontSize)" aria-hidden="true" />
     </IconButton>
     <Button size="sm" variant="secondary" onclick={fitToFrame}>{strings.fit}</Button>
+    <Button size="sm" variant="secondary" class="st-diagramSceneFigure-viewAll" aria-pressed={viewAll} onclick={toggleViewAll}>
+      <Scan size="var(--st-component-diagramScene-controlIconSize, var(--st-component-button-anatomy-density-sm-fontSize))" aria-hidden="true" />
+      <span>{strings.viewAll}</span>
+    </Button>
+    <IconButton size="sm" variant="secondary" class="st-diagramSceneFigure-fullscreen" aria-label={strings.fullscreen} aria-pressed={fullscreen} onclick={toggleFullscreen}>
+      {#if fullscreen}
+        <Minimize2 size="var(--st-component-diagramScene-controlIconSize, var(--st-component-button-anatomy-density-sm-fontSize))" aria-hidden="true" />
+      {:else}
+        <Maximize2 size="var(--st-component-diagramScene-controlIconSize, var(--st-component-button-anatomy-density-sm-fontSize))" aria-hidden="true" />
+      {/if}
+    </IconButton>
   </div>
   {#if flowSteps.length > 0}
     <div class="st-diagramSceneFigure-flowNavigator" role="group" aria-label={strings.navigator}>
@@ -1047,6 +1437,7 @@
               </div>
             {/snippet}
             {@const connectorMask = sceneConnectorMask(scene)}
+            {@const extraMarkers = extraConnectorMarkers(scene.edges, markerIds)}
             <!-- Paint order (diagram-canvas `scenePaintPlane`): expanded zone
                  frames, connectors, boxes, labels last. A zone frame is opaque:
                  painted after the connectors it would hide every route that
@@ -1060,10 +1451,14 @@
               aria-hidden="true"
               style={animating ? `opacity:${eased}` : undefined}
             >
-              <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker>{#if connectorMask !== undefined}<mask id={maskId} maskUnits="userSpaceOnUse" x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height}><rect x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height} fill="#fff" />{#each connectorMask.cutouts as cutout, index (index)}<rect data-scene-cutout={index} x={cutout.x} y={cutout.y} width={cutout.width} height={cutout.height} fill="#000" />{/each}</mask>{/if}</defs>
+              <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerUnits={scene.r7Connectors ? "userSpaceOnUse" : undefined} markerWidth={scene.r7Connectors ? "10.5" : "7"} markerHeight={scene.r7Connectors ? "10.5" : "7"} orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker>{#each extraMarkers as marker (marker.id)}<marker id={marker.id} data-arrowhead-kind={marker.kind} data-arrowhead-emphasis={marker.emphasis} viewBox={marker.viewBox} refX={marker.refX} refY={marker.refY} markerUnits={marker.markerUnits} markerWidth={marker.markerWidth} markerHeight={marker.markerHeight} orient={marker.orient}><path d={marker.path} fill={marker.fill} stroke={marker.stroke} stroke-width={marker.strokeWidth} /></marker>{/each}{#if connectorMask !== undefined}<mask id={maskId} maskUnits="userSpaceOnUse" x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height}><rect x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height} fill="#fff" />{#each connectorMask.cutouts as cutout, index (index)}<rect data-scene-cutout={index} x={cutout.x} y={cutout.y} width={cutout.width} height={cutout.height} fill="#000" />{/each}</mask>{/if}</defs>
               <g data-scene-connectors="" mask={connectorMask === undefined ? undefined : `url(#${maskId})`}>
               {#each scene.edges as edge (edge.occurrence)}
-                <polyline marker-end={edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} points={pointsOf(edge.points)} />
+                {#if edge.r7}
+                  <path marker-end={connectorMarkerRef(edge, markerIds)} stroke-dasharray={connectorDashArray(edge.strokeStyle)} style={connectorDashPaint(edge.strokeStyle)} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-connector-mode="r7" data-edge-stroke={edge.strokeStyle} data-edge-arrowhead={edge.arrowhead} data-edge-emphasis={edge.emphasis} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} d={pathOf(edge.points)} />
+                {:else}
+                  <polyline marker-end={edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} points={pointsOf(edge.points)} />
+                {/if}
                 {#if edge.directed}
                   <polyline class="st-diagramSceneFigure-flowHit" data-flow-hit={edge.occurrence} points={pointsOf(edge.points)} />
                   {#each edge.arrows as arrow, index (index)}
@@ -1075,7 +1470,13 @@
                 {#if edge.markers}<g>{@html edge.markers}</g>{/if}
               {/each}
               {#each scene.labels as edgeLabel (edgeLabel.occurrence)}
-                {#if edgeLabel.leader}<polyline class="st-diagramSceneFigure-edge" points={pointsOf(edgeLabel.leader)} />{/if}
+                {#if edgeLabel.leader}
+                  {#if scene.r7Connectors && !edgeLabel.erd}
+                    <path class="st-diagramSceneFigure-edge" data-connector-mode="r7" d={pathOf(edgeLabel.leader)} />
+                  {:else}
+                    <polyline class="st-diagramSceneFigure-edge" points={pointsOf(edgeLabel.leader)} />
+                  {/if}
+                {/if}
               {/each}
               </g>
             </svg>
@@ -1092,6 +1493,7 @@
               <div
                 class="st-diagramSceneFigure-edgeLabel"
                 data-scene-label={edgeLabel.occurrence}
+                data-connector-mode={scene.r7Connectors && !edgeLabel.erd ? "r7" : undefined}
                 title={edgeLabel.title}
                 data-erd-label={edgeLabel.erd || undefined}
                 style={`left:${edgeLabel.box.x}px;top:${edgeLabel.box.y}px;width:${edgeLabel.box.width}px;height:${edgeLabel.box.height}px${animating ? `;opacity:${eased}` : ""}`}
@@ -1108,6 +1510,52 @@
                 {/if}
               </div>
             {/each}
+            {#if scene.linkLegend !== undefined}
+              <aside
+                class="st-diagramSceneFigure-legend"
+                role="region"
+                aria-label={scene.linkLegend.title}
+                data-scene-legend=""
+                data-legend-anchor={scene.linkLegend.anchor}
+                style={linkLegendBoxStyle(scene.linkLegend, animating ? eased : undefined)}
+              >
+                <div class="st-diagramSceneFigure-legendTitle">{scene.linkLegend.title}</div>
+                <ul class="st-diagramSceneFigure-legendList">
+                  {#each scene.linkLegend.entries as entry (entry.key)}
+                    {@const swatch = linkLegendSwatchGeometry(entry, effectiveMetrics)}
+                    <li
+                      class="st-diagramSceneFigure-legendItem"
+                      data-legend-style={entry.key}
+                      data-edge-stroke={entry.strokeStyle}
+                      data-edge-arrowhead={entry.arrowhead}
+                      data-edge-emphasis={entry.emphasis}
+                    >
+                      <svg class="st-diagramSceneFigure-legendSwatch" viewBox={swatch.viewBox} aria-hidden="true">
+                        <path
+                          data-legend-swatch={entry.key}
+                          d={swatch.linePath}
+                          fill="none"
+                          stroke={swatch.stroke}
+                          stroke-width={swatch.strokeWidth}
+                          stroke-dasharray={swatch.dashArray}
+                          style={connectorDashPaint(entry.strokeStyle)}
+                          vector-effect="non-scaling-stroke"
+                        />
+                        {#if swatch.arrowPath !== undefined}
+                          <path
+                            d={swatch.arrowPath}
+                            fill={swatch.arrowFill}
+                            stroke={swatch.arrowStroke}
+                            stroke-width={swatch.arrowStrokeWidth}
+                          />
+                        {/if}
+                      </svg>
+                      <span class="st-diagramSceneFigure-legendLabel">{entry.label}</span>
+                    </li>
+                  {/each}
+                </ul>
+              </aside>
+            {/if}
           {/if}
         </div>
       </div>
@@ -1155,6 +1603,15 @@
   .st-diagramSceneFigure--compact {
     gap: var(--st-spacing-1, 0.25rem);
   }
+  .st-diagramSceneFigure--fitToWindow {
+    margin-inline: auto;
+    max-width: 100%;
+  }
+  .st-diagramSceneFigure--fitToWindow .st-diagramSceneFigure-viewport {
+    margin-inline: auto;
+    max-height: calc(100vh - var(--st-spacing-6, 1.5rem));
+    max-width: 100%;
+  }
   .st-diagramSceneFigure-title {
     color: var(--st-semantic-text-primary);
     grid-column: 1;
@@ -1166,8 +1623,55 @@
   .st-diagramSceneFigure-controls {
     align-items: center;
     display: inline-flex;
+    flex-wrap: wrap;
     gap: var(--st-spacing-1, 0.25rem);
     grid-column: 2;
+    justify-content: flex-end;
+  }
+  .st-diagramSceneFigure-controls :global(.st-diagramSceneFigure-viewAll) {
+    gap: var(--st-component-diagramScene-controlGap, var(--st-spacing-1, 0.25rem));
+  }
+  .st-diagramSceneFigure-controls :global(.st-diagramSceneFigure-viewAll[aria-pressed="true"]),
+  .st-diagramSceneFigure-controls :global(.st-diagramSceneFigure-fullscreen[aria-pressed="true"]),
+  .st-diagramSceneFigure-controls :global(.st-diagramSceneFigure-viewAll[aria-pressed="true"]:not(:disabled):hover),
+  .st-diagramSceneFigure-controls :global(.st-diagramSceneFigure-fullscreen[aria-pressed="true"]:not(:disabled):hover) {
+    background: var(--st-component-diagramScene-controlActiveBackground, var(--st-semantic-action-primary));
+    border-color: var(--st-component-diagramScene-controlActiveBorder, var(--st-semantic-action-primary));
+    color: var(--st-component-diagramScene-controlActiveText, var(--st-semantic-action-primaryText));
+  }
+  .st-diagramSceneFigure--fullscreen,
+  .st-diagramSceneFigure:fullscreen {
+    align-content: stretch;
+    background: var(--st-component-diagramScene-fullscreenBackground, var(--st-semantic-surface-default));
+    box-sizing: border-box;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100vh;
+    height: 100dvh;
+    inset: 0;
+    padding: var(--st-component-diagramScene-fullscreenPadding, var(--st-spacing-4, 1rem));
+    width: 100vw;
+  }
+  .st-diagramSceneFigure--fullscreen:has(.st-diagramSceneFigure-flowNavigator),
+  .st-diagramSceneFigure:fullscreen:has(.st-diagramSceneFigure-flowNavigator) {
+    grid-template-rows: auto auto minmax(0, 1fr);
+  }
+  .st-diagramSceneFigure--fullscreenFallback {
+    position: fixed;
+    z-index: var(--st-component-diagramScene-fullscreenZIndex, var(--st-component-overlay-zIndex, 90));
+  }
+  .st-diagramSceneFigure--fullscreen .st-diagramSceneFigure-frame,
+  .st-diagramSceneFigure:fullscreen .st-diagramSceneFigure-frame {
+    height: 100%;
+    min-height: 0;
+  }
+  .st-diagramSceneFigure--fullscreen .st-diagramSceneFigure-viewport,
+  .st-diagramSceneFigure:fullscreen .st-diagramSceneFigure-viewport {
+    max-height: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .st-diagramSceneFigure-controls :global(button) {
+      transition: none;
+    }
   }
   .st-diagramSceneFigure-readout {
     color: var(--st-semantic-text-secondary);
@@ -1235,6 +1739,16 @@
     stroke-width: var(--st-component-diagramZone-borderWidth, 1.5px);
     vector-effect: non-scaling-stroke;
   }
+  .st-diagramSceneFigure-edge[data-connector-mode="r7"] {
+    stroke-width: var(--st-diagram-link-stroke-width, var(--st-component-diagramScene-linkStrokeWidth, 2.5px));
+  }
+  .st-diagramSceneFigure-edge[data-connector-mode="r7"][data-edge-arrowhead="none"] {
+    stroke-width: var(--st-diagram-link-related-stroke-width, var(--st-component-diagramScene-linkRelatedStrokeWidth, 3px));
+  }
+  .st-diagramSceneFigure-edge[data-connector-mode="r7"][data-edge-emphasis="emphasis"] {
+    stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
+    stroke-width: var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px));
+  }
   .st-diagramSceneFigure-edgeLabel {
     box-sizing: border-box;
     background: var(--st-component-diagramScene-labelSurface, var(--st-semantic-surface-raised));
@@ -1251,8 +1765,61 @@
     position: absolute;
     white-space: nowrap;
   }
-  .st-diagramSceneFigure-edgeLabel > span { display: block; flex: none; height: var(--st-diagram-label-line-height, 22px); }
+  .st-diagramSceneFigure-edgeLabel[data-connector-mode="r7"] {
+    font-size: var(--st-diagram-overview-edge-label-size, var(--st-diagram-edge-label-size, var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px))));
+    --st-diagram-edge-label-line-height: var(--st-diagram-overview-edge-label-line-height, var(--st-diagram-label-line-height, 22px));
+    line-height: var(--st-diagram-edge-label-line-height);
+  }
+  .st-diagramSceneFigure-edgeLabel > span { display: block; flex: none; height: var(--st-diagram-edge-label-line-height, var(--st-diagram-label-line-height, 22px)); }
   .st-diagramSceneFigure-bundleHeader { display: block; padding: var(--st-component-diagramScene-labelPadding, 4px); font-weight: 400; }
   .st-diagramSceneFigure-bundleRelation { display: flex; align-self: stretch; gap: var(--st-component-diagramScene-bundleMarkerGap, 6px); padding: var(--st-component-diagramScene-labelPadding, 4px); box-shadow: inset 0 var(--st-component-diagramScene-labelBorderWidth, 1px) 0 var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle)); }
   .st-diagramSceneFigure-bundleRelation div { display: flex; flex-direction: column; }
+  .st-diagramSceneFigure-legend {
+    background: var(--st-component-diagramScene-labelSurface, var(--st-semantic-surface-raised));
+    box-shadow: inset 0 0 0 var(--st-component-diagramScene-labelBorderWidth, 1px) var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
+    box-sizing: border-box;
+    color: var(--st-component-diagramScene-labelText, var(--st-semantic-text-primary));
+    display: flex;
+    flex-direction: column;
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
+    font-size: var(--st-diagram-legend-font-size, var(--st-component-diagramScene-edgeLabelSize, var(--st-component-diagramScene-edgeLabelFontSize, 18px)));
+    gap: var(--st-diagram-legend-header-gap);
+    line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
+    padding: var(--st-diagram-legend-padding);
+    position: absolute;
+  }
+  .st-diagramSceneFigure-legendTitle {
+    align-items: center;
+    border-bottom: var(--st-component-diagramScene-labelBorderWidth, 1px) solid var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
+    box-sizing: border-box;
+    display: flex;
+    flex: none;
+    font-weight: var(--st-component-diagramCard-titleFontWeight, 700);
+    height: var(--st-diagram-legend-header-height);
+    white-space: nowrap;
+  }
+  .st-diagramSceneFigure-legendList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--st-diagram-legend-row-gap);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .st-diagramSceneFigure-legendItem {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    flex: none;
+    gap: var(--st-diagram-legend-swatch-gap);
+    height: var(--st-diagram-legend-row-height);
+    white-space: nowrap;
+  }
+  .st-diagramSceneFigure-legendSwatch {
+    flex: none;
+    height: var(--st-diagram-legend-swatch-height);
+    overflow: visible;
+    width: var(--st-diagram-legend-swatch-width);
+  }
+  .st-diagramSceneFigure-legendLabel { white-space: nowrap; }
 </style>

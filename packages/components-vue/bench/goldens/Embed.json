@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Embed",
-  "sourceRevision": "ebf7a23971457de6d93ccee722b67bf753d7684c",
+  "sourceRevision": "f041a3a21ad6b14b3d15004a289239c5ee67eb1f",
   "source": "src/Embed.ts",
   "fixtures": [
     {

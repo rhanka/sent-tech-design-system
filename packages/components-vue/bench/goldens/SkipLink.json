@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "SkipLink",
-  "sourceRevision": "d65431536df693afe5f51cc72530db1c6a9bb410",
+  "sourceRevision": "a0c78b9644e6829b61725791b3195713e6787122",
   "source": "src/SkipLink.ts",
   "fixtures": [
     {

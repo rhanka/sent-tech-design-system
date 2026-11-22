@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "SkeletonText",
-  "sourceRevision": "2fbb5e4f06c68aec2a2f34700c97c0b0bea833e0",
+  "sourceRevision": "5fe31b7e294d04951c9030f2a22e8fb2e1d8ba7a",
   "source": "src/SkeletonText.ts",
   "fixtures": [
     {

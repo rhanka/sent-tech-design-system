@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "RangeSliderFilter",
-  "sourceRevision": "c13d1fd962a974fdd93c3997020dc6395e6ad17c",
+  "sourceRevision": "daa4e59f389c278b1f4179daedfd86064676968a",
   "source": "src/lib/RangeSliderFilter.ts",
   "fixtures": [
     {

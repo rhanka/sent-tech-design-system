@@ -36,7 +36,7 @@ describe("DC-2c A14 frozen geometry and contrast",()=>{
      const restBg=mix(bg,surface,alpha),pressedBg=mix(color(c.flowPrimaryStroke),surface,alpha);
      expect(ratio(mix(color(c.flowBadgeText),surface,alpha),restBg),path+" "+mode+" rest "+alpha).toBeGreaterThanOrEqual(4.5);
      expect(ratio(mix(bg,surface,alpha),pressedBg),path+" "+mode+" pressed "+alpha).toBeGreaterThanOrEqual(4.5);
-     for(const leaf of ["flowStroke","flowPrimaryStroke","flowFocusOutline"]as const)expect(ratio(mix(color(c[leaf]),surface,alpha),surface),path+" "+mode+" "+leaf).toBeGreaterThanOrEqual(3);
+     for(const leaf of ["flowStroke","flowPrimaryStroke","flowFocusOutline","linkEmphasisStroke"]as const)expect(ratio(mix(color(c[leaf]),surface,alpha),surface),path+" "+mode+" "+leaf).toBeGreaterThanOrEqual(3);
     }modes++;
    }
   }expect(modes).toBeGreaterThan(150);
