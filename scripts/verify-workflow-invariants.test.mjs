@@ -296,6 +296,13 @@ const DECLARED_TOKEN_BOOTSTRAPS = {
     // successful `npm publish`. Measured E404 (never published) on 2026-11-20.
     removeWhen: "@sentropic/design-system-review-core has had a first successful npm publish",
   },
+  "diagram-codecs-publish.yml": {
+    // Remove this entry — and the bootstrap step/secret it names in the
+    // workflow — the day @sentropic/diagram-codecs has a first successful
+    // `npm publish`. The package is new in lot E2 (PLAN-r3 §E2) and cannot
+    // declare a trusted publisher before it exists on the registry.
+    removeWhen: "@sentropic/diagram-codecs has had a first successful npm publish",
+  },
 };
 
 const BOOTSTRAP_COMMENT_PATTERN = /bootstrap|amor[cç]age/i;
