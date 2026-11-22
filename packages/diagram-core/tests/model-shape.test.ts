@@ -130,17 +130,18 @@ describe("the view document", () => {
     }
   });
 
-  it("persists a camera, pins anatomy v2 on new views, and nothing a renderer owns", () => {
-    expect(DEFAULT_PRESENTATION).toEqual({ camera: { x: 0, y: 0, zoom: 1 }, anatomy: "v2" });
-    expect(view.presentation.anatomy).toBe("v2");
+  it("persists a camera without implicit anatomy v2 on default views, allows opt-in v2, and nothing a renderer owns", () => {
+    expect(DEFAULT_PRESENTATION).toEqual({ camera: { x: 0, y: 0, zoom: 1 } });
+    expect(view.presentation.anatomy).toBeUndefined();
     expect(Object.keys(view.presentation.camera).sort()).toEqual(["x", "y", "zoom"]);
-    const legacy = createView({
-      viewId: viewRef("legacy"),
+    expect(validateState({ document, views: { "view:v": view } }, { registry })).toEqual([]);
+    const compact = createView({
+      viewId: viewRef("compact"),
       semanticDocumentId: document.documentId,
-      presentation: { camera: { x: 0, y: 0, zoom: 1 } },
+      presentation: { camera: { x: 0, y: 0, zoom: 1 }, anatomy: "v2" },
     });
-    expect(legacy.presentation.anatomy).toBeUndefined();
-    expect(validateState({ document, views: { "view:legacy": legacy } }, { registry })).toEqual([]);
+    expect(compact.presentation.anatomy).toBe("v2");
+    expect(validateState({ document, views: { "view:compact": compact } }, { registry })).toEqual([]);
     const invalid = createView({
       viewId: viewRef("bad-anatomy"),
       semanticDocumentId: document.documentId,

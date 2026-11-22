@@ -83,6 +83,8 @@ export interface LayoutMetrics {
   readonly edgeCornerRadius?: number;
   /** Dedicated resting connector stroke width, CSS px (token `diagramScene.linkStrokeWidth`, DE-2, default 2.5). */
   readonly linkStrokeWidth?: number;
+  /** Stroke width for undirected related links on the r7 path. */
+  readonly linkRelatedStrokeWidth?: number;
   /** Emphasized connector stroke width, CSS px (token `diagramScene.linkEmphasisStrokeWidth`, DE-2, default 3.5). */
   readonly linkEmphasisStrokeWidth?: number;
   /** Edge label font size, world px (token `diagramScene.edgeLabelSize`, DE-2, default 18). */

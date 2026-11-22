@@ -62,6 +62,7 @@
     {iconName}
     {iconGlyph}
     {iconSize}
+    {headerInset}
     {headerTextWidth}
     {headerBlockHeight}
     {toggle}

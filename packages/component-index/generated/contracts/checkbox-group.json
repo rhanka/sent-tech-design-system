@@ -1,8 +1,8 @@
 {
   "componentId": "checkbox-group",
   "contractSource": "derived",
-  "digest": "sha256:4548937a9dd9ea8664485ee507cd4be99a7e4e34fedfc410355653aed72669ab",
-  "entryDigest": "sha256:941170ce826cd420f789a0106229fd82b696d9fc758dd5ab11361f348e57ea16",
+  "digest": "sha256:ba63abb9c0372d42024140a9867afdd04c2c2570ba0779da1dedff4432885ccc",
+  "entryDigest": "sha256:d740ed14052b90ea748c2ca9ce3fba87400849ea3d3f028eb322640b95cc9817",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -324,7 +324,7 @@
         "declarationPath": "packages/components-svelte/dist/CheckboxGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CheckboxGroupProps",
-        "version": "0.44.0"
+        "version": "0.44.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -444,7 +444,7 @@
         "declarationPath": "packages/components-vue/dist/CheckboxGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CheckboxGroupProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.12"
       },
       "status": "partial",
       "unresolved": [],

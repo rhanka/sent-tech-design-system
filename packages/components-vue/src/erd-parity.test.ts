@@ -27,9 +27,29 @@ describe('ERD Vue/Svelte DOM and ARIA parity', () => {
   it('should keep ERD and base scene token styles identical across both hosts', () => {
     // Vue delegates ordinary scenes to the base host; flow-only rules are separate.
     const styles = (path: string) => readFileSync(path, 'utf8').split('<style>')[1]!.split('</style>')[0]!;
+    // Svelte `<style>` scopes selectors by default and wraps child-component selectors in `:global(...)`;
+    // Vue `<style>` here is unscoped, so strip only Svelte's `:global(...)` wrapper while preserving every selector token.
+    const unwrapSvelteGlobal = (css: string) => {
+      let out = css;
+      while (out.includes(':global(')) {
+        const start = out.indexOf(':global(');
+        let depth = 0;
+        let end = -1;
+        for (let i = start + ':global('.length; i < out.length; i++) {
+          if (out[i] === '(') depth++;
+          else if (out[i] === ')') {
+            if (depth === 0) { end = i; break; }
+            depth--;
+          }
+        }
+        if (end === -1) break;
+        out = out.slice(0, start) + out.slice(start + ':global('.length, end) + out.slice(end + 1);
+      }
+      return out;
+    };
     const rules = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, '').split('}')
       .map(rule => rule.replace(/\s+/g, ' ').trim()).filter(Boolean).sort();
-    const svelte = styles('../components-svelte/src/lib/DiagramSceneFigure.svelte');
+    const svelte = unwrapSvelteGlobal(styles('../components-svelte/src/lib/DiagramSceneFigure.svelte'));
     const fallback = svelte.match(/\.st-diagramSceneFigure-fallback\s*\{[^}]*\}/)?.[0] ?? '';
     const shared = styles('src/DiagramErdNode.vue') + styles('src/DiagramSceneFallback.vue');
     expect(rules(fallback + svelte.slice(svelte.indexOf('  .st-diagramErd-toggle')))).toEqual(
@@ -79,7 +99,7 @@ for (const source of scenes) it('should retain ERD overlays and accessible text 
   const vue = mount(VueFigure, { props: { ...props, flows: {} } });
   const svelte = render(SvelteFigure, { ...props, flows: {} });
   const selectors = ['.st-diagramSceneFigure-fallback', '.st-diagramErd-fallback', '.st-diagramErd-svg',
-    '.st-diagramErd-toggle', '[data-erd-marker]', '[data-erd-label]', '.st-diagramSceneFigure-edges path:not([data-scene-edge])'];
+    '.st-diagramErd-toggle', '[data-erd-marker]', '[data-erd-label]', '.st-diagramSceneFigure-edges > polyline:not([data-scene-edge])'];
   const compare = () => {
     for (const selector of selectors) {
       const expected = [...base.element.querySelectorAll(selector)].map(dom);

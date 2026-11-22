@@ -25,10 +25,9 @@ Builds a draw.io `<mxfile>` document from the `resolveScene` output:
 - **Edges** — connected between the ids they touch (source and target are
   kept), with their intermediate waypoints. Stroke style, dashes and
   arrowheads follow the DE-2 connector registry words the scene edges
-  carry: `solid | dashed | dotted`, `arrow | filled-triangle |
-  open-triangle | none`, plus the emphasis colour/width axis. Dashes emit
-  `dashPattern` from the registry dash array; `open-triangle` emits an
-  outlined arrow; `none` omits the arrowhead.
+  carry: `solid | dashed | dotted`, `arrow | none`, plus the emphasis
+  colour/width axis. Dashes emit `dashPattern` from the registry dash
+  array; `arrow` emits a filled triangle; `none` emits `endArrow=none`.
 - **Metadata** — `options.metadata` is an optional opaque string written
   verbatim alongside the diagram in the `<mxfile>` (a
   `DiagramCodecsMetadata` CDATA block). Callers that embed a carrier

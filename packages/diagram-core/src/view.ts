@@ -89,8 +89,8 @@ export interface RelationOccurrence {
    */
   readonly strokeStyle?: StrokeStyle;
   /**
-   * Arrowhead registry word (`arrow | filled-triangle | open-triangle | none`, DE-2).
-   * Absent means default filled triangle and is preserved byte-for-byte.
+   * Arrowhead registry word (`arrow | none`, DE-2; further heads reserved for N2).
+   * Absent means default arrow and is preserved byte-for-byte.
    */
   readonly arrowhead?: ArrowheadKind;
   /**
@@ -195,8 +195,10 @@ export interface PresentationState {
   readonly grid?: { readonly size: number; readonly snap: boolean };
   /** A theme id the host resolves. No colour, no token value is stored here. */
   readonly theme?: string;
-  /** Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). New views default to `"v2"`. */
+  /** Pinned card/zone anatomy (`diagram-anatomy/v1 | v2`). Absent means legacy `"v1"`; `"v2"` is opt-in. */
   readonly anatomy?: DiagramAnatomyVersion;
+  /** Per-occurrence anatomy overrides for mixed full-size and compact scenes. */
+  readonly entityAnatomy?: Readonly<Record<string, DiagramAnatomyVersion>>;
   /** Typed presentation fragment (M3 §3.2.2). Absent means no presentation contract. */
   readonly diagram?: DiagramPresentation;
 }
@@ -235,7 +237,7 @@ export const VIEW_DOCUMENT_FIELDS = [
   "viewId",
 ] as const;
 
-export const DEFAULT_PRESENTATION: PresentationState = { camera: { x: 0, y: 0, zoom: 1 }, anatomy: "v2" };
+export const DEFAULT_PRESENTATION: PresentationState = { camera: { x: 0, y: 0, zoom: 1 } };
 
 export interface CreateViewInput {
   readonly viewId: ViewRef;

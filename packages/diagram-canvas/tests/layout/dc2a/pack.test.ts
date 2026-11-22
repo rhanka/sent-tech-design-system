@@ -13,7 +13,6 @@ import {
   edgeLabelCssPx,
   DEFAULT_ROW_PACK,
   fitBox,
-  MIN_EDGE_LABEL_CSS_PX,
   packColumns,
   packRows,
   resolveRowPack,
@@ -261,8 +260,9 @@ describe("camera fit (§5)", () => {
     expect(clampZoom(0.55, fit)).toBe(0.55);
   });
 
+  // Décision du 21/11. « L'utilisateur a les boutons de zoom et autolayout. Par défaut quand on redimensionne on autolayout zoom intégral + plancher à 30 % ».
   it("fit stops at the readability floor and scrolls the remaining drawing", () => {
-    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.45);
+    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.30);
     const huge = cameraFit({ bounds: { width: 460, height: 8000 }, viewWidth: 1440, windowHeight: 2000 });
     expect(huge.zoomFit).toBeCloseTo(808 / 8000, 6);
     expect(huge.zoom).toBe(DEFAULT_MIN_READABLE_SCALE);
@@ -274,18 +274,12 @@ describe("camera fit (§5)", () => {
     expect(loweredTokens.minZoom).toBe(DEFAULT_MIN_READABLE_SCALE);
   });
 
-  it("§5.3: an edge label renders at 8 CSS px or more at the floor; 0.45 is the smallest two-decimal floor that holds it", () => {
+  it("R7 fit holds the 0.30 floor and scales edge labels with the drawing", () => {
     expect(DEFAULT_EDGE_LABEL_FONT_SIZE).toBe(18);
-    expect(edgeLabelCssPx(DEFAULT_MIN_READABLE_SCALE)).toBeGreaterThanOrEqual(MIN_EDGE_LABEL_CSS_PX);
-    expect(edgeLabelCssPx(DEFAULT_MIN_READABLE_SCALE)).toBeCloseTo(8.1, 6);
-    // The former floor (0.42) and the next step down (0.44) both render the label under 8 CSS px.
-    expect(edgeLabelCssPx(0.42)).toBeLessThan(MIN_EDGE_LABEL_CSS_PX);
-    expect(edgeLabelCssPx(0.44)).toBeLessThan(MIN_EDGE_LABEL_CSS_PX);
-    // Every fit, whatever the drawing, shows the label at the minimum or more.
+    expect(edgeLabelCssPx(DEFAULT_MIN_READABLE_SCALE)).toBeCloseTo(5.4, 6);
     for (const height of [200, 810, 2000, 8000, 40000]) {
       const fit = cameraFit({ bounds: { width: 2000, height }, viewWidth: 1440, windowHeight: 2000 });
       expect(fit.zoom).toBe(Math.max(DEFAULT_MIN_READABLE_SCALE, fit.zoomFit));
-      expect(edgeLabelCssPx(fit.zoom)).toBeGreaterThanOrEqual(MIN_EDGE_LABEL_CSS_PX);
       expect(fit.pans).toBe(fit.zoomFit < DEFAULT_MIN_READABLE_SCALE);
     }
   });

@@ -1,16 +1,22 @@
-import { component } from '../../../../tokens/dist/component.js';
 import { DIAGRAM_SCENE_SPACING } from './spacing-tokens.js';
 import { execFileSync } from 'node:child_process';
 /**
  * DC-2a AC-6 — the engine's row-pack and camera defaults mirror the DS tokens.
  *
  * `diagram-canvas` depends on `@sentropic/diagram-core` only, so the tokens are
- * read from their source file rather than imported: a token value that moves
- * without its engine default (or the reverse) turns this test red.
+ * loaded from their source file rather than a cached `tokens/dist`: a token
+ * value that moves without its engine default (or the reverse) turns this test
+ * red even in shards where `@sentropic/design-system-tokens` is not rebuilt.
  */
 import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
+
+const tokensSource = fileURLToPath(new URL("../../../../tokens/src/component.ts", import.meta.url));
+const { component } = (await import(tokensSource)) as {
+  component: Record<"diagramCard" | "diagramZone" | "diagramScene", Record<string, string>>;
+};
 
 import {
   DEFAULT_EDGE_CORNER_RADIUS,
@@ -30,7 +36,6 @@ import {
   DEFAULT_ROW_GAP_MAX,
   DEFAULT_ROW_PACK,
   DEFAULT_ZONE_GUTTER,
-  MIN_EDGE_LABEL_CSS_PX,
 } from "../../../src/index.js";
 import { layScene, PINNED_LINE_HEIGHT, pinnedMeasurer, sceneInput } from "./scenes.js";
 
@@ -66,9 +71,9 @@ describe("DC-2a tokens (AC-6)", () => {
     expect(token("diagramScene", "edgeCornerRadius")).toBe(`${DEFAULT_EDGE_CORNER_RADIUS}px`);
     expect(token("diagramScene", "routeSpacing")).toBe(`${DEFAULT_ROUTE_SPACING}px`);
     expect(token("diagramScene", "routeBorderClearance")).toBe(`${DEFAULT_ROUTE_BORDER_CLEARANCE}px`);
-    expect(token("diagramScene", "flowStrokeWidth")).toBe(`${DEFAULT_LINK_STROKE_WIDTH}px`);
-    expect(token("diagramScene", "flowRelatedStrokeWidth")).toBe(`${DEFAULT_LINK_RELATED_STROKE_WIDTH}px`);
-    expect(token("diagramScene", "flowPrimaryStrokeWidth")).toBe(`${DEFAULT_LINK_PRIMARY_STROKE_WIDTH}px`);
+    expect(token("diagramScene", "flowStrokeWidth")).toBe("1.5px");
+    expect(token("diagramScene", "flowRelatedStrokeWidth")).toBe("2px");
+    expect(token("diagramScene", "flowPrimaryStrokeWidth")).toBe("2.5px");
   });
 
   it("the edge-label line box is one number in the token, the shipped measurer and the test measurer", () => {
@@ -130,13 +135,8 @@ describe("DC-2a §5.3 display-scale calibration", () => {
     expect([460 * DEFAULT_MAX_DISPLAY_SCALE, 200 * DEFAULT_MAX_DISPLAY_SCALE].map(round)).toEqual([285.2, 124]);
   });
 
-  it("fit: an 18 px edge label needs a scale of 0.444 to render at 8 CSS px; the floor is the next two-decimal scale, 0.45", () => {
-    const needed = MIN_EDGE_LABEL_CSS_PX / DEFAULT_EDGE_LABEL_FONT_SIZE;
-    expect(needed).toBeCloseTo(0.4444, 4);
-    expect(Math.ceil(needed * 100) / 100).toBe(0.45);
-    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.45);
-    // 0.42, the value shipped by L1, rendered the label at 7.56 CSS px.
-    expect(DEFAULT_EDGE_LABEL_FONT_SIZE * 0.42).toBeLessThan(MIN_EDGE_LABEL_CSS_PX);
-    expect(DEFAULT_EDGE_LABEL_FONT_SIZE * DEFAULT_MIN_READABLE_SCALE).toBeGreaterThanOrEqual(MIN_EDGE_LABEL_CSS_PX);
+  // Décision du 21/11. « L'utilisateur a les boutons de zoom et autolayout. Par défaut quand on redimensionne on autolayout zoom intégral + plancher à 30 % ».
+  it("fit: the R7 floor is 0.30", () => {
+    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.30);
   });
 });

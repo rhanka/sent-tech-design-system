@@ -1,8 +1,8 @@
 {
   "componentId": "error-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:1e60cae18100b2f9418e8f5f46bd0ab020f8c8523dd0553a7d36db884df20058",
-  "entryDigest": "sha256:3de8321e0646ae74bac6695ed24d663adcf98aa3b20e38711b6edfb6ec6c641a",
+  "digest": "sha256:ced1383e29502dbc6b716c5a881dde7168942d9ac5436a72c39d139ea27a5b90",
+  "entryDigest": "sha256:ec110724daf93cfe64efe140cbc7666b3dd1ffd6c4f276b3a73526849ea8d2aa",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -259,7 +259,7 @@
         "declarationPath": "packages/components-svelte/dist/ErrorBarChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ErrorBarChartProps",
-        "version": "0.44.0"
+        "version": "0.44.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -346,7 +346,7 @@
         "declarationPath": "packages/components-vue/dist/ErrorBarChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ErrorBarChartProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.12"
       },
       "status": "complete",
       "unresolved": [],

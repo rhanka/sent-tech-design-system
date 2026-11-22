@@ -1,8 +1,8 @@
 {
   "componentId": "popper",
   "contractSource": "derived",
-  "digest": "sha256:9b05e8f828572a9003e7eac3425653eeda66ea797c82a8d9a5e0cf4a428d1d6a",
-  "entryDigest": "sha256:f8e2b4e7e4e9f94af68cf69dccbc30eb61618ab16d51cbd5e9f810ff25836ee6",
+  "digest": "sha256:ff9c36563cfb283c6081b578c3e8bdea09d70afd41f35ba9177626654e39a19b",
+  "entryDigest": "sha256:43cd8fa0cfd6a888361d09a18bfe1c46372ad187da350120e5977f59d6723d6e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -370,7 +370,7 @@
         "declarationPath": "packages/components-svelte/dist/Popper.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PopperProps",
-        "version": "0.44.0"
+        "version": "0.44.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -534,7 +534,7 @@
         "declarationPath": "packages/components-vue/dist/Popper.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PopperProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.12"
       },
       "status": "partial",
       "unresolved": [],

@@ -94,6 +94,7 @@ export {
   LEGEND_KEY_HEIGHT,
   measureHeader,
   RULE_GAP,
+  scaleEdgeLabelMeasurer,
   SWATCH_ALLOCATION,
   TOGGLE_ALLOCATION,
   UNWRAPPED_PROBE_WIDTH,

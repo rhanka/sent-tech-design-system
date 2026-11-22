@@ -1,8 +1,8 @@
 {
   "componentId": "tabs",
   "contractSource": "derived",
-  "digest": "sha256:bf2646d980739c1b48f005002c4d1a83ce6e39a10143446b016c5845a4d558bc",
-  "entryDigest": "sha256:208c5f748859d96c399f55fa26f773f28cdbc197312a64fd1bcf9febc7887a87",
+  "digest": "sha256:c129bbf1ee8229d79c7cf23698627bbb723030f232b663425a7b31e97f57b7ac",
+  "entryDigest": "sha256:7e87974b7c8ee71be94f0edbd622a568b14e980c5dc6f887c10c3ad9163d769e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -272,7 +272,7 @@
         "declarationPath": "packages/components-svelte/dist/Tabs.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TabsProps",
-        "version": "0.44.0"
+        "version": "0.44.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -408,7 +408,7 @@
         "declarationPath": "packages/components-vue/dist/Tabs.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TabsProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.12"
       },
       "status": "partial",
       "unresolved": [],

@@ -24,7 +24,7 @@ export interface ToDrawioOptions {
 /** Edge stroke of a default link, mirroring the canvas fallback. */
 const EDGE_STROKE = "#64748b";
 /** Stroke of an emphasised link, mirroring the canvas fallback. */
-const EMPHASIS_STROKE = "#2563eb";
+const EMPHASIS_STROKE = "#001f33";
 /** Box border stroke. */
 const BOX_STROKE = "#64748b";
 /** Zone frame stroke. */
@@ -147,15 +147,17 @@ function edgeStyle(edge: SceneEdgeModel): string {
   const emphasized = edge.emphasis === "emphasis";
   let style = "edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;";
   style += `strokeColor=${emphasized ? EMPHASIS_STROKE : EDGE_STROKE};`;
-  style += `strokeWidth=${emphasized ? "3.5" : "2.5"};`;
+  style += `strokeWidth=${emphasized ? "3.5" : edge.arrowhead === "none" ? "3" : "2.5"};`;
   const dash = connectorDashArray(edge.strokeStyle);
   if (dash !== undefined) style += `dashed=1;dashPattern=${dash};`;
   // Flow and ERD markers are drawn by the scene as extra geometry; like the
   // SVG renderer, those edges carry no registry arrowhead here either.
   if (edge.markers === undefined && edge.directed !== true) {
     const kind = connectorMarkerKind(edge.arrowhead);
-    if (kind === "filled-triangle") style += "endArrow=classic;";
-    else if (kind === "open-triangle") style += "endArrow=classic;endFill=0;";
+    if (kind === "arrow") style += "endArrow=classic;";
+    else style += "endArrow=none;";
+  } else {
+    style += "endArrow=none;";
   }
   return style;
 }

@@ -226,7 +226,7 @@ export function renderCardSvg(
   const { content, layout } = renderCardContent(props, measure);
   const g = { ...anatomyCardGeometry(layout.anatomyFallback ?? props.anatomy), width: layout.box.width, height: layout.box.height };
   const overflowSlots = layout.diagnostics
-    .filter((diagnostic) => diagnostic.code === "card-overflow")
+    .filter((diagnostic) => diagnostic.code === "card-overflow" && diagnostic.reason !== "fallback-v1")
     .map((diagnostic) => diagnostic.slot);
   const unknownIcon = layout.diagnostics.some(
     (diagnostic) => diagnostic.code === "card-icon-unknown",

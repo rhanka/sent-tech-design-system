@@ -119,7 +119,7 @@ describe("diagram-view-schema@4 connector registries and exact pin", () => {
     const doc = conformanceDocument();
     const base = conformanceView(doc);
     for (const strokeStyle of ["solid", "dashed", "dotted"] as const) {
-      for (const arrowhead of ["arrow", "filled-triangle", "open-triangle", "none"] as const) {
+      for (const arrowhead of ["arrow", "none"] as const) {
         for (const emphasis of ["default", "emphasis"] as const) {
           const candidate = JSON.parse(JSON.stringify({
             ...base,
@@ -146,6 +146,8 @@ describe("diagram-view-schema@4 connector registries and exact pin", () => {
     const invalidCases = [
       { strokeStyle: "8 6" },
       { strokeStyle: "wavy" },
+      { arrowhead: "filled-triangle" },
+      { arrowhead: "open-triangle" },
       { arrowhead: "M0 0L10 5L0 10Z" },
       { arrowhead: "diamond" },
       { emphasis: "dashed" },

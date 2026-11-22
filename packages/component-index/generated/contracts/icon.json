@@ -1,8 +1,8 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:c01ec25d784f35f3ff3f8645f4337d6cc9d1729ba3dac4f320391c7602d01e18",
-  "entryDigest": "sha256:c7e060db9390902f53b18f0cd790db1519b3ad40a472e00dd2d8ccb0b92c492a",
+  "digest": "sha256:8c699bebc95f39694c98314f1292f30962295e157a4316d2ff3820e5cfe390bf",
+  "entryDigest": "sha256:c3e48e6b0e8b8f21215b76b9a386791546199f207006ea74acefdc8f78fd4b52",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -4044,7 +4044,7 @@
         "declarationPath": "packages/components-svelte/dist/Icon.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "IconProps",
-        "version": "0.44.0"
+        "version": "0.44.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -4181,7 +4181,7 @@
         "declarationPath": "packages/components-vue/dist/Icon.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "IconProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.12"
       },
       "status": "partial",
       "unresolved": [],

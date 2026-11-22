@@ -1,8 +1,8 @@
 {
   "componentId": "error-summary",
   "contractSource": "derived",
-  "digest": "sha256:b9af66fc19b2a79aef075d55c62d38d9b9642a6bacda7adb4af9a23d48a34b59",
-  "entryDigest": "sha256:befa7d7a7b95705394b8538928bfba9a900bd42e03e92d077d9b3875ff9113d1",
+  "digest": "sha256:e98356a222576e4cfb1aaa4a6f925338069bafefcd03d8645ea2b6b506fc7e88",
+  "entryDigest": "sha256:d95798cd5facc3265168fe61500a15b59e0238c28e609ef9c2f2e5469021c7e7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -180,7 +180,7 @@
         "declarationPath": "packages/components-svelte/dist/ErrorSummary.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ErrorSummaryProps",
-        "version": "0.44.0"
+        "version": "0.44.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -237,7 +237,7 @@
         "declarationPath": "packages/components-vue/dist/ErrorSummary.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ErrorSummaryProps",
-        "version": "0.41.0-next.9"
+        "version": "0.41.0-next.12"
       },
       "status": "complete",
       "unresolved": [],

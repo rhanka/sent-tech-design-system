@@ -2,13 +2,18 @@ import { setTimeout as realDelay } from "node:timers/promises";
 import { m3ProfileRegistry, shippedExecutorBindings } from "@sentropic/diagram-core";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { cameraFit, createLayoutCache, floorToQuantum, worldToView } from "../../src/index.js";
+import {
+  cameraFit, createLayoutCache, DEFAULT_MAX_DISPLAY_SCALE, DEFAULT_MIN_READABLE_SCALE,
+  FIT_ASPECT, FIT_PAINT_INSET, FIT_WINDOW_HEIGHT_SHARE, fitBox, floorToQuantum,
+  worldToView, zoomReadout,
+} from "../../src/index.js";
 import * as sceneModule from "../../src/scene.js";
 import * as labelsModule from "../../src/layout/labels.js";
 import {
-  FIT_QUANTUM, layoutScene, resolveScene, resolveZoom, sceneContentSize, sceneFit, scenePlacement,
+  DEFAULT_SCENE_LABELS, FIT_QUANTUM, layoutScene, resolveScene, resolveZoom, sceneContentSize, sceneFit, scenePlacement,
   type SceneLayoutInput,
 } from "../../src/presentation/diagramSceneModel.js";
+import type { DiagramSceneFigureLabels } from "../../src/presentation/diagramSceneTypes.js";
 import { pinnedMeasurer, sceneInput } from "../layout/dc2a/scenes.js";
 
 const witness = sceneInput("vue-globale", "after");
@@ -21,15 +26,15 @@ afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.useRealTimers(
 
 describe("shared scene presentation (DC-2b)", () => {
   it.each([0, 15, 20])('should keep drawing content reachable with a %i px horizontal scrollbar', (scrollbarHeight) => {
-    for (const height of [200, 472.015625, 800]) {
+    for (const height of [200, 700, 800]) {
       const bounds = { x: -20, y: -26, width: 1500, height };
       const fit = sceneFit({ bounds, viewWidth: 390, windowHeight: 844, scrollbarHeight });
       const placement = scenePlacement(bounds, fit.zoom, fit);
       const viewportHeight = fit.fitHeight + scrollbarHeight;
-      expect(fit.zoom).toBe(.45);
+      expect(fit.zoom).toBe(.30);
       expect(placement.overflowX).toBe(true);
       expect(viewportHeight).toBeLessThanOrEqual(390 * 9 / 16);
-      expect(placement.overflowY).toBe(height === 800 || (height === 472.015625 && scrollbarHeight > 0));
+      expect(placement.overflowY).toBe(height === 800 || (height === 700 && scrollbarHeight > 0));
       if (!placement.overflowY) {
         expect(placement.translateY + bounds.y * fit.zoom + bounds.height * fit.zoom)
           .toBeLessThanOrEqual(viewportHeight - scrollbarHeight);
@@ -56,7 +61,7 @@ describe("shared scene presentation (DC-2b)", () => {
     expect(sceneFit({ bounds: { x: 0, y: 0, width: 1000, height: 100 }, viewWidth: 503, windowHeight: 900 }).zoom).toBe(0.501);
     for (let width = 1950; width < 2700; width += 7.3) {
       const swept = sceneFit({ bounds: { x: -3, y: -5, width, height: 300 }, viewWidth: 1206, windowHeight: 900 });
-      expect(swept.zoom, String(width)).toBeLessThanOrEqual(Math.max(0.45, swept.zoomFit));
+      expect(swept.zoom, String(width)).toBeLessThanOrEqual(Math.max(0.30, swept.zoomFit));
       expect(swept.zoomFit - swept.zoom, String(width)).toBeLessThan(FIT_QUANTUM);
       // On the grid: the printed scale has three decimals at most.
       expect(swept.zoom, String(width)).toBe(Number(swept.zoom.toFixed(3)));
@@ -83,18 +88,41 @@ describe("shared scene presentation (DC-2b)", () => {
   it('should shrink a width-constrained frame to painted content and scroll only the overflowing axis at the floor', () => {
     const bounds = { x: -20.015625, y: -26, width: 1200, height: 200 };
     const fit = sceneFit({ bounds, viewWidth: 660, windowHeight: 900 });
-    expect(fit.zoom).toBeGreaterThan(.45);
+    expect(fit.zoom).toBeGreaterThan(.30);
     expect(fit.zoom).toBeLessThan(.62);
     expect(fit.fitHeight).toBeGreaterThanOrEqual(bounds.height * fit.zoom + 2);
     expect(fit.fitHeight).toBeLessThan(bounds.height * fit.zoom + 2 + 1 / 64);
     expect(scenePlacement(bounds, fit.zoom, fit)).toMatchObject({ overflowX: false, overflowY: false });
-    const narrow = sceneFit({ bounds, viewWidth: 400, windowHeight: 900 });
-    expect(narrow.zoom).toBe(.45);
+    const narrow = sceneFit({ bounds, viewWidth: 350, windowHeight: 900 });
+    expect(narrow.zoom).toBe(.30);
     const placement = scenePlacement(bounds, narrow.zoom, narrow);
     expect(placement).toMatchObject({ overflowX: true, overflowY: false });
     expect(placement.translateX + bounds.x * narrow.zoom).toBe(1);
     expect(placement.contentWidth - bounds.width * narrow.zoom).toBe(2);
   });
+  it("fits a wider-than-viewport scene in full when the fit clears 0.30", () => {
+    const bounds = { x: 0, y: 0, width: 1000, height: 200 };
+    const fit = sceneFit({ bounds, viewWidth: 390, windowHeight: 844 });
+    const placement = scenePlacement(bounds, fit.zoom, fit);
+
+    expect(fit.zoom).toBe(0.388);
+    expect(fit.pans).toBe(false);
+    expect(placement).toMatchObject({ overflowX: false, overflowY: false });
+    expect(placement.translateX + bounds.width * fit.zoom).toBeLessThanOrEqual(389);
+    expect(placement.translateY + bounds.height * fit.zoom).toBeLessThan(fit.fitHeight);
+  });
+
+  it("pans at 0.30 only when the whole-scene fit falls below 0.30", () => {
+    const bounds = { x: 0, y: 0, width: 1000, height: 200 };
+    const atFloor = sceneFit({ bounds, viewWidth: 302, windowHeight: 844 });
+    const belowFloor = sceneFit({ bounds, viewWidth: 301, windowHeight: 844 });
+
+    expect(atFloor).toMatchObject({ zoomFit: 0.30, zoom: 0.30, pans: false });
+    expect(belowFloor).toMatchObject({ zoomFit: 0.299, zoom: 0.30, pans: true });
+    expect(scenePlacement(bounds, belowFloor.zoom, belowFloor))
+      .toMatchObject({ overflowX: true, overflowY: false, contentWidth: 302 });
+  });
+
   it("should use either cache entry point and preserve the uncached result", () => {
     const cache = createLayoutCache();
     const layout = vi.spyOn(cache, "layout");
@@ -227,5 +255,146 @@ describe("shared scene presentation (DC-2b)", () => {
     expect(cache.stats()).toMatchObject({ misses: 2, hits: 239, entries: 2, evictions: 0 });
     console.info(`DC-2b M3 engine/model: 600 actions / 240 stress toggles; worst ${worst.toFixed(3)} ms < 1800 ms`);
     expect(worst).toBeLessThan(1800);
+  });
+
+  // Décision du 21/11. « L'utilisateur a les boutons de zoom et autolayout. Par défaut quand on redimensionne on autolayout zoom intégral + plancher à 30 % ».
+  it("should pin the R7 floor, v1 figure max size, cap and fit box", () => {
+    // R7 floor with the original cap and frame dimensions.
+    expect(DEFAULT_MAX_DISPLAY_SCALE).toBe(0.62);
+    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.30);
+    expect(FIT_WINDOW_HEIGHT_SHARE).toBe(0.85);
+    expect(FIT_ASPECT).toBe(16 / 9);
+    expect(FIT_PAINT_INSET).toBe(1);
+    expect(FIT_QUANTUM).toBe(1e-3);
+
+    // 16:9 fit box capped at 0.85 * windowHeight.
+    expect(fitBox(1280, 720)).toEqual({ width: 1280, height: 612 });
+    expect(fitBox(1920, 1080)).toEqual({ width: 1920, height: 918 });
+    expect(fitBox(1280, 1200)).toEqual({ width: 1280, height: 720 });
+
+    // Single v1 / fallback-v1 complete card (460 x 200) clamps at maxDisplayScale 0.62 (readout 100 %).
+    const singleBounds = { x: 0, y: 0, width: 460, height: 200 };
+    const singleFit = sceneFit({ bounds: singleBounds, viewWidth: 1280, windowHeight: 720 });
+    expect(singleFit).toEqual({
+      fitWidth: 1280,
+      fitHeight: 126,
+      zoomFit: 0.62,
+      zoom: 0.62,
+      minZoom: 0.62,
+      maxZoom: 0.62,
+      pans: false,
+    });
+    expect(zoomReadout(singleFit.zoom, singleFit.maxZoom)).toBe(100);
+    expect(singleBounds.width * singleFit.zoom).toBeCloseTo(285.2, 5);
+    expect(singleBounds.height * singleFit.zoom).toBeCloseTo(124, 5);
+
+    // Wide v1 scene (witness) fits inside [0.30, 0.62] and pans below the 0.30 readability floor.
+    const laidOut = layoutScene(input);
+    expect(laidOut.status).toBe("laid-out");
+    if (laidOut.status !== "laid-out") return;
+    const scene = resolveScene(laidOut, input);
+    expect(scene.bounds).toBeDefined();
+    const wideDesktop = sceneFit({ bounds: scene.bounds!, viewWidth: 1280, windowHeight: 720 });
+    expect(wideDesktop.maxZoom).toBe(0.62);
+    expect(wideDesktop.minZoom).toBeGreaterThanOrEqual(0.30);
+    expect(wideDesktop.zoom).toBeLessThanOrEqual(0.62);
+    expect(wideDesktop.fitHeight).toBeLessThanOrEqual(Math.min((1280 * 9) / 16, 0.85 * 720));
+
+    const widePhone = sceneFit({ bounds: scene.bounds!, viewWidth: 390, windowHeight: 844 });
+    expect(widePhone.zoom).toBe(0.30);
+    expect(widePhone.minZoom).toBe(0.30);
+    expect(widePhone.maxZoom).toBe(0.62);
+    expect(widePhone.pans).toBe(true);
+    expect(zoomReadout(widePhone.zoom, widePhone.maxZoom)).toBe(48);
+
+    // Explicit opt-in scale overrides still apply, while the 0.30 absolute floor never lowers.
+    expect(sceneFit({ bounds: singleBounds, viewWidth: 1280, windowHeight: 720, maxDisplayScale: 0.8 }).maxZoom).toBe(0.8);
+    expect(sceneFit({ bounds: scene.bounds!, viewWidth: 390, windowHeight: 844, minReadableScale: 0.2 }).minZoom).toBe(0.30);
+  });
+
+  // Owner 21/11: « Diag - je veux pour voir dit total sans limit pour vraiment tout voir sans scroll » (Track 01M7ZN6TME8E8V6BPKXXSA6SNS).
+  it("fits the whole scene with no readability floor and no scroll when unconstrained (« Tout voir »)", () => {
+    // Measured owner case: 5876 x 2284 scene in 1366 x 900 (fit box 1366 x 765) and 390 x 844 phone.
+    const largeBounds = { x: -24, y: -18, width: 5876, height: 2284 };
+
+    // Default fit stays floored at 0.30 and pans (REQ-R7-28).
+    const defaultDesktop = sceneFit({ bounds: largeBounds, viewWidth: 1366, windowHeight: 900 });
+    expect(defaultDesktop.zoom).toBe(0.30);
+    expect(defaultDesktop.pans).toBe(true);
+    expect(scenePlacement(largeBounds, defaultDesktop.zoom, defaultDesktop).overflowX).toBe(true);
+
+    // Unconstrained fit drops the 0.30 floor so the whole scene fits with zero overflow.
+    for (const [viewWidth, windowHeight] of [[1366, 900], [390, 844]] as const) {
+      const viewAll = sceneFit({ bounds: largeBounds, viewWidth, windowHeight, unconstrained: true });
+      expect(viewAll.zoom).toBeLessThan(0.30);
+      expect(viewAll.zoom).toBeGreaterThan(0);
+      expect(viewAll.zoom).toBeLessThanOrEqual(viewAll.zoomFit);
+      expect(viewAll.minZoom).toBe(viewAll.zoom);
+      expect(viewAll.maxZoom).toBe(0.62);
+      expect(viewAll.pans).toBe(false);
+      const placed = scenePlacement(largeBounds, viewAll.zoom, viewAll);
+      expect(placed.overflowX).toBe(false);
+      expect(placed.overflowY).toBe(false);
+      expect(placed.contentWidth).toBeLessThanOrEqual(viewAll.fitWidth);
+      expect(placed.contentHeight).toBeLessThanOrEqual(viewAll.fitHeight);
+      // Zooming in for detail stays allowed from the unconstrained floor up to maxDisplayScale.
+      expect(resolveZoom(0.62, viewAll)).toBe(0.62);
+      expect(resolveZoom(viewAll.zoom * 1.2, viewAll)).toBeCloseTo(viewAll.zoom * 1.2, 10);
+      expect(resolveZoom(0.001, viewAll)).toBe(viewAll.zoom);
+    }
+
+    // Explicit fullscreen viewHeight uses the full screen area and yields a larger scale than inline.
+    const inlineMobile = sceneFit({ bounds: { x: 0, y: 0, width: 1200, height: 1800 }, viewWidth: 390, windowHeight: 844, unconstrained: true });
+    const fullscreenMobile = sceneFit({ bounds: { x: 0, y: 0, width: 1200, height: 1800 }, viewWidth: 390, windowHeight: 844, viewHeight: 780, unconstrained: true });
+    expect(fullscreenMobile.fitHeight).toBe(780);
+    expect(fullscreenMobile.zoom).toBeGreaterThan(inlineMobile.zoom);
+    expect(fullscreenMobile.pans).toBe(false);
+    expect(scenePlacement({ x: 0, y: 0, width: 1200, height: 1800 }, fullscreenMobile.zoom, fullscreenMobile)).toMatchObject({
+      overflowX: false,
+      overflowY: false,
+    });
+
+    // Precedence of viewHeight vs fitToWindow vs unconstrained (DE-2 + « Tout voir »).
+    const tallBounds = { x: 0, y: 0, width: 1200, height: 1800 };
+    const fitWindowInline = sceneFit({ bounds: tallBounds, viewWidth: 800, windowHeight: 900, fitToWindow: true });
+    const fitWindowFullscreen = sceneFit({ bounds: tallBounds, viewWidth: 800, windowHeight: 900, viewHeight: 820, fitToWindow: true });
+    expect(fitWindowFullscreen.fitHeight).toBe(820);
+    expect(fitWindowFullscreen.zoom).toBeLessThanOrEqual(fitWindowInline.zoom);
+    expect(fitWindowFullscreen.pans).toBe(false);
+    const composed = sceneFit({ bounds: largeBounds, viewWidth: 390, windowHeight: 844, fitToWindow: true, unconstrained: true });
+    expect(composed.zoom).toBeLessThan(0.30);
+    expect(composed.zoom).toBeGreaterThan(0);
+    expect(composed.pans).toBe(false);
+    expect(scenePlacement(largeBounds, composed.zoom, composed)).toMatchObject({ overflowX: false, overflowY: false });
+
+    // Extreme sub-quantum scene stays strictly positive (never collapses to scale 0).
+    const extreme = sceneFit({ bounds: { x: 0, y: 0, width: 1_000_000, height: 500_000 }, viewWidth: 390, windowHeight: 844, unconstrained: true });
+    expect(extreme.zoom).toBeGreaterThan(0);
+    expect(extreme.zoom).toBe(extreme.zoomFit);
+    expect(extreme.pans).toBe(false);
+
+    // Default labels expose viewAll/fullscreen while keeping older typed label objects compatible.
+    expect(DEFAULT_SCENE_LABELS.viewAll).toBe("View all");
+    expect(DEFAULT_SCENE_LABELS.fullscreen).toBe("Fullscreen");
+    const legacyLabels: DiagramSceneFigureLabels = {
+      navigator: "Nav",
+      step: "Step",
+      scenario: "Scenario",
+      count: "{n}",
+      node: "Node",
+      previous: "Prev",
+      next: "Next",
+      allScenarios: "All",
+      controls: "Zoom",
+      zoomIn: "In",
+      zoomOut: "Out",
+      fit: "Fit",
+      zoomLevel: (p) => `${p}%`,
+      viewport: "Diagram",
+      expand: (t) => t,
+      collapse: (t) => t,
+    };
+    expect(legacyLabels.viewAll).toBeUndefined();
+    expect(legacyLabels.fullscreen).toBeUndefined();
   });
 });
