@@ -131,7 +131,7 @@ describe("projected model chain E1 parity", () => {
       scene.edges.map((e) => [String(e.occurrence), e] as const),
     );
     // Closed-word defaults are omitted from the model (`solid` /
-    // `filled-triangle` / `default` are the resolved defaults), so the
+    // `arrow` / `default` are the resolved defaults), so the
     // legend keys are the exact proof of the three presentation words.
     expect(styles.get("occurrence:r.lnk-feed")?.strokeStyle).toBeUndefined();
     expect(styles.get("occurrence:r.lnk-drive")).toMatchObject({
@@ -140,15 +140,15 @@ describe("projected model chain E1 parity", () => {
     });
     expect(styles.get("occurrence:r.lnk-handoff")).toMatchObject({
       strokeStyle: "dotted",
-      arrowhead: "open-triangle",
+      arrowhead: "none",
     });
 
     expect(scene.linkLegend).toBeDefined();
     expect(scene.linkLegend!.anchor).toBe("right");
     expect(scene.linkLegend!.entries.map((e) => e.key)).toEqual([
-      "solid:filled-triangle:default",
-      "dashed:filled-triangle:emphasis",
-      "dotted:open-triangle:default",
+      "solid:arrow:default",
+      "dashed:arrow:emphasis",
+      "dotted:none:default",
     ]);
     expect(scene.bounds).toBeDefined();
   });

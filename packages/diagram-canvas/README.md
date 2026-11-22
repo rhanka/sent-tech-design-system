@@ -478,7 +478,7 @@ projected model  →  layoutMeasured (row-pack @1)  →  resolveScene  →  Scen
 - `layoutMeasured` / `layoutFolded` (`layout/measured.ts`) lays the
   projected document out; `layoutScene` (`presentation/diagramSceneModel.ts`)
   is the shared seam both hosts call before `resolveScene`.
-- `resolveScene` (`presentation/diagramSceneModel.ts:509`) turns a laid-out
+- `resolveScene` (`presentation/diagramSceneModel.ts`) turns a laid-out
   result into the one `SceneModel` every target renders: same nodes, same
   edges, same geometry, same bounds, same link legend.
 - `renderSceneSvg` (`presentation/renderSceneSvg.ts`) runs the same

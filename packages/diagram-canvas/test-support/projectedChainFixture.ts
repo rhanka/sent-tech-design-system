@@ -167,10 +167,10 @@ export function projectedChainFixture(): ProjectedChainFixture {
       [relationId("lnk-feed")]: { strokeStyle: "solid", arrowhead: "arrow" },
       [relationId("lnk-drive")]: {
         strokeStyle: "dashed",
-        arrowhead: "filled-triangle",
+        arrowhead: "arrow",
         emphasis: "emphasis",
       },
-      [relationId("lnk-handoff")]: { strokeStyle: "dotted", arrowhead: "open-triangle" },
+      [relationId("lnk-handoff")]: { strokeStyle: "dotted", arrowhead: "none" },
     },
   } as unknown as DiagramPresentation;
 
