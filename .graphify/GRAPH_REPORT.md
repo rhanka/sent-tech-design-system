@@ -1,97 +1,148 @@
-# Graph Report - .  (2026-05-13)
+# Graph Report - .  (2026-11-22)
 
 ## Corpus Check
-- Corpus is ~26,691 words - fits in a single context window. You may not need a graph.
+- 88 files · ~79 776 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 120 nodes · 115 edges · 6 communities detected
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.81)
+- 304 nodes · 393 edges · 16 communities detected
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.82)
 - Token cost: 0 input · 0 output
+- Edge kinds: contains: 223 · imports_from: 74 · calls: 47 · imports: 17 · re_exports: 16 · references: 11 · conceptually_related_to: 3 · implements: 2
 
 
 ## Input Scope
-- Requested: auto
+- Requested: committed
 - Resolved: committed (source: cli)
-- Included files: 84 · Candidates: 104
-- Excluded: 0 untracked · 5425 ignored · 0 sensitive · 0 missing committed
+- Included files: 88 · Candidates: 7165
+- Excluded: 3 untracked · 79582 ignored · 0 sensitive · 0 missing committed
 - Recommendation: Use --scope all or graphify.yaml inputs.corpus for a knowledge-base folder.
 
 ## Graph Freshness
-- Built from Git commit: `7045323`
+- Built from Git commit: `f5e6672`
 - Compare this hash to `git rev-parse HEAD` before trusting freshness-sensitive graph output.
 ## God Nodes (most connected - your core abstractions)
-1. `Sent Tech Design System` - 6 edges
-2. `Forge low-coupling integration` - 6 edges
-3. `npm Trusted Publishing release` - 6 edges
-4. `@sent-tech/themes` - 5 edges
-5. `getOrderedWorkspaces()` - 4 edges
-6. `run()` - 4 edges
-7. `White-label runtime theming` - 4 edges
-8. `Entropic chat refactor dependency` - 4 edges
-9. `Component TDD verification` - 4 edges
-10. `runWorkspaceScript()` - 3 edges
+1. `createComponent()` - 21 edges
+2. `distFilesRecursiveLazy()` - 7 edges
+3. `TenantTheme` - 6 edges
+4. `distFilesLazy()` - 6 edges
+5. `Elements 0.3.0` - 6 edges
+6. `compileTheme()` - 5 edges
+7. `getOrderedWorkspaces()` - 5 edges
+8. `compileThemeWithModes()` - 4 edges
+9. `flattenTokens()` - 4 edges
+10. `toCssVariables()` - 4 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Foundation semantic component tokens` --conceptually_related_to--> `@sent-tech/themes`  [INFERRED]
-  PLAN.md → README.md
-- `sentech-forge needs` --references--> `Forge low-coupling integration`  [INFERRED]
-  PLAN.md → docs/integration/forge-low-coupling.md
-- `Token-first architecture` --conceptually_related_to--> `@sent-tech/tokens`  [INFERRED]
-  PLAN.md → README.md
-- `Make or buy strategy` --conceptually_related_to--> `External design-system adapters`  [INFERRED]
-  PLAN.md → docs/superpowers/specs/2026-05-05-sent-tech-design-system-design.md
-- `White-label runtime theming` --conceptually_related_to--> `@sent-tech/themes`  [EXTRACTED]
-  docs/superpowers/specs/2026-05-05-sent-tech-design-system-design.md → README.md
-
-## Hyperedges (group relationships)
-- **Sent Tech package model** — readme_tokens_package, readme_themes_package, readme_components_svelte_package, readme_docs_app [EXTRACTED 0.95]
-- **Forge low-coupling path** — forge_vendor_copy_css, forge_theme_scope_attribute, forge_compatibility_bridge, forge_component_pilot [EXTRACTED 0.95]
-- **Chat contract surface** — chat_contract_entropic_refactor, chat_contract_modes, chat_contract_runtime_events, chat_contract_token_groups [EXTRACTED 0.95]
-- **Component Catalog V1 slices** — catalog_forms_slice, catalog_overlay_feedback_slice, catalog_data_navigation_slice [EXTRACTED 0.90]
-- **Trusted publishing release flow** — release_trusted_publishing, release_pack_smoke, workflow_release_guard, workflow_post_publish_check [EXTRACTED 0.92]
+- `Elements 0.3.0` --references--> `Review Core 0.1.2 (DS-7)`  [EXTRACTED]
+  docs/release.md → packages/review-core/README.md
+- `Design system quality gate` --conceptually_related_to--> `Component TDD verification`  [INFERRED]
+  docs/superpowers/specs/2026-05-05-sent-tech-design-system-design.md → docs/superpowers/specs/2026-05-06-component-catalog-v1-design.md
+- `Component API principles` --conceptually_related_to--> `White-label runtime theming`  [EXTRACTED]
+  docs/superpowers/specs/2026-05-06-component-catalog-v1-design.md → docs/superpowers/specs/2026-05-05-sent-tech-design-system-design.md
+- `Data navigation slice` --implements--> `Component API principles`  [EXTRACTED]
+  docs/superpowers/specs/2026-05-06-data-navigation-catalog-design.md → docs/superpowers/specs/2026-05-06-component-catalog-v1-design.md
+- `Data navigation slice` --references--> `Component TDD verification`  [EXTRACTED]
+  docs/superpowers/specs/2026-05-06-data-navigation-catalog-design.md → docs/superpowers/specs/2026-05-06-component-catalog-v1-design.md
 
 ## Communities
 
 ### Community 0 - "Community 0"
-Cohesion: 0.13
-Nodes (19): Forge CSS compatibility bridge, Forge component pilot, Forge low-coupling integration, Forge theme scope attribute, Forge vendor-copy CSS, Foundation semantic component tokens, sentech-forge needs, Token-first architecture (+11 more)
+Cohesion: 0.04
+Nodes (1): set
 
 ### Community 1 - "Community 1"
-Cohesion: 0.15
-Nodes (17): Component API principles, Data navigation slice, Forms component slice, Overlay and feedback slice, Component TDD verification, Entropic chat refactor dependency, Chat shell modes, Chat runtime events (+9 more)
+Cohesion: 0.07
+Nodes (39): angularComponentFiles(), angularManifest, assert(), datavizAngularLibFiles(), datavizAngularManifest, datavizCoreFiles(), datavizReactLibFiles(), datavizReactManifest (+31 more)
+
+### Community 2 - "Community 2"
+Cohesion: 0.07
+Nodes (41): AccordionInput, accordionOf(), AlertInput, alertOf(), BadgeInput, badgeOf(), BreadcrumbInput, breadcrumbOf() (+33 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.28
-Nodes (2): compileTheme(), compileThemeStyleTag()
+Cohesion: 0.07
+Nodes (6): base, selector, options, action, content, trigger
 
 ### Community 4 - "Community 4"
-Cohesion: 0.33
-Nodes (5): getOrderedWorkspaces(), main(), orderWorkspaces(), readJson(), runWorkspaceScript()
+Cohesion: 0.14
+Nodes (22): compileTheme(), CompileThemeOptions, compileThemeStyleTag(), compileThemeWithModes(), component, flattenTokens(), toCssVariables(), TokenTree (+14 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.46
-Nodes (6): assert(), installTarballs(), listTarball(), packWorkspace(), run(), verifyTarball()
+Cohesion: 0.13
+Nodes (2): body, trigger
+
+### Community 7 - "Community 7"
+Cohesion: 0.27
+Nodes (7): defaultRoot, dependencyFields, getOrderedWorkspaces(), main(), orderWorkspaces(), readJson(), runWorkspaceScript()
 
 ### Community 8 - "Community 8"
-Cohesion: 0.43
-Nodes (2): flattenTokens(), toCssVariables()
+Cohesion: 0.22
+Nodes (10): Component API principles, Data navigation slice, Forms component slice, Overlay and feedback slice, Component TDD verification, Chat UI incubation, External design-system adapters, Design system quality gate (+2 more)
+
+### Community 9 - "Community 9"
+Cohesion: 0.29
+Nodes (7): BPMN element and mount exports, FA-D3 Review Layer in Focus Kit, Focus static artifact kit, Elements Trusted Publishing, Elements 0.3.0, TimeSeriesChart, Review Core 0.1.2 (DS-7)
+
+### Community 10 - "Community 10"
+Cohesion: 0.33
+Nodes (4): DossierReviewMode, DossierReviewMount, DossierReviewOptions, liveByHost
+
+### Community 11 - "Community 11"
+Cohesion: 0.50
+Nodes (2): copy, Locale
+
+### Community 12 - "Community 12"
+Cohesion: 0.50
+Nodes (3): cssDir, root, themes
+
+### Community 13 - "Community 13"
+Cohesion: 0.67
+Nodes (2): DOCUMENTED_CSP, KNOWN_CSP_DEVIATIONS
+
+### Community 14 - "Community 14"
+Cohesion: 1.00
+Nodes (2): asDiagnostic(), renderBpmn()
+
+### Community 15 - "Community 15"
+Cohesion: 1.00
+Nodes (1): st
+
+### Community 24 - "Community 24"
+Cohesion: 1.00
+Nodes (1): Forge relay prompt
 
 ## Knowledge Gaps
-- **13 isolated node(s):** `Carbon-like bilingual docs app`, `Public Repository Safety`, `sentech-forge needs`, `top-ai app needs`, `Design system quality gate` (+8 more)
+- **80 isolated node(s):** `Locale`, `copy`, `st`, `DOCUMENTED_CSP`, `KNOWN_CSP_DEVIATIONS` (+75 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `Community 3`** (2 nodes): `compileTheme()`, `compileThemeStyleTag()`
+- **Thin community `Community 0`** (1 nodes): `set`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 8`** (2 nodes): `flattenTokens()`, `toCssVariables()`
+- **Thin community `Community 5`** (2 nodes): `body`, `trigger`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 11`** (2 nodes): `copy`, `Locale`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 13`** (2 nodes): `DOCUMENTED_CSP`, `KNOWN_CSP_DEVIATIONS`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 14`** (2 nodes): `asDiagnostic()`, `renderBpmn()`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 15`** (1 nodes): `st`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 24`** (1 nodes): `Forge relay prompt`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `@sent-tech/themes` connect `Community 0` to `Community 1`?**
-  _High betweenness centrality (0.040) - this node is a cross-community bridge._
-- **Why does `White-label runtime theming` connect `Community 1` to `Community 0`?**
-  _High betweenness centrality (0.039) - this node is a cross-community bridge._
-- **What connects `Carbon-like bilingual docs app`, `Public Repository Safety`, `sentech-forge needs` to the rest of the system?**
-  _13 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `createComponent()` connect `Community 2` to `Community 4`?**
+  _High betweenness centrality (0.007) - this node is a cross-community bridge._
+- **What connects `Locale`, `copy`, `st` to the rest of the system?**
+  _80 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.13 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.03773584905660377 - nodes in this community are weakly interconnected._
+- **Should `Community 1` be split into smaller, more focused modules?**
+  _Cohesion score 0.06659619450317125 - nodes in this community are weakly interconnected._
+- **Should `Community 2` be split into smaller, more focused modules?**
+  _Cohesion score 0.06968641114982578 - nodes in this community are weakly interconnected._
+- **Should `Community 3` be split into smaller, more focused modules?**
+  _Cohesion score 0.06585365853658537 - nodes in this community are weakly interconnected._
+- **Should `Community 4` be split into smaller, more focused modules?**
+  _Cohesion score 0.13636363636363635 - nodes in this community are weakly interconnected._
