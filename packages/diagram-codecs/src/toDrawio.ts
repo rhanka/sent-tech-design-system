@@ -68,6 +68,14 @@ function escapeAttr(text: string): string {
     .replaceAll('"', "&quot;");
 }
 
+/** Escape plain text for draw.io `html=1` labels before XML attribute escaping. */
+function escapeHtml(text: string): string {
+  return text
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
 /** Deterministic number formatting: the same double always renders the same bytes. */
 function num(value: number): string {
   return String(value);
@@ -137,7 +145,7 @@ function parentOf(node: SceneNodeModel, nodes: readonly SceneNodeModel[]): Scene
 
 function vertexStyle(node: SceneNodeModel): string {
   if (node.kind === "zone" && !node.collapsed) {
-    return `rounded=1;whiteSpace=wrap;html=1;fillColor=${ZONE_FILL};strokeColor=${ZONE_STROKE};strokeWidth=2;`;
+    return `rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;verticalAlign=top;fillColor=${ZONE_FILL};strokeColor=${ZONE_STROKE};strokeWidth=2;`;
   }
   const fill = tintFill(node.presentation?.categoryRef, "#ffffff");
   return `rounded=1;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${BOX_STROKE};strokeWidth=2;`;
@@ -191,7 +199,7 @@ export function toDrawio(scene: SceneModel, options: ToDrawioOptions = {}): stri
     const y = parent === undefined ? node.rect.y : node.rect.y - parent.rect.y;
     const parentId = parent === undefined ? "1" : escapeAttr(parent.occurrence);
     lines.push(
-      `<mxCell id="${escapeAttr(node.occurrence)}" value="${escapeAttr(node.text)}" style="${escapeAttr(vertexStyle(node))}" vertex="1" parent="${parentId}">`,
+      `<mxCell id="${escapeAttr(node.occurrence)}" value="${escapeAttr(escapeHtml(node.text))}" style="${escapeAttr(vertexStyle(node))}" vertex="1" parent="${parentId}">`,
     );
     lines.push(
       `<mxGeometry x="${num(x)}" y="${num(y)}" width="${num(node.rect.width)}" height="${num(node.rect.height)}" as="geometry"/>`,
