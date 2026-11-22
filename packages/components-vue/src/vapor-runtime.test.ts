@@ -186,6 +186,23 @@ it('should preserve numbered flow navigation through the published Vapor scene e
   next.click(); await nextTick();
   expect(onStepChange).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ relation: 'relation:z' }));
   scene.vm.setZoom(1); expect(scene.vm.getCamera().zoom).toBeGreaterThan(0);
+  expect(typeof scene.vm.toggleViewAll).toBe('function');
+  expect(typeof scene.vm.toggleFullscreen).toBe('function');
+  const viewAllBtn = scene.root.querySelector<HTMLButtonElement>('.st-diagramSceneFigure-viewAll')!;
+  const fullscreenBtn = scene.root.querySelector<HTMLButtonElement>('.st-diagramSceneFigure-fullscreen')!;
+  expect(viewAllBtn.getAttribute('aria-pressed')).toBe('false');
+  expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('false');
+  viewAllBtn.click(); await nextTick();
+  expect(viewAllBtn.getAttribute('aria-pressed')).toBe('true');
+  expect(scene.root.querySelector('figure')?.getAttribute('data-view-all')).toBe('true');
+  fullscreenBtn.click(); await nextTick(); await nextTick();
+  expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('true');
+  expect(scene.root.querySelector('figure')?.getAttribute('data-fullscreen')).toBe('fallback');
+  viewAllBtn.click(); await nextTick(); await nextTick();
+  expect(viewAllBtn.getAttribute('aria-pressed')).toBe('false');
+  expect(fullscreenBtn.getAttribute('aria-pressed')).toBe('false');
+  expect(scene.root.querySelector('figure')?.getAttribute('data-view-all')).toBeNull();
+  expect(scene.root.querySelector('figure')?.getAttribute('data-fullscreen')).toBeNull();
 });
 
 it('should render DE-2 connectors, right-anchored link legend, and live fold/unfold updates in native Vapor', async () => {

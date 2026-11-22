@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ErrorSummary.svelte",
-      "version": "0.44.0"
+      "version": "0.44.1"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ErrorSummary.vue",
-      "version": "0.41.0-next.11"
+      "version": "0.41.0-next.12"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Aggregated list of a form's errors, each entry linked to the offending field.",
     "fr": "Liste agrégée des erreurs d’un formulaire, chaque entrée reliée au champ fautif."
   },
-  "digest": "sha256:3868dcd0ae83c30625de3c83356d6a8b0c31811332405b2fb9e7807c60d35ea8",
+  "digest": "sha256:d95798cd5facc3265168fe61500a15b59e0238c28e609ef9c2f2e5469021c7e7",
   "displayName": "ErrorSummary",
   "format": "component-entry/v1",
   "frameworks": [

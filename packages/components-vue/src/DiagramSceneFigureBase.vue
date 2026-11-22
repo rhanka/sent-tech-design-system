@@ -37,20 +37,21 @@ const emit = defineEmits<{
         camera: DiagramSceneCamera
     ];
 }>();
-const defaults: DiagramSceneFigureLabels = DEFAULT_SCENE_LABELS;
+const defaults = DEFAULT_SCENE_LABELS;
 const strings = computed(() => ({ ...defaults, ...props.labels }));
 const hostId = useId();
 const arrowId = 'diagram-arrow-' + hostId;
 const markerIds = connectorMarkerIds(arrowId);
 const maskId = 'diagram-connector-mask-' + hostId;
 const ownedCache = createLayoutCache();
-const { frameEl, viewportEl, measure, measureLines, effectiveMetrics, r7Mode, token,
+const { figureEl, controlsEl, frameEl, viewportEl, measure, measureLines, effectiveMetrics, r7Mode, token,
     fit, zoom, readout, placement, viewportStyle, sceneFitInput, resetToFit,
-    setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
+    viewAll, fullscreen, fallbackFullscreen, fullscreenMode,
+    setZoom, zoomIn, zoomOut, fitToFrame, setViewAll, toggleViewAll, toggleFullscreen, onFigureKeydown, getCamera } = useDiagramSceneViewport(
         props, () => scene.value, camera => emit('cameraChange', camera), undefined,
         { animating: () => animating.value, settle: () => settle() },
         () => ownedCache.clear());
-defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
+defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, setViewAll, toggleViewAll, toggleFullscreen, getCamera });
 const folds = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? folds.value);
 watch(() => [...collapsedNow.value].sort().join('\0'), resetToFit, { flush: 'pre' });
@@ -310,12 +311,14 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
 </script>
 
 <template>
-  <figure :class="['st-diagramSceneFigure', { 'st-diagramSceneFigure--compact': compact, 'st-diagramSceneFigure--fitToWindow': fitToWindow }]"
+  <figure ref="figureEl" :class="['st-diagramSceneFigure', { 'st-diagramSceneFigure--compact': compact, 'st-diagramSceneFigure--fitToWindow': fitToWindow, 'st-diagramSceneFigure--fullscreen': fullscreen, 'st-diagramSceneFigure--fullscreenFallback': fallbackFullscreen }]"
     :aria-label="label ?? title" :data-zoom="zoom" :data-zoom-readout="readout"
     :data-fit-to-window="fitToWindow ? 'true' : undefined"
-    :data-scene-refused="layoutResult.status === 'refused' ? layoutResult.refusals[0]?.code : undefined">
+    :data-view-all="viewAll ? 'true' : undefined" :data-fullscreen="fullscreenMode"
+    :data-scene-refused="layoutResult.status === 'refused' ? layoutResult.refusals[0]?.code : undefined"
+    @keydown="onFigureKeydown">
     <figcaption v-if="title !== undefined" class="st-diagramSceneFigure-title">{{ title }}</figcaption>
-    <div class="st-diagramSceneFigure-controls" role="group" :aria-label="strings.controls">
+    <div ref="controlsEl" class="st-diagramSceneFigure-controls" role="group" :aria-label="strings.controls">
       <button type="button" class="st-iconButton st-iconButton--sm st-iconButton--secondary" :aria-label="strings.zoomOut" :disabled="zoom <= fit.minZoom" @click="zoomOut">
         <DiagramControlGlyph size="var(--st-component-button-anatomy-density-sm-fontSize)" />
       </button>
@@ -324,6 +327,13 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
         <DiagramControlGlyph plus size="var(--st-component-button-anatomy-density-sm-fontSize)" />
       </button>
       <button type="button" class="st-button st-button--secondary st-button--sm" @click="fitToFrame">{{ strings.fit }}</button>
+      <button type="button" class="st-button st-button--secondary st-button--sm st-diagramSceneFigure-viewAll" :aria-pressed="viewAll" @click="toggleViewAll">
+        <DiagramControlGlyph kind="view-all" size="var(--st-component-diagramScene-controlIconSize, var(--st-component-button-anatomy-density-sm-fontSize))" />
+        <span>{{ strings.viewAll }}</span>
+      </button>
+      <button type="button" class="st-iconButton st-iconButton--sm st-iconButton--secondary st-diagramSceneFigure-fullscreen" :aria-label="strings.fullscreen" :aria-pressed="fullscreen" @click="toggleFullscreen">
+        <DiagramControlGlyph :kind="fullscreen ? 'exit-fullscreen' : 'fullscreen'" size="var(--st-component-diagramScene-controlIconSize, var(--st-component-button-anatomy-density-sm-fontSize))" />
+      </button>
     </div>
     <div ref="frameEl" class="st-diagramSceneFigure-frame">
       <p v-if="layoutResult.status === 'refused'" class="st-diagramSceneFigure-refused" role="alert">Diagram unavailable ({{ layoutResult.refusals[0]?.code ?? 'refused' }})</p>
@@ -426,8 +436,55 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
   .st-diagramSceneFigure-controls {
     align-items: center;
     display: inline-flex;
+    flex-wrap: wrap;
     gap: var(--st-spacing-1, 0.25rem);
     grid-column: 2;
+    justify-content: flex-end;
+  }
+  .st-diagramSceneFigure-controls .st-diagramSceneFigure-viewAll {
+    gap: var(--st-component-diagramScene-controlGap, var(--st-spacing-1, 0.25rem));
+  }
+  .st-diagramSceneFigure-controls .st-diagramSceneFigure-viewAll[aria-pressed="true"],
+  .st-diagramSceneFigure-controls .st-diagramSceneFigure-fullscreen[aria-pressed="true"],
+  .st-diagramSceneFigure-controls .st-diagramSceneFigure-viewAll[aria-pressed="true"]:not(:disabled):hover,
+  .st-diagramSceneFigure-controls .st-diagramSceneFigure-fullscreen[aria-pressed="true"]:not(:disabled):hover {
+    background: var(--st-component-diagramScene-controlActiveBackground, var(--st-semantic-action-primary));
+    border-color: var(--st-component-diagramScene-controlActiveBorder, var(--st-semantic-action-primary));
+    color: var(--st-component-diagramScene-controlActiveText, var(--st-semantic-action-primaryText));
+  }
+  .st-diagramSceneFigure--fullscreen,
+  .st-diagramSceneFigure:fullscreen {
+    align-content: stretch;
+    background: var(--st-component-diagramScene-fullscreenBackground, var(--st-semantic-surface-default));
+    box-sizing: border-box;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100vh;
+    height: 100dvh;
+    inset: 0;
+    padding: var(--st-component-diagramScene-fullscreenPadding, var(--st-spacing-4, 1rem));
+    width: 100vw;
+  }
+  .st-diagramSceneFigure--fullscreen:has(.st-diagramSceneFigure-flowNavigator),
+  .st-diagramSceneFigure:fullscreen:has(.st-diagramSceneFigure-flowNavigator) {
+    grid-template-rows: auto auto minmax(0, 1fr);
+  }
+  .st-diagramSceneFigure--fullscreenFallback {
+    position: fixed;
+    z-index: var(--st-component-diagramScene-fullscreenZIndex, var(--st-component-overlay-zIndex, 90));
+  }
+  .st-diagramSceneFigure--fullscreen .st-diagramSceneFigure-frame,
+  .st-diagramSceneFigure:fullscreen .st-diagramSceneFigure-frame {
+    height: 100%;
+    min-height: 0;
+  }
+  .st-diagramSceneFigure--fullscreen .st-diagramSceneFigure-viewport,
+  .st-diagramSceneFigure:fullscreen .st-diagramSceneFigure-viewport {
+    max-height: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .st-diagramSceneFigure-controls button {
+      transition: none;
+    }
   }
   .st-diagramSceneFigure-readout {
     color: var(--st-semantic-text-secondary);

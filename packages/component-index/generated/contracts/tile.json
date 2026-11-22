@@ -1,8 +1,8 @@
 {
   "componentId": "tile",
   "contractSource": "derived",
-  "digest": "sha256:d90eabba80f3b085347eb373a518fe658efb29be6ced08a025cc6f1ea00b3e50",
-  "entryDigest": "sha256:73cd77fb69d479e560836abe00be23cabf1fe51a31b58f0468072442dd674c53",
+  "digest": "sha256:ee97a720d0300482d4e646ee11df360da5cf5908f010f41f1632c39da9f59ae5",
+  "entryDigest": "sha256:7dbc766d8a52f2759f8b1f67644c7a9264d15053d7328e8de7b6afc844d03b44",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -228,7 +228,7 @@
         "declarationPath": "packages/components-svelte/dist/Tile.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TileProps",
-        "version": "0.44.0"
+        "version": "0.44.1"
       },
       "status": "partial",
       "unresolved": [
@@ -325,7 +325,7 @@
         "declarationPath": "packages/components-vue/dist/Tile.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TileProps",
-        "version": "0.41.0-next.11"
+        "version": "0.41.0-next.12"
       },
       "status": "complete",
       "unresolved": [],

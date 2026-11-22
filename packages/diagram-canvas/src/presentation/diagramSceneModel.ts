@@ -861,13 +861,19 @@ function resolveSceneAtZoom(
   };
 }
 
-/** Default labels for `DiagramSceneFigure`, including the DE-1b containment fallback label. */
-export const DEFAULT_SCENE_LABELS: DiagramSceneFigureLabels & { readonly contains: string } = Object.freeze({
+/** Default labels for `DiagramSceneFigure`, including DE-1b containment and « Tout voir » controls. */
+export const DEFAULT_SCENE_LABELS: DiagramSceneFigureLabels & {
+  readonly contains: string;
+  readonly viewAll: string;
+  readonly fullscreen: string;
+} = Object.freeze({
   ...DEFAULT_FLOW_STRINGS,
   controls: "Zoom",
   zoomIn: "Zoom in",
   zoomOut: "Zoom out",
   fit: "Fit",
+  viewAll: "View all",
+  fullscreen: "Fullscreen",
   zoomLevel: (percent: number) => `Zoom ${percent} %`,
   viewport: "Diagram",
   expand: (title: string) => `Expand ${title}`,
@@ -901,9 +907,11 @@ export interface SceneCameraInput {
   readonly bounds?: Rect;
   readonly viewWidth: number;
   readonly windowHeight: number;
+  readonly viewHeight?: number;
   readonly scrollbarHeight?: number;
   readonly maxDisplayScale?: number;
   readonly minReadableScale?: number;
+  readonly unconstrained?: boolean;
   /** Opt-in fit-to-window framing (`calc(100vh - 24px)`, DE-2 ask 9). Default `false`. */
   readonly fitToWindow?: boolean;
 }
@@ -923,9 +931,11 @@ export function sceneFit(input: SceneCameraInput): CameraFit {
     ...(input.bounds === undefined ? {} : { bounds: input.bounds }),
     viewWidth: input.viewWidth,
     windowHeight: input.windowHeight,
+    ...(input.viewHeight === undefined ? {} : { viewHeight: input.viewHeight }),
     ...(input.scrollbarHeight === undefined ? {} : { scrollbarHeight: input.scrollbarHeight }),
     ...(input.maxDisplayScale === undefined ? {} : { maxDisplayScale: input.maxDisplayScale }),
     ...(input.minReadableScale === undefined ? {} : { minReadableScale: input.minReadableScale }),
+    ...(input.unconstrained === undefined ? {} : { unconstrained: input.unconstrained }),
     ...(input.fitToWindow === undefined ? {} : { fitToWindow: input.fitToWindow }),
     zoomQuantum: FIT_QUANTUM,
   });

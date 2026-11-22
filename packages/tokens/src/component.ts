@@ -2003,7 +2003,15 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       flowBadgeBorder: flowInk(semantic.border.strong, semantic.surface.raised, semantic.surface.default),
       flowBadgeText: flowInk(semantic.text.primary, semantic.surface.raised, semantic.surface.default),
       flowFanOutMax: "4",
-      readoutMinWidth: "4ch"
+      readoutMinWidth: "4ch",
+      controlIconSize: "var(--st-component-button-anatomy-density-sm-fontSize)",
+      controlGap: "var(--st-spacing-1)",
+      controlActiveBackground: semantic.action.primary,
+      controlActiveText: semantic.action.primaryText,
+      controlActiveBorder: semantic.action.primary,
+      fullscreenBackground: semantic.surface.default,
+      fullscreenPadding: "var(--st-spacing-4)",
+      fullscreenZIndex: foundation.z.modal
     },
     // Existing BPMN element host footprint, shared by framework bindings.
     bpmnCanvas: { minHeight: "120px" },

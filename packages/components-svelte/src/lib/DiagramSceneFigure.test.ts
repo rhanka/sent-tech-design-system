@@ -1761,3 +1761,325 @@ describe("DC-2b cache and content size", () => {
     vi.unstubAllGlobals();
   });
 });
+
+/* ── « Tout voir » whole-scene and fullscreen mode (owner 21/11) ─── */
+
+describe("DiagramSceneFigure « Tout voir » mode (owner 21/11)", () => {
+  it("fits the whole scene with no readability floor and no scroll, keeps pinch/zoom controls working, and restores the 0.30 default on exit", async () => {
+    setWindow(390, 844);
+    const view = mount(WIDE, {
+      labels: { fit: "Ajuster", viewAll: "Tout voir", fullscreen: "Plein écran" },
+    });
+    await tick();
+
+    const viewAllBtn = view.button("Tout voir");
+    const fullscreenBtn = view.button("Plein écran");
+    expect(viewAllBtn.getAttribute("aria-pressed")).toBe("false");
+    expect(fullscreenBtn.getAttribute("aria-pressed")).toBe("false");
+    expect(view.figure.dataset["viewAll"]).toBeUndefined();
+    expect(view.figure.dataset["fullscreen"]).toBeUndefined();
+
+    // Default behaviour without pressing the control keeps the 0.30 floor and scrolling (REQ-R7-28).
+    const defaultZoom = view.zoom();
+    const defaultHeight = view.viewport.style.height;
+    const defaultTransform = view.world.style.transform;
+    expect(defaultZoom).toBe(DEFAULT_MIN_READABLE_SCALE);
+    expect(view.viewport.dataset["pans"]).toBe("true");
+    expect(view.viewport.style.overflowX).toBe("auto");
+
+    // Activate « Tout voir »: no readability floor, no scroll, entire scene fits in the frame.
+    await fireEvent.click(viewAllBtn);
+    await tick();
+    expect(viewAllBtn.getAttribute("aria-pressed")).toBe("true");
+    expect(view.figure.dataset["viewAll"]).toBe("true");
+    const viewAllZoom = view.zoom();
+    expect(viewAllZoom).toBeLessThan(DEFAULT_MIN_READABLE_SCALE);
+    expect(viewAllZoom).toBeGreaterThan(0);
+    expect(view.viewport.dataset["pans"]).toBe("false");
+    expect(view.viewport.style.overflowX).toBe("hidden");
+    expect(view.viewport.style.overflowY).toBe("hidden");
+    expect(view.viewport.scrollLeft).toBe(0);
+    expect(view.viewport.scrollTop).toBe(0);
+    expect(view.button("Zoom out").disabled).toBe(true);
+    expect(view.button("Zoom in").disabled).toBe(false);
+
+    // Every rendered node fits inside the visible viewport without clipping.
+    const vpHeight = parseFloat(view.viewport.style.height);
+    const [tx, ty, scale] = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/
+      .exec(view.world.style.transform)!.slice(1).map(Number) as [number, number, number];
+    expect(scale).toBe(viewAllZoom);
+    for (const node of view.root.querySelectorAll<HTMLElement>("[data-scene-occurrence],[data-scene-label]")) {
+      const x = parseFloat(node.style.left), y = parseFloat(node.style.top);
+      const w = parseFloat(node.style.width), h = parseFloat(node.style.height);
+      expect(tx + x * scale).toBeGreaterThanOrEqual(-0.5);
+      expect(ty + y * scale).toBeGreaterThanOrEqual(-0.5);
+      expect(tx + (x + w) * scale).toBeLessThanOrEqual(390 + 0.5);
+      expect(ty + (y + h) * scale).toBeLessThanOrEqual(vpHeight + 0.5);
+    }
+
+    // Zoom buttons (+ / -) keep working for detail in « Tout voir » mode.
+    await fireEvent.click(view.button("Zoom in"));
+    await tick();
+    expect(view.zoom()).toBeGreaterThan(viewAllZoom);
+    expect(view.button("Zoom out").disabled).toBe(false);
+    await fireEvent.click(view.button("Zoom out"));
+    await tick();
+    expect(view.zoom()).toBeCloseTo(viewAllZoom, 10);
+
+    // Two-finger pinch zoom keeps working for detail from the unconstrained floor up to maxDisplayScale.
+    const touch = (type: string, pointerId: number, clientX: number): Event =>
+      Object.assign(new Event(type, { bubbles: true, cancelable: true }), { pointerId, pointerType: "touch", clientX, clientY: 0 });
+    view.viewport.dispatchEvent(touch("pointerdown", 1, 0));
+    view.viewport.dispatchEvent(touch("pointerdown", 2, 100));
+    view.viewport.dispatchEvent(touch("pointermove", 2, 250));
+    await tick();
+    expect(view.zoom()).toBeGreaterThan(viewAllZoom);
+    view.viewport.dispatchEvent(touch("pointerup", 2, 250));
+    view.viewport.dispatchEvent(touch("pointerup", 1, 0));
+
+    // Fit / 0 resets back to the whole-scene unconstrained fit without leaving « Tout voir ».
+    await fireEvent.click(view.button("Ajuster"));
+    await tick();
+    expect(view.zoom()).toBe(viewAllZoom);
+    expect(viewAllBtn.getAttribute("aria-pressed")).toBe("true");
+    expect(view.viewport.dataset["pans"]).toBe("false");
+
+    // Leaving « Tout voir » restores the exact default 0.30 floor fit.
+    await fireEvent.click(viewAllBtn);
+    await tick();
+    expect(viewAllBtn.getAttribute("aria-pressed")).toBe("false");
+    expect(view.figure.dataset["viewAll"]).toBeUndefined();
+    expect(view.zoom()).toBe(defaultZoom);
+    expect(view.viewport.style.height).toBe(defaultHeight);
+    expect(view.world.style.transform).toBe(defaultTransform);
+    expect(view.viewport.dataset["pans"]).toBe("true");
+    expect(view.viewport.style.overflowX).toBe("auto");
+  });
+
+  it("supports native Fullscreen API and fixed-overlay fallback, Escape keyboard exit, reduced motion, and listener cleanup", async () => {
+    reducedMotion = true;
+    setWindow(390, 844);
+    const addDoc = vi.spyOn(document, "addEventListener");
+    const removeDoc = vi.spyOn(document, "removeEventListener");
+    const view = mount(WIDE, {
+      labels: { viewAll: "Tout voir", fullscreen: "Plein écran" },
+    });
+    await tick();
+
+    const viewAllBtn = view.button("Tout voir");
+    const fullscreenBtn = view.button("Plein écran");
+
+    // Token-backed icon sizing on the controls.
+    expect(viewAllBtn.querySelector("svg")?.getAttribute("width")).toContain("--st-component-diagramScene-controlIconSize");
+    expect(fullscreenBtn.querySelector("svg")?.getAttribute("width")).toContain("--st-component-diagramScene-controlIconSize");
+
+    // 1. Native Fullscreen API path.
+    let activeFs: Element | null = null;
+    Object.defineProperty(document, "fullscreenEnabled", { configurable: true, get: () => true });
+    Object.defineProperty(document, "fullscreenElement", { configurable: true, get: () => activeFs });
+    const reqFs = vi.fn(async () => {
+      activeFs = view.figure;
+      document.dispatchEvent(new Event("fullscreenchange"));
+    });
+    const exitFs = vi.fn(async () => {
+      activeFs = null;
+      document.dispatchEvent(new Event("fullscreenchange"));
+    });
+    Object.defineProperty(view.figure, "requestFullscreen", { configurable: true, value: reqFs });
+    Object.defineProperty(document, "exitFullscreen", { configurable: true, value: exitFs });
+
+    await fireEvent.click(viewAllBtn);
+    await tick();
+    await fireEvent.click(fullscreenBtn);
+    await Promise.resolve();
+    await tick();
+    await tick();
+    expect(reqFs).toHaveBeenCalledTimes(1);
+    expect(fullscreenBtn.getAttribute("aria-pressed")).toBe("true");
+    expect(view.figure.dataset["fullscreen"]).toBe("native");
+    expect(view.figure.classList.contains("st-diagramSceneFigure--fullscreen")).toBe(true);
+    expect(fullscreenBtn.querySelector("svg")?.classList.contains("lucide-minimize-2")).toBe(true);
+
+    // Leaving « Tout voir » while in native fullscreen exits fullscreen and restores default 0.30 fit.
+    await fireEvent.click(viewAllBtn);
+    await Promise.resolve();
+    await tick();
+    await tick();
+    expect(exitFs).toHaveBeenCalledTimes(1);
+    expect(fullscreenBtn.getAttribute("aria-pressed")).toBe("false");
+    expect(view.figure.dataset["fullscreen"]).toBeUndefined();
+    expect(view.zoom()).toBe(DEFAULT_MIN_READABLE_SCALE);
+
+    // 2. Fallback path when requestFullscreen rejects.
+    const rejectingFs = vi.fn(() => Promise.reject(new Error("disallowed")));
+    Object.defineProperty(view.figure, "requestFullscreen", { configurable: true, value: rejectingFs });
+    await fireEvent.click(viewAllBtn);
+    await tick();
+    const inlineViewAllHeight = parseFloat(view.viewport.style.height);
+    await fireEvent.click(fullscreenBtn);
+    await Promise.resolve();
+    await tick();
+    await tick();
+    expect(rejectingFs).toHaveBeenCalledTimes(1);
+    expect(fullscreenBtn.getAttribute("aria-pressed")).toBe("true");
+    expect(view.figure.dataset["fullscreen"]).toBe("fallback");
+    expect(view.figure.classList.contains("st-diagramSceneFigure--fullscreenFallback")).toBe(true);
+    expect(parseFloat(view.viewport.style.height)).toBeGreaterThan(inlineViewAllHeight);
+    expect(view.viewport.dataset["pans"]).toBe("false");
+
+    // Reduced motion: folding a zone inside view-all/fullscreen runs zero RAF frames.
+    const frames = vi.spyOn(window, "requestAnimationFrame");
+    await fireEvent.click(view.toggle("a"));
+    await tick();
+    expect(frames).not.toHaveBeenCalled();
+    expect(view.viewport.getAttribute("aria-busy")).toBe("false");
+    expect(view.viewport.dataset["pans"]).toBe("false");
+
+    // Escape exits fallback fullscreen first, then a second Escape exits « Tout voir ».
+    await fireEvent.keyDown(fullscreenBtn, { key: "Escape" });
+    await tick();
+    expect(fullscreenBtn.getAttribute("aria-pressed")).toBe("false");
+    expect(view.figure.dataset["fullscreen"]).toBeUndefined();
+    expect(viewAllBtn.getAttribute("aria-pressed")).toBe("true");
+
+    await fireEvent.keyDown(viewAllBtn, { key: "Escape" });
+    await tick();
+    expect(viewAllBtn.getAttribute("aria-pressed")).toBe("false");
+    expect(view.zoom()).toBe(DEFAULT_MIN_READABLE_SCALE);
+
+    // Cleanup removes fullscreenchange listener on unmount.
+    const fsCalls = addDoc.mock.calls.filter(([type]) => type === "fullscreenchange");
+    expect(fsCalls.length).toBeGreaterThan(0);
+    view.unmount();
+    expect(removeDoc.mock.calls.some(([type, handler]) => type === "fullscreenchange" && handler === fsCalls[0]![1])).toBe(true);
+
+    delete (document as { fullscreenEnabled?: boolean }).fullscreenEnabled;
+    delete (document as { fullscreenElement?: Element | null }).fullscreenElement;
+    delete (document as { exitFullscreen?: () => Promise<void> }).exitFullscreen;
+  });
+
+  it("suppresses fitToWindow max-height in fullscreen and restores it on exit", async () => {
+    setWindow(1280, 720);
+    const view = mount(WIDE, {
+      fitToWindow: true,
+      labels: { viewAll: "Tout voir", fullscreen: "Plein écran" },
+    });
+    await tick();
+
+    expect(view.figure.classList.contains("st-diagramSceneFigure--fitToWindow")).toBe(true);
+    expect(view.viewport.style.maxHeight).toBe("calc(100vh - 24px)");
+
+    await fireEvent.click(view.button("Plein écran"));
+    await tick();
+    await tick();
+    expect(view.figure.dataset["fullscreen"]).toBe("fallback");
+    expect(view.viewport.style.maxHeight).toBe("");
+
+    await fireEvent.click(view.button("Plein écran"));
+    await tick();
+    await tick();
+    expect(view.figure.dataset["fullscreen"]).toBeUndefined();
+    expect(view.viewport.style.maxHeight).toBe("calc(100vh - 24px)");
+  });
+
+  it("keeps painted-bounds fixed point and exact 0.30 exit-restore at sub-0.30 « Tout voir » scales (0.23 and 0.12)", async () => {
+    reducedMotion = true;
+    const snap = (px: number): number => Math.round(px * 64) / 64;
+    const originalRect = Element.prototype.getBoundingClientRect;
+    const sheet = document.createElement("style");
+    sheet.textContent = ".st-diagramSceneFigure-edge { fill: none; stroke: rgb(100, 116, 139); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }";
+    document.head.append(sheet);
+    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+      const world = this.closest<HTMLElement>(".st-diagramSceneFigure-world");
+      if (world === null) return originalRect.call(this);
+      const match = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/.exec(world.style.transform);
+      if (match === null) return new DOMRect();
+      const [tx, ty, scale] = match.slice(1).map(Number) as [number, number, number];
+      if (this === world) return new DOMRect(snap(tx), snap(ty), 0, 0);
+      if (this.matches("[data-scene-edge]")) {
+        const pts = (this.getAttribute("points") ?? "").trim().split(/\s+/).filter(Boolean).map((p) => p.split(",").map(Number) as [number, number]);
+        if (pts.length === 0) return new DOMRect();
+        const xs = pts.map(([x]) => x), ys = pts.map(([, y]) => y);
+        const left = snap(tx + Math.min(...xs) * scale), top = snap(ty + Math.min(...ys) * scale);
+        return new DOMRect(left, top, snap(tx + Math.max(...xs) * scale) - left, snap(ty + Math.max(...ys) * scale) - top);
+      }
+      if (!(this instanceof HTMLElement) || !this.matches("[data-scene-occurrence],[data-scene-label]")) return new DOMRect();
+      const x = parseFloat(this.style.left), y = parseFloat(this.style.top);
+      const w = parseFloat(this.style.width), h = parseFloat(this.style.height);
+      const left = snap(tx + x * scale), top = snap(ty + y * scale);
+      return new DOMRect(left, top, snap(tx + (x + w) * scale) - left, snap(ty + (y + h) * scale) - top);
+    });
+    try {
+      const wideScene = WIDE;
+      const probe = mount(wideScene, { labels: { fit: "Ajuster", viewAll: "Tout voir", fullscreen: "Plein écran" } });
+      await tick();
+      const boxes = [...probe.root.querySelectorAll<HTMLElement>("[data-scene-occurrence],[data-scene-label]")].map((el) => ({
+        x: parseFloat(el.style.left), y: parseFloat(el.style.top),
+        w: parseFloat(el.style.width), h: parseFloat(el.style.height),
+      }));
+      const edgePts = [...probe.root.querySelectorAll("[data-scene-edge]")].flatMap((edge) =>
+        (edge.getAttribute("points") ?? "").trim().split(/\s+/).filter(Boolean).map((p) => {
+          const [x, y] = p.split(",").map(Number) as [number, number];
+          return { x, y, w: 0, h: 0 };
+        }),
+      );
+      const all = [...boxes, ...edgePts];
+      const sceneWidth = Math.max(...all.map((b) => b.x + b.w)) - Math.min(...all.map((b) => b.x));
+      const sceneHeight = Math.max(...all.map((b) => b.y + b.h)) - Math.min(...all.map((b) => b.y));
+      probe.unmount();
+
+      for (const targetScale of [0.23, 0.12] as const) {
+        const frameWidth = Math.round(Math.max(sceneWidth * targetScale + 2, (sceneHeight * targetScale + 2) * (16 / 9)));
+        const winHeight = Math.max(900, Math.ceil((frameWidth * 9 / 16) / 0.85) + 100);
+        setWindow(frameWidth, winHeight);
+        const view = mount(wideScene, { labels: { fit: "Ajuster", viewAll: "Tout voir", fullscreen: "Plein écran" } });
+        await tick();
+        await tick();
+        const state = () => ({
+          zoom: view.zoom(),
+          height: view.viewport.style.height,
+          transform: view.world.style.transform,
+          extent: view.root.querySelector<HTMLElement>(".st-diagramSceneFigure-extent")!.style.cssText,
+          pans: view.viewport.dataset["pans"],
+        });
+        const initial = state();
+        expect(initial.zoom).toBe(DEFAULT_MIN_READABLE_SCALE);
+        expect(initial.pans).toBe("true");
+
+        await fireEvent.click(view.button("Tout voir"));
+        await tick();
+        await tick();
+        await fireEvent.click(view.button("Ajuster"));
+        await tick();
+        await tick();
+        const settled = state();
+        expect(settled.zoom).toBeCloseTo(targetScale, 2);
+        expect(settled.pans).toBe("false");
+
+        for (let i = 0; i < 3; i++) {
+          await fireEvent.click(view.button("Ajuster"));
+          await tick();
+          await tick();
+          expect(state(), `Svelte repeat Ajuster ${i} at ${targetScale}`).toEqual(settled);
+        }
+        await fireEvent.click(view.button("Zoom in"));
+        await tick();
+        await fireEvent.click(view.button("Zoom in"));
+        await tick();
+        expect(view.zoom()).toBeGreaterThan(settled.zoom);
+        await fireEvent.click(view.button("Ajuster"));
+        await tick();
+        await tick();
+        expect(state(), `Svelte Ajuster after zoom-in at ${targetScale}`).toEqual(settled);
+
+        await fireEvent.click(view.button("Tout voir"));
+        await tick();
+        await tick();
+        expect(state(), `Svelte exact 0.30 exit-restore from ${targetScale}`).toEqual(initial);
+        view.unmount();
+      }
+    } finally {
+      sheet.remove();
+    }
+  });
+});
