@@ -111,6 +111,7 @@ export {
 } from "./pack.js";
 export {
   distributeWholeExcess,
+  findFirstEmptyRootCell,
   layoutGridScope,
   layoutInheritedGridScope,
   layoutStackScope,
@@ -119,6 +120,7 @@ export {
   type ComposedGutter,
   type ComposedPaintedGap,
   type ComposedTrackLine,
+  type FreeCellItemSpec,
   type GridLayoutInput,
   type GridLayoutResult,
   type InheritedColumnSpec,

@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   CURRENT_SCHEMA_VERSION,
@@ -69,10 +70,19 @@ export interface RawRelationSpec {
   readonly emphasis?: LinkEmphasis;
 }
 
-const FIXTURE_DIR = new URL("../../../../../diagram-core/tests/fixtures/layout-hints-2/", import.meta.url);
+function resolveThisDir(): string {
+  const url = import.meta.url;
+  if (url.startsWith("file://")) {
+    return dirname(fileURLToPath(url).replace(/^\/@fs(?=\/)/, ""));
+  }
+  const parsed = new URL(url);
+  return dirname(parsed.pathname.replace(/^\/@fs(?=\/)/, ""));
+}
+
+const FIXTURE_DIR = resolve(resolveThisDir(), "../../../../../diagram-core/tests/fixtures/layout-hints-2");
 
 export function loadCoreFixture(name: string): { carries: string[]; hints: DsLayoutHintsV2 } {
-  const path = fileURLToPath(new URL(`${name}.json`, FIXTURE_DIR).href).replace(/^\/@fs(?=\/)/, "");
+  const path = resolve(FIXTURE_DIR, `${name}.json`);
   return JSON.parse(readFileSync(path, "utf8")) as { carries: string[]; hints: DsLayoutHintsV2 };
 }
 

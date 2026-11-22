@@ -665,4 +665,99 @@ describe("H2.5 fold-aware nominal plan, plan cache, subtree memo (D-6), invarian
     expect(cache.planStats().planEntries).toBe(2);
     expect(r1.linkLegend?.rect.width).not.toBe(r2.linkLegend?.rect.width);
   });
+
+  it("Review P2 #3 & R1-1 (F-3 legend): hiding second style removes free-cell legend in s2, narrows s2 on the same call, and re-seats inheriting sibling with memo on & off", () => {
+    const hintsV2: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      legend: "free-cell",
+      grids: {
+        root: {
+          stage_columns: ["s1", "s2", "s3"],
+          transverse_bands: [
+            { id: "r1", items: [entityRef("z-s1"), entityRef("c-s3")] },
+            { id: "r2", items: [entityRef("sibling")] },
+          ],
+          cells: {
+            [entityRef("z-s1")]: { column: "s1" },
+            [entityRef("c-s3")]: { column: "s3" },
+            [entityRef("sibling")]: { column: "s2", to_column: "s3" },
+          },
+        },
+        [entityRef("sibling")]: {
+          stage_columns: "inherit",
+          transverse_bands: [{ id: "sb", items: [entityRef("sib-s2"), entityRef("sib-s3")] }],
+          cells: {
+            [entityRef("sib-s2")]: { column: "s2" },
+            [entityRef("sib-s3")]: { column: "s3" },
+          },
+        },
+      },
+    };
+    const scene = buildGenericScene({
+      id: "f3-free-cell-legend-inherit",
+      carries: ["H2.8", "F-3", "P2-3"],
+      hintsV2,
+      entities: [
+        { id: "z-s1", container: true, title: "Style-2 Host In S1" },
+        { id: "z-a", parent: "z-s1", title: "Inner A" },
+        { id: "z-b", parent: "z-s1", title: "Inner B" },
+        { id: "c-s3", title: "Top S3 Card" },
+        { id: "sibling", container: true, title: "Sibling Inheriting S2..S3" },
+        { id: "sib-s2", parent: "sibling", title: "Sib S2" },
+        { id: "sib-s3", parent: "sibling", title: "Sib S3" },
+      ],
+      relations: [
+        // Style 1: solid between root items
+        { id: "e1", source: "sib-s2", target: "sib-s3", strokeStyle: "solid" },
+        // Style 2: dashed strictly inside z-s1 -> folding z-s1 hides style 2!
+        { id: "e2", source: "z-a", target: "z-b", strokeStyle: "dashed" },
+      ],
+    });
+    const wideLegendTitle = "Very Long Free-Cell Legend Heading Wider Than Standard Card In Column S2";
+    const opts = (collapsed: readonly OccurrenceRef[], targetWidth = 1440) =>
+      baseOptionsOf(scene, { collapsed, legendTitle: wideLegendTitle, targetWidth });
+
+    const cacheOn = createLayoutCache({ maxEntries: 32, subtreeMemo: true });
+    const cacheOff = createLayoutCache({ maxEntries: 32, subtreeMemo: false });
+    const foldZ = [occurrenceRef("e.z-s1")];
+
+    const u1On = mustLayOut(cacheOn.layout(scene.document, opts([])), "u1:on");
+    const f1On = mustLayOut(cacheOn.layout(scene.document, opts(foldZ)), "f1:on");
+    // Unfold & refold with different targetWidth to miss result cache and exercise plan + subtree memo!
+    const u2On = mustLayOut(cacheOn.layout(scene.document, opts([], 1200)), "u2:on");
+    const f2On = mustLayOut(cacheOn.layout(scene.document, opts(foldZ, 1200)), "f2:on");
+
+    const u1Off = mustLayOut(cacheOff.layout(scene.document, opts([])), "u1:off");
+    const f1Off = mustLayOut(cacheOff.layout(scene.document, opts(foldZ)), "f1:off");
+
+    // Memo on vs off byte-identical on both unfolded and folded states
+    expect(canonicalise(u1On.view, "view")).toBe(canonicalise(u1Off.view, "view"));
+    expect(canonicalise(f1On.view, "view")).toBe(canonicalise(f1Off.view, "view"));
+
+    // Unfolded: free-cell legend sits in (r1, s2) as widest item of s2
+    expect(u1On.linkLegend?.anchor).toBe("free-cell");
+    const uS2 = u1On.composition!.grids["root"]!.columns.find((c) => c.id === "s2")!;
+    expect(uS2.size).toBeGreaterThanOrEqual(u1On.linkLegend!.rect.width - TOL);
+
+    // Folded on THAT VERY SAME CALL: legend disappears, s2 narrows, sibling's cards re-seat on new s2 & s3 axes!
+    expect(f1On.linkLegend).toBeUndefined();
+    const fS2 = f1On.composition!.grids["root"]!.columns.find((c) => c.id === "s2")!;
+    const fS3 = f1On.composition!.grids["root"]!.columns.find((c) => c.id === "s3")!;
+    expect(fS2.size).toBeLessThan(uS2.size);
+
+    const geom = (r: Extract<LayoutResult, { status: "laid-out" }>, local: string) =>
+      r.view.entityOccurrences[occurrenceRef(`e.${local}`)]!.geometry;
+    expect(Math.abs(centerX(geom(f1On, "sib-s2")) - (fS2.start + fS2.size / 2))).toBeLessThanOrEqual(TOL);
+    expect(Math.abs(centerX(geom(f1On, "sib-s3")) - (fS3.start + fS3.size / 2))).toBeLessThanOrEqual(TOL);
+    expect(centerX(geom(f1On, "sib-s3")) - centerX(geom(f1On, "sib-s2"))).toBeLessThan(
+      centerX(geom(u1On, "sib-s3")) - centerX(geom(u1On, "sib-s2")),
+    );
+
+    // Fold -> unfold -> refold give exact same entity geometries with memo on
+    expect(geom(u2On, "sib-s2")).toEqual(geom(u1On, "sib-s2"));
+    expect(geom(u2On, "sib-s3")).toEqual(geom(u1On, "sib-s3"));
+    expect(geom(f2On, "sib-s2")).toEqual(geom(f1On, "sib-s2"));
+    expect(geom(f2On, "sib-s3")).toEqual(geom(f1On, "sib-s3"));
+  });
 });
