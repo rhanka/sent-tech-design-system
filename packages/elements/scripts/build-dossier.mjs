@@ -76,8 +76,21 @@ if (renderedModules.some(([id]) => /[\\/]dom[\\/]browser-entry\.ts$|[\\/]dom[\\/
   throw new Error("The dossier kit includes a Shadow DOM element");
 }
 const svelteComponents = renderedModules.filter(([id]) => id.endsWith(".svelte"));
-if (svelteComponents.length > 0) {
-  throw new Error(`The dossier kit includes unexpected Svelte components: ${svelteComponents.map(([id]) => id).join(", ")}`);
+// FA-D3: the review layer ships in the kit through the Svelte barrel import.
+// Only the CommentLayer closure is allowed in the emitted graph (plus the
+// lucide icons it names and dossier-review.svelte); every other barrel
+// component must have been shaken out of the dedicated build. The closure is
+// the transitive import set of CommentLayer: its thread panel pulls in
+// Header/Drawer/EmptyState, pins and threads pull in CommentAuthorship,
+// CommentThread, AvatarGroup and IconButton.
+const reviewClosure = /[\\/](?:CommentLayer|ThreadPanel|CommentComposer|CommentPin|Button|Badge|CommentAuthorship|CommentThread|OrphanList|Header|AvatarGroup|IconButton|Drawer|EmptyState)\.svelte$/;
+const inReviewClosure = (id) => reviewClosure.test(id) || id.includes("@lucide/svelte") || id.includes("dossier-review.svelte");
+if (!svelteComponents.some(([id]) => id.includes("dossier-review.svelte"))) {
+  throw new Error("The dossier kit is missing the review layer (dossier-review.svelte)");
+}
+const outsideReview = svelteComponents.filter(([id]) => !inReviewClosure(id));
+if (outsideReview.length > 0) {
+  throw new Error(`The dossier kit includes Svelte components outside the review layer: ${outsideReview.map(([id]) => id).join(", ")}`);
 }
 
 // The package import exposes mounting without running the static page bootstrap.

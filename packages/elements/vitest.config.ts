@@ -10,6 +10,10 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 export default defineConfig({
   root: new URL(".", import.meta.url).pathname,
   plugins: [svelte()],
+  // The dossier review test mounts a real Svelte component through
+  // `mount(...)` under jsdom; without the browser condition Vitest resolves
+  // `svelte` to its server entry and mounting is refused.
+  resolve: { conditions: ["browser"] },
   test: {
     globals: false,
     css: { include: [/\/dossier\.css(?:\?raw)?$/] },

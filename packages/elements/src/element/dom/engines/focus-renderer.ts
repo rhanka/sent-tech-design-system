@@ -99,6 +99,10 @@ function markdownBlock(source: string, tables: boolean): HTMLDivElement {
   const block = document.createElement("div");
   block.className = "st-dossier__prose";
   block.innerHTML = renderMarkdownToSafeHtml(renderMarkdown(source, tables), tables);
+  // Links keep their navigation role in review mode instead of opening a
+  // comment composer on the enclosing block (added after sanitizing, which
+  // carries no data attributes).
+  for (const link of block.querySelectorAll("a")) link.setAttribute("data-review-passthrough", "");
   return block;
 }
 

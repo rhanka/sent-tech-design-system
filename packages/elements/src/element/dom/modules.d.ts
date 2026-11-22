@@ -10,8 +10,10 @@
  */
 /// <reference types="svelte" />
 
+import type { Component } from "svelte";
+
 declare module "*.svelte" {
-  const component: unknown;
+  const component: Component<any, any>;
   export default component;
 }
 

@@ -14,6 +14,9 @@ function label(tag: string, value: string): HTMLElement {
 export function dossierReference(id: string, value: string): HTMLAnchorElement {
   const link = document.createElement("a");
   link.setAttribute("href", `#${encodeURIComponent(id)}`);
+  // Citation pastilles navigate to their definition; the review layer must
+  // leave them alone instead of opening a comment composer on the block.
+  link.setAttribute("data-review-passthrough", "");
   link.textContent = value;
   return link;
 }
@@ -79,6 +82,7 @@ function sourceDefinition(source: EvidenceSource, hasBibliographyDownload: boole
   );
   if (!hasBibliographyDownload) {
     const download = document.createElement("a");
+    download.setAttribute("data-review-passthrough", "");
     download.href = `data:application/octet-stream;base64,${source.data}`;
     download.download = `evidence-${source.id.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
     download.textContent = "Download source";

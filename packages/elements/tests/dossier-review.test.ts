@@ -10,7 +10,7 @@ import { baseDigest } from "@sentropic/focus/editing";
 import { decodeAnchor } from "@sentropic/design-system-review-core";
 import { createFixtureCommentsAdapter } from "@sentropic/design-system-review-core";
 import { mountDossier } from "../src/element/dom/dossier-mount.js";
-import { mountDossierReview } from "../src/element/dom/dossier-review.svelte";
+import { mountDossierReview } from "../src/element/dom/dossier-review-mount.js";
 import b5 from "./fixtures/focus-artifact/b5.json";
 
 const currentUser = { actorId: "user-alice", kind: "human" as const, displayLabel: "Alice", color: "#2563eb" };
@@ -54,6 +54,12 @@ async function clickSubmit(root: HTMLElement, selector: string, body: string): P
   expect(submit, "composer submit missing").not.toBeNull();
   submit!.click();
   await tick();
+  // The submit path awaits the host adapter; the harness must let the
+  // composer close before the next click opens a fresh session, or the
+  // pending close wipes the session the next click just created.
+  for (let i = 0; i < 50 && root.ownerDocument.querySelector(".st-review-composer__textarea") !== null; i++) {
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
 }
 
 afterEach(() => {
