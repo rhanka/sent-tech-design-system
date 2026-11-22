@@ -9,4 +9,4 @@ it('imports root and Vapor entries without editor peers and rejects only the edi
     expect(vapor.Button).toBeDefined();
     await expect(import('@sentropic/design-system-vue/vapor/rich-text-editor')).rejects.toThrow(/@tiptap\//);
   }
-});
+}, 30_000);

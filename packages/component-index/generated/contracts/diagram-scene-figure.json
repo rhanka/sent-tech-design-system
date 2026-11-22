@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:6ddca55e0a3e39fc9917aea0077c8b344296faf2f0befc61973fcbec5596a823",
-  "entryDigest": "sha256:a89b40a1e3f372348f1cf2daf1d6a368fbfba1965e0ca7eb46bc652fdd318d19",
+  "digest": "sha256:c347726e435f81e74e6e14d800f5bbb695a5d59671f61eba454e3aabf9a7a1e3",
+  "entryDigest": "sha256:bf0936e6209c4fecdb6d30edcc9a46dcc8926b6c37f5071303f233b7d67d7694",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -206,6 +206,17 @@
                     },
                     "type": "array"
                   },
+                  "combGroups": {
+                    "description": "Formed fan-in and fan-out comb groups (H2.7).",
+                    "items": {
+                      "$ref": "#/$defs/LayoutCombGroup"
+                    },
+                    "type": "array"
+                  },
+                  "composition": {
+                    "$ref": "#/$defs/LayoutCompositionReport",
+                    "description": "Composition track lines, cell rects, plan digest and painted-gap report (H2.3+)."
+                  },
                   "edgeBundles": {
                     "additionalProperties": {
                       "additionalProperties": false,
@@ -373,6 +384,14 @@
                     },
                     "properties": {},
                     "type": "object"
+                  },
+                  "legendResolved": {
+                    "description": "True when layout resolved the legend (including suppression) for a composed scene.",
+                    "type": "boolean"
+                  },
+                  "linkLegend": {
+                    "$ref": "#/$defs/SceneLinkLegend",
+                    "description": "Link-style legend measured in layout for composed scenes (H2.2/H2.8)."
                   },
                   "measurements": {
                     "$ref": "#/$defs/LayoutMeasurements"
@@ -579,6 +598,153 @@
               "capacity",
               "demand",
               "gap"
+            ],
+            "type": "object"
+          },
+          "ComposedGridReport": {
+            "additionalProperties": false,
+            "properties": {
+              "bands": {
+                "items": {
+                  "$ref": "#/$defs/ComposedTrackLine"
+                },
+                "type": "array"
+              },
+              "cells": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "bandEnd": {
+                      "type": "number"
+                    },
+                    "bandStart": {
+                      "type": "number"
+                    },
+                    "boxRect": {
+                      "$ref": "#/$defs/Rect"
+                    },
+                    "colEnd": {
+                      "type": "number"
+                    },
+                    "colStart": {
+                      "type": "number"
+                    },
+                    "entity": {
+                      "type": "string"
+                    },
+                    "slotRect": {
+                      "$ref": "#/$defs/Rect"
+                    }
+                  },
+                  "required": [
+                    "bandEnd",
+                    "bandStart",
+                    "boxRect",
+                    "colEnd",
+                    "colStart",
+                    "entity",
+                    "slotRect"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "columns": {
+                "items": {
+                  "$ref": "#/$defs/ComposedTrackLine"
+                },
+                "type": "array"
+              },
+              "runKey": {
+                "type": "string"
+              },
+              "scope": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "bands",
+              "cells",
+              "columns",
+              "runKey",
+              "scope"
+            ],
+            "type": "object"
+          },
+          "ComposedPaintedGap": {
+            "additionalProperties": false,
+            "properties": {
+              "axis": {
+                "enum": [
+                  "horizontal",
+                  "vertical"
+                ]
+              },
+              "fromSlack": {
+                "type": "number"
+              },
+              "left": {
+                "type": "string"
+              },
+              "paintedGap": {
+                "type": "number"
+              },
+              "right": {
+                "type": "string"
+              },
+              "scope": {
+                "type": "string"
+              },
+              "slack": {
+                "type": "number"
+              },
+              "toSlack": {
+                "type": "number"
+              },
+              "token": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "axis",
+              "fromSlack",
+              "left",
+              "paintedGap",
+              "right",
+              "scope",
+              "slack",
+              "toSlack",
+              "token"
+            ],
+            "type": "object"
+          },
+          "ComposedTrackLine": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "peripheral-start",
+                  "stage",
+                  "peripheral-end",
+                  "band",
+                  "trailing"
+                ]
+              },
+              "size": {
+                "type": "number"
+              },
+              "start": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "size",
+              "start"
             ],
             "type": "object"
           },
@@ -1318,8 +1484,8 @@
               },
               "reason": {
                 "enum": [
-                  "fold",
                   "fan-out",
+                  "fold",
                   "obstructed"
                 ]
               },
@@ -1392,6 +1558,25 @@
               "occurrence",
               "overflow",
               "title"
+            ],
+            "type": "object"
+          },
+          "LayoutBand": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "items": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "id",
+              "items"
             ],
             "type": "object"
           },
@@ -1474,6 +1659,217 @@
             ],
             "type": "object"
           },
+          "LayoutCombGroup": {
+            "additionalProperties": false,
+            "properties": {
+              "arrowhead": {
+                "enum": [
+                  "none",
+                  "arrow"
+                ]
+              },
+              "carrier": {
+                "type": "string"
+              },
+              "hub": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "fan-in",
+                  "fan-out"
+                ]
+              },
+              "label": {
+                "type": "string"
+              },
+              "members": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "styleKey": {
+                "type": "string"
+              },
+              "trunk": {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "$ref": "#/$defs/Vec2"
+                  },
+                  {
+                    "$ref": "#/$defs/Vec2"
+                  }
+                ],
+                "type": "array"
+              },
+              "trunkGutterId": {
+                "type": "string"
+              },
+              "trunkSegments": {
+                "description": "Trunk sub-segments between consecutive join points, sorted longest-first for label placement.",
+                "items": {
+                  "items": false,
+                  "prefixItems": [
+                    {
+                      "$ref": "#/$defs/Vec2"
+                    },
+                    {
+                      "$ref": "#/$defs/Vec2"
+                    }
+                  ],
+                  "type": "array"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "arrowhead",
+              "carrier",
+              "hub",
+              "id",
+              "kind",
+              "members",
+              "styleKey",
+              "trunk",
+              "trunkGutterId",
+              "trunkSegments"
+            ],
+            "type": "object"
+          },
+          "LayoutComposition": {
+            "additionalProperties": false,
+            "properties": {
+              "aspect": {
+                "enum": [
+                  "16:9",
+                  "free"
+                ]
+              },
+              "fanIn": {
+                "enum": [
+                  "comb",
+                  "separate"
+                ]
+              },
+              "fanOut": {
+                "enum": [
+                  "comb",
+                  "separate"
+                ]
+              },
+              "grids": {
+                "additionalProperties": false,
+                "properties": {
+                  "root": {
+                    "$ref": "#/$defs/LayoutGrid"
+                  }
+                },
+                "required": [
+                  "root"
+                ],
+                "type": "object"
+              },
+              "legend": {
+                "description": "\"host\" uses the scene option and its default.",
+                "enum": [
+                  "none",
+                  "right",
+                  "bottom",
+                  "free-cell",
+                  "host"
+                ]
+              },
+              "stacks": {}
+            },
+            "required": [
+              "aspect",
+              "fanIn",
+              "fanOut",
+              "grids",
+              "legend",
+              "stacks"
+            ],
+            "type": "object"
+          },
+          "LayoutCompositionReport": {
+            "additionalProperties": false,
+            "properties": {
+              "combFallbacks": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "hub": {
+                      "type": "string"
+                    },
+                    "members": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "hub",
+                    "members",
+                    "reason"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "grids": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/ComposedGridReport"
+                },
+                "properties": {},
+                "type": "object"
+              },
+              "nominalAspect": {
+                "type": "number"
+              },
+              "paintedGapsAboveToken": {
+                "items": {
+                  "$ref": "#/$defs/ComposedPaintedGap"
+                },
+                "type": "array"
+              },
+              "planDigest": {
+                "type": "string"
+              },
+              "postRouteCorrectionRounds": {
+                "type": "number"
+              },
+              "sigmaBands": {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "properties": {},
+                "type": "object"
+              },
+              "sigmaCols": {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "properties": {},
+                "type": "object"
+              },
+              "tau": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "grids"
+            ],
+            "type": "object"
+          },
           "LayoutFit": {
             "additionalProperties": false,
             "properties": {
@@ -1510,6 +1906,41 @@
               "phone",
               "width",
               "zoom"
+            ],
+            "type": "object"
+          },
+          "LayoutGrid": {
+            "additionalProperties": false,
+            "properties": {
+              "cells": {},
+              "peripheral_columns": {
+                "items": {
+                  "$ref": "#/$defs/LayoutPeripheralColumn"
+                },
+                "type": "array"
+              },
+              "stage_columns": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "const": "inherit"
+                  }
+                ]
+              },
+              "transverse_bands": {
+                "items": {
+                  "$ref": "#/$defs/LayoutBand"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "transverse_bands"
             ],
             "type": "object"
           },
@@ -1562,6 +1993,10 @@
               },
               "cardGapY": {
                 "type": "number"
+              },
+              "composition": {
+                "$ref": "#/$defs/LayoutComposition",
+                "description": "Composed `ds-layout-hints@2` placement (`stage-columns`). Absent on `@1` and `auto-pack`."
               },
               "grouping": {
                 "items": {
@@ -1618,6 +2053,35 @@
               "headers",
               "overflows",
               "slots"
+            ],
+            "type": "object"
+          },
+          "LayoutPeripheralColumn": {
+            "additionalProperties": false,
+            "properties": {
+              "from_band": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "items": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "side": {
+                "enum": [
+                  "start",
+                  "end"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "items",
+              "side"
             ],
             "type": "object"
           },
@@ -1679,7 +2143,10 @@
                   "zone-surface-same",
                   "arrow-direction-convention",
                   "zone-tag-opaque-acronym",
-                  "docking-overflow"
+                  "docking-overflow",
+                  "composition-unplaced",
+                  "aspect-unreached",
+                  "comb-fallback"
                 ]
               },
               "details": {
@@ -1690,10 +2157,16 @@
                     },
                     {
                       "type": "number"
+                    },
+                    {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
                     }
                   ]
                 },
-                "description": "Structured overflow detail (needed/allocated sizes, side, required/fitted slots).",
+                "description": "Structured overflow detail (needed/allocated sizes, side, required/fitted slots, comb members).",
                 "properties": {},
                 "type": "object"
               },
@@ -1756,6 +2229,61 @@
               "lines",
               "overflow",
               "width"
+            ],
+            "type": "object"
+          },
+          "LinkLegendEntry": {
+            "additionalProperties": false,
+            "properties": {
+              "arrowhead": {
+                "enum": [
+                  "none",
+                  "arrow"
+                ]
+              },
+              "count": {
+                "description": "Count of visible connectors using this style in the current fold state.",
+                "type": "number"
+              },
+              "emphasis": {
+                "enum": [
+                  "default",
+                  "emphasis"
+                ]
+              },
+              "key": {
+                "description": "Deterministic key: `<strokeStyle>:<arrowhead>:<emphasis>`.",
+                "type": "string"
+              },
+              "label": {
+                "description": "Human-readable label shown beside the sample swatch.",
+                "type": "string"
+              },
+              "rowHeight": {
+                "description": "Height of this row inside the legend box (world units).",
+                "type": "number"
+              },
+              "rowY": {
+                "description": "Top offset of this row inside the legend box (world units).",
+                "type": "number"
+              },
+              "strokeStyle": {
+                "enum": [
+                  "solid",
+                  "dashed",
+                  "dotted"
+                ]
+              }
+            },
+            "required": [
+              "arrowhead",
+              "count",
+              "emphasis",
+              "key",
+              "label",
+              "rowHeight",
+              "rowY",
+              "strokeStyle"
             ],
             "type": "object"
           },
@@ -2694,6 +3222,75 @@
           "SceneLayoutCache": {
             "additionalProperties": false,
             "properties": {},
+            "type": "object"
+          },
+          "SceneLinkLegend": {
+            "additionalProperties": false,
+            "properties": {
+              "anchor": {
+                "enum": [
+                  "right",
+                  "bottom",
+                  "free-cell"
+                ]
+              },
+              "entries": {
+                "description": "Visible styles in fixed canonical order (always length >= 2).",
+                "items": {
+                  "$ref": "#/$defs/LinkLegendEntry"
+                },
+                "type": "array"
+              },
+              "fontSize": {
+                "type": "number"
+              },
+              "headerGap": {
+                "type": "number"
+              },
+              "headerHeight": {
+                "type": "number"
+              },
+              "padding": {
+                "type": "number"
+              },
+              "rect": {
+                "$ref": "#/$defs/Rect",
+                "description": "Outer bounding rectangle in world coordinates, outside the functional flow."
+              },
+              "rowGap": {
+                "type": "number"
+              },
+              "rowHeight": {
+                "type": "number"
+              },
+              "swatchGap": {
+                "type": "number"
+              },
+              "swatchHeight": {
+                "type": "number"
+              },
+              "swatchWidth": {
+                "type": "number"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "anchor",
+              "entries",
+              "fontSize",
+              "headerGap",
+              "headerHeight",
+              "padding",
+              "rect",
+              "rowGap",
+              "rowHeight",
+              "swatchGap",
+              "swatchHeight",
+              "swatchWidth",
+              "title"
+            ],
             "type": "object"
           },
           "SchemaVersion": {
@@ -4200,6 +4797,18 @@
           "sourceType": "EntityRef"
         },
         {
+          "name": "ComposedPaintedGap.left",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "EntityRef"
+        },
+        {
+          "name": "ComposedPaintedGap.right",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "EntityRef"
+        },
+        {
           "name": "Diagnostic.details",
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"number\"},{\"const\":false},{\"const\":true}]}",
@@ -4230,6 +4839,54 @@
           "sourceType": "OccurrenceRef"
         },
         {
+          "name": "LayoutBand.items[]",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "EntityRef"
+        },
+        {
+          "name": "LayoutCombGroup.carrier",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "OccurrenceRef"
+        },
+        {
+          "name": "LayoutCombGroup.members[]",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "OccurrenceRef"
+        },
+        {
+          "name": "LayoutComposition.stacks",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "Readonly<Partial<Record<EntityRef, LayoutStack>>>"
+        },
+        {
+          "name": "LayoutCompositionReport.grids",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"$ref\":\"#/$defs/ComposedGridReport\"}",
+          "sourceType": "Readonly<Record<string, ComposedGridReport>>"
+        },
+        {
+          "name": "LayoutCompositionReport.sigmaBands",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"number\"}",
+          "sourceType": "Readonly<Record<string, number>>"
+        },
+        {
+          "name": "LayoutCompositionReport.sigmaCols",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"number\"}",
+          "sourceType": "Readonly<Record<string, number>>"
+        },
+        {
+          "name": "LayoutGrid.cells",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "Readonly<Partial<Record<EntityRef, LayoutCell>>>"
+        },
+        {
           "name": "LayoutGroup.items[]",
           "reason": "primitive intersection constraints (including brands) are not represented in JSON",
           "replacement": "{\"type\":\"string\"}",
@@ -4248,10 +4905,16 @@
           "sourceType": "EntityRef"
         },
         {
+          "name": "LayoutPeripheralColumn.items[]",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "EntityRef"
+        },
+        {
           "name": "LayoutWarning.details",
           "reason": "index-signature: open-ended map loses key discipline",
-          "replacement": "{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"number\"}]}",
-          "sourceType": "Readonly<Record<string, string | number>>"
+          "replacement": "{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"number\"},{\"type\":\"array\",\"items\":{\"type\":\"string\"}}]}",
+          "sourceType": "Readonly<Record<string, string | number | readonly string[]>>"
         },
         {
           "name": "MeasurementOverflow.occurrence",
@@ -4857,6 +5520,17 @@
                     },
                     "type": "array"
                   },
+                  "combGroups": {
+                    "description": "Formed fan-in and fan-out comb groups (H2.7).",
+                    "items": {
+                      "$ref": "#/$defs/LayoutCombGroup"
+                    },
+                    "type": "array"
+                  },
+                  "composition": {
+                    "$ref": "#/$defs/LayoutCompositionReport",
+                    "description": "Composition track lines, cell rects, plan digest and painted-gap report (H2.3+)."
+                  },
                   "edgeBundles": {
                     "additionalProperties": {
                       "additionalProperties": false,
@@ -5024,6 +5698,14 @@
                     },
                     "properties": {},
                     "type": "object"
+                  },
+                  "legendResolved": {
+                    "description": "True when layout resolved the legend (including suppression) for a composed scene.",
+                    "type": "boolean"
+                  },
+                  "linkLegend": {
+                    "$ref": "#/$defs/SceneLinkLegend",
+                    "description": "Link-style legend measured in layout for composed scenes (H2.2/H2.8)."
                   },
                   "measurements": {
                     "$ref": "#/$defs/LayoutMeasurements"
@@ -5176,6 +5858,17 @@
                     },
                     "type": "array"
                   },
+                  "combGroups": {
+                    "description": "Formed fan-in and fan-out comb groups (H2.7).",
+                    "items": {
+                      "$ref": "#/$defs/LayoutCombGroup"
+                    },
+                    "type": "array"
+                  },
+                  "composition": {
+                    "$ref": "#/$defs/LayoutCompositionReport",
+                    "description": "Composition track lines, cell rects, plan digest and painted-gap report (H2.3+)."
+                  },
                   "edgeBundles": {
                     "additionalProperties": {
                       "additionalProperties": false,
@@ -5343,6 +6036,14 @@
                     },
                     "properties": {},
                     "type": "object"
+                  },
+                  "legendResolved": {
+                    "description": "True when layout resolved the legend (including suppression) for a composed scene.",
+                    "type": "boolean"
+                  },
+                  "linkLegend": {
+                    "$ref": "#/$defs/SceneLinkLegend",
+                    "description": "Link-style legend measured in layout for composed scenes (H2.2/H2.8)."
                   },
                   "measurements": {
                     "$ref": "#/$defs/LayoutMeasurements"
@@ -5605,6 +6306,153 @@
               "capacity",
               "demand",
               "gap"
+            ],
+            "type": "object"
+          },
+          "ComposedGridReport": {
+            "additionalProperties": false,
+            "properties": {
+              "bands": {
+                "items": {
+                  "$ref": "#/$defs/ComposedTrackLine"
+                },
+                "type": "array"
+              },
+              "cells": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "bandEnd": {
+                      "type": "number"
+                    },
+                    "bandStart": {
+                      "type": "number"
+                    },
+                    "boxRect": {
+                      "$ref": "#/$defs/Rect"
+                    },
+                    "colEnd": {
+                      "type": "number"
+                    },
+                    "colStart": {
+                      "type": "number"
+                    },
+                    "entity": {
+                      "type": "string"
+                    },
+                    "slotRect": {
+                      "$ref": "#/$defs/Rect"
+                    }
+                  },
+                  "required": [
+                    "bandEnd",
+                    "bandStart",
+                    "boxRect",
+                    "colEnd",
+                    "colStart",
+                    "entity",
+                    "slotRect"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "columns": {
+                "items": {
+                  "$ref": "#/$defs/ComposedTrackLine"
+                },
+                "type": "array"
+              },
+              "runKey": {
+                "type": "string"
+              },
+              "scope": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "bands",
+              "cells",
+              "columns",
+              "runKey",
+              "scope"
+            ],
+            "type": "object"
+          },
+          "ComposedPaintedGap": {
+            "additionalProperties": false,
+            "properties": {
+              "axis": {
+                "enum": [
+                  "horizontal",
+                  "vertical"
+                ]
+              },
+              "fromSlack": {
+                "type": "number"
+              },
+              "left": {
+                "type": "string"
+              },
+              "paintedGap": {
+                "type": "number"
+              },
+              "right": {
+                "type": "string"
+              },
+              "scope": {
+                "type": "string"
+              },
+              "slack": {
+                "type": "number"
+              },
+              "toSlack": {
+                "type": "number"
+              },
+              "token": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "axis",
+              "fromSlack",
+              "left",
+              "paintedGap",
+              "right",
+              "scope",
+              "slack",
+              "toSlack",
+              "token"
+            ],
+            "type": "object"
+          },
+          "ComposedTrackLine": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "peripheral-start",
+                  "stage",
+                  "peripheral-end",
+                  "band",
+                  "trailing"
+                ]
+              },
+              "size": {
+                "type": "number"
+              },
+              "start": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "size",
+              "start"
             ],
             "type": "object"
           },
@@ -6344,8 +7192,8 @@
               },
               "reason": {
                 "enum": [
-                  "fold",
                   "fan-out",
+                  "fold",
                   "obstructed"
                 ]
               },
@@ -6418,6 +7266,25 @@
               "occurrence",
               "overflow",
               "title"
+            ],
+            "type": "object"
+          },
+          "LayoutBand": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "items": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "id",
+              "items"
             ],
             "type": "object"
           },
@@ -6500,6 +7367,217 @@
             ],
             "type": "object"
           },
+          "LayoutCombGroup": {
+            "additionalProperties": false,
+            "properties": {
+              "arrowhead": {
+                "enum": [
+                  "none",
+                  "arrow"
+                ]
+              },
+              "carrier": {
+                "type": "string"
+              },
+              "hub": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "fan-in",
+                  "fan-out"
+                ]
+              },
+              "label": {
+                "type": "string"
+              },
+              "members": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "styleKey": {
+                "type": "string"
+              },
+              "trunk": {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "$ref": "#/$defs/Vec2"
+                  },
+                  {
+                    "$ref": "#/$defs/Vec2"
+                  }
+                ],
+                "type": "array"
+              },
+              "trunkGutterId": {
+                "type": "string"
+              },
+              "trunkSegments": {
+                "description": "Trunk sub-segments between consecutive join points, sorted longest-first for label placement.",
+                "items": {
+                  "items": false,
+                  "prefixItems": [
+                    {
+                      "$ref": "#/$defs/Vec2"
+                    },
+                    {
+                      "$ref": "#/$defs/Vec2"
+                    }
+                  ],
+                  "type": "array"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "arrowhead",
+              "carrier",
+              "hub",
+              "id",
+              "kind",
+              "members",
+              "styleKey",
+              "trunk",
+              "trunkGutterId",
+              "trunkSegments"
+            ],
+            "type": "object"
+          },
+          "LayoutComposition": {
+            "additionalProperties": false,
+            "properties": {
+              "aspect": {
+                "enum": [
+                  "16:9",
+                  "free"
+                ]
+              },
+              "fanIn": {
+                "enum": [
+                  "comb",
+                  "separate"
+                ]
+              },
+              "fanOut": {
+                "enum": [
+                  "comb",
+                  "separate"
+                ]
+              },
+              "grids": {
+                "additionalProperties": false,
+                "properties": {
+                  "root": {
+                    "$ref": "#/$defs/LayoutGrid"
+                  }
+                },
+                "required": [
+                  "root"
+                ],
+                "type": "object"
+              },
+              "legend": {
+                "description": "\"host\" uses the scene option and its default.",
+                "enum": [
+                  "none",
+                  "right",
+                  "bottom",
+                  "free-cell",
+                  "host"
+                ]
+              },
+              "stacks": {}
+            },
+            "required": [
+              "aspect",
+              "fanIn",
+              "fanOut",
+              "grids",
+              "legend",
+              "stacks"
+            ],
+            "type": "object"
+          },
+          "LayoutCompositionReport": {
+            "additionalProperties": false,
+            "properties": {
+              "combFallbacks": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "hub": {
+                      "type": "string"
+                    },
+                    "members": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "hub",
+                    "members",
+                    "reason"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "grids": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/ComposedGridReport"
+                },
+                "properties": {},
+                "type": "object"
+              },
+              "nominalAspect": {
+                "type": "number"
+              },
+              "paintedGapsAboveToken": {
+                "items": {
+                  "$ref": "#/$defs/ComposedPaintedGap"
+                },
+                "type": "array"
+              },
+              "planDigest": {
+                "type": "string"
+              },
+              "postRouteCorrectionRounds": {
+                "type": "number"
+              },
+              "sigmaBands": {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "properties": {},
+                "type": "object"
+              },
+              "sigmaCols": {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "properties": {},
+                "type": "object"
+              },
+              "tau": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "grids"
+            ],
+            "type": "object"
+          },
           "LayoutFit": {
             "additionalProperties": false,
             "properties": {
@@ -6536,6 +7614,41 @@
               "phone",
               "width",
               "zoom"
+            ],
+            "type": "object"
+          },
+          "LayoutGrid": {
+            "additionalProperties": false,
+            "properties": {
+              "cells": {},
+              "peripheral_columns": {
+                "items": {
+                  "$ref": "#/$defs/LayoutPeripheralColumn"
+                },
+                "type": "array"
+              },
+              "stage_columns": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "const": "inherit"
+                  }
+                ]
+              },
+              "transverse_bands": {
+                "items": {
+                  "$ref": "#/$defs/LayoutBand"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "transverse_bands"
             ],
             "type": "object"
           },
@@ -6588,6 +7701,10 @@
               },
               "cardGapY": {
                 "type": "number"
+              },
+              "composition": {
+                "$ref": "#/$defs/LayoutComposition",
+                "description": "Composed `ds-layout-hints@2` placement (`stage-columns`). Absent on `@1` and `auto-pack`."
               },
               "grouping": {
                 "items": {
@@ -6644,6 +7761,35 @@
               "headers",
               "overflows",
               "slots"
+            ],
+            "type": "object"
+          },
+          "LayoutPeripheralColumn": {
+            "additionalProperties": false,
+            "properties": {
+              "from_band": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "items": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "side": {
+                "enum": [
+                  "start",
+                  "end"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "items",
+              "side"
             ],
             "type": "object"
           },
@@ -6705,7 +7851,10 @@
                   "zone-surface-same",
                   "arrow-direction-convention",
                   "zone-tag-opaque-acronym",
-                  "docking-overflow"
+                  "docking-overflow",
+                  "composition-unplaced",
+                  "aspect-unreached",
+                  "comb-fallback"
                 ]
               },
               "details": {
@@ -6716,10 +7865,16 @@
                     },
                     {
                       "type": "number"
+                    },
+                    {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
                     }
                   ]
                 },
-                "description": "Structured overflow detail (needed/allocated sizes, side, required/fitted slots).",
+                "description": "Structured overflow detail (needed/allocated sizes, side, required/fitted slots, comb members).",
                 "properties": {},
                 "type": "object"
               },
@@ -6782,6 +7937,61 @@
               "lines",
               "overflow",
               "width"
+            ],
+            "type": "object"
+          },
+          "LinkLegendEntry": {
+            "additionalProperties": false,
+            "properties": {
+              "arrowhead": {
+                "enum": [
+                  "none",
+                  "arrow"
+                ]
+              },
+              "count": {
+                "description": "Count of visible connectors using this style in the current fold state.",
+                "type": "number"
+              },
+              "emphasis": {
+                "enum": [
+                  "default",
+                  "emphasis"
+                ]
+              },
+              "key": {
+                "description": "Deterministic key: `<strokeStyle>:<arrowhead>:<emphasis>`.",
+                "type": "string"
+              },
+              "label": {
+                "description": "Human-readable label shown beside the sample swatch.",
+                "type": "string"
+              },
+              "rowHeight": {
+                "description": "Height of this row inside the legend box (world units).",
+                "type": "number"
+              },
+              "rowY": {
+                "description": "Top offset of this row inside the legend box (world units).",
+                "type": "number"
+              },
+              "strokeStyle": {
+                "enum": [
+                  "solid",
+                  "dashed",
+                  "dotted"
+                ]
+              }
+            },
+            "required": [
+              "arrowhead",
+              "count",
+              "emphasis",
+              "key",
+              "label",
+              "rowHeight",
+              "rowY",
+              "strokeStyle"
             ],
             "type": "object"
           },
@@ -7733,6 +8943,75 @@
           "SceneLayoutCache": {
             "additionalProperties": false,
             "properties": {},
+            "type": "object"
+          },
+          "SceneLinkLegend": {
+            "additionalProperties": false,
+            "properties": {
+              "anchor": {
+                "enum": [
+                  "right",
+                  "bottom",
+                  "free-cell"
+                ]
+              },
+              "entries": {
+                "description": "Visible styles in fixed canonical order (always length >= 2).",
+                "items": {
+                  "$ref": "#/$defs/LinkLegendEntry"
+                },
+                "type": "array"
+              },
+              "fontSize": {
+                "type": "number"
+              },
+              "headerGap": {
+                "type": "number"
+              },
+              "headerHeight": {
+                "type": "number"
+              },
+              "padding": {
+                "type": "number"
+              },
+              "rect": {
+                "$ref": "#/$defs/Rect",
+                "description": "Outer bounding rectangle in world coordinates, outside the functional flow."
+              },
+              "rowGap": {
+                "type": "number"
+              },
+              "rowHeight": {
+                "type": "number"
+              },
+              "swatchGap": {
+                "type": "number"
+              },
+              "swatchHeight": {
+                "type": "number"
+              },
+              "swatchWidth": {
+                "type": "number"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "anchor",
+              "entries",
+              "fontSize",
+              "headerGap",
+              "headerHeight",
+              "padding",
+              "rect",
+              "rowGap",
+              "rowHeight",
+              "swatchGap",
+              "swatchHeight",
+              "swatchWidth",
+              "title"
+            ],
             "type": "object"
           },
           "SchemaVersion": {
@@ -9239,6 +10518,18 @@
           "sourceType": "EntityRef"
         },
         {
+          "name": "ComposedPaintedGap.left",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "EntityRef"
+        },
+        {
+          "name": "ComposedPaintedGap.right",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "EntityRef"
+        },
+        {
           "name": "Diagnostic.details",
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"number\"},{\"const\":false},{\"const\":true}]}",
@@ -9269,6 +10560,54 @@
           "sourceType": "OccurrenceRef"
         },
         {
+          "name": "LayoutBand.items[]",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "EntityRef"
+        },
+        {
+          "name": "LayoutCombGroup.carrier",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "OccurrenceRef"
+        },
+        {
+          "name": "LayoutCombGroup.members[]",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "OccurrenceRef"
+        },
+        {
+          "name": "LayoutComposition.stacks",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "Readonly<Partial<Record<EntityRef, LayoutStack>>>"
+        },
+        {
+          "name": "LayoutCompositionReport.grids",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"$ref\":\"#/$defs/ComposedGridReport\"}",
+          "sourceType": "Readonly<Record<string, ComposedGridReport>>"
+        },
+        {
+          "name": "LayoutCompositionReport.sigmaBands",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"number\"}",
+          "sourceType": "Readonly<Record<string, number>>"
+        },
+        {
+          "name": "LayoutCompositionReport.sigmaCols",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"number\"}",
+          "sourceType": "Readonly<Record<string, number>>"
+        },
+        {
+          "name": "LayoutGrid.cells",
+          "reason": "library type not expanded",
+          "replacement": "{}",
+          "sourceType": "Readonly<Partial<Record<EntityRef, LayoutCell>>>"
+        },
+        {
           "name": "LayoutGroup.items[]",
           "reason": "primitive intersection constraints (including brands) are not represented in JSON",
           "replacement": "{\"type\":\"string\"}",
@@ -9287,10 +10626,16 @@
           "sourceType": "EntityRef"
         },
         {
+          "name": "LayoutPeripheralColumn.items[]",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "EntityRef"
+        },
+        {
           "name": "LayoutWarning.details",
           "reason": "index-signature: open-ended map loses key discipline",
-          "replacement": "{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"number\"}]}",
-          "sourceType": "Readonly<Record<string, string | number>>"
+          "replacement": "{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"number\"},{\"type\":\"array\",\"items\":{\"type\":\"string\"}}]}",
+          "sourceType": "Readonly<Record<string, string | number | readonly string[]>>"
         },
         {
           "name": "MeasurementOverflow.occurrence",

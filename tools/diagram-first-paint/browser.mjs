@@ -347,7 +347,13 @@ function check(state, scene) {
         [], 'h2 link legend order and anchor');
     }
     if (scene === 'h2-aspect-16-9') {
-      const ratio = worldWidth / worldHeight;
+      // Measure actual painted drawing bounds rather than `.st-diagramSceneFigure-extent`,
+      // which carries `min-width: 100%; min-height: 100%` and includes centering margin.
+      const left = Math.min(...drawing.map(p => p.left));
+      const right = Math.max(...drawing.map(p => p.right));
+      const top = Math.min(...drawing.map(p => p.top));
+      const bottom = Math.max(...drawing.map(p => p.bottom));
+      const ratio = (right - left) / (bottom - top);
       assert.ok(Math.abs(ratio / (16 / 9) - 1) <= 0.02,
         `h2-aspect-16-9 nominal ratio ${ratio.toFixed(4)} outside 16:9 ± 2%`);
     }
