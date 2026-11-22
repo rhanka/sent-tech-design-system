@@ -46,8 +46,8 @@ jobs:
           node-version: "22"
           cache: "npm"
       - run: npm ci
-      - name: Build workspace for package smoke
-        run: npm run build
+      - name: Build local dependency closure for elements
+        run: node scripts/ensure-theme-dists.mjs --workspaces=@sentropic/design-system-elements
       - name: Verify elements package
         run: |
           npm --workspace @sentropic/design-system-elements run build:browser
@@ -68,6 +68,10 @@ jobs:
         run: node --test scripts/elements-publish-tarball.test.mjs
       - name: Verify publishable licensing
         run: npm run licensing:check
+      # pack:smoke packs every publishable package, not just the elements
+      # closure built above, so its dist/ must exist before the smoke guard.
+      - name: Build all workspaces for package smoke
+        run: npm run build
       - name: Smoke packed packages
         run: npm run pack:smoke
 
@@ -120,6 +124,7 @@ jobs:
       - name: Install and build
         run: |
           npm ci
+          node scripts/ensure-theme-dists.mjs --no-hash --workspaces=@sentropic/design-system-elements
           npm --workspace @sentropic/design-system-elements run build
           npm --workspace @sentropic/design-system-elements run build:browser
           # The tarball guard, against THIS runner's bytes, right before publish:

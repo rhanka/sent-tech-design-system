@@ -296,6 +296,13 @@ const DECLARED_TOKEN_BOOTSTRAPS = {
     // successful `npm publish`. Measured E404 (never published) on 2026-11-20.
     removeWhen: "@sentropic/design-system-review-core has had a first successful npm publish",
   },
+  "diagram-codecs-publish.yml": {
+    // Remove this entry — and the bootstrap step/secret it names in the
+    // workflow — the day @sentropic/diagram-codecs has a first successful
+    // `npm publish`. The package is new in lot E2 (PLAN-r3 §E2) and cannot
+    // declare a trusted publisher before it exists on the registry.
+    removeWhen: "@sentropic/diagram-codecs has had a first successful npm publish",
+  },
 };
 
 const BOOTSTRAP_COMMENT_PATTERN = /bootstrap|amor[cç]age/i;
@@ -902,4 +909,57 @@ test("guard fixture (item 5): missing, empty, write-all and write scopes fail", 
     const { strippedText } = scanWorkflow(snippet);
     assert.ok(!hasAcceptableTopLevelPermissions(strippedText), `expected rejected permissions, got:\n${snippet}`);
   }
+});
+
+// --- 10. unnarrowed pack:smoke requires a full workspace build in the same job
+// Measured 2026-11-21 (PR #332 Carbon P1): narrowing the initial build step of
+// elements-publish.yml to `ensure-theme-dists.mjs --workspaces=...` left all
+// non-closure workspaces without dist/, while `npm run pack:smoke` still
+// packed every publishable package.
+function verifyPackSmokeBuildErrors(strippedText) {
+  const errors = [];
+  for (const job of jobsWithScriptSteps(strippedText)) {
+    const body = job.lines.join("\n");
+    const smokeAt = body.search(/^\s+(?:-\s+)?run:\s*npm run pack:smoke\s*$/m);
+    if (smokeAt < 0) continue;
+    const beforeSmoke = body.slice(0, smokeAt);
+    const hasFullBuild = /^\s+(?:-\s+)?run:\s*npm run (?:build|verify)\s*$/m.test(beforeSmoke);
+    if (!hasFullBuild) {
+      errors.push(`job ${job.name}: unnarrowed \`npm run pack:smoke\` requires \`npm run build\` or \`npm run verify\` earlier in the same job`);
+    }
+  }
+  return errors;
+}
+
+test("every workflow job running unnarrowed pack:smoke builds all workspaces first", () => {
+  const offenders = [];
+  for (const name of workflowFiles()) {
+    const { strippedText } = scanWorkflow(readWorkflow(name));
+    for (const error of verifyPackSmokeBuildErrors(strippedText)) {
+      offenders.push(`${name}: ${error}`);
+    }
+  }
+  assert.deepEqual(offenders, [], `pack:smoke build gap(s):\n  ${offenders.join("\n  ")}`);
+});
+
+test("guard fixture (item 10): narrowed build before unnarrowed pack:smoke fails while full npm run build passes", () => {
+  const narrowed = [
+    "jobs:",
+    "  verify:",
+    "    steps:",
+    "      - run: node scripts/ensure-theme-dists.mjs --workspaces=@sentropic/design-system-elements",
+    "      - run: npm run pack:smoke",
+    "",
+  ].join("\n");
+  const full = [
+    "jobs:",
+    "  verify:",
+    "    steps:",
+    "      - run: node scripts/ensure-theme-dists.mjs --workspaces=@sentropic/design-system-elements",
+    "      - run: npm run build",
+    "      - run: npm run pack:smoke",
+    "",
+  ].join("\n");
+  assert.equal(verifyPackSmokeBuildErrors(scanWorkflow(narrowed).strippedText).length, 1);
+  assert.deepEqual(verifyPackSmokeBuildErrors(scanWorkflow(full).strippedText), []);
 });

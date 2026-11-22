@@ -40,11 +40,11 @@
 //   force Node's JIT fallback path instead. That proves the module graph and
 //   export shapes are real and resolvable, but does not exercise the actual
 //   linker step a consumer's build performs.
-// - Only the 18 packages listed below are covered by the tarball-shape and
+// - Only the 19 packages listed below are covered by the tarball-shape and
 //   deep-import checks. The other 5 publishable packages - theme-dsfr,
 //   theme-canada, theme-quebec, theme-latex, codemirror - and apps/* are
 //   untested by those.
-//   THE ONE EXCEPTION is the licensing gate below: it runs over all 23
+//   THE ONE EXCEPTION is the licensing gate below: it runs over all 24
 //   publishable packages on every invocation, whatever --workspaces selects,
 //   precisely because the package nobody selected is the one that ships
 //   unlicensed.
@@ -310,6 +310,13 @@ const packages = [
     absentPatterns: ["\\.map$", "\\.srchash$"],
   },
   {
+    name: "@sentropic/diagram-codecs",
+    // E2: the static draw.io/SVG codecs. Same tarball promise as
+    // diagram-core: entry points present, no maps, no build stamp.
+    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/toDrawio.js"],
+    absentPatterns: ["\\.map$", "\\.srchash$"],
+  },
+  {
     name: "@sentropic/graph",
     // GD-M2-PROCESSING: the DOM-free computation subpath ships alongside the
     // root entry; both are required in the tarball.
@@ -438,15 +445,18 @@ const deepVerify = {
       ["svelte", rootManifest.devDependencies.svelte],
     ],
   },
-  // L7a: the elements package. No local closure: its runtime dependencies
-  // (ajv, dompurify, svelte, @sentropic/bpmn-canvas, @sentropic/focus) all
-  // exist on the registry at the pinned versions, so the throwaway install
-  // resolves them from the registry for real. That resolution IS the
-  // reclassification proof: with ajv still in devDependencies, importing the
-  // installed "." entry would die on `ajv/dist/2020.js` with no workspace
-  // to fall back on.
+  // L7a: the elements package. Its runtime dependencies (ajv, dompurify,
+  // svelte, @sentropic/bpmn-canvas, @sentropic/focus) all exist on the
+  // registry at the pinned versions, so the throwaway install resolves them
+  // from the registry for real. That resolution IS the reclassification
+  // proof: with ajv still in devDependencies, importing the installed "."
+  // entry would die on `ajv/dist/2020.js` with no workspace to fall back on.
+  // FA-D3 adds the review layer, which imports CommentLayer from
+  // @sentropic/design-system-svelte at the workspace version — unpublished
+  // until release (ETARGET otherwise) — so that tarball is packed locally;
+  // the walk pulls its own local closure (incl. review-core) with it.
   [reviewCoreName]: { closure: [], peers: [] },
-  "@sentropic/design-system-elements": { closure: [], peers: [] },
+  "@sentropic/design-system-elements": { closure: ["@sentropic/design-system-svelte"], peers: [] },
   "@sentropic/design-system-react": {
     closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens"],
     peers: [
@@ -495,6 +505,8 @@ const deepVerify = {
   "@sentropic/diagram-core": { closure: [], peers: [] },
   // DC-2a BF-5: one local dependency, resolved from the workspace tarball.
   "@sentropic/diagram-canvas": { closure: ["@sentropic/diagram-core"], peers: [] },
+  // E2: one local dependency chain, resolved from the workspace tarballs.
+  "@sentropic/diagram-codecs": { closure: ["@sentropic/diagram-canvas", "@sentropic/diagram-core"], peers: [] },
   "@sentropic/dataviz-core": { closure: [], peers: [] },
   "@sentropic/dataviz-svelte": {
     // Compiling .svelte source never resolves the component's own imports
