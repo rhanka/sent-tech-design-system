@@ -84,6 +84,42 @@ jobs:
           path: ${{ runner.temp }}/diagram-first-paint
           if-no-files-found: warn
 
+  # Exact publish verification for elements on pull requests: the
+  # elements-v0.3.0 and elements-v0.3.1 publish runs failed in the
+  # tag-only `verify` job of elements-publish.yml at
+  # packages/elements/tests/browser/chromium-suite.mjs, a suite that
+  # never ran in the pull-request CI (the shard `test` tasks run vitest,
+  # which excludes it). This job mirrors that `verify` job's Chrome setup,
+  # elements build and suite run so the same failure is caught on every
+  # pull request that reaches this workflow, instead of at tag time.
+  elements-browser-suite:
+    name: elements browser suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+          cache: "npm"
+      # Same pinned Chrome for Testing setup as elements-publish.yml and
+      # diagram-first-paint above.
+      - name: Set up Chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
+        with:
+          chrome-version: stable
+          install-dependencies: true
+      - run: npm ci
+      - name: Build local dependency closure for elements
+        run: node scripts/ensure-theme-dists.mjs --workspaces=@sentropic/design-system-elements
+      - name: Build elements browser bundle
+        run: npm --workspace @sentropic/design-system-elements run build:browser
+      - name: Run Chromium suite (stable host)
+        env:
+          CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
+        run: node packages/elements/tests/browser/chromium-suite.mjs
+
   # Deliberately NOT sharded and NOT gated on the affected-workspace plan: the
   # package this catches is the one nobody thought to select. It needs no build
   # (it reads manifests, the lockfile and `npm pack --dry-run`), so it is the
