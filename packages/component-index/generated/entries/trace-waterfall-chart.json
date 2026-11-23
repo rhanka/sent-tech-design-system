@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TraceWaterfallChart.vue",
-      "version": "0.41.0-next.14"
+      "version": "0.41.0-next.15"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Distributed span trace: start → duration bars on the time axis, ordered and indented by hierarchy.",
     "fr": "Trace de spans distribués : barres start → durée sur l'axe temps, ordonnées et indentées par hiérarchie."
   },
-  "digest": "sha256:12fbce9f4089f0e9e61bf3c3c692a2bc37e37847430d75f4b944d67b9ee159ae",
+  "digest": "sha256:675ebf49d3b68b2c68b46298ddaf49d9388f2578a3b680c5798f3cbe5b08e8fa",
   "displayName": "TraceWaterfallChart",
   "format": "component-entry/v1",
   "frameworks": [

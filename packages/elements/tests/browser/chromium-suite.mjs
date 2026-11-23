@@ -237,6 +237,36 @@ const referenceProps = PDATA_FIXTURES.map((name) => {
 const tempRoot = join(WORKTREE_ROOT, "tmp");
 mkdirSync(tempRoot, { recursive: true });
 const work = mkdtempSync(join(tempRoot, "st-elements-suite-"));
+
+// Chromium's singleton socket (process_singleton_posix.cc) is bound under
+// TMPDIR as `org.chromium.Chromium.<random>/SingletonSocket`, and the Unix
+// socket address is limited to ~108 bytes. The GitHub workspace path
+// (/home/runner/work/<repo>/<repo>/tmp/st-elements-suite-...) made that
+// socket path exceed the limit, so the publish `verify` job died with
+// "FATAL ... Socket path too long" before publishing (elements-v0.3.0 and
+// elements-v0.3.1). Root the profile, TMPDIR and XDG_RUNTIME_DIR in a short
+// base instead: RUNNER_TEMP on GitHub runners, otherwise the repository
+// tmp/ (local rule: no system /tmp). The other suite outputs (vite
+// harness, server fixtures) stay under `work` in the repository tmp/.
+// The profile directory IS the short base, which also keeps TMPDIR as
+// short as the profile itself.
+const chromiumBaseRoot = process.env.RUNNER_TEMP && process.env.RUNNER_TEMP.trim() !== ""
+  ? process.env.RUNNER_TEMP
+  : tempRoot;
+mkdirSync(chromiumBaseRoot, { recursive: true });
+// Shortest prefix: every character here is added to the socket path.
+const chromiumBase = mkdtempSync(join(chromiumBaseRoot, "c-"));
+const chromiumProfile = chromiumBase;
+const chromiumRuntime = join(chromiumBase, "runtime");
+const chromiumTmp = chromiumBase;
+const SINGLETON_SOCKET_PATH = join(chromiumProfile, "SingletonSocket");
+if (SINGLETON_SOCKET_PATH.length > 100) {
+  throw new Error(
+    `Chromium singleton socket path exceeds 100 characters (${SINGLETON_SOCKET_PATH.length}): ${SINGLETON_SOCKET_PATH}. ` +
+    "Chromium binds its singleton socket under TMPDIR and the Unix socket limit is ~108 bytes; shorten the directory rooting " +
+    "the Chromium profile (RUNNER_TEMP on GitHub runners, otherwise the repository tmp/ fallback is too shallow) and retry.",
+  );
+}
 const focusReport = readFileSync(join(FIXTURES, "focus-artifact", "report.json"), "utf8");
 const focusB5 = readFileSync(join(FIXTURES, "focus-artifact", "b5.json"), "utf8");
 function diagramOptions(doc) {
@@ -735,8 +765,10 @@ const BASE = `http://127.0.0.1:${server.address().port}`;
 // ---------------------------------------------------------------------------
 
 const puppeteer = await import("puppeteer-core");
-const chromiumProfile = join(work, "chromium");
-const chromiumRuntime = join(work, "runtime");
+// chromiumProfile/chromiumRuntime/chromiumTmp are defined with the short
+// base above (RUNNER_TEMP on GitHub runners, repository tmp/ locally) so the
+// singleton socket path stays within the Unix limit. `work` (the vite
+// harness and server fixtures) stays under the repository tmp/.
 let browser;
 // Everything below runs inside try/finally: the server and the work dir
 // (including the profile) are cleaned up even when a page operation throws,
@@ -748,7 +780,7 @@ browser = await puppeteer.default.launch({
   executablePath: findChrome(),
   headless: "new",
   userDataDir: chromiumProfile,
-  env: { ...process.env, TMPDIR: work, XDG_RUNTIME_DIR: chromiumRuntime },
+  env: { ...process.env, TMPDIR: chromiumTmp, XDG_RUNTIME_DIR: chromiumRuntime },
   args: ["--no-sandbox", "--disable-dev-shm-usage", "--font-render-hinting=none"],
 });
 
@@ -2714,5 +2746,8 @@ if (failures.length > 0) {
   } catch { /* already closed */ }
   try {
     rmSync(work, { recursive: true, force: true });
+  } catch { /* already removed */ }
+  try {
+    rmSync(chromiumBase, { recursive: true, force: true });
   } catch { /* already removed */ }
 }

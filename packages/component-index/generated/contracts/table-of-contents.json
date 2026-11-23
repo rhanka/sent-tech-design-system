@@ -1,8 +1,8 @@
 {
   "componentId": "table-of-contents",
   "contractSource": "derived",
-  "digest": "sha256:5bd908bf8a534dad59061974b7bbd5a9d93fc989f2a3f0c96cb0c499ef9bb017",
-  "entryDigest": "sha256:c3e0b00c66b379e6800972a0ca4697dc9e5835c2cfe88f69b7f9f32bc918fc0a",
+  "digest": "sha256:fc4bdd48d12c2f7c8bb9747b7dea5bd59671e65133d5917d76bb8e642c65f8e9",
+  "entryDigest": "sha256:e34575830aeb2c008f1fb26a6bf898e3b74cf033cf66e57031f554bca0b9b9dd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -271,7 +271,7 @@
         "declarationPath": "packages/components-vue/dist/TableOfContents.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TableOfContentsProps",
-        "version": "0.41.0-next.14"
+        "version": "0.41.0-next.15"
       },
       "status": "complete",
       "unresolved": [],

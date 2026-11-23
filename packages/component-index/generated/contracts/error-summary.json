@@ -1,8 +1,8 @@
 {
   "componentId": "error-summary",
   "contractSource": "derived",
-  "digest": "sha256:4c50dbdec15243484768c27ba088f33c74b479ef5f37ab3ac43e20ae82fe64e8",
-  "entryDigest": "sha256:05d9a2f99cf555305c0cbcd3b30c49f0cfe35b5864edefeef1113fb3ecf4f7c7",
+  "digest": "sha256:90baaa5cd92f7fb6a6baec26800c62faa70a5ee6bafd9b78aed24e145c323616",
+  "entryDigest": "sha256:d26340be12e535aeade2d1f5a1bf7c8193474b68771e87d80ab4df46db5ad3fe",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -237,7 +237,7 @@
         "declarationPath": "packages/components-vue/dist/ErrorSummary.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ErrorSummaryProps",
-        "version": "0.41.0-next.14"
+        "version": "0.41.0-next.15"
       },
       "status": "complete",
       "unresolved": [],

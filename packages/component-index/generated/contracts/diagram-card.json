@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:21b952e133551754b9b842678c5a27048755226fe8d3d9868b23d9824834a219",
-  "entryDigest": "sha256:0141d71778b7dcc846518402b28fb4719945fed7569ab0e8926c98ebec552cc0",
+  "digest": "sha256:fbff7f4794d4ca967b09839c14c0888b5cda2428677a5f211c361a1e6b98e91a",
+  "entryDigest": "sha256:fe4cbce4b1932490003c0f3a0ea61143addb140da3318fc501454404af1d639a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -557,7 +557,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramCardProps",
-        "version": "0.41.0-next.14"
+        "version": "0.41.0-next.15"
       },
       "status": "partial",
       "unresolved": [],

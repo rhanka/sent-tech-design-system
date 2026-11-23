@@ -1,8 +1,8 @@
 {
   "componentId": "pareto-chart",
   "contractSource": "derived",
-  "digest": "sha256:10230fe0bd486fd8eea6921659379ed7b6151a465069ecbca28a4a56877ab09b",
-  "entryDigest": "sha256:65c06b19ef3a5a73d4c68871c93e9140d45e50b0984932436c952b1594519773",
+  "digest": "sha256:bfb63d99aba34fdaf0c5ab423abe664568eb8be37bdc5f91e18186fd3bca782b",
+  "entryDigest": "sha256:566e730910458c0bf124e23f404ffc5162c3f0d18a671380d890d8e5069fb267",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -314,7 +314,7 @@
         "declarationPath": "packages/components-vue/dist/ParetoChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ParetoChartProps",
-        "version": "0.41.0-next.14"
+        "version": "0.41.0-next.15"
       },
       "status": "complete",
       "unresolved": [],

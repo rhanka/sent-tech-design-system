@@ -1,8 +1,8 @@
 {
   "componentId": "flex",
   "contractSource": "derived",
-  "digest": "sha256:0b996714565c770ad11ef88341d1ef40bef445d69c97d94cdc4f684cb38be6a8",
-  "entryDigest": "sha256:04bf44592047645452a3568712b95b026bfe46398ea0603ecf8a131bc07c3a3b",
+  "digest": "sha256:517796f2e53acdccc77df5a1491f0a72eb638c0428271b3fb40e521295341a12",
+  "entryDigest": "sha256:2b36a4eff8f0748795791aed2d7983cf106e7289eeab7732f568a4ac9827ce0a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -298,7 +298,7 @@
         "declarationPath": "packages/components-vue/dist/Flex.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FlexProps",
-        "version": "0.41.0-next.14"
+        "version": "0.41.0-next.15"
       },
       "status": "complete",
       "unresolved": [],

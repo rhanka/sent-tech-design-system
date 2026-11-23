@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/MarimekkoChart.vue",
-      "version": "0.41.0-next.14"
+      "version": "0.41.0-next.15"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Marimekko chart: weighted column width with stacked segments.",
     "fr": "Matrice Marimekko : largeur de colonne pondérée, segments en hauteur."
   },
-  "digest": "sha256:082be16954ff767ed952b99e37478da59cd92a49027199c8d4d949faf56919ca",
+  "digest": "sha256:7b34450566d66570f3540bbb893d5a33037b514b47c64318c481a27888f091c3",
   "displayName": "MarimekkoChart",
   "format": "component-entry/v1",
   "frameworks": [

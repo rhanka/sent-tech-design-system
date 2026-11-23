@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TreeView.vue",
-      "version": "0.41.0-next.14"
+      "version": "0.41.0-next.15"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Tree view: expand/collapse, selection, keyboard navigation (arrows).",
     "fr": "Arborescence : expand/collapse, sélection, navigation clavier (flèches)."
   },
-  "digest": "sha256:637e9308b4824eb379e19b41fe90bc9b8bcde6ae4bb0df67a22cac43ef2bb957",
+  "digest": "sha256:05423846f19448ca75882b48b1cf6be1fe22e57cef6836ee8080856a70b5f0f6",
   "displayName": "TreeView",
   "format": "component-entry/v1",
   "frameworks": [

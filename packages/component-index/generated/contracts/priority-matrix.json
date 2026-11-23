@@ -1,8 +1,8 @@
 {
   "componentId": "priority-matrix",
   "contractSource": "derived",
-  "digest": "sha256:ca3da0d251b016c0493e771133d4b64d38904db514e885fe9f76fa9301beed09",
-  "entryDigest": "sha256:b2954b9257e5d011ba6b0c1171b4907c5ca0aba933e374aa858e7923d1c4d569",
+  "digest": "sha256:5fa8ebc8a1bd5335989710d0daef0da395257f6a4bdcfa4fabc8de90dda06a2e",
+  "entryDigest": "sha256:a5399428a6959ef5faa2c24fc64e224dc969ea7abc80db8f86797d641600ae67",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -420,7 +420,7 @@
         "declarationPath": "packages/components-vue/dist/PriorityMatrix.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PriorityMatrixProps",
-        "version": "0.41.0-next.14"
+        "version": "0.41.0-next.15"
       },
       "status": "complete",
       "unresolved": [],

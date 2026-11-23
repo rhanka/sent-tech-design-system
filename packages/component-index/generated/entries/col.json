@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Col.vue",
-      "version": "0.41.0-next.14"
+      "version": "0.41.0-next.15"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Column of a 12-grid (span, offset, responsive overrides).",
     "fr": "Colonne d'une grille 12 (span, offset, surcharges responsives)."
   },
-  "digest": "sha256:2d2156fccb488935d30108189765920f442507aa16f73c7f1213afc9e317f967",
+  "digest": "sha256:56e982bcf2d7729bb3f5ca6caa3cd04220261ce3e59b98a384e940c846506665",
   "displayName": "Col",
   "format": "component-entry/v1",
   "frameworks": [

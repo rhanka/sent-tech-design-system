@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ForceGraph.vue",
-      "version": "0.41.0-next.14"
+      "version": "0.41.0-next.15"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Force-directed graph (nodes/edges), self-contained simulation, focusable nodes, tooltip.",
     "fr": "Graphe à force dirigée (nœuds/liens), simulation autonome, nœuds focusables, tooltip."
   },
-  "digest": "sha256:17e7071c05385ab3fbda9f9908ac1982059d371acda23af7a0555343a93b812e",
+  "digest": "sha256:b7c514d27afe2094a45d480ca7cb68abacd316b230f1f0a8036272b8e1e8197c",
   "displayName": "ForceGraph",
   "format": "component-entry/v1",
   "frameworks": [

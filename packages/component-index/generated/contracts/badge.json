@@ -1,8 +1,8 @@
 {
   "componentId": "badge",
   "contractSource": "derived",
-  "digest": "sha256:0b705557e17ef32e809e82d0e5a0000afd432096c7f50abc19166064a9c1e2d1",
-  "entryDigest": "sha256:5dee63b8a8497cd94cf1e26d2cf841bdb1ca31cdc1650dbcd77dcef5c027ed5c",
+  "digest": "sha256:6273eba6a78d13989bf83d844c331ce3a626c46384387ea92bf76d6436e0bd79",
+  "entryDigest": "sha256:7226a2120f1e1b86790f43248b6097c4c2bcb94f425926bcabb14da20342cc8e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -228,7 +228,7 @@
         "declarationPath": "packages/components-vue/dist/Badge.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BadgeProps",
-        "version": "0.41.0-next.14"
+        "version": "0.41.0-next.15"
       },
       "status": "complete",
       "unresolved": [],
