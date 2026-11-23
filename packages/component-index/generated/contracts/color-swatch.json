@@ -1,8 +1,8 @@
 {
   "componentId": "color-swatch",
   "contractSource": "derived",
-  "digest": "sha256:76ab4cf847ee08c13d6bc35fd4b840506e30d5aa89b276077f02f40e67284d27",
-  "entryDigest": "sha256:4de992bd6e48565440503128f7a5580b3b28c3092bf25c758490dfedf6c5deff",
+  "digest": "sha256:eb1d02c2a7f4523810b49c12c8a7a2faa1629413d176bfecbb3e477caa1f5016",
+  "entryDigest": "sha256:5db70e604193f976e224c8a92a760ee6a39b1a35d0cc08ba5339c066313c5073",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -207,7 +207,7 @@
         "declarationPath": "packages/components-vue/dist/ColorSwatch.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ColorSwatchProps",
-        "version": "0.41.0-next.14"
+        "version": "0.41.0-next.15"
       },
       "status": "complete",
       "unresolved": [],

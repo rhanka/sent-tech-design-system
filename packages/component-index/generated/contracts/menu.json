@@ -1,8 +1,8 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:3d5e788bf640d2ed247dd1da112d1dfdbba2c410c490adb90a833d11ec5c167a",
-  "entryDigest": "sha256:cd1db95948ebb3e1c0e05d914b3f68bab429f25b0819c5d7fe7603957bcda478",
+  "digest": "sha256:65dbf050666b3be93c9c2fcfa01e884149b4e06002db9f37168aaa092f4c578e",
+  "entryDigest": "sha256:03b3bea5173eecd957682bad8f81eb2568d516689755e0cea834e1fa672edbc5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -860,7 +860,7 @@
         "declarationPath": "packages/components-vue/dist/Menu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MenuProps",
-        "version": "0.41.0-next.14"
+        "version": "0.41.0-next.15"
       },
       "status": "partial",
       "unresolved": [],

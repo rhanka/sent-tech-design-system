@@ -17,14 +17,14 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/rich-text-editor/ComposerEditor.vue",
-      "version": "0.41.0-next.14"
+      "version": "0.41.0-next.15"
     }
   ],
   "description": {
     "en": "Controlled text composer with capture that waits for IME composition.",
     "fr": "Surface de rédaction à valeur texte contrôlée et capture compatible avec la composition IME."
   },
-  "digest": "sha256:b93a132bdeeffee4ea8d968435854f73a905cd147f128b77ca551b3feedd3bb3",
+  "digest": "sha256:26d29230e0b00d405a05fe01f0046bd6f615d1cf94530d053153e8a23569d86f",
   "displayName": "ComposerEditor",
   "format": "component-entry/v1",
   "frameworks": [

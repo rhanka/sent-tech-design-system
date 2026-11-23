@@ -1,8 +1,8 @@
 {
   "componentId": "button-group",
   "contractSource": "derived",
-  "digest": "sha256:0243818ce10227787cf81e445dc0d1294c6505e8a299af657e74dacb4c6b7a70",
-  "entryDigest": "sha256:aba23c894c67d816cbc8e5470b8a360d3f923c55ac00f73ebdf728bf1abba23d",
+  "digest": "sha256:7f7fd302fa07119251943bff2c418231416986b276a1f415e0fa95567cf23cf0",
+  "entryDigest": "sha256:c1c9d347390800c621fa97eab45d268bd85c8460b63e3d3743c60f5c90759efa",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -239,7 +239,7 @@
         "declarationPath": "packages/components-vue/dist/ButtonGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ButtonGroupProps",
-        "version": "0.41.0-next.14"
+        "version": "0.41.0-next.15"
       },
       "status": "complete",
       "unresolved": [],

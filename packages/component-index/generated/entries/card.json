@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Card.vue",
-      "version": "0.41.0-next.14"
+      "version": "0.41.0-next.15"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Surface container with border and padding.",
     "fr": "Conteneur surface avec bordure et padding."
   },
-  "digest": "sha256:2d53d22678946154a9d16351d2bb5684abe9aba83537680a450d5dad1d20f980",
+  "digest": "sha256:fa9416a0d617b3cc19a8d0ad1f7414082758e8be269c295dbaa91d82dfad1195",
   "displayName": "Card",
   "format": "component-entry/v1",
   "frameworks": [

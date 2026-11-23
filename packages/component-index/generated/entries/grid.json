@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Grid.vue",
-      "version": "0.41.0-next.14"
+      "version": "0.41.0-next.15"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Simple CSS grid: fixed columns or responsive auto-fill.",
     "fr": "Grille CSS simple : colonnes fixes ou auto-fill responsive."
   },
-  "digest": "sha256:7d7502f6b1de1ae46bd7cfde430ff86e3a7028c16f954f65eb7cb273592fd5af",
+  "digest": "sha256:c60d363e5115537933b697283ff88cd71e275e00c975b41cb5b130d307264c56",
   "displayName": "Grid",
   "format": "component-entry/v1",
   "frameworks": [

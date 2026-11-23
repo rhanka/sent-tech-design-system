@@ -1,8 +1,8 @@
 {
   "componentId": "tooltip",
   "contractSource": "derived",
-  "digest": "sha256:282ec99120fe50f93cf81aa548d201cbd4f69a384a262e7c69bf6aac09eb29ee",
-  "entryDigest": "sha256:6c6391632597eb5366ebf4bfe4c0cd6dd06c22a236b702ae8117eaab0277a2d2",
+  "digest": "sha256:46c30f41650d636b37a5be4f9df787a56f9768e756c653aaf954af5fc14c131c",
+  "entryDigest": "sha256:a65420d772ae0ad177b8172aedbc3f31f1a3cf00c8d6124de4ceef1658c79eec",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -197,7 +197,7 @@
         "declarationPath": "packages/components-vue/dist/Tooltip.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TooltipProps",
-        "version": "0.41.0-next.14"
+        "version": "0.41.0-next.15"
       },
       "status": "complete",
       "unresolved": [],

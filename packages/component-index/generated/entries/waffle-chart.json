@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/WaffleChart.vue",
-      "version": "0.41.0-next.14"
+      "version": "0.41.0-next.15"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "N×M cell grid: the share of colored cells encodes each category's proportion.",
     "fr": "Grille N×M de cellules : la proportion de cellules colorées encode la part de chaque catégorie."
   },
-  "digest": "sha256:e048b854592cdd3e432e17c5211b3b6b5b409da272fbdf9af4e7a7070339f286",
+  "digest": "sha256:7a5c362578ea61d95954e0b3d5c8ff7f8a6b8421a9041b7a32c393f1c2c5321d",
   "displayName": "WaffleChart",
   "format": "component-entry/v1",
   "frameworks": [

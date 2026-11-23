@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/StatusHistoryChart.vue",
-      "version": "0.41.0-next.14"
+      "version": "0.41.0-next.15"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Time × entity grid: each cell encodes a discrete status per time bucket.",
     "fr": "Grille temps × entité : chaque cellule encode un statut discret par bucket temporel."
   },
-  "digest": "sha256:63f8c5bdd915c7fb7c1953a067b0e0e69af151d4f7f5ad0d1d54f4f3e6f38be3",
+  "digest": "sha256:911aa552f12fa122c9510955d470a0aa5d9c1ee5f7cdcdacaca9608f1768fda6",
   "displayName": "StatusHistoryChart",
   "format": "component-entry/v1",
   "frameworks": [
