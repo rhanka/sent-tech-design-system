@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/PolygonChart.vue",
-      "version": "0.41.0-next.13"
+      "version": "0.41.0-next.14"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Closed filled polygon connecting x/y points in order (zones/clusters), outline + vertices, numeric axes.",
     "fr": "Polygone fermé rempli reliant des points x/y dans l'ordre fourni (zones/clusters), contour + sommets, axes numériques."
   },
-  "digest": "sha256:75ff2ee07dc8484cb1fcee4b93bb54d4bc9cec4a60213a88ec44c00afe7bb21c",
+  "digest": "sha256:21afd3c8545bd30a0a8ee7485aa28a38ac6a0856e6e05013cb17deceafb47967",
   "displayName": "PolygonChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "content-switcher",
   "contractSource": "derived",
-  "digest": "sha256:4ad990e442f589cc75caf4fc83b934ce634b5e49898a4eb0893b1dfb4a21a806",
-  "entryDigest": "sha256:e8f6e2af7250145f869384abbf970860a6e98a40070280054d5002bd6fd2e943",
+  "digest": "sha256:449886715e0c8bed3ff16cd29fbe8729fc79aec77793b1b2405e419d1cd4233e",
+  "entryDigest": "sha256:a029dda81b974e3720da19e77e8babf4374fd5c567fe92a16562fbd80f48be97",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -370,7 +370,7 @@
         "declarationPath": "packages/components-vue/dist/ContentSwitcher.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ContentSwitcherProps",
-        "version": "0.41.0-next.13"
+        "version": "0.41.0-next.14"
       },
       "status": "partial",
       "unresolved": [],

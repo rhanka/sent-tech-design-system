@@ -17,14 +17,14 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/rich-text-editor/RichTextEditor.vue",
-      "version": "0.41.0-next.13"
+      "version": "0.41.0-next.14"
     }
   ],
   "description": {
     "en": "Structured document editor with capture, Markdown profiles, and collaboration.",
     "fr": "Éditeur de documents structurés, avec capture, profils Markdown et collaboration."
   },
-  "digest": "sha256:593a16b481a5236979987b02f5743ad4f8704ff1093d442aa61fe2a383130fad",
+  "digest": "sha256:ac80a4efc5fb155b49d9542d5f0fba7933fcad8da8049cff6916f331dac6a536",
   "displayName": "RichTextEditor",
   "format": "component-entry/v1",
   "frameworks": [

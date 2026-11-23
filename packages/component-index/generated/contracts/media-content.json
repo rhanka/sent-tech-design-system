@@ -1,8 +1,8 @@
 {
   "componentId": "media-content",
   "contractSource": "derived",
-  "digest": "sha256:94a0f6aa0de7caa04fa1799d9e84e14e28785a2426356ab4c11aef97b66e435e",
-  "entryDigest": "sha256:6f7c45cddb0ee7bec6b21996faba95ed2f19b6e527fae0c7438b75acd9b25e95",
+  "digest": "sha256:12a100107aacf8a9b3f88e5041913ee3aee27049b0dac32b2040192f73167510",
+  "entryDigest": "sha256:ae08dae44adf77ca46a15d1171171e1b7451ac879b171a9e516856ead4c74785",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -289,7 +289,7 @@
         "declarationPath": "packages/components-vue/dist/MediaContent.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MediaContentProps",
-        "version": "0.41.0-next.13"
+        "version": "0.41.0-next.14"
       },
       "status": "complete",
       "unresolved": [],

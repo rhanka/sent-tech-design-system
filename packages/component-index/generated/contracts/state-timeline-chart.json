@@ -1,8 +1,8 @@
 {
   "componentId": "state-timeline-chart",
   "contractSource": "derived",
-  "digest": "sha256:d822719d0d7b3e8d2e64e9aa63b9f9276c6d0baf7281fbec5839431f6eecbce4",
-  "entryDigest": "sha256:2bad59ab19e13ab7bfff2dd7e7b21f2af0c45286e480e324a72f0a5a7c25a0c0",
+  "digest": "sha256:c9340876622050812a09ef29bcfcc8e624b8c7af7e679b2e867c5de1362f7722",
+  "entryDigest": "sha256:bc89bc6066a4618ae243f6091084cf5c0b13258bbc17ac2836961d5e5dca09ff",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -451,7 +451,7 @@
         "declarationPath": "packages/components-vue/dist/StateTimelineChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StateTimelineChartProps",
-        "version": "0.41.0-next.13"
+        "version": "0.41.0-next.14"
       },
       "status": "complete",
       "unresolved": [],

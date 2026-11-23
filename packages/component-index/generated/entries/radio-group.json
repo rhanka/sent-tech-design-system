@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/RadioGroup.vue",
-      "version": "0.41.0-next.13"
+      "version": "0.41.0-next.14"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Exclusive choice among options, with legend and a11y.",
     "fr": "Choix exclusif parmi plusieurs options, légende et a11y."
   },
-  "digest": "sha256:f46318927e5d40b0bf7594d9e5d470422db886882062c797b9108b5faafe8695",
+  "digest": "sha256:a0458b6520d1687b26e994c261f2c18cdcb5e4c7226dc8c66a767d66832c62a1",
   "displayName": "RadioGroup",
   "format": "component-entry/v1",
   "frameworks": [

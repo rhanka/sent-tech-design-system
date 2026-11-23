@@ -1,8 +1,8 @@
 {
   "componentId": "dataviz-data-image",
   "contractSource": "derived",
-  "digest": "sha256:1d08135d0feb053539464e8649487e73e9018a180f0e007339a13796766a7cb5",
-  "entryDigest": "sha256:118f29339dbb57dbd9b2ce7ac013c63350cb25d48971f25279b2ab9107d3b88e",
+  "digest": "sha256:2a904e89f01bcdf27824e74c810d77d34d0619271756d426e921f0ffca64e3a0",
+  "entryDigest": "sha256:fd78c71f0f779459cbf4cfe5e70f041c65495bae0e54b75619faa0218dc7c931",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -362,7 +362,7 @@
         "declarationPath": "packages/components-vue/dist/DataImage.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DataImageProps",
-        "version": "0.41.0-next.13"
+        "version": "0.41.0-next.14"
       },
       "status": "complete",
       "unresolved": [],

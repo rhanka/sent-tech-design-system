@@ -1,8 +1,8 @@
 {
   "componentId": "tree-view",
   "contractSource": "derived",
-  "digest": "sha256:e30a76bab2731aa7dc5edf7c67888476661b8e0c91b442151ab4bc80e2ce54a9",
-  "entryDigest": "sha256:9d0d57a181d532c429c695433fa8496f0818a45b0b3a9a9735dd9e77cd7804de",
+  "digest": "sha256:a31bb08ad731c176ce139dc2b50b9edc6bc339af6db4e094210e478206b22d79",
+  "entryDigest": "sha256:637e9308b4824eb379e19b41fe90bc9b8bcde6ae4bb0df67a22cac43ef2bb957",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -473,7 +473,7 @@
         "declarationPath": "packages/components-vue/dist/TreeView.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TreeViewProps",
-        "version": "0.41.0-next.13"
+        "version": "0.41.0-next.14"
       },
       "status": "partial",
       "unresolved": [],

@@ -319,46 +319,67 @@ git push origin diagram-codecs-v0.1.0
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
-### Elements 0.3.0
+### Elements 0.3.1
+
+`0.3.1` ships the `0.3.0` package content, plus FA-D2 (#330), plus the publish
+workflow fix (`elements-publish.yml` adds the pinned
+`browser-actions/setup-chrome` step and `CHROME_BIN` env for
+`chromium-suite.mjs`). `0.3.0` was tagged (`elements-v0.3.0`) but never
+published on npm — its `verify` job failed twice before publishing because the
+workflow lacked that Chrome setup, and the existing tag cannot be republished
+with the fixed workflow. Because `0.3.0` was never published on npm, this
+release uses `0.3.1` rather than a new minor (`0.4.0`) even though FA-D2 adds a
+public export and a runtime dependency.
 
 This release ships the Focus static artifact kit and the `st-dossier-ready`
 review root (FA-D1, #322), the `TimeSeriesChart` element, catalogue entry and
-transcript formatter (EZ-1, #321), and the FA-D3 review layer in the compiled
-kit and `./dossier-mount` export (#332). It also publishes the `./bpmn` and
-`./bpmn-mount` exports for the first time (#267). Publish Elements before any
-Vue release that carries its updated optional BPMN peer pin.
+transcript formatter (EZ-1, #321), the FA-D3 review layer in the compiled kit
+and `./dossier-mount` export (#332), and FA-D2 (#330): r7 scene rendering and
+container folding (including in review mode) in the static kit, the new
+`./dossier-views` subpath export, and the new exact runtime dependency
+`@sentropic/diagram-canvas@0.5.0` (already published on npm). It also publishes
+the `./bpmn` and `./bpmn-mount` exports for the first time (#267). Publish
+Elements `0.3.1` before tagging `@sentropic/design-system-vue` `0.41.0-next.14`,
+which carries its updated optional BPMN peer pin (`0.3.1`).
 
-`@sentropic/design-system-review-core` is bumped to `0.1.2` in the same release
-prep because DS-7 (#320) changed `packages/review-core/src/fixture-adapter.ts`
+#### Vue `0.41.0-next.14` (`0.41.0-next.13` tagged, never published)
+
+`@sentropic/design-system-vue` `0.41.0-next.13` was tagged (`vue-v0.41.0-next.13`)
+and never published on npm: at that tag the package pinned the optional peer
+`@sentropic/design-system-elements@0.3.0`, which never reached npm, so the
+publish gate refused publication. Because `vue-v0.41.0-next.13` already exists,
+the updated peer pin (`@sentropic/design-system-elements@0.3.1`, with no code
+change) ships as `0.41.0-next.14` (`vue-v0.41.0-next.14`, under `next`) once
+`elements-v0.3.1` is visible on npm.
+
+`@sentropic/design-system-review-core` was bumped to `0.1.2` in the `0.3.0`
+release prep because DS-7 (#320) changed `packages/review-core/src/fixture-adapter.ts`
 after `review-core-v0.1.1` was published. `@sentropic/design-system-elements`
 keeps its exact runtime pin on published `@sentropic/design-system-review-core@0.1.1`,
-so `elements-v0.3.0` and `review-core-v0.1.2` can be tagged independently on the
-merged default-branch commit.
+so `elements-v0.3.1` can be tagged independently on the merged default-branch
+commit.
 
-On the merged default-branch commit, push the `elements-v<version>` tag (and
-`review-core-v0.1.2` for the DS-7 fixture-adapter patch). The elements publish
-job grants `id-token: write` and uses npm 11 with the public npm registry.
-Confirm the package's npm Trusted Publisher names
+On the merged default-branch commit, push the `elements-v0.3.1` tag. The
+elements publish job grants `id-token: write` and uses npm 11 with the public
+npm registry. Confirm the package's npm Trusted Publisher names
 `rhanka/sent-tech-design-system` and `elements-publish.yml`.
 
 ```bash
 git push origin main
-git tag elements-v0.3.0
-git push origin elements-v0.3.0
-git tag review-core-v0.1.2
-git push origin review-core-v0.1.2
+git tag elements-v0.3.1
+git push origin elements-v0.3.1
 ```
 
 The browser bundle is served from the CDN base (exact version pinned, §7 — never a range, never `latest`):
 
 ```
-https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.3.0/dist/browser/
+https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.3.1/dist/browser/
 ```
 
 Once jsDelivr visibly serves the pinned version, run the post-publish CDN check (also wired into each publish workflow's `post-publish-check` job):
 
 ```bash
-node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.3.0
+node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.3.1
 node scripts/verify-jsdelivr-published.mjs --package @sentropic/diagram-core --version 0.1.0
 node scripts/verify-jsdelivr-published.mjs --package @sentropic/diagram-canvas --version 0.1.0
 ```

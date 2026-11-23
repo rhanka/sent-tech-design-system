@@ -1,8 +1,8 @@
 {
   "componentId": "tag",
   "contractSource": "derived",
-  "digest": "sha256:e165334512e9a4b76f7f69432c6bea05f9261374ce828b02d183baed818d53d9",
-  "entryDigest": "sha256:a8a25d510c440c04e1978a5c51033aafebb7c42b18c6b993ca412c66f695e940",
+  "digest": "sha256:d105b216182a2f8b9d460daa78b4497c7ea3fad758a7537233409aab31a7ce31",
+  "entryDigest": "sha256:ff3322bf8880a6baf9241d8fbff259d9e079a79d29e12c632256c575ccddd835",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -289,7 +289,7 @@
         "declarationPath": "packages/components-vue/dist/Tag.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TagProps",
-        "version": "0.41.0-next.13"
+        "version": "0.41.0-next.14"
       },
       "status": "partial",
       "unresolved": [

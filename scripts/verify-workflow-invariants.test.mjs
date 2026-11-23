@@ -957,3 +957,36 @@ test("guard fixture (item 10): narrowed build before unnarrowed pack:smoke fails
   assert.equal(verifyPackSmokeBuildErrors(scanWorkflow(narrowed).strippedText).length, 1);
   assert.deepEqual(verifyPackSmokeBuildErrors(scanWorkflow(full).strippedText), []);
 });
+
+// --- 11. every job running chromium-suite.mjs sets up Chrome and CHROME_BIN -
+// Measured 2026-11-22 (elements-v0.3.0 tag publish): elements-publish.yml ran
+// `node packages/elements/tests/browser/chromium-suite.mjs` in its `verify`
+// job without `browser-actions/setup-chrome` or `CHROME_BIN`, failing twice
+// with "Failed to launch the browser process".
+function verifyChromiumSuiteSetupErrors(strippedText) {
+  const errors = [];
+  for (const job of jobsWithScriptSteps(strippedText)) {
+    const body = job.lines.join("\n");
+    const suiteAt = body.search(/packages\/elements\/tests\/browser\/chromium-suite\.mjs/);
+    if (suiteAt < 0) continue;
+    const beforeSuite = body.slice(0, suiteAt);
+    if (!/uses:\s*browser-actions\/setup-chrome@[0-9a-f]{40}\b/.test(beforeSuite)) {
+      errors.push(`job ${job.name}: runs chromium-suite.mjs without a pinned browser-actions/setup-chrome step earlier in the job`);
+    }
+    if (!/CHROME_BIN:\s*\$\{\{\s*steps\.setup-chrome\.outputs\.chrome-path\s*\}\}/.test(beforeSuite)) {
+      errors.push(`job ${job.name}: runs chromium-suite.mjs without CHROME_BIN pointing to steps.setup-chrome.outputs.chrome-path`);
+    }
+  }
+  return errors;
+}
+
+test("every workflow job running packages/elements/tests/browser/chromium-suite.mjs sets up Chrome and passes CHROME_BIN", () => {
+  const offenders = [];
+  for (const name of workflowFiles()) {
+    const { strippedText } = scanWorkflow(readWorkflow(name));
+    for (const error of verifyChromiumSuiteSetupErrors(strippedText)) {
+      offenders.push(`${name}: ${error}`);
+    }
+  }
+  assert.deepEqual(offenders, [], `chromium-suite.mjs Chrome setup gap(s):\n  ${offenders.join("\n  ")}`);
+});

@@ -44,7 +44,7 @@ const DIST_ONLY_PACKAGES = new Set(["@sentropic/diagram-core", "@sentropic/diagr
 function usage() {
   return [
     "usage: node scripts/verify-jsdelivr-published.mjs --package <name> --version <version> [--attempts N] [--delay-ms MS] [--base-url URL]",
-    "example: node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.3.0",
+    "example: node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.3.1",
   ].join("\n");
 }
 

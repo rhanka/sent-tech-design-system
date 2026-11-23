@@ -1,8 +1,8 @@
 {
   "componentId": "sunburst-chart",
   "contractSource": "derived",
-  "digest": "sha256:08f493b6b59a5224c199854f68497eba199f06c8e8293a11b20b068bb0de346c",
-  "entryDigest": "sha256:23d9d3fef21ee70a4f2ce28a388a04d2a89ecd3cce4d04cb8f5a629a99aea608",
+  "digest": "sha256:56a50f163f346e9762fdea8184d18a96bd53e05f0f717e24403c95f9ec3e320e",
+  "entryDigest": "sha256:1e8c37289ffe2d0005c4d0ebcb5ac6e742e4af6f1683a1656ed7e2e7f7a14869",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -336,7 +336,7 @@
         "declarationPath": "packages/components-vue/dist/SunburstChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SunburstChartProps",
-        "version": "0.41.0-next.13"
+        "version": "0.41.0-next.14"
       },
       "status": "complete",
       "unresolved": [],

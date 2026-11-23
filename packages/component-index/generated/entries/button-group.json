@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ButtonGroup.vue",
-      "version": "0.41.0-next.13"
+      "version": "0.41.0-next.14"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Groups buttons, either attached as segments or spaced.",
     "fr": "Regroupe des boutons, en segments joints ou espacés."
   },
-  "digest": "sha256:db4c6810bb2d4e9d3c90126a3c0903c935b343276404d0c2e58f82818673fa9c",
+  "digest": "sha256:aba23c894c67d816cbc8e5470b8a360d3f923c55ac00f73ebdf728bf1abba23d",
   "displayName": "ButtonGroup",
   "format": "component-entry/v1",
   "frameworks": [

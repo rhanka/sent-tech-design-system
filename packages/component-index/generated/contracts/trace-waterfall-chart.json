@@ -1,8 +1,8 @@
 {
   "componentId": "trace-waterfall-chart",
   "contractSource": "derived",
-  "digest": "sha256:b0284a70ba821560146540a4c519da0faec9bd5e25a40aeb2f17d697d99e6180",
-  "entryDigest": "sha256:97eac591bedef8d492df670d82e820e2871c09080fd405edebb6db8d123ad486",
+  "digest": "sha256:4ad99d1d8f567025b3241338ed4bf182deac96b1f89f79b73784d348627a1af9",
+  "entryDigest": "sha256:12fbce9f4089f0e9e61bf3c3c692a2bc37e37847430d75f4b944d67b9ee159ae",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -367,7 +367,7 @@
         "declarationPath": "packages/components-vue/dist/TraceWaterfallChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TraceWaterfallChartProps",
-        "version": "0.41.0-next.13"
+        "version": "0.41.0-next.14"
       },
       "status": "complete",
       "unresolved": [],

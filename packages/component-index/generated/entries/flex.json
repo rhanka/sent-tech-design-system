@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Flex.vue",
-      "version": "0.41.0-next.13"
+      "version": "0.41.0-next.14"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Flex box: direction, gap, alignment, and justification.",
     "fr": "Boîte flex : direction, gap, alignement et justification."
   },
-  "digest": "sha256:71d4e3e322011618b26669e928e3ed15cd76da3b3817b44940ae09f8781502ec",
+  "digest": "sha256:04bf44592047645452a3568712b95b026bfe46398ea0603ecf8a131bc07c3a3b",
   "displayName": "Flex",
   "format": "component-entry/v1",
   "frameworks": [
