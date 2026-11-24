@@ -30,10 +30,67 @@
   text-transform: uppercase;
 }
 
-.st-dossier__diagramDrawing > button {
+.st-dossier__diagramControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--st-spacing-2);
+  align-items: center;
+}
+
+.st-dossier__diagramControls > button {
   margin-block: var(--st-spacing-2);
   font: inherit;
   cursor: pointer;
+}
+
+/* `Tout voir`: the whole scene fits the column with no scroll. Pinch zoom
+   keeps working (`touch-action: pinch-zoom` on the viewport); no transition
+   or animation is applied, so reduced motion needs no override. */
+.st-dossier__diagramViewport[data-view-all="true"] {
+  overflow: hidden;
+}
+
+.st-dossier__diagramViewport[data-view-all="true"] > svg {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: 70vh;
+}
+
+/* `Plein écran`: the whole scene fills the screen, still with no scroll. */
+.st-dossier__diagramDrawing:fullscreen {
+  background: var(--st-semantic-surface-default, #ffffff);
+}
+
+.st-dossier__diagramDrawing:fullscreen .st-dossier__diagramViewport {
+  overflow: hidden;
+}
+
+.st-dossier__diagramDrawing:fullscreen .st-dossier__diagramViewport > svg {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: none;
+}
+
+.st-dossier__diagramDrawing[data-fullscreen="true"] {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: auto;
+  background: var(--st-semantic-surface-default, #ffffff);
+  padding: var(--st-spacing-4);
+}
+
+.st-dossier__diagramDrawing[data-fullscreen="true"] .st-dossier__diagramViewport {
+  overflow: hidden;
+}
+
+.st-dossier__diagramDrawing[data-fullscreen="true"] .st-dossier__diagramViewport > svg {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: none;
 }
 
 .st-dossier__readability {
