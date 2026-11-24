@@ -303,9 +303,27 @@ const diagramSection = {
 const foldDoc = JSON.parse(focusB5);
 foldDoc.sections.push(diagramSection);
 const foldPayload = diagramOptions(foldDoc);
+const sizingDoc = JSON.parse(focusB5);
+sizingDoc.sections.push({
+  id: "sizing-diagram", kind: "diagram", targetRef: "focus-test", alt: "Five box sizing scene",
+  syntax: "mermaid", source: "The embedded scene is authoritative.",
+  scene: {
+    documentId: "document:sizing", schemaVersion: { major: 1, minor: 1 }, revision: 0,
+    profileRefs: ["generic@1"], typeDefinitions: {}, ports: {}, resources: {}, extensions: [],
+    entities: Object.fromEntries(["alpha", "bravo", "charlie", "delta", "echo"]
+      .map((id) => [`entity:${id}`, { id: `entity:${id}`, profile: "generic@1", type: "node",
+        attributes: { name: { kind: "text", value: `Box ${id}` } } }])),
+    relations: Object.fromEntries(["alpha", "bravo", "charlie", "delta"]
+      .map((id, index) => [`relation:${id}`, { id: `relation:${id}`, profile: "generic@1", type: "link", attributes: {},
+        endpoints: [{ role: "source", target: `entity:${id}` },
+          { role: "target", target: `entity:${["bravo", "charlie", "delta", "echo"][index]}` }] }])),
+  },
+});
+const sizingPayload = diagramOptions(sizingDoc);
 const diagramPages = new Map(["safe", "application", "strict"].map((mode) => [`diagram-${mode}`, {
   mode, doc: foldDoc, ...foldPayload, fold: true,
 }]));
+diagramPages.set("diagram-sizing", { mode: "strict", doc: sizingDoc, ...sizingPayload });
 diagramPages.set("diagram-refusal", {
   mode: "strict", doc: foldDoc, ...foldPayload, refuse: true,
   manifest: { ...foldPayload.manifest, renderer: { digest: baseDigest("different renderer") } },
@@ -2723,6 +2741,107 @@ for (const [url, fixture, offline] of [
   const mountViolations = await observed.violations();
   assert(mountViolations.length === 0 && observed.consoleErrors.length === 0,
     "Focus mount host review page is clean", JSON.stringify({ violations: mountViolations, errors: observed.consoleErrors }));
+  await observed.close();
+}
+
+// Focus diagrams at natural size, never enlarged, with the `Tout voir` mode
+// (owner feedback 24/11): at 390, 820 and 1280 px a 5-box diagram is never
+// wider than its natural width (the SVG width attribute), and the large
+// diagram fits the column (`max-width: 100%`). At 390 px `Tout voir` shows
+// the whole scene with no scroll and restores the natural size on exit.
+{
+  for (const width of [390, 820, 1280]) {
+    const observed = await openPage("/focus-kit/diagram-sizing/");
+    const page = observed.page;
+    await page.setViewport({ width, height: 900 });
+    await waitFor(
+      page,
+      "() => { const viewport = document.querySelector('.st-dossier__diagramViewport'); return viewport && viewport.querySelector('svg') ? true : false; }",
+      20000,
+      `diagram-sizing diagram renders at ${width}px`,
+    );
+    const metrics = await page.evaluate(() => {
+      const viewport = document.querySelector(".st-dossier__diagramViewport");
+      const svg = viewport.querySelector("svg");
+      return {
+        rendered: svg.getBoundingClientRect().width,
+        natural: Number(svg.getAttribute("width")),
+        hasHeight: svg.getAttribute("height") !== null,
+        hasViewBox: svg.getAttribute("viewBox") !== null,
+        column: viewport.clientWidth,
+      };
+    });
+    assert(metrics.rendered <= metrics.natural + 1,
+      `diagram-sizing ${width}px is never wider than its natural width`, JSON.stringify(metrics));
+    assert(metrics.rendered <= metrics.column + 1,
+      `diagram-sizing ${width}px fits the column`, JSON.stringify(metrics));
+    assert(metrics.hasHeight && metrics.hasViewBox,
+      `diagram-sizing ${width}px SVG carries width, height and viewBox`, JSON.stringify(metrics));
+    if (assert(observed.consoleErrors.length === 0 && (await observed.violations()).length === 0,
+      `diagram-sizing ${width}px page is clean`,
+      JSON.stringify({ errors: observed.consoleErrors, violations: await observed.violations() }))) {
+      ok(`diagram-sizing ${width}px page is clean`);
+    }
+    record(`diagram-sizing ${width}px`, `rendered ${metrics.rendered}px, natural ${metrics.natural}px, column ${metrics.column}px`);
+    await observed.close();
+  }
+
+  const observed = await openPage("/focus-kit/diagram-sizing/");
+  const page = observed.page;
+  await page.setViewport({ width: 390, height: 844 });
+  await waitFor(
+    page,
+    "() => { const toutVoir = [...document.querySelectorAll('button')].find((button) => button.textContent === 'Tout voir'); return toutVoir ? true : false; }",
+    20000,
+    "diagram-sizing Tout voir renders",
+  );
+  const natural = await page.evaluate(() => {
+    const viewport = document.querySelector(".st-dossier__diagramViewport");
+    const svg = viewport.querySelector("svg");
+    return { rendered: svg.getBoundingClientRect().width, natural: Number(svg.getAttribute("width")) };
+  });
+  assert(natural.rendered <= natural.natural + 1, "diagram-sizing 390px Tout voir starts at natural width",
+    JSON.stringify(natural));
+  await page.evaluate(() => {
+    [...document.querySelectorAll("button")].find((button) => button.textContent === "Tout voir").click();
+  });
+  await page.waitForFunction(
+    "() => document.querySelector('.st-dossier__diagramViewport')?.getAttribute('data-view-all') === 'true'",
+    { timeout: 5000 },
+  );
+  const viewAll = await page.evaluate(() => {
+    const viewport = document.querySelector(".st-dossier__diagramViewport");
+    const toutVoir = [...document.querySelectorAll("button")].find((button) => button.textContent === "Tout voir");
+    const pleinEcran = document.querySelector('button[aria-label="Plein écran"]');
+    return {
+      pressed: toutVoir.getAttribute("aria-pressed"),
+      offered: pleinEcran !== null && !pleinEcran.hidden,
+      scrollWidth: viewport.scrollWidth,
+      clientWidth: viewport.clientWidth,
+      scrollHeight: viewport.scrollHeight,
+      clientHeight: viewport.clientHeight,
+    };
+  });
+  assert(viewAll.pressed === "true" && viewAll.offered,
+    "diagram-sizing 390px Tout voir offers fullscreen", JSON.stringify(viewAll));
+  assert(viewAll.scrollWidth <= viewAll.clientWidth + 1 && viewAll.scrollHeight <= viewAll.clientHeight + 1,
+    "diagram-sizing 390px Tout voir shows the whole scene with no scroll", JSON.stringify(viewAll));
+  record("diagram-sizing 390px Tout voir", JSON.stringify(viewAll));
+  await page.evaluate(() => {
+    [...document.querySelectorAll("button")].find((button) => button.textContent === "Tout voir").click();
+  });
+  await page.waitForFunction(
+    "() => document.querySelector('.st-dossier__diagramViewport')?.hasAttribute('data-view-all') === false",
+    { timeout: 5000 },
+  );
+  const restored = await page.evaluate(() => {
+    const viewport = document.querySelector(".st-dossier__diagramViewport");
+    const toutVoir = [...document.querySelectorAll("button")].find((button) => button.textContent === "Tout voir");
+    const svg = viewport.querySelector("svg");
+    return { pressed: toutVoir.getAttribute("aria-pressed"), rendered: svg.getBoundingClientRect().width, natural: Number(svg.getAttribute("width")) };
+  });
+  assert(restored.pressed === "false" && restored.rendered <= restored.natural + 1,
+    "diagram-sizing 390px Tout voir exit restores the natural size", JSON.stringify(restored));
   await observed.close();
 }
 
