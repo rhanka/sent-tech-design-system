@@ -16,10 +16,13 @@
 
 .st-dossier__diagramViewport {
   overflow: auto;
+  touch-action: pinch-zoom;
 }
 
 .st-dossier__diagramViewport > svg {
   display: block;
+  width: auto;
+  max-width: 100%;
   height: auto;
 }
 

@@ -11,6 +11,15 @@ function sceneSvg(owner: Document, source: string, prefix: string): SVGSVGElemen
   // Strip the pinned canvas renderer's inline CSS before handing it to the DOM.
   template.innerHTML = source.replace(/<style>[\s\S]*?<\/style>| style="[^"]*"/g, "");
   const svg = template.content.querySelector("svg")!;
+  // The diagram renders at its natural size and is never enlarged: the SVG
+  // carries explicit width/height attributes and a viewBox (renderSceneSvg
+  // always emits them); restore them from the viewBox if ever missing so the
+  // CSS `width: auto; max-width: 100%; height: auto` rule stays meaningful.
+  const viewBox = svg.getAttribute("viewBox")?.trim().split(/\s+/).map(Number);
+  if (viewBox !== undefined && viewBox.length === 4 && viewBox.every(Number.isFinite)) {
+    if (!svg.hasAttribute("width")) svg.setAttribute("width", String(viewBox[2]));
+    if (!svg.hasAttribute("height")) svg.setAttribute("height", String(viewBox[3]));
+  }
   // The kit provides a single native fold control for the figure.
   for (const toggle of svg.querySelectorAll("[data-toggle]")) toggle.remove();
   for (const element of svg.querySelectorAll("[id]")) element.id = prefix + element.id;
