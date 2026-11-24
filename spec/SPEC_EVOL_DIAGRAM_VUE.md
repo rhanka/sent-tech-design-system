@@ -94,7 +94,7 @@ optional engine `options`, and small `selection`, `hover`, `viewport` and
 changes; replace small intent arrays to signal changes. Renderer creation
 options are initial mount inputs. The wrapper never invents a colour or size.
 
-BPMN uses the optional `@sentropic/design-system-elements@0.3.2` peer; install
+BPMN uses the optional `@sentropic/design-system-elements@0.3.3` peer; install
 that existing runtime in applications that use `BpmnCanvas`. It is already
 available in this monorepo. Other Vue components require no BPMN engine.
 

@@ -1,8 +1,8 @@
 {
   "componentId": "vector-field-chart",
   "contractSource": "derived",
-  "digest": "sha256:abd3022fe7d38265c7833bc35998b0259c361791f9de3e4750f78f2f7311e460",
-  "entryDigest": "sha256:fae5478ae7656be61f1e569ac8f96c07598fbda161c569235c00d5ba8b8fc4a6",
+  "digest": "sha256:e3afbcac9d20da6421126c071b1525d47f3d339f1df32a52ececabea96e29b5c",
+  "entryDigest": "sha256:69bc407d2d25e74dc2994ca6c45c0b217e05bb105555565e36b7b327e370fcf7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -313,7 +313,7 @@
         "declarationPath": "packages/components-vue/dist/VectorFieldChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "VectorFieldChartProps",
-        "version": "0.41.0-next.15"
+        "version": "0.41.0-next.16"
       },
       "status": "complete",
       "unresolved": [],

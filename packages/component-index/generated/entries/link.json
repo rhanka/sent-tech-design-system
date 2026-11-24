@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Link.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Styled link consistent with the DS, disabled/external support.",
     "fr": "Lien stylé cohérent avec le DS, support disabled/external."
   },
-  "digest": "sha256:5c08090b340c5e2c103183d8661169167bdc469abc4aae992909e2ba1253c52c",
+  "digest": "sha256:36a8cbb22bfd89a60b8dfa4c6dc0139eef6cf662bf6ce6efdb1138a2aa5367ad",
   "displayName": "Link",
   "format": "component-entry/v1",
   "frameworks": [

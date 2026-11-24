@@ -7,8 +7,9 @@ import DOSSIER_CSS from "./dossier.css?raw";
  * the wrapper sheets. Every colour resolves to a `--st-*` token; card
  * outlines are `1px solid var(--st-…)` and no rule exceeds 1 px.
  *
- * English in code per repo rules. No colour literal appears below: only
- * `var(--st-*)` references plus neutral layout keywords.
+ * English in code per repo rules. Every `--st-semantic-*` reference carries
+ * the design-system light-theme literal as its fallback, so the page renders
+ * styled without a themed host.
  */
 
 /** Fold threshold in characters (AMB-L6-2): the pinned focus readability cap. */

@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.3.3
+
+Focus static kit sizing fix (owner feedback 24/11,
+track 01M85JMWB3YWBM69DAKPMZ9KX8). Vue consumers using the updated optional
+BPMN peer require Elements `0.3.3`.
+
+### Fixed
+
+- Every `var(--st-semantic-*)` in the kit CSS (`dossier-page.css`,
+  `engines/dossier.css`, `time-series-chart.svelte`) now carries the
+  design-system light-theme literal as its fallback, so the Focus dossiers
+  published as claude.ai artifacts render styled without a themed host.
+- Focus diagrams render at their natural size and are never enlarged
+  (`width: auto; max-width: 100%; height: auto` in
+  `.st-dossier__diagramViewport > svg`, explicit `width`/`height`/`viewBox`
+  on the SVG): a large diagram fits the column, a small one stays small. No
+  media query in the kit CSS triggers above 599 px.
+
+### Added
+
+- A `Tout voir` toggle on every Focus diagram with the same behaviour and
+  wording as the DiagramSceneFigure `Tout voir` mode: natural size by
+  default, whole scene with no scroll in view-all, `Plein écran` offered
+  while view-all stands, pinch zoom kept, Escape leaves fullscreen then
+  view-all, keyboard and `aria-pressed` throughout, no animated motion.
+
 ## 0.3.2
 
 Ships the `0.3.1` content, plus the publish workflow fix for the Chromium

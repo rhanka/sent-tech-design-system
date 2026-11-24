@@ -1,8 +1,8 @@
 {
   "componentId": "card",
   "contractSource": "derived",
-  "digest": "sha256:042d5145791de9b2bfd5e75b238f11d184504ab4ca3052e8ead20a1458543199",
-  "entryDigest": "sha256:fa9416a0d617b3cc19a8d0ad1f7414082758e8be269c295dbaa91d82dfad1195",
+  "digest": "sha256:45d61f6ea6df8bd2b580eb4469c81d68af105e5be59f5a6d4c63c1d8c9d19be0",
+  "entryDigest": "sha256:c0469d86cf2c31a7935799b2d315f5017a949bc2f894f789a0b4f2978392ea97",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -146,7 +146,7 @@
         "declarationPath": "packages/components-vue/dist/Card.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CardProps",
-        "version": "0.41.0-next.15"
+        "version": "0.41.0-next.16"
       },
       "status": "complete",
       "unresolved": [],

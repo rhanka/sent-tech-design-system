@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TimeRangePicker.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Time-range selector: relative presets or an absolute range.",
     "fr": "Sélecteur de plage temporelle : presets relatifs ou plage absolue."
   },
-  "digest": "sha256:0e9459d8b8444986c3c775ac8c0f1ee307e29b9cc5e85a0419da278c1622d213",
+  "digest": "sha256:80d202db4c017258681de1855c450bee293e21f1baeb7674dc9a6e161959681b",
   "displayName": "TimeRangePicker",
   "format": "component-entry/v1",
   "frameworks": [

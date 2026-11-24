@@ -100,6 +100,6 @@
   }
   th,
   td {
-    border-block-end: 1px solid var(--st-semantic-border-subtle);
+    border-block-end: 1px solid var(--st-semantic-border-subtle, #e2e8f0);
   }
 </style>

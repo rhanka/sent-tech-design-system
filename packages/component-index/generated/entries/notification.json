@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Notification.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Inline/actionable notification with info/success/warning/error tones.",
     "fr": "Notification inline/actionable avec tonalités info/success/warning/error."
   },
-  "digest": "sha256:557571fbd47a11ed7daa32083cbc9e4e48a6660b7a1dbe2bda36164f98039b94",
+  "digest": "sha256:8ce6c9cf17b4c92a2e321e47e04032269583b9fd284a44452ccd374a026b2527",
   "displayName": "Notification",
   "format": "component-entry/v1",
   "frameworks": [

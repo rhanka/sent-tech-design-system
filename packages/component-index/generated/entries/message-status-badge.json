@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/MessageStatusBadge.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Message status badge mapped to pending/processing/completed/failed.",
     "fr": "Badge de statut de message basé sur les niveaux pending/processing/completed/failed."
   },
-  "digest": "sha256:e85146cab39ef8bad6854cdcf9a09eb53a684c4793e15741297177de448044f7",
+  "digest": "sha256:dd57dec46be2e19ad2c71a2b2efc768e529b103f86513acf4bf41ea3be5e8116",
   "displayName": "MessageStatusBadge",
   "format": "component-entry/v1",
   "frameworks": [

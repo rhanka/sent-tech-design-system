@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/SankeyChart.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Weighted flow diagram between categorical nodes.",
     "fr": "Diagramme de flux pondérés entre nœuds catégoriels."
   },
-  "digest": "sha256:b04f15cbf4257407c6fe687b49fc645d26738bdbcd9315c7c0110256886f1191",
+  "digest": "sha256:18d7fa375e4a7f3a5a3a8bb8ab5c7a9060ee0d6a189d8b9e8ff3cbf569aa4dae",
   "displayName": "SankeyChart",
   "format": "component-entry/v1",
   "frameworks": [

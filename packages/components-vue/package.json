@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-vue",
-  "version": "0.41.0-next.15",
+  "version": "0.41.0-next.16",
   "license": "MIT",
   "description": "Vue 3 components for the Sentropic design system.",
   "type": "module",
@@ -88,7 +88,7 @@
   },
   "peerDependencies": {
     "vue": "^3.5 || ^3.6.0-0",
-    "@sentropic/design-system-elements": "0.3.2",
+    "@sentropic/design-system-elements": "0.3.3",
     "@tiptap/core": "^3.0.0",
     "@tiptap/extension-blockquote": "^3.0.0",
     "@tiptap/extension-bold": "^3.0.0",

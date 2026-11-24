@@ -1,8 +1,8 @@
 {
   "componentId": "inline",
   "contractSource": "derived",
-  "digest": "sha256:8f3a330441036a76978c44fca57735f3ca57421090188f5753836524525a8957",
-  "entryDigest": "sha256:719cda2c2657d4d7748729259d96a2a788bf381cc730da6ba8aff772038ad7a8",
+  "digest": "sha256:003dea409d3c453bd8612c23b19341ff870137aab78183f044cce854c96b0b7a",
+  "entryDigest": "sha256:88c6c5893d09486e15f8f57b908fd79b9667fcd464b4a1c7633d9a2f6c5336d7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -266,7 +266,7 @@
         "declarationPath": "packages/components-vue/dist/Inline.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "InlineProps",
-        "version": "0.41.0-next.15"
+        "version": "0.41.0-next.16"
       },
       "status": "complete",
       "unresolved": [],

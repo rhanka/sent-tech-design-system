@@ -4,7 +4,7 @@
   max-width: 72ch;
   margin: auto;
   padding: var(--st-spacing-6);
-  background-color: var(--st-semantic-surface-default);
+  background-color: var(--st-semantic-surface-default, #ffffff);
   font-family: system-ui, sans-serif;
   line-height: 1.5;
 }
@@ -16,10 +16,13 @@
 
 .st-dossier__diagramViewport {
   overflow: auto;
+  touch-action: pinch-zoom;
 }
 
 .st-dossier__diagramViewport > svg {
   display: block;
+  width: auto;
+  max-width: 100%;
   height: auto;
 }
 
@@ -27,10 +30,96 @@
   text-transform: uppercase;
 }
 
-.st-dossier__diagramDrawing > button {
+.st-dossier__diagramControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--st-spacing-2);
+  align-items: center;
+}
+
+.st-dossier__diagramControls > button {
   margin-block: var(--st-spacing-2);
   font: inherit;
   cursor: pointer;
+}
+
+/* `Tout voir`: the whole scene fits the column with no scroll, never
+   enlarged past its natural size: `width: auto` keeps the SVG at its natural
+   width (only shrinking to fit via `max-width: 100%`), `max-height: 70vh`
+   bounds a tall scene while `height: auto` keeps the aspect ratio. Pinch
+   zoom keeps working (`touch-action: pinch-zoom` on the viewport); no
+   transition or animation is applied, so reduced motion needs no override. */
+.st-dossier__diagramViewport[data-view-all="true"] {
+  overflow: hidden;
+}
+
+.st-dossier__diagramViewport[data-view-all="true"] > svg {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 70vh;
+}
+
+/* `Plein écran`: the whole scene fills the screen, still with no scroll and
+   never enlarged — the SVG keeps `width: auto` / `height: auto` with
+   `max-width: 100%` / `max-height: 100%` so it only shrinks to fit, keeping
+   its aspect ratio. The fullscreen box has a definite height (`100dvh`,
+   with the `100vh` fallback) and the viewport is a flex child of it, so the
+   viewport height is definite and `max-height: 100%` truly bounds a tall
+   scene instead of resolving against an auto height. */
+.st-dossier__diagramDrawing:fullscreen {
+  background: var(--st-semantic-surface-default, #ffffff);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  padding: var(--st-spacing-4);
+}
+
+.st-dossier__diagramDrawing:fullscreen .st-dossier__diagramViewport {
+  overflow: hidden;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.st-dossier__diagramDrawing:fullscreen .st-dossier__diagramViewport > svg {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+}
+
+.st-dossier__diagramDrawing[data-fullscreen="true"] {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+  background: var(--st-semantic-surface-default, #ffffff);
+  padding: var(--st-spacing-4);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.st-dossier__diagramDrawing[data-fullscreen="true"] .st-dossier__diagramViewport {
+  overflow: hidden;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.st-dossier__diagramDrawing[data-fullscreen="true"] .st-dossier__diagramViewport > svg {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
 }
 
 .st-dossier__readability {
@@ -65,7 +154,7 @@
 
 .st-dossier :where(th, td) {
   padding: var(--st-spacing-1) var(--st-spacing-2);
-  border: var(--st-borderWidth-thin) var(--st-borderStyle-solid) var(--st-semantic-border-subtle);
+  border: var(--st-borderWidth-thin) var(--st-borderStyle-solid) var(--st-semantic-border-subtle, #e2e8f0);
   text-align: start;
 }
 
@@ -76,7 +165,7 @@
 .focus-option {
   margin-block: var(--st-spacing-2);
   padding: var(--st-spacing-2);
-  border: var(--st-borderWidth-thin) var(--st-borderStyle-solid) var(--st-semantic-border-subtle);
+  border: var(--st-borderWidth-thin) var(--st-borderStyle-solid) var(--st-semantic-border-subtle, #e2e8f0);
   border-radius: var(--st-radius-md);
 }
 
@@ -94,12 +183,12 @@
 }
 
 .focus-option:has([data-st-selected]) {
-  border-color: var(--st-semantic-border-interactive);
-  background: var(--st-semantic-surface-subtle);
+  border-color: var(--st-semantic-border-interactive, oklch(50% 0.134 242.749));
+  background: var(--st-semantic-surface-subtle, #f8fafc);
 }
 
 .focus-option[data-st-recommended] > :is(strong, button) {
-  color: var(--st-semantic-action-primary);
+  color: var(--st-semantic-action-primary, oklch(50% 0.134 242.749));
 }
 
 @media print {

@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Search.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Search field with icon and clear button.",
     "fr": "Champ de recherche avec icône et bouton clear."
   },
-  "digest": "sha256:55d01eaeb4fdebd32a87b8932ba091d6639b568a9b24c05f7ed2a35bc12003a6",
+  "digest": "sha256:241cfe07b1f933daf4604f374cbfe78030e94aca9c9056ddae7b44200190d30d",
   "displayName": "Search",
   "format": "component-entry/v1",
   "frameworks": [

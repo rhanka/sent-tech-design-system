@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/CopyButton.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Button dedicated to copying a value to the clipboard.",
     "fr": "Bouton dédié à la copie d’une valeur dans le presse-papier."
   },
-  "digest": "sha256:9f4902b88f81e10a6562531f12d4afee2172b23dd1eaf6cf825ecc3f6ca76375",
+  "digest": "sha256:e9e31935676435c572b941bbf256b1d5a615c0b6dad85d9a0d96acffa3dfc254",
   "displayName": "CopyButton",
   "format": "component-entry/v1",
   "frameworks": [

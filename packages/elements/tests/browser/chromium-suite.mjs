@@ -303,9 +303,70 @@ const diagramSection = {
 const foldDoc = JSON.parse(focusB5);
 foldDoc.sections.push(diagramSection);
 const foldPayload = diagramOptions(foldDoc);
+const sizingDoc = JSON.parse(focusB5);
+sizingDoc.sections.push({
+  id: "sizing-diagram", kind: "diagram", targetRef: "focus-test", alt: "Five box sizing scene",
+  syntax: "mermaid", source: "The embedded scene is authoritative.",
+  scene: {
+    documentId: "document:sizing", schemaVersion: { major: 1, minor: 1 }, revision: 0,
+    profileRefs: ["generic@1"], typeDefinitions: {}, ports: {}, resources: {}, extensions: [],
+    entities: Object.fromEntries(["alpha", "bravo", "charlie", "delta", "echo"]
+      .map((id) => [`entity:${id}`, { id: `entity:${id}`, profile: "generic@1", type: "node",
+        attributes: { name: { kind: "text", value: `Box ${id}` } } }])),
+    relations: Object.fromEntries(["alpha", "bravo", "charlie", "delta"]
+      .map((id, index) => [`relation:${id}`, { id: `relation:${id}`, profile: "generic@1", type: "link", attributes: {},
+        endpoints: [{ role: "source", target: `entity:${id}` },
+          { role: "target", target: `entity:${["bravo", "charlie", "delta", "echo"][index]}` }] }])),
+  },
+});
+const sizingPayload = diagramOptions(sizingDoc);
+// P2: one diagram strictly smaller than the column and one strictly larger,
+// so the "never enlarged" assertions can tell a stretched small scene from a
+// shrunk-to-fit large one. The column caps at 72ch (~579px) on desktop, so
+// the small scene must be narrower than even the 390px column and the large
+// scene wider than the capped column.
+const smallSizingDoc = JSON.parse(focusB5);
+smallSizingDoc.sections.push({
+  id: "sizing-small-diagram", kind: "diagram", targetRef: "focus-test", alt: "Small sizing scene",
+  syntax: "mermaid", source: "The embedded scene is authoritative.",
+  scene: {
+    documentId: "document:sizing-small", schemaVersion: { major: 1, minor: 1 }, revision: 0,
+    profileRefs: ["generic@1"], typeDefinitions: {}, ports: {}, resources: {}, extensions: [],
+    // Single node: the renderer's smallest scene (~288px natural). It is
+    // smaller than the desktop column (~579px) but still wider than the
+    // 390px column (~246px), so it keeps its natural size on desktop and
+    // shrinks to fit on a phone — never enlarged in either case.
+    entities: Object.fromEntries(["one"]
+      .map((id) => [`entity:${id}`, { id: `entity:${id}`, profile: "generic@1", type: "node",
+        attributes: { name: { kind: "text", value: `Box ${id}` } } }])),
+    relations: {},
+  },
+});
+const smallSizingPayload = diagramOptions(smallSizingDoc);
+const largeIds = ["alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel", "india", "juliet", "kilo", "lima"];
+const largeSizingDoc = JSON.parse(focusB5);
+largeSizingDoc.sections.push({
+  id: "sizing-large-diagram", kind: "diagram", targetRef: "focus-test", alt: "Large sizing scene",
+  syntax: "mermaid", source: "The embedded scene is authoritative.",
+  scene: {
+    documentId: "document:sizing-large", schemaVersion: { major: 1, minor: 1 }, revision: 0,
+    profileRefs: ["generic@1"], typeDefinitions: {}, ports: {}, resources: {}, extensions: [],
+    entities: Object.fromEntries(largeIds
+      .map((id) => [`entity:${id}`, { id: `entity:${id}`, profile: "generic@1", type: "node",
+        attributes: { name: { kind: "text", value: `Phase ${id}` } } }])),
+    relations: Object.fromEntries(largeIds.slice(0, -1)
+      .map((id, index) => [`relation:${id}`, { id: `relation:${id}`, profile: "generic@1", type: "link", attributes: {},
+        endpoints: [{ role: "source", target: `entity:${id}` },
+          { role: "target", target: `entity:${largeIds[index + 1]}` }] }])),
+  },
+});
+const largeSizingPayload = diagramOptions(largeSizingDoc);
 const diagramPages = new Map(["safe", "application", "strict"].map((mode) => [`diagram-${mode}`, {
   mode, doc: foldDoc, ...foldPayload, fold: true,
 }]));
+diagramPages.set("diagram-sizing", { mode: "strict", doc: sizingDoc, ...sizingPayload });
+diagramPages.set("diagram-sizing-small", { mode: "strict", doc: smallSizingDoc, ...smallSizingPayload });
+diagramPages.set("diagram-sizing-large", { mode: "strict", doc: largeSizingDoc, ...largeSizingPayload });
 diagramPages.set("diagram-refusal", {
   mode: "strict", doc: foldDoc, ...foldPayload, refuse: true,
   manifest: { ...foldPayload.manifest, renderer: { digest: baseDigest("different renderer") } },
@@ -2724,6 +2785,201 @@ for (const [url, fixture, offline] of [
   assert(mountViolations.length === 0 && observed.consoleErrors.length === 0,
     "Focus mount host review page is clean", JSON.stringify({ violations: mountViolations, errors: observed.consoleErrors }));
   await observed.close();
+}
+
+// Focus diagrams at natural size, never enlarged, with the `Tout voir` and
+// `Plein écran` modes (owner feedback 24/11, P2 extension): at 390, 820 and
+// 1280 px a diagram smaller than the column keeps its natural size (rendered
+// equals natural, never stretched) and a diagram larger than the column
+// shrinks to fit it; `Tout voir` and fullscreen show the whole scene with no
+// scroll without ever enlarging past natural size.
+{
+  const sizingCases = [
+    { kind: "sizing", path: "/focus-kit/diagram-sizing/", small: false, large: false },
+    { kind: "sizing-small", path: "/focus-kit/diagram-sizing-small/", small: true, large: false },
+    { kind: "sizing-large", path: "/focus-kit/diagram-sizing-large/", small: false, large: true },
+  ];
+  for (const width of [390, 820, 1280]) {
+    for (const target of sizingCases) {
+      const observed = await openPage(target.path);
+      const page = observed.page;
+      await page.setViewport({ width, height: 900 });
+      await waitFor(
+        page,
+        "() => { const viewport = document.querySelector('.st-dossier__diagramViewport'); return viewport && viewport.querySelector('svg') ? true : false; }",
+        20000,
+        `diagram-${target.kind} diagram renders at ${width}px`,
+      );
+      const metrics = await page.evaluate(() => {
+        const viewport = document.querySelector(".st-dossier__diagramViewport");
+        const svg = viewport.querySelector("svg");
+        return {
+          rendered: svg.getBoundingClientRect().width,
+          natural: Number(svg.getAttribute("width")),
+          hasHeight: svg.getAttribute("height") !== null,
+          hasViewBox: svg.getAttribute("viewBox") !== null,
+          column: viewport.clientWidth,
+        };
+      });
+      assert(metrics.rendered <= metrics.natural + 1,
+        `diagram-${target.kind} ${width}px is never wider than its natural width`, JSON.stringify(metrics));
+      assert(metrics.rendered <= metrics.column + 1,
+        `diagram-${target.kind} ${width}px fits the column`, JSON.stringify(metrics));
+      assert(metrics.hasHeight && metrics.hasViewBox,
+        `diagram-${target.kind} ${width}px SVG carries width, height and viewBox`, JSON.stringify(metrics));
+      if (target.small) {
+        // Smallest renderer scene (~288px): below the desktop column, still
+        // wider than the 390px column. Either way it is never enlarged.
+        assert(metrics.natural <= metrics.column ? metrics.natural < metrics.column - 20 : metrics.natural > metrics.column + 20,
+          `diagram-${target.kind} ${width}px natural width straddles the column`, JSON.stringify(metrics));
+        if (metrics.natural < metrics.column) {
+          assert(Math.abs(metrics.rendered - metrics.natural) <= 2,
+            `diagram-${target.kind} ${width}px keeps its natural size`, JSON.stringify(metrics));
+        } else {
+          assert(metrics.rendered < metrics.natural - 10,
+            `diagram-${target.kind} ${width}px shrinks to fit the phone column`, JSON.stringify(metrics));
+        }
+      }
+      if (target.large) {
+        assert(metrics.natural > metrics.column + 20,
+          `diagram-${target.kind} ${width}px natural width exceeds the column`, JSON.stringify(metrics));
+        assert(metrics.rendered < metrics.natural,
+          `diagram-${target.kind} ${width}px shrinks to fit the column`, JSON.stringify(metrics));
+      }
+      if (assert(observed.consoleErrors.length === 0 && (await observed.violations()).length === 0,
+        `diagram-${target.kind} ${width}px page is clean`,
+        JSON.stringify({ errors: observed.consoleErrors, violations: await observed.violations() }))) {
+        ok(`diagram-${target.kind} ${width}px page is clean`);
+      }
+      record(`diagram-${target.kind} ${width}px`, `rendered ${metrics.rendered}px, natural ${metrics.natural}px, column ${metrics.column}px`);
+      await observed.close();
+    }
+  }
+
+  for (const target of sizingCases) {
+    for (const width of [390, 820, 1280]) {
+      const observed = await openPage(target.path);
+      const page = observed.page;
+      await page.setViewport({ width, height: width === 390 ? 844 : 900 });
+      await waitFor(
+        page,
+        "() => { const toutVoir = [...document.querySelectorAll('button')].find((button) => button.textContent === 'Tout voir'); return toutVoir ? true : false; }",
+        20000,
+        `diagram-${target.kind} Tout voir renders at ${width}px`,
+      );
+      const natural = await page.evaluate(() => {
+        const viewport = document.querySelector(".st-dossier__diagramViewport");
+        const svg = viewport.querySelector("svg");
+        return {
+          rendered: svg.getBoundingClientRect().width,
+          natural: Number(svg.getAttribute("width")),
+          naturalHeight: Number(svg.getAttribute("height")),
+        };
+      });
+      assert(natural.rendered <= natural.natural + 1,
+        `diagram-${target.kind} ${width}px Tout voir starts at natural width`, JSON.stringify(natural));
+      await page.evaluate(() => {
+        [...document.querySelectorAll("button")].find((button) => button.textContent === "Tout voir").click();
+      });
+      await page.waitForFunction(
+        "() => document.querySelector('.st-dossier__diagramViewport')?.getAttribute('data-view-all') === 'true'",
+        { timeout: 5000 },
+      );
+      const viewAll = await page.evaluate(() => {
+        const viewport = document.querySelector(".st-dossier__diagramViewport");
+        const toutVoir = [...document.querySelectorAll("button")].find((button) => button.textContent === "Tout voir");
+        const pleinEcran = document.querySelector('button[aria-label="Plein écran"]');
+        const svg = viewport.querySelector("svg");
+        const rect = svg.getBoundingClientRect();
+        return {
+          pressed: toutVoir.getAttribute("aria-pressed"),
+          offered: pleinEcran !== null && !pleinEcran.hidden,
+          rendered: rect.width,
+          natural: Number(svg.getAttribute("width")),
+          renderedHeight: rect.height,
+          scrollWidth: viewport.scrollWidth,
+          clientWidth: viewport.clientWidth,
+          scrollHeight: viewport.scrollHeight,
+          clientHeight: viewport.clientHeight,
+          windowHeight: window.innerHeight,
+        };
+      });
+      assert(viewAll.pressed === "true" && viewAll.offered,
+        `diagram-${target.kind} ${width}px Tout voir offers fullscreen`, JSON.stringify(viewAll));
+      assert(viewAll.rendered <= viewAll.natural + 1,
+        `diagram-${target.kind} ${width}px Tout voir never enlarges past natural size`, JSON.stringify(viewAll));
+      assert(viewAll.scrollWidth <= viewAll.clientWidth + 1 && viewAll.scrollHeight <= viewAll.clientHeight + 1,
+        `diagram-${target.kind} ${width}px Tout voir shows the whole scene with no scroll`, JSON.stringify(viewAll));
+      assert(viewAll.renderedHeight <= 0.7 * viewAll.windowHeight + 2,
+        `diagram-${target.kind} ${width}px Tout voir height stays within the viewport bound`, JSON.stringify(viewAll));
+      if (target.small && viewAll.natural < viewAll.clientWidth) {
+        assert(Math.abs(viewAll.rendered - viewAll.natural) <= 2,
+          `diagram-${target.kind} ${width}px Tout voir small scene keeps natural size`, JSON.stringify(viewAll));
+      }
+      record(`diagram-${target.kind} ${width}px Tout voir`, JSON.stringify(viewAll));
+      await page.evaluate(() => {
+        document.querySelector('button[aria-label="Plein écran"]').click();
+      });
+      await page.waitForFunction(
+        "() => { const active = document.querySelector('.st-dossier__diagramDrawing')?.getAttribute('data-fullscreen') === 'true' || document.fullscreenElement !== null; return active && document.querySelector('button[aria-label=\"Plein écran\"]').getAttribute('aria-pressed') === 'true'; }",
+        { timeout: 5000 },
+      );
+      const fullscreen = await page.evaluate(() => {
+        const drawing = document.querySelector(".st-dossier__diagramDrawing");
+        const viewport = document.querySelector(".st-dossier__diagramViewport");
+        const svg = viewport.querySelector("svg");
+        const rect = svg.getBoundingClientRect();
+        return {
+          pressed: document.querySelector('button[aria-label="Plein écran"]').getAttribute("aria-pressed"),
+          fallback: drawing.getAttribute("data-fullscreen") === "true",
+          native: document.fullscreenElement === drawing,
+          rendered: rect.width,
+          natural: Number(svg.getAttribute("width")),
+          renderedHeight: rect.height,
+          scrollWidth: viewport.scrollWidth,
+          clientWidth: viewport.clientWidth,
+          scrollHeight: viewport.scrollHeight,
+          clientHeight: viewport.clientHeight,
+        };
+      });
+      assert(fullscreen.pressed === "true" && (fullscreen.fallback || fullscreen.native),
+        `diagram-${target.kind} ${width}px fullscreen is active`, JSON.stringify(fullscreen));
+      assert(fullscreen.rendered <= fullscreen.natural + 1,
+        `diagram-${target.kind} ${width}px fullscreen never enlarges past natural size`, JSON.stringify(fullscreen));
+      assert(fullscreen.clientHeight > 100,
+        `diagram-${target.kind} ${width}px fullscreen viewport has a definite height`, JSON.stringify(fullscreen));
+      assert(fullscreen.scrollWidth <= fullscreen.clientWidth + 1 && fullscreen.scrollHeight <= fullscreen.clientHeight + 1,
+        `diagram-${target.kind} ${width}px fullscreen shows the whole scene with no scroll`, JSON.stringify(fullscreen));
+      assert(fullscreen.rendered <= fullscreen.clientWidth + 1 && fullscreen.renderedHeight <= fullscreen.clientHeight + 1,
+        `diagram-${target.kind} ${width}px fullscreen scene fits the viewport`, JSON.stringify(fullscreen));
+      record(`diagram-${target.kind} ${width}px fullscreen`, JSON.stringify(fullscreen));
+      await page.evaluate(() => {
+        document.querySelector('button[aria-label="Plein écran"]').click();
+      });
+      await page.waitForFunction(
+        "() => document.querySelector('.st-dossier__diagramViewport')?.getAttribute('data-view-all') === 'true' && !document.querySelector('.st-dossier__diagramDrawing')?.hasAttribute('data-fullscreen')",
+        { timeout: 5000 },
+      ).catch(() => undefined);
+      await page.evaluate(() => {
+        if (document.querySelector('.st-dossier__diagramViewport')?.getAttribute('data-view-all') === 'true') {
+          [...document.querySelectorAll("button")].find((button) => button.textContent === "Tout voir").click();
+        }
+      });
+      await page.waitForFunction(
+        "() => document.querySelector('.st-dossier__diagramViewport')?.hasAttribute('data-view-all') === false",
+        { timeout: 5000 },
+      );
+      const restored = await page.evaluate(() => {
+        const viewport = document.querySelector(".st-dossier__diagramViewport");
+        const toutVoir = [...document.querySelectorAll("button")].find((button) => button.textContent === "Tout voir");
+        const svg = viewport.querySelector("svg");
+        return { pressed: toutVoir.getAttribute("aria-pressed"), rendered: svg.getBoundingClientRect().width, natural: Number(svg.getAttribute("width")) };
+      });
+      assert(restored.pressed === "false" && restored.rendered <= restored.natural + 1,
+        `diagram-${target.kind} ${width}px exit restores the natural size`, JSON.stringify(restored));
+      await observed.close();
+    }
+  }
 }
 
 console.log("");

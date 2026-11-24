@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/PackedBubblesChart.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Packed bubbles whose area is proportional to value.",
     "fr": "Bulles tassées dont l'aire est proportionnelle à la valeur."
   },
-  "digest": "sha256:3566daf975d881fee1ca03be7f96502bf3c659c98c47a1728532ef15fefbeb90",
+  "digest": "sha256:1350a83edfcdbee221578cc5ff43f0f708c71a6c742ca330032c1b0b8274fa51",
   "displayName": "PackedBubblesChart",
   "format": "component-entry/v1",
   "frameworks": [

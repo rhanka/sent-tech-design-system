@@ -127,8 +127,10 @@ describe("F-R0 consumed contract: author layout is refused (criterion 11-refusal
 });
 
 describe("F-R2 stylesheet foundation (criteria 3 and 8, static half)", () => {
-  it("carries no colour literal anywhere in the chunk CSS", () => {
-    const withoutVars = DOSSIER_CSS.replace(/var\(\s*--[a-z0-9-]+\s*\)/gi, "var()");
+  it("carries colour literals only as --st-* fallbacks (owner 24/11)", () => {
+    const withoutVars = DOSSIER_CSS
+      .replace(/var\(\s*--[a-z0-9-]+\s*(?:,\s*(?:[^()]|\([^()]*\))*)\s*\)/gi, "var()")
+      .replace(/var\(\s*--[a-z0-9-]+\s*\)/gi, "var()");
     expect(withoutVars).not.toMatch(/#[0-9a-f]{3,8}\b/i);
     expect(withoutVars).not.toMatch(/(rgb|hsl|oklch|oklab|color-mix?)\s*\(/i);
     for (const literal of ["white", "black", "red", "blue", "green", "yellow", "grey", "gray", "transparent", "currentcolor"]) {
@@ -149,7 +151,7 @@ describe("F-R2 stylesheet foundation (criteria 3 and 8, static half)", () => {
         const bearsColour = colourProps.has(prop) || prop === "border" || prop === "outline" || prop === "background";
         if (!bearsColour) continue;
         expect(value).toContain("var(--st-");
-        const stripped = value.replace(/var\(\s*--[a-z0-9-]+\s*\)/gi, "").replace(/\b(1px|solid|none)\b/gi, "").replace(/[0, ]/g, "");
+        const stripped = value.replace(/var\(\s*--[a-z0-9-]+\s*(?:,\s*(?:[^()]|\([^()]*\))*)\s*\)/gi, "").replace(/var\(\s*--[a-z0-9-]+\s*\)/gi, "").replace(/\b(1px|solid|none)\b/gi, "").replace(/[0, ]/g, "");
         expect(stripped).not.toMatch(/#[0-9a-f]/i);
       }
     }

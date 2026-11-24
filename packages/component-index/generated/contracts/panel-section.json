@@ -1,8 +1,8 @@
 {
   "componentId": "panel-section",
   "contractSource": "derived",
-  "digest": "sha256:426f28462f236d48a34526ad5f064ba26cb21fbd02d42afea1f7b743878dee2e",
-  "entryDigest": "sha256:e10d543cc838236344a1a1c4c347109127bddf06e80fe5dc02aed5d9444ed318",
+  "digest": "sha256:ed4416f4c2e3ea1c0a3a0a70c57b2e961a5a255db7496081eecdacfbcd221f7c",
+  "entryDigest": "sha256:e70406669612e84e1756bee0c4689fd83c2c542a4530ea42fbfac9be6078c4d1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -203,7 +203,7 @@
         "declarationPath": "packages/components-vue/dist/PanelSection.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PanelSectionProps",
-        "version": "0.41.0-next.15"
+        "version": "0.41.0-next.16"
       },
       "status": "complete",
       "unresolved": [],

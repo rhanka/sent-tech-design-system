@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/OHLCChart.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "OHLC bars: a vertical low→high bar with a left open tick and a right close tick.",
     "fr": "Bâtons OHLC : barre verticale low→high, tick gauche à l'ouverture, tick droite à la clôture."
   },
-  "digest": "sha256:a7442d05edd4316c438644b52fb1aa71704c6f1feccc1377bd1104033433ba87",
+  "digest": "sha256:31fca05e6c8b66ff7ac3a29e789d6f3697f447936da36f8263676ec6b7393436",
   "displayName": "OHLCChart",
   "format": "component-entry/v1",
   "frameworks": [
