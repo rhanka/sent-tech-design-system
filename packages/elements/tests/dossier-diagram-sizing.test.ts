@@ -80,6 +80,68 @@ describe("diagram natural size (static kit CSS)", () => {
   });
 });
 
+describe("Tout voir and fullscreen never enlarge (P1 reproductions)", () => {
+  const FILL = /(?<![-\w])width:\s*100%/;
+  const FILL_HEIGHT = /(?<![-\w])height:\s*100%/;
+  function svgRule(selector: string): string {
+    const rule = pageCss.match(new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*\\{[^}]*\\}`));
+    expect(rule).not.toBeNull();
+    return rule![0];
+  }
+
+  it("Tout voir never enlarges: no width: 100% on the SVG, capped by max-width and max-height", () => {
+    const rule = svgRule(".st-dossier__diagramViewport[data-view-all=\"true\"] > svg");
+    expect(rule).not.toMatch(FILL);
+    expect(rule).toContain("width: auto");
+    expect(rule).toContain("max-width: 100%");
+    expect(rule).toContain("height: auto");
+    expect(rule).toMatch(/max-height:\s*\d+dvh|max-height:\s*\d+vh|max-height:\s*100%/);
+    // A small diagram stays at natural size in Tout voir (at most the
+    // companion-fit maxZoom analogue): width is auto, so a narrower-than-column
+    // scene is never stretched to the column width.
+    expect(pageCss).not.toMatch(/\.st-dossier__diagramViewport\[data-view-all="true"\]\s*>\s*svg\s*\{[^}]*?(?<![-\w])width:\s*100%/);
+  });
+
+  it("fullscreen gives the viewport a definite height so a tall scene fits whole", () => {
+    expect(pageCss).toContain("height: 100vh");
+    expect(pageCss).toContain("height: 100dvh");
+    const nativeDrawing = pageCss.match(/\.st-dossier__diagramDrawing:fullscreen\s*\{[^}]*\}/);
+    expect(nativeDrawing).not.toBeNull();
+    expect(nativeDrawing![0]).toMatch(/height:\s*100(dvh|vh)/);
+    for (const selector of [
+      ".st-dossier__diagramDrawing:fullscreen .st-dossier__diagramViewport",
+      ".st-dossier__diagramDrawing[data-fullscreen=\"true\"] .st-dossier__diagramViewport",
+    ]) {
+      const rule = svgRule(selector);
+      expect(rule).toMatch(/flex:\s*1\s+1\s+auto|height:\s*100%|height:\s*100dvh/);
+      expect(rule).toContain("min-height: 0");
+    }
+  });
+
+  it("fullscreen never enlarges: width/height auto with max caps, no max-height: none", () => {
+    for (const selector of [
+      ".st-dossier__diagramDrawing:fullscreen .st-dossier__diagramViewport > svg",
+      ".st-dossier__diagramDrawing[data-fullscreen=\"true\"] .st-dossier__diagramViewport > svg",
+    ]) {
+      const rule = svgRule(selector);
+      expect(rule).not.toMatch(FILL);
+      expect(rule).not.toMatch(FILL_HEIGHT);
+      expect(rule).not.toMatch(/max-height:\s*none/);
+      expect(rule).toContain("width: auto");
+      expect(rule).toContain("max-width: 100%");
+      expect(rule).toContain("height: auto");
+      expect(rule).toContain("max-height: 100%");
+    }
+  });
+
+  it("no diagram SVG rule enlarges past natural size, in any mode", () => {
+    for (const match of pageCss.matchAll(/\.st-dossier__diagramViewport[^{]*>\s*svg\s*\{[^}]*\}/g)) {
+      expect(match[0]).not.toMatch(FILL);
+      expect(match[0]).toContain("width: auto");
+    }
+  });
+});
+
 describe("Tout voir mode", () => {
   function mount() {
     const host = document.body.appendChild(document.createElement("main"));

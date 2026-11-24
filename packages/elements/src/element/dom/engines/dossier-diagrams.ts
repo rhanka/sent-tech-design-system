@@ -83,7 +83,7 @@ function attachViewAll(
     if (enabled) {
       const promise = (request as () => Promise<unknown>).call(drawing);
       if (promise === undefined || typeof (promise as Promise<unknown>).catch !== "function") return;
-      (promise as Promise<unknown>).catch(() => {
+      (promise as Promise<unknown>).then(() => syncButtons()).catch(() => {
         fallbackFullscreen = true;
         drawing.dataset["fullscreen"] = "true";
         syncButtons();
