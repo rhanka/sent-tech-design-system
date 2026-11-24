@@ -319,76 +319,57 @@ git push origin diagram-codecs-v0.1.0
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
-### Elements 0.3.2
+### Elements 0.3.3
 
-`0.3.2` ships the `0.3.1` package content, plus the publish workflow fix for
-the Chromium singleton socket path (`chromium-suite.mjs` roots the profile,
-TMPDIR and XDG_RUNTIME_DIR in a short directory: `RUNNER_TEMP` on GitHub
-runners, otherwise the repository `tmp/`, and fails early if the resulting
-socket path would exceed 100 characters). `0.3.1` was tagged
-(`elements-v0.3.1`) but never published on npm — its `verify` job failed
-twice before publishing because the suite built its work dir under the
-GitHub workspace path, so Chromium aborted with `FATAL
-process_singleton_posix.cc Socket path too long:
-.../tmp/st-elements-suite-XXXX/org.chromium.Chromium.XXXX/SingletonSocket`
-(Chrome was found via the pinned `browser-actions/setup-chrome` step and
-`CHROME_BIN`; the Unix socket limit was exceeded). This suite did not run
-in the pull-request CI, which is why it was never caught. The existing tag
-cannot be republished with the fixed workflow. Because `0.3.1` was never
-published on npm (nor `0.3.0`), this release uses `0.3.2` rather than a new
-minor (`0.4.0`).
+`0.3.3` ships the `0.3.2` package content, plus the Focus static kit sizing
+fix (owner feedback 24/11, track 01M85JMWB3YWBM69DAKPMZ9KX8): every
+`var(--st-semantic-*)` in the kit CSS now carries the design-system
+light-theme literal as its fallback, Focus diagrams render at their natural
+size and are never enlarged, and every diagram carries a `Tout voir`
+toggle with the same behaviour and wording as the DiagramSceneFigure
+`Tout voir` mode (whole scene with no scroll, `Plein écran` offered while
+view-all stands, pinch zoom kept, Escape and `aria-pressed` throughout). The
+elements browser suite measures a 5-box diagram at 390, 820 and 1280 px:
+never wider than its natural width, large diagram fitting the column.
+`0.3.2` was published on npm, so this is a normal patch release. Publish
+Elements `0.3.3` before tagging `@sentropic/design-system-vue` `0.41.0-next.16`,
+which carries its updated optional BPMN peer pin (`0.3.3`).
 
-This release ships the Focus static artifact kit and the `st-dossier-ready`
-review root (FA-D1, #322), the `TimeSeriesChart` element, catalogue entry and
-transcript formatter (EZ-1, #321), the FA-D3 review layer in the compiled kit
-and `./dossier-mount` export (#332), and FA-D2 (#330): r7 scene rendering and
-container folding (including in review mode) in the static kit, the new
-`./dossier-views` subpath export, and the new exact runtime dependency
-`@sentropic/diagram-canvas@0.5.0` (already published on npm). It also publishes
-the `./bpmn` and `./bpmn-mount` exports for the first time (#267). Publish
-Elements `0.3.2` before tagging `@sentropic/design-system-vue` `0.41.0-next.15`,
-which carries its updated optional BPMN peer pin (`0.3.2`).
+#### Vue `0.41.0-next.16` (peer pin only, no code change)
 
-#### Vue `0.41.0-next.15` (`0.41.0-next.14` tagged, never published)
-
-`@sentropic/design-system-vue` `0.41.0-next.14` was tagged (`vue-v0.41.0-next.14`)
-and never published on npm: at that tag the package pinned the optional peer
-`@sentropic/design-system-elements@0.3.1`, which never reached npm (its
-`verify` job failed twice before publishing with the socket path too long
-above), so the publish gate refused publication. Because
-`vue-v0.41.0-next.14` already exists, the updated peer pin
-(`@sentropic/design-system-elements@0.3.2`, with no code change) ships as
-`0.41.0-next.15` (`vue-v0.41.0-next.15`, under `next`) once `elements-v0.3.2`
-is visible on npm.
+`@sentropic/design-system-vue` `0.41.0-next.16` carries the updated optional
+BPMN peer pin (`@sentropic/design-system-elements@0.3.3`, with no code
+change) as `0.41.0-next.16` (`vue-v0.41.0-next.16`, under `next`) once
+`elements-v0.3.3` is visible on npm.
 
 `@sentropic/design-system-review-core` was bumped to `0.1.2` in the `0.3.0`
 release prep because DS-7 (#320) changed `packages/review-core/src/fixture-adapter.ts`
 after `review-core-v0.1.1` was published. `@sentropic/design-system-elements`
 keeps its exact runtime pin on published `@sentropic/design-system-review-core@0.1.1`,
-so `elements-v0.3.2` can be tagged independently on the merged default-branch
+so `elements-v0.3.3` can be tagged independently on the merged default-branch
 commit.
 
-On the merged default-branch commit, push the `elements-v0.3.2` tag. The
+On the merged default-branch commit, push the `elements-v0.3.3` tag. The
 elements publish job grants `id-token: write` and uses npm 11 with the public
 npm registry. Confirm the package's npm Trusted Publisher names
 `rhanka/sent-tech-design-system` and `elements-publish.yml`.
 
 ```bash
 git push origin main
-git tag elements-v0.3.2
-git push origin elements-v0.3.2
+git tag elements-v0.3.3
+git push origin elements-v0.3.3
 ```
 
 The browser bundle is served from the CDN base (exact version pinned, §7 — never a range, never `latest`):
 
 ```
-https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.3.2/dist/browser/
+https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.3.3/dist/browser/
 ```
 
 Once jsDelivr visibly serves the pinned version, run the post-publish CDN check (also wired into each publish workflow's `post-publish-check` job):
 
 ```bash
-node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.3.2
+node scripts/verify-jsdelivr-published.mjs --package @sentropic/design-system-elements --version 0.3.3
 node scripts/verify-jsdelivr-published.mjs --package @sentropic/diagram-core --version 0.1.0
 node scripts/verify-jsdelivr-published.mjs --package @sentropic/diagram-canvas --version 0.1.0
 ```

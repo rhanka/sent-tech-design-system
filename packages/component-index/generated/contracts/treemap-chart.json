@@ -1,8 +1,8 @@
 {
   "componentId": "treemap-chart",
   "contractSource": "derived",
-  "digest": "sha256:02eaa645e1798a56e2bed303897eaf56ab2fc7e168b41e93581ea2424c65ae50",
-  "entryDigest": "sha256:6d5e92b9854fa2256976abe607bf2a1f8afde131b5175bb994679f694b2896e5",
+  "digest": "sha256:8643288d924997a38c2ed48b72bd94a376ff8aa2628d591c99b70de551553223",
+  "entryDigest": "sha256:e350682f025eba4c778da1e1ec64f1025dad3bd2dab93cfcf04250f8da840858",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -382,7 +382,7 @@
         "declarationPath": "packages/components-vue/dist/TreemapChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TreemapChartProps",
-        "version": "0.41.0-next.15"
+        "version": "0.41.0-next.16"
       },
       "status": "complete",
       "unresolved": [],

@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/VariablePieChart.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Variable-radius pie: each slice's angle scales with value, its radius with a 2nd metric z mapped between a min and max radius.",
     "fr": "Camembert à rayon variable : l'angle de chaque part ∝ value, le rayon ∝ une 2e métrique z mappée entre rayon min et max."
   },
-  "digest": "sha256:4bfcb09c3818ef361a0f92343f61e9c0b2ac04021ab855ade2c06f397822842d",
+  "digest": "sha256:8ab61197eda11bcd1d1cb535996bd4057ba17d2bc4a2608bfaa0b2de88bce3f3",
   "displayName": "VariablePieChart",
   "format": "component-entry/v1",
   "frameworks": [

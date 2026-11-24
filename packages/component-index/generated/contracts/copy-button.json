@@ -1,8 +1,8 @@
 {
   "componentId": "copy-button",
   "contractSource": "derived",
-  "digest": "sha256:651110ec26811a7d96e805dd91c693215e2605a56372cebcb53c1a15e9b0d99d",
-  "entryDigest": "sha256:9f4902b88f81e10a6562531f12d4afee2172b23dd1eaf6cf825ecc3f6ca76375",
+  "digest": "sha256:5d797dfb53b27ce8322dc813e46d606203f627136d8fce74e833963a941dfb31",
+  "entryDigest": "sha256:e9e31935676435c572b941bbf256b1d5a615c0b6dad85d9a0d96acffa3dfc254",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -248,7 +248,7 @@
         "declarationPath": "packages/components-vue/dist/CopyButton.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CopyButtonProps",
-        "version": "0.41.0-next.15"
+        "version": "0.41.0-next.16"
       },
       "status": "partial",
       "unresolved": [

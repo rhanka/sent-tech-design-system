@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TileMapChart.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Tile map (\"tilemap\" cartogram): grid of square cells placed at explicit (col, row) coordinates, colored by value on a sequential scale.",
     "fr": "Carte en tuiles (cartogramme « tilemap ») : grille de cellules carrées posées à des coordonnées (col, row) explicites, colorées par valeur sur une échelle séquentielle."
   },
-  "digest": "sha256:f638d9c7e9e5271f6accae210a01fde3f3a3f9ee4142b2abd2c2e1e7c4d703a8",
+  "digest": "sha256:72215b50cb7a9e396a3f8238502e3753ba15c98299a65d01957bb09d18100ea4",
   "displayName": "TileMapChart",
   "format": "component-entry/v1",
   "frameworks": [

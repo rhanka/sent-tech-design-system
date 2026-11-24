@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/NumberInput.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Numeric field with increment/decrement.",
     "fr": "Champ numérique avec incrément/décrément."
   },
-  "digest": "sha256:c828fdafbe1727cd728020907c53a74debbc9e9831d288543a69275646ae08ed",
+  "digest": "sha256:38b946ad252a5432c7ea56e2bcfa50b92f41d7b1a7d5c70e9990f6d13b71131e",
   "displayName": "NumberInput",
   "format": "component-entry/v1",
   "frameworks": [

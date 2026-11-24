@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Radio.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Radio button grouped via `name`.",
     "fr": "Bouton radio groupé via `name`."
   },
-  "digest": "sha256:4fdeee2d2a64b6a85c0d2cfc9a76c0076ee46a55d6d811a03779bc8d665742b7",
+  "digest": "sha256:4101b4a64a243bf91744fae4256e9368deee5d8349abe7dfd75d5a1ef1e7721c",
   "displayName": "Radio",
   "format": "component-entry/v1",
   "frameworks": [

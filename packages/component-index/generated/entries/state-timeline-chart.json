@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/StateTimelineChart.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Discrete state bands over time: one lane per series, contiguous segments colored by state.",
     "fr": "Bandes d'états discrets dans le temps : une ligne par série, segments contigus colorés par état."
   },
-  "digest": "sha256:9b21dd33f14e4713cc6e3a99971646f2ac3b9b443c614bbd6755085ba045be64",
+  "digest": "sha256:f32f27e7359c716d93232820df6f87972f3682050f41d6f6d8bbce46cf5309ea",
   "displayName": "StateTimelineChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "waterfall-chart",
   "contractSource": "derived",
-  "digest": "sha256:4a555516d9e94310f9ac33de6916ad83de80eb5f28cfa786d27369aedda722b5",
-  "entryDigest": "sha256:47945b47ec47769e63d09c6f793c0e8c35a4f36507ee49d29da27ec28b519481",
+  "digest": "sha256:c6a03cac878ddec6bb188de9ef37a0e45497984f054a19cc07a35b66b704501b",
+  "entryDigest": "sha256:3e5ff26afa22c6f22b24738faf725912413a8948601cab27ec559a9501cb6f33",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -334,7 +334,7 @@
         "declarationPath": "packages/components-vue/dist/WaterfallChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "WaterfallChartProps",
-        "version": "0.41.0-next.15"
+        "version": "0.41.0-next.16"
       },
       "status": "partial",
       "unresolved": [],

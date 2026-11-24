@@ -1,8 +1,8 @@
 {
   "componentId": "modal",
   "contractSource": "derived",
-  "digest": "sha256:8f8f9aaabf227bd94b8dfeb2fd14b4e11eaa6f1616c4f992f87d070942836de7",
-  "entryDigest": "sha256:72b693b7b4bf5a78a71e9bf7df1fb70c0233f93a2c1ccede65c4c009155164eb",
+  "digest": "sha256:db799e21d56e56cae263fd1c5146f1e3062db12fd263240f94017d2f51a3b6aa",
+  "entryDigest": "sha256:b925bf6ef37cf1eb0e89e84eecca90509c76df471b9921a3092911b2e20f645f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -248,7 +248,7 @@
         "declarationPath": "packages/components-vue/dist/Modal.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ModalProps",
-        "version": "0.41.0-next.15"
+        "version": "0.41.0-next.16"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "radio",
   "contractSource": "derived",
-  "digest": "sha256:90ee135273619b302caf44f0c2872ed3479adad22cec2669add7b656b5a42407",
-  "entryDigest": "sha256:4fdeee2d2a64b6a85c0d2cfc9a76c0076ee46a55d6d811a03779bc8d665742b7",
+  "digest": "sha256:85e4696c9c8ba7b4e9f309d0ca70e10870d6583fd59677424467c1cbea62cb48",
+  "entryDigest": "sha256:4101b4a64a243bf91744fae4256e9368deee5d8349abe7dfd75d5a1ef1e7721c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -264,7 +264,7 @@
         "declarationPath": "packages/components-vue/dist/Radio.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RadioProps",
-        "version": "0.41.0-next.15"
+        "version": "0.41.0-next.16"
       },
       "status": "partial",
       "unresolved": [

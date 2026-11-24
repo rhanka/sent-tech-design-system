@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ColumnPyramidChart.vue",
-      "version": "0.41.0-next.15"
+      "version": "0.41.0-next.16"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Pyramid columns: each category is a triangle, base on the X axis and apex at the value height.",
     "fr": "Colonnes pyramidales : chaque catégorie est un triangle, base sur l'axe X et sommet à la hauteur de la valeur."
   },
-  "digest": "sha256:7f1fc1d062123d3926d3675edc999cfb80c68c354d1d98c31d894c2046a4bc8f",
+  "digest": "sha256:b4d6215458b804af347c3d05506ef5bbde084f3a11e3b1bb51dd57a263bad092",
   "displayName": "ColumnPyramidChart",
   "format": "component-entry/v1",
   "frameworks": [
