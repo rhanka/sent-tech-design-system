@@ -319,6 +319,21 @@ git push origin diagram-codecs-v0.1.0
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
+### DE-3 Milestone 1 (`DE3-L1a`, `DE3-L2a`)
+
+Minor bumps for changed `r7` token/link defaults and single-legend authority
+(`tokens` `0.17.0`, `themes` `0.17.0`, `diagram-canvas` `0.6.0`, `diagram-codecs`
+`0.2.0`, `design-system-svelte` `0.46.0`, and `design-system-vue`
+`0.41.0-next.17` on the `next` dist-tag). Keep `v1` frozen semantics
+(`edgeStroke` `#64748b`, `1.5 px` strokes, `v1` `<marker>` and draw.io)
+byte-identical. Tag order after merge (each waiting for the previous
+`post-publish-check` to turn green):
+
+1. `core-v0.17.0` (`npm-publish.yml`: `@sentropic/design-system-tokens` then `@sentropic/design-system-themes`)
+2. `diagram-canvas-v0.6.0` (`diagram-canvas-publish.yml`)
+3. `svelte-v0.46.0` (`svelte-publish.yml`) and `vue-v0.41.0-next.17` (`vue-publish.yml`)
+4. `diagram-codecs-v0.2.0` (`diagram-codecs-publish.yml`, requires `@sentropic/diagram-canvas@0.6.0`)
+
 ### Elements 0.3.3
 
 `0.3.3` ships the `0.3.2` package content, plus the Focus static kit sizing

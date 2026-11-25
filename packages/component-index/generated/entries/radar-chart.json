@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/RadarChart.svelte",
-      "version": "0.45.0"
+      "version": "0.46.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/RadarChart.vue",
-      "version": "0.41.0-next.16"
+      "version": "0.41.0-next.17"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Polar radar chart for comparing series across shared axes.",
     "fr": "Radar polaire pour comparer plusieurs séries sur des axes communs."
   },
-  "digest": "sha256:4e344a650b1762ec2a3bc0b09d7222f25b6aee9a9dbc034a7cf175fd4fb14f93",
+  "digest": "sha256:7e87d3c5430ebaba9617a4802242403e3f9f15d67b8a5cace1472c4b65d7853e",
   "displayName": "RadarChart",
   "format": "component-entry/v1",
   "frameworks": [

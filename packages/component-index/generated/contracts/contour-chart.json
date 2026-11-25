@@ -1,8 +1,8 @@
 {
   "componentId": "contour-chart",
   "contractSource": "derived",
-  "digest": "sha256:fba264409349b83e37a0a35c0a1a13e38a4a598ea20d97627700d73617e2a174",
-  "entryDigest": "sha256:1979ae5c0d5337b1fa542eea21e83509a159c661d6d8f0157a37ed4df7ac592c",
+  "digest": "sha256:8af785ff2498808a254a8e3f79e3d3102774f118c18e89af67d8d778ddc52b72",
+  "entryDigest": "sha256:c3ba8778d5393412fbbb1f4c7ff8b266f3a2109a45de46594021fc91efc3b06a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -247,7 +247,7 @@
         "declarationPath": "packages/components-svelte/dist/ContourChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ContourChartProps",
-        "version": "0.45.0"
+        "version": "0.46.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -330,7 +330,7 @@
         "declarationPath": "packages/components-vue/dist/ContourChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ContourChartProps",
-        "version": "0.41.0-next.16"
+        "version": "0.41.0-next.17"
       },
       "status": "complete",
       "unresolved": [],

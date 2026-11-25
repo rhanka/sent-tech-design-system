@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Dropdown.svelte",
-      "version": "0.45.0"
+      "version": "0.46.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Dropdown.vue",
-      "version": "0.41.0-next.16"
+      "version": "0.41.0-next.17"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Selection dropdown (listbox).",
     "fr": "Liste déroulante de sélection (listbox)."
   },
-  "digest": "sha256:9b08678f59eeb30eabcede2b44a039921a93282733d99487294eb099d467e7eb",
+  "digest": "sha256:a54a86e4ee3baa49b2c2e5e8f9f902235488ec79e6d33ebd1828af7e6a4b921b",
   "displayName": "Dropdown",
   "format": "component-entry/v1",
   "frameworks": [

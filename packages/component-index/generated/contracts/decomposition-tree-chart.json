@@ -1,8 +1,8 @@
 {
   "componentId": "decomposition-tree-chart",
   "contractSource": "derived",
-  "digest": "sha256:792b6003b9c9fd70f40823530ee0d1a3b085151bb8702635b7eaae4d57c7fa83",
-  "entryDigest": "sha256:6b19146920429ef864da737f66f3ccd4a67669cb536e3e5aebcef449a7b56179",
+  "digest": "sha256:c53ad39bd7ca565b15648673e915c67be93e81a1bffc9061df04264030aeaa75",
+  "entryDigest": "sha256:ecaa4ddde285ec39fc381816fe5a5208674417abaeafcf19390583256e32bb93",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -320,7 +320,7 @@
         "declarationPath": "packages/components-svelte/dist/DecompositionTreeChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DecompositionTreeChartProps",
-        "version": "0.45.0"
+        "version": "0.46.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -427,7 +427,7 @@
         "declarationPath": "packages/components-vue/dist/DecompositionTreeChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DecompositionTreeChartProps",
-        "version": "0.41.0-next.16"
+        "version": "0.41.0-next.17"
       },
       "status": "complete",
       "unresolved": [],

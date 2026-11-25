@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Radio.svelte",
-      "version": "0.45.0"
+      "version": "0.46.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Radio.vue",
-      "version": "0.41.0-next.16"
+      "version": "0.41.0-next.17"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Radio button grouped via `name`.",
     "fr": "Bouton radio groupé via `name`."
   },
-  "digest": "sha256:4101b4a64a243bf91744fae4256e9368deee5d8349abe7dfd75d5a1ef1e7721c",
+  "digest": "sha256:24f43315b089c193c78810679be7c1ef9e06c58a94b0fb5d9a44fa9ff34b57c0",
   "displayName": "Radio",
   "format": "component-entry/v1",
   "frameworks": [

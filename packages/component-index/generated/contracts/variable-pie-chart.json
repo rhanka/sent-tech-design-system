@@ -1,8 +1,8 @@
 {
   "componentId": "variable-pie-chart",
   "contractSource": "derived",
-  "digest": "sha256:43b0f6d7a9857fa7bdb78730dbdf77da97ef6696f062c4d92de65d7b75ba1247",
-  "entryDigest": "sha256:8ab61197eda11bcd1d1cb535996bd4057ba17d2bc4a2608bfaa0b2de88bce3f3",
+  "digest": "sha256:adf76975fc989bba9a0549f800b195d1e5a17e2562589a86730e816b5a683ee8",
+  "entryDigest": "sha256:529ba555244225e8093b5f35e41dd4927960cf58b3defc1a83e5d1bd1de3847c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -247,7 +247,7 @@
         "declarationPath": "packages/components-svelte/dist/VariablePieChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "VariablePieChartProps",
-        "version": "0.45.0"
+        "version": "0.46.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -330,7 +330,7 @@
         "declarationPath": "packages/components-vue/dist/VariablePieChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "VariablePieChartProps",
-        "version": "0.41.0-next.16"
+        "version": "0.41.0-next.17"
       },
       "status": "complete",
       "unresolved": [],

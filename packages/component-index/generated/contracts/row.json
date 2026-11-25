@@ -1,8 +1,8 @@
 {
   "componentId": "row",
   "contractSource": "derived",
-  "digest": "sha256:6f13b9b037a98360e8e8adf1906e8f99ae8f5460b10c76cca03ad74bd8f275e9",
-  "entryDigest": "sha256:13f1452a7f0245f6abccf5c05b077c86a5185e97b480f6b13050623f510ec63c",
+  "digest": "sha256:18c5823469ff60f6f83e9aa2b4f26121deb3ea9f61ac933337a92e0ac07c02f1",
+  "entryDigest": "sha256:caeb8b0d0810b175abfbf19f901366b9e4b802d5fa1a1b012253fa2ceb1ba37b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -192,7 +192,7 @@
         "declarationPath": "packages/components-svelte/dist/Row.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RowProps",
-        "version": "0.45.0"
+        "version": "0.46.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -254,7 +254,7 @@
         "declarationPath": "packages/components-vue/dist/Row.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RowProps",
-        "version": "0.41.0-next.16"
+        "version": "0.41.0-next.17"
       },
       "status": "complete",
       "unresolved": [],
