@@ -1,8 +1,8 @@
 {
   "componentId": "empty-state",
   "contractSource": "derived",
-  "digest": "sha256:9ada714bc4d108d7f1f2c2e8b2ae1a6002ff515c79a88859c6f177854db4d5e1",
-  "entryDigest": "sha256:68a2aad90b07c201ca078b7a6620316f4e27ed9bea6b49572e65d4e5bc4a320a",
+  "digest": "sha256:40eea51f3a6eb3e80b3261e066b5c34008bcbbe32a5693697dabda2ca7e8e4f7",
+  "entryDigest": "sha256:9c25ce82129242d47d5432e120758fd3191516a1c59b2593624df08f66e3e06f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -153,7 +153,7 @@
         "declarationPath": "packages/components-svelte/dist/EmptyState.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "EmptyStateProps",
-        "version": "0.46.0"
+        "version": "0.47.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -225,7 +225,7 @@
         "declarationPath": "packages/components-vue/dist/EmptyState.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EmptyStateProps",
-        "version": "0.42.0-next.0"
+        "version": "0.43.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

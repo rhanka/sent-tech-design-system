@@ -1,5 +1,31 @@
 # Changelog
 
+## Unreleased — DE-3 Milestone 1 (DE3-L1a, DE3-L2a)
+
+- diagram-canvas, Svelte and Vue `DiagramSceneFigure`: suppress auto-generated
+  link legend when a scene already carries a visible authored `form: "legend"`
+  node (`data-authored-legend=""`), and pre-reserve scene legend rectangles in
+  label clearance (`DE3-L1a`).
+- tokens and themes: add `diagramScene.linkStroke` (`semantic.text.primary` /
+  `#0f172a` light, `oklch(96% 0.005 250)` dark) and raise default `r7`
+  `linkStrokeWidth` / `linkRelatedStrokeWidth` from `2.5px` / `3px` to `3.5px`
+  across regenerated theme CSS (`sent-tech`, `entropic`, `forge`); keep
+  `emphasis` at `3.5px` (`D-DE3-1` open) (`DE3-L2a`).
+- diagram-canvas, diagram-codecs, design-system-elements, Svelte and Vue
+  `DiagramSceneFigure`: align `r7` resting link strokes, `<marker>` fills,
+  legend swatches, rendered bounds and draw.io `r7` export to `linkStroke` and
+  `3.5px` while preserving `process@1` (`2.5px`, `edgeStroke`) and `v1`
+  byte-identity (`DE3-L2a`).
+- Bumped minors for changed defaults and pins: `tokens` `0.17.0`, `themes`
+  `0.17.0`, `diagram-canvas` `0.7.0`, `diagram-codecs` `0.2.0`,
+  `design-system-elements` `0.5.0`, `design-system-svelte` `0.47.0` (above
+  PR #350's `0.46.1` Stepper patch), `design-system-vue` `0.43.0-next.0`.
+
+## @sentropic/design-system-svelte 0.46.1 — Stepper horizontal alignment fix
+
+- Stepper: centre horizontal step connectors on the step bubbles and join the
+  last step cleanly (PR #344).
+
 ## Unreleased — DC-2c.1
 
 - diagram-core: additive relation refinements, authored flow types, validation,

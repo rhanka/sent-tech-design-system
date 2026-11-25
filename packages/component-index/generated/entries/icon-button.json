@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/IconButton.svelte",
-      "version": "0.46.0"
+      "version": "0.47.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/IconButton.vue",
-      "version": "0.42.0-next.0"
+      "version": "0.43.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact 32-36 px icon-only button, mandatory aria-label, Lucide.",
     "fr": "Bouton icône compact 32-36 px, aria-label obligatoire, Lucide."
   },
-  "digest": "sha256:3e19bf9a1140b751517d04ea80830ae44837d8429c1b395c1d15653587450d2e",
+  "digest": "sha256:d222e84a8b99768501a39117424dfb4a6bab329091f7017f9222489492b10f4a",
   "displayName": "IconButton",
   "format": "component-entry/v1",
   "frameworks": [

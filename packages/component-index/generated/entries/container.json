@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Container.svelte",
-      "version": "0.46.0"
+      "version": "0.47.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Container.vue",
-      "version": "0.42.0-next.0"
+      "version": "0.43.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Centered container with bounded max width (sm…full).",
     "fr": "Conteneur centré à largeur maximale bornée (sm…full)."
   },
-  "digest": "sha256:52bc8cec34226a1d717a040c39443525d94c1c510b9ae38414961e8bc42d4514",
+  "digest": "sha256:0839f4444dd5c67e4bca1387c5b5c483fa5501f471db9ac15948d8e1cdea56de",
   "displayName": "Container",
   "format": "component-entry/v1",
   "frameworks": [

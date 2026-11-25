@@ -1,8 +1,8 @@
 {
   "componentId": "col",
   "contractSource": "derived",
-  "digest": "sha256:8332cf7628bbaf6349c7cf34ad37dec4b447931c96868da0884647ab5d4d8d92",
-  "entryDigest": "sha256:affaf12895cf2d396052a6d615e74aa3d852b913d78fee3150b7834f25a17efa",
+  "digest": "sha256:522ad0bf03785cf75a0e06721f00475634e97f8503fe4ce2cb4d94f2f7b217b4",
+  "entryDigest": "sha256:925de00f7fd7de0804f0dcbeec1e5ea552c327a44540c4907bd22e4abb552f81",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -250,7 +250,7 @@
         "declarationPath": "packages/components-svelte/dist/Col.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ColProps",
-        "version": "0.46.0"
+        "version": "0.47.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -332,7 +332,7 @@
         "declarationPath": "packages/components-vue/dist/Col.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ColProps",
-        "version": "0.42.0-next.0"
+        "version": "0.43.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

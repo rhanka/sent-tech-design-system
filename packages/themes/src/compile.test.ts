@@ -48,9 +48,12 @@ describe("compileTheme", () => {
     expect(css).toContain("--st-component-dataTable-headerBackground");
   });
 
-  it("emits DE-2 link tokens and preserves DC-2c flow stroke widths on compiled themes", () => {
+  it("emits DE-2/DE-3 link tokens and preserves v1 edgeStroke & DC-2c flow stroke widths on compiled themes", () => {
     const css = compileTheme(sentTechTheme);
-    expect(css).toContain("--st-component-diagramScene-linkStrokeWidth: 2.5px;");
+    expect(css).toContain("--st-component-diagramScene-edgeStroke: #64748b;");
+    expect(css).toContain("--st-component-diagramScene-linkStroke: #0f172a;");
+    expect(css).toContain("--st-component-diagramScene-linkStrokeWidth: 3.5px;");
+    expect(css).toContain("--st-component-diagramScene-linkRelatedStrokeWidth: 3.5px;");
     expect(css).toContain("--st-component-diagramScene-linkEmphasisStroke: #001f33;");
     expect(css).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth: 3.5px;");
     expect(css).toContain("--st-component-diagramScene-edgeCornerRadius: 12px;");
@@ -59,6 +62,16 @@ describe("compileTheme", () => {
     expect(css).toContain("--st-component-diagramScene-flowStrokeWidth: 1.5px;");
     expect(css).toContain("--st-component-diagramScene-flowRelatedStrokeWidth: 2px;");
     expect(css).toContain("--st-component-diagramScene-flowPrimaryStrokeWidth: 2.5px;");
+
+    for (const id of ["sent-tech", "entropic", "forge"] as const) {
+      const diskCss = readFileSync(join(process.cwd(), "css", `${id}.css`), "utf8");
+      expect(diskCss, `${id}.css edgeStroke`).toContain("--st-component-diagramScene-edgeStroke: #64748b;");
+      expect(diskCss, `${id}.css linkStroke`).toContain("--st-component-diagramScene-linkStroke: #0f172a;");
+      expect(diskCss, `${id}.css dark linkStroke`).toContain("--st-component-diagramScene-linkStroke: oklch(96% 0.005 250);");
+      expect(diskCss, `${id}.css linkStrokeWidth`).toContain("--st-component-diagramScene-linkStrokeWidth: 3.5px;");
+      expect(diskCss, `${id}.css linkRelatedStrokeWidth`).toContain("--st-component-diagramScene-linkRelatedStrokeWidth: 3.5px;");
+      expect(diskCss, `${id}.css linkPrimaryStrokeWidth`).toContain("--st-component-diagramScene-linkPrimaryStrokeWidth: 3.5px;");
+    }
   });
 });
 

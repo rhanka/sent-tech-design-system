@@ -1,8 +1,8 @@
 {
   "componentId": "dependency-wheel-chart",
   "contractSource": "derived",
-  "digest": "sha256:1471687ea0fe8835c9f73990e40e8963c6eab8304f86e013f2d0f17a5a2e48aa",
-  "entryDigest": "sha256:b5cf8939172928c8eaacdf2562090e0bf44c9f400fc218cd512e1cb3fca8969a",
+  "digest": "sha256:d859da026a96ecc8ed5f5bd40da8d276d301791f66cb5c14c84571a368cc30ba",
+  "entryDigest": "sha256:4c9fd64ba373e13f36091818e11c7bf85e9bb9bed77cf5a794a2a68ba30fa881",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/DependencyWheelChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DependencyWheelChartProps",
-        "version": "0.46.0"
+        "version": "0.47.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -341,7 +341,7 @@
         "declarationPath": "packages/components-vue/dist/DependencyWheelChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DependencyWheelChartProps",
-        "version": "0.42.0-next.0"
+        "version": "0.43.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

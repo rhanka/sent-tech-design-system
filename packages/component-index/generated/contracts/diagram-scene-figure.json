@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:78bfd2bb232268ff6f12348d8e8d75fd606bec1ea9237e18c3848d78fd11e8c7",
-  "entryDigest": "sha256:0268f15716505e17aa596256aff9a597a4a447f3358f2be097d169611632bddf",
+  "digest": "sha256:547848268a8669a7a19bdadbe4173ec04627feb61c07b92f42360718a34364be",
+  "entryDigest": "sha256:21519d8c2c4679aad875bff990e5b1b906468f25ee18d3b0486d018279597cbd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1346,8 +1346,8 @@
               },
               "form": {
                 "enum": [
-                  "card",
                   "legend",
+                  "card",
                   "container",
                   "legend-key"
                 ]
@@ -5081,7 +5081,7 @@
         {
           "name": "presentation.entities",
           "reason": "index-signature: open-ended map loses key discipline",
-          "replacement": "{\"type\":\"object\",\"properties\":{\"categoryRef\":{\"type\":\"string\"},\"form\":{\"enum\":[\"card\",\"legend\",\"container\",\"legend-key\"]},\"icon\":{\"type\":\"string\"},\"text\":{\"$ref\":\"#/$defs/PresentationText\"},\"anatomy\":{\"enum\":[\"v1\",\"v2\"]},\"depth\":{\"type\":\"number\"},\"depthParityStart\":{\"enum\":[0,1]}},\"additionalProperties\":false,\"required\":[\"form\",\"text\"]}",
+          "replacement": "{\"type\":\"object\",\"properties\":{\"categoryRef\":{\"type\":\"string\"},\"form\":{\"enum\":[\"legend\",\"card\",\"container\",\"legend-key\"]},\"icon\":{\"type\":\"string\"},\"text\":{\"$ref\":\"#/$defs/PresentationText\"},\"anatomy\":{\"enum\":[\"v1\",\"v2\"]},\"depth\":{\"type\":\"number\"},\"depthParityStart\":{\"enum\":[0,1]}},\"additionalProperties\":false,\"required\":[\"form\",\"text\"]}",
           "sourceType": "Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>"
         },
         {
@@ -5157,7 +5157,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.46.0"
+        "version": "0.47.0"
       },
       "status": "partial",
       "unresolved": [
@@ -10920,7 +10920,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.42.0-next.0"
+        "version": "0.43.0-next.0"
       },
       "status": "partial",
       "unresolved": [

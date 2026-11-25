@@ -1,7 +1,7 @@
 {
   "componentId": "time-series-line-chart",
   "contractSource": "derived",
-  "digest": "sha256:a6257f1bd7a98557c10d5c1de0623016632eea55f165b22dc36965d64895b3f8",
+  "digest": "sha256:4ca2ef0b7246096a7ea28a38bc0eca152565b0514c8118b00c3a0b808580ff77",
   "entryDigest": "sha256:360c124ae6ea84d8ba8de60c28fc93d9fdb5e90331c944cacea5260d07003411",
   "format": "component-contract/v1",
   "frameworks": {
@@ -410,11 +410,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:cd5877c6d2b78b1aeef4f9490e6db65d24eb8f0d591cc225d1343f8fc9cb2d6e",
+        "declarationDigest": "sha256:bf6b53f9a5131f6da37b2932ff0ab484ed662af5653257dcb115f63fdbb5d688",
         "declarationPath": "packages/components-svelte/dist/TimeSeriesLineChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimeSeriesLineChartProps",
-        "version": "0.46.0"
+        "version": "0.47.0"
       },
       "status": "none",
       "unresolved": [],
@@ -437,7 +437,7 @@
         "declarationPath": "packages/components-vue/dist/TimeSeriesLineChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TimeSeriesLineChartProps",
-        "version": "0.42.0-next.0"
+        "version": "0.43.0-next.0"
       },
       "status": "none",
       "unresolved": [],

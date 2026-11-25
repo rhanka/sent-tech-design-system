@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ParallelCoordinatesChart.svelte",
-      "version": "0.46.0"
+      "version": "0.47.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ParallelCoordinatesChart.vue",
-      "version": "0.42.0-next.0"
+      "version": "0.43.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Parallel coordinates for comparing multi-dimensional records.",
     "fr": "Axes parallèles pour comparer des enregistrements multidimensionnels."
   },
-  "digest": "sha256:a164a2c22a4d8ddc22af3866d244a2cb67b1a847c322e5d0c4dbfc0ebd083250",
+  "digest": "sha256:50cd96dc159cf72294047ef01809588b5f4d9480a7c83a0bf02339690bac351c",
   "displayName": "ParallelCoordinatesChart",
   "format": "component-entry/v1",
   "frameworks": [

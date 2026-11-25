@@ -128,10 +128,10 @@ describe("fit-to-window host framing (DE-2 ask 9)", () => {
     expect(zoom).toBeLessThan(0.45);
     expect(fit.pans).toBe(false);
     const expectedWidths: readonly [string, number][] = [
-      ["occurrence:r.r-solid", 2.5],
+      ["occurrence:r.r-solid", 3.5],
       ["occurrence:r.r-emph", 3.5],
-      ["occurrence:r.r-dashed", 2.5],
-      ["occurrence:r.r-dotted", 2.5],
+      ["occurrence:r.r-dashed", 3.5],
+      ["occurrence:r.r-dotted", 3.5],
     ];
     for (const [occurrence, expectedWidth] of expectedWidths) {
       const shaft = svg.match(new RegExp(`<path data-scene-edge="${occurrence}"[^>]+>`))?.[0];
@@ -140,10 +140,10 @@ describe("fit-to-window host framing (DE-2 ask 9)", () => {
       expect.soft(Number(label?.match(/font-size="([^"]+)"/)?.[1]) * zoom, occurrence).toBeGreaterThanOrEqual(8);
     }
     const expectedSwatchWidths: readonly [string, number][] = [
-      ["solid:arrow:default", 2.5],
+      ["solid:arrow:default", 3.5],
       ["solid:none:emphasis", 3.5],
-      ["dashed:arrow:default", 2.5],
-      ["dotted:arrow:default", 2.5],
+      ["dashed:arrow:default", 3.5],
+      ["dotted:arrow:default", 3.5],
     ];
     for (const [styleKey, expectedWidth] of expectedSwatchWidths) {
       const swatch = svg.match(new RegExp(`<path data-legend-swatch="${styleKey}"[^>]+>`))?.[0];

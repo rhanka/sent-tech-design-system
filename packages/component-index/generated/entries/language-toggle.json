@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/LanguageToggle.svelte",
-      "version": "0.46.0"
+      "version": "0.47.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/LanguageToggle.vue",
-      "version": "0.42.0-next.0"
+      "version": "0.43.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Controlled language toggle, as a desktop select or mobile accordion.",
     "fr": "Bascule de langue contrôlée, en select desktop ou accordéon mobile."
   },
-  "digest": "sha256:fa6e6c2de3c526f24b29c3d7bb9d6500e23c0fdc1629aca63e975d39f4170e50",
+  "digest": "sha256:4ab9bb6635a05a5e7de78daddc5bbd4bf50193c310576701b92828480af063a7",
   "displayName": "LanguageToggle",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "composer-editor",
   "contractSource": "derived",
-  "digest": "sha256:8299ecf65ee7e6436234e84ff5803e53162ec532eb786b436e94ad8ad0abe98b",
-  "entryDigest": "sha256:449516490cdae3036c0c403d9077ac83248acf38732b59ec622fcf40ab5a98e6",
+  "digest": "sha256:3d7dffee98e4d2fabc2b11d20f444822777484c092dbee066e5e7a6770a7df37",
+  "entryDigest": "sha256:7d7577b00c93c33a2461958a51918f5f31a3e9f5a287f230e0642456e58ef9d8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -270,7 +270,7 @@
         "declarationPath": "packages/components-svelte/dist/rich-text-editor/ComposerEditor.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ComposerEditorProps",
-        "version": "0.46.0"
+        "version": "0.47.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -550,7 +550,7 @@
         "declarationPath": "packages/components-vue/dist/rich-text-editor/ComposerEditor.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ComposerEditorProps",
-        "version": "0.42.0-next.0"
+        "version": "0.43.0-next.0"
       },
       "status": "partial",
       "unresolved": [],
