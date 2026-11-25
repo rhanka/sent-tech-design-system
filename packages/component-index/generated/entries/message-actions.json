@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/MessageActions.svelte",
-      "version": "0.46.0"
+      "version": "0.47.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/MessageActions.vue",
-      "version": "0.41.0-next.17"
+      "version": "0.43.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Message action row with icon buttons and optional overflow.",
     "fr": "Rangée d’actions d’un message avec boutons icône et overflow optionnel."
   },
-  "digest": "sha256:9c1052c4bc352b834f3efa2a03725628ccc5b7e8ea6f80c1e270233adfc694e6",
+  "digest": "sha256:afda46ad776f72ef3c34ec9acca96fd056e40e635c2f2ae461f6ebb94f8bd7f9",
   "displayName": "MessageActions",
   "format": "component-entry/v1",
   "frameworks": [

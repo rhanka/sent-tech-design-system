@@ -1,8 +1,8 @@
 {
   "componentId": "date-picker",
   "contractSource": "derived",
-  "digest": "sha256:abd6f8bfd96475b549ffdfb0416414d07028744a41c672ac927f069cb9f570a2",
-  "entryDigest": "sha256:13cb2db2a1fa6415544e57b12c712de32df34730ccff25e761d3ce4ab72e6041",
+  "digest": "sha256:7d173218626b19d264293c28001397c767c13e4fde11a770ea2fa43656441a89",
+  "entryDigest": "sha256:40b5239ca0e6f5a663eefeb28437dea4ac5b1da6a7840d412dae2f0610c55284",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -563,7 +563,7 @@
         "declarationPath": "packages/components-svelte/dist/DatePicker.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DatePickerProps",
-        "version": "0.46.0"
+        "version": "0.47.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -847,7 +847,7 @@
         "declarationPath": "packages/components-vue/dist/DatePicker.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DatePickerProps",
-        "version": "0.41.0-next.17"
+        "version": "0.43.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

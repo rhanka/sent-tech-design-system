@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.4.0
+
+Process-flow simple boxes in Focus dossiers (Archify lot 1, L1d), consuming
+`@sentropic/diagram-canvas@0.6.0` (built on `@sentropic/diagram-core@0.6.1`).
+
+### Changed
+
+- Focus diagram source resolution (`resolveDossierScene` and `readDossierScene`)
+  now validates scenes through `validateSceneDocument` from
+  `@sentropic/diagram-canvas/diagramSceneModel` while keeping `generic@1`
+  bound locally to `foldableGenericProfile`.
+- Untyped Mermaid `flowchart LR|TB|TD` sources lower to `process@1` simple
+  boxes with content-derived `relation:<from>.<to>` (`.2`/`.3` parallel) IDs
+  checked by `validateDocument`, with `TB`/`TD` carrying the validated
+  `sentropic:process-flow` direction extension.
+- Focus `process@1` diagrams pin `FOCUS_PROCESS_TARGET_WIDTH = 640`, keeping
+  3 or fewer steps left-to-right and switching longer flows to top-to-bottom
+  so 5-step process flows render at scale `>= 0.9` in the `72ch` column with
+  visible straight/rounded connectors, no component icon, and no `+`/fold
+  button.
+
+### Added
+
+- Collapsible accessible step table (`renderProcessTable`) below Focus
+  `process@1` diagrams, styled for narrow and wide viewports (`390`, `820`,
+  `1280` px) and hidden in fullscreen mode.
+
 ## 0.3.3
 
 Focus static kit sizing fix (owner feedback 24/11,

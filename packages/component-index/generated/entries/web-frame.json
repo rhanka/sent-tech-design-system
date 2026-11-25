@@ -25,14 +25,14 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/WebFrame.vue",
-      "version": "0.41.0-next.17"
+      "version": "0.43.0-next.0"
     }
   ],
   "description": {
     "en": "Hardened embedded web frame (sandbox, title, lazy loading).",
     "fr": "Cadre web intégré et durci (sandbox, titre, chargement paresseux)."
   },
-  "digest": "sha256:5382fad97a51f51f0a02ad8d48a671565a3242d451441658d60ff51aab020dc0",
+  "digest": "sha256:aa774ab4dfed5748d735bde12a3df5346d6382ab83f033b8e624808dc47d02bd",
   "displayName": "WebFrame",
   "format": "component-entry/v1",
   "frameworks": [

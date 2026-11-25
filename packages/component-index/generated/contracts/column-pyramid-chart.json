@@ -1,8 +1,8 @@
 {
   "componentId": "column-pyramid-chart",
   "contractSource": "derived",
-  "digest": "sha256:a63d96ef1195a4b20acb9f7d63fbbddf2ed5c44a344e0494c4add89daafd2743",
-  "entryDigest": "sha256:4c8e8109859d6de4caa1f681c2364cbd823256d04a18438cf5786fb489b7a347",
+  "digest": "sha256:ba158b637865f26b4affb16156638a12b0e017429e5257376467b65264529b7b",
+  "entryDigest": "sha256:9c52ff8625339cc11f4b35152f9c58fd8b965d851e0552fe376fb4ff4e4e630d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -273,7 +273,7 @@
         "declarationPath": "packages/components-svelte/dist/ColumnPyramidChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ColumnPyramidChartProps",
-        "version": "0.46.0"
+        "version": "0.47.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -365,7 +365,7 @@
         "declarationPath": "packages/components-vue/dist/ColumnPyramidChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ColumnPyramidChartProps",
-        "version": "0.41.0-next.17"
+        "version": "0.43.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

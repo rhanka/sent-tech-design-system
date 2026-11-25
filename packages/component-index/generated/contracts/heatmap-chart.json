@@ -1,8 +1,8 @@
 {
   "componentId": "heatmap-chart",
   "contractSource": "derived",
-  "digest": "sha256:a68ee44144663753018127d40e71f3da858599f6e8c1e71f7d16e93ca03c6aca",
-  "entryDigest": "sha256:7f0ec1130574860802509cf33526e1b964246ce3ad922a11bc8adcb1e66d79b3",
+  "digest": "sha256:3910bbd60e074abc8e0f9f50f74cbefa2146d83a89b49e962ec54b16b424e14f",
+  "entryDigest": "sha256:72717d894f3f7db7eb224a761f240818f97d2c8c00e638f841d2e0ef76e08886",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -274,7 +274,7 @@
         "declarationPath": "packages/components-svelte/dist/HeatmapChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HeatmapChartProps",
-        "version": "0.46.0"
+        "version": "0.47.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -366,7 +366,7 @@
         "declarationPath": "packages/components-vue/dist/HeatmapChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HeatmapChartProps",
-        "version": "0.41.0-next.17"
+        "version": "0.43.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

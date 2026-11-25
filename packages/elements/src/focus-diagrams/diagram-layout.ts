@@ -1,12 +1,27 @@
 import { layoutCard, layoutZone, defaultCardMeasure, sceneCardMeasure } from "@sentropic/diagram-canvas/diagramCardModel";
 import {
-  layoutScene, type SceneDocument, type SceneLayoutInput, type SceneOccurrenceRef,
+  layoutScene,
+  shippedSceneBindings,
+  shippedSceneRegistry,
+  type SceneDocument,
+  type SceneLayoutInput,
+  type SceneOccurrenceRef,
 } from "@sentropic/diagram-canvas/diagramSceneModel";
 import { cardLineMeasurer, projectCardProps, projectZoneProps, renderSceneSvg } from "@sentropic/diagram-canvas/diagram-render";
 import { DossierDiagramError } from "./diagram-source.js";
 
+/** Pinned column width for Focus `process@1` diagrams (72ch column, scale >= 0.9 under P-R1). */
+export const FOCUS_PROCESS_TARGET_WIDTH = 640;
+
 const measure = sceneCardMeasure(defaultCardMeasure);
 const measureLines = cardLineMeasurer(measure);
+const processMeasureLines: SceneLayoutInput["measureLines"] = (request) => {
+  const layout = measureLines(request);
+  if (request.role !== "edge-label" || layout.width === 0) return layout;
+  // Pad static edge-label boxes so fallback sans fonts (e.g. DejaVu/Liberation
+  // Sans on Linux) stay inside their label rect at 12 px scaled height.
+  return { ...layout, width: layout.width + 8, height: layout.height + 6 };
+};
 const layoutFailures = new Set([
   "label-unplaced",
   "label-budget-exhausted",
@@ -119,44 +134,63 @@ const foldableGenericProfile: NonNullable<ReturnType<SceneLayoutInput["registry"
   ],
 };
 
-const registry: SceneLayoutInput["registry"] = {
-  get: (id) => (id === "generic@1" ? foldableGenericProfile : undefined),
-  has: (id) => id === "generic@1",
-  list: () => ["generic@1"],
+const isProcessScene = (scene: SceneDocument): boolean =>
+  scene.profileRefs.length === 1 && scene.profileRefs[0] === "process@1";
+
+export const focusSceneRegistry: SceneLayoutInput["registry"] = {
+  get: (id) => (id === "generic@1" ? foldableGenericProfile : shippedSceneRegistry.get(id)),
+  has: (id) => id === "generic@1" || shippedSceneRegistry.has(id),
+  list: () => ["generic@1", ...shippedSceneRegistry.list().filter((id) => id !== "generic@1")],
 };
 
-const bindings: NonNullable<SceneLayoutInput["bindings"]> = {
+export const focusSceneBindings: NonNullable<SceneLayoutInput["bindings"]> = {
   schemaVersion: "1",
-  rows: [{
-    profileId: "generic@1",
-    profilePin: {
-      id: "generic@1",
-      version: 1,
-      contentDigest: "a003981971bdf75b50f455f19d701130c81fd896aeb7f4b0f0f9fe49dd874b8a",
+  rows: [
+    {
+      profileId: "generic@1",
+      profilePin: {
+        id: "generic@1",
+        version: 1,
+        contentDigest: "a003981971bdf75b50f455f19d701130c81fd896aeb7f4b0f0f9fe49dd874b8a",
+      },
+      declarationAdapter: "legacy-constraints@1",
     },
-    declarationAdapter: "legacy-constraints@1",
-  }],
+    ...shippedSceneBindings.rows,
+  ],
 };
 
 const localIdOf = (ref: string): string => ref.slice(ref.indexOf(":") + 1);
 const occurrenceRef = (id: string): SceneOccurrenceRef => `occurrence:${id}` as SceneOccurrenceRef;
 
 export function dossierDiagramLayout(scene: SceneDocument) {
-  const entities: SceneLayoutInput["presentation"]["entities"] = Object.fromEntries(
-    Object.values(scene.entities).map((entity) => [
-      occurrenceRef(`e.${localIdOf(entity.id)}`),
-      {
-        form: entity.type === "container" ? "container" : "card",
-        text: { title: entity.attributes.name?.kind === "text" ? entity.attributes.name.value : entity.id },
-      },
-    ]),
-  );
-  const containers = Object.entries(entities)
-    .filter(([, entity]) => entity.form === "container").map(([id]) => id as SceneOccurrenceRef);
+  const processScene = isProcessScene(scene);
+  const entities: SceneLayoutInput["presentation"]["entities"] = processScene
+    ? {}
+    : Object.fromEntries(
+        Object.values(scene.entities).map((entity) => [
+          occurrenceRef(`e.${localIdOf(entity.id)}`),
+          {
+            form: entity.type === "container" ? "container" : "card",
+            text: { title: entity.attributes.name?.kind === "text" ? entity.attributes.name.value : entity.id },
+          },
+        ]),
+      );
+  const containers = processScene
+    ? []
+    : Object.entries(entities)
+        .filter(([, entity]) => entity.form === "container").map(([id]) => id as SceneOccurrenceRef);
   const presentation: SceneLayoutInput["presentation"] = {
     contractPin: PRESENTATION_CONTRACT_PIN, entities, legends: {}, categoryTokens: [],
   };
-  return { document: scene, registry, bindings, presentation, measureLines, containers };
+  return {
+    document: scene,
+    registry: focusSceneRegistry,
+    bindings: focusSceneBindings,
+    presentation,
+    measureLines: processScene ? processMeasureLines : measureLines,
+    containers,
+    ...(processScene ? { targetWidth: FOCUS_PROCESS_TARGET_WIDTH } : {}),
+  };
 }
 
 export function drawDossierDiagram(
@@ -166,7 +200,7 @@ export function drawDossierDiagram(
   let drawing: ReturnType<typeof renderSceneSvg>;
   try {
     // renderSceneSvg uses layoutScene and resolveScene for the drawing.
-    drawing = renderSceneSvg(input, { title, measure });
+    drawing = renderSceneSvg(input, isProcessScene(layout.document) ? { title } : { title, measure });
   } catch (error) {
     const result = layoutScene(input);
     if (result.status === "laid-out") throw error;
@@ -174,6 +208,7 @@ export function drawDossierDiagram(
       [...result.refusals, ...result.diagnostics]);
   }
   const diagnostics = drawing.scene.nodes.flatMap((node) => {
+    if (node.kind === "process" || node.kind === "erd") return [];
     const options = { entityId: node.entity };
     const projected = node.kind === "zone"
       ? projectZoneProps(node.presentation, {

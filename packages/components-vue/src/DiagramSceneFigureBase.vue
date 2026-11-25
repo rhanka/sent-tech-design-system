@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import DiagramErdNode from "./DiagramErdNode.vue";
+import DiagramProcessNode from "./DiagramProcessNode.vue";
 import DiagramSceneFallback from "./DiagramSceneFallback.vue";
 defineOptions({ name: 'DiagramSceneFigureBase' });
 import { useDiagramSceneViewport } from './useDiagramSceneViewport.js';
@@ -365,6 +366,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
               <template v-else>
               <div v-for="{ node, cardProps, zoneProps } in layer.nodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :data-authored-legend="scene.r7Connectors && node.presentation?.form === 'legend' ? '' : undefined" :style="nodeStyle(node)">
                 <DiagramErdNode v-if="node.kind === 'erd' && node.erd" :node="node" :expand="strings.expand" :collapse="strings.collapse" :toggle="() => toggleFold(node)" />
+                <DiagramProcessNode v-else-if="node.kind === 'process' && node.processBox" :node="node" />
                 <template v-else-if="node.kind === 'card'">
                   <DiagramCard v-if="cardProps !== undefined" v-bind="cardProps" :measure="measure" @select="emit('select', $event)" />
                 </template>

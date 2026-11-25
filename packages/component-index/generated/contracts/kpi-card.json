@@ -1,8 +1,8 @@
 {
   "componentId": "kpi-card",
   "contractSource": "derived",
-  "digest": "sha256:a554fb8fdfebbb434c32f64b58f9112620bee5fcfa693ea3d0b24b6ec93f739b",
-  "entryDigest": "sha256:586dd2f9e3c270d150ce63918a02212f886e1163012fd165e28858a0a3328664",
+  "digest": "sha256:95c82499f12c558a71bf1fd54af6e2c2a3669621dbf8ecc9091935eb8c53df50",
+  "entryDigest": "sha256:087861c6121777f6010893083cef9e109f11d851decc2797311599038b9fa10f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -422,7 +422,7 @@
         "declarationPath": "packages/components-svelte/dist/KpiCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "KpiCardProps",
-        "version": "0.46.0"
+        "version": "0.47.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -557,7 +557,7 @@
         "declarationPath": "packages/components-vue/dist/KpiCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "KpiCardProps",
-        "version": "0.41.0-next.17"
+        "version": "0.43.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

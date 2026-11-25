@@ -361,12 +361,46 @@ largeSizingDoc.sections.push({
   },
 });
 const largeSizingPayload = diagramOptions(largeSizingDoc);
+const process5Doc = JSON.parse(focusB5);
+process5Doc.sections.push({
+  id: "process-5-diagram", kind: "diagram", targetRef: "focus-test", alt: "Five step process flow",
+  syntax: "mermaid",
+  source: [
+    "flowchart LR",
+    's1["Intake"]',
+    's2["Triage"]',
+    's3["Review"]',
+    's4["Approve"]',
+    's5["Archive"]',
+    "s1 -->|Submit| s2",
+    "s2 -->|Route| s3",
+    "s3 -->|Verify| s4",
+    "s4 -->|Close| s5",
+  ].join("\n"),
+});
+const process5Payload = diagramOptions(process5Doc);
+const process3Doc = JSON.parse(focusB5);
+process3Doc.sections.push({
+  id: "process-3-diagram", kind: "diagram", targetRef: "focus-test", alt: "Three step process flow",
+  syntax: "mermaid",
+  source: [
+    "flowchart LR",
+    'a["Intake"]',
+    'b["Review"]',
+    'c["Publish"]',
+    "a -->|Open| b",
+    "b -->|Ship| c",
+  ].join("\n"),
+});
+const process3Payload = diagramOptions(process3Doc);
 const diagramPages = new Map(["safe", "application", "strict"].map((mode) => [`diagram-${mode}`, {
   mode, doc: foldDoc, ...foldPayload, fold: true,
 }]));
 diagramPages.set("diagram-sizing", { mode: "strict", doc: sizingDoc, ...sizingPayload });
 diagramPages.set("diagram-sizing-small", { mode: "strict", doc: smallSizingDoc, ...smallSizingPayload });
 diagramPages.set("diagram-sizing-large", { mode: "strict", doc: largeSizingDoc, ...largeSizingPayload });
+diagramPages.set("diagram-process", { mode: "strict", doc: process5Doc, ...process5Payload });
+diagramPages.set("diagram-process-3", { mode: "strict", doc: process3Doc, ...process3Payload });
 diagramPages.set("diagram-refusal", {
   mode: "strict", doc: foldDoc, ...foldPayload, refuse: true,
   manifest: { ...foldPayload.manifest, renderer: { digest: baseDigest("different renderer") } },
@@ -2287,7 +2321,7 @@ for (const [url, fixture, offline] of [
     }));
     const expected = Object.entries(fixture.views.diagrams).map(([id, { scene }]) => ({
       id, nodes: Object.keys(scene.entities).length,
-      edges: Object.values(scene.relations).filter(({ type }) => type === "link").length,
+      edges: Object.values(scene.relations).filter(({ type }) => type === "link" || type === "transition").length,
       labels: Object.values(scene.relations).filter(({ attributes }) => Boolean(attributes.label?.value.trim())).length,
     }));
     const expanded = await snapshot();
@@ -2795,9 +2829,11 @@ for (const [url, fixture, offline] of [
 // scroll without ever enlarging past natural size.
 {
   const sizingCases = [
-    { kind: "sizing", path: "/focus-kit/diagram-sizing/", small: false, large: false },
-    { kind: "sizing-small", path: "/focus-kit/diagram-sizing-small/", small: true, large: false },
-    { kind: "sizing-large", path: "/focus-kit/diagram-sizing-large/", small: false, large: true },
+    { kind: "sizing", path: "/focus-kit/diagram-sizing/", small: false, large: false, processSteps: 0 },
+    { kind: "sizing-small", path: "/focus-kit/diagram-sizing-small/", small: true, large: false, processSteps: 0 },
+    { kind: "sizing-large", path: "/focus-kit/diagram-sizing-large/", small: false, large: true, processSteps: 0 },
+    { kind: "process", path: "/focus-kit/diagram-process/", small: false, large: false, processSteps: 5 },
+    { kind: "process-3", path: "/focus-kit/diagram-process-3/", small: false, large: false, processSteps: 3 },
   ];
   for (const width of [390, 820, 1280]) {
     for (const target of sizingCases) {
@@ -2811,14 +2847,29 @@ for (const [url, fixture, offline] of [
         `diagram-${target.kind} diagram renders at ${width}px`,
       );
       const metrics = await page.evaluate(() => {
-        const viewport = document.querySelector(".st-dossier__diagramViewport");
+        const drawing = document.querySelector(".st-dossier__diagramDrawing");
+        const viewport = drawing.querySelector(".st-dossier__diagramViewport");
         const svg = viewport.querySelector("svg");
+        const edges = [...svg.querySelectorAll("[data-scene-edge]")];
+        const boxes = [...svg.querySelectorAll(".st-diagramProcessBox")];
+        const boxRects = boxes.map((el) => el.getBoundingClientRect());
+        const buttons = [...drawing.querySelectorAll("button")].map((b) => b.textContent?.trim() ?? "");
+        const tableRows = drawing.querySelectorAll("details.st-diagramProcessTable tbody tr").length;
         return {
           rendered: svg.getBoundingClientRect().width,
           natural: Number(svg.getAttribute("width")),
+          displayScale: Number(svg.getAttribute("data-display-scale") ?? "1"),
           hasHeight: svg.getAttribute("height") !== null,
           hasViewBox: svg.getAttribute("viewBox") !== null,
           column: viewport.clientWidth,
+          edgeCount: edges.length,
+          edgesVisible: edges.every((e) => Number(getComputedStyle(e).opacity) > 0.99),
+          hasIcon: svg.querySelector(".st-diagramCard-icon") !== null,
+          hasToggle: drawing.querySelector("[data-toggle], button[aria-expanded]") !== null,
+          hasPlusButton: buttons.includes("+") || buttons.includes("Fold containers"),
+          boxCount: boxes.length,
+          distinctYs: new Set(boxRects.map((r) => Math.round(r.y))).size,
+          tableRows,
         };
       });
       assert(metrics.rendered <= metrics.natural + 1,
@@ -2827,6 +2878,26 @@ for (const [url, fixture, offline] of [
         `diagram-${target.kind} ${width}px fits the column`, JSON.stringify(metrics));
       assert(metrics.hasHeight && metrics.hasViewBox,
         `diagram-${target.kind} ${width}px SVG carries width, height and viewBox`, JSON.stringify(metrics));
+      if (target.processSteps > 0) {
+        assert(metrics.boxCount === target.processSteps && metrics.edgeCount === target.processSteps - 1,
+          `diagram-${target.kind} ${width}px renders ${target.processSteps} process boxes and ${target.processSteps - 1} edges`, JSON.stringify(metrics));
+        assert(metrics.edgesVisible && !metrics.hasIcon && !metrics.hasToggle && !metrics.hasPlusButton,
+          `diagram-${target.kind} ${width}px has visible edges, no icon, and no +/fold button`, JSON.stringify(metrics));
+        assert(metrics.tableRows === target.processSteps,
+          `diagram-${target.kind} ${width}px renders step table with ${target.processSteps} rows`, JSON.stringify(metrics));
+        if (target.processSteps <= 3) {
+          assert(metrics.distinctYs === 1,
+            `diagram-${target.kind} ${width}px keeps <=3 steps left-to-right`, JSON.stringify(metrics));
+        } else {
+          assert(metrics.distinctYs === target.processSteps,
+            `diagram-${target.kind} ${width}px lays out >3 steps top-to-bottom`, JSON.stringify(metrics));
+        }
+        if (width >= 820) {
+          const effectiveScale = (metrics.rendered / metrics.natural) * metrics.displayScale;
+          assert(effectiveScale >= 0.9,
+            `diagram-${target.kind} ${width}px renders at scale >= 0.9 in 72ch column`, JSON.stringify({ effectiveScale, ...metrics }));
+        }
+      }
       if (target.small) {
         // Smallest renderer scene (~288px): below the desktop column, still
         // wider than the 390px column. Either way it is never enlarged.

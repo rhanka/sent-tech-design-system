@@ -305,3 +305,44 @@ it('should match renderSceneSvg and fold/unfold inner and outer zones live on th
     delete (HTMLElement.prototype as { clientWidth?: number }).clientWidth;
   }
 });
+
+it('should render process@1 simple boxes, lanes, dashed retry edges, and step table fallback in native Vapor', async () => {
+  vi.stubGlobal('matchMedia', () => ({ matches: true }));
+  const document = {
+    documentId: 'document:vapor-process',
+    schemaVersion: CURRENT_SCHEMA_VERSION,
+    revision: 0,
+    profileRefs: ['process@1'],
+    typeDefinitions: {},
+    entities: {
+      'entity:l1': { id: 'entity:l1', profile: 'process@1', type: 'lane', attributes: { name: { kind: 'text', value: 'Intake' } } },
+      'entity:s1': { id: 'entity:s1', profile: 'process@1', type: 'step', attributes: { name: { kind: 'text', value: 'Start' }, kind: { kind: 'enum', value: 'start' } } },
+      'entity:s2': { id: 'entity:s2', profile: 'process@1', type: 'step', attributes: { name: { kind: 'text', value: 'Review' }, kind: { kind: 'enum', value: 'decision' } } },
+      'entity:s3': { id: 'entity:s3', profile: 'process@1', type: 'step', attributes: { name: { kind: 'text', value: 'Done' }, kind: { kind: 'enum', value: 'end' } } },
+    },
+    relations: {
+      'relation:l1.s1': { id: 'relation:l1.s1', profile: 'process@1', type: 'inLane', endpoints: [{ role: 'lane', target: 'entity:l1' }, { role: 'step', target: 'entity:s1' }], attributes: {} },
+      'relation:s1.s2': { id: 'relation:s1.s2', profile: 'process@1', type: 'transition', endpoints: [{ role: 'source', target: 'entity:s1' }, { role: 'target', target: 'entity:s2' }], attributes: { label: { kind: 'text', value: 'Submit' } } },
+      'relation:s2.s1': { id: 'relation:s2.s1', profile: 'process@1', type: 'transition', endpoints: [{ role: 'source', target: 'entity:s2' }, { role: 'target', target: 'entity:s1' }], attributes: { label: { kind: 'text', value: 'Retry' }, kind: { kind: 'enum', value: 'retry' } } },
+      'relation:s2.s3': { id: 'relation:s2.s3', profile: 'process@1', type: 'transition', endpoints: [{ role: 'source', target: 'entity:s2' }, { role: 'target', target: 'entity:s3' }], attributes: {} },
+    },
+    ports: {},
+    resources: {},
+    extensions: [],
+  };
+  const scene = mount(DiagramSceneFigure, {
+    document,
+    presentation: { contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN }, entities: {}, legends: {}, categoryTokens: [] },
+    registry: m3ProfileRegistry,
+    bindings: shippedExecutorBindings,
+    measureLines: flowMeasure,
+  });
+  await nextTick();
+  expect(scene.root.querySelector('figure')?.getAttribute('data-zoom')).toBe('1');
+  expect(scene.root.querySelector('figure')?.getAttribute('data-zoom-readout')).toBe('100');
+  expect(scene.root.querySelectorAll('[data-scene-kind="process"]')).toHaveLength(4);
+  expect(scene.root.querySelectorAll('.st-diagramProcessBox')).toHaveLength(3);
+  expect(scene.root.querySelectorAll('.st-diagramProcessLane')).toHaveLength(1);
+  expect(scene.root.querySelector('[data-edge-stroke="dashed"]')).not.toBeNull();
+  expect(scene.root.querySelectorAll('.st-diagramProcess-fallback details.st-diagramProcessTable tbody tr')).toHaveLength(3);
+});

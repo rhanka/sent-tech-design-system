@@ -17,7 +17,7 @@
   byte-identity (`DE3-L2a`).
 - Bumped minors for changed defaults and pins: `tokens` `0.17.0`, `themes`
   `0.17.0`, `diagram-canvas` `0.7.0`, `diagram-codecs` `0.2.0`,
-  `design-system-svelte` `0.46.0`, `design-system-vue` `0.41.0-next.17`.
+  `design-system-svelte` `0.47.0`, `design-system-vue` `0.43.0-next.0`.
 
 ## Unreleased — DC-2c.1
 

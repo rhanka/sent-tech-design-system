@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/VennChart.svelte",
-      "version": "0.46.0"
+      "version": "0.47.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/VennChart.vue",
-      "version": "0.41.0-next.17"
+      "version": "0.43.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Venn / Euler diagram: 2 or 3 sets as overlapping circles with labeled intersections; radius scales with √(set size).",
     "fr": "Diagramme de Venn / Euler : 2 ou 3 ensembles en cercles superposés, intersections étiquetées ; rayon ∝ √(taille de l'ensemble)."
   },
-  "digest": "sha256:519a11dd7b1dcb5a001c861bcaaf08a286cda9c3a41dbacdf993e67aef19fc7e",
+  "digest": "sha256:63c2c8974da5cbf0a00fd91c8f74686879c83e256f095ad3fe2b234df48c474b",
   "displayName": "VennChart",
   "format": "component-entry/v1",
   "frameworks": [

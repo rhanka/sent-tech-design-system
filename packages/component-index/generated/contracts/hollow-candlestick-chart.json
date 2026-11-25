@@ -1,8 +1,8 @@
 {
   "componentId": "hollow-candlestick-chart",
   "contractSource": "derived",
-  "digest": "sha256:66c6b5c0ac7e96a58840984709c2d181be895929471870eb82d54c7d1cb664ec",
-  "entryDigest": "sha256:a84fa3580828c94a8f9fecfb739a9c41219453fe4ce0829bf944b57f39880a36",
+  "digest": "sha256:4272f3b1ba9c6e20ef8edb1ec87c1c61e365a80bf4b5660939bf6f2dd8e44afa",
+  "entryDigest": "sha256:6cdacdcbb0268e5d3bd96c72fd87ed7fdfcddd971e2031d0e2504261711d6ab2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/HollowCandlestickChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HollowCandlestickChartProps",
-        "version": "0.46.0"
+        "version": "0.47.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -314,7 +314,7 @@
         "declarationPath": "packages/components-vue/dist/HollowCandlestickChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HollowCandlestickChartProps",
-        "version": "0.41.0-next.17"
+        "version": "0.43.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

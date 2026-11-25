@@ -1,8 +1,8 @@
 {
   "componentId": "popover",
   "contractSource": "derived",
-  "digest": "sha256:3a8c2a5953ce28ad8acc25701a3ff73c7b457fc01ee2477299739a03dd54cff6",
-  "entryDigest": "sha256:62d9cbb102a7c39d1c730b786c6bdc33b1ec86e2d0aa4446ade351db84f30bc1",
+  "digest": "sha256:2629bd8756e3b41cd01844df552082ec7a44fda95e4940172b6739ee9e8dba6a",
+  "entryDigest": "sha256:338025d54820baf9226ed24b21870fc66744320b1a2b05a35ef61ad8559e9a3c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -190,7 +190,7 @@
         "declarationPath": "packages/components-svelte/dist/Popover.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PopoverProps",
-        "version": "0.46.0"
+        "version": "0.47.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -261,7 +261,7 @@
         "declarationPath": "packages/components-vue/dist/Popover.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PopoverProps",
-        "version": "0.41.0-next.17"
+        "version": "0.43.0-next.0"
       },
       "status": "complete",
       "unresolved": [],
