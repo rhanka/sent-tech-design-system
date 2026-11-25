@@ -668,7 +668,63 @@ async function verifyDiagramCanvas() {
     fail("@sentropic/diagram-canvas", "a single card did not fit at readout 100: " + String(readout));
     return;
   }
-  console.log("OK @sentropic/diagram-canvas: camera + layout + scene import verified");
+  const bridge = await import("@sentropic/diagram-canvas/focus-bridge");
+  for (const name of ["validateSceneDocument", "layoutScene", "renderProcessTable"]) {
+    if (typeof bridge[name] !== "function") {
+      fail("@sentropic/diagram-canvas", "focus-bridge missing " + name + " export (or not a function)");
+      return;
+    }
+  }
+  if (!bridge.shippedSceneRegistry?.has("process@1") || !Array.isArray(bridge.shippedSceneBindings?.rows)) {
+    fail("@sentropic/diagram-canvas", "focus-bridge missing shippedSceneRegistry or shippedSceneBindings");
+    return;
+  }
+  const processDoc = {
+    documentId: "document:smoke-process",
+    schemaVersion: { major: 1, minor: 1 },
+    revision: 0,
+    profileRefs: ["process@1"],
+    typeDefinitions: {},
+    entities: {
+      "entity:a": { id: "entity:a", profile: "process@1", type: "step", attributes: { name: { kind: "text", value: "Start" }, kind: { kind: "enum", value: "start" } } },
+      "entity:b": { id: "entity:b", profile: "process@1", type: "step", attributes: { name: { kind: "text", value: "Done" }, kind: { kind: "enum", value: "end" } } },
+    },
+    relations: {
+      "relation:a.b": { id: "relation:a.b", profile: "process@1", type: "transition", endpoints: [{ role: "source", target: "entity:a" }, { role: "target", target: "entity:b" }], attributes: { label: { kind: "text", value: "Go" } } },
+    },
+    ports: {},
+    resources: {},
+    extensions: [],
+  };
+  const diagnostics = bridge.validateSceneDocument(processDoc);
+  if (!Array.isArray(diagnostics) || diagnostics.some((d) => d.severity === "error")) {
+    fail("@sentropic/diagram-canvas", "focus-bridge validateSceneDocument rejected valid process@1 fixture");
+    return;
+  }
+  const laidOut = bridge.layoutScene({
+    document: processDoc,
+    registry: bridge.shippedSceneRegistry,
+    bindings: bridge.shippedSceneBindings,
+    presentation: {
+      contractPin: { id: "diagram-presentation", version: "1", contentDigest: "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae" },
+      entities: {},
+      legends: {},
+      categoryTokens: [],
+    },
+    measureLines: ({ text }) => ({ lines: [text], width: text.length * 7, height: 16 }),
+    collapsed: [],
+    targetWidth: 640,
+  });
+  if (laidOut.status !== "laid-out") {
+    fail("@sentropic/diagram-canvas", "focus-bridge layoutScene refused valid process@1 fixture: " + laidOut.status);
+    return;
+  }
+  const tableHtml = bridge.renderProcessTable(processDoc);
+  if (typeof tableHtml !== "string" || !tableHtml.includes("Start") || !tableHtml.includes("Done")) {
+    fail("@sentropic/diagram-canvas", "focus-bridge renderProcessTable did not render expected table");
+    return;
+  }
+  console.log("OK @sentropic/diagram-canvas: camera + layout + scene + focus-bridge import verified");
 }
 
 // E2: the static draw.io/SVG codecs. The public entry loads from the installed

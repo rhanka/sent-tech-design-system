@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased — @sentropic/diagram-canvas 0.8.0 (focus-bridge subpath)
+
+- diagram-canvas: publish `@sentropic/diagram-canvas/focus-bridge` subpath
+  re-exporting `validateSceneDocument`, `layoutScene`, `renderProcessTable`,
+  `shippedSceneRegistry`, `shippedSceneBindings` and scene types without DOM
+  or side effects.
+- design-system-elements: switch Focus dossier diagram imports to
+  `@sentropic/diagram-canvas/focus-bridge`.
+- Bump `@sentropic/diagram-canvas` to `0.8.0` and update exact pins in
+  `design-system-elements`, `design-system-svelte`, `design-system-vue`, and
+  `diagram-codecs` plus `package-lock.json`.
+
 ## Unreleased — DE-3 Milestone 1 (DE3-L1a, DE3-L2a)
 
 - diagram-canvas, Svelte and Vue `DiagramSceneFigure`: suppress auto-generated

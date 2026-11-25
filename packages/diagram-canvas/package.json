@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/diagram-canvas",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Headless diagram scenes, layout, hit testing and pure presentation models/SVG helpers. No DOM or framework.",
   "publishConfig": {
     "access": "public"
@@ -52,6 +52,10 @@
     "./flowModel": {
       "types": "./dist/presentation/flowModel.d.ts",
       "import": "./dist/presentation/flowModel.js"
+    },
+    "./focus-bridge": {
+      "types": "./dist/focus-bridge.d.ts",
+      "import": "./dist/focus-bridge.js"
     }
   },
   "types": "./dist/index.d.ts",

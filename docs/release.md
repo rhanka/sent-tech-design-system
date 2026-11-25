@@ -319,6 +319,20 @@ git push origin diagram-codecs-v0.1.0
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
+### Diagram Canvas 0.8.0 (`@sentropic/diagram-canvas/focus-bridge`)
+
+Minor bump of `@sentropic/diagram-canvas` (`0.7.0` → `0.8.0`, tag
+`diagram-canvas-v0.8.0`, requiring published `@sentropic/diagram-core@0.6.1`)
+adding the publishable, DOM-free, side-effect-free subpath export
+`@sentropic/diagram-canvas/focus-bridge` (`validateSceneDocument`,
+`layoutScene`, `renderProcessTable`, `shippedSceneRegistry`,
+`shippedSceneBindings`, and scene types), switching
+`@sentropic/design-system-elements` Focus dossier imports to that subpath, and
+aligning the exact workspace `@sentropic/diagram-canvas` pins (`0.8.0`) in
+`elements`, `components-svelte`, `components-vue`, and `diagram-codecs`.
+Follows `diagram-canvas-v0.7.0` before downstream `elements`, `svelte`, `vue`,
+and `diagram-codecs` tags.
+
 ### DE-3 Milestone 1 (`DE3-L1a`, `DE3-L2a`)
 
 Minor bumps for changed `r7` token/link defaults and single-legend authority

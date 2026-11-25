@@ -1,6 +1,6 @@
 import type { DiagramNode } from "@sentropic/focus";
 import { canonicalJson } from "@sentropic/focus/editing";
-import { renderProcessTable } from "@sentropic/diagram-canvas";
+import { renderProcessTable } from "@sentropic/diagram-canvas/focus-bridge";
 import { drawDossierDiagram, prepareDossierDiagram } from "../../../focus-diagrams/diagram-layout.js";
 import { DossierDiagramError, readDossierScene } from "../../../focus-diagrams/diagram-source.js";
 
