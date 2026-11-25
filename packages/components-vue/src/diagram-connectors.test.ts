@@ -5,7 +5,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent } from "@testing-library/dom";
 import { mount } from "@vue/test-utils";
 import { nextTick as tick } from "vue";
-import { DIAGRAM_PRESENTATION_V2_CONTRACT_PIN, occurrenceRef, relationRef } from "../../diagram-canvas/tests/scene-host-fixtures.js";
+import {
+  DIAGRAM_PRESENTATION_CONTRACT_PIN,
+  DIAGRAM_PRESENTATION_V2_CONTRACT_PIN,
+  m3ProfileRegistry,
+  occurrenceRef,
+  relationRef,
+  shippedExecutorBindings,
+} from "../../diagram-canvas/tests/scene-host-fixtures.js";
 import { expectConnectorPaint, scenePaintOrder } from "../../diagram-canvas/tests/host-support/connectorHostContract.js";
 import { flowFixture, flowMeasure } from "../../diagram-canvas/test-support/flowFixture.js";
 import { nestedZoneFixture } from "../../diagram-canvas/test-support/nestedZoneFixture.js";
@@ -427,7 +434,6 @@ describe("DiagramSceneFigure numbered flow connectors — Vue", () => {
 
   it("DE3-L1a: renders exactly one legend on r7-authored-legend (unfolded and folded) and omits data-authored-legend on v1", async () => {
     const r7 = r7AuthoredLegendFixture(false);
-    const { DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } = await import("@sentropic/diagram-core");
     const props = {
       document: r7.document,
       registry: m3ProfileRegistry,

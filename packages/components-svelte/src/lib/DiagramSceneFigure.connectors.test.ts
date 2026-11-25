@@ -1,7 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render } from "@testing-library/svelte";
 import { tick } from "svelte";
-import { DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } from "../../../diagram-canvas/tests/scene-host-fixtures.js";
+import {
+  DIAGRAM_PRESENTATION_CONTRACT_PIN,
+  DIAGRAM_PRESENTATION_V2_CONTRACT_PIN,
+  m3ProfileRegistry,
+  shippedExecutorBindings,
+} from "../../../diagram-canvas/tests/scene-host-fixtures.js";
 import { expectConnectorPaint, scenePaintOrder } from "../../../diagram-canvas/tests/host-support/connectorHostContract.js";
 import { flowFixture, flowMeasure } from "../../../diagram-canvas/test-support/flowFixture.js";
 import { nestedZoneFixture } from "../../../diagram-canvas/test-support/nestedZoneFixture.js";
@@ -396,8 +401,8 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     const r7 = r7AuthoredLegendFixture(false);
     const props = {
       document: r7.document,
-      registry: (await import("@sentropic/diagram-core")).m3ProfileRegistry,
-      bindings: (await import("@sentropic/diagram-core")).shippedExecutorBindings,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
       presentation: r7.presentation,
       measureLines: flowMeasure,
       collapsed: [],
@@ -414,7 +419,6 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     expect(view.container.querySelectorAll("[data-scene-legend]")).toHaveLength(0);
     view.unmount();
 
-    const { DIAGRAM_PRESENTATION_CONTRACT_PIN } = await import("@sentropic/diagram-core");
     const v1View = render(DiagramSceneFigure, {
       ...props,
       presentation: {
@@ -436,7 +440,6 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
 
   it("DE3-L2a: uses linkStroke for r7 default marker fill while preserving edgeStroke on v1", async () => {
     const r7 = r7AuthoredLegendFixture(false);
-    const { m3ProfileRegistry, shippedExecutorBindings } = await import("@sentropic/diagram-core");
     const r7View = render(DiagramSceneFigure, {
       document: r7.document,
       registry: m3ProfileRegistry,
