@@ -438,6 +438,34 @@
   let thanksHeadingEl = $state<HTMLElement | undefined>(undefined);
   let errorSummaryWrap = $state<HTMLElement | undefined>(undefined);
 
+  function resolvePostAuthStep(opts: {
+    requestedStep: SurveyStep;
+    draftStep?: SurveyStep;
+    scope: SurveyEntryScope | null;
+    depth: SurveyDepthMode | null;
+    milestonePassed: boolean;
+  }): SurveyStep {
+    if (!hasEntry) {
+      return opts.requestedStep === "enrollment" || opts.requestedStep === "link_sent"
+        ? "questions"
+        : opts.requestedStep;
+    }
+    if (!opts.scope) return "entry_scope";
+    if (!opts.depth) return "entry_depth";
+    if (opts.draftStep === "entry_scope" || opts.draftStep === "entry_depth") {
+      return opts.draftStep;
+    }
+    if (
+      (opts.draftStep === "deep_themes" || opts.requestedStep === "deep_themes") &&
+      opts.depth === "deep" &&
+      !opts.milestonePassed &&
+      (survey.themes?.length ?? 0) > 0
+    ) {
+      return "deep_themes";
+    }
+    return "questions";
+  }
+
   // Reset / initialize when survey.id or initial auth/session props change (e.g. async /api/me)
   $effect(() => {
     const id = survey.id;
@@ -452,18 +480,21 @@
       const nextStep = resolveInitialStep(survey, initStep);
       const cleanedEmail = (initEmail || "").trim();
       const nextIdentity = cleanedEmail || seed.trim() || "anonymous";
-      step = nextStep;
+      const isPostAuthStep =
+        nextStep === "questions" ||
+        nextStep === "entry_scope" ||
+        nextStep === "entry_depth" ||
+        nextStep === "deep_themes";
+      const defaultScope = survey.entry?.scope.default ?? null;
+      const defaultDepth = survey.entry?.depth.default ?? null;
+      const defaultThemes = (survey.themes ?? []).map((t) => t.id);
+
       email = initEmail;
       emailError = "";
       enrollmentError = "";
       requestingLink = false;
       sessionIdentity = nextIdentity;
-      entryScope = survey.entry?.scope.default ?? null;
-      depthMode = survey.entry?.depth.default ?? null;
-      selectedThemes = (survey.themes ?? []).map((t) => t.id);
-      questionScopes = {};
       entryError = "";
-      deepMilestonePassed = false;
       questionError = "";
       submitError = "";
       missingIds = [];
@@ -471,28 +502,67 @@
       lastSubmitted = null;
 
       const restored =
-        nextStep === "questions" && persistDraft
+        isPostAuthStep && persistDraft
           ? loadSurveyDraft(id, nextIdentity, Date.now(), storageSalt)
           : null;
 
       if (restored) {
+        const nextScope = restored.entryScope !== undefined ? restored.entryScope : defaultScope;
+        const nextDepth = restored.depthMode !== undefined ? restored.depthMode : defaultDepth;
+        const nextThemes = restored.selectedThemes ? restored.selectedThemes.slice() : defaultThemes;
+        const nextMilestonePassed = Boolean(restored.deepMilestonePassed);
+        entryScope = nextScope;
+        depthMode = nextDepth;
+        selectedThemes = nextThemes;
+        questionScopes = restored.questionScopes ? { ...restored.questionScopes } : {};
+        deepMilestonePassed = nextMilestonePassed;
+
+        const restoredList = isV2
+          ? getActiveSurveyQuestions(survey, {
+              depthMode: nextDepth ?? "fast",
+              selectedThemes: nextThemes,
+            })
+          : survey.questions;
         answers = { ...(initialAnswers ?? {}), ...restored.answers };
-        questionIndex = Math.min(restored.questionIndex, Math.max(0, survey.questions.length - 1));
+        questionIndex = Math.min(restored.questionIndex, Math.max(0, restoredList.length - 1));
         enrollmentMeta = { ...restored.enrollmentMeta };
         expiresAt = restored.expiresAt;
         const hasProgress =
-          countAnsweredQuestions(survey.questions, restored.answers) > 0 ||
+          countAnsweredQuestions(restoredList, restored.answers) > 0 ||
           restored.questionIndex > 0;
         returnedFromDraft = hasProgress;
         restoredBanner = hasProgress;
+        step = resolvePostAuthStep({
+          requestedStep: nextStep,
+          draftStep: restored.step,
+          scope: nextScope,
+          depth: nextDepth,
+          milestonePassed: nextMilestonePassed,
+        });
       } else {
+        entryScope = defaultScope;
+        depthMode = defaultDepth;
+        selectedThemes = defaultThemes;
+        questionScopes = {};
+        deepMilestonePassed = false;
         answers = initialAnswers ? { ...initialAnswers } : {};
         questionIndex = 0;
         enrollmentMeta = {};
         returnedFromDraft = false;
         restoredBanner = false;
+        step = isPostAuthStep
+          ? resolvePostAuthStep({
+              requestedStep: nextStep,
+              scope: defaultScope,
+              depth: defaultDepth,
+              milestonePassed: false,
+            })
+          : nextStep;
         expiresAt =
-          (nextStep === "questions" || nextStep === "entry_scope" || nextStep === "entry_depth") &&
+          (step === "questions" ||
+            step === "entry_scope" ||
+            step === "entry_depth" ||
+            step === "deep_themes") &&
           draftWindowMinutes > 0
             ? Date.now() + draftTtlMs
             : 0;
@@ -569,6 +639,29 @@
     return loadSurveyDraft(survey.id, trimmed, Date.now(), storageSalt);
   });
 
+  const existingDraftQuestions = $derived.by(() => {
+    if (!existingDraft) return activeQuestions;
+    return isV2
+      ? getActiveSurveyQuestions(survey, {
+          depthMode: existingDraft.depthMode ?? "fast",
+          selectedThemes: existingDraft.selectedThemes,
+        })
+      : survey.questions;
+  });
+
+  const existingDraftAnsweredCount = $derived(
+    existingDraft ? countAnsweredQuestions(existingDraftQuestions, existingDraft.answers) : 0,
+  );
+
+  const showExistingDraftBanner = $derived(
+    Boolean(
+      existingDraft &&
+        (existingDraftAnsweredCount > 0 ||
+          existingDraft.questionIndex > 0 ||
+          Boolean(existingDraft.entryScope)),
+    ),
+  );
+
   const remainingMs = $derived(expiresAt > 0 ? Math.max(0, expiresAt - nowMs) : 0);
   const draftExpired = $derived(
     (step === "questions" || step === "deep_themes") &&
@@ -602,11 +695,19 @@
   const coreQuestionsCount = $derived(getCoreSurveyQuestions(survey).length);
   const currentQuestion = $derived(activeQuestions[questionIndex] ?? activeQuestions[0]);
   const answeredCount = $derived(countAnsweredQuestions(activeQuestions, answers));
+  const nonOptionalQuestions = $derived(
+    activeQuestions.filter(
+      (q) => !(q.type === "text_long" || q.type === "text_short") || !q.optional,
+    ),
+  );
+  const nonOptionalAnsweredCount = $derived(
+    countAnsweredQuestions(nonOptionalQuestions, answers),
+  );
   const canPartialSubmit = $derived(
     !readOnly &&
       survey.rules.allowPartialSubmit !== false &&
       answeredCount > 0 &&
-      answeredCount < activeQuestions.length,
+      nonOptionalAnsweredCount < nonOptionalQuestions.length,
   );
 
   const privacyTitle = $derived(
@@ -666,6 +767,7 @@
     nextExpires: number,
     nextMeta: Record<string, string> = enrollmentMeta,
     identityOverride?: string,
+    stepOverride?: SurveyStep,
   ) {
     const now = Date.now();
     const draft: SurveyDraft = {
@@ -679,7 +781,8 @@
             depthMode,
             selectedThemes: selectedThemes.slice(),
             questionScopes: { ...questionScopes },
-            step,
+            deepMilestonePassed,
+            step: stepOverride ?? step,
           }
         : {}),
       expiresAt: nextExpires,
@@ -738,12 +841,14 @@
       ? loadSurveyDraft(survey.id, cleaned, Date.now(), storageSalt)
       : null;
 
+    let nextStep: SurveyStep;
     if (found) {
       answers = { ...found.answers };
       if (found.entryScope !== undefined) entryScope = found.entryScope;
       if (found.depthMode !== undefined) depthMode = found.depthMode;
       if (found.selectedThemes) selectedThemes = found.selectedThemes.slice();
       if (found.questionScopes) questionScopes = { ...found.questionScopes };
+      deepMilestonePassed = Boolean(found.deepMilestonePassed);
       const restoredList = isV2
         ? getActiveSurveyQuestions(survey, {
             depthMode: found.depthMode ?? "fast",
@@ -753,8 +858,20 @@
       questionIndex = Math.min(found.questionIndex, Math.max(0, restoredList.length - 1));
       enrollmentMeta = { ...found.enrollmentMeta, ...cleanMeta };
       expiresAt = found.expiresAt;
-      returnedFromDraft = true;
-      restoredBanner = true;
+      const hasProgress =
+        countAnsweredQuestions(restoredList, found.answers) > 0 || found.questionIndex > 0;
+      returnedFromDraft = hasProgress;
+      restoredBanner = hasProgress;
+      nextStep =
+        enrollmentMode === "email-magic-link"
+          ? "link_sent"
+          : resolvePostAuthStep({
+              requestedStep: "questions",
+              draftStep: found.step,
+              scope: entryScope,
+              depth: depthMode,
+              milestonePassed: deepMilestonePassed,
+            });
     } else {
       answers = initialAnswers ? { ...initialAnswers } : {};
       questionIndex = 0;
@@ -762,7 +879,16 @@
       expiresAt = draftWindowMinutes > 0 ? Date.now() + draftTtlMs : 0;
       returnedFromDraft = false;
       restoredBanner = false;
-      persistCurrentDraft(answers, questionIndex, expiresAt, cleanMeta, cleaned);
+      nextStep =
+        enrollmentMode === "email-magic-link"
+          ? "link_sent"
+          : resolvePostAuthStep({
+              requestedStep: "questions",
+              scope: entryScope,
+              depth: depthMode,
+              milestonePassed: false,
+            });
+      persistCurrentDraft(answers, questionIndex, expiresAt, cleanMeta, cleaned, nextStep);
     }
 
     const loadedPending = persistDraft
@@ -772,17 +898,11 @@
     pendingIdentity = loadedPending ? cleaned : null;
     passkeySaved = persistDraft ? hasSurveyPasskey(cleaned, storageSalt) : false;
 
-    if (enrollmentMode === "email-magic-link") {
-      step = "link_sent";
-    } else if (hasEntry && (!entryScope || !depthMode)) {
-      step = "entry_scope";
-    } else {
-      step = "questions";
-    }
+    step = nextStep;
   }
 
   function handleResumeDraft() {
-    if (!existingDraft) return;
+    if (!existingDraft || enrollmentMode === "email-magic-link") return;
     const cleaned = email.trim();
     sessionIdentity = cleaned;
     answers = { ...existingDraft.answers };
@@ -790,6 +910,7 @@
     if (existingDraft.depthMode !== undefined) depthMode = existingDraft.depthMode;
     if (existingDraft.selectedThemes) selectedThemes = existingDraft.selectedThemes.slice();
     if (existingDraft.questionScopes) questionScopes = { ...existingDraft.questionScopes };
+    deepMilestonePassed = Boolean(existingDraft.deepMilestonePassed);
     const restoredList = isV2
       ? getActiveSurveyQuestions(survey, {
           depthMode: existingDraft.depthMode ?? "fast",
@@ -806,17 +927,29 @@
       : null;
     pendingSubmission = loadedPending;
     pendingIdentity = loadedPending ? cleaned : null;
-    step =
-      existingDraft.step === "entry_scope" || existingDraft.step === "entry_depth"
-        ? existingDraft.step
-        : "questions";
+    step = resolvePostAuthStep({
+      requestedStep: "questions",
+      draftStep: existingDraft.step,
+      scope: entryScope,
+      depth: depthMode,
+      milestonePassed: deepMilestonePassed,
+    });
   }
 
   function handleOpenFromLink() {
     if (draftWindowMinutes > 0 && (!expiresAt || Date.now() >= expiresAt)) {
       expiresAt = Date.now() + draftTtlMs;
     }
-    step = hasEntry && (!entryScope || !depthMode) ? "entry_scope" : "questions";
+    const found = persistDraft
+      ? loadSurveyDraft(survey.id, activeIdentity, Date.now(), storageSalt)
+      : null;
+    step = resolvePostAuthStep({
+      requestedStep: "questions",
+      draftStep: found?.step,
+      scope: entryScope,
+      depth: depthMode,
+      milestonePassed: deepMilestonePassed,
+    });
     persistCurrentDraft(answers, questionIndex, expiresAt);
   }
 
@@ -852,8 +985,10 @@
   }
 
   function handleDeepThemesBack() {
+    deepMilestonePassed = false;
     step = "questions";
     questionIndex = Math.max(0, coreQuestionsCount - 1);
+    persistCurrentDraft(answers, questionIndex, expiresAt);
   }
 
   function handleDeepThemesContinue() {
@@ -971,7 +1106,14 @@
       (survey.themes?.length ?? 0) > 0 &&
       questionIndex === coreQuestionsCount
     ) {
+      deepMilestonePassed = false;
       step = "deep_themes";
+      persistCurrentDraft(answers, questionIndex, expiresAt);
+      return;
+    }
+    if (questionIndex === 0 && hasEntry) {
+      step = "entry_depth";
+      persistCurrentDraft(answers, questionIndex, expiresAt);
       return;
     }
     if (questionIndex > 0) {
@@ -1015,6 +1157,12 @@
     enrollmentMeta = {};
     answers = {};
     questionIndex = 0;
+    entryScope = survey.entry?.scope.default ?? null;
+    depthMode = survey.entry?.depth.default ?? null;
+    selectedThemes = (survey.themes ?? []).map((t) => t.id);
+    questionScopes = {};
+    entryError = "";
+    deepMilestonePassed = false;
     expiresAt = 0;
     restoredBanner = false;
     returnedFromDraft = false;
@@ -1094,8 +1242,8 @@
   function formatSubmitGateError(ids: string[]): string {
     const entries = ids
       .map((id) => {
-        const idx = survey.questions.findIndex((q) => q.id === id);
-        return idx >= 0 ? { q: survey.questions[idx], num: idx + 1 } : null;
+        const idx = activeQuestions.findIndex((q) => q.id === id);
+        return idx >= 0 ? { q: activeQuestions[idx], num: idx + 1 } : null;
       })
       .filter((item): item is { q: SurveyQuestion; num: number } => item !== null);
     if (entries.length === 1) {
@@ -1216,9 +1364,18 @@
       {@const entSide = getScopedSideValue(q.id, "enterprise")}
       {@const perSide = getScopedSideValue(q.id, "personal")}
       {@const isMulti = q.type === "multi"}
-      <fieldset class="st-surveyDual" disabled={readOnly}>
+      {@const dualHelpId = `st-survey-${survey.id}-${q.id}-dual-help`}
+      {@const dualErrorId = `st-survey-${survey.id}-${q.id}-dual-error`}
+      {@const dualDescribedBy = [dualHelpId, qError ? dualErrorId : null].filter(Boolean).join(" ")}
+      <fieldset
+        class="st-surveyDual"
+        disabled={readOnly}
+        aria-invalid={qError ? "true" : undefined}
+        aria-describedby={dualDescribedBy}
+        data-invalid={qError ? "true" : undefined}
+      >
         <legend class="st-surveyDual__legend">{qLegend}</legend>
-        <p class="st-surveyDual__help">{qHelper ?? copy.dualHint}</p>
+        <p id={dualHelpId} class="st-surveyDual__help">{qHelper ?? copy.dualHint}</p>
         <div class="st-surveyDual__header" aria-hidden="true">
           <span class="st-surveyDual__colLabel"></span>
           <span class="st-surveyDual__colHead">{copy.enterpriseShort}</span>
@@ -1249,6 +1406,8 @@
                       checked={entChecked}
                       disabled={readOnly || opt.disabled}
                       aria-label={`${optLabel} — ${copy.enterpriseShort}`}
+                      aria-invalid={qError ? "true" : undefined}
+                      aria-describedby={dualDescribedBy}
                       onchange={(e) =>
                         handleDualMultiToggle(q, "enterprise", opt.id, e.currentTarget.checked)}
                     />
@@ -1261,10 +1420,12 @@
                       checked={entChecked}
                       disabled={readOnly || opt.disabled}
                       aria-label={`${optLabel} — ${copy.enterpriseShort}`}
+                      aria-invalid={qError ? "true" : undefined}
+                      aria-describedby={dualDescribedBy}
                       onchange={() => updateDualSideAnswer(q, "enterprise", opt.id)}
                     />
                   {/if}
-                  <span class="st-surveyDual__mobileTag">{copy.enterpriseShort}</span>
+                  <span class="st-surveyDual__mobileTag" aria-hidden="true">{copy.enterpriseShort}</span>
                 </label>
 
                 <label
@@ -1280,6 +1441,8 @@
                       checked={perChecked}
                       disabled={readOnly || opt.disabled}
                       aria-label={`${optLabel} — ${copy.personalShort}`}
+                      aria-invalid={qError ? "true" : undefined}
+                      aria-describedby={dualDescribedBy}
                       onchange={(e) =>
                         handleDualMultiToggle(q, "personal", opt.id, e.currentTarget.checked)}
                     />
@@ -1292,15 +1455,20 @@
                       checked={perChecked}
                       disabled={readOnly || opt.disabled}
                       aria-label={`${optLabel} — ${copy.personalShort}`}
+                      aria-invalid={qError ? "true" : undefined}
+                      aria-describedby={dualDescribedBy}
                       onchange={() => updateDualSideAnswer(q, "personal", opt.id)}
                     />
                   {/if}
-                  <span class="st-surveyDual__mobileTag">{copy.personalShort}</span>
+                  <span class="st-surveyDual__mobileTag" aria-hidden="true">{copy.personalShort}</span>
                 </label>
               </div>
             </div>
           {/each}
         </div>
+        {#if qError}
+          <p id={dualErrorId} class="st-surveyDual__error" role="alert">{qError}</p>
+        {/if}
       </fieldset>
     {:else if q.type === "multi"}
       <CheckboxGroup
@@ -1373,12 +1541,16 @@
       />
     {:else if q.type === "text_long" || q.type === "text_short"}
       {@const textVal = typeof singleVal === "string" ? singleVal : ""}
+      {@const countId = q.maxLength ? `st-survey-${survey.id}-${q.id}-count` : undefined}
       <div class="st-surveyForm__openField">
         {#if q.type === "text_long"}
           <Textarea
             label={qLegend}
             placeholder={q.placeholder ? resolveLocalizedText(q.placeholder, locale) : undefined}
             helperText={qHelper ?? (q.display === "agent_summary_only" ? copy.openTextNotice : undefined)}
+            errorText={qError}
+            invalid={Boolean(qError)}
+            aria-describedby={countId}
             maxlength={q.maxLength}
             value={textVal}
             disabled={readOnly}
@@ -1391,6 +1563,9 @@
             label={qLegend}
             placeholder={q.placeholder ? resolveLocalizedText(q.placeholder, locale) : undefined}
             helperText={qHelper ?? (q.display === "agent_summary_only" ? copy.openTextNotice : undefined)}
+            errorText={qError}
+            invalid={Boolean(qError)}
+            aria-describedby={countId}
             maxlength={q.maxLength}
             value={textVal}
             disabled={readOnly}
@@ -1398,7 +1573,7 @@
           />
         {/if}
         {#if q.maxLength}
-          <p class="st-surveyForm__charCount">{textVal.length} / {q.maxLength}</p>
+          <p id={countId} class="st-surveyForm__charCount">{textVal.length} / {q.maxLength}</p>
         {/if}
       </div>
     {/if}
@@ -1532,25 +1707,27 @@
                   <Alert tone="error" title={enrollmentError} />
                 {/if}
 
-                {#if existingDraft}
+                {#if showExistingDraftBanner && existingDraft}
                   <Alert
                     tone="info"
                     title={copy.resumeTitle}
                     message={copy.resumeMsg(
-                      countAnsweredQuestions(activeQuestions, existingDraft.answers),
-                      activeQuestions.length,
+                      existingDraftAnsweredCount,
+                      existingDraftQuestions.length,
                       formatSurveyCountdown(Math.max(0, existingDraft.expiresAt - nowMs)),
                     )}
                   >
                     {#snippet actions()}
-                      <Button
-                        variant="secondary"
-                        size="lg"
-                        type="button"
-                        onclick={handleResumeDraft}
-                      >
-                        {copy.resumeBtn}
-                      </Button>
+                      {#if enrollmentMode !== "email-magic-link"}
+                        <Button
+                          variant="secondary"
+                          size="lg"
+                          type="button"
+                          onclick={handleResumeDraft}
+                        >
+                          {copy.resumeBtn}
+                        </Button>
+                      {/if}
                     {/snippet}
                   </Alert>
                 {/if}
@@ -1721,6 +1898,7 @@
                 disabled={readOnly}
                 onchange={(vals) => {
                   selectedThemes = vals;
+                  persistCurrentDraft(answers, questionIndex, expiresAt);
                 }}
               />
 
@@ -1820,7 +1998,7 @@
                 {/if}
 
                 <SurveyNav
-                  canGoPrevious={questionIndex > 0}
+                  canGoPrevious={questionIndex > 0 || hasEntry}
                   isLast={questionIndex === activeQuestions.length - 1}
                   nextDisabled={questionIndex === activeQuestions.length - 1
                     ? readOnly || answeredCount === 0
@@ -2141,6 +2319,13 @@
   .st-surveyDual__mobileTag {
     font-size: 0.875rem;
     font-weight: 600;
+  }
+
+  .st-surveyDual__error {
+    color: var(--st-component-field-errorText, var(--st-semantic-feedback-error, #dc2626));
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    margin: var(--st-spacing-2, 0.5rem) 0 0;
   }
 
   @container (min-width: 560px) {

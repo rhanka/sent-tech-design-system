@@ -20,8 +20,15 @@
     ...rest
   }: TextareaProps = $props();
 
+  const uid = $props.id();
   const fieldClasses = () => ["st-field", className].filter(Boolean).join(" ");
   const isInvalid = () => invalid || Boolean(errorText);
+  const messageId = $derived(
+    errorText ? `${uid}-error` : helperText ? `${uid}-help` : undefined,
+  );
+  const describedBy = $derived(
+    [rest["aria-describedby"], messageId].filter(Boolean).join(" ") || undefined,
+  );
 </script>
 
 <div class={fieldClasses()}>
@@ -32,12 +39,13 @@
       bind:value
       class="st-textarea"
       aria-invalid={isInvalid() ? "true" : undefined}
+      aria-describedby={describedBy}
     ></textarea>
   </label>
   {#if errorText}
-    <span class="st-field__error">{errorText}</span>
+    <span id={messageId} class="st-field__error">{errorText}</span>
   {:else if helperText}
-    <span class="st-field__help">{helperText}</span>
+    <span id={messageId} class="st-field__help">{helperText}</span>
   {/if}
 </div>
 

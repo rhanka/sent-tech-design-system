@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:1344bbc3e9d6c2ce44ce5825051bc9163c2faadf24c1639e05f8ec4b2425a068",
+  "contractsRevision": "sha256:e87c10b10ecbb6c8b5d5a0722f8cb79580017454fd347113b8f06a37cb667ba6",
   "counts": {
     "byFramework": {
       "angular": {
@@ -2452,8 +2452,8 @@
         "vue": "partial"
       },
       "componentId": "textarea",
-      "contractDigest": "sha256:f9ada9dfd74eafd33b0816a533a9e4fa3b3f7f0fb757820881a551289bd1a256",
-      "entryDigest": "sha256:5b7e6340745145b4832ff9f5c65bb657da1ca7893b8d869d0d05d22dd1ef84f4",
+      "contractDigest": "sha256:486fa951a4d2f3895897c041377b09d868480c9f29dafd1f782cef5f142aa692",
+      "entryDigest": "sha256:5b0e1335c3265a511576b245a1ddf401e092574f62717b2c6b2e12b44bd55fe9",
       "path": "contracts/textarea.json",
       "producerId": "sentropic-ds"
     },
@@ -2863,5 +2863,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "3adf8b1370cc322bb8f5cbec8073045027d4f194"
+  "sourceCommit": "1124201547de0525fb552741c4bd9296a347a809"
 }

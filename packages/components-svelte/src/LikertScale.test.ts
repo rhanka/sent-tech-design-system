@@ -293,4 +293,14 @@ describe("LikertScale — symmetric bipolar neutral scale with non-substantive o
     );
     expect(badges).toEqual(["−−", "−", "0", "+", "++"]);
   });
+
+  it("scopes nonSubstantive subtle background with :not(.st-likert__option--checked) so checked background is not overridden", () => {
+    const src = readFileSync(join(here, "lib/LikertScale.svelte"), "utf8");
+    expect(src).toMatch(
+      /\.st-likert__option--nonSubstantive:not\(\.st-likert__option--checked\)\s*\{[^}]*background:/s,
+    );
+    expect(src).not.toMatch(
+      /\.st-likert__option--nonSubstantive\s*\{[^}]*background:/s,
+    );
+  });
 });

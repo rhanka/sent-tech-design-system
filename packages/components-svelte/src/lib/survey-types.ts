@@ -278,6 +278,7 @@ export interface SurveyDraft {
   depthMode?: SurveyDepthMode | null;
   selectedThemes?: string[];
   questionScopes?: Record<string, SurveyScope>;
+  deepMilestonePassed?: boolean;
   step?: SurveyStep;
   expiresAt: number;
   updatedAt: number;

@@ -117,6 +117,9 @@ export function loadSurveyDraft(
       ...(parsed.questionScopes && typeof parsed.questionScopes === "object"
         ? { questionScopes: parsed.questionScopes }
         : {}),
+      ...(typeof parsed.deepMilestonePassed === "boolean"
+        ? { deepMilestonePassed: parsed.deepMilestonePassed }
+        : {}),
       ...(typeof parsed.step === "string" ? { step: parsed.step } : {}),
       expiresAt: parsed.expiresAt,
       updatedAt: typeof parsed.updatedAt === "number" ? parsed.updatedAt : now,

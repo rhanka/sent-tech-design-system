@@ -171,7 +171,7 @@ describe("survey-storage", () => {
     expect(loadSurveyDraft("B", "sandbox@example.ca", now + 1000)).toBeNull();
   });
 
-  it("preserves v2 draft fields (entryScope, depthMode, selectedThemes, questionScopes, step)", () => {
+  it("preserves v2 draft fields (entryScope, depthMode, selectedThemes, questionScopes, deepMilestonePassed, step)", () => {
     const now = 1_700_000_000_000;
     const draft: SurveyDraft = {
       surveyId: "V2",
@@ -182,6 +182,7 @@ describe("survey-storage", () => {
       depthMode: "deep",
       selectedThemes: ["usine", "decision"],
       questionScopes: { code_tools: "personal" },
+      deepMilestonePassed: true,
       step: "questions",
       expiresAt: now + DEFAULT_DRAFT_TTL_MS,
       updatedAt: now,

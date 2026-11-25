@@ -258,7 +258,10 @@ describe("SurveyForm — enrollment, flow, explicit submit & passkey", () => {
 
     const { getByLabelText, getByRole, getByText } = render(SurveyForm, {
       props: {
-        survey: TEST_SURVEY,
+        survey: {
+          ...TEST_SURVEY,
+          rules: { ...TEST_SURVEY.rules, enrollment: "email-unverified" },
+        },
         locale: "fr",
       },
     });
@@ -1194,5 +1197,324 @@ describe("SurveyForm v2 — two entry screens, orientation toggle, ai_effect & P
       code_tools: { enterprise: ["a1"] },
       quotas: { personal: "q_week" },
     });
+  });
+
+  it("P1-2: restores v2 draft on magic-link return / async /api/me and routes entryScope === null through entry screens", async () => {
+    const v2MagicSurvey: SurveyDefinition = {
+      ...V2_SURVEY,
+      rules: { ...V2_SURVEY.rules, enrollment: "email-magic-link" },
+      enrollmentFields: TEST_SURVEY.enrollmentFields,
+    };
+
+    // Case A: pre-link draft has company_name but no entryScope yet -> async /api/me must route to entry_scope and preserve enrollmentMeta
+    const now = Date.now();
+    saveSurveyDraft("devmtl-v2", "alice@devmtl.ca", {
+      surveyId: "devmtl-v2",
+      answers: {},
+      questionIndex: 0,
+      enrollmentMeta: { company_name: "Atelier Nord" },
+      entryScope: null,
+      depthMode: null,
+      step: "link_sent",
+      expiresAt: now + 20 * 60 * 1000,
+      updatedAt: now - 5_000,
+    });
+
+    const onsubmit = vi.fn();
+    const r1 = render(SurveyForm, {
+      props: { survey: v2MagicSurvey, locale: "fr", onsubmit },
+    });
+    expect(r1.getByText(/Accéder au sondage/i)).toBeTruthy();
+
+    await r1.rerender({
+      survey: v2MagicSurvey,
+      locale: "fr",
+      initialStep: "questions",
+      initialEmail: "alice@devmtl.ca",
+      onsubmit,
+    });
+
+    // Must land on entry_scope (NOT skip cadrage with entryScope === null)
+    await waitFor(() => expect(r1.getByText(/Je réponds pour/i)).toBeTruthy());
+    await fireEvent.click(r1.getByLabelText(/Ma pratique perso/i));
+    await fireEvent.click(r1.getByRole("button", { name: /Continuer/i }));
+    await fireEvent.click(r1.getByLabelText(/~2 min/i));
+    await fireEvent.click(r1.getByRole("button", { name: /Commencer/i }));
+
+    // Walk to Q3 (contextual) -> per-question toggle must be present & answer scoped to personal
+    await fireEvent.click(r1.getByLabelText("Startup"));
+    await fireEvent.click(r1.getByRole("button", { name: /Suivant/i }));
+    await fireEvent.click(r1.getByLabelText(/Neutre/i));
+    await fireEvent.click(r1.getByRole("button", { name: /Suivant/i }));
+    expect(r1.getByRole("group", { name: /Contexte de réponse/i })).toBeTruthy();
+    expect(r1.getByRole("button", { name: "Perso" }).getAttribute("aria-pressed")).toBe("true");
+    await fireEvent.click(r1.getByLabelText("Assistant Alpha"));
+    await fireEvent.click(r1.getByRole("button", { name: /Envoyer seulement celles-ci/i }));
+    await fireEvent.click(r1.getByRole("button", { name: /Confirmer l’envoi partiel/i }));
+
+    await waitFor(() => expect(onsubmit).toHaveBeenCalledTimes(1));
+    expect(onsubmit.mock.calls[0][0]).toMatchObject({
+      entryScope: "personal",
+      depthMode: "fast",
+      enrollmentMeta: { company_name: "Atelier Nord" },
+      answers: {
+        type: "startup",
+        ai_impact_year: "imp_neutral",
+        code_tools: { personal: ["a1"] },
+      },
+    });
+    r1.unmount();
+    clearAllSurveyStorage();
+
+    // Case B: direct mount with initialStep="questions" and no draft -> still forces entry_scope
+    const r2 = render(SurveyForm, {
+      props: { survey: V2_SURVEY, locale: "fr", initialStep: "questions" },
+    });
+    expect(r2.getByText(/Je réponds pour/i)).toBeTruthy();
+    r2.unmount();
+
+    // Case C: magic-link return with completed v2 entry choices restores v2 state + contextual toggle
+    saveSurveyDraft("devmtl-v2", "bob@devmtl.ca", {
+      surveyId: "devmtl-v2",
+      answers: { type: "manuf", ai_impact_year: "imp_pos" },
+      questionIndex: 2,
+      enrollmentMeta: { company_name: "Forge QC" },
+      entryScope: "personal",
+      depthMode: "fast",
+      selectedThemes: [],
+      questionScopes: {},
+      step: "questions",
+      expiresAt: Date.now() + 20 * 60 * 1000,
+      updatedAt: Date.now() - 2_000,
+    });
+    const r3 = render(SurveyForm, {
+      props: {
+        survey: v2MagicSurvey,
+        locale: "fr",
+        initialStep: "questions",
+        initialEmail: "bob@devmtl.ca",
+      },
+    });
+    expect(r3.getByText(/Brouillon restauré/i)).toBeTruthy();
+    expect(r3.getByRole("group", { name: /Contexte de réponse/i })).toBeTruthy();
+    expect(r3.getByRole("button", { name: "Perso" }).getAttribute("aria-pressed")).toBe("true");
+    r3.unmount();
+  });
+
+  it("P1-3: blocks magic-link bypass on draft resume, avoids persisting step='enrollment', and restores deep_themes + deepMilestonePassed", async () => {
+    const v2MagicSurvey: SurveyDefinition = {
+      ...V2_SURVEY,
+      rules: { ...V2_SURVEY.rules, enrollment: "email-magic-link" },
+    };
+
+    // Requesting a link must not persist step='enrollment' and must not expose a direct resume bypass
+    const onrequestlink = vi.fn().mockResolvedValue(undefined);
+    const r1 = render(SurveyForm, {
+      props: { survey: v2MagicSurvey, locale: "fr", onrequestlink },
+    });
+    await fireEvent.input(r1.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "alice@devmtl.ca" },
+    });
+    await fireEvent.click(r1.getByRole("button", { name: /Recevoir mon lien/i }));
+    await waitFor(() => expect(r1.getByText(/Un lien vient de partir/i)).toBeTruthy());
+
+    const savedPreLink = loadSurveyDraft("devmtl-v2", "alice@devmtl.ca");
+    expect(savedPreLink?.step).not.toBe("enrollment");
+
+    // Going back to enrollment and typing alice@devmtl.ca must NOT expose a direct-resume bypass button
+    await fireEvent.click(r1.getByRole("button", { name: /Changer d’e-mail/i }));
+    await fireEvent.input(r1.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "alice@devmtl.ca" },
+    });
+    expect(r1.queryByRole("button", { name: /Reprendre mon brouillon/i })).toBeNull();
+    r1.unmount();
+
+    // Even with answered progress under email-magic-link, no direct unauthenticated resume button is rendered
+    saveSurveyDraft("devmtl-v2", "alice@devmtl.ca", {
+      surveyId: "devmtl-v2",
+      answers: { type: "startup" },
+      questionIndex: 1,
+      enrollmentMeta: {},
+      entryScope: "enterprise",
+      depthMode: "fast",
+      step: "questions",
+      expiresAt: Date.now() + 20 * 60 * 1000,
+      updatedAt: Date.now() - 1_000,
+    });
+    const r2 = render(SurveyForm, {
+      props: { survey: v2MagicSurvey, locale: "fr" },
+    });
+    await fireEvent.input(r2.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "alice@devmtl.ca" },
+    });
+    expect(r2.getByText(/Brouillon actif retrouvé/i)).toBeTruthy();
+    expect(r2.queryByRole("button", { name: /Reprendre mon brouillon/i })).toBeNull();
+    r2.unmount();
+    clearAllSurveyStorage();
+
+    // Under email-unverified: resuming a draft with step='enrollment' & entryScope=null routes to entry_scope
+    const v2Unverified: SurveyDefinition = {
+      ...V2_SURVEY,
+      rules: { ...V2_SURVEY.rules, enrollment: "email-unverified" },
+    };
+    saveSurveyDraft("devmtl-v2", "carol@devmtl.ca", {
+      surveyId: "devmtl-v2",
+      answers: { type: "startup" },
+      questionIndex: 0,
+      enrollmentMeta: {},
+      entryScope: null,
+      depthMode: null,
+      step: "enrollment",
+      expiresAt: Date.now() + 20 * 60 * 1000,
+      updatedAt: Date.now() - 1_000,
+    });
+    const r3 = render(SurveyForm, {
+      props: { survey: v2Unverified, locale: "fr" },
+    });
+    await fireEvent.input(r3.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "carol@devmtl.ca" },
+    });
+    await fireEvent.click(r3.getByRole("button", { name: /Reprendre mon brouillon/i }));
+    expect(r3.getByText(/Je réponds pour/i)).toBeTruthy();
+    r3.unmount();
+    clearAllSurveyStorage();
+
+    // Resuming a draft saved at deep_themes restores step='deep_themes'
+    saveSurveyDraft("devmtl-v2", "dave@devmtl.ca", {
+      surveyId: "devmtl-v2",
+      answers: { type: "startup", ai_impact_year: "imp_pos", code_tools: { enterprise: ["a1"] }, quotas: { enterprise: "q_week" } },
+      questionIndex: 3,
+      enrollmentMeta: {},
+      entryScope: "enterprise",
+      depthMode: "deep",
+      selectedThemes: ["usine"],
+      deepMilestonePassed: false,
+      step: "deep_themes",
+      expiresAt: Date.now() + 20 * 60 * 1000,
+      updatedAt: Date.now() - 1_000,
+    });
+    const r4 = render(SurveyForm, {
+      props: { survey: v2Unverified, locale: "fr" },
+    });
+    await fireEvent.input(r4.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "dave@devmtl.ca" },
+    });
+    // P2-6 check: existingDraft count uses draft's depthMode='deep' & selectedThemes=['usine'] -> 4/6 (not fast 4/5)
+    expect(r4.getByText(/4\/6/)).toBeTruthy();
+    await fireEvent.click(r4.getByRole("button", { name: /Reprendre mon brouillon/i }));
+    expect(r4.getByText(/Thèmes d’approfondissement/i)).toBeTruthy();
+    r4.unmount();
+    clearAllSurveyStorage();
+
+    // Resuming a draft AFTER deepMilestonePassed restores deepMilestonePassed so Précédent returns to deep_themes
+    saveSurveyDraft("devmtl-v2", "eve@devmtl.ca", {
+      surveyId: "devmtl-v2",
+      answers: { type: "startup", ai_impact_year: "imp_pos", code_tools: { enterprise: ["a1"] }, quotas: { enterprise: "q_week" } },
+      questionIndex: 4,
+      enrollmentMeta: {},
+      entryScope: "enterprise",
+      depthMode: "deep",
+      selectedThemes: ["usine"],
+      deepMilestonePassed: true,
+      step: "questions",
+      expiresAt: Date.now() + 20 * 60 * 1000,
+      updatedAt: Date.now() - 1_000,
+    });
+    const r5 = render(SurveyForm, {
+      props: {
+        survey: v2MagicSurvey,
+        locale: "fr",
+        initialStep: "questions",
+        initialEmail: "eve@devmtl.ca",
+      },
+    });
+    expect(r5.getByText(/Maturité du cycle/i)).toBeTruthy();
+    await fireEvent.click(r5.getByRole("button", { name: /Précédent/i }));
+    expect(r5.getByText(/Thèmes d’approfondissement/i)).toBeTruthy();
+    r5.unmount();
+  });
+
+  it("P1-4 & P2-5/6: validates dual-mode multi with SR semantics, wires open-text aria-describedby, allows Q1 back to entry_depth, and hides partial submit on optional closing", async () => {
+    const v2MinSurvey: SurveyDefinition = {
+      ...V2_SURVEY,
+      questions: V2_SURVEY.questions.map((q) =>
+        q.id === "code_tools" && q.type === "multi"
+          ? { ...q, minSelections: 2, required: true }
+          : q,
+      ),
+    };
+    const onsubmit = vi.fn();
+    const { container, getByLabelText, getByRole, getByText, queryByRole, queryByText } = render(
+      SurveyForm,
+      {
+        props: { survey: v2MinSurvey, locale: "fr", onsubmit },
+      },
+    );
+
+    // Entry -> Both -> Fast (~2 min)
+    await fireEvent.click(getByLabelText(/Les deux/i));
+    await fireEvent.click(getByRole("button", { name: /Continuer/i }));
+    await fireEvent.click(getByLabelText(/~2 min/i));
+    await fireEvent.click(getByRole("button", { name: /Commencer/i }));
+
+    // P2-6: On Q1, Précédent is enabled and navigates back to entry_depth
+    const prevQ1 = getByRole("button", { name: /Précédent/i }) as HTMLButtonElement;
+    expect(prevQ1.disabled).toBe(false);
+    await fireEvent.click(prevQ1);
+    expect(getByText(/Temps souhaité/i)).toBeTruthy();
+    await fireEvent.click(getByRole("button", { name: /Commencer/i }));
+
+    // Answer Q1 & Q2
+    await fireEvent.click(getByLabelText("Startup"));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+    await fireEvent.click(getByLabelText(/Neutre/i));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    // Q3: dual-mode multi (minSelections: 2, exclusive: ["aucun"])
+    const dualFieldset = container.querySelector("fieldset.st-surveyDual") as HTMLFieldSetElement;
+    const dualHelp = container.querySelector(".st-surveyDual__help") as HTMLElement;
+    expect(dualHelp.id).toBeTruthy();
+    expect(dualFieldset.getAttribute("aria-describedby")).toContain(dualHelp.id);
+    const mobileTags = [...container.querySelectorAll(".st-surveyDual__mobileTag")];
+    expect(mobileTags.length).toBeGreaterThan(0);
+    expect(mobileTags.every((t) => t.getAttribute("aria-hidden") === "true")).toBe(true);
+
+    // Select only 1 option on Enterprise and try Next -> shows error, aria-invalid="true", aria-describedby includes error
+    await fireEvent.click(getByLabelText("Assistant Alpha — Entreprise"));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+    expect(dualFieldset.getAttribute("aria-invalid")).toBe("true");
+    const alphaEnt = getByLabelText("Assistant Alpha — Entreprise") as HTMLInputElement;
+    expect(alphaEnt.getAttribute("aria-invalid")).toBe("true");
+    const dualDescribedIds = (dualFieldset.getAttribute("aria-describedby") ?? "")
+      .split(/\s+/)
+      .filter(Boolean);
+    expect(
+      dualDescribedIds.some((id) => document.getElementById(id)?.textContent?.includes("au moins 2")),
+    ).toBe(true);
+
+    // Exclusive "Aucun" satisfies minSelections: 2
+    await fireEvent.click(getByLabelText("Aucun — Entreprise"));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    // Q4 quotas
+    await fireEvent.click(getByLabelText("Oui, cette semaine — Entreprise"));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    // Q5 optional closing open_feedback
+    expect(getByText(/Question ouverte/i)).toBeTruthy();
+    // P2-5: textarea aria-describedby links BOTH helperText ("jamais affiché mot à mot") AND char count ("0 / 280")
+    const textarea = getByLabelText(/Question ouverte/i) as HTMLTextAreaElement;
+    const taDescIds = (textarea.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean);
+    const taDescTexts = taDescIds.map((id) => document.getElementById(id)?.textContent ?? "");
+    expect(taDescTexts.some((t) => t.includes("jamais affiché mot à mot"))).toBe(true);
+    expect(taDescTexts.some((t) => t.includes("0 / 280"))).toBe(true);
+
+    // P2-6: All 4 non-optional questions answered -> partial submit button NOT shown on optional closing question
+    expect(queryByRole("button", { name: /Envoyer seulement celles-ci/i })).toBeNull();
+
+    // Complete submit succeeds
+    await fireEvent.click(getByRole("button", { name: /Envoyer mes réponses/i }));
+    await waitFor(() => expect(onsubmit).toHaveBeenCalledTimes(1));
+    expect(queryByText(/question 1/i)).toBeNull();
   });
 });

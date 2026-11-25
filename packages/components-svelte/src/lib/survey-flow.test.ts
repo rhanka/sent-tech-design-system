@@ -389,4 +389,89 @@ describe("survey-flow helpers", () => {
     expect(payload.answeredCount).toBe(2);
     expect(payload.totalQuestions).toBe(3);
   });
+
+  it("enforces minSelections, maxSelections, and exclusive exemption on v2 scoped multi answers in validateSubmission", () => {
+    const v2MultiSurvey: SurveyDefinition = {
+      schemaVersion: 2,
+      id: "V2-MULTI",
+      title: "V2 Multi",
+      rules: {
+        mode: "one-per-screen",
+        enrollment: "none",
+        explicitSubmitOnly: true,
+        requiredForSubmit: ["type"],
+      },
+      questions: [
+        {
+          id: "type",
+          tier: "core",
+          type: "single",
+          label: "Secteur",
+          options: [{ id: "startup", label: "Startup" }],
+        },
+        {
+          id: "code_tools",
+          tier: "core",
+          contextual: true,
+          type: "multi",
+          exclusive: ["aucun"],
+          minSelections: 2,
+          maxSelections: 2,
+          label: "Outils",
+          options: [
+            { id: "a", label: "A" },
+            { id: "b", label: "B" },
+            { id: "c", label: "C" },
+            { id: "aucun", label: "Aucun" },
+          ],
+        },
+        {
+          id: "deep_q",
+          tier: "deep",
+          deepTheme: "usine",
+          type: "single",
+          required: true,
+          label: "Deep required",
+          options: [{ id: "d1", label: "D1" }],
+        },
+      ],
+    };
+
+    const fastQs = getActiveSurveyQuestions(v2MultiSurvey, { depthMode: "fast" });
+    // Too few on enterprise side fails both complete and partial
+    expect(
+      validateSubmission(
+        v2MultiSurvey,
+        { type: "startup", code_tools: { enterprise: ["a"] } },
+        "complete",
+        fastQs,
+      ),
+    ).toEqual({ valid: false, missingIds: ["code_tools"] });
+    expect(
+      validateSubmission(
+        v2MultiSurvey,
+        { type: "startup", code_tools: { personal: ["a"] } },
+        "partial",
+        fastQs,
+      ),
+    ).toEqual({ valid: false, missingIds: ["code_tools"] });
+    // Exclusive option ("aucun") on enterprise or personal satisfies minSelections > 1
+    expect(
+      validateSubmission(
+        v2MultiSurvey,
+        { type: "startup", code_tools: { enterprise: ["aucun"], personal: ["a", "b"] } },
+        "complete",
+        fastQs,
+      ),
+    ).toEqual({ valid: true, missingIds: [] });
+    // Too many on personal side fails
+    expect(
+      validateSubmission(
+        v2MultiSurvey,
+        { type: "startup", code_tools: { enterprise: ["a", "b"], personal: ["a", "b", "c"] } },
+        "complete",
+        fastQs,
+      ),
+    ).toEqual({ valid: false, missingIds: ["code_tools"] });
+  });
 });

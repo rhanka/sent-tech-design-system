@@ -407,8 +407,11 @@
   }
 
   .st-likert__option--nonSubstantive {
-    background: var(--st-semantic-surface-subtle, #f3f4fb);
     grid-template-columns: auto 1fr;
+  }
+
+  .st-likert__option--nonSubstantive:not(.st-likert__option--checked) {
+    background: var(--st-semantic-surface-subtle, #f3f4fb);
   }
 
   @container (min-width: 600px) {
