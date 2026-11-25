@@ -121,6 +121,7 @@ export { default as Flex } from "./Flex.svelte";
 export { default as Footer } from "./Footer.svelte";
 export { default as ForceGraph } from "./ForceGraph.svelte";
 export { default as GraphLegend } from "./GraphLegend.svelte";
+export type { GraphLegendProps, GraphLegendSize, GraphLegendVariant } from "./GraphLegend.svelte";
 export { default as Grid } from "./Grid.svelte";
 export { default as Form } from "./Form.svelte";
 export { default as FormGroup } from "./FormGroup.svelte";
@@ -265,6 +266,27 @@ export { default as Sparkline } from "./Sparkline.svelte";
 export { default as StackedBarChart } from "./StackedBarChart.svelte";
 export { default as StructuredList } from "./StructuredList.svelte";
 export { default as SunburstChart } from "./SunburstChart.svelte";
+export { default as SurveyResults } from "./SurveyResults.svelte";
+export type {
+  SanitizedSurveyGraph,
+  SurveyAggregateFunnel,
+  SurveyAggregateGraph,
+  SurveyAggregateOption,
+  SurveyAggregateQuestion,
+  SurveyAggregateSnapshot,
+  SurveyAggregateSummary,
+  SurveyAggregateWord,
+  SurveyGraphEdge,
+  SurveyGraphFamily,
+  SurveyGraphNode,
+  SurveyLocalizedText,
+  SurveyResultsDensity,
+  SurveyResultsLabels,
+  SurveyResultsLocale,
+  SurveyResultsProps,
+  SurveyResultsSegment,
+  SurveySnapshotStatus
+} from "./SurveyResults.svelte";
 export { default as Switch } from "./Switch.svelte";
 export { default as Table } from "./Table.svelte";
 export { default as Tabs } from "./Tabs.svelte";
