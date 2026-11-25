@@ -38,6 +38,7 @@ export function isR7ConnectorPresentation(
   document?: R7DocumentLike,
 ): boolean {
   if (document?.profileRefs?.length === 1 && document.profileRefs[0] === "erd@1") return false;
+  if (document?.profileRefs?.length === 1 && document.profileRefs[0] === "process@1") return true;
   const hasFilters = (view?.filters?.length ?? 0) > 0;
   const occurrences = view == null ? [] : Object.values(view.relationOccurrences ?? {}).filter((occ) => {
     if (occ == null) return false;
