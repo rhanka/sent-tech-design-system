@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:21e260a99a4ef8b30b94d4947107f1d76913151dc84aa5844d86fa29837e9dc8",
+  "contractsRevision": "sha256:bacb9a2bced934ab50f6ece52d7bb95ff52fc4f7937573037f37467380de9c5e",
   "counts": {
     "byFramework": {
       "angular": {
@@ -1555,8 +1555,8 @@
         "vue": "complete"
       },
       "componentId": "modal",
-      "contractDigest": "sha256:8409b9eee0dbe9d1f2656e6fd43d463ba73405c1b380edd8d7b139cf542cfcdf",
-      "entryDigest": "sha256:da0e44d4b2b6dffd5a33e96849eee02608c4ff0a3a2f6fd9c5a050b87aef38b4",
+      "contractDigest": "sha256:1824c3b23b2f5b291aee61f4c9cd22686771cdd9874431b599a70b2dca24be17",
+      "entryDigest": "sha256:5334e37a0dd6d3b770b3ffb0da4af379a9c94b055aab2ca50db75392b3787d1c",
       "path": "contracts/modal.json",
       "producerId": "sentropic-ds"
     },
@@ -2863,5 +2863,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "17070e0bf6a6aa54da773f126725411f249a60c7"
+  "sourceCommit": "4fca9689a7562ce2740fd0f69971eb20ff5eb032"
 }

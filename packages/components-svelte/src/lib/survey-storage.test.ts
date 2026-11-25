@@ -76,6 +76,7 @@ describe("survey-storage", () => {
   });
 
   it("persists and clears offline pending submissions", () => {
+    const now = Date.now();
     const pending: SurveyPendingSubmission = {
       payload: {
         surveyId: "C",
@@ -87,16 +88,53 @@ describe("survey-storage", () => {
         returnedFromDraft: false,
         submittedAt: "2026-11-27T14:00:00.000Z",
       },
-      queuedAt: 1_700_000_000_000,
+      queuedAt: now,
       attempts: 1,
       lastError: "offline",
     };
 
     savePendingSubmission("C", "alice@example.ca", pending);
-    expect(loadPendingSubmission("C", "alice@example.ca")).toEqual(pending);
+    expect(loadPendingSubmission("C", "alice@example.ca", undefined, now + 1000)).toEqual(pending);
 
     clearPendingSubmission("C", "alice@example.ca");
     expect(loadPendingSubmission("C", "alice@example.ca")).toBeNull();
+  });
+
+  it("expires and purges stale pending submissions past TTL", () => {
+    const queuedAt = 1_700_000_000_000;
+    const pending: SurveyPendingSubmission = {
+      payload: {
+        surveyId: "C",
+        mode: "partial",
+        answeredCount: 1,
+        totalQuestions: 3,
+        answers: { type: "manuf" },
+        enrollmentMeta: { company_name: "Acme" },
+        returnedFromDraft: false,
+        submittedAt: "2026-11-27T14:00:00.000Z",
+      },
+      queuedAt,
+      attempts: 1,
+      lastError: "offline",
+    };
+
+    savePendingSubmission("C", "alice@example.ca", pending);
+    // Fresh within 24h
+    expect(
+      loadPendingSubmission("C", "alice@example.ca", undefined, queuedAt + 60_000),
+    ).toEqual(pending);
+    // Expired past 24h -> purged and returns null
+    expect(
+      loadPendingSubmission(
+        "C",
+        "alice@example.ca",
+        undefined,
+        queuedAt + 24 * 60 * 60 * 1000 + 1,
+      ),
+    ).toBeNull();
+    expect(
+      loadPendingSubmission("C", "alice@example.ca", undefined, queuedAt + 1000),
+    ).toBeNull();
   });
 
   it("tracks optional local passkey registration per salted identity", () => {

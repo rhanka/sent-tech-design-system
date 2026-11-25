@@ -129,6 +129,61 @@ describe("survey-flow helpers", () => {
     });
   });
 
+  it("enforces minSelections and maxSelections during validateSubmission (complete and partial)", () => {
+    const surveyWithMin: SurveyDefinition = {
+      ...SAMPLE_SURVEY,
+      questions: [
+        SAMPLE_SURVEY.questions[0],
+        {
+          id: "tools",
+          type: "multi",
+          label: { fr: "Outils ?", en: "Tools?" },
+          exclusive: ["none"],
+          minSelections: 2,
+          maxSelections: 2,
+          options: [
+            { id: "t1", label: "T1" },
+            { id: "t2", label: "T2" },
+            { id: "t3", label: "T3" },
+            { id: "none", label: "None" },
+          ],
+        },
+      ],
+    };
+
+    expect(
+      validateSubmission(surveyWithMin, { type: "startup", tools: ["t1"] }, "complete"),
+    ).toEqual({
+      valid: false,
+      missingIds: ["tools"],
+    });
+    expect(
+      validateSubmission(surveyWithMin, { type: "startup", tools: ["t1"] }, "partial"),
+    ).toEqual({
+      valid: false,
+      missingIds: ["tools"],
+    });
+    expect(
+      validateSubmission(surveyWithMin, { type: "startup", tools: ["t1", "t2", "t3"] }, "complete"),
+    ).toEqual({
+      valid: false,
+      missingIds: ["tools"],
+    });
+    expect(
+      validateSubmission(surveyWithMin, { type: "startup", tools: ["t1", "t2"] }, "complete"),
+    ).toEqual({
+      valid: true,
+      missingIds: [],
+    });
+    // Exclusive option satisfies minSelections
+    expect(
+      validateSubmission(surveyWithMin, { type: "startup", tools: ["none"] }, "complete"),
+    ).toEqual({
+      valid: true,
+      missingIds: [],
+    });
+  });
+
   it("builds a complete or partial submit payload with segregated enrollmentMeta", () => {
     const partial = buildSubmitPayload({
       survey: SAMPLE_SURVEY,

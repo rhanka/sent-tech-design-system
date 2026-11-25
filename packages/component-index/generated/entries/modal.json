@@ -5,7 +5,7 @@
   "delivery": [
     {
       "channel": "source",
-      "digest": "sha256:a1a68a99cc12ba9a1d51e0b2f14669c2154bcf53d9acb868d750184d7604dc9d",
+      "digest": "sha256:b3eb8e5bcab35a23c2810de90e8e68d2cdd2bc43ec6148bffe17a5e6b40cc82a",
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Modal.svelte",
@@ -40,7 +40,7 @@
     "en": "Centered modal dialog.",
     "fr": "Dialogue modal recentré."
   },
-  "digest": "sha256:da0e44d4b2b6dffd5a33e96849eee02608c4ff0a3a2f6fd9c5a050b87aef38b4",
+  "digest": "sha256:5334e37a0dd6d3b770b3ffb0da4af379a9c94b055aab2ca50db75392b3787d1c",
   "displayName": "Modal",
   "format": "component-entry/v1",
   "frameworks": [

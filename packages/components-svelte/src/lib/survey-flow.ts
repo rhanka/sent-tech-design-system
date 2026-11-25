@@ -80,7 +80,15 @@ export function validateQuestionAnswer(
     return "required";
   }
   if (question.type === "multi" && Array.isArray(value)) {
-    if (question.minSelections != null && value.length > 0 && value.length < question.minSelections) {
+    const hasExclusive = Boolean(
+      question.exclusive?.length && value.some((v) => question.exclusive!.includes(v)),
+    );
+    if (
+      !hasExclusive &&
+      question.minSelections != null &&
+      value.length > 0 &&
+      value.length < question.minSelections
+    ) {
       return "minSelections";
     }
     if (question.maxSelections != null && value.length > question.maxSelections) {
@@ -103,11 +111,12 @@ export function validateSubmission(
     }
   }
 
-  if (mode === "complete") {
-    for (const q of survey.questions) {
-      if (q.required && !isAnswerPresent(answers[q.id])) {
-        missingSet.add(q.id);
-      }
+  for (const q of survey.questions) {
+    const err = validateQuestionAnswer(q, answers[q.id]);
+    if (err === "required") {
+      if (mode === "complete") missingSet.add(q.id);
+    } else if (err === "minSelections" || err === "maxSelections") {
+      missingSet.add(q.id);
     }
   }
 

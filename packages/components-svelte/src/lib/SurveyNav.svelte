@@ -292,9 +292,7 @@
     .st-surveyNav :global(.st-surveyNav__btn) {
       width: 100%;
     }
-  }
 
-  @media (max-width: 520px) {
     .st-surveyNav--stickyMobile {
       background: var(--st-semantic-surface-default, #ffffff);
       border-radius: 0;
