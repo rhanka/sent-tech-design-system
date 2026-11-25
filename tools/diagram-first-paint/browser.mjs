@@ -141,19 +141,17 @@ function measure() {
     const r = box(element);
     const inset = Math.max(...['borderTopLeftRadius', 'borderTopRightRadius', 'borderBottomLeftRadius', 'borderBottomRightRadius']
       .map(key => parseFloat(style[key]) || 0)) * scale;
-    if (element.matches('.st-diagramSceneFigure-flowBadge')) {
-      // CSS reduces the pill's nominal 999px radius to its painted radius.
-      // Clip against the actual rounded surface: its central rectangles and
-      // corner disks. Insetting a circle by its radius leaves no interior.
-      const radius = Math.min(inset, r.width / 2, r.height / 2);
-      return [
-        { left: r.left + radius, top: r.top, right: r.right - radius, bottom: r.bottom },
-        { left: r.left, top: r.top + radius, right: r.right, bottom: r.bottom - radius },
-        ...[r.left + radius, r.right - radius].flatMap(x =>
-          [r.top + radius, r.bottom - radius].map(y => ({ x, y, radius }))),
-      ];
-    }
-    return [{ left: r.left + inset, top: r.top + inset, right: r.right - inset, bottom: r.bottom - inset }];
+    // Decompose every opaque rounded box into its exact union of two central
+    // rectangles and four corner disks so flat sides occlude terminal legs while
+    // curved corners remain unclipped.
+    const radius = Math.min(inset, r.width / 2, r.height / 2);
+    if (radius <= 0) return [r];
+    return [
+      { left: r.left + radius, top: r.top, right: r.right - radius, bottom: r.bottom },
+      { left: r.left, top: r.top + radius, right: r.right, bottom: r.bottom - radius },
+      ...[r.left + radius, r.right - radius].flatMap(x =>
+        [r.top + radius, r.bottom - radius].map(y => ({ x, y, radius }))),
+    ];
   });
   const occluders = [...surfaces, ...cutouts];
   const frameBox = box(frame);

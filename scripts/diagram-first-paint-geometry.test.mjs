@@ -63,6 +63,21 @@ test('should keep a connector that only passes behind a footer cutout', () => {
   assert.deepEqual(connectorFindings({ ...scene, occluders: [cutout] }), []);
 });
 
+test('should occlude terminal connector overlap along flat edges of a rounded-rect box', () => {
+  const roundedRectOccluders = ({ left, top, right, bottom }, radius) => [
+    { left: left + radius, top, right: right - radius, bottom },
+    { left, top: top + radius, right, bottom: bottom - radius },
+  ];
+  const segments = exposedSegments(
+    { x: 100, y: 260 },
+    { x: 100, y: 200 },
+    roundedRectOccluders({ left: 0, top: 0, right: 200, bottom: 200 }, 12),
+    2,
+  );
+  assert.equal(segments.length, 1);
+  assert.ok(segments[0][1].y >= 198);
+});
+
 // Owner card-body-centring: the three-cards gate pins the single-line
 // `First paint` ink in the frozen body box (centre-x 232, ink inside
 // [104, 172] card px vertically — never top- or bottom-aligned).
