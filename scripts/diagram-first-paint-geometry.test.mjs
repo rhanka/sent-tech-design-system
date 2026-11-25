@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { borderDistance, centredBodyFindings, compactCardFindings, connectorFindings, exposedSegments, legendFindings, linkStrokeWidthFindings, roundedElbowFindings, segmentInterval } from '../tools/diagram-first-paint/geometry.mjs';
-import { cases, expectedLegendAnchor, expectedLegendStyles } from '../tools/diagram-first-paint/scenes.js';
+import { borderDistance, centredBodyFindings, combinedLegendFindings, compactCardFindings, connectorFindings, exposedSegments, legendFindings, linkStrokeWidthFindings, roundedElbowFindings, segmentInterval } from '../tools/diagram-first-paint/geometry.mjs';
+import { cases, expectedLegendAnchor, expectedLegendStyles, expectedVisibleCounts, foldTargets } from '../tools/diagram-first-paint/scenes.js';
 
 test('should clip a crossing connector against the stroke-inset badge disk', () => {
   const a = { x: -20, y: 0 }, b = { x: 20, y: 0 };
@@ -61,6 +61,21 @@ test('should fail on a label without connector, a missing relation and a detache
 test('should keep a connector that only passes behind a footer cutout', () => {
   const cutout = { left: 150, top: 90, right: 200, bottom: 110 };
   assert.deepEqual(connectorFindings({ ...scene, occluders: [cutout] }), []);
+});
+
+test('should occlude terminal connector overlap along flat edges of a rounded-rect box', () => {
+  const roundedRectOccluders = ({ left, top, right, bottom }, radius) => [
+    { left: left + radius, top, right: right - radius, bottom },
+    { left, top: top + radius, right, bottom: bottom - radius },
+  ];
+  const segments = exposedSegments(
+    { x: 100, y: 260 },
+    { x: 100, y: 200 },
+    roundedRectOccluders({ left: 0, top: 0, right: 200, bottom: 200 }, 12),
+    2,
+  );
+  assert.equal(segments.length, 1);
+  assert.ok(segments[0][1].y >= 198);
 });
 
 // Owner card-body-centring: the three-cards gate pins the single-line
@@ -164,18 +179,19 @@ test('should verify rounded elbow radius cap (<= 12 and <= half shorter leg)', (
   assert.ok(pastHalfLeg.some(f => f.includes('half-leg cap')));
 });
 
-test('should verify resting (2.5px) and emphasis (3.5px) link stroke widths', () => {
+test('should verify resting (3.5px) and emphasis (3.5px) link stroke widths', () => {
   assert.deepEqual(linkStrokeWidthFindings({
     paths: [
-      { id: 'rest', strokeWidthCss: 2.5, emphasis: 'default', flow: false, erd: false },
+      { id: 'rest', strokeWidthCss: 3.5, emphasis: 'default', flow: false, erd: false },
+      { id: 'related', strokeWidthCss: 3.5, arrowhead: 'none', emphasis: 'default', flow: false, erd: false },
       { id: 'emph', strokeWidthCss: 3.5, emphasis: 'emphasis', flow: false, erd: false },
       { id: 'flow', strokeWidthCss: 1.5, emphasis: 'default', flow: true, erd: false },
     ],
   }), []);
   const bad = linkStrokeWidthFindings({
-    paths: [{ id: 'thin', strokeWidthCss: 1.5, emphasis: 'default', flow: false, erd: false }],
+    paths: [{ id: 'thin', strokeWidthCss: 2.5, emphasis: 'default', flow: false, erd: false }],
   });
-  assert.deepEqual(bad, ['connector thin stroke width 1.5 != 2.5']);
+  assert.deepEqual(bad, ['connector thin stroke width 2.5 != 3.5']);
 });
 
 test('should verify legend canonical order, right anchor, non-overlap, and omission after fold', () => {
@@ -206,4 +222,33 @@ test('should verify legend canonical order, right anchor, non-overlap, and omiss
   };
   const stageNode = [{ id: 'n1', left: 336, top: 0, right: 688, bottom: 154 }];
   assert.deepEqual(legendFindings({ legend: freeCellLegend, nodes: stageNode, expectedAnchor: 'free-cell', expectedStyles: freeCellLegend.styles }), []);
+});
+
+test('should enforce combined legend count <= 1 and zero overlap for authored legends (DE3-L1a)', () => {
+  assert.ok(cases.includes('r7-authored-legend'));
+  assert.deepEqual(foldTargets('r7-authored-legend'), ['occurrence:e.zone-core']);
+  assert.ok(!foldTargets('r7-authored-legend').includes('occurrence:e.legend'));
+  assert.deepEqual(expectedLegendStyles('r7-authored-legend'), []);
+  assert.deepEqual(expectedLegendStyles('r7-authored-legend--folded'), []);
+  assert.equal(expectedLegendAnchor('r7-authored-legend'), null);
+  assert.equal(expectedLegendAnchor('r7-authored-legend--folded'), null);
+  assert.deepEqual(expectedVisibleCounts('r7-authored-legend--folded'), { minNodes: 3, expectEdges: true, expectLabels: true });
+
+  const authored = { id: 'occurrence:e.legend', left: 10, top: 10, right: 200, bottom: 160 };
+  const auto = { id: 'legend', left: 300, top: 10, right: 540, bottom: 160, anchor: 'right', styles: ['solid:arrow:default', 'dashed:arrow:default'] };
+  const nodes = [
+    { id: 'occurrence:e.legend', kind: 'zone', left: 10, top: 10, right: 200, bottom: 160 },
+    { id: 'occurrence:e.key-core', kind: 'legend-key', left: 26, top: 60, right: 184, bottom: 90 },
+    { id: 'occurrence:e.alpha', kind: 'card', left: 250, top: 200, right: 450, bottom: 320 },
+  ];
+  const labels = [{ id: 'calls', left: 260, top: 170, right: 320, bottom: 192 }];
+  const paths = [{ id: 'r1', stroke: 1.75, points: [{ x: 250, y: 260 }, { x: 450, y: 260 }] }];
+
+  assert.deepEqual(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes, labels, paths }), []);
+  assert.ok(combinedLegendFindings({ legend: auto, authoredLegends: [authored], nodes, labels, paths }).some(f => f.includes('2')));
+  assert.ok(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes, labels: [{ id: 'overlap', left: 150, top: 100, right: 220, bottom: 130 }], paths }).some(f => f.includes('overlaps label')));
+  // Interior foreign cards and interior edge labels must be flagged; enclosing outer zones must not.
+  assert.ok(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes: [...nodes, { id: 'inside-card', kind: 'card', left: 30, top: 30, right: 90, bottom: 90 }], labels, paths }).some(f => f.includes('overlaps box inside-card')));
+  assert.ok(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes, labels: [{ id: 'inside-label', left: 30, top: 30, right: 90, bottom: 50 }], paths }).some(f => f.includes('overlaps label inside-label')));
+  assert.deepEqual(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes: [...nodes, { id: 'outer-zone', kind: 'zone', left: 0, top: 0, right: 220, bottom: 180 }], labels, paths }), []);
 });

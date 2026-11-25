@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.0
+
+DE-3 Milestone 1 (`DE3-L1a`, `DE3-L2a`), consuming
+`@sentropic/diagram-canvas@0.7.0` (built on `@sentropic/diagram-core@0.6.1`)
+and updating the bundled browser runtime (`dist/browser/elements.js`).
+
+### Changed
+
+- Updated the pinned `@sentropic/diagram-canvas` dependency from `0.6.0` to
+  `0.7.0` so Focus dossier `renderSceneSvg` renders adopt single-legend
+  authority (`DE3-L1a`) and `3.5px` contrast-aligned `r7` links while keeping
+  `process@1` (`2.5px`, `edgeStroke`) and `v1` (`1.5px`, `#64748b`) intact
+  (`DE3-L2a`).
+
 ## 0.4.0
 
 Process-flow simple boxes in Focus dossiers (Archify lot 1, L1d), consuming

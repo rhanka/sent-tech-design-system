@@ -298,10 +298,10 @@ export function roundedElbowFindings({ paths, maxRadius = 12, tolerance = 0.5 })
 }
 
 /**
- * DE-2 link-width gate: verifies that ordinary resting links paint at
- * `defaultWidth` (2.5 px) and emphasized links paint at `emphasisWidth` (3.5 px).
+ * DE-2 / DE3-L2a link-width gate: verifies that ordinary resting links paint at
+ * `defaultWidth` (3.5 px), related links at `relatedWidth` (3.5 px), and emphasized links at `emphasisWidth` (3.5 px).
  */
-export function linkStrokeWidthFindings({ paths, defaultWidth = 2.5, relatedWidth = 3, emphasisWidth = 3.5, tolerance = 0.05 }) {
+export function linkStrokeWidthFindings({ paths, defaultWidth = 3.5, relatedWidth = 3.5, emphasisWidth = 3.5, tolerance = 0.05 }) {
   const findings = [];
   for (const path of paths) {
     if (path.flow || path.erd) continue;
@@ -354,6 +354,58 @@ export function legendFindings({ legend, nodes, expectedAnchor = 'right', expect
   }
   if (expectedAnchor === 'right' && nodes.length > 0 && legend.left < maxRight - tolerance) {
     findings.push(`right-anchored legend left ${legend.left} < functional right ${maxRight}`);
+  }
+  return findings;
+}
+
+function boxesOverlap(a, b, tolerance = 0.5) {
+  return a.left < b.right - tolerance && a.right > b.left + tolerance
+    && a.top < b.bottom - tolerance && a.bottom > b.top + tolerance;
+}
+
+/**
+ * REQ-R7-31: Enforces combined legend count <= 1 (counting authored `form: "legend"`
+ * zones together with automatic `scene.linkLegend`) and zero overlap between any
+ * authored legend and non-member nodes, edge labels, or connector segments.
+ */
+export function combinedLegendFindings({ legend, authoredLegends = [], nodes = [], labels = [], paths = [], tolerance = 0.5 }) {
+  const findings = [];
+  const totalCount = (legend !== null && legend !== undefined ? 1 : 0) + authoredLegends.length;
+  if (totalCount > 1) {
+    findings.push(`expected at most 1 legend per figure, found ${totalCount}`);
+  }
+  for (const authored of authoredLegends) {
+    for (const node of nodes) {
+      if (node.id === authored.id || node.kind === 'legend-key') continue;
+      // An enclosing container zone surrounds the authored legend rather than overlapping it.
+      const enclosesAuthored = node.kind === 'zone'
+        && authored.left >= node.left - tolerance && authored.right <= node.right + tolerance
+        && authored.top >= node.top - tolerance && authored.bottom <= node.bottom + tolerance;
+      if (enclosesAuthored) continue;
+      if (boxesOverlap(authored, node, tolerance)) {
+        findings.push(`authored legend ${authored.id} overlaps box ${node.id}`);
+      }
+    }
+    for (const label of labels) {
+      if (label.isEdgeLabel === false) continue;
+      if (boxesOverlap(authored, label, tolerance)) {
+        findings.push(`authored legend ${authored.id} overlaps label ${label.id}`);
+      }
+    }
+    const expanded = {
+      left: authored.left - tolerance,
+      top: authored.top - tolerance,
+      right: authored.right + tolerance,
+      bottom: authored.bottom + tolerance,
+    };
+    for (const path of paths) {
+      for (let i = 1; i < path.points.length; i++) {
+        if (segmentInterval(expanded, path.points[i - 1], path.points[i]) !== undefined) {
+          findings.push(`authored legend ${authored.id} overlaps connector ${path.id}`);
+          break;
+        }
+      }
+    }
   }
   return findings;
 }

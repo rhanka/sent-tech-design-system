@@ -1,8 +1,8 @@
 {
   "componentId": "radio-group",
   "contractSource": "derived",
-  "digest": "sha256:54a04936af99b3ad5caa68dfa5f3a0c8a210d5d8519664debb3c2e1e17a92b19",
-  "entryDigest": "sha256:0dd042fdfb8a8078ef4ca9963989779a0790f4ecb9fe31c3d9b38b5af330776a",
+  "digest": "sha256:36ae3cd6d0b9a73759aa50f5c0fc371edb2b785e161391fe1cacd4827da7ca99",
+  "entryDigest": "sha256:c7f84decbf576f774b3112abc4450169cf9175ced6fcc61001f8d4b9a342a61b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -301,7 +301,7 @@
         "declarationPath": "packages/components-svelte/dist/RadioGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RadioGroupProps",
-        "version": "0.46.1"
+        "version": "0.47.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -412,7 +412,7 @@
         "declarationPath": "packages/components-vue/dist/RadioGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RadioGroupProps",
-        "version": "0.42.0-next.0"
+        "version": "0.43.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

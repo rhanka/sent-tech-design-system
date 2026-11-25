@@ -10,11 +10,11 @@
   "delivery": [
     {
       "channel": "source",
-      "digest": "sha256:563d02d8728429fd6e117bec2ed2c22a74ac8e9972d6ee137359170e644521ef",
+      "digest": "sha256:f140976dc083fff7ea4b849c04fe4fae4867513761b5ad81c0d4b25fad1ba028",
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DiagramSceneFigure.svelte",
-      "version": "0.46.1"
+      "version": "0.47.0"
     },
     {
       "channel": "source",
@@ -22,14 +22,14 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DiagramSceneFigure.vue",
-      "version": "0.42.0-next.0"
+      "version": "0.43.0-next.0"
     }
   ],
   "description": {
     "en": "Diagram scene: measured diagram view with 16:9 row-pack autolayout, zoom capped at the maximum display size, fit to frame and fold transition.",
     "fr": "Scène de diagramme : vue mesurée avec disposition automatique en rangées au format 16:9, zoom plafonné à la taille maximale d’affichage, ajustement au cadre et transition de repli."
   },
-  "digest": "sha256:cc71cacf3780aec3e9775bd8673d52988406ecb11408032d3e32e0edf9215133",
+  "digest": "sha256:21519d8c2c4679aad875bff990e5b1b906468f25ee18d3b0486d018279597cbd",
   "displayName": "DiagramSceneFigure",
   "format": "component-entry/v1",
   "frameworks": [

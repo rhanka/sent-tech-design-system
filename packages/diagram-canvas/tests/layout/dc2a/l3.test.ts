@@ -332,4 +332,11 @@ describe("DC-2a L3 determinism (AC-7, D-2, S-3)", () => {
       rmSync(directory, { recursive: true, force: true });
     }
   }, 600_000);
+
+  it("G-V1 #4: all 31 dc2a v1 views remain byte-identical to recorded origin/main digests", () => {
+    const baseline = JSON.parse(readFileSync(new URL("./digests.base.json", import.meta.url), "utf8")) as Record<string, string>;
+    const current = sceneDigests();
+    expect(Object.keys(baseline)).toHaveLength(31);
+    expect(current).toEqual(baseline);
+  }, 120_000);
 });

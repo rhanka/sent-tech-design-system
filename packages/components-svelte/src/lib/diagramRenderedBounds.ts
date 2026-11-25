@@ -77,7 +77,7 @@ export function shouldRefitRenderedBounds(previous: Rect | undefined, next: Rect
 /** Token default of a resting numbered-flow stroke, CSS px (DC-2c). */
 const RESTING_FLOW_STROKE_WIDTH = 1.5;
 /** Token default of a resting connector stroke, CSS px (DE-2 `linkStrokeWidth`). */
-const RESTING_EDGE_STROKE_WIDTH = 2.5;
+const RESTING_EDGE_STROKE_WIDTH = 3.5;
 
 /** Whether a computed colour paints nothing: `transparent` or a zero alpha. */
 function isTransparent(color: string): boolean {
