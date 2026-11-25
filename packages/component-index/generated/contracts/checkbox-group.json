@@ -1,8 +1,8 @@
 {
   "componentId": "checkbox-group",
   "contractSource": "derived",
-  "digest": "sha256:dfc81c843ceaebcc954797c0aba9973dbe9a328a37043c971172fc0f999595d6",
-  "entryDigest": "sha256:bd729051e66ddd2179f6d7a521664b287212c9992fbc818f6998687bc2d18933",
+  "digest": "sha256:9886c384a288b85adf486c060911f89595ca2a8d98e7ec46128aca01859d7de7",
+  "entryDigest": "sha256:e806f987ca329b6e06ccf2abaad1ee804602ccd38724062d7439b9e9f71d787d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -220,7 +220,9 @@
       "warnings": []
     },
     "svelte": {
-      "bindable": [],
+      "bindable": [
+        "value"
+      ],
       "dropped": [],
       "events": [
         {
@@ -338,6 +340,10 @@
             "description": "Marque le groupe comme requis.",
             "type": "boolean"
           },
+          "requiredLabel": {
+            "description": "Accessible screen-reader text announced when required is set.",
+            "type": "string"
+          },
           "value": {
             "description": "Valeurs cochées (liste contrôlée).",
             "items": {
@@ -365,7 +371,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:93fa60e1e34a3df36a1e1ad67470cffc394deb95fc463972dd280a1640273e2e",
+        "declarationDigest": "sha256:8343bb8bf6abcb58cfa98cc264fceffa4dd13b255448c0c2dc5269fabc3f8757",
         "declarationPath": "packages/components-svelte/dist/CheckboxGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CheckboxGroupProps",
