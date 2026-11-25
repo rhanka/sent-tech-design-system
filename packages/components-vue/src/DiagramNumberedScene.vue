@@ -354,7 +354,7 @@ const scenarioId = useId();
                 </g>
               </svg>
               <template v-else>
-              <div v-for="node in layer.nodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :data-flow-state="stateOf(node.occurrence)" :style="boxStyle(node.rect)">
+              <div v-for="node in layer.nodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :data-authored-legend="scene.r7Connectors && node.presentation?.form === 'legend' ? '' : undefined" :data-flow-state="stateOf(node.occurrence)" :style="boxStyle(node.rect)">
                 <SceneNode :node="node" :measure="measure" :container-padding="effectiveMetrics.containerPadding" :expand="strings.expand" :collapse="strings.collapse" :resolve-glyph="props.resolveGlyph ?? getDiagramGlyph" :select="() => selectNode(node)" :toggle="() => toggle(node)" />
               </div>
               </template>

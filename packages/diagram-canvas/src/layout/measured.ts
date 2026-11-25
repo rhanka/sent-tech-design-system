@@ -1451,8 +1451,13 @@ function layoutMeasuredPass(
       : composition.legend === "host"
         ? (options.legend ?? "right")
         : composition.legend;
+  const hasVisibleAuthoredLegend = [...graph.nodes.keys()].some((id) => {
+    if (!visible(id)) return false;
+    const kind = kinds.get(id);
+    return kind === "legend-expanded" || kind === "legend-collapsed";
+  });
   const stateMeasuredLegend = (() => {
-    if (composition === undefined || effectiveLegendAnchor === "none") return undefined;
+    if (composition === undefined || effectiveLegendAnchor === "none" || hasVisibleAuthoredLegend) return undefined;
     const legendEdges: LinkLegendEdgeInput[] = [];
     for (const edge of drawnEdges) {
       const occurrence = projected.relationOccurrences[edge.occurrence];

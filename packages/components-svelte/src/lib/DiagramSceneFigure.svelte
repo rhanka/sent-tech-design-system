@@ -1415,6 +1415,7 @@
                 class="st-diagramSceneFigure-node"
                 data-scene-occurrence={node.occurrence}
                 data-scene-kind={node.kind}
+                data-authored-legend={scene.r7Connectors && node.presentation?.form === "legend" ? "" : undefined}
                 data-flow-state={stateOf(node.occurrence)}
                 style={`left:${rect.x}px;top:${rect.y}px;width:${rect.width}px;height:${rect.height}px${entering(node) ? `;opacity:${eased}` : ""}`}
               >

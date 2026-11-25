@@ -80,14 +80,15 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
     return `<path ${attrs}/>${edge.markers??''}`;
   }).join('');
   const drawNode=(node:SceneNodeModel)=>{
+    const authoredLegendAttr=scene.r7Connectors&&node.presentation?.form==='legend'?' data-authored-legend=""':'';
     const measure=measureFor(node.collapsed);
-    if(node.kind==='erd'&&node.erd!==undefined)return `<g data-scene-occurrence="${escape(node.occurrence)}" transform="translate(${node.rect.x} ${node.rect.y})">${renderErdCardSvg(node.erd)}</g>`;
+    if(node.kind==='erd'&&node.erd!==undefined)return `<g data-scene-occurrence="${escape(node.occurrence)}"${authoredLegendAttr} transform="translate(${node.rect.x} ${node.rect.y})">${renderErdCardSvg(node.erd)}</g>`;
     const props={entityId:node.entity,resolveGlyph:input.resolveGlyph??getDiagramGlyph};
     const projected=node.kind==='zone'?projectZoneProps(node.presentation,{...props,collapsed:node.collapsed,...(input.metrics?.containerPadding===undefined?{}:{containerPadding:input.metrics.containerPadding}),width:node.rect.width,height:node.rect.height,toggleLabel:node.collapsed?'Expand':'Collapse'}):projectCardProps(node.presentation,props);
     if(projected.kind==='label')return `<text x="${node.rect.x}" y="${node.rect.y+24}">${escape(node.text)}</text>`;
     const rendered=projected.kind==='zone'?renderZoneSvg({...projected.props,autoSize:true},{measure}):renderCardSvg({...projected.props,autoSize:true,height:node.rect.height},measure);
     if(rendered.kind!=='rendered')throw new Error('Content must never refuse a component');
-    return `<g data-scene-occurrence="${escape(node.occurrence)}" transform="translate(${node.rect.x} ${node.rect.y})">${rendered.svg}</g>`;
+    return `<g data-scene-occurrence="${escape(node.occurrence)}"${authoredLegendAttr} transform="translate(${node.rect.x} ${node.rect.y})">${rendered.svg}</g>`;
   };
   // Expanded zone surfaces are opaque: they paint under the connectors, the boxes above them.
   // The connector layer is masked over the footer text the frames paint themselves.

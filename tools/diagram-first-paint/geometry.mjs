@@ -357,3 +357,56 @@ export function legendFindings({ legend, nodes, expectedAnchor = 'right', expect
   }
   return findings;
 }
+
+function boxesOverlap(a, b, tolerance = 0.5) {
+  return a.left < b.right - tolerance && a.right > b.left + tolerance
+    && a.top < b.bottom - tolerance && a.bottom > b.top + tolerance;
+}
+
+/**
+ * REQ-R7-31: Enforces combined legend count <= 1 (counting authored `form: "legend"`
+ * zones together with automatic `scene.linkLegend`) and zero overlap between any
+ * authored legend and non-member nodes, edge labels, or connector segments.
+ */
+export function combinedLegendFindings({ legend, authoredLegends = [], nodes = [], labels = [], paths = [], tolerance = 0.5 }) {
+  const findings = [];
+  const totalCount = (legend !== null && legend !== undefined ? 1 : 0) + authoredLegends.length;
+  if (totalCount > 1) {
+    findings.push(`expected at most 1 legend per figure, found ${totalCount}`);
+  }
+  for (const authored of authoredLegends) {
+    for (const node of nodes) {
+      if (node.id === authored.id || node.kind === 'legend-key') continue;
+      const insideAuthored = node.left >= authored.left - tolerance && node.right <= authored.right + tolerance
+        && node.top >= authored.top - tolerance && node.bottom <= authored.bottom + tolerance;
+      if (insideAuthored) continue;
+      if (boxesOverlap(authored, node, tolerance)) {
+        findings.push(`authored legend ${authored.id} overlaps box ${node.id}`);
+      }
+    }
+    for (const label of labels) {
+      if (label.isEdgeLabel === false) continue;
+      const insideAuthored = label.left >= authored.left - tolerance && label.right <= authored.right + tolerance
+        && label.top >= authored.top - tolerance && label.bottom <= authored.bottom + tolerance;
+      if (insideAuthored) continue;
+      if (boxesOverlap(authored, label, tolerance)) {
+        findings.push(`authored legend ${authored.id} overlaps label ${label.id}`);
+      }
+    }
+    const expanded = {
+      left: authored.left - tolerance,
+      top: authored.top - tolerance,
+      right: authored.right + tolerance,
+      bottom: authored.bottom + tolerance,
+    };
+    for (const path of paths) {
+      for (let i = 1; i < path.points.length; i++) {
+        if (segmentInterval(expanded, path.points[i - 1], path.points[i]) !== undefined) {
+          findings.push(`authored legend ${authored.id} overlaps connector ${path.id}`);
+          break;
+        }
+      }
+    }
+  }
+  return findings;
+}

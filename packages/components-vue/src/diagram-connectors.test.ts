@@ -9,6 +9,7 @@ import { DIAGRAM_PRESENTATION_V2_CONTRACT_PIN, occurrenceRef, relationRef } from
 import { expectConnectorPaint, scenePaintOrder } from "../../diagram-canvas/tests/host-support/connectorHostContract.js";
 import { flowFixture, flowMeasure } from "../../diagram-canvas/test-support/flowFixture.js";
 import { nestedZoneFixture } from "../../diagram-canvas/test-support/nestedZoneFixture.js";
+import { r7AuthoredLegendFixture } from "../../diagram-canvas/test-support/r7AuthoredLegendFixture.js";
 import DiagramSceneFigure from "./DiagramSceneFigure.vue";
 import type { DiagramSceneFigureProps } from "./DiagramSceneFigure.types.js";
 
@@ -418,5 +419,46 @@ describe("DiagramSceneFigure numbered flow connectors — Vue", () => {
       expect(distEdgeRules.at(-1)).toBe(vueEdgeRules[0]);
       expect(distCss).toContain('.st-diagramSceneFigure-edge[data-connector-mode="r7"]');
     }
+  });
+
+  it("DE3-L1a: renders exactly one legend on r7-authored-legend (unfolded and folded) and omits data-authored-legend on v1", async () => {
+    const r7 = r7AuthoredLegendFixture(false);
+    const { DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } = await import("@sentropic/diagram-core");
+    const props = {
+      document: r7.document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: r7.presentation,
+      measureLines: flowMeasure,
+      collapsed: [],
+    } as DiagramSceneFigureProps;
+    const view = render(props);
+    await tick();
+    expect(view.container.querySelectorAll("[data-authored-legend]")).toHaveLength(1);
+    expect(view.container.querySelectorAll("[data-scene-legend]")).toHaveLength(0);
+
+    const coreToggle = view.container.querySelector<HTMLButtonElement>('[data-scene-occurrence="occurrence:e.zone-core"] button[aria-expanded="true"]')!;
+    await fireEvent.click(coreToggle);
+    await tick();
+    expect(view.container.querySelectorAll("[data-authored-legend]")).toHaveLength(1);
+    expect(view.container.querySelectorAll("[data-scene-legend]")).toHaveLength(0);
+
+    const v1View = render({
+      ...props,
+      presentation: {
+        ...r7.presentation,
+        contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+        entities: Object.fromEntries(
+          Object.entries(r7.presentation.entities).map(([id, entry]) => {
+            const { anatomy: _ignored, ...rest } = entry as { anatomy?: unknown; form: string; text: unknown };
+            return [id, rest];
+          }),
+        ),
+        relations: {},
+      },
+    } as DiagramSceneFigureProps);
+    await tick();
+    expect(v1View.container.querySelectorAll("[data-authored-legend]")).toHaveLength(0);
+    expect(v1View.container.querySelectorAll("[data-scene-legend]")).toHaveLength(0);
   });
 });

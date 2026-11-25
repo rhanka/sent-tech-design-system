@@ -363,7 +363,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
                 </g>
               </svg>
               <template v-else>
-              <div v-for="{ node, cardProps, zoneProps } in layer.nodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :style="nodeStyle(node)">
+              <div v-for="{ node, cardProps, zoneProps } in layer.nodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :data-authored-legend="scene.r7Connectors && node.presentation?.form === 'legend' ? '' : undefined" :style="nodeStyle(node)">
                 <DiagramErdNode v-if="node.kind === 'erd' && node.erd" :node="node" :expand="strings.expand" :collapse="strings.collapse" :toggle="() => toggleFold(node)" />
                 <template v-else-if="node.kind === 'card'">
                   <DiagramCard v-if="cardProps !== undefined" v-bind="cardProps" :measure="measure" @select="emit('select', $event)" />

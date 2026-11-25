@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { borderDistance, centredBodyFindings, compactCardFindings, connectorFindings, exposedSegments, legendFindings, linkStrokeWidthFindings, roundedElbowFindings, segmentInterval } from '../tools/diagram-first-paint/geometry.mjs';
-import { cases, expectedLegendAnchor, expectedLegendStyles } from '../tools/diagram-first-paint/scenes.js';
+import { borderDistance, centredBodyFindings, combinedLegendFindings, compactCardFindings, connectorFindings, exposedSegments, legendFindings, linkStrokeWidthFindings, roundedElbowFindings, segmentInterval } from '../tools/diagram-first-paint/geometry.mjs';
+import { cases, expectedLegendAnchor, expectedLegendStyles, expectedVisibleCounts, foldTargets } from '../tools/diagram-first-paint/scenes.js';
 
 test('should clip a crossing connector against the stroke-inset badge disk', () => {
   const a = { x: -20, y: 0 }, b = { x: 20, y: 0 };
@@ -206,4 +206,29 @@ test('should verify legend canonical order, right anchor, non-overlap, and omiss
   };
   const stageNode = [{ id: 'n1', left: 336, top: 0, right: 688, bottom: 154 }];
   assert.deepEqual(legendFindings({ legend: freeCellLegend, nodes: stageNode, expectedAnchor: 'free-cell', expectedStyles: freeCellLegend.styles }), []);
+});
+
+test('should enforce combined legend count <= 1 and zero overlap for authored legends (DE3-L1a)', () => {
+  assert.ok(cases.includes('r7-authored-legend'));
+  assert.deepEqual(foldTargets('r7-authored-legend'), ['occurrence:e.zone-core']);
+  assert.ok(!foldTargets('r7-authored-legend').includes('occurrence:e.legend'));
+  assert.deepEqual(expectedLegendStyles('r7-authored-legend'), []);
+  assert.deepEqual(expectedLegendStyles('r7-authored-legend--folded'), []);
+  assert.equal(expectedLegendAnchor('r7-authored-legend'), null);
+  assert.equal(expectedLegendAnchor('r7-authored-legend--folded'), null);
+  assert.deepEqual(expectedVisibleCounts('r7-authored-legend--folded'), { minNodes: 3, expectEdges: true, expectLabels: true });
+
+  const authored = { id: 'occurrence:e.legend', left: 10, top: 10, right: 200, bottom: 160 };
+  const auto = { id: 'legend', left: 300, top: 10, right: 540, bottom: 160, anchor: 'right', styles: ['solid:arrow:default', 'dashed:arrow:default'] };
+  const nodes = [
+    { id: 'occurrence:e.legend', kind: 'zone', left: 10, top: 10, right: 200, bottom: 160 },
+    { id: 'occurrence:e.key-core', kind: 'legend-key', left: 26, top: 60, right: 184, bottom: 90 },
+    { id: 'occurrence:e.alpha', kind: 'card', left: 250, top: 200, right: 450, bottom: 320 },
+  ];
+  const labels = [{ id: 'calls', left: 260, top: 170, right: 320, bottom: 192 }];
+  const paths = [{ id: 'r1', stroke: 1.75, points: [{ x: 250, y: 260 }, { x: 450, y: 260 }] }];
+
+  assert.deepEqual(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes, labels, paths }), []);
+  assert.ok(combinedLegendFindings({ legend: auto, authoredLegends: [authored], nodes, labels, paths }).some(f => f.includes('2')));
+  assert.ok(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes, labels: [{ id: 'overlap', left: 150, top: 100, right: 220, bottom: 130 }], paths }).some(f => f.includes('overlaps label')));
 });

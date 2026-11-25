@@ -8,8 +8,8 @@ const { mkdir, writeFile, mkdtemp, rm } = await import('node:fs/promises');
 const { tmpdir } = await import('node:os');
 const { join } = await import('node:path');
 const { buildHarness, root } = await import('./build.mjs');
-const { cases, expectedLegendAnchor, expectedLegendStyles } = await import('./scenes.js');
-const { segmentInterval, exposedSegments, centredBodyFindings, compactCardFindings, connectorFindings, roundedElbowFindings, linkStrokeWidthFindings, legendFindings } = await import('./geometry.mjs');
+const { cases, expectedLegendAnchor, expectedLegendStyles, expectedVisibleCounts, foldTargets } = await import('./scenes.js');
+const { segmentInterval, exposedSegments, centredBodyFindings, combinedLegendFindings, compactCardFindings, connectorFindings, roundedElbowFindings, linkStrokeWidthFindings, legendFindings } = await import('./geometry.mjs');
 const { preview } = await import('vite');
 const { default: puppeteer } = await import('puppeteer-core');
 const assert = (await import('node:assert/strict')).default;
@@ -39,7 +39,11 @@ function measure() {
   const transform = [matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f];
   const scale = Math.hypot(matrix.a, matrix.b);
   const labels = [...figure.querySelectorAll('[data-scene-label],.st-diagramSceneFigure-label')]
-    .map(element => ({ id: element.dataset.sceneLabel ?? element.textContent, ...box(element) }));
+    .map(element => ({
+      id: element.dataset.sceneLabel ?? element.textContent,
+      isEdgeLabel: element.hasAttribute('data-scene-label'),
+      ...box(element),
+    }));
   // Include actual text ink, which can overflow its allocated label/card box.
   const walker = document.createTreeWalker(world, NodeFilter.SHOW_TEXT);
   const paintsText = text => {
@@ -58,8 +62,10 @@ function measure() {
     const range = document.createRange();
     range.selectNodeContents(text);
     const carrier = text.parentElement.closest('[data-flow-badge]')?.dataset.flowBadge;
+    const isEdgeLabel = text.parentElement.closest('[data-scene-label]') !== null;
     for (const r of range.getClientRects()) labels.push({ id: text.textContent,
       left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height,
+      isEdgeLabel,
       ...(carrier === undefined ? {} : { carrier }) });
   }
   const parsePathPoints = d => {
@@ -164,7 +170,11 @@ function measure() {
     scroll: [frame.scrollWidth, frame.clientWidth, frame.scrollHeight, frame.clientHeight, frame.scrollLeft, frame.scrollTop],
     outerScroll: (() => { const el = figure.querySelector('.st-diagramSceneFigure-frame');
       return [el.scrollWidth, el.clientWidth, el.scrollHeight, el.clientHeight]; })(),
-    nodes: [...figure.querySelectorAll('[data-scene-occurrence]')].map(element => ({ id: element.dataset.sceneOccurrence, ...box(element) })),
+    nodes: [...figure.querySelectorAll('[data-scene-occurrence]')].map(element => ({
+      id: element.dataset.sceneOccurrence,
+      kind: element.dataset.sceneKind ?? null,
+      ...box(element),
+    })),
     cardSlots: [...figure.querySelectorAll('[data-scene-occurrence]')].flatMap(element => {
       const card = element.querySelector('.st-diagramCard');
       if (!card) return [];
@@ -192,6 +202,10 @@ function measure() {
         styles: [...el.querySelectorAll('[data-legend-style]')].map(row => row.dataset.legendStyle),
       };
     })(),
+    authoredLegends: [...figure.querySelectorAll('[data-authored-legend]')].map(el => ({
+      id: el.dataset.sceneOccurrence ?? 'authored-legend',
+      ...box(el),
+    })),
     relations: window.__relations ?? null,
     labels, paths, occluders };
 }
@@ -261,14 +275,16 @@ function parityGeometry(state) {
 
 function check(state, scene) {
   assert.equal(state.refused, null, 'scene must render');
-  assert.ok(state.nodes.length >= 3, 'must render at least three cards');
+  const counts = expectedVisibleCounts(scene);
+  assert.ok(state.nodes.length >= counts.minNodes, `must render at least ${counts.minNodes} nodes`);
   assert.ok(state.frame.width > 0 && state.frame.height > 0, 'nonempty frame');
   assert.ok(Number.isFinite(state.camera.fitZoom), 'finite fit');
   assert.ok(state.scale > 0, 'positive display scale');
   if (!state.fitToWindow) assert.ok(state.scale >= 0.30, `display scale ${state.scale} < 0.30`);
   assert.ok(Number.isFinite(state.clearance) && state.clearance > 0, 'clearance token must resolve');
-  if (scene !== 'three-cards' && scene !== 'three-cards-compact') {
-    assert.ok(state.paths.length > 0 && state.labels.length > 0, 'golden must have connectors and labels');
+  if (counts.expectEdges || counts.expectLabels) {
+    if (counts.expectEdges) assert.ok(state.paths.length > 0, 'scene must have connectors');
+    if (counts.expectLabels) assert.ok(state.labels.length > 0, 'scene must have labels');
   } else if (scene === 'three-cards-compact') {
     // DE-1 compact-face gate: 352 × 154 cards, centred body centre within
     // 1/64 px of body-area centre, title and body inside slots at desktop
@@ -326,6 +342,8 @@ function check(state, scene) {
   // joins: a label never floats between two cards without its line.
   assert.deepEqual(connectorFindings({ paths: state.paths, labels: state.connectorLabels, nodes: state.nodes,
     occluders: state.occluders, relations: state.relations ?? undefined, tolerance: 1 }), [], 'connectors');
+  assert.deepEqual(combinedLegendFindings({ legend: state.legend, authoredLegends: state.authoredLegends,
+    nodes: state.nodes, labels: state.labels, paths: state.paths }), [], 'combined legend count <= 1 and zero overlap');
   if (scene.startsWith('r7-')) {
     assert.deepEqual(roundedElbowFindings({ paths: state.paths, maxRadius: 12 }), [], 'r7 rounded elbow radius cap');
     assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths }), [], 'r7 link stroke widths');
@@ -340,10 +358,10 @@ function check(state, scene) {
   if (scene.startsWith('h2-')) {
     const expectedStyles = expectedLegendStyles(scene);
     const expectedAnchor = expectedLegendAnchor(scene);
-    if (expectedStyles !== null && expectedAnchor !== null) {
+    if (expectedStyles !== null) {
       assert.deepEqual(roundedElbowFindings({ paths: state.paths, maxRadius: 12 }), [], 'h2 rounded elbow radius cap');
       assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths }), [], 'h2 link stroke widths');
-      assert.deepEqual(legendFindings({ legend: state.legend, nodes: state.nodes, expectedAnchor, expectedStyles }),
+      assert.deepEqual(legendFindings({ legend: state.legend, nodes: state.nodes, expectedAnchor: expectedAnchor ?? 'right', expectedStyles }),
         [], 'h2 link legend order and anchor');
     }
     if (scene === 'h2-aspect-16-9') {
@@ -433,28 +451,30 @@ try {
             assert.ok(parity.has(key), `Svelte baseline must exist for ${key}`);
             equalGeometry(current, parity.get(key), `Svelte/Vue ${key}`);
           }
-          if (scene === 'r7-connectors' || scene === 'r7-nested-styles') {
-            const toggle = await page.$('button[aria-expanded="true"]');
-            assert.ok(toggle, `${name} must expose an expanded zone fold toggle`);
+          const targets = foldTargets(scene);
+          for (const targetId of targets) {
+            const toggle = await page.$(`[data-scene-occurrence="${targetId}"] button[aria-expanded="true"]`);
+            assert.ok(toggle, `${name} must expose an expanded zone fold toggle for ${targetId}`);
             await toggle.click();
             await settle(page);
             const folded = await page.evaluate(measure);
-            check(folded, `${scene}--folded`);
-            const expand = await page.$('button[aria-expanded="false"]');
-            assert.ok(expand, `${name} folded zone toggle must remain interactive`);
+            const foldStateName = targets.length > 1 ? `${scene}--folded:${targetId}` : `${scene}--folded`;
+            check(folded, foldStateName);
+            const expand = await page.$(`[data-scene-occurrence="${targetId}"] button[aria-expanded="false"]`);
+            assert.ok(expand, `${name} folded zone toggle for ${targetId} must remain interactive`);
             await expand.click();
             await settle(page);
             const unfolded = await page.evaluate(measure);
             // REQ-R7-18 / REQ-R7-30: verify automatic refit on unfold BEFORE any Ajuster click.
             check(unfolded, scene);
-            equalGeometry(parityGeometry(unfolded), current, `${name} automatic unfold refit`);
+            equalGeometry(parityGeometry(unfolded), current, `${name} automatic unfold refit (${targetId})`);
             const refit = await page.$('button::-p-text(Ajuster)');
             assert.ok(refit, 'Ajuster button must exist after unfold');
             await refit.click();
             await settle(page);
             const restored = await page.evaluate(measure);
-            assert.deepEqual(restored.camera, unfolded.camera, `${name} unfold camera must equal state after Ajuster`);
-            equalGeometry(restored, unfolded, `${name} unfold Ajuster idempotence`);
+            assert.deepEqual(restored.camera, unfolded.camera, `${name} unfold camera must equal state after Ajuster (${targetId})`);
+            equalGeometry(restored, unfolded, `${name} unfold Ajuster idempotence (${targetId})`);
           }
           if (scene === 'r7-connectors') {
             await page.addStyleTag({ content: 'html{font-size:16px}.st-diagramSceneFigure{--st-component-diagramScene-edgeLabelFontSize:calc(1rem + 8px);--st-component-diagramScene-linkDashDashed:11px 7px}' });

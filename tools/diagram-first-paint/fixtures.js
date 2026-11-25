@@ -13,6 +13,7 @@ import {
   buildH2Appctx16x9Fixture,
 } from '../../packages/diagram-canvas/test-support/h2ReferenceFixtures.ts';
 import { nestedZoneFixture } from '../../packages/diagram-canvas/test-support/nestedZoneFixture.ts';
+import { r7AuthoredLegendFixture } from '../../packages/diagram-canvas/test-support/r7AuthoredLegendFixture.ts';
 import { r7ConnectorsFixture } from '../../packages/diagram-canvas/test-support/r7ConnectorsFixture.ts';
 
 import { cases, expectedLegendAnchor, expectedLegendStyles } from './scenes.js';
@@ -79,6 +80,9 @@ export function fixture(name) {
     labels: { fit: 'Ajuster' }, title: name };
   if (name === 'r7-connectors' || name === 'r7-connectors-folded') {
     return { ...common, ...r7ConnectorsFixture(name.endsWith('-folded')) };
+  }
+  if (name === 'r7-authored-legend') {
+    return { ...common, ...r7AuthoredLegendFixture(false) };
   }
   if (name === 'r7-nested-styles') {
     return { ...common, ...r7NestedStylesFixture() };

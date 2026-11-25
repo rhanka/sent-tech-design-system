@@ -69,7 +69,7 @@ import { measureBundleLabel, type BundleLabelGroup } from "../layout/bundleLabel
 import { LABEL_CLEARANCE_REFERENCE_SCALE } from "../layout/labels.js";
 import { getDiagramGlyph } from "./registry.js";
 import { anatomyZoneGeometry, lineBoxHeight, ZONE_GEOMETRY } from "./diagramCardModel.js";
-import { buildSceneLinkLegend, type LinkLegendAnchor, type SceneLinkLegend } from "./linkLegend.js";
+import { buildSceneLinkLegend, placeSceneLinkLegend, type LinkLegendAnchor, type SceneLinkLegend } from "./linkLegend.js";
 import { clearSceneLabels } from "./sceneLabelClearance.js";
 import type { EntityPresentation } from "@sentropic/diagram-core";
 import type { AlignPinned, AnatomyPinned, DepthPinned, DiagramAnatomy } from "./diagramCardModel.js";
@@ -837,31 +837,64 @@ function resolveSceneAtZoom(
       height: cutoutBottom - cutoutTop,
     });
   }
+  const hasVisibleAuthoredLegend = nodes.some((node) => node.presentation?.form === "legend");
+  let preBounds = bounds;
+  for (const { box } of labels) {
+    const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
+    preBounds = preBounds === undefined ? padded : rectUnion(preBounds, padded);
+  }
+  const preLinkLegend = hasVisibleAuthoredLegend
+    ? undefined
+    : result.legendResolved
+      ? result.linkLegend
+      : buildSceneLinkLegend({
+          edges,
+          contentBounds: preBounds,
+          measureLines: input.measureLines,
+          ...(input.legend === undefined ? {} : { anchor: input.legend }),
+          ...(input.legendTitle === undefined ? {} : { title: input.legendTitle }),
+          ...(input.legendLabels === undefined ? {} : { labels: input.legendLabels }),
+          ...(input.metrics?.edgeLabelSize === undefined ? {} : { fontSize: input.metrics.edgeLabelSize }),
+        });
+  const allBlockers = [
+    ...blockers,
+    ...(preLinkLegend === undefined ? [] : [preLinkLegend.rect]),
+    ...badges.map(badge => badge.box),
+    ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box)),
+  ];
   const clearedLabels = r7Connectors
     ? clearSceneLabels(labels, edges.map(edge => edge.points),
-      [...blockers, ...badges.map(badge => badge.box), ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box))],
+      allBlockers,
       paintClearance, cornerRadius,
       edges.map(edge => edge.r7
         ? Math.max(0, connectorStrokeWidth(edge, input.metrics) - baseLinkStrokeWidth) / (2 * clearanceZoom)
         : 0))
     : clearSceneLabels(labels, edges.map(edge => edge.points),
-      [...blockers, ...badges.map(badge => badge.box), ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box))],
+      allBlockers,
       paintClearance);
   for (const { box } of clearedLabels) {
     const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
     bounds = bounds === undefined ? padded : rectUnion(bounds, padded);
   }
-  const linkLegend = result.legendResolved
-    ? result.linkLegend
-    : buildSceneLinkLegend({
-        edges,
-        contentBounds: bounds,
-        measureLines: input.measureLines,
-        ...(input.legend === undefined ? {} : { anchor: input.legend }),
-        ...(input.legendTitle === undefined ? {} : { title: input.legendTitle }),
-        ...(input.legendLabels === undefined ? {} : { labels: input.legendLabels }),
-        ...(input.metrics?.edgeLabelSize === undefined ? {} : { fontSize: input.metrics.edgeLabelSize }),
-      });
+  const linkLegend = hasVisibleAuthoredLegend
+    ? undefined
+    : result.legendResolved
+      ? (result.linkLegend !== undefined && overviewEdgeLabelSize !== undefined && result.linkLegend.anchor !== "free-cell" && bounds !== undefined
+          ? placeSceneLinkLegend(
+              { ...result.linkLegend, width: result.linkLegend.rect.width, height: result.linkLegend.rect.height },
+              result.linkLegend.anchor,
+              bounds,
+            )
+          : result.linkLegend)
+      : buildSceneLinkLegend({
+          edges,
+          contentBounds: bounds,
+          measureLines: input.measureLines,
+          ...(input.legend === undefined ? {} : { anchor: input.legend }),
+          ...(input.legendTitle === undefined ? {} : { title: input.legendTitle }),
+          ...(input.legendLabels === undefined ? {} : { labels: input.legendLabels }),
+          ...(input.metrics?.edgeLabelSize === undefined ? {} : { fontSize: input.metrics.edgeLabelSize }),
+        });
   if (linkLegend !== undefined) {
     bounds = bounds === undefined ? linkLegend.rect : rectUnion(bounds, linkLegend.rect);
   }
