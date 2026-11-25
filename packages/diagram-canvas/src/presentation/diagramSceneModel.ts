@@ -53,6 +53,7 @@ import {
   DEFAULT_LINK_RELATED_STROKE_WIDTH,
   DEFAULT_LINK_STROKE_WIDTH,
   DEFAULT_LINK_EMPHASIS_STROKE_WIDTH,
+  DEFAULT_MIN_READABLE_SCALE,
   FIT_PAINT_INSET,
   MIN_EDGE_LABEL_CSS_PX,
   diagramAnatomyOf, isR7ConnectorPresentation,
@@ -866,18 +867,15 @@ function resolveSceneAtZoom(
       });
       continue;
     }
-    const basePad = Math.max(
-      paintClearance + CONNECTOR_CUTOUT_SLACK,
-      margin + baseLinkStrokeWidth / clearanceZoom + 1.15,
+    const r7CutoutPad = (width: number) => Math.max(
+      margin + width / (2 * clearanceZoom) + CONNECTOR_CUTOUT_SLACK,
+      margin + width / (2 * DEFAULT_MIN_READABLE_SCALE) + width / (2 * clearanceZoom) + 1.15,
     );
+    const basePad = r7CutoutPad(baseLinkStrokeWidth);
     let pad = basePad;
     for (const edge of edges) {
       if (!edge.r7) continue;
-      const width = connectorStrokeWidth(edge, input.metrics);
-      const edgePad = Math.max(
-        margin + width / (2 * clearanceZoom) + CONNECTOR_CUTOUT_SLACK,
-        margin + width / clearanceZoom + 1.15,
-      );
+      const edgePad = r7CutoutPad(connectorStrokeWidth(edge, input.metrics));
       if (edgePad <= pad) continue;
       const cutoutLeft = node.rect.x + zoneInset - edgePad;
       const cutoutRight = cutoutLeft + Math.min(footerWidths.get(node.occurrence) ?? inner, inner) + 2 * edgePad;

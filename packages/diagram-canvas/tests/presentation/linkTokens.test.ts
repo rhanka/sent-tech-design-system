@@ -113,6 +113,13 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     // Wider linkStrokeWidth enlarges connector cutout clearance strictly.
     expect(wideScene.connectorCutouts[0]!.width).toBeGreaterThan(narrowScene.connectorCutouts[0]!.width);
     expect(wideScene.connectorCutouts[0]!.height).toBeGreaterThan(narrowScene.connectorCutouts[0]!.height);
+    // At 3.5 px linkStrokeWidth, cutout padding covers both 0.30 floor stroke and 0.45 reserve.
+    const defaultResult = layoutScene({ ...fixture, measureLines, collapsed: [] });
+    if (defaultResult.status !== "laid-out") throw new Error("expected laid-out");
+    const defaultScene = resolveScene(defaultResult, { ...fixture, measureLines });
+    const z0 = defaultScene.nodes.find((n) => n.kind === "zone")!;
+    const c0 = defaultScene.connectorCutouts[0]!;
+    expect(z0.rect.x + 16 - c0.x).toBeGreaterThanOrEqual(4 + 3.5 / 0.6 + 3.5 / 0.9);
   });
 
   it("decouples r7 edge CSS from diagramZone.borderWidth while preserving 1.5px base for v1/ERD/flow and wiring emphasis + edgeLabelSize tokens", () => {
