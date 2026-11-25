@@ -1,8 +1,8 @@
 {
   "componentId": "stepper",
   "contractSource": "derived",
-  "digest": "sha256:e0b7aefb6ed172e817657c3e2258b728a5e3a5c64c71c151729d714d36e77e2e",
-  "entryDigest": "sha256:bc89e0821f3fe9d8a24ccb73b076007d0a79325052a81ae374f4d99e3135ba84",
+  "digest": "sha256:e87d3957aadda7ff0d05065f6a6f4cd6f79561df698a30f40248603073a159ec",
+  "entryDigest": "sha256:0e89c23d4f9098b5c741599f94c0fe78cf4bc306bab3bb32bd04f3e709c5cd32",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -219,6 +219,10 @@
             "description": "Autorise la navigation au clic sur les étapes.",
             "type": "boolean"
           },
+          "compactMobile": {
+            "description": "Replie les libellés des étapes non courantes sous 480 px tout en les gardant lisibles aux lecteurs d'écran.",
+            "type": "boolean"
+          },
           "current": {
             "description": "Index de l'étape courante (0-based).",
             "type": "number"
@@ -248,7 +252,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d1756ea09971d4a22f3fbc7f820c599b2d1a918165b7c4239e125282abcb4704",
+        "declarationDigest": "sha256:a7665ab5dc30ef240f20d72d75732470a9595e36781cc5cfb354eb4b82653321",
         "declarationPath": "packages/components-svelte/dist/Stepper.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StepperProps",
