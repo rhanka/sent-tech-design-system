@@ -460,7 +460,7 @@ const deepVerify = {
   // until release (ETARGET otherwise) — so that tarball is packed locally;
   // the walk pulls its own local closure (incl. review-core) with it.
   [reviewCoreName]: { closure: [], peers: [] },
-  "@sentropic/design-system-elements": { closure: ["@sentropic/design-system-svelte"], peers: [] },
+  "@sentropic/design-system-elements": { closure: ["@sentropic/dataviz-core", "@sentropic/design-system-svelte"], peers: [] },
   "@sentropic/design-system-react": {
     closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens"],
     peers: [
