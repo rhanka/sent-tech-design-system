@@ -4,6 +4,7 @@
   import { Maximize2, Minimize2, Minus, Plus, Scan } from "@lucide/svelte";
   import {
     renderErdCardSvg, renderErdTable,
+    renderProcessBoxSvg, renderProcessTable,
     clampZoom,
     createLayoutCache,
     DEFAULT_MIN_READABLE_SCALE,
@@ -15,6 +16,7 @@
     type LayoutOptions,
     type LayoutResult,
     type LineMeasurer,
+    type ProcessBoxModel,
     type Rect,
     type RowPackOptions,
   } from "@sentropic/diagram-canvas";
@@ -402,6 +404,8 @@
           : undefined
       : undefined,
   );
+  const isProcess = $derived(semanticDocument.profileRefs.length === 1 && semanticDocument.profileRefs[0] === "process@1");
+  const effectiveMaxDisplayScale = $derived(isProcess ? 1 : maxDisplayScale);
   const sceneFitInput = $derived({
     // Before the frame is measured (server render, hidden mount) the fit
     // box is the nominal 16:9 box of the layout target width.
@@ -409,7 +413,7 @@
     windowHeight: windowHeight ?? Number.POSITIVE_INFINITY,
     ...(fullscreenViewHeight === undefined ? {} : { viewHeight: fullscreenViewHeight }),
     ...(viewAll ? { unconstrained: true } : {}),
-    ...(maxDisplayScale === undefined ? {} : { maxDisplayScale }),
+    ...(effectiveMaxDisplayScale === undefined ? {} : { maxDisplayScale: effectiveMaxDisplayScale }),
     ...(minReadableScale === undefined ? {} : { minReadableScale }),
     ...(fitToWindow ? { fitToWindow: true } : {}),
   });
@@ -842,6 +846,9 @@
   const fitInput = $derived({
     ...(cameraBounds === undefined ? {} : { bounds: cameraBounds }),
     ...sceneFitInput,
+    ...(isProcess && !fullscreen && !fitToWindow && !viewAll && cameraBounds !== undefined
+      ? { viewHeight: Math.max(1, cameraBounds.height + 16) }
+      : {}),
   });
   // Try the full width first so scrollbars from a user zoom cannot trap
   // the next fit at the floor. If it still pans, account for the bars.
@@ -1285,6 +1292,9 @@
   };
 
   const erdTable = $derived(semanticDocument.profileRefs.includes("erd@1") ? renderErdTable(semanticDocument) : "");
+  const processTable = $derived(semanticDocument.profileRefs.includes("process@1") ? renderProcessTable(semanticDocument) : "");
+  const processBoxCardSvg = (box: ProcessBoxModel): string =>
+    `<svg xmlns="http://www.w3.org/2000/svg" class="st-diagramProcessCard" aria-hidden="true" width="100%" height="100%" viewBox="0 0 ${box.width} ${box.height}" style="font-family:var(--st-font-sans, Inter, system-ui, sans-serif)">${renderProcessBoxSvg(box)}</svg>`;
 
   const edgeCornerRadius = $derived(effectiveMetrics.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS);
   const pathOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
@@ -1310,7 +1320,7 @@
     return `;--st-diagram-overview-edge-label-size:${size}px;--st-diagram-overview-edge-label-line-height:${lineHeight}px`;
   });
   const viewportStyle = $derived(
-    `height:${viewportHeight}px;${fullscreen ? "" : fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${metricPaintVars}${overviewLabelPaintVars}${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
+    `height:${viewportHeight}px;${fullscreen ? "" : fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : isProcess ? "" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${metricPaintVars}${overviewLabelPaintVars}${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );
   const worldStyle = $derived(
     `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,
@@ -1421,6 +1431,8 @@
                 {#if node.kind === "erd" && node.erd}
                   <button class="st-diagramErd-toggle" type="button" aria-label={node.collapsed ? strings.expand(node.erd.title) : strings.collapse(node.erd.title)} aria-expanded={!node.collapsed} style={`--st-erd-header-height: ${node.erd.headerHeight}px`} onclick={() => toggleFold(node)}>{node.erd.title}</button>
                   <div class="st-diagramErd-svg">{@html renderErdCardSvg(node.erd)}</div>
+                {:else if node.kind === "process" && node.processBox}
+                  <div class="st-diagramProcess-svg">{@html processBoxCardSvg(node.processBox)}</div>
                 {:else if node.kind === "card"}
                   {@const cardProps = cardPropsOf(node)}
                   {#if cardProps !== undefined}
@@ -1563,6 +1575,7 @@
   </div>
   {#if scene}<div class="st-diagramSceneFigure-fallback">{#each sceneTextRows(scene, semanticDocument, strings) as row}<p>{row}</p>{/each}</div>{/if}
   {#if erdTable}<div class="st-diagramErd-fallback">{@html erdTable}</div>{/if}
+  {#if processTable}<div class="st-diagramProcess-fallback">{@html processTable}</div>{/if}
 </figure>
 
 <style>
@@ -1590,6 +1603,8 @@
 
   .st-diagramSceneFigure-edgeLabel[data-erd-label] { background: var(--st-semantic-surface-default); }
   .st-diagramErd-fallback { grid-column: 1 / -1; overflow: auto; color: var(--st-semantic-text-primary); }
+  .st-diagramProcess-svg { height: 100%; width: 100%; }
+  .st-diagramProcess-fallback { grid-column: 1 / -1; overflow: auto; color: var(--st-semantic-text-primary); }
   .st-diagramErd-toggle:focus-visible { outline: var(--st-component-diagramErd-strokeWidth) solid var(--st-semantic-border-interactive); outline-offset: calc(-1 * var(--st-component-diagramErd-strokeWidth)); }
   .st-diagramSceneFigure {
     /* Title and camera controls share the first row; the frame spans both. */

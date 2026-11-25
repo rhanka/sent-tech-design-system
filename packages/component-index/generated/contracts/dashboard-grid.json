@@ -1,8 +1,8 @@
 {
   "componentId": "dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:b6694728d91a2cebd0b63cec44778370c2d3e61b1c5e7ff5a9a83632a1adf3ae",
-  "entryDigest": "sha256:88ddc9fb8137e721dda45a39b1dfaa3447f30815e0a6a20a2a50bf719ec33138",
+  "digest": "sha256:e4dc6e85780d81d79165e177de367125cb54a3195084cb991d966bf36b81396c",
+  "entryDigest": "sha256:531a9d53447f9a246b1c7bdac776ddb5bfecea22d7dc459249a5274f2cec4fbb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -315,7 +315,7 @@
         "declarationPath": "packages/components-svelte/dist/DashboardGrid.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DashboardGridProps",
-        "version": "0.45.0"
+        "version": "0.46.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -434,7 +434,7 @@
         "declarationPath": "packages/components-vue/dist/DashboardGrid.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DashboardGridProps",
-        "version": "0.41.0-next.16"
+        "version": "0.42.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

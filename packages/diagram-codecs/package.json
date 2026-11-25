@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/diagram-codecs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Static diagram codecs: draw.io export of a resolved scene and the scene SVG re-export. Pure string, DOM-free.",
   "publishConfig": {
     "access": "public"

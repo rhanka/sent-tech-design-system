@@ -1,8 +1,8 @@
 {
   "componentId": "icon-button",
   "contractSource": "derived",
-  "digest": "sha256:baf3197e412894b79b17ba41406ed0911eb6cdb2f4381ca485c733e1a4f42842",
-  "entryDigest": "sha256:b07a21af18ad44700c9f0f9776a2cbccf5a9d298f34aaacf50a3e7cd6ba5f7c7",
+  "digest": "sha256:13862dd2752cd6eca75f7fd08e6264e3eeefba77b42a0b7f80da42dc64d74bb8",
+  "entryDigest": "sha256:3e19bf9a1140b751517d04ea80830ae44837d8429c1b395c1d15653587450d2e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -175,7 +175,7 @@
         "declarationPath": "packages/components-svelte/dist/IconButton.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "IconButtonProps",
-        "version": "0.45.0"
+        "version": "0.46.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -232,7 +232,7 @@
         "declarationPath": "packages/components-vue/dist/IconButton.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "IconButtonProps",
-        "version": "0.41.0-next.16"
+        "version": "0.42.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

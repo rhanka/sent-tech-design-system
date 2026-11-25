@@ -122,6 +122,17 @@
   max-height: 100%;
 }
 
+.st-diagramProcessTable {
+  margin-block-start: var(--st-spacing-2);
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.st-dossier__diagramDrawing:fullscreen .st-diagramProcessTable,
+.st-dossier__diagramDrawing[data-fullscreen="true"] .st-diagramProcessTable {
+  display: none;
+}
+
 .st-dossier__readability {
   margin-block-end: var(--st-spacing-4);
 }

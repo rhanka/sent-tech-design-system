@@ -1,8 +1,8 @@
 {
   "componentId": "bell-curve-chart",
   "contractSource": "derived",
-  "digest": "sha256:c974b01d2cd3bd487adefbae146d8152b6b6cce66a6bc0d4149f46f1b3653a47",
-  "entryDigest": "sha256:97dec3ad952f7c9842569ecc02bec8ceb475b033522f7c167a629c5f6594a5cb",
+  "digest": "sha256:40f37465e245ddc393c79a50772c81d7d1eb744b3cf63b5305bb7d0540f15412",
+  "entryDigest": "sha256:45a7255acd25965ac5715b3458fbc503e75849be09f75ed1cdd8ccb88ba25a96",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -199,7 +199,7 @@
         "declarationPath": "packages/components-svelte/dist/BellCurveChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BellCurveChartProps",
-        "version": "0.45.0"
+        "version": "0.46.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -266,7 +266,7 @@
         "declarationPath": "packages/components-vue/dist/BellCurveChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BellCurveChartProps",
-        "version": "0.41.0-next.16"
+        "version": "0.42.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

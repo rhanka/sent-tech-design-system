@@ -1,8 +1,8 @@
 {
   "componentId": "selection-chip",
   "contractSource": "derived",
-  "digest": "sha256:1beaf43b83c8838a3dc0d18963d481e68f24a00375b6b700bc5955d03b20d982",
-  "entryDigest": "sha256:47900e0413bb0930cdb724df58c4b333d54efe60feed52dfb9fb7c5f82f7a891",
+  "digest": "sha256:a6af34314d08541f0f603d48d8c3807119e098a76e1d7243edc87a1516b32d86",
+  "entryDigest": "sha256:986149637f8768e27451c1f37d55c2a65651665b7344bab71b8be5bf988996a1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -169,7 +169,7 @@
         "declarationPath": "packages/components-svelte/dist/SelectionChip.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SelectionChipProps",
-        "version": "0.45.0"
+        "version": "0.46.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -233,7 +233,7 @@
         "declarationPath": "packages/components-vue/dist/SelectionChip.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectionChipProps",
-        "version": "0.41.0-next.16"
+        "version": "0.42.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

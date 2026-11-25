@@ -1,8 +1,8 @@
 {
   "componentId": "chat-thread",
   "contractSource": "derived",
-  "digest": "sha256:8c939721e8ed91a3d7c1c2505078ace7c9150467a8d4032cc340d8b4d6b814af",
-  "entryDigest": "sha256:08efabdc678c4274a7da92e410d19b6c3e1c134523bf5a9850f69f23660fb6fc",
+  "digest": "sha256:f34bdf7bfa501960fd3924b4d77ed1610f983904afd01912af62458aab2f3016",
+  "entryDigest": "sha256:4c7012e4a4aad97a64a3d0596e6a0990f4feb9bbb4ae38cbda852f51637c4aa1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatThread.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatThreadProps",
-        "version": "0.45.0"
+        "version": "0.46.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -419,7 +419,7 @@
         "declarationPath": "packages/components-vue/dist/ChatThread.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatThreadProps",
-        "version": "0.41.0-next.16"
+        "version": "0.42.0-next.0"
       },
       "status": "complete",
       "unresolved": [],
