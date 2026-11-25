@@ -1,20 +1,32 @@
 import {
+  archimate2Profile,
+  createProfileRegistry,
+  erdProfile,
   flowIndex,
+  generic2Profile,
   parentOccurrenceOf,
+  parseProcessFlowExtension,
+  processProfile,
   representativeOf,
   resolveArrowhead,
   resolveDashPattern,
   resolveLinkEmphasis,
+  shippedExecutorBindings,
+  uml2Profile,
+  validateDocument,
   type ArrowheadKind,
+  type Diagnostic,
   type FlowIndex,
   type FlowStep,
   type LinkEmphasis,
   type StrokeStyle,
 } from "@sentropic/diagram-core";
 import type { FlowArrow, FlowBundle, FlowVisibleTarget } from "../layout/flows.js";
+import { computeProcessStepNumbers } from "../layout/process.js";
 import { DEFAULT_FLOW_STRINGS, type Visible } from "./flowModel.js";
 import type { DiagramSceneFigureLabels } from "./diagramSceneTypes.js";
 import { measureErdCard, renderErdMarkerSvg, erdText, wrapErdText, placeErdRoleLabels, ERD_GEOMETRY, type ErdCard } from "./erd.js";
+import { measureProcessBox, PROCESS_BOX_GEOMETRY, type ProcessBoxModel } from "./process.js";
 import type { EntityRef, ErdCardinality } from "@sentropic/diagram-core";
 /**
  * `DiagramSceneFigure` — the pure half of the scene host (DC-2a lot L4,
@@ -207,7 +219,7 @@ export function resolveScenePresentation(document: SceneDocument, presentation: 
     if (entry.form !== "card" && entry.form !== "container" && entry.form !== "legend") return [id, withViewAnatomy(id, entry)];
     const entityId = view?.entityOccurrences[id]?.entity ?? id.replace(/^occurrence:e\./, "entity:");
     const entity = document.entities[entityId];
-    if (entity?.profile === "erd@1") return [id, withViewAnatomy(id, entry)];
+    if (entity?.profile === "erd@1" || entity?.profile === "process@1") return [id, withViewAnatomy(id, entry)];
     const binding = bindings[entity === undefined ? "" : entity.profile + ":" + entity.type] ?? bindings[entity?.type ?? ""];
     if (binding?.shape !== undefined && binding.shape !== "component") return [id, withViewAnatomy(id, { ...entry, icon: entry.icon ?? "none" })];
     const role = binding?.role ?? (entry.form === "card" ? "card" : "zone");
@@ -371,7 +383,7 @@ export function collapsedOccurrencesOf(view: SceneView | undefined): SceneOccurr
   return found;
 }
 
-export type SceneNodeKind = "card" | "zone" | "legend-key" | "label" | "erd";
+export type SceneNodeKind = "card" | "zone" | "legend-key" | "label" | "erd" | "process";
 
 export interface SceneNodeModel {
   readonly occurrence: SceneOccurrenceRef;
@@ -384,6 +396,7 @@ export interface SceneNodeModel {
   /** Text of a node with no card form (L-R12 label) or of a legend key. */
   readonly text: string;
   readonly erd?: ErdCard;
+  readonly processBox?: ProcessBoxModel;
 }
 
 /**
@@ -403,12 +416,13 @@ export interface SceneNodeModel {
  */
 export type ScenePaintPlane = "frame" | "box";
 
-export function scenePaintPlane(node: Pick<SceneNodeModel, "kind" | "collapsed">): ScenePaintPlane {
+export function scenePaintPlane(node: Pick<SceneNodeModel, "kind" | "collapsed" | "processBox">): ScenePaintPlane {
+  if (node.kind === "process" && node.processBox?.kind === "lane") return "frame";
   return node.kind === "zone" && !node.collapsed ? "frame" : "box";
 }
 
 /** The nodes of one paint plane, in the scene's own bottom-to-top order. */
-export function sceneNodesOnPlane<T extends Pick<SceneNodeModel, "kind" | "collapsed">>(
+export function sceneNodesOnPlane<T extends Pick<SceneNodeModel, "kind" | "collapsed" | "processBox">>(
   nodes: readonly T[],
   plane: ScenePaintPlane,
 ): readonly T[] {
@@ -573,13 +587,36 @@ function resolveSceneAtZoom(
   const items = frame.items.filter(item => item.kind !== "edge" || !bundledMembers.has(item.occurrence));
   const visibleEdges = new Set(items.filter(item => item.kind === "edge").map(item => item.occurrence as string));
   const collapsed = new Set<string>(collapsedOccurrencesOf(view));
-  const nodes: SceneNodeModel[] = sceneNodes(frame).map((node) => {
+  const rawNodes = sceneNodes(frame);
+  const isProcessDoc = input.document.profileRefs.length === 1 && input.document.profileRefs[0] === "process@1";
+  const processDirection: "left-to-right" | "top-to-bottom" =
+    result.fit.direction === "top-to-bottom" ? "top-to-bottom" : "left-to-right";
+  const processNumbered = isProcessDoc ? (parseProcessFlowExtension(input.document)?.numbered ?? true) : false;
+  const processStepNumbers = isProcessDoc && processNumbered
+    ? computeProcessStepNumbers(
+        input.document,
+        Object.values(input.document.entities).filter((e) => e.type === "step"),
+      )
+    : undefined;
+  const laneBandIndexByEntity = new Map<string, number>();
+  if (isProcessDoc) {
+    rawNodes
+      .filter((n) => input.document.entities[n.entity]?.type === "lane")
+      .sort((a, b) =>
+        (processDirection === "left-to-right" ? a.rect.y - b.rect.y : a.rect.x - b.rect.x) ||
+        byCodeUnit(a.entity, b.entity),
+      )
+      .forEach((laneNode, idx) => laneBandIndexByEntity.set(laneNode.entity, idx));
+  }
+  const nodes: SceneNodeModel[] = rawNodes.map((node) => {
     const presentation = resolved.presentation.entities[node.occurrence] as (EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned) | undefined;
     const form = presentation?.form;
     const titled = presentation?.text.title !== undefined && presentation.text.title !== "";
-    const erd = input.document.entities[node.entity]?.profile === "erd@1";
+    const entity = input.document.entities[node.entity];
+    const erd = entity?.profile === "erd@1";
+    const isProcess = entity?.profile === "process@1";
     const kind: SceneNodeKind =
-      erd ? "erd" : form === "legend-key"
+      erd ? "erd" : isProcess ? "process" : form === "legend-key"
         ? "legend-key"
         : !titled
           ? "label"
@@ -588,15 +625,28 @@ function resolveSceneAtZoom(
             : form === "container" || form === "legend"
               ? "zone"
               : "label";
+    const stepNum = processStepNumbers?.get(node.entity as EntityRef);
+    const bandIdx = laneBandIndexByEntity.get(node.entity);
+    const processBox = isProcess
+      ? measureProcessBox(input.document, node.entity as EntityRef, {
+          width: node.rect.width,
+          height: node.rect.height,
+          direction: processDirection,
+          ...(stepNum === undefined ? {} : { stepNumber: stepNum }),
+          ...(bandIdx === undefined ? {} : { bandIndex: bandIdx }),
+          measureLines: input.measureLines,
+        })
+      : undefined;
     return {
       occurrence: node.occurrence,
       entity: node.entity,
       kind,
       collapsed: (kind === "zone" || kind === "erd") && collapsed.has(node.occurrence),
       ...(erd ? { erd: measureErdCard(input.document, node.entity as EntityRef, collapsed.has(node.occurrence), input.measureLines) } : {}),
+      ...(processBox === undefined ? {} : { processBox }),
       rect: node.rect,
       ...(presentation === undefined ? {} : { presentation }),
-      text: presentation?.text.title ?? presentation?.text.body ?? "",
+      text: processBox?.title ?? presentation?.text.title ?? presentation?.text.body ?? "",
     };
   });
 
@@ -614,8 +664,10 @@ function resolveSceneAtZoom(
   const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
   const erd = input.document.profileRefs.length === 1 && input.document.profileRefs[0] === 'erd@1';
   const r7Connectors = !erd && (result.routeSpacing !== undefined || isR7ConnectorPresentation(input.presentation, input.view ?? view, input.document));
-  const edgeLabelMeasure = scaleEdgeLabelMeasurer(input.measureLines, r7Connectors ? input.metrics?.edgeLabelSize : undefined, DEFAULT_EDGE_LABEL_SIZE);
-  const baseLabelSize = input.metrics?.edgeLabelSize ?? DEFAULT_EDGE_LABEL_SIZE;
+  const processDefaultLabelSize = isProcessDoc ? 12 : undefined;
+  const effectiveInputLabelSize = input.metrics?.edgeLabelSize ?? processDefaultLabelSize;
+  const edgeLabelMeasure = scaleEdgeLabelMeasurer(input.measureLines, r7Connectors ? effectiveInputLabelSize : undefined, DEFAULT_EDGE_LABEL_SIZE);
+  const baseLabelSize = effectiveInputLabelSize ?? DEFAULT_EDGE_LABEL_SIZE;
   const overviewEdgeLabelSize = r7Connectors && paintZoom !== undefined && baseLabelSize * paintZoom < MIN_EDGE_LABEL_CSS_PX
     ? Math.ceil(MIN_EDGE_LABEL_CSS_PX / paintZoom * 64) / 64
     : undefined;
@@ -630,6 +682,15 @@ function resolveSceneAtZoom(
   const zoneInset = input.metrics?.containerPadding ?? ZONE_GEOMETRY.contentInsetInline;
   const pendingCutouts: { readonly node: SceneNodeModel; readonly inner: number; readonly lineHeight: number; readonly bottom: number }[] = [];
   for (const node of nodes) {
+    if (node.kind === "process" && node.processBox?.kind === "lane") {
+      const header = PROCESS_BOX_GEOMETRY.laneHeaderSize;
+      blockers.push(
+        node.processBox.direction === "left-to-right"
+          ? { x: node.rect.x, y: node.rect.y, width: header, height: node.rect.height }
+          : { x: node.rect.x, y: node.rect.y, width: node.rect.width, height: header },
+      );
+      continue;
+    }
     if (node.kind !== "zone" || node.collapsed) {
       blockers.push(node.rect);
       continue;
@@ -851,16 +912,17 @@ function resolveSceneAtZoom(
     const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
     bounds = bounds === undefined ? padded : rectUnion(bounds, padded);
   }
+  const effectiveLegendAnchor = input.legend ?? (isProcessDoc ? "none" : undefined);
   const linkLegend = result.legendResolved
     ? result.linkLegend
     : buildSceneLinkLegend({
         edges,
         contentBounds: bounds,
         measureLines: input.measureLines,
-        ...(input.legend === undefined ? {} : { anchor: input.legend }),
+        ...(effectiveLegendAnchor === undefined ? {} : { anchor: effectiveLegendAnchor }),
         ...(input.legendTitle === undefined ? {} : { title: input.legendTitle }),
         ...(input.legendLabels === undefined ? {} : { labels: input.legendLabels }),
-        ...(input.metrics?.edgeLabelSize === undefined ? {} : { fontSize: input.metrics.edgeLabelSize }),
+        ...(effectiveInputLabelSize === undefined ? {} : { fontSize: effectiveInputLabelSize }),
       });
   if (linkLegend !== undefined) {
     bounds = bounds === undefined ? linkLegend.rect : rectUnion(bounds, linkLegend.rect);
@@ -1177,3 +1239,43 @@ export function sameRects(left: ReadonlyMap<string, Rect>, right: ReadonlyMap<st
 
 export { scaleEdgeLabelMeasurer };
 export type { DiagramSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera } from "./diagramSceneTypes.js";
+
+/**
+ * Slim non-`generic@1` profile registry bridge for hosts (such as Focus)
+ * that keep `@sentropic/diagram-core` out of their direct dependency graph
+ * while retaining their own local `foldableGenericProfile` for `generic@1`.
+ */
+export const shippedSceneRegistry: LayoutOptions["registry"] = createProfileRegistry([
+  generic2Profile,
+  archimate2Profile,
+  uml2Profile,
+  erdProfile,
+  processProfile,
+]);
+
+let cachedSceneBindings: NonNullable<LayoutOptions["bindings"]> | undefined;
+
+/** Non-`generic@1` verified executor bindings, computed lazily on first `rows` access. */
+export const shippedSceneBindings: NonNullable<LayoutOptions["bindings"]> = {
+  schemaVersion: "1",
+  get rows() {
+    if (cachedSceneBindings === undefined) {
+      cachedSceneBindings = {
+        schemaVersion: "1",
+        rows: shippedExecutorBindings.rows.filter((row) => shippedSceneRegistry.has(row.profileId)),
+      };
+    }
+    return cachedSceneBindings.rows;
+  },
+};
+
+/** Validate a semantic document via `@sentropic/diagram-core` without importing it directly in host packages. */
+export function validateSceneDocument(
+  document: SceneDocument,
+  options: { readonly registry?: LayoutOptions["registry"]; readonly bindings?: LayoutOptions["bindings"] } = {},
+): readonly Diagnostic[] {
+  return validateDocument(document, {
+    registry: options.registry ?? shippedSceneRegistry,
+    bindings: options.bindings ?? shippedSceneBindings,
+  });
+}

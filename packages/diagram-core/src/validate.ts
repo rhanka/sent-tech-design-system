@@ -15,6 +15,10 @@ import { relationBaseType, relationSchema } from "./relation-types.js";
 
 import { validateErdKeys } from "./erd-validate.js";
 import {
+  PROCESS_FLOW_EXTENSION_NAMESPACE,
+  validateProcessFlowExtension,
+} from "./profiles/process.js";
+import {
   referencesOf,
   validateAttributeValue,
   type AttributeSchema,
@@ -1529,6 +1533,7 @@ function nearestWithinTypeAncestor(
 
 function validateExtensions(document: SemanticDocument): readonly Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
+  let seenProcessFlow = false;
   document.extensions.forEach((extension: PreservedExtension, index) => {
     const path = `extensions[${index}]`;
     if (extension.validation === "unsupported") {
@@ -1562,6 +1567,20 @@ function validateExtensions(document: SemanticDocument): readonly Diagnostic[] {
           details: { recorded: extension.contentHash, computed: hashContent(extension.source) },
         }),
       );
+    }
+    if (extension.namespace === PROCESS_FLOW_EXTENSION_NAMESPACE && extension.validation !== "unsupported") {
+      if (seenProcessFlow) {
+        diagnostics.push(
+          diagnostic({
+            code: "duplicate-id",
+            path,
+            message: `duplicate ${PROCESS_FLOW_EXTENSION_NAMESPACE} extension`,
+          }),
+        );
+      } else {
+        seenProcessFlow = true;
+        diagnostics.push(...validateProcessFlowExtension(extension, path));
+      }
     }
   });
   return diagnostics;
