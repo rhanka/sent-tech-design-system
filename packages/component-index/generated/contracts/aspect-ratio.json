@@ -1,8 +1,8 @@
 {
   "componentId": "aspect-ratio",
   "contractSource": "derived",
-  "digest": "sha256:83c8bd2feead3ed6d00c580b84b8eeeb9e8d17b7a42868ca943adc4bf1c16b03",
-  "entryDigest": "sha256:d07f23b6dab2f0476445834f8200237f995e0f891a0a7ade4a82df7f1c1585a6",
+  "digest": "sha256:05e5f83dc5a23acf773af8341b59ca1a29523db5ea325e4bab91fd9cad5945bf",
+  "entryDigest": "sha256:3b9219ea4ffd56a1850e48c7d06139cc9d27829fe71745d18bdac4aa9853a0f2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-svelte/dist/AspectRatio.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AspectRatioProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "complete",
       "unresolved": [],

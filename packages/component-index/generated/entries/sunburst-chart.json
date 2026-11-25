@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SunburstChart.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Radial hierarchy for exploring nested contributions.",
     "fr": "Hiérarchie radiale pour explorer les contributions imbriquées."
   },
-  "digest": "sha256:505872040b9767408c187ad8eeeb9c0c2e19f20ca8e4959353ef8ee1e2b9b39e",
+  "digest": "sha256:ebd0d86905309faf8f08091bfb65a9761ac977f8c824994b079cf5f0cdf8b574",
   "displayName": "SunburstChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/PackedBubblesChart.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Packed bubbles whose area is proportional to value.",
     "fr": "Bulles tassées dont l'aire est proportionnelle à la valeur."
   },
-  "digest": "sha256:210ef1e41728e59506c6523c455a52b09d113823b67d1d01cff26d39015a74ee",
+  "digest": "sha256:9db3ad0fa027e6bcf5ad34a44e7a4454a1b74ea9bc573a7f2b2e82c7f4675725",
   "displayName": "PackedBubblesChart",
   "format": "component-entry/v1",
   "frameworks": [

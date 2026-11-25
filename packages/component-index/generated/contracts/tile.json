@@ -1,8 +1,8 @@
 {
   "componentId": "tile",
   "contractSource": "derived",
-  "digest": "sha256:94292026b718c0d454fa450202f4d076c5ce83476b454ae68fe333caad080db4",
-  "entryDigest": "sha256:340fffc73690a25faa7bd7dec57bed4c9c6bcef0377ecf29ec83ba5ba484467f",
+  "digest": "sha256:8d36c41b6eeb93077c522a0c14bd5c362228ef2bd0ca011781c2fabac35d49b4",
+  "entryDigest": "sha256:e57b09098e9df70aed079d59172206b8d9dbda397ea5e3d452391266a4f959c6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -228,7 +228,7 @@
         "declarationPath": "packages/components-svelte/dist/Tile.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TileProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "partial",
       "unresolved": [

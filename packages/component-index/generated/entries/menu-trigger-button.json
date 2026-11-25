@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/MenuTriggerButton.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Square icon button preconfigured to open a menu (haspopup/expanded wired).",
     "fr": "Bouton icône carré préconfiguré pour ouvrir un menu (haspopup/expanded câblés)."
   },
-  "digest": "sha256:92f3f6b4a75d6f5927b23df648e04f69d2840d9dc49268a124d72f46225924ba",
+  "digest": "sha256:0370642c4a7346e088aefe0480ee17fd20ce31ca2a0eff351b0d871d2bd8bd2f",
   "displayName": "MenuTriggerButton",
   "format": "component-entry/v1",
   "frameworks": [

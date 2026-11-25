@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Typography.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Text component: variants, weight, tone, and alignment.",
     "fr": "Composant de texte : variantes, poids, ton, alignement."
   },
-  "digest": "sha256:26d197861ee6bc4bff41cca9c5afdaa051799fdf8e5178bd495201e494da520b",
+  "digest": "sha256:1ba570d531aedd9c9f54bbda8aeb754c348e4df5506b0f69ec7f33d313c4e16e",
   "displayName": "Typography",
   "format": "component-entry/v1",
   "frameworks": [
