@@ -21,8 +21,10 @@ export interface ToDrawioOptions {
   readonly metadata?: string;
 }
 
-/** Edge stroke of a default link, mirroring the canvas fallback. */
+/** Edge stroke of a v1 resting link, mirroring the canvas fallback. */
 const EDGE_STROKE = "#64748b";
+/** Edge stroke of an r7 resting link, mirroring the `linkStroke` token fallback. */
+const R7_EDGE_STROKE = "#0f172a";
 /** Stroke of an emphasised link, mirroring the canvas fallback. */
 const EMPHASIS_STROKE = "#001f33";
 /** Box border stroke. */
@@ -153,9 +155,11 @@ function vertexStyle(node: SceneNodeModel): string {
 
 function edgeStyle(edge: SceneEdgeModel): string {
   const emphasized = edge.emphasis === "emphasis";
+  const restingStroke = edge.r7 === true ? R7_EDGE_STROKE : EDGE_STROKE;
+  const restingWidth = edge.r7 === true ? "3.5" : edge.arrowhead === "none" ? "3" : "2.5";
   let style = "edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;";
-  style += `strokeColor=${emphasized ? EMPHASIS_STROKE : EDGE_STROKE};`;
-  style += `strokeWidth=${emphasized ? "3.5" : edge.arrowhead === "none" ? "3" : "2.5"};`;
+  style += `strokeColor=${emphasized ? EMPHASIS_STROKE : restingStroke};`;
+  style += `strokeWidth=${emphasized ? "3.5" : restingWidth};`;
   const dash = connectorDashArray(edge.strokeStyle);
   if (dash !== undefined) style += `dashed=1;dashPattern=${dash};`;
   // Flow and ERD markers are drawn by the scene as extra geometry; like the

@@ -132,8 +132,8 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     labelBand: `${spacing.labelBand}px`,
     gapMax: `${spacing.gapMax}px`,
     bundleLabelMaxWidth: "320px",
-    linkStrokeWidth: "2.5px",
-    linkRelatedStrokeWidth: "3px",
+    linkStrokeWidth: "3.5px",
+    linkRelatedStrokeWidth: "3.5px",
     linkPrimaryStrokeWidth: "3.5px",
     linkEmphasisStrokeWidth: "3.5px",
     linkDashDashed: "8 6",
@@ -196,16 +196,21 @@ describe("diagram tokens — frozen Appendix A values", () => {
     expect(componentDark.diagramScene.fullscreenBackground).toBe(semanticDark.surface.default);
   });
 
-  it("exposes dedicated DE-2 link emphasis colour + width distinct from resting links in both themes", () => {
+  it("exposes dedicated DE-2 link emphasis colour + width and r7 primary linkStroke in both themes", () => {
+    expect(component.diagramScene.linkStroke).toBe(semantic.text.primary);
+    expect(componentDark.diagramScene.linkStroke).toBe(semanticDark.text.primary);
+    expect(component.diagramScene.linkStroke).not.toBe(component.diagramScene.edgeStroke);
+    expect(componentDark.diagramScene.linkStroke).not.toBe(componentDark.diagramScene.edgeStroke);
     expect(component.diagramScene.linkEmphasisStroke).not.toBe(component.diagramScene.edgeStroke);
     expect(componentDark.diagramScene.linkEmphasisStroke).not.toBe(componentDark.diagramScene.edgeStroke);
-    expect(parseFloat(component.diagramScene.linkEmphasisStrokeWidth)).toBeGreaterThan(
+    expect(parseFloat(component.diagramScene.linkEmphasisStrokeWidth)).toBeGreaterThanOrEqual(
       parseFloat(component.diagramScene.linkStrokeWidth),
     );
     expect(component.diagramScene.linkStrokeWidth).not.toBe(component.diagramZone.borderWidth);
     const css = toCssVariables({ component });
-    expect(css).toContain("--st-component-diagramScene-linkStrokeWidth: 2.5px;");
-    expect(css).toContain("--st-component-diagramScene-linkRelatedStrokeWidth: 3px;");
+    expect(css).toContain(`--st-component-diagramScene-linkStroke: ${component.diagramScene.linkStroke};`);
+    expect(css).toContain("--st-component-diagramScene-linkStrokeWidth: 3.5px;");
+    expect(css).toContain("--st-component-diagramScene-linkRelatedStrokeWidth: 3.5px;");
     expect(css).toContain("--st-component-diagramScene-linkPrimaryStrokeWidth: 3.5px;");
     expect(css).toContain(`--st-component-diagramScene-linkEmphasisStroke: ${component.diagramScene.linkEmphasisStroke};`);
     expect(css).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth: 3.5px;");
