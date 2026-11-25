@@ -408,8 +408,11 @@ describe("DiagramSceneFigure numbered flow connectors — Vue", () => {
     expect(svelteEdgeRules).toHaveLength(1);
     expect(vueEdgeRules[0]).toBe(svelteEdgeRules[0]);
     expect(vueEdgeRules[0]).toContain("stroke: var(--st-component-diagramScene-edgeStroke, var(--st-semantic-border-strong));");
-    expect(vueBase).toContain('fill="var(--st-component-diagramScene-edgeStroke, #64748b)"');
-    expect(vueNumbered).toContain('fill="var(--st-component-diagramScene-edgeStroke, #64748b)"');
+    expect(baseStyle).toContain('.st-diagramSceneFigure-edge[data-connector-mode="r7"] {');
+    expect(baseStyle).toContain("stroke: var(--st-component-diagramScene-linkStroke, #0f172a);");
+    expect(svelte).toContain("stroke: var(--st-component-diagramScene-linkStroke, #0f172a);");
+    expect(vueBase).toContain(':fill="scene.r7Connectors ? \'var(--st-component-diagramScene-linkStroke, #0f172a)\' : \'var(--st-component-diagramScene-edgeStroke, #64748b)\'"');
+    expect(vueNumbered).toContain(':fill="scene.r7Connectors ? \'var(--st-component-diagramScene-linkStroke, #0f172a)\' : \'var(--st-component-diagramScene-edgeStroke, #64748b)\'"');
 
     const distPath = resolve(here, "../dist/styles.css");
     if (existsSync(distPath)) {
@@ -418,6 +421,7 @@ describe("DiagramSceneFigure numbered flow connectors — Vue", () => {
       // Built dist/styles.css appends DiagramSceneFigureBase.vue <style> last, supplying edgeStroke + DE-2 rules just like main.
       expect(distEdgeRules.at(-1)).toBe(vueEdgeRules[0]);
       expect(distCss).toContain('.st-diagramSceneFigure-edge[data-connector-mode="r7"]');
+      expect(distCss).toContain("stroke: var(--st-component-diagramScene-linkStroke, #0f172a);");
     }
   });
 

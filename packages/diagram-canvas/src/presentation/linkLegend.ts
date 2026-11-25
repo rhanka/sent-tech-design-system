@@ -19,7 +19,7 @@ import { DEFAULT_EDGE_LABEL_SIZE } from "../camera.js";
 import type { LineMeasurer } from "../layout/measure.js";
 import type { LayoutMetrics } from "../layout/types.js";
 import type { Rect } from "../transform.js";
-import { connectorDashArray, connectorMarkerKind, connectorStrokeWidth, LINK_EMPHASIS_STROKE } from "./connectorStyle.js";
+import { connectorDashArray, connectorMarkerKind, connectorStrokeWidth, LINK_EMPHASIS_STROKE, LINK_STROKE } from "./connectorStyle.js";
 import { cardLineMeasurer } from "./diagramCardModel.js";
 
 /** Where the automatic link-style legend strip sits relative to the functional drawing. */
@@ -133,7 +133,7 @@ export interface LinkLegendSwatchGeometry {
   readonly arrowStrokeWidth?: number;
 }
 
-const EDGE_STROKE = "var(--st-component-diagramScene-edgeStroke, #64748b)";
+const EDGE_STROKE = LINK_STROKE;
 const EMPHASIS_STROKE = LINK_EMPHASIS_STROKE;
 const measureLegendFallback = cardLineMeasurer();
 

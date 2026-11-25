@@ -128,6 +128,9 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
 
     const swatch = linkLegendSwatchGeometry(forward[4]!);
     expect(swatch.dashArray).toBe("2 5");
+    expect(swatch.stroke).toBe("var(--st-component-diagramScene-linkStroke, #0f172a)");
+    expect(swatch.arrowFill).toBe("var(--st-component-diagramScene-linkStroke, #0f172a)");
+    expect(swatch.strokeWidth).toBe(3.5);
     expect(swatch.arrowPath).toBeTruthy();
     expect(swatch.arrowStroke).toBeUndefined();
     const undirected = linkLegendSwatchGeometry(forward[1]!);

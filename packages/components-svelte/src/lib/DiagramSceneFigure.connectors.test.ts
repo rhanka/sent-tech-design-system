@@ -433,4 +433,28 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     expect(v1View.container.querySelectorAll("[data-authored-legend]")).toHaveLength(0);
     expect(v1View.container.querySelectorAll("[data-scene-legend]")).toHaveLength(0);
   });
+
+  it("DE3-L2a: uses linkStroke for r7 default marker fill while preserving edgeStroke on v1", async () => {
+    const r7 = r7AuthoredLegendFixture(false);
+    const { m3ProfileRegistry, shippedExecutorBindings } = await import("@sentropic/diagram-core");
+    const r7View = render(DiagramSceneFigure, {
+      document: r7.document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: r7.presentation,
+      measureLines: flowMeasure,
+      collapsed: [],
+    } as DiagramSceneFigureProps);
+    await tick();
+    const r7MarkerPath = r7View.container.querySelector("defs marker path");
+    expect(r7MarkerPath?.getAttribute("fill")).toBe("var(--st-component-diagramScene-linkStroke, #0f172a)");
+    r7View.unmount();
+
+    const v1 = nestedZoneFixture({ outside: false });
+    const v1View = render(DiagramSceneFigure, propsOf(v1));
+    await tick();
+    const v1MarkerPath = v1View.container.querySelector("defs marker path");
+    expect(v1MarkerPath?.getAttribute("fill")).toBe("var(--st-component-diagramScene-edgeStroke, #64748b)");
+    v1View.unmount();
+  });
 });

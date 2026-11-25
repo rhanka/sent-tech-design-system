@@ -1959,10 +1959,11 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       labelBorderWidth: "1px",
       bundleMarkerGap: "6px",
       edgeStroke: "#64748b",
-      // DE-2 dedicated link stroke tokens (zone borderWidth no longer drives links).
+      // DE-2 / DE3-L2a dedicated link stroke tokens (zone borderWidth no longer drives links).
       // Emphasis (OWNER-ADDENDA G6) is colour + width, never a dash style.
-      linkStrokeWidth: "2.5px",
-      linkRelatedStrokeWidth: "3px",
+      linkStroke: flowInk(semantic.text.primary, semantic.surface.raised, semantic.surface.default),
+      linkStrokeWidth: "3.5px",
+      linkRelatedStrokeWidth: "3.5px",
       linkPrimaryStrokeWidth: "3.5px",
       linkEmphasisStroke: flowInk(semantic.border.interactive, semantic.surface.raised, semantic.surface.default),
       linkEmphasisStrokeWidth: "3.5px",

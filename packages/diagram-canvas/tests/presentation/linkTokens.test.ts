@@ -45,8 +45,8 @@ const r7NestedFixture = () => {
 
 describe("DE-2 link tokens, emphasis token and edge-label size", () => {
   it("exports dedicated link stroke widths, emphasis width, corner radius and label size defaults", () => {
-    expect(DEFAULT_LINK_STROKE_WIDTH).toBe(2.5);
-    expect(DEFAULT_LINK_RELATED_STROKE_WIDTH).toBe(3);
+    expect(DEFAULT_LINK_STROKE_WIDTH).toBe(3.5);
+    expect(DEFAULT_LINK_RELATED_STROKE_WIDTH).toBe(3.5);
     expect(DEFAULT_LINK_PRIMARY_STROKE_WIDTH).toBe(3.5);
     expect(DEFAULT_LINK_EMPHASIS_STROKE_WIDTH).toBe(3.5);
     expect(DEFAULT_EDGE_CORNER_RADIUS).toBe(12);
@@ -59,20 +59,28 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     expect(v1Rendered.scene.r7Connectors).toBe(false);
     expect(v1Rendered.svg).toContain("<polyline data-scene-edge=");
     expect(v1Rendered.svg).toContain('stroke-width="1.5"');
+    expect(v1Rendered.svg).toContain('<marker id="scene-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)"/></marker>');
     expect(v1Rendered.svg).not.toContain('data-connector-mode="r7"');
 
     const fixture = r7NestedFixture();
     const base = renderSceneSvg({ ...fixture, measureLines, collapsed: [] });
     expect(base.scene.r7Connectors).toBe(true);
     expect(base.svg).toContain('data-connector-mode="r7"');
-    expect(base.svg).toContain('stroke-width="2.5"');
+    expect(base.svg).toContain('stroke="var(--st-component-diagramScene-linkStroke, #0f172a)"');
+    expect(base.svg).toContain('stroke-width="3.5"');
+    expect(base.svg).toContain('<marker id="scene-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="10.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-linkStroke, #0f172a)"/></marker>');
     expect(base.svg).toContain('vector-effect="non-scaling-stroke"');
     expect(base.svg).toContain('font-size="18"');
-    expect(base.svg).toContain("--st-component-diagramScene-linkStrokeWidth:2.5px");
+    expect(base.svg).toContain("--st-component-diagramScene-linkStroke:#0f172a");
+    expect(base.svg).toContain("--st-component-diagramScene-linkStrokeWidth:3.5px");
+    expect(base.svg).toContain("--st-component-diagramScene-linkRelatedStrokeWidth:3.5px");
     expect(base.svg).toContain("--st-component-diagramScene-linkEmphasisStroke:");
     expect(base.svg).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth:3.5px");
     expect(base.svg).toContain("--st-component-diagramScene-edgeLabelSize:18px");
     expect(base.svg).not.toContain('data-scene-edge="occurrence:lnk-0" d="');
+    // Pin DE3-L2a r7 label positions under 3.5 px paintClearance.
+    const baselineAt25 = resolveScene(layoutScene({ ...fixture, measureLines, collapsed: [], metrics: { linkStrokeWidth: 2.5 } }) as Extract<ReturnType<typeof layoutScene>, { status: "laid-out" }>, { ...fixture, measureLines, metrics: { linkStrokeWidth: 2.5 } });
+    expect(base.scene.labels.map((l) => l.box)).not.toEqual(baselineAt25.labels.map((l) => l.box));
 
     const thicker = renderSceneSvg({
       ...fixture,
@@ -125,10 +133,12 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
         "diagramZone-borderWidth",
       );
       const r7EdgeBlock = /\.st-diagramSceneFigure-edge\[data-connector-mode="r7"\]\s*\{[^}]*\}/.exec(source)?.[0] ?? "";
+      expect(r7EdgeBlock, `${name} r7 edge rule uses linkStroke`).toContain("--st-component-diagramScene-linkStroke");
       expect(r7EdgeBlock, `${name} r7 edge rule uses linkStrokeWidth`).toContain("--st-component-diagramScene-linkStrokeWidth");
       expect(r7EdgeBlock, `${name} r7 edge rule must not use zone borderWidth`).not.toContain(
         "diagramZone-borderWidth",
       );
+      expect(source, `${name} r7 marker uses linkStroke`).toContain("--st-component-diagramScene-linkStroke, #0f172a");
       expect(source, `${name} emphasis rule`).toContain("--st-component-diagramScene-linkEmphasisStroke");
       expect(source, `${name} emphasis width`).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth");
       expect(source, `${name} edgeLabelSize`).toContain("--st-component-diagramScene-edgeLabelSize");
@@ -328,7 +338,7 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     expect(byView.scene.r7Connectors).toBe(true);
     expect(byView.result.routeSpacing).toBeDefined();
     expect(byView.svg).toContain('data-connector-mode="r7"');
-    expect(byView.svg).toContain('stroke-width="2.5"');
+    expect(byView.svg).toContain('stroke-width="3.5"');
     expect(byView.svg).not.toContain("<polyline data-scene-edge=");
 
     // 2. entity anatomy: "v2" under @1

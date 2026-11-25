@@ -298,10 +298,10 @@ export function roundedElbowFindings({ paths, maxRadius = 12, tolerance = 0.5 })
 }
 
 /**
- * DE-2 link-width gate: verifies that ordinary resting links paint at
- * `defaultWidth` (2.5 px) and emphasized links paint at `emphasisWidth` (3.5 px).
+ * DE-2 / DE3-L2a link-width gate: verifies that ordinary resting links paint at
+ * `defaultWidth` (3.5 px), related links at `relatedWidth` (3.5 px), and emphasized links at `emphasisWidth` (3.5 px).
  */
-export function linkStrokeWidthFindings({ paths, defaultWidth = 2.5, relatedWidth = 3, emphasisWidth = 3.5, tolerance = 0.05 }) {
+export function linkStrokeWidthFindings({ paths, defaultWidth = 3.5, relatedWidth = 3.5, emphasisWidth = 3.5, tolerance = 0.05 }) {
   const findings = [];
   for (const path of paths) {
     if (path.flow || path.erd) continue;

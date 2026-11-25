@@ -164,18 +164,19 @@ test('should verify rounded elbow radius cap (<= 12 and <= half shorter leg)', (
   assert.ok(pastHalfLeg.some(f => f.includes('half-leg cap')));
 });
 
-test('should verify resting (2.5px) and emphasis (3.5px) link stroke widths', () => {
+test('should verify resting (3.5px) and emphasis (3.5px) link stroke widths', () => {
   assert.deepEqual(linkStrokeWidthFindings({
     paths: [
-      { id: 'rest', strokeWidthCss: 2.5, emphasis: 'default', flow: false, erd: false },
+      { id: 'rest', strokeWidthCss: 3.5, emphasis: 'default', flow: false, erd: false },
+      { id: 'related', strokeWidthCss: 3.5, arrowhead: 'none', emphasis: 'default', flow: false, erd: false },
       { id: 'emph', strokeWidthCss: 3.5, emphasis: 'emphasis', flow: false, erd: false },
       { id: 'flow', strokeWidthCss: 1.5, emphasis: 'default', flow: true, erd: false },
     ],
   }), []);
   const bad = linkStrokeWidthFindings({
-    paths: [{ id: 'thin', strokeWidthCss: 1.5, emphasis: 'default', flow: false, erd: false }],
+    paths: [{ id: 'thin', strokeWidthCss: 2.5, emphasis: 'default', flow: false, erd: false }],
   });
-  assert.deepEqual(bad, ['connector thin stroke width 1.5 != 2.5']);
+  assert.deepEqual(bad, ['connector thin stroke width 2.5 != 3.5']);
 });
 
 test('should verify legend canonical order, right anchor, non-overlap, and omission after fold', () => {
