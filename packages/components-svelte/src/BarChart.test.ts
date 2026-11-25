@@ -403,4 +403,84 @@ describe("BarChart horizontal labelPlacement (P1-1)", () => {
     expect(afterLabel.getAttribute("text-anchor")).toBe("start");
     expect(Number(afterLabel.getAttribute("x"))).toBeGreaterThan(Number(afterVal.getAttribute("x")));
   });
+
+  it("accounts for labelFontSize (e.g. 18px projection) when measuring, truncating, and clipping horizontal labels", () => {
+    const label89 =
+      "Automated code review and pull-request triage integrated across our continuous delivery!!";
+    const label60 = "Interactive pair-programming assistant inside primary IDE now";
+    expect(label89.length).toBe(89);
+    expect(label60.length).toBe(61);
+
+    const { container } = render(BarChart, {
+      props: {
+        label: "ProjectionMain",
+        data: [
+          { label: label89, value: 82 },
+          { label: label60, value: 45 }
+        ],
+        orientation: "horizontal",
+        labelPlacement: "above-bar",
+        labelFontSize: 18,
+        domain: [0, 100],
+        dataLabels: { format: (v) => `${v}%` },
+        width: 640,
+        height: 220
+      }
+    });
+
+    const root = container.querySelector(".st-barChart") as HTMLElement;
+    expect(root.getAttribute("style")).toContain("--st-component-barChart-labelFontSize: 18px");
+
+    const svg = container.querySelector("svg") as SVGSVGElement;
+    expect(svg.classList.contains("st-barChart__svg--horizontal")).toBe(true);
+
+    const labels = Array.from(container.querySelectorAll(".st-barChart__categoryLabel")) as SVGTextElement[];
+    // At 18px bold on width=640, an 89-char label must be end-truncated (not left untruncated to ~865px)
+    const firstVisible = labels[0].textContent?.replace(label89, "").trim() ?? "";
+    const firstTitle = labels[0].querySelector("title")?.textContent ?? "";
+    expect(firstTitle).toBe(label89);
+    expect(labels[0].getAttribute("aria-label")).toBe(label89);
+    expect(firstVisible.startsWith("Automated code review")).toBe(true);
+    expect(firstVisible.endsWith("…")).toBe(true);
+    expect(firstVisible.length).toBeLessThan(65);
+
+    // Segment chart width=460 at 18px must also truncate 60-char labels well within viewBox
+    const seg = render(BarChart, {
+      props: {
+        label: "ProjectionSeg",
+        data: [{ label: label60, value: 100 }],
+        orientation: "horizontal",
+        labelPlacement: "above-bar",
+        labelFontSize: 18,
+        domain: [0, 100],
+        dataLabels: { format: (v) => `${v}%` },
+        width: 460,
+        height: 160
+      }
+    }).container;
+    const segLabel = seg.querySelector(".st-barChart__categoryLabel") as SVGTextElement;
+    expect(segLabel.getAttribute("aria-label")).toBe(label60);
+    const segVisible = segLabel.textContent?.replace(label60, "").trim() ?? "";
+    expect(segVisible.startsWith("Interactive")).toBe(true);
+    expect(segVisible.endsWith("…")).toBe(true);
+    expect(segVisible.length).toBeLessThan(42);
+    // 100% data label at 18px gets wider right margin so it stays inside 460
+    const segVal = seg.querySelector(".st-barChart__dataLabel") as SVGTextElement;
+    expect(Number(segVal.getAttribute("x"))).toBeLessThan(460 - 50);
+
+    // Auto placement switches to above-bar earlier when labelFontSize=18 exceeds 40% cap
+    const auto18 = render(BarChart, {
+      props: {
+        label: "Auto18",
+        data: [{ label: "Continuous integration", value: 60 }],
+        orientation: "horizontal",
+        labelFontSize: 18,
+        width: 480,
+        height: 160
+      }
+    }).container;
+    const autoBar = auto18.querySelector(".st-barChart__bar") as SVGRectElement;
+    const autoLabel = auto18.querySelector(".st-barChart__categoryLabel") as SVGTextElement;
+    expect(Number(autoLabel.getAttribute("y"))).toBeLessThan(Number(autoBar.getAttribute("y")));
+  });
 });

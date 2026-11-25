@@ -439,4 +439,107 @@ describe("SurveyResults — P1 regression guards (masking, locale, stale selecti
     const lowNAlert = container.querySelector(".st-alert--info")!;
     expect(lowNAlert.getAttribute("aria-live")).toBe("off");
   });
+
+  it("prevents projection BarChart label overflow, keeps segment bars >= 18px at 1280px, and enforces >= 16px devmtl floor", () => {
+    const label89 =
+      "Automated code review and pull-request triage integrated across our continuous delivery!!";
+    const label60 = "Interactive pair-programming assistant inside primary IDE now";
+    const snap = makeSnapshot({
+      questions: [
+        {
+          id: "q_long",
+          type: "multi",
+          label: { fr: "Pratiques longues", en: "Long practices" },
+          n: 180,
+          nBySegment: { manuf: 80, startup: 92, autre: 8 },
+          options: [
+            {
+              id: "opt_89",
+              label: { fr: "Revue auto", en: label89 },
+              short: "Revue",
+              n: 120,
+              bySegment: { manuf: 50, startup: 66, autre: 4 }
+            },
+            {
+              id: "opt_60",
+              label: { fr: "Binôme IDE", en: label60 },
+              short: "IDE",
+              n: 90,
+              bySegment: { manuf: 40, startup: 48, autre: 2 }
+            }
+          ]
+        }
+      ],
+      graph: {
+        nodes: [
+          { id: "type:manuf", label: "Manuf.", family: "company_type", shape: "hexagon", tone: "category1", weight: 4, rawCount: 80 },
+          { id: "tool:inline", label: "Inline", family: "tools", shape: "circle", tone: "category2", weight: 5, rawCount: 126 },
+          { id: "prac:review", label: "Review", family: "practices", shape: "diamond", tone: "category7", weight: 4, rawCount: 90 }
+        ],
+        edges: [
+          { source: "type:manuf", target: "tool:inline", kind: "answers", weight: 52, relation: "52" },
+          { source: "tool:inline", target: "prac:review", kind: "co_answered", weight: 40, relation: "40" }
+        ]
+      }
+    });
+
+    const { container } = render(SurveyResults, {
+      props: { snapshot: snap, segments, locale: "en", density: "projection" }
+    });
+
+    // Main projection chart uses 18px labelFontSize and stacked width=960 so labels truncate within bounds
+    const mainChart = container.querySelector(".st-surveyResults__chartWrap .st-barChart") as HTMLElement;
+    expect(mainChart.getAttribute("style")).toContain("--st-component-barChart-labelFontSize: 18px");
+    const mainSvg = mainChart.querySelector("svg") as SVGSVGElement;
+    expect(mainSvg.getAttribute("viewBox")?.startsWith("0 0 960 ")).toBe(true);
+    const mainFirstLabel = mainChart.querySelector(".st-barChart__categoryLabel") as SVGTextElement;
+    expect(mainFirstLabel.getAttribute("aria-label")).toBe(label89);
+    const mainVisible = mainFirstLabel.textContent?.replace(label89, "").trim() ?? "";
+    expect(mainVisible.startsWith("Automated code review")).toBe(true);
+    expect(mainVisible.endsWith("…")).toBe(true);
+
+    // Segment projection charts use 18px labelFontSize and width=460 inside a 2-col 30rem projection grid
+    const segChart = container.querySelector(".st-surveyResults__segmentBar .st-barChart") as HTMLElement;
+    expect(segChart.getAttribute("style")).toContain("--st-component-barChart-labelFontSize: 18px");
+    const segSvg = segChart.querySelector("svg") as SVGSVGElement;
+    expect(segSvg.getAttribute("viewBox")?.startsWith("0 0 460 ")).toBe(true);
+    const segLabels = Array.from(segChart.querySelectorAll(".st-barChart__categoryLabel")) as SVGTextElement[];
+    expect(segLabels[1].getAttribute("aria-label")).toBe(label60);
+    const segVisible = segLabels[1].textContent?.replace(label60, "").trim() ?? "";
+    expect(segVisible.endsWith("…")).toBe(true);
+    expect(segVisible.length).toBeLessThan(42);
+
+    // Co-answer weak edge is rendered and styled with category5 matching the legend
+    expect(container.querySelector(".st-forceGraph__edge--weak")).toBeTruthy();
+
+    const source = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), "SurveyResults.svelte"),
+      "utf8"
+    );
+    expect(source).toContain("minmax(min(100%, 18rem), 1fr)");
+    expect(source).toContain("minmax(min(100%, 30rem), 1fr)");
+    expect(source).toContain("max(1rem, var(--st-typography-field-size, 1rem))");
+    expect(source).toContain("var(--st-semantic-data-category5, #15803d)");
+  });
+
+  it("resets selectedQuestionId to 'all' when surveyId changes even if question ids match", async () => {
+    const { container, rerender } = render(SurveyResults, {
+      props: { snapshot: makeSnapshot(), segments, locale: "fr", statsThrottleMs: 0, graphThrottleMs: 0 }
+    });
+
+    const select = container.querySelector("select") as HTMLSelectElement;
+    await fireEvent.change(select, { target: { value: "q_level" } });
+    expect(container.querySelectorAll(".st-surveyResults__questionCard")).toHaveLength(1);
+
+    await rerender({
+      snapshot: makeSnapshot({ surveyId: "devmtl-2026-second" }),
+      segments,
+      locale: "fr",
+      statsThrottleMs: 0,
+      graphThrottleMs: 0
+    });
+
+    expect(select.value).toBe("all");
+    expect(container.querySelectorAll(".st-surveyResults__questionCard")).toHaveLength(2);
+  });
 });

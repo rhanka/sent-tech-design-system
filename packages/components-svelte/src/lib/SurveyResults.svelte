@@ -270,6 +270,9 @@
     const currentSurveyId = snapshot.surveyId;
     if (currentSurveyId !== prevSurveyIdForSelection) {
       prevSurveyIdForSelection = currentSurveyId;
+      if (untrack(() => selectedQuestionId) !== "all") {
+        selectedQuestionId = "all";
+      }
       if (untrack(() => selectedNodeId) !== null) {
         selectedNodeId = null;
         onselectnode?.(null);
@@ -577,9 +580,20 @@
                           data={barData}
                           orientation="horizontal"
                           labelPlacement="above-bar"
+                          labelFontSize={density === "projection" ? 18 : undefined}
                           domain={[0, 100]}
-                          width={stackedMain ? 640 : 440}
-                          height={Math.max(170, barData.length * (density === "projection" ? 64 : 52) + 48)}
+                          width={stackedMain
+                            ? density === "projection"
+                              ? 960
+                              : 640
+                            : density === "projection"
+                              ? 420
+                              : 440}
+                          height={Math.max(
+                            170,
+                            barData.length * (density === "projection" ? 66 : 52) +
+                              (density === "projection" ? 56 : 48)
+                          )}
                           label={qTitle}
                           dataLabels={{
                             format: (v) => (locale === "fr" ? `${v} %` : `${v}%`)
@@ -603,9 +617,14 @@
                                   data={segGroup.data}
                                   orientation="horizontal"
                                   labelPlacement="above-bar"
+                                  labelFontSize={density === "projection" ? 18 : undefined}
                                   domain={[0, 100]}
-                                  width={420}
-                                  height={Math.max(140, segGroup.data.length * (density === "projection" ? 56 : 46) + 44)}
+                                  width={density === "projection" ? 460 : 420}
+                                  height={Math.max(
+                                    140,
+                                    segGroup.data.length * (density === "projection" ? 60 : 46) +
+                                      (density === "projection" ? 52 : 44)
+                                  )}
                                   label={`${qTitle} — ${segGroup.label}`}
                                   dataLabels={{
                                     format: (v) => (locale === "fr" ? `${v} %` : `${v}%`)
@@ -730,7 +749,11 @@
   .st-surveyResults__segmentBars {
     display: grid;
     gap: var(--st-spacing-3, 0.75rem);
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  }
+
+  .st-surveyResults--projection .st-surveyResults__segmentBars {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
   }
 
   .st-surveyResults__segmentBar {
@@ -740,6 +763,7 @@
     display: grid;
     gap: var(--st-spacing-2, 0.5rem);
     min-width: 0;
+    overflow: hidden;
     padding: var(--st-spacing-3, 0.75rem);
   }
 
@@ -748,10 +772,21 @@
   }
 
   .st-surveyResults__graphWrap :global(svg),
-  .st-surveyResults__chartWrap :global(svg) {
+  .st-surveyResults__chartWrap :global(svg),
+  .st-surveyResults__segmentBar :global(svg) {
     display: block;
     height: auto;
     max-width: 100%;
+  }
+
+  .st-surveyResults__chartWrap :global(svg),
+  .st-surveyResults__segmentBar :global(svg) {
+    overflow: hidden;
+  }
+
+  .st-surveyResults :global(.st-forceGraph__edge--weak:not(.st-forceGraph__edge--dim)) {
+    stroke: var(--st-semantic-data-category5, #15803d);
+    opacity: 0.95;
   }
 
   .st-surveyResults :global(.st-table td),
@@ -810,7 +845,7 @@
   }
 
   .st-surveyResults--projection :global(.st-alert__message) {
-    font-size: var(--st-typography-field-size, 1rem);
+    font-size: max(1rem, var(--st-typography-field-size, 1rem));
   }
 
   .st-surveyResults--projection :global(.st-table th),
@@ -824,12 +859,11 @@
   }
 
   .st-surveyResults--projection :global(.st-barChart text) {
-    font-size: 1.125rem;
     font-weight: 600;
   }
 
   .st-surveyResults--projection :global(.st-forceGraph__label) {
-    font-size: var(--st-typography-field-size, 1rem);
+    font-size: max(1rem, var(--st-typography-field-size, 1rem));
     font-weight: 600;
   }
 

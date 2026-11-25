@@ -83,7 +83,8 @@ describe("GraphLegend — size & variant extensions (S-4)", () => {
     expect(root.getAttribute("role")).toBe("region");
 
     const overlay = render(GraphLegend, { props: { entries: sampleEntries } }).container;
-    expect(overlay.querySelector(".st-graphLegend")?.getAttribute("role")).toBeNull();
+    expect(overlay.querySelector(".st-graphLegend")?.getAttribute("role")).toBe("group");
+    expect(overlay.querySelector(".st-graphLegend")?.getAttribute("aria-label")).toBe("Graph legend");
 
     const source = readFileSync(
       join(dirname(fileURLToPath(import.meta.url)), "GraphLegend.svelte"),
@@ -93,7 +94,8 @@ describe("GraphLegend — size & variant extensions (S-4)", () => {
     expect(source).toContain("var(--st-semantic-surface-subtle,");
     expect(source).toContain("var(--st-semantic-text-primary,");
     expect(source).toContain(".st-graphLegend--lg");
-    expect(source).toContain("var(--st-typography-field-size, 1rem)");
+    expect(source).toContain("max(1rem, var(--st-typography-field-size, 1rem))");
+    expect(source).not.toMatch(/\.st-graphLegend--lg \.st-graphLegend__title\s*\{\s*font-size:\s*0\.875rem/);
     expect(source).toContain(":where(.st-graphLegend--inline) .st-graphLegend__edge--weak");
     expect(source).toContain(".st-graphLegend--inline .st-graphLegend__shape");
   });

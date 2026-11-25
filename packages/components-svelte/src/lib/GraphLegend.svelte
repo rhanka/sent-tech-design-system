@@ -50,7 +50,7 @@
 
 <div
   class={classes}
-  role={variant === "inline" ? "region" : undefined}
+  role={variant === "inline" ? "region" : "group"}
   aria-label={title ?? "Graph legend"}
 >
   {#if title}
@@ -142,7 +142,7 @@
   }
 
   .st-graphLegend--lg {
-    font-size: var(--st-typography-field-size, 1rem);
+    font-size: max(1rem, var(--st-typography-field-size, 1rem));
     font-weight: 500;
     gap: var(--st-spacing-2, 0.5rem);
     padding: var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem);
@@ -162,7 +162,7 @@
   }
 
   .st-graphLegend--lg .st-graphLegend__title {
-    font-size: 0.875rem;
+    font-size: 1rem;
     opacity: 0.85;
   }
 

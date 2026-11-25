@@ -183,6 +183,13 @@
      * `aria-label`.
      */
     labelPlacement?: BarChartLabelPlacement;
+    /**
+     * Explicit SVG label font size in user-unit px (default `0.6875rem` / 11 px).
+     * Scales horizontal label width estimation, end-truncation, and margins in lockstep
+     * with the rendered SVG font size so enlarged labels (e.g. 18 px projection mode)
+     * never overflow the chart viewBox.
+     */
+    labelFontSize?: number;
     class?: string;
   };
 
@@ -208,6 +215,7 @@
     keyboardNav,
     onSelectKey,
     labelPlacement = "auto",
+    labelFontSize,
     class: className
   }: BarChartProps = $props();
 
@@ -218,29 +226,48 @@
   const BASE_MARGIN = { top: 12, right: 16, bottom: 32, left: 44 };
   const HORIZ_MIN_LEFT = 12;
 
-  function estimateCharWidth(ch: string): number {
-    if (ch === " ") return 3.5;
-    if ("ijlI1.,;:|!'’".includes(ch)) return 3.8;
-    if ("MW@#%&—–".includes(ch)) return 9.5;
-    if (ch >= "A" && ch <= "Z") return 8;
-    return 6.8;
+  const validLabelFontSize = $derived(
+    typeof labelFontSize === "number" && Number.isFinite(labelFontSize) && labelFontSize > 0
+      ? labelFontSize
+      : undefined
+  );
+  // Include an 8 % safety factor above 11 px to absorb semibold weight and system font width variance.
+  const labelFontScale = $derived(
+    validLabelFontSize === undefined
+      ? 1
+      : (validLabelFontSize / 11) * (validLabelFontSize > 11 ? 1.08 : 1)
+  );
+  const horizontalTickOffset = $derived(
+    validLabelFontSize !== undefined && validLabelFontSize > 11
+      ? Math.round(validLabelFontSize * 1.25)
+      : 16
+  );
+
+  function estimateCharWidth(ch: string, fontScale = 1): number {
+    let base: number;
+    if (ch === " ") base = 3.5;
+    else if ("ijlI1.,;:|!'’".includes(ch)) base = 3.8;
+    else if ("MW@#%&—–".includes(ch)) base = 9.5;
+    else if (ch >= "A" && ch <= "Z") base = 8;
+    else base = 6.8;
+    return base * fontScale;
   }
 
-  function estimateTextWidth(text: string): number {
+  function estimateTextWidth(text: string, fontScale = 1): number {
     let w = 0;
-    for (const ch of text) w += estimateCharWidth(ch);
+    for (const ch of text) w += estimateCharWidth(ch, fontScale);
     return w;
   }
 
-  function truncateEnd(text: string, maxWidthPx: number): string {
-    if (estimateTextWidth(text) <= maxWidthPx) return text;
+  function truncateEnd(text: string, maxWidthPx: number, fontScale = 1): string {
+    if (estimateTextWidth(text, fontScale) <= maxWidthPx) return text;
     const ellipsis = "…";
-    const budget = Math.max(0, maxWidthPx - estimateTextWidth(ellipsis));
+    const budget = Math.max(0, maxWidthPx - estimateTextWidth(ellipsis, fontScale));
     let acc = 0;
     let end = 0;
     const chars = Array.from(text);
     for (let i = 0; i < chars.length; i++) {
-      const cw = estimateCharWidth(chars[i]);
+      const cw = estimateCharWidth(chars[i], fontScale);
       if (i > 0 && acc + cw > budget) break;
       acc += cw;
       end = i + 1;
@@ -404,7 +431,7 @@
   const maxLeftCap = $derived(Math.max(BASE_MARGIN.left, Math.round(width * 0.4)));
 
   const longestLabelPx = $derived(
-    data.reduce((max, d) => Math.max(max, estimateTextWidth(d.label)), 0)
+    data.reduce((max, d) => Math.max(max, estimateTextWidth(d.label, labelFontScale)), 0)
   );
 
   const resolvedLabelPlacement = $derived.by<"margin" | "after-value" | "inside-bar" | "above-bar">(() => {
@@ -422,13 +449,18 @@
       (dataLabelOpts.position ?? "outside") !== "center";
     const maxDataLabelPx = outsideDataLabels
       ? data.reduce(
-          (max, d) => Math.max(max, estimateTextWidth(formatDataLabel(d.value, dataLabelOpts, formatTick))),
+          (max, d) =>
+            Math.max(max, estimateTextWidth(formatDataLabel(d.value, dataLabelOpts, formatTick), labelFontScale)),
           0
         )
       : 0;
 
     let left = BASE_MARGIN.left;
     let right = BASE_MARGIN.right;
+    const bottom =
+      validLabelFontSize !== undefined && validLabelFontSize > 11
+        ? Math.max(BASE_MARGIN.bottom, Math.ceil(validLabelFontSize * 2))
+        : BASE_MARGIN.bottom;
 
     if (resolvedLabelPlacement === "margin") {
       const neededLeft = Math.ceil(longestLabelPx) + 12;
@@ -447,7 +479,7 @@
       right = Math.min(Math.max(BASE_MARGIN.right, neededRight), Math.round(width * 0.25));
     }
 
-    return { top: BASE_MARGIN.top, right, bottom: BASE_MARGIN.bottom, left };
+    return { top: BASE_MARGIN.top, right, bottom, left };
   });
 
   const scales = $derived.by(() => {
@@ -549,7 +581,10 @@
     const xOf = (v: number) => plotWidth * valueFraction(v);
     const zeroX = xOf(baselineValue);
     if (resolvedLabelPlacement === "above-bar") {
-      const labelBand = Math.min(band * 0.44, 24);
+      const labelBand =
+        validLabelFontSize !== undefined && validLabelFontSize > 11
+          ? Math.min(band * 0.48, Math.max(24, Math.ceil(validLabelFontSize * 1.45)))
+          : Math.min(band * 0.44, 24);
       const barHeight = Math.max(6, (band - labelBand) * 0.68);
       return data.map((d, i) => {
         const valueX = xOf(d.value);
@@ -725,7 +760,7 @@
       const full = bar.datum.label;
       if (resolvedLabelPlacement === "above-bar") {
         const avail = Math.max(24, scales.plotWidth - 4);
-        const text = truncateEnd(full, avail);
+        const text = truncateEnd(full, avail, labelFontScale);
         return {
           key: full,
           index: i,
@@ -743,7 +778,7 @@
         const minInsideBarWidth = 36;
         if (bar.width >= minInsideBarWidth) {
           const avail = Math.max(16, bar.width - 12);
-          const text = truncateEnd(full, avail);
+          const text = truncateEnd(full, avail, labelFontScale);
           return {
             key: full,
             index: i,
@@ -758,11 +793,11 @@
           };
         }
         const valPad = outsideDataLabels
-          ? estimateTextWidth(formatDataLabel(bar.datum.value, dataLabelOpts, formatTick)) + 12
+          ? estimateTextWidth(formatDataLabel(bar.datum.value, dataLabelOpts, formatTick), labelFontScale) + 12
           : 0;
         const x = bar.x + bar.width + 6 + valPad;
         const avail = Math.max(24, width - 4 - x);
-        const text = truncateEnd(full, avail);
+        const text = truncateEnd(full, avail, labelFontScale);
         return {
           key: full,
           index: i,
@@ -778,11 +813,11 @@
       }
       if (resolvedLabelPlacement === "after-value") {
         const valPad = outsideDataLabels
-          ? estimateTextWidth(formatDataLabel(bar.datum.value, dataLabelOpts, formatTick)) + 12
+          ? estimateTextWidth(formatDataLabel(bar.datum.value, dataLabelOpts, formatTick), labelFontScale) + 12
           : 0;
         const x = bar.cx + (outsideDataLabels ? 4 + valPad : 6);
         const avail = Math.max(24, width - 4 - x);
-        const text = truncateEnd(full, avail);
+        const text = truncateEnd(full, avail, labelFontScale);
         return {
           key: full,
           index: i,
@@ -798,7 +833,7 @@
       }
       // "margin"
       const avail = Math.max(16, margin.left - 10);
-      const text = truncateEnd(full, avail);
+      const text = truncateEnd(full, avail, labelFontScale);
       const truncated = text !== full;
       return {
         key: full,
@@ -926,7 +961,12 @@
   const classes = () => ["st-barChart", className].filter(Boolean).join(" ");
 </script>
 
-<div class={classes()}>
+<div
+  class={classes()}
+  style={validLabelFontSize !== undefined
+    ? `--st-component-barChart-labelFontSize: ${validLabelFontSize}px`
+    : undefined}
+>
   <div
     class="st-barChart__visual"
     role="img"
@@ -935,6 +975,7 @@
     onpointerleave={handleLeave}
   >
     <svg
+      class:st-barChart__svg--horizontal={orientation === "horizontal"}
       viewBox="0 0 {width} {height}"
       preserveAspectRatio="xMidYMid meet"
       width="100%"
@@ -974,7 +1015,7 @@
         <text
           class="st-barChart__tickLabel"
           x={tick.x}
-          y={height - margin.bottom + 16}
+          y={height - margin.bottom + horizontalTickOffset}
           text-anchor="middle"
         >
           {formatTick(tick.value)}
@@ -1253,6 +1294,10 @@
     overflow: visible;
   }
 
+  .st-barChart svg.st-barChart__svg--horizontal {
+    overflow: hidden;
+  }
+
   .st-barChart__visual {
     display: block;
   }
@@ -1272,7 +1317,7 @@
   .st-barChart__tickLabel,
   .st-barChart__categoryLabel {
     fill: var(--st-component-barChart-labelColor, var(--st-semantic-text-secondary));
-    font-size: 0.6875rem;
+    font-size: var(--st-component-barChart-labelFontSize, 0.6875rem);
   }
 
   .st-barChart__categoryLabel--inside {
@@ -1491,7 +1536,7 @@
   /* Data labels — per-bar value, drawn on top. Token-only colour. */
   .st-barChart__dataLabel {
     fill: var(--st-semantic-text-primary);
-    font-size: 0.6875rem;
+    font-size: var(--st-component-barChart-labelFontSize, 0.6875rem);
     font-weight: 600;
   }
 
