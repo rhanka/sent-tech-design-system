@@ -40,9 +40,13 @@ const REVIEW_KIT_SVELTE_ONLY = new Set([
   "ThreadPanel",
 ]);
 
-// Survey kit (lot S-1) — Svelte-only until catalog/multi-framework lots.
+// Survey kit (lots S-1..S-3) — Svelte-only until catalog/multi-framework lots.
 const SURVEY_KIT_SVELTE_ONLY = new Set([
   "LikertScale",
+  "SurveyForm",
+  "SurveyNav",
+  "SurveyPrivacyNotice",
+  "SurveyQuestionCard",
 ]);
 
 const componentNames = [
@@ -50,7 +54,7 @@ const componentNames = [
 ]
   .map((match) => match[1])
   // AppShell + IdentityButton = chrome applicatif svelte-only (ex-paquet app-shell,
-  // replié dans design-system-svelte) ; review-kit (DS-3..DS-5) et survey-kit (S-1)
+  // replié dans design-system-svelte) ; review-kit (DS-3..DS-5) et survey-kit (S-1..S-3)
   // sont svelte-only à ce lot (aucun port Angular dans le périmètre).
   .filter(
     (name) =>
