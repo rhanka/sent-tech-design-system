@@ -43,12 +43,12 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
   const viewportWidth=input.targetWidth??1440;
   const viewport={viewWidth:viewportWidth,windowHeight:options.windowHeight??900,fitToWindow:options.fitToWindow??false};
   const isProcess=input.document.profileRefs.length===1&&input.document.profileRefs[0]==='process@1';
-  const resolvedViewport=isProcess?{...viewport,maxDisplayScale:1,...(viewport.fitToWindow?{}:{viewHeight:Math.max(1,(result.fit.height??1)+16)})}:viewport;
+  const resolvedViewport=isProcess?{...viewport,maxDisplayScale:1}:viewport;
   const scene=resolveScene(result,measuredInput,resolvedViewport),box=scene.bounds??{x:0,y:0,width:1,height:1};
-  const fit=sceneFit({bounds:box,...resolvedViewport});
+  const fit=sceneFit({bounds:box,...resolvedViewport,...(isProcess&&!viewport.fitToWindow?{viewHeight:Math.max(1,box.height+16)}:{})});
   const cornerRadius=input.metrics?.edgeCornerRadius??DEFAULT_EDGE_CORNER_RADIUS;
   const linkStrokeWidth=input.metrics?.linkStrokeWidth??DEFAULT_LINK_STROKE_WIDTH;
-  const edgeLabelSize=scene.overviewEdgeLabelSize??(scene.r7Connectors ? input.metrics?.edgeLabelSize : undefined)??DEFAULT_EDGE_LABEL_SIZE;
+  const edgeLabelSize=scene.overviewEdgeLabelSize??(scene.r7Connectors ? input.metrics?.edgeLabelSize : undefined)??(isProcess ? 12 : DEFAULT_EDGE_LABEL_SIZE);
   const markerIds=connectorMarkerIds('scene-arrow');
   const extraMarkers=extraConnectorMarkers(scene.edges,markerIds);
   const extraMarkerDefs=extraMarkers.map(marker=>{
