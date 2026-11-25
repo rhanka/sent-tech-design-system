@@ -666,6 +666,60 @@
       "lot": "P2",
       "hardSet": false,
       "renderable": true
+    },
+    {
+      "module": "Pagination",
+      "file": "src/Pagination.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "PaginationNav",
+      "file": "src/PaginationNav.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Breadcrumb",
+      "file": "src/Breadcrumb.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "BackToTop",
+      "file": "src/BackToTop.tsx",
+      "reactSource": "components-react/src/BackToTop.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Stepper",
+      "file": "src/Stepper.tsx",
+      "reactSource": "components-react/src/Stepper.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "TableOfContents",
+      "file": "src/TableOfContents.tsx",
+      "reactSource": "components-react/src/TableOfContents.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
     }
   ],
   "adaptersNote": "The three adapters are owned by lot P5 (hard set) and reused by every conversion lot. Their file set must stay identical to the ADAPTERS map of scripts/emit-react.mjs: the emission is the lint of the single-source rule.",

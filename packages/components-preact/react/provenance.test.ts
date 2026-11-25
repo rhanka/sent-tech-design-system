@@ -34,6 +34,9 @@ import * as handWrittenStack from "../../components-react/src/Stack.js";
 import * as handWrittenStatusDot from "../../components-react/src/StatusDot.js";
 import * as handWrittenTheme from "../../components-react/src/ThemeProvider.js";
 import * as handWrittenTimeline from "../../components-react/src/Timeline.js";
+import * as handWrittenBackToTop from "../../components-react/src/BackToTop.js";
+import * as handWrittenStepper from "../../components-react/src/Stepper.js";
+import * as handWrittenTableOfContents from "../../components-react/src/TableOfContents.js";
 import * as emitted from "../.react-emit/src/index.js";
 
 const switched = [
@@ -110,6 +113,12 @@ const switched = [
   "TimePicker",
   "TimeRangePicker",
   "Toggle",
+  "BackToTop",
+  "Breadcrumb",
+  "Pagination",
+  "PaginationNav",
+  "Stepper",
+  "TableOfContents",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -186,6 +195,12 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   TimePicker: handWrittenCatalog.TimePicker,
   TimeRangePicker: handWrittenTimeRangePicker.TimeRangePicker,
   Toggle: handWrittenCatalog.Toggle,
+  BackToTop: handWrittenBackToTop.BackToTop,
+  Breadcrumb: handWrittenCatalog.Breadcrumb,
+  Pagination: handWrittenCatalog.Pagination,
+  PaginationNav: handWrittenCatalog.PaginationNav,
+  Stepper: handWrittenStepper.Stepper,
+  TableOfContents: handWrittenTableOfContents.TableOfContents,
 };
 
 describe("React leg provenance", () => {

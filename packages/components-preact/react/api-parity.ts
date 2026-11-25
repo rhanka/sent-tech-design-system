@@ -145,6 +145,16 @@ export type PropsParity = [
   Expect<Equal<Emitted.ResolvedSubMenuSide, HandWritten.ResolvedSubMenuSide>>,
   Expect<Equal<Emitted.SubMenuPosition, HandWritten.SubMenuPosition>>,
   Expect<Equal<Emitted.SubMenuSide, HandWritten.SubMenuSide>>,
+  Expect<Equal<Emitted.BackToTopProps, HandWritten.BackToTopProps>>,
+  Expect<Equal<Emitted.BreadcrumbProps, HandWritten.BreadcrumbProps>>,
+  Expect<Equal<Emitted.BreadcrumbItem, HandWritten.BreadcrumbItem>>,
+  Expect<Equal<Emitted.PaginationProps, HandWritten.PaginationProps>>,
+  Expect<Equal<Emitted.PaginationNavProps, HandWritten.PaginationNavProps>>,
+  Expect<Equal<Emitted.StepperProps, HandWritten.StepperProps>>,
+  Expect<Equal<Emitted.StepperStep, HandWritten.StepperStep>>,
+  Expect<Equal<Emitted.StepperOrientation, HandWritten.StepperOrientation>>,
+  Expect<Equal<Emitted.TableOfContentsProps, HandWritten.TableOfContentsProps>>,
+  Expect<Equal<Emitted.TableOfContentsItem, HandWritten.TableOfContentsItem>>,
 ];
 
 export type ComponentParity = [
@@ -221,6 +231,12 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.TimePicker, typeof HandWritten.TimePicker>>,
   Expect<Equal<typeof Emitted.TimeRangePicker, typeof HandWritten.TimeRangePicker>>,
   Expect<Equal<typeof Emitted.Toggle, typeof HandWritten.Toggle>>,
+  Expect<Equal<typeof Emitted.BackToTop, typeof HandWritten.BackToTop>>,
+  Expect<Equal<typeof Emitted.Breadcrumb, typeof HandWritten.Breadcrumb>>,
+  Expect<Equal<typeof Emitted.Pagination, typeof HandWritten.Pagination>>,
+  Expect<Equal<typeof Emitted.PaginationNav, typeof HandWritten.PaginationNav>>,
+  Expect<Equal<typeof Emitted.Stepper, typeof HandWritten.Stepper>>,
+  Expect<Equal<typeof Emitted.TableOfContents, typeof HandWritten.TableOfContents>>,
 ];
 
 export type ValueParity = [

@@ -144,6 +144,18 @@ export { TimeRangePicker } from "./TimeRangePicker.js";
 export type { TimeRangePickerProps } from "./TimeRangePicker.js";
 export { Toggle } from "./Toggle.js";
 export type { ToggleProps } from "./Toggle.js";
+export { BackToTop } from "./BackToTop.js";
+export type { BackToTopProps } from "./BackToTop.js";
+export { Breadcrumb } from "./Breadcrumb.js";
+export type { BreadcrumbProps, BreadcrumbItem } from "./Breadcrumb.js";
+export { Pagination } from "./Pagination.js";
+export type { PaginationProps } from "./Pagination.js";
+export { PaginationNav } from "./PaginationNav.js";
+export type { PaginationNavProps } from "./PaginationNav.js";
+export { Stepper } from "./Stepper.js";
+export type { StepperProps, StepperStep, StepperOrientation } from "./Stepper.js";
+export { TableOfContents } from "./TableOfContents.js";
+export type { TableOfContentsProps, TableOfContentsItem } from "./TableOfContents.js";
 export {
   computeSubMenuPosition,
   pointInSafeTriangle,
