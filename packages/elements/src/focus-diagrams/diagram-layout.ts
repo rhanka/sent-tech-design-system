@@ -18,9 +18,9 @@ const measureLines = cardLineMeasurer(measure);
 const processMeasureLines: SceneLayoutInput["measureLines"] = (request) => {
   const layout = measureLines(request);
   if (request.role !== "edge-label" || layout.width === 0) return layout;
-  // Pad static edge-label boxes by 4 px on each side so fallback sans fonts
-  // (e.g. DejaVu/Liberation Sans on Linux) stay inside their label rect.
-  return { ...layout, width: layout.width + 8 };
+  // Pad static edge-label boxes so fallback sans fonts (e.g. DejaVu/Liberation
+  // Sans on Linux) stay inside their label rect at 12 px scaled height.
+  return { ...layout, width: layout.width + 8, height: layout.height + 6 };
 };
 const layoutFailures = new Set([
   "label-unplaced",

@@ -1,8 +1,10 @@
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { baseDigest, canonicalJson } from "@sentropic/focus/editing";
 import { shippedSceneBindings, shippedSceneRegistry, validateSceneDocument, type SceneDocument } from "@sentropic/diagram-canvas/diagramSceneModel";
+import { mountDossier } from "../src/element/dom/dossier-mount.js";
 import { FOCUS_PROCESS_TARGET_WIDTH, prepareDossierDiagram } from "../src/focus-diagrams/diagram-layout.js";
-import { readDossierScene, resolveDossierScene } from "../src/focus-diagrams/diagram-source.js";
+import { DossierDiagramError, readDossierScene, resolveDossierScene } from "../src/focus-diagrams/diagram-source.js";
 import { buildDossierViews, validateDossierViews } from "../src/focus-diagrams/dossier-views.js";
 import decision from "./fixtures/focus-artifact/decision-v1.json";
 
@@ -109,20 +111,67 @@ describe("Focus process@1 lowering and validation bridge (L1d)", () => {
     );
   });
 
-  it("keeps generic@1 bound locally to foldableGenericProfile and validates frozen focus-views/1 (flowchart + ecosystem:* + container)", () => {
+  it("refuses malformed nested objects and undeclared extra keys with DossierDiagramError instead of TypeError or passthrough", () => {
+    const validProcess = resolveDossierScene(makeFlowchartSection("valid", 'flowchart LR\na["A"]\nb["B"]\na -->|Go| b') as never);
+    const cases: Record<string, unknown>[] = [
+      { ...structuredClone(validProcess), entities: { "entity:a": null } },
+      { ...structuredClone(validProcess), entities: { "entity:a": { id: "entity:a", profile: "process@1", type: "step" } } },
+      { ...structuredClone(validProcess), entities: { "entity:a": { id: "entity:a", profile: "process@1", type: "step", attributes: { name: null } } } },
+      { ...structuredClone(validProcess), relations: { "relation:a.b": { id: "relation:a.b", profile: "process@1", type: "transition", attributes: {} } } },
+      { ...structuredClone(validProcess), relations: { "relation:a.b": { id: "relation:a.b", profile: "process@1", type: "transition", endpoints: [null], attributes: {} } } },
+      { ...structuredClone(validProcess), extensions: [{ namespace: "sentropic:process-flow" }] },
+      { ...structuredClone(validProcess), entities: { ...(validProcess.entities as Record<string, unknown>), "entity:a": { ...(validProcess.entities as Record<string, Record<string, unknown>>)["entity:a"], geometry: { x: 10, y: 20 } } } },
+      { ...structuredClone(validProcess), relations: { "relation:a.b": { ...(validProcess.relations as Record<string, Record<string, unknown>>)["relation:a.b"], layoutHints: { rankdir: "LR" } } } },
+      { ...structuredClone(validProcess), relations: { "relation:a.b": { ...(validProcess.relations as Record<string, Record<string, unknown>>)["relation:a.b"], endpoints: [{ role: "source", target: "entity:a", geometry: {} }, { role: "target", target: "entity:b" }] } } },
+      { ...structuredClone(validProcess), extensions: [{ namespace: "sentropic:process-flow", schemaVersion: "1", scope: { kind: "document", extra: true }, validation: "validated", contentHash: "fnv1a64:0000000000000000", source: "{}" }] },
+      { ...structuredClone(validProcess), extensions: [{ namespace: "sentropic:process-flow", schemaVersion: "1", scope: { kind: "document" }, validation: "validated", contentHash: "fnv1a64:0000000000000000", source: "{}", geometry: {} }] },
+    ];
+    for (const [index, badScene] of cases.entries()) {
+      expect(() => readDossierScene(`bad-${index}`, badScene), `read case ${index}`).toThrowError(DossierDiagramError);
+      expect(() => readDossierScene(`bad-${index}`, badScene), `read code ${index}`).toThrow(
+        expect.objectContaining({ sectionId: `bad-${index}`, code: "diagram-source-unsupported" }),
+      );
+      expect(() => resolveDossierScene(makeFlowchartSection(`bad-${index}`, "ignored", { scene: badScene }) as never), `resolve case ${index}`).toThrowError(DossierDiagramError);
+      expect(() => resolveDossierScene(makeFlowchartSection(`bad-${index}`, "ignored", { scene: badScene }) as never), `resolve code ${index}`).toThrow(
+        expect.objectContaining({ sectionId: `bad-${index}`, code: "diagram-source-unsupported" }),
+      );
+    }
+  });
+
+  it("keeps generic@1 bound locally to foldableGenericProfile and replays frozen kit 0.5.0 generic@1 relation:0 views via mountDossier", () => {
+    const legacyFlow = 'flowchart LR\ns1["Step 1"]\ns2["Step 2"]\ns1 -->|Next| s2';
     const doc = {
       ...decision,
       sections: [
         ...decision.sections.filter((s) => s.kind !== "diagram"),
-        makeFlowchartSection("diagram-flowchart", 'flowchart LR\ns1["Step 1"]\ns2["Step 2"]\ns3["Step 3"]\ns4["Step 4"]\ns5["Step 5"]\ns1 -->|Next| s2\ns2 -->|Next| s3\ns3 -->|Next| s4\ns4 -->|Next| s5'),
+        makeFlowchartSection("diagram-flowchart", legacyFlow),
         makeFlowchartSection("diagram-ecosystem", "ecosystem:overview"),
         makeFlowchartSection("diagram-container", "ignored", { scene: containerScene }),
       ],
     };
-    const views = buildDossierViews(doc, kit)!;
-    expect(views.diagrams["diagram-flowchart"]?.scene.profileRefs).toEqual(["process@1"]);
-    expect(views.diagrams["diagram-ecosystem"]?.scene.profileRefs).toEqual(["generic@1"]);
-    expect(views.diagrams["diagram-container"]?.scene.profileRefs).toEqual(["generic@1"]);
+    const liveViews = buildDossierViews(doc, kit)!;
+    expect(liveViews.diagrams["diagram-flowchart"]?.scene.profileRefs).toEqual(["process@1"]);
+    const frozenGenericView = {
+      viewId: "view:layout", semanticDocumentId: "document:diagram-flowchart", revision: 0,
+      entityOccurrences: { "occurrence:e.s1": { id: "occurrence:e.s1", entity: "entity:s1", geometry: { x: 0, y: 0, width: 460, height: 200 }, z: 0 }, "occurrence:e.s2": { id: "occurrence:e.s2", entity: "entity:s2", geometry: { x: 568, y: 0, width: 460, height: 200 }, z: 0 } },
+      relationOccurrences: { "occurrence:r.0": { id: "occurrence:r.0", relation: "relation:0", endpoints: [{ role: "source", occurrence: "occurrence:e.s1" }, { role: "target", occurrence: "occurrence:e.s2" }], waypoints: [{ x: 460, y: 100 }, { x: 568, y: 100 }] } },
+      portOccurrences: {}, groups: {}, filters: [],
+      presentation: { camera: { x: 0, y: 0, zoom: 1 }, diagram: { contractPin: { id: "diagram-presentation", version: "1", contentDigest: "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae" }, entities: { "occurrence:e.s1": { form: "card", text: { title: "Step 1" }, icon: "base" }, "occurrence:e.s2": { form: "card", text: { title: "Step 2" }, icon: "base" } }, legends: {}, categoryTokens: [] } },
+    };
+    const frozenViews = {
+      ...liveViews,
+      diagrams: {
+        ...liveViews.diagrams,
+        "diagram-flowchart": {
+          scene: {
+            documentId: "document:diagram-flowchart", schemaVersion: { major: 1, minor: 1 }, revision: 0, profileRefs: ["generic@1"], typeDefinitions: {}, ports: {}, resources: {}, extensions: [],
+            entities: { "entity:s1": { id: "entity:s1", profile: "generic@1", type: "node", attributes: { name: { kind: "text", value: "Step 1" } } }, "entity:s2": { id: "entity:s2", profile: "generic@1", type: "node", attributes: { name: { kind: "text", value: "Step 2" } } } },
+            relations: { "relation:0": { id: "relation:0", profile: "generic@1", type: "link", endpoints: [{ role: "source", target: "entity:s1" }, { role: "target", target: "entity:s2" }], attributes: { label: { kind: "text", value: "Next" } } } },
+          },
+          views: { expanded: frozenGenericView, folded: frozenGenericView },
+        },
+      },
+    };
     const containerPrep = prepareDossierDiagram("diagram-container", "Container", containerScene as unknown as SceneDocument);
     expect(containerPrep.layout.containers).toEqual(["occurrence:e.group"]);
     expect(containerPrep.folded.svg).not.toContain("Child");
@@ -132,14 +181,18 @@ describe("Focus process@1 lowering and validation bridge (L1d)", () => {
       contract: "focus-dossier/1",
       document: { digest: baseDigest(doc) },
       renderer: { digest: baseDigest(kit) },
-      derived: [{
-        path: "views.json",
-        mimeType: "application/json",
-        digest: baseDigest(views),
-        bytes: new TextEncoder().encode(canonicalJson(views)).length,
-      }],
+      derived: [{ path: "views.json", mimeType: "application/json", digest: baseDigest(frozenViews), bytes: new TextEncoder().encode(canonicalJson(frozenViews)).length }],
     };
-    const validated = validateDossierViews(doc, manifest, views, new Set(["diagram-flowchart", "diagram-ecosystem", "diagram-container"]));
-    expect(validated.size).toBe(3);
+    expect(validateDossierViews(doc, manifest, frozenViews, new Set(["diagram-flowchart", "diagram-ecosystem", "diagram-container"])).size).toBe(3);
+    const host = document.body.appendChild(document.createElement("main"));
+    const mounted = mountDossier(host);
+    try {
+      mounted.render(doc, { views: frozenViews, manifest });
+      expect(host.querySelector('[data-anchor-id="diagram-flowchart"] svg')?.textContent).toContain("Next");
+      expect(host.querySelector('[data-anchor-id="diagram-container"] svg')?.textContent).toContain("Child");
+    } finally {
+      mounted.destroy();
+      host.remove();
+    }
   });
 });

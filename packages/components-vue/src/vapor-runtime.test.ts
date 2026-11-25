@@ -338,6 +338,8 @@ it('should render process@1 simple boxes, lanes, dashed retry edges, and step ta
     measureLines: flowMeasure,
   });
   await nextTick();
+  expect(scene.root.querySelector('figure')?.getAttribute('data-zoom')).toBe('1');
+  expect(scene.root.querySelector('figure')?.getAttribute('data-zoom-readout')).toBe('100');
   expect(scene.root.querySelectorAll('[data-scene-kind="process"]')).toHaveLength(4);
   expect(scene.root.querySelectorAll('.st-diagramProcessBox')).toHaveLength(3);
   expect(scene.root.querySelectorAll('.st-diagramProcessLane')).toHaveLength(1);

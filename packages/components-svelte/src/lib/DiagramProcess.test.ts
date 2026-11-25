@@ -60,6 +60,8 @@ describe("process@1 Svelte host", () => {
     await tick();
     const root = mounted.container;
     expect(root.querySelector("[data-scene-refused]")).toBeNull();
+    expect(root.querySelector("figure")?.getAttribute("data-zoom")).toBe("1");
+    expect(root.querySelector("figure")?.getAttribute("data-zoom-readout")).toBe("100");
     expect(root.querySelectorAll('[data-scene-kind="process"]')).toHaveLength(6);
     expect(root.querySelectorAll(".st-diagramProcess-svg svg .st-diagramProcessBox")).toHaveLength(4);
     expect(root.querySelectorAll(".st-diagramProcess-svg svg .st-diagramProcessLane")).toHaveLength(2);

@@ -127,8 +127,66 @@ describe("process@1 Svelte / Vue / static SVG parity (L1e)", () => {
       expect(staticRendered.svg).toContain('data-edge-stroke="dashed"');
       expect(vue.find('[data-edge-stroke="dashed"]').exists()).toBe(true);
       expect(renderProcessTable(doc)).toContain("Intake Desk");
+      expect(svgParser.documentElement.getAttribute("data-display-scale")).toBe("1");
+      expect(vue.element.getAttribute("data-zoom")).toBe("1");
+      expect(svelte.container.querySelector("figure")!.getAttribute("data-zoom")).toBe("1");
+      expect(vue.element.getAttribute("data-zoom-readout")).toBe("100");
+      expect(svelte.container.querySelector("figure")!.getAttribute("data-zoom-readout")).toBe("100");
     } finally {
       vue.unmount();
+    }
+  });
+
+  it("renders process@1 at 1:1 (maxDisplayScale: 1 and non-16:9 height) even with theme 0.62 token and tall TB flows", async () => {
+    const base = createDocument({ documentId: documentRef("process-tb-tall"), profileRefs: [PROCESS_PROFILE_ID] });
+    const tbDoc: SemanticDocument = {
+      ...base,
+      entities: {
+        "entity:s1": { id: entityRef("s1"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("Step 1") } },
+        "entity:s2": { id: entityRef("s2"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("Step 2") } },
+        "entity:s3": { id: entityRef("s3"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("Step 3") } },
+        "entity:s4": { id: entityRef("s4"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("Step 4") } },
+        "entity:s5": { id: entityRef("s5"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("Step 5") } },
+      },
+      relations: {
+        "relation:s1.s2": { id: relationRef("s1.s2"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("s1") }, { role: "target", target: entityRef("s2") }], attributes: {} },
+        "relation:s2.s3": { id: relationRef("s2.s3"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("s2") }, { role: "target", target: entityRef("s3") }], attributes: {} },
+        "relation:s3.s4": { id: relationRef("s3.s4"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("s3") }, { role: "target", target: entityRef("s4") }], attributes: {} },
+        "relation:s4.s5": { id: relationRef("s4.s5"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("s4") }, { role: "target", target: entityRef("s5") }], attributes: {} },
+      },
+      extensions: [createProcessFlowExtension({ direction: "TB" })],
+    };
+    const presentation = {
+      contractPin: DIAGRAM_PRESENTATION_V2_CONTRACT_PIN,
+      entities: {},
+      legends: {},
+      categoryTokens: [],
+    };
+    const prevToken = document.documentElement.style.getPropertyValue("--st-component-diagramScene-maxDisplayScale");
+    document.documentElement.style.setProperty("--st-component-diagramScene-maxDisplayScale", "0.62");
+    const props = {
+      document: tbDoc,
+      presentation,
+      registry: m3ProfileRegistry as DiagramSceneFigureProps["registry"],
+      bindings: shippedExecutorBindings as DiagramSceneFigureProps["bindings"],
+      measureLines: cardLineMeasurer(),
+      targetWidth: 640,
+      title: "Tall TB process",
+    };
+    const vue = mount(VueFigure, { props, attachTo: document.body });
+    const svelte = render(SvelteFigure, props);
+    try {
+      await nextTick();
+      await tick();
+      expect(vue.element.getAttribute("data-zoom")).toBe("1");
+      expect(svelte.container.querySelector("figure")!.getAttribute("data-zoom")).toBe("1");
+      expect(vue.element.getAttribute("data-zoom-readout")).toBe("100");
+      expect(svelte.container.querySelector("figure")!.getAttribute("data-zoom-readout")).toBe("100");
+      expect(vue.vm.getCamera().maxZoom).toBe(1);
+    } finally {
+      vue.unmount();
+      if (prevToken) document.documentElement.style.setProperty("--st-component-diagramScene-maxDisplayScale", prevToken);
+      else document.documentElement.style.removeProperty("--st-component-diagramScene-maxDisplayScale");
     }
   });
 

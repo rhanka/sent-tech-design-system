@@ -404,6 +404,8 @@
           : undefined
       : undefined,
   );
+  const isProcess = $derived(semanticDocument.profileRefs.length === 1 && semanticDocument.profileRefs[0] === "process@1");
+  const effectiveMaxDisplayScale = $derived(isProcess ? 1 : maxDisplayScale);
   const sceneFitInput = $derived({
     // Before the frame is measured (server render, hidden mount) the fit
     // box is the nominal 16:9 box of the layout target width.
@@ -411,7 +413,7 @@
     windowHeight: windowHeight ?? Number.POSITIVE_INFINITY,
     ...(fullscreenViewHeight === undefined ? {} : { viewHeight: fullscreenViewHeight }),
     ...(viewAll ? { unconstrained: true } : {}),
-    ...(maxDisplayScale === undefined ? {} : { maxDisplayScale }),
+    ...(effectiveMaxDisplayScale === undefined ? {} : { maxDisplayScale: effectiveMaxDisplayScale }),
     ...(minReadableScale === undefined ? {} : { minReadableScale }),
     ...(fitToWindow ? { fitToWindow: true } : {}),
   });
@@ -844,6 +846,9 @@
   const fitInput = $derived({
     ...(cameraBounds === undefined ? {} : { bounds: cameraBounds }),
     ...sceneFitInput,
+    ...(isProcess && !fullscreen && !fitToWindow && !viewAll && cameraBounds !== undefined
+      ? { viewHeight: Math.max(1, cameraBounds.height + 16) }
+      : {}),
   });
   // Try the full width first so scrollbars from a user zoom cannot trap
   // the next fit at the floor. If it still pans, account for the bars.
@@ -1315,7 +1320,7 @@
     return `;--st-diagram-overview-edge-label-size:${size}px;--st-diagram-overview-edge-label-line-height:${lineHeight}px`;
   });
   const viewportStyle = $derived(
-    `height:${viewportHeight}px;${fullscreen ? "" : fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${metricPaintVars}${overviewLabelPaintVars}${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
+    `height:${viewportHeight}px;${fullscreen ? "" : fitToWindow ? "max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;" : isProcess ? "" : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${metricPaintVars}${overviewLabelPaintVars}${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );
   const worldStyle = $derived(
     `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,

@@ -23,6 +23,33 @@ function closed(value: unknown, keys: readonly string[]): value is Record<string
   return isRecord(value) && Object.keys(value).every((key) => keys.includes(key));
 }
 
+function isClosedScalarValue(value: unknown): boolean {
+  if (!isRecord(value) || typeof value.kind !== "string") return false;
+  switch (value.kind) {
+    case "text":
+    case "date":
+    case "enum":
+    case "reference":
+      return closed(value, ["kind", "value"]) && typeof value.value === "string";
+    case "boolean":
+      return closed(value, ["kind", "value"]) && typeof value.value === "boolean";
+    case "quantity":
+      return closed(value, ["kind", "value", "unit"]) && typeof value.value === "number" && typeof value.unit === "string";
+    default:
+      return false;
+  }
+}
+
+function isClosedAttributeValue(value: unknown): boolean {
+  if (isClosedScalarValue(value)) return true;
+  return closed(value, ["kind", "items"]) && value.kind === "collection" &&
+    Array.isArray(value.items) && value.items.every(isClosedScalarValue);
+}
+
+function isClosedAttributes(value: unknown): boolean {
+  return isRecord(value) && Object.values(value).every(isClosedAttributeValue);
+}
+
 type Refuse = (message: string) => never;
 
 const ALLOWED_FOCUS_PROFILES = new Set(["generic@1", "process@1"]);
@@ -66,14 +93,41 @@ function checkScene(scene: Record<string, unknown>, refuse: Refuse): void {
 
   const profileId = profileRefs[0];
   if (profileId === "generic@1" && extensions.length !== 0) return fail();
-  if (profileId === "process@1" &&
-      (extensions.length > 1 || extensions.some((ext: unknown) => !isRecord(ext) || ext.namespace !== PROCESS_FLOW_EXTENSION_NAMESPACE))) {
-    return fail("Unsupported extension on process@1 scene");
+  if (profileId === "process@1") {
+    if (extensions.length > 1) return fail("Unsupported extension on process@1 scene");
+    for (const ext of extensions) {
+      if (!closed(ext, ["namespace", "schemaVersion", "scope", "validation", "contentHash", "source"]) ||
+          ext.namespace !== PROCESS_FLOW_EXTENSION_NAMESPACE ||
+          typeof ext.schemaVersion !== "string" ||
+          !closed(ext.scope, ["kind"]) || ext.scope.kind !== "document" ||
+          typeof ext.validation !== "string" ||
+          typeof ext.contentHash !== "string" ||
+          (ext.source !== undefined && typeof ext.source !== "string")) {
+        return fail("Unsupported extension on process@1 scene");
+      }
+    }
   }
   if (!isRecord(entities) || !isRecord(relations)) return fail();
-  const nodeCount = Object.keys(entities).length;
-  const edgeCount = Object.keys(relations).length;
-  if (nodeCount === 0 || nodeCount > 80 || edgeCount > 240) return fail();
+  const nodes = Object.entries(entities);
+  const edges = Object.entries(relations);
+  if (nodes.length === 0 || nodes.length > 80 || edges.length > 240) return fail();
+  for (const [id, entity] of nodes) {
+    if (!id.startsWith("entity:") || !closed(entity, ["id", "profile", "type", "attributes"]) ||
+        typeof entity.id !== "string" || typeof entity.profile !== "string" || typeof entity.type !== "string" ||
+        !isClosedAttributes(entity.attributes)) {
+      return fail();
+    }
+  }
+  for (const [id, relation] of edges) {
+    if (!id.startsWith("relation:") || !closed(relation, ["id", "profile", "type", "endpoints", "attributes"]) ||
+        typeof relation.id !== "string" || typeof relation.profile !== "string" || typeof relation.type !== "string" ||
+        !Array.isArray(relation.endpoints) ||
+        !relation.endpoints.every((endpoint: unknown) =>
+          closed(endpoint, ["role", "target"]) && typeof endpoint.role === "string" && typeof endpoint.target === "string") ||
+        !isClosedAttributes(relation.attributes)) {
+      return fail();
+    }
+  }
 
   const diagnostics = validateSceneDocument(scene as unknown as SceneDocument, {
     registry: focusSceneRegistry,

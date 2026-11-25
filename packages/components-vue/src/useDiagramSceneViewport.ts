@@ -179,18 +179,23 @@ export function useDiagramSceneViewport(
                 ? Math.max(0, windowHeight.value - controlsHeight.value)
                 : undefined)
         : undefined);
+    const isProcess = computed(() => props.document.profileRefs.length === 1 && props.document.profileRefs[0] === 'process@1');
+    const effectiveMaxDisplayScale = computed(() => isProcess.value ? 1 : maxDisplayScale.value);
     const sceneFitInput = computed(() => ({
         viewWidth: frameWidth.value ?? props.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
         windowHeight: windowHeight.value ?? Number.POSITIVE_INFINITY,
         ...(fullscreenViewHeight.value === undefined ? {} : { viewHeight: fullscreenViewHeight.value }),
         ...(viewAll.value ? { unconstrained: true } : {}),
-        ...(maxDisplayScale.value === undefined ? {} : { maxDisplayScale: maxDisplayScale.value }),
+        ...(effectiveMaxDisplayScale.value === undefined ? {} : { maxDisplayScale: effectiveMaxDisplayScale.value }),
         ...(minReadableScale.value === undefined ? {} : { minReadableScale: minReadableScale.value }),
         ...(props.fitToWindow ? { fitToWindow: true } : {}),
     }));
     const fitInput = computed(() => ({
         ...(cameraBounds.value === undefined ? {} : { bounds: cameraBounds.value }),
         ...sceneFitInput.value,
+        ...(isProcess.value && !fullscreen.value && !props.fitToWindow && !viewAll.value && cameraBounds.value !== undefined
+            ? { viewHeight: Math.max(1, cameraBounds.value.height + 16) }
+            : {}),
     }));
     // Try the full width before reserving space for any scrollbar.
     const frameFit = computed(() => sceneFit(fitInput.value));
@@ -465,7 +470,7 @@ export function useDiagramSceneViewport(
         const lineHeight = edgeLabelLineHeight.value * size / (effectiveMetrics.value.edgeLabelSize ?? DEFAULT_EDGE_LABEL_SIZE);
         return `;--st-diagram-overview-edge-label-size:${size}px;--st-diagram-overview-edge-label-line-height:${lineHeight}px`;
     });
-    const viewportStyle = computed(() => `height:${viewportHeight.value}px;${fullscreen.value ? '' : props.fitToWindow ? 'max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;' : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px${metricPaintVars.value}${overviewLabelPaintVars.value}`);
+    const viewportStyle = computed(() => `height:${viewportHeight.value}px;${fullscreen.value ? '' : props.fitToWindow ? 'max-height:calc(100vh - 24px);max-width:100%;margin-inline:auto;' : isProcess.value ? '' : `aspect-ratio:${FIT_ASPECT};`}overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px${metricPaintVars.value}${overviewLabelPaintVars.value}`);
     return { figureEl, controlsEl, frameEl, viewportEl, measure, measureLines, effectiveMetrics, r7Mode, token,
         fit, zoom, readout, placement, viewportStyle, sceneFitInput, resetToFit,
         viewAll, fullscreen, fallbackFullscreen, fullscreenMode,
