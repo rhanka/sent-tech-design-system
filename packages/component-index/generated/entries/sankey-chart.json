@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SankeyChart.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Weighted flow diagram between categorical nodes.",
     "fr": "Diagramme de flux pondérés entre nœuds catégoriels."
   },
-  "digest": "sha256:8afc8dfdc0a331820e51fd822f28d75efb90127453b2fa56f396111224a88824",
+  "digest": "sha256:e3901775c4abe3c8fa63eb0cdb435163f1f09adb6acb8adb660f09deedc396ea",
   "displayName": "SankeyChart",
   "format": "component-entry/v1",
   "frameworks": [

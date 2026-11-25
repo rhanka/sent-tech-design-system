@@ -1,8 +1,8 @@
 {
   "componentId": "stacked-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:3ea10a9600910142e91da651f2f427d40c5c8afe5d9d348f6cf8a383015aee57",
-  "entryDigest": "sha256:f7efd022e3b3c56f3d9c66a1be0983754a7bcdecc97ffd1518e1a5791fde904a",
+  "digest": "sha256:7dd15d01318455f66d3246655f56b5c474a6f3a8e8b13945b2c69e7a4d376818",
+  "entryDigest": "sha256:1293eed24015637432ecb723ea2d6b0cd4f28ed97f611324643b7b2b3be5d707",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -442,7 +442,7 @@
         "declarationPath": "packages/components-svelte/dist/StackedBarChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StackedBarChartProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "composer-editor",
   "contractSource": "derived",
-  "digest": "sha256:8299ecf65ee7e6436234e84ff5803e53162ec532eb786b436e94ad8ad0abe98b",
-  "entryDigest": "sha256:449516490cdae3036c0c403d9077ac83248acf38732b59ec622fcf40ab5a98e6",
+  "digest": "sha256:bbf4d0f1a4ec3ea1ae9a941f16aca23f07c8de603ea0b0a3424cd2250f0f83d1",
+  "entryDigest": "sha256:44e89880bf4d43c9a83469ea5d8f8de42a8d422e9d6cafd58b10b6c5b410f4be",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -270,7 +270,7 @@
         "declarationPath": "packages/components-svelte/dist/rich-text-editor/ComposerEditor.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ComposerEditorProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "partial",
       "unresolved": [],

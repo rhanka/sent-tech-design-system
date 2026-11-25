@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/StructuredList.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Structured key/value list (term/definition pairs).",
     "fr": "Liste clé/valeur structurée (paires terme/définition)."
   },
-  "digest": "sha256:cc5b0be3816cdcadd3f3ff7f6f0bc417b3c5d266804108b1bf44492a13bd35e7",
+  "digest": "sha256:532035cd13954e63a81b4fe598851ad2658427e253b8b432168b4001b6607410",
   "displayName": "StructuredList",
   "format": "component-entry/v1",
   "frameworks": [

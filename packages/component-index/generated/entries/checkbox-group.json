@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/CheckboxGroup.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Set of checkboxes with a legend and multiple values.",
     "fr": "Ensemble de cases à cocher avec légende, valeurs multiples."
   },
-  "digest": "sha256:bd729051e66ddd2179f6d7a521664b287212c9992fbc818f6998687bc2d18933",
+  "digest": "sha256:4c592f20577b9e6c1b5c643bc241790181f5ff201b7e0a62cbb00a0ab8ee9922",
   "displayName": "CheckboxGroup",
   "format": "component-entry/v1",
   "frameworks": [

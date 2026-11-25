@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Overline.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Discreet small-caps section label (group heading above a block).",
     "fr": "Étiquette de section discrète en petites capitales (libellé de groupe au-dessus d'un bloc)."
   },
-  "digest": "sha256:d9cdce271c0d23a6f1a0a5280ee13eced8cb456f4f0d195da16fcff54daeb9bd",
+  "digest": "sha256:e829089a93c24b9ef720a3c4101150655517a16abcf2d6409d19058842a9546d",
   "displayName": "Overline",
   "format": "component-entry/v1",
   "frameworks": [

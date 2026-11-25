@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/BumpChart.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Rankings over time: rising and falling rank lines.",
     "fr": "Classements dans le temps : lignes qui montent et descendent."
   },
-  "digest": "sha256:6a566e3ac45c2eb1871fb5067036404569d89e18bda951791c343a5051fbbf8e",
+  "digest": "sha256:4bfcfd648f6c33743d06a4c6e3b07adb5b700eb5408609a8b12c67266b8e88a7",
   "displayName": "BumpChart",
   "format": "component-entry/v1",
   "frameworks": [

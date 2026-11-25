@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TimePicker.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Time selection from slots generated at a fixed step.",
     "fr": "Sélection d'une heure parmi des créneaux générés par pas."
   },
-  "digest": "sha256:d01604fe6150f08e33495ae444a0ad2ff49916626530fd7987992972fbeb2199",
+  "digest": "sha256:de851981b5528c37411cbc0d7229fe6bca46035eb234baaa6d6be1219d50f3bc",
   "displayName": "TimePicker",
   "format": "component-entry/v1",
   "frameworks": [
