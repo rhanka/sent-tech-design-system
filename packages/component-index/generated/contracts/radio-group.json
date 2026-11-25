@@ -1,8 +1,8 @@
 {
   "componentId": "radio-group",
   "contractSource": "derived",
-  "digest": "sha256:ce0465c5c1611e1f826a8bb759b816f929111849a59aeaf14d2c6975d7ef970e",
-  "entryDigest": "sha256:ffe547c216ac92cdea5f8a908ffc7caecdb557dfda4cffc5a2bdcec36bb2d0b3",
+  "digest": "sha256:a15e1017b190f4351ff0558bcbf505af92b9a2218126ea870eaab6df24788813",
+  "entryDigest": "sha256:908671e541f81655f52343ba64e34210888a18c7817a28ece630c7808ebf82d6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -229,6 +229,9 @@
           "RadioGroupOption": {
             "additionalProperties": false,
             "properties": {
+              "description": {
+                "type": "string"
+              },
               "disabled": {
                 "type": "boolean"
               },
@@ -254,11 +257,24 @@
           "class": {
             "type": "string"
           },
+          "columns": {
+            "description": "Optional 2-column grid on wide containers (>= 520px) for card variant.",
+            "enum": [
+              2,
+              1
+            ]
+          },
           "disabled": {
             "type": "boolean"
           },
+          "errorText": {
+            "type": "string"
+          },
           "helperText": {
             "type": "string"
+          },
+          "invalid": {
+            "type": "boolean"
           },
           "legend": {
             "type": "string"
@@ -279,9 +295,19 @@
               "vertical"
             ]
           },
+          "required": {
+            "type": "boolean"
+          },
           "value": {
             "description": "Valeur sélectionnée (contrôlée).",
             "type": "string"
+          },
+          "variant": {
+            "description": "Presentation density: list rows (default) or >= 48px choice cards.",
+            "enum": [
+              "list",
+              "card"
+            ]
           }
         },
         "required": [
@@ -297,7 +323,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:1cb20960ef369a0341d77284297d2561bfd50a9282fe8b69b91b585f2d15a7d7",
+        "declarationDigest": "sha256:f55187c2faa3ad309497e12fa5a51d0571ef6f290fbaaeb341640ffd1059f6d6",
         "declarationPath": "packages/components-svelte/dist/RadioGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RadioGroupProps",
