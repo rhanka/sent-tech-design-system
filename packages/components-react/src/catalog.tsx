@@ -4822,7 +4822,7 @@ export function MenuPopover({
 }
 
 // `expanded` (Svelte-canonical) is accepted as an alias of `open`.
-export type MenuTriggerButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+export type MenuTriggerButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "className"> & {
   open?: boolean;
   expanded?: boolean;
   size?: Size;
@@ -5249,7 +5249,7 @@ export function OrderedList({ items, nested = false, className, ...rest }: Order
 }
 
 export type OverflowMenuItem = MenuItem;
-export type OverflowMenuProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> & {
+export type OverflowMenuProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect" | "className"> & {
   items: OverflowMenuItem[];
   label?: React.ReactNode;
   open?: boolean;
@@ -5561,7 +5561,7 @@ export function PasswordInput({ label, helperText, errorText, size = "md", showL
   );
 }
 
-export type PopoverProps = Omit<React.HTMLAttributes<HTMLElement>, "content"> & {
+export type PopoverProps = Omit<React.HTMLAttributes<HTMLElement>, "content" | "className"> & {
   trigger?: React.ReactNode;
   content?: React.ReactNode;
   open?: boolean;
@@ -6511,7 +6511,7 @@ export function Toggle({ label, labelOn = "On", labelOff = "Off", helperText, si
   );
 }
 
-export type ToggletipProps = Omit<React.HTMLAttributes<HTMLSpanElement>, "content"> & {
+export type ToggletipProps = Omit<React.HTMLAttributes<HTMLSpanElement>, "content" | "className"> & {
   label: React.ReactNode;
   content?: React.ReactNode;
   open?: boolean;
@@ -6528,7 +6528,7 @@ export function Toggletip({ label, content, open: controlledOpen, placement = "t
   );
 }
 
-export type TooltipProps = Omit<React.HTMLAttributes<HTMLSpanElement>, "content"> & {
+export type TooltipProps = Omit<React.HTMLAttributes<HTMLSpanElement>, "content" | "className"> & {
   content: React.ReactNode;
   placement?: "top" | "bottom";
 };

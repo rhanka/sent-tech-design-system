@@ -19,7 +19,7 @@ const MENU_POPOVER_VIEWPORT_MARGIN = 8;
 // rather than a crushed menu (rare case of a trigger glued to the edge).
 const MENU_POPOVER_MIN_HEIGHT = 160;
 
-function menuPopoverIsWithin(event: Event, node: Element | null | undefined): boolean {
+export function menuPopoverIsWithin(event: Event, node: Element | null | undefined): boolean {
   if (!node) return false;
   const path =
     typeof (event as Event & { composedPath?: () => EventTarget[] }).composedPath === "function"

@@ -112,12 +112,18 @@ export { Menu } from "./Menu.js";
 export type { MenuProps, MenuItem, MenuActionItem, MenuSubmenuSide } from "./Menu.js";
 export { MenuPopover } from "./MenuPopover.js";
 export type { MenuPopoverProps, MenuPopoverPlacement, MenuPopoverAlign } from "./MenuPopover.js";
+export { MenuTriggerButton } from "./MenuTriggerButton.js";
+export type { MenuTriggerButtonProps } from "./MenuTriggerButton.js";
 export { MultiSelect } from "./MultiSelect.js";
 export type { MultiSelectProps, MultiSelectOption } from "./MultiSelect.js";
 export { NumberInput } from "./NumberInput.js";
 export type { NumberInputProps } from "./NumberInput.js";
+export { OverflowMenu } from "./OverflowMenu.js";
+export type { OverflowMenuProps, OverflowMenuItem } from "./OverflowMenu.js";
 export { PasswordInput } from "./PasswordInput.js";
 export type { PasswordInputProps } from "./PasswordInput.js";
+export { Popover } from "./Popover.js";
+export type { PopoverProps } from "./Popover.js";
 export { Radio } from "./Radio.js";
 export type { RadioProps } from "./Radio.js";
 export { RadioGroup } from "./RadioGroup.js";
@@ -144,6 +150,10 @@ export { TimeRangePicker } from "./TimeRangePicker.js";
 export type { TimeRangePickerProps } from "./TimeRangePicker.js";
 export { Toggle } from "./Toggle.js";
 export type { ToggleProps } from "./Toggle.js";
+export { Toggletip } from "./Toggletip.js";
+export type { ToggletipProps } from "./Toggletip.js";
+export { Tooltip } from "./Tooltip.js";
+export type { TooltipProps } from "./Tooltip.js";
 export {
   computeSubMenuPosition,
   pointInSafeTriangle,

@@ -94,9 +94,12 @@ const switched = [
   "FormGroup",
   "Menu",
   "MenuPopover",
+  "MenuTriggerButton",
   "MultiSelect",
   "NumberInput",
+  "OverflowMenu",
   "PasswordInput",
+  "Popover",
   "Radio",
   "RadioGroup",
   "RangeSlider",
@@ -110,6 +113,8 @@ const switched = [
   "TimePicker",
   "TimeRangePicker",
   "Toggle",
+  "Toggletip",
+  "Tooltip",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -170,9 +175,12 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   FormGroup: handWrittenCatalog.FormGroup,
   Menu: handWrittenCatalog.Menu,
   MenuPopover: handWrittenCatalog.MenuPopover,
+  MenuTriggerButton: handWrittenCatalog.MenuTriggerButton,
   MultiSelect: handWrittenCatalog.MultiSelect,
   NumberInput: handWrittenCatalog.NumberInput,
+  OverflowMenu: handWrittenCatalog.OverflowMenu,
   PasswordInput: handWrittenCatalog.PasswordInput,
+  Popover: handWrittenCatalog.Popover,
   Radio: handWrittenCatalog.Radio,
   RadioGroup: handWrittenRadioGroup.RadioGroup,
   RangeSlider: handWrittenRangeSlider.RangeSlider,
@@ -186,6 +194,8 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   TimePicker: handWrittenCatalog.TimePicker,
   TimeRangePicker: handWrittenTimeRangePicker.TimeRangePicker,
   Toggle: handWrittenCatalog.Toggle,
+  Toggletip: handWrittenCatalog.Toggletip,
+  Tooltip: handWrittenCatalog.Tooltip,
 };
 
 describe("React leg provenance", () => {
