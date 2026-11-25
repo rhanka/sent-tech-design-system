@@ -1438,6 +1438,7 @@
       "ReviewModeToggle",
       "SHELL_TOKEN_CONTRACT",
       "SITE_CONFIG_SCHEMA_VERSION",
+      "SurveyResults",
       "ThemeProvider",
       "ThreadPanel",
       "UtilityPanel",
