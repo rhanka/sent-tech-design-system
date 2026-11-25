@@ -13,6 +13,7 @@ import {
   buildH2Appctx16x9Fixture,
 } from '../../packages/diagram-canvas/test-support/h2ReferenceFixtures.ts';
 import { nestedZoneFixture } from '../../packages/diagram-canvas/test-support/nestedZoneFixture.ts';
+import { r7AuthoredLegendFixture } from '../../packages/diagram-canvas/test-support/r7AuthoredLegendFixture.ts';
 import { r7ConnectorsFixture } from '../../packages/diagram-canvas/test-support/r7ConnectorsFixture.ts';
 
 import { cases, expectedLegendAnchor, expectedLegendStyles } from './scenes.js';
@@ -80,6 +81,9 @@ export function fixture(name) {
   if (name === 'r7-connectors' || name === 'r7-connectors-folded') {
     return { ...common, ...r7ConnectorsFixture(name.endsWith('-folded')) };
   }
+  if (name === 'r7-authored-legend') {
+    return { ...common, ...r7AuthoredLegendFixture(false) };
+  }
   if (name === 'r7-nested-styles') {
     return { ...common, ...r7NestedStylesFixture() };
   }
@@ -93,11 +97,11 @@ export function fixture(name) {
       relations: spec.relations,
       hintsV2: payload.hints,
     });
-    return { ...common, document: built.document, presentation: built.presentation, hints: built.hints, collapsed: [] };
+    return { ...common, document: built.document, presentation: built.presentation, hints: built.hints, defaultFolds: [] };
   }
   if (name === 'h2-aspect-16-9') {
     const built = buildH2Appctx16x9Fixture(architecture, architectureView);
-    return { ...common, document: built.document, view: built.view, presentation: built.presentation, hints: built.hints, collapsed: [] };
+    return { ...common, document: built.document, view: built.view, presentation: built.presentation, hints: built.hints, defaultFolds: [] };
   }
   if (name.startsWith('numbered-flows')) {
     const source = flowFixture(name.endsWith('-bundled') ? 6 : 3, { labels: true, folded: true, reverse: true });

@@ -178,7 +178,8 @@ describe("toDrawio", () => {
     expect(feed).toContain('source="occurrence:e.parser"');
     expect(feed).toContain('target="occurrence:e.planner"');
     expect(feed).toContain("orthogonalEdgeStyle");
-    expect(feed).toContain("strokeWidth=2.5;");
+    expect(feed).toContain("strokeColor=#0f172a;");
+    expect(feed).toContain("strokeWidth=3.5;");
     expect(feed).toContain("endArrow=classic;");
     expect(feed).not.toContain("dashed=1");
 
@@ -193,9 +194,27 @@ describe("toDrawio", () => {
     const handoff = cellTag(xml, "occurrence:r.lnk-handoff");
     expect(handoff).toContain('source="occurrence:e.parser"');
     expect(handoff).toContain('target="occurrence:e.handoff"');
-    expect(handoff).toContain("strokeWidth=3;");
+    expect(handoff).toContain("strokeColor=#0f172a;");
+    expect(handoff).toContain("strokeWidth=3.5;");
     expect(handoff).toContain("dashed=1;dashPattern=2 5;");
     expect(handoff).toContain("endArrow=none;");
+
+    // Non-r7 v1 edges keep frozen #64748b and 2.5/3 widths byte-identical (REQ-R7-28).
+    const v1Scene: SceneModel = {
+      ...scene,
+      r7Connectors: false,
+      edges: scene.edges.map((edge) => {
+        const { r7: _ignored, ...rest } = edge;
+        return rest;
+      }),
+    };
+    const v1Xml = toDrawio(v1Scene);
+    const v1Feed = cellTag(v1Xml, "occurrence:r.lnk-feed");
+    expect(v1Feed).toContain("strokeColor=#64748b;");
+    expect(v1Feed).toContain("strokeWidth=2.5;");
+    const v1Handoff = cellTag(v1Xml, "occurrence:r.lnk-handoff");
+    expect(v1Handoff).toContain("strokeColor=#64748b;");
+    expect(v1Handoff).toContain("strokeWidth=3;");
 
     // Every edge references only ids emitted as vertices.
     const ids = new Set(vertexIds(xml));

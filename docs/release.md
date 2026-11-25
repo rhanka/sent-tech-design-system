@@ -319,9 +319,26 @@ git push origin diagram-codecs-v0.1.0
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
+### DE-3 Milestone 1 (`DE3-L1a`, `DE3-L2a`)
+
+Minor bumps for changed `r7` token/link defaults and single-legend authority
+(`tokens` `0.17.0`, `themes` `0.17.0`, `diagram-canvas` `0.7.0`, `diagram-codecs`
+`0.2.0`, `design-system-elements` `0.5.0`, `design-system-svelte` `0.47.0`
+coordinated above PR #350's `0.46.1` Stepper patch, and `design-system-vue`
+`0.43.0-next.0` on the `next` dist-tag). Keep `v1` frozen semantics
+(`edgeStroke` `#64748b`, `1.5 px` strokes, `v1` `<marker>` and draw.io)
+byte-identical and `process@1` at `2.5 px` `edgeStroke`. Tag order after merge
+(each waiting for the previous `post-publish-check` to turn green):
+
+1. `core-v0.17.0` (`npm-publish.yml`: `@sentropic/design-system-tokens` then `@sentropic/design-system-themes`)
+2. `diagram-canvas-v0.7.0` (`diagram-canvas-publish.yml`, requires `@sentropic/diagram-core@0.6.1`, already on npm)
+3. `elements-v0.5.0` (`elements-publish.yml`, requires `@sentropic/diagram-canvas@0.7.0`; must precede `vue-v0.43.0-next.0` because `vue-publish.yml` checks `@sentropic/design-system-elements@0.5.0` via `verify-deps-published.mjs --runtime`)
+4. `svelte-v0.47.0` (`svelte-publish.yml`, following `svelte-v0.46.1` from PR #350) and `vue-v0.43.0-next.0` (`vue-publish.yml`, requires `@sentropic/design-system-elements@0.5.0`, `@sentropic/design-system-themes@0.17.0`, and `@sentropic/diagram-canvas@0.7.0`)
+5. `diagram-codecs-v0.2.0` (`diagram-codecs-publish.yml`, requires `@sentropic/diagram-canvas@0.7.0`)
+
 ### Svelte 0.46.1 (Stepper horizontal alignment fix)
 
-Patch release of `@sentropic/design-system-svelte` (`0.46.0` → `0.46.1`) shipping PR #344 (`fix(stepper): centre connectors on bubbles and join the last step`). All runtime `@sentropic/*` pins in `packages/components-svelte/package.json` (`themes@0.16.1`, `diagram-canvas@0.6.0`, `graph@0.3.1`, `rich-text@0.1.1`, `theme-dsfr@0.2.2`, `review-core@0.1.0`) are already on npm, so `svelte-v0.46.1` can be tagged directly once this commit is on `main`:
+Patch release of `@sentropic/design-system-svelte` (`0.46.0` → `0.46.1`) shipping PR #344 (`fix(stepper): centre connectors on bubbles and join the last step`), already tagged on `main` (`svelte-v0.46.1`, superseded by `0.47.0` in DE-3 Milestone 1 above). All runtime `@sentropic/*` pins in `packages/components-svelte/package.json` (`themes@0.16.1`, `diagram-canvas@0.6.0`, `graph@0.3.1`, `rich-text@0.1.1`, `theme-dsfr@0.2.2`, `review-core@0.1.0`) were already on npm:
 
 ```bash
 git push origin main
@@ -331,7 +348,7 @@ git push origin svelte-v0.46.1
 
 ### Diagram Core 0.6.1, Diagram Canvas 0.6.0, Elements 0.4.0, Svelte 0.46.0, Vue 0.42.0-next.0 (Archify lot 1)
 
-Release tag order for the `process@1` simple-box release train (L1a–L1e), each pushed only after the previous publish workflow's `post-publish-check` passes:
+Release tag order for the `process@1` simple-box release train (L1a–L1e), already published on `main` (superseded for `diagram-canvas`, `elements`, `svelte`, `vue`, and `diagram-codecs` by DE-3 Milestone 1 above and PR #350 `svelte-v0.46.1`):
 
 1. `diagram-core-v0.6.1` — `process@1` profile + `diagram-notation@1` minimal resolver (`notation-resolve.ts`) + validated `sentropic:process-flow` extension.
 2. `diagram-canvas-v0.6.0` — `layout/process.ts` (DFS cycle-break, global step ranking, barycentre swimlanes, `P-R1` fit), `presentation/process.ts`, `renderSceneSvg` dispatch, and `validateSceneDocument` bridge; pins `@sentropic/diagram-core@0.6.1`.

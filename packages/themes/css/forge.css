@@ -893,8 +893,9 @@
   --st-component-diagramScene-labelBorderWidth: 1px;
   --st-component-diagramScene-bundleMarkerGap: 6px;
   --st-component-diagramScene-edgeStroke: #64748b;
-  --st-component-diagramScene-linkStrokeWidth: 2.5px;
-  --st-component-diagramScene-linkRelatedStrokeWidth: 3px;
+  --st-component-diagramScene-linkStroke: #0f172a;
+  --st-component-diagramScene-linkStrokeWidth: 3.5px;
+  --st-component-diagramScene-linkRelatedStrokeWidth: 3.5px;
   --st-component-diagramScene-linkPrimaryStrokeWidth: 3.5px;
   --st-component-diagramScene-linkEmphasisStroke: #001f33;
   --st-component-diagramScene-linkEmphasisStrokeWidth: 3.5px;
@@ -1850,8 +1851,9 @@
   --st-component-diagramScene-labelBorderWidth: 1px;
   --st-component-diagramScene-bundleMarkerGap: 6px;
   --st-component-diagramScene-edgeStroke: #64748b;
-  --st-component-diagramScene-linkStrokeWidth: 2.5px;
-  --st-component-diagramScene-linkRelatedStrokeWidth: 3px;
+  --st-component-diagramScene-linkStroke: oklch(96% 0.005 250);
+  --st-component-diagramScene-linkStrokeWidth: 3.5px;
+  --st-component-diagramScene-linkRelatedStrokeWidth: 3.5px;
   --st-component-diagramScene-linkPrimaryStrokeWidth: 3.5px;
   --st-component-diagramScene-linkEmphasisStroke: #99d0f5;
   --st-component-diagramScene-linkEmphasisStrokeWidth: 3.5px;
@@ -2807,8 +2809,9 @@
   --st-component-diagramScene-labelBorderWidth: 1px;
   --st-component-diagramScene-bundleMarkerGap: 6px;
   --st-component-diagramScene-edgeStroke: #64748b;
-  --st-component-diagramScene-linkStrokeWidth: 2.5px;
-  --st-component-diagramScene-linkRelatedStrokeWidth: 3px;
+  --st-component-diagramScene-linkStroke: oklch(96% 0.005 250);
+  --st-component-diagramScene-linkStrokeWidth: 3.5px;
+  --st-component-diagramScene-linkRelatedStrokeWidth: 3.5px;
   --st-component-diagramScene-linkPrimaryStrokeWidth: 3.5px;
   --st-component-diagramScene-linkEmphasisStroke: #99d0f5;
   --st-component-diagramScene-linkEmphasisStrokeWidth: 3.5px;

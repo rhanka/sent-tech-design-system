@@ -1,8 +1,8 @@
 {
   "componentId": "combo-chart",
   "contractSource": "derived",
-  "digest": "sha256:d0842670dc4e9608d6089410654af115f987857b2cb9fc8712fdbfd9200c672f",
-  "entryDigest": "sha256:067ce143af01f8c3cc425eaa17d51c9f120a1d016b5d1109b5f4eb5577feb44d",
+  "digest": "sha256:ebe16579fe4b5ec34aa51667ad12ea3cf698ccf1c717c6810d2851d31780bb4b",
+  "entryDigest": "sha256:5e269600e6d4bf52630b81994237d4e5e9f07ed748dd74068d53b79e9535ef13",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1171,7 +1171,7 @@
         "declarationPath": "packages/components-svelte/dist/ComboChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ComboChartProps",
-        "version": "0.46.1"
+        "version": "0.47.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -1584,7 +1584,7 @@
         "declarationPath": "packages/components-vue/dist/ComboChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ComboChartProps",
-        "version": "0.42.0-next.0"
+        "version": "0.43.0-next.0"
       },
       "status": "partial",
       "unresolved": [],
