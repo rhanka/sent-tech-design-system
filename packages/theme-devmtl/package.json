@@ -1,0 +1,38 @@
+{
+  "name": "@sentropic/design-system-theme-devmtl",
+  "version": "0.1.0",
+  "private": true,
+  "description": "/dev/mtl keynote theme mapping for the Sentropic token structure (light v0).",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
+    "directory": "packages/theme-devmtl"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./css/devmtl.css": "./css/devmtl.css"
+  },
+  "files": [
+    "dist",
+    "css"
+  ],
+  "dependencies": {
+    "@sentropic/design-system-themes": "0.16.1",
+    "@sentropic/design-system-tokens": "0.16.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && npm run build:css",
+    "build:css": "node scripts/build-css.mjs",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run src"
+  }
+}
