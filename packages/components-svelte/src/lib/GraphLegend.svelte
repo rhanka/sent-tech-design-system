@@ -48,7 +48,11 @@
   );
 </script>
 
-<div class={classes} aria-label={title ?? "Graph legend"}>
+<div
+  class={classes}
+  role={variant === "inline" ? "region" : undefined}
+  aria-label={title ?? "Graph legend"}
+>
   {#if title}
     <p class="st-graphLegend__title">{title}</p>
   {/if}
@@ -132,13 +136,13 @@
   }
 
   .st-graphLegend--md {
-    font-size: 0.875rem;
+    font-size: var(--st-typography-label-size, 0.875rem);
     gap: var(--st-spacing-2, 0.5rem);
     padding: var(--st-spacing-2, 0.5rem) var(--st-spacing-3, 0.75rem);
   }
 
   .st-graphLegend--lg {
-    font-size: 1rem;
+    font-size: var(--st-typography-field-size, 1rem);
     font-weight: 500;
     gap: var(--st-spacing-2, 0.5rem);
     padding: var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem);
@@ -204,6 +208,10 @@
     stroke-width: 1.25;
   }
 
+  .st-graphLegend--inline .st-graphLegend__shape {
+    stroke: var(--st-semantic-border-strong, #334155);
+  }
+
   .st-graphLegend__shape--category1 { fill: var(--st-semantic-data-category1, #01055e); }
   .st-graphLegend__shape--category2 { fill: var(--st-semantic-data-category2, #e87432); }
   .st-graphLegend__shape--category3 { fill: var(--st-semantic-data-category3, #4a4f8f); }
@@ -224,7 +232,7 @@
     opacity: 0.75;
   }
 
-  .st-graphLegend--inline .st-graphLegend__edge--weak {
+  :where(.st-graphLegend--inline) .st-graphLegend__edge--weak {
     stroke: var(--st-semantic-text-secondary, #475569);
     opacity: 0.9;
   }

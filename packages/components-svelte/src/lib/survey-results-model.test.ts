@@ -152,4 +152,117 @@ describe("survey-results-model", () => {
     expect(highN.nodes.map((n) => n.id)).toEqual(["type:manuf", "type:startup", "tool:a"]);
     expect(highN.edges).toHaveLength(2);
   });
+
+  it("fails closed when node rawCount or edge weight is undefined, and never exposes < minCellSize room:all", () => {
+    const graph: SurveyAggregateGraph = {
+      nodes: [
+        { id: "type:manuf", label: "Manuf.", family: "company_type", shape: "hexagon", weight: 4 },
+        { id: "tool:ok", label: "Valid", family: "tools", shape: "circle", weight: 3, rawCount: 12 },
+        { id: "tool:unknown", label: "Unknown", family: "tools", shape: "circle", weight: 3 }
+      ],
+      edges: [
+        { source: "tool:ok", target: "tool:unknown", kind: "co_answered" },
+        { source: "type:manuf", target: "tool:ok", kind: "answers" }
+      ]
+    };
+
+    const sanitized = sanitizeSurveyGraph(graph, {
+      isLowN: false,
+      submitted: 200,
+      minCellSize: 5,
+      wholeRoomLabel: "Whole room"
+    });
+    expect(sanitized.nodes.map((n) => n.id)).toEqual(["tool:ok"]);
+    expect(sanitized.edges).toEqual([]);
+
+    const tinyRoom = sanitizeSurveyGraph(graph, {
+      isLowN: true,
+      submitted: 3,
+      minCellSize: 5,
+      wholeRoomLabel: "Whole room"
+    });
+    expect(tinyRoom.nodes).toEqual([]);
+    expect(tinyRoom.edges).toEqual([]);
+  });
+
+  it("does not fabricate room:all edge weights by summing lift-filtered segment edges under lowN", () => {
+    // tool:a has true room count 32, while only one lift-filtered segment edge (10) survived
+    const graph: SurveyAggregateGraph = {
+      nodes: [
+        { id: "type:manuf", label: "Manuf.", family: "company_type", shape: "hexagon", weight: 3, rawCount: 30 },
+        { id: "type:startup", label: "Startup", family: "company_type", shape: "hexagon", weight: 4, rawCount: 40 },
+        { id: "tool:a", label: { fr: "Complétion", en: "Completion" }, family: "tools", shape: "circle", weight: 4, rawCount: 32 }
+      ],
+      edges: [
+        { source: "type:manuf", target: "tool:a", kind: "answers", weight: 10, relation: { fr: "10 réponses", en: "10 answers" } }
+      ]
+    };
+
+    const lowN = sanitizeSurveyGraph(graph, {
+      isLowN: true,
+      submitted: 70,
+      minCellSize: 5,
+      wholeRoomLabel: "Whole room",
+      locale: "en"
+    });
+    expect(lowN.nodes.find((n) => n.id === "tool:a")?.label).toBe("Completion");
+    expect(lowN.nodes.find((n) => n.id === "tool:a")?.group).toBe("tools");
+    expect(lowN.edges).toHaveLength(1);
+    // Uses true whole-room rawCount (32), never fabricated partial sum (10)
+    expect(lowN.edges[0].weight).toBe(32);
+
+    // Explicit room:all edge is preserved without double-counting type:* edges
+    const withExplicitRoom: SurveyAggregateGraph = {
+      nodes: [
+        { id: "room:all", label: "Salle", family: "company_type", shape: "hexagon", weight: 5, rawCount: 70 },
+        { id: "type:manuf", label: "Manuf.", family: "company_type", shape: "hexagon", weight: 3, rawCount: 30 },
+        { id: "tool:a", label: { fr: "Complétion", en: "Completion" }, family: "tools", shape: "circle", weight: 4, rawCount: 32 }
+      ],
+      edges: [
+        { source: "room:all", target: "tool:a", kind: "answers", weight: 32, relation: { fr: "32 réponses", en: "32 answers" } },
+        { source: "type:manuf", target: "tool:a", kind: "answers", weight: 10, relation: "10" }
+      ]
+    };
+    const explicit = sanitizeSurveyGraph(withExplicitRoom, {
+      isLowN: true,
+      submitted: 70,
+      minCellSize: 5,
+      wholeRoomLabel: "Whole room",
+      locale: "en"
+    });
+    expect(explicit.edges).toHaveLength(1);
+    expect(explicit.edges[0].weight).toBe(32);
+    expect(explicit.edges[0].relation).toBe("32 answers");
+  });
+
+  it("never renders French-only short strings under locale='en' in buildQuestionBarData", () => {
+    const frenchShortQuestion: SurveyAggregateQuestion = {
+      id: "q_fr_short",
+      type: "multi",
+      label: { fr: "Outils utilisés", en: "Tools used" },
+      n: 100,
+      options: [
+        {
+          id: "revue",
+          label: { fr: "Revue de code assistée", en: "Assisted code review" },
+          short: "Revue IA",
+          n: 60
+        },
+        {
+          id: "bilingual",
+          label: { fr: "Tests générés", en: "Generated tests" },
+          short: { fr: "Tests IA", en: "AI tests" },
+          n: 40
+        }
+      ]
+    };
+
+    const enBars = buildQuestionBarData(frenchShortQuestion, { locale: "en", minCellSize: 5 });
+    expect(enBars[0].label).toBe("Assisted code review");
+    expect(enBars[1].label).toBe("AI tests");
+
+    const frBars = buildQuestionBarData(frenchShortQuestion, { locale: "fr", minCellSize: 5 });
+    expect(frBars[0].label).toBe("Revue IA");
+    expect(frBars[1].label).toBe("Tests IA");
+  });
 });

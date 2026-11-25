@@ -31,7 +31,7 @@ export type SurveyAggregateFunnel = {
 export type SurveyAggregateOption = {
   id: string;
   label: SurveyLocalizedText;
-  short?: string;
+  short?: SurveyLocalizedText;
   n: number;
   bySegment?: Record<string, number>;
 };
@@ -53,7 +53,7 @@ export type SurveyAggregateQuestion = {
 
 export type SurveyGraphNode = {
   id: string;
-  label: string;
+  label: SurveyLocalizedText;
   family: SurveyGraphFamily;
   shape: "hexagon" | "circle" | "diamond" | "square";
   tone?: ForceGraphTone;
@@ -67,7 +67,7 @@ export type SurveyGraphEdge = {
   source: string;
   target: string;
   kind: "answers" | "co_answered";
-  relation?: string;
+  relation?: SurveyLocalizedText;
   weight?: number;
   width?: number;
   dash?: ForceGraphEdgeDash;
@@ -100,6 +100,8 @@ export type SurveyAggregateSnapshot = {
 export type SurveyResultsLabels = {
   simulationTitle: string;
   simulationMessage: string;
+  sectionAriaLabel: string;
+  kpisRegionLabel: string;
   statusIdle: string;
   statusLive: string;
   statusPaused: string;
@@ -120,9 +122,10 @@ export type SurveyResultsLabels = {
   graphLegendPractices: string;
   graphLegendLevels: string;
   graphLegendCo: string;
-  graphNodeSelected: (label: string, count: number, links: string) => string;
+  graphNodeSelected: (label: string, count: number | string, links: string) => string;
   statsTitle: string;
   statsSubtitle: string;
+  segmentBarsTitle: string;
   questionFilterLabel: string;
   allQuestionsLabel: string;
   colOption: string;
@@ -130,7 +133,7 @@ export type SurveyResultsLabels = {
   colCount: string;
   wholeRoomLabel: string;
   masked: string;
-  responsesCount: (n: number) => string;
+  responsesCount: (n: number | string) => string;
   multiTag: string;
   summaryTitle: string;
   summaryFactsHeading: string;
@@ -143,6 +146,8 @@ const DEFAULT_LABELS: Record<SurveyResultsLocale, SurveyResultsLabels> = {
     simulationTitle: "SIMULATION — données de démonstration",
     simulationMessage:
       "Les chiffres affichés proviennent d’une simulation et non d’un sondage en production.",
+    sectionAriaLabel: "Résultats du sondage en direct",
+    kpisRegionLabel: "Indicateurs de la salle",
     statusIdle: "En attente",
     statusLive: "En direct",
     statusPaused: "En pause",
@@ -171,6 +176,7 @@ const DEFAULT_LABELS: Record<SurveyResultsLocale, SurveyResultsLabels> = {
     statsTitle: "Résultats par question",
     statsSubtitle:
       "Pourcentages des répondants par question. Les cellules sous le seuil sont masquées (< 5).",
+    segmentBarsTitle: "Répartition par type d’organisation",
     questionFilterLabel: "Filtrer une question",
     allQuestionsLabel: "Toutes les questions",
     colOption: "Réponse",
@@ -189,6 +195,8 @@ const DEFAULT_LABELS: Record<SurveyResultsLocale, SurveyResultsLabels> = {
     simulationTitle: "SIMULATION — demo data",
     simulationMessage:
       "All room figures shown here come from a simulation rather than a live production poll.",
+    sectionAriaLabel: "Live survey results",
+    kpisRegionLabel: "Room metrics",
     statusIdle: "Waiting",
     statusLive: "Live",
     statusPaused: "Paused",
@@ -217,6 +225,7 @@ const DEFAULT_LABELS: Record<SurveyResultsLocale, SurveyResultsLabels> = {
     statsTitle: "Results by question",
     statsSubtitle:
       "Percentage of respondents per question. Cells below the privacy threshold are masked (< 5).",
+    segmentBarsTitle: "Breakdown by organisation type",
     questionFilterLabel: "Filter question",
     allQuestionsLabel: "All questions",
     colOption: "Answer",
@@ -281,6 +290,21 @@ export function formatSurveyPercent(
   return locale === "fr" ? `${pct} %` : `${pct}%`;
 }
 
+function resolveOptionBarLabel(
+  opt: SurveyAggregateOption,
+  locale: SurveyResultsLocale
+): string {
+  if (opt.short !== undefined) {
+    if (typeof opt.short === "object") {
+      const resolved = resolveSurveyText(opt.short, locale);
+      if (resolved) return resolved;
+    } else if (opt.short.length > 0 && (locale === "fr" || typeof opt.label === "string")) {
+      return opt.short;
+    }
+  }
+  return resolveSurveyText(opt.label, locale);
+}
+
 export function buildQuestionBarData(
   question: SurveyAggregateQuestion,
   options: {
@@ -294,7 +318,7 @@ export function buildQuestionBarData(
   const items = question.options ?? [];
 
   return items.map((opt, idx) => {
-    const baseLabel = opt.short || resolveSurveyText(opt.label, options.locale);
+    const baseLabel = resolveOptionBarLabel(opt, options.locale);
     const isMasked = opt.n < minCell || question.n < minCell || question.n <= 0;
     const pct = isMasked ? 0 : Math.round((100 * opt.n) / question.n);
     return {
@@ -303,6 +327,55 @@ export function buildQuestionBarData(
       tone: BAR_TONES[idx % BAR_TONES.length]
     };
   });
+}
+
+export type SurveySegmentBarGroup = {
+  segmentId: string;
+  label: string;
+  n: number;
+  data: BarChartDatum[];
+};
+
+export function buildQuestionSegmentBars(
+  question: SurveyAggregateQuestion,
+  options: {
+    locale: SurveyResultsLocale;
+    segments?: SurveyResultsSegment[];
+    isLowN: boolean;
+    minCellSize?: number;
+    minSegmentSize?: number;
+    maskedLabel?: string;
+  }
+): SurveySegmentBarGroup[] {
+  if (options.isLowN || !options.segments || options.segments.length === 0) return [];
+  const minCell = options.minCellSize ?? 5;
+  const minSegment = options.minSegmentSize ?? 10;
+  const maskedLabel = options.maskedLabel ?? `< ${minCell}`;
+  const items = question.options ?? [];
+  if (items.length === 0) return [];
+
+  const groups: SurveySegmentBarGroup[] = [];
+  for (const seg of options.segments) {
+    const denom = question.nBySegment?.[seg.id] ?? 0;
+    if (denom < minSegment || denom < minCell) continue;
+    groups.push({
+      segmentId: seg.id,
+      label: resolveSurveyText(seg.label, options.locale),
+      n: denom,
+      data: items.map((opt, idx) => {
+        const baseLabel = resolveOptionBarLabel(opt, options.locale);
+        const segCount = opt.bySegment?.[seg.id] ?? 0;
+        const isMasked = segCount < minCell;
+        const pct = isMasked ? 0 : Math.round((100 * segCount) / denom);
+        return {
+          label: isMasked ? `${baseLabel} (${maskedLabel})` : baseLabel,
+          value: pct,
+          tone: BAR_TONES[idx % BAR_TONES.length]
+        };
+      })
+    });
+  }
+  return groups;
 }
 
 export function buildQuestionTable(
@@ -389,13 +462,16 @@ export function sanitizeSurveyGraph(
     submitted: number;
     minCellSize?: number;
     wholeRoomLabel: string;
+    locale?: SurveyResultsLocale;
   }
 ): SanitizedSurveyGraph {
-  if (!graph || graph.nodes.length === 0) {
+  const minCell = options.minCellSize ?? 5;
+  const locale = options.locale ?? "fr";
+
+  if (!graph || graph.nodes.length === 0 || options.submitted < minCell) {
     return { nodes: [], edges: [] };
   }
 
-  const minCell = options.minCellSize ?? 5;
   const companyTypeIds = new Set<string>();
   const keptNodes: (ForceGraphNode & { family: SurveyGraphFamily; rawCount?: number })[] = [];
 
@@ -412,6 +488,7 @@ export function sanitizeSurveyGraph(
       keptNodes.push({
         id: "room:all",
         label: options.wholeRoomLabel,
+        group: "company_type",
         family: "company_type",
         shape: "hexagon",
         tone: "category1",
@@ -422,10 +499,13 @@ export function sanitizeSurveyGraph(
 
     for (const node of graph.nodes) {
       if (companyTypeIds.has(node.id)) continue;
-      if (node.rawCount !== undefined && node.rawCount < minCell) continue;
+      if (node.rawCount === undefined || !Number.isFinite(node.rawCount) || node.rawCount < minCell) {
+        continue;
+      }
       keptNodes.push({
         id: node.id,
-        label: node.label,
+        label: resolveSurveyText(node.label, locale),
+        group: node.family,
         family: node.family,
         shape: node.shape,
         tone: node.tone ?? FAMILY_DEFAULT_TONE[node.family],
@@ -437,12 +517,13 @@ export function sanitizeSurveyGraph(
     }
   } else {
     for (const node of graph.nodes) {
-      if (node.id !== "room:all" && node.rawCount !== undefined && node.rawCount < minCell) {
+      if (node.rawCount === undefined || !Number.isFinite(node.rawCount) || node.rawCount < minCell) {
         continue;
       }
       keptNodes.push({
         id: node.id,
-        label: node.id === "room:all" ? options.wholeRoomLabel : node.label,
+        label: node.id === "room:all" ? options.wholeRoomLabel : resolveSurveyText(node.label, locale),
+        group: node.family,
         family: node.family,
         shape: node.shape,
         tone: node.tone ?? FAMILY_DEFAULT_TONE[node.family],
@@ -454,45 +535,95 @@ export function sanitizeSurveyGraph(
     }
   }
 
-  const validIds = new Set(keptNodes.map((n) => n.id));
-  const mergedEdgeMap = new Map<
+  const keptNodeMap = new Map(keptNodes.map((n) => [n.id, n]));
+  const edgeMap = new Map<
     string,
-    ForceGraphEdge & { kind: "answers" | "co_answered"; weight?: number }
+    ForceGraphEdge & { kind: "answers" | "co_answered"; weight?: number; _explicitRoom?: boolean }
   >();
 
   for (const edge of graph.edges) {
+    const isExplicitRoomEdge = edge.source === "room:all" || edge.target === "room:all";
+    const touchesCollapsedType =
+      options.isLowN &&
+      !isExplicitRoomEdge &&
+      (companyTypeIds.has(edge.source) || companyTypeIds.has(edge.target));
+
     const source = options.isLowN && companyTypeIds.has(edge.source) ? "room:all" : edge.source;
     const target = options.isLowN && companyTypeIds.has(edge.target) ? "room:all" : edge.target;
     if (source === target) continue;
-    if (!validIds.has(source) || !validIds.has(target)) continue;
+    if (!keptNodeMap.has(source) || !keptNodeMap.has(target)) continue;
+
+    // Fail closed when weight is missing or below minCellSize.
+    if (edge.weight === undefined || !Number.isFinite(edge.weight) || edge.weight < minCell) {
+      continue;
+    }
 
     const key = `${source}->${target}:${edge.kind}`;
-    const existing = mergedEdgeMap.get(key);
-    if (existing) {
-      const nextWeight = (existing.weight ?? 0) + (edge.weight ?? 0);
-      existing.weight = nextWeight;
-      existing.relation = String(nextWeight);
-      if (edge.width !== undefined) {
-        existing.width = Math.max(existing.width ?? 0, edge.width);
+    const existing = edgeMap.get(key);
+
+    if (touchesCollapsedType) {
+      // Never fabricate room:all weights by summing lift-filtered segment edges.
+      // Prefer an explicit room:all edge if present; otherwise derive the whole-room
+      // count from the surviving target node's verified rawCount (>= minCell).
+      if (existing) {
+        if (!existing._explicitRoom && edge.width !== undefined) {
+          existing.width = Math.max(existing.width ?? 0, edge.width);
+        }
+        continue;
       }
-    } else {
-      mergedEdgeMap.set(key, {
+      const otherId = source === "room:all" ? target : source;
+      const otherNode = keptNodeMap.get(otherId);
+      const roomWeight = otherNode?.rawCount;
+      if (roomWeight === undefined || roomWeight < minCell) continue;
+      edgeMap.set(key, {
         source,
         target,
         kind: edge.kind,
-        relation: edge.relation ?? (edge.weight !== undefined ? String(edge.weight) : undefined),
+        relation: String(roomWeight),
+        weight: roomWeight,
+        width: edge.width,
+        dash: edge.dash ?? (edge.kind === "co_answered" ? "dashed" : undefined),
+        weak: edge.weak ?? (edge.kind === "co_answered" ? true : undefined),
+        emphasis: edge.emphasis,
+        _explicitRoom: false
+      });
+      continue;
+    }
+
+    const resolvedRelation =
+      edge.relation !== undefined ? resolveSurveyText(edge.relation, locale) : String(edge.weight);
+
+    if (isExplicitRoomEdge && existing && !existing._explicitRoom) {
+      // Explicit room:all edge supersedes any collapsed segment placeholder.
+      edgeMap.set(key, {
+        source,
+        target,
+        kind: edge.kind,
+        relation: resolvedRelation,
         weight: edge.weight,
         width: edge.width,
         dash: edge.dash ?? (edge.kind === "co_answered" ? "dashed" : undefined),
         weak: edge.weak ?? (edge.kind === "co_answered" ? true : undefined),
-        emphasis: edge.emphasis
+        emphasis: edge.emphasis,
+        _explicitRoom: true
+      });
+    } else if (!existing) {
+      edgeMap.set(key, {
+        source,
+        target,
+        kind: edge.kind,
+        relation: resolvedRelation,
+        weight: edge.weight,
+        width: edge.width,
+        dash: edge.dash ?? (edge.kind === "co_answered" ? "dashed" : undefined),
+        weak: edge.weak ?? (edge.kind === "co_answered" ? true : undefined),
+        emphasis: edge.emphasis,
+        _explicitRoom: isExplicitRoomEdge
       });
     }
   }
 
-  const keptEdges = Array.from(mergedEdgeMap.values()).filter(
-    (e) => e.weight === undefined || e.weight >= minCell
-  );
+  const keptEdges = Array.from(edgeMap.values()).map(({ _explicitRoom: _ignored, ...rest }) => rest);
 
   return { nodes: keptNodes, edges: keptEdges };
 }

@@ -16,6 +16,7 @@
     SurveyResultsLabels,
     SurveyResultsLocale,
     SurveyResultsSegment,
+    SurveySegmentBarGroup,
     SurveySnapshotStatus
   } from "./survey-results-model.js";
 
@@ -53,6 +54,7 @@
 </script>
 
 <script lang="ts">
+  import { untrack } from "svelte";
   import Alert from "./Alert.svelte";
   import Badge from "./Badge.svelte";
   import BarChart from "./BarChart.svelte";
@@ -70,6 +72,7 @@
   import {
     buildDefaultGraphLegend,
     buildQuestionBarData,
+    buildQuestionSegmentBars,
     buildQuestionTable,
     getSurveyResultsLabels,
     resolveSurveyText,
@@ -186,14 +189,19 @@
   let selectedNodeId = $state<string | null>(null);
   let selectedQuestionId = $state<string>("all");
 
+  // svelte-ignore state_referenced_locally
+  let prevSurveyIdForSelection = snapshot.surveyId;
+
   const t = $derived(getSurveyResultsLabels(locale, labelOverrides));
   const numberLocale = $derived(locale === "fr" ? "fr-CA" : "en-CA");
   const kpiSize = $derived(density === "projection" ? "lg" : "md");
   const legendSize = $derived(density === "projection" ? "lg" : "md");
   const maskedLabel = $derived(minCellSize === 5 ? t.masked : `< ${minCellSize}`);
+  const sectionHeadingAs = $derived<"h2" | "h3">(title ? "h3" : "h2");
+  const subHeadingAs = $derived<"h3" | "h4">(title ? "h4" : "h3");
 
   const resolvedTitle = $derived(
-    title ? resolveSurveyText(title, locale) : t.statsTitle
+    title ? resolveSurveyText(title, locale) : t.sectionAriaLabel
   );
 
   const statusMeta = $derived.by(() => {
@@ -222,7 +230,8 @@
       isLowN: isGraphLowN,
       submitted: graphSnapshot.funnel.submitted,
       minCellSize,
-      wholeRoomLabel: t.wholeRoomLabel
+      wholeRoomLabel: t.wholeRoomLabel,
+      locale
     })
   );
 
@@ -242,23 +251,62 @@
       : statsSnapshot.questions.filter((q) => q.id === effectiveQuestionId)
   );
 
+  // Stack graph and stats full-width when filtering a single question or when
+  // projection mode renders multi-column segmented tables so >= 18 px text and
+  // 7-column tables never overflow on a 1280 px read-only projector.
+  const stackedMain = $derived(
+    effectiveQuestionId !== "all" ||
+      (density === "projection" && !isLowN && segments.length > 0)
+  );
+
+  // Synchronously drop any stale node selection so ForceGraph never dims 100% of nodes/edges.
+  const effectiveSelectedNodeId = $derived(
+    selectedNodeId && sanitizedGraph.nodes.some((n) => n.id === selectedNodeId)
+      ? selectedNodeId
+      : null
+  );
+
+  $effect(() => {
+    const currentSurveyId = snapshot.surveyId;
+    if (currentSurveyId !== prevSurveyIdForSelection) {
+      prevSurveyIdForSelection = currentSurveyId;
+      if (untrack(() => selectedNodeId) !== null) {
+        selectedNodeId = null;
+        onselectnode?.(null);
+      }
+    }
+  });
+
+  $effect(() => {
+    const nodes = sanitizedGraph.nodes;
+    const current = selectedNodeId;
+    if (current !== null && !nodes.some((n) => n.id === current)) {
+      selectedNodeId = null;
+      onselectnode?.(null);
+    }
+  });
+
   const selectedNodeSummary = $derived.by(() => {
-    if (!selectedNodeId) return null;
-    const node = sanitizedGraph.nodes.find((n) => n.id === selectedNodeId);
+    if (!effectiveSelectedNodeId) return null;
+    const node = sanitizedGraph.nodes.find((n) => n.id === effectiveSelectedNodeId);
     if (!node) return null;
     const incident = sanitizedGraph.edges
-      .filter((e) => e.source === selectedNodeId || e.target === selectedNodeId)
+      .filter((e) => e.source === effectiveSelectedNodeId || e.target === effectiveSelectedNodeId)
       .sort((a, b) => (b.weight ?? 0) - (a.weight ?? 0))
       .slice(0, 4)
       .map((e) => {
-        const otherId = e.source === selectedNodeId ? e.target : e.source;
+        const otherId = e.source === effectiveSelectedNodeId ? e.target : e.source;
         const other = sanitizedGraph.nodes.find((n) => n.id === otherId);
-        const detail = e.relation ?? (e.weight !== undefined ? String(e.weight) : "");
+        const detail =
+          e.relation ??
+          (e.weight !== undefined && e.weight >= minCellSize ? String(e.weight) : "");
         return detail ? `${other?.label ?? otherId} (${detail})` : (other?.label ?? otherId);
       });
+    const countDisplay =
+      node.rawCount !== undefined && node.rawCount >= minCellSize ? node.rawCount : maskedLabel;
     return t.graphNodeSelected(
       node.label ?? node.id,
-      node.rawCount ?? Math.round(node.weight ?? 0),
+      countDisplay,
       incident.length > 0 ? incident.join(" · ") : "—"
     );
   });
@@ -270,7 +318,7 @@
   );
 
   function handleNodeSelect(nodeId: string) {
-    const next = selectedNodeId === nodeId ? null : nodeId;
+    const next = effectiveSelectedNodeId === nodeId ? null : nodeId;
     selectedNodeId = next;
     onselectnode?.(next);
   }
@@ -280,6 +328,7 @@
       "st-surveyResults",
       `st-surveyResults--${density}`,
       hasGraph && "st-surveyResults--withGraph",
+      stackedMain && "st-surveyResults--stackedMain",
       className
     ]
       .filter(Boolean)
@@ -312,7 +361,7 @@
       />
     {/if}
 
-    <div class="st-surveyResults__kpis" role="region" aria-label={t.kpiSubmitted}>
+    <div class="st-surveyResults__kpis" role="region" aria-label={t.kpisRegionLabel}>
       <KpiCard
         label={t.kpiSubmitted}
         value={statsSnapshot.funnel.submitted}
@@ -345,6 +394,7 @@
     {#if isLowN}
       <Alert
         tone="info"
+        aria-live="off"
         title={t.lowNTitle(lowNThreshold)}
         message={t.lowNMessage(statsSnapshot.funnel.submitted, minCellSize)}
       />
@@ -363,7 +413,7 @@
         <Card class="st-surveyResults__summary">
           <div class="st-surveyResults__sectionStack">
             <div class="st-surveyResults__rowHeader">
-              <Typography variant={density === "projection" ? "h3" : "h4"} as="h3">
+              <Typography variant={density === "projection" ? "h3" : "h4"} as={sectionHeadingAs}>
                 {t.summaryTitle}
               </Typography>
               <Badge tone="info">{statusMeta.label}</Badge>
@@ -371,7 +421,7 @@
             <Divider />
             {#if statsSnapshot.summary.facts.length > 0}
               <div class="st-surveyResults__subBlock">
-                <Typography variant="h5" as="h4">{t.summaryFactsHeading}</Typography>
+                <Typography variant="h5" as={subHeadingAs}>{t.summaryFactsHeading}</Typography>
                 <UnorderedList
                   items={statsSnapshot.summary.facts.map((item) => resolveSurveyText(item, locale))}
                 />
@@ -379,17 +429,18 @@
             {/if}
             {#if statsSnapshot.summary.impacts.length > 0}
               <div class="st-surveyResults__subBlock">
-                <Typography variant="h5" as="h4">{t.summaryImpactsHeading}</Typography>
+                <Typography variant="h5" as={subHeadingAs}>{t.summaryImpactsHeading}</Typography>
                 <UnorderedList
                   items={statsSnapshot.summary.impacts.map((item) => resolveSurveyText(item, locale))}
                 />
               </div>
             {/if}
-            <Alert
-              tone="info"
-              title={t.summaryDecisionHeading}
-              message={resolveSurveyText(statsSnapshot.summary.decision, locale)}
-            />
+            <div class="st-surveyResults__callout">
+              <Typography variant="h5" as={subHeadingAs}>{t.summaryDecisionHeading}</Typography>
+              <Typography variant="body">
+                {resolveSurveyText(statsSnapshot.summary.decision, locale)}
+              </Typography>
+            </div>
             {#if statsSnapshot.summary.limits}
               <Typography variant="caption" tone="secondary">
                 {resolveSurveyText(statsSnapshot.summary.limits, locale)}
@@ -404,7 +455,7 @@
           <Card class="st-surveyResults__graphCard">
             <div class="st-surveyResults__sectionStack">
               <div class="st-surveyResults__headingGroup">
-                <Typography variant={density === "projection" ? "h3" : "h4"} as="h3">
+                <Typography variant={density === "projection" ? "h3" : "h4"} as={sectionHeadingAs}>
                   {t.graphTitle}
                 </Typography>
                 <Typography variant="body-sm" tone="secondary">
@@ -417,14 +468,14 @@
                   nodes={sanitizedGraph.nodes}
                   edges={sanitizedGraph.edges}
                   label={t.graphTitle}
-                  width={920}
-                  height={480}
+                  width={stackedMain ? 920 : 640}
+                  height={stackedMain ? 480 : 400}
                   nodeRadius={density === "projection" ? 9 : 7}
                   showLabels={true}
                   iterations={graphSnapshot.status === "live" ? 60 : 140}
                   repulsion={1.0}
                   edgeCurve={0.14}
-                  selectedIds={selectedNodeId ? [selectedNodeId] : []}
+                  selectedIds={effectiveSelectedNodeId ? [effectiveSelectedNodeId] : []}
                   onSelect={handleNodeSelect}
                 />
               </div>
@@ -437,7 +488,9 @@
               />
 
               {#if selectedNodeSummary}
-                <Alert tone="info" title={selectedNodeSummary} />
+                <p class="st-surveyResults__nodeSummary" role="status">
+                  {selectedNodeSummary}
+                </p>
               {/if}
             </div>
           </Card>
@@ -447,7 +500,7 @@
           <div class="st-surveyResults__sectionStack">
             <div class="st-surveyResults__statsHeader">
               <div class="st-surveyResults__headingGroup">
-                <Typography variant={density === "projection" ? "h3" : "h4"} as="h3">
+                <Typography variant={density === "projection" ? "h3" : "h4"} as={sectionHeadingAs}>
                   {t.statsTitle}
                 </Typography>
                 <Typography variant="body-sm" tone="secondary">
@@ -476,9 +529,19 @@
             <div class="st-surveyResults__questions">
               {#each visibleQuestions as question (question.id)}
                 {@const qTitle = resolveSurveyText(question.label, locale)}
+                {@const qCountDisplay =
+                  question.n > 0 && question.n < minCellSize ? maskedLabel : question.n}
                 {@const barData = buildQuestionBarData(question, {
                   locale,
                   minCellSize,
+                  maskedLabel
+                })}
+                {@const segmentBars = buildQuestionSegmentBars(question, {
+                  locale,
+                  segments,
+                  isLowN,
+                  minCellSize,
+                  minSegmentSize,
                   maskedLabel
                 })}
                 {@const tableData = buildQuestionTable(question, {
@@ -497,11 +560,11 @@
                 <Card class="st-surveyResults__questionCard">
                   <div class="st-surveyResults__sectionStack">
                     <div class="st-surveyResults__rowHeader">
-                      <Typography variant={density === "projection" ? "h4" : "h5"} as="h4">
+                      <Typography variant={density === "projection" ? "h4" : "h5"} as={subHeadingAs}>
                         {qTitle}
                       </Typography>
                       <div class="st-surveyResults__tags">
-                        <Tag tone="neutral" size="sm">{t.responsesCount(question.n)}</Tag>
+                        <Tag tone="neutral" size="sm">{t.responsesCount(qCountDisplay)}</Tag>
                         {#if question.type === "multi"}
                           <Tag tone="info" size="sm">{t.multiTag}</Tag>
                         {/if}
@@ -513,15 +576,46 @@
                         <BarChart
                           data={barData}
                           orientation="horizontal"
+                          labelPlacement="above-bar"
                           domain={[0, 100]}
-                          width={640}
-                          height={Math.max(170, barData.length * (density === "projection" ? 48 : 40) + 44)}
+                          width={stackedMain ? 640 : 440}
+                          height={Math.max(170, barData.length * (density === "projection" ? 64 : 52) + 48)}
                           label={qTitle}
                           dataLabels={{
                             format: (v) => (locale === "fr" ? `${v} %` : `${v}%`)
                           }}
                         />
                       </div>
+
+                      {#if segmentBars.length > 0}
+                        <div class="st-surveyResults__segmentBarsSection">
+                          <Typography variant="body-sm" tone="secondary">
+                            {t.segmentBarsTitle}
+                          </Typography>
+                          <div class="st-surveyResults__segmentBars">
+                            {#each segmentBars as segGroup (segGroup.segmentId)}
+                              <div class="st-surveyResults__segmentBar">
+                                <div class="st-surveyResults__rowHeader">
+                                  <span class="st-surveyResults__segmentBarTitle">{segGroup.label}</span>
+                                  <Tag tone="neutral" size="sm">{t.responsesCount(segGroup.n)}</Tag>
+                                </div>
+                                <BarChart
+                                  data={segGroup.data}
+                                  orientation="horizontal"
+                                  labelPlacement="above-bar"
+                                  domain={[0, 100]}
+                                  width={420}
+                                  height={Math.max(140, segGroup.data.length * (density === "projection" ? 56 : 46) + 44)}
+                                  label={`${qTitle} — ${segGroup.label}`}
+                                  dataLabels={{
+                                    format: (v) => (locale === "fr" ? `${v} %` : `${v}%`)
+                                  }}
+                                />
+                              </div>
+                            {/each}
+                          </div>
+                        </div>
+                      {/if}
 
                       <Table
                         columns={tableData.columns}
@@ -614,8 +708,43 @@
   .st-surveyResults__graphWrap,
   .st-surveyResults__chartWrap {
     min-width: 0;
-    overflow-x: auto;
     width: 100%;
+  }
+
+  .st-surveyResults__callout,
+  .st-surveyResults__nodeSummary {
+    background: var(--st-semantic-surface-subtle, #f1f5f9);
+    border-left: 4px solid var(--st-semantic-feedback-info, #0284c7);
+    border-radius: var(--st-radius-sm, 0.25rem);
+    display: grid;
+    gap: var(--st-spacing-1, 0.25rem);
+    margin: 0;
+    padding: var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem);
+  }
+
+  .st-surveyResults__segmentBarsSection {
+    display: grid;
+    gap: var(--st-spacing-2, 0.5rem);
+  }
+
+  .st-surveyResults__segmentBars {
+    display: grid;
+    gap: var(--st-spacing-3, 0.75rem);
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  }
+
+  .st-surveyResults__segmentBar {
+    background: var(--st-semantic-surface-subtle, #f8fafc);
+    border: 1px solid var(--st-semantic-border-subtle, #cbd5e1);
+    border-radius: var(--st-radius-md, 0.5rem);
+    display: grid;
+    gap: var(--st-spacing-2, 0.5rem);
+    min-width: 0;
+    padding: var(--st-spacing-3, 0.75rem);
+  }
+
+  .st-surveyResults__segmentBarTitle {
+    font-weight: 600;
   }
 
   .st-surveyResults__graphWrap :global(svg),
@@ -630,10 +759,15 @@
     font-variant-numeric: tabular-nums;
   }
 
+  .st-surveyResults :global(.st-forceGraph__resetBtn) {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+
   .st-surveyResults :global(select:focus-visible),
   .st-surveyResults :global([role="button"]:focus-visible) {
     outline: var(--st-component-control-anatomy-focus-outline, 3px solid #e87432);
-    outline-offset: var(--st-component-control-anatomy-focus-outlineOffset, 2px);
+    outline-offset: var(--st-component-control-anatomy-focus-offset, 2px);
   }
 
   /* 820 px tablet: 2x2 KPI grid, side-by-side stats header. */
@@ -647,13 +781,13 @@
     }
   }
 
-  /* 1280 px room / 16:9: 4-col KPI strip + 7/5 split (engram graph | question stats). */
+  /* 1280 px room / 16:9: 4-col KPI strip + 7/5 split unless stacked for wide projection tables or single-question focus. */
   @container st-survey-results (min-width: 1080px) {
     .st-surveyResults__kpis {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
-    .st-surveyResults--withGraph .st-surveyResults__main {
+    .st-surveyResults--withGraph:not(.st-surveyResults--stackedMain) .st-surveyResults__main {
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     }
   }
@@ -676,13 +810,13 @@
   }
 
   .st-surveyResults--projection :global(.st-alert__message) {
-    font-size: 1rem;
+    font-size: var(--st-typography-field-size, 1rem);
   }
 
   .st-surveyResults--projection :global(.st-table th),
   .st-surveyResults--projection :global(.st-table td) {
     font-size: 1.125rem;
-    padding: var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem);
+    padding: var(--st-spacing-2, 0.5rem) var(--st-spacing-3, 0.75rem);
   }
 
   .st-surveyResults--projection :global(.st-table caption) {
@@ -695,11 +829,11 @@
   }
 
   .st-surveyResults--projection :global(.st-forceGraph__label) {
-    font-size: 1rem;
+    font-size: var(--st-typography-field-size, 1rem);
     font-weight: 600;
   }
 
-  .st-surveyResults--projection :global(.st-forceGraph__edge) {
-    stroke-opacity: 0.85;
+  .st-surveyResults--projection :global(.st-forceGraph__edge:not(.st-forceGraph__edge--dim)) {
+    opacity: 0.85;
   }
 </style>

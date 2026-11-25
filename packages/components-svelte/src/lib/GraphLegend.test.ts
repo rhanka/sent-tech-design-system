@@ -75,7 +75,16 @@ describe("GraphLegend — size & variant extensions (S-4)", () => {
     expect(edgeLine.classList.contains("st-graphLegend__edge--category5")).toBe(true);
   });
 
-  it("uses --st-* light tokens with fallbacks and >= 16px lg typography", () => {
+  it("uses --st-* light tokens with fallbacks, inline region role, and preserves edge tone specificity", () => {
+    const { container } = render(GraphLegend, {
+      props: { entries: sampleEntries, variant: "inline", size: "lg", title: "Room legend" }
+    });
+    const root = container.querySelector(".st-graphLegend") as HTMLElement;
+    expect(root.getAttribute("role")).toBe("region");
+
+    const overlay = render(GraphLegend, { props: { entries: sampleEntries } }).container;
+    expect(overlay.querySelector(".st-graphLegend")?.getAttribute("role")).toBeNull();
+
     const source = readFileSync(
       join(dirname(fileURLToPath(import.meta.url)), "GraphLegend.svelte"),
       "utf8"
@@ -84,6 +93,8 @@ describe("GraphLegend — size & variant extensions (S-4)", () => {
     expect(source).toContain("var(--st-semantic-surface-subtle,");
     expect(source).toContain("var(--st-semantic-text-primary,");
     expect(source).toContain(".st-graphLegend--lg");
-    expect(source).toContain("font-size: 1rem;");
+    expect(source).toContain("var(--st-typography-field-size, 1rem)");
+    expect(source).toContain(":where(.st-graphLegend--inline) .st-graphLegend__edge--weak");
+    expect(source).toContain(".st-graphLegend--inline .st-graphLegend__shape");
   });
 });

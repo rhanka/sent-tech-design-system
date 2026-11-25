@@ -196,7 +196,7 @@ describe("SurveyResults — GraphLegend, node selection, question filter & summa
     expect(legend.classList.contains("st-graphLegend--lg")).toBe(true);
 
     // Click a ForceGraph node
-    const nodeEl = container.querySelector('.st-forceGraph [role="button"][aria-label="Inline"]') as Element;
+    const nodeEl = container.querySelector('.st-forceGraph [role="button"][aria-label^="Inline"]') as Element;
     expect(nodeEl).toBeTruthy();
     await fireEvent.click(nodeEl);
     expect(onselectnode).toHaveBeenCalledWith("tool:inline");
@@ -289,5 +289,154 @@ describe("SurveyResults — GraphLegend, node selection, question filter & summa
     expect(source).toContain(".st-surveyResults--projection");
     expect(source).toContain("1.125rem");
     expect(source).toContain("--st-");
+  });
+});
+
+describe("SurveyResults — P1 regression guards (masking, locale, stale selection, projection)", () => {
+  it("masks question header Tag when 0 < question.n < minCellSize and keeps EN labels with French short strings", () => {
+    const snap = makeSnapshot({
+      questions: [
+        {
+          id: "q_small",
+          type: "single",
+          label: { fr: "Question rare", en: "Rare question" },
+          n: 3,
+          options: [
+            {
+              id: "opt1",
+              label: { fr: "Déploiement continu", en: "Continuous deployment" },
+              short: "Déploiement",
+              n: 3
+            }
+          ]
+        }
+      ]
+    });
+
+    const { container } = render(SurveyResults, {
+      props: { snapshot: snap, locale: "en", minCellSize: 5 }
+    });
+
+    const tags = Array.from(container.querySelectorAll(".st-surveyResults__tags .st-tag")).map((el) =>
+      el.textContent?.trim()
+    );
+    expect(tags[0]).toBe("< 5 responses");
+    expect(tags[0]).not.toContain("3 responses");
+
+    // BarChart must render English label, not French short string
+    const barLabels = Array.from(container.querySelectorAll(".st-barChart__categoryLabel")).map((el) =>
+      el.textContent?.trim()
+    );
+    expect(barLabels.some((l) => l?.includes("Continuous deployment"))).toBe(true);
+    expect(barLabels.some((l) => l?.includes("Déploiement"))).toBe(false);
+  });
+
+  it("resets stale selectedNodeId on surveyId change and lowN collapse so ForceGraph is never 100% dimmed", async () => {
+    const onselectnode = vi.fn();
+    const { container, rerender } = render(SurveyResults, {
+      props: {
+        snapshot: makeSnapshot(),
+        segments,
+        locale: "en",
+        statsThrottleMs: 0,
+        graphThrottleMs: 0,
+        onselectnode
+      }
+    });
+
+    // Select a company_type node present at high N
+    const startupNode = container.querySelector('.st-forceGraph [role="button"][aria-label^="Startup"]') as Element;
+    expect(startupNode).toBeTruthy();
+    await fireEvent.click(startupNode);
+    expect(onselectnode).toHaveBeenCalledWith("type:startup");
+    expect(container.querySelectorAll(".st-forceGraph__node--dim").length).toBeGreaterThan(0);
+
+    // Transition to lowN where type:startup collapses into room:all
+    await rerender({
+      snapshot: makeSnapshot({
+        funnel: { enrolled: 90, submitted: 75, complete: 65, partial: 10, returnedWithinWindow: 5 }
+      }),
+      segments,
+      locale: "en",
+      statsThrottleMs: 0,
+      graphThrottleMs: 0,
+      onselectnode
+    });
+
+    // Graph actually collapsed to Whole room and stale selection is cleared (zero dimmed nodes)
+    expect(container.querySelector(".st-forceGraph")?.textContent).toContain("Whole room");
+    expect(container.querySelectorAll(".st-forceGraph__node--dim")).toHaveLength(0);
+    expect(onselectnode).toHaveBeenLastCalledWith(null);
+
+    // Select a surviving node, then switch surveyId (even if the new survey reuses the same node id)
+    const inlineNode = container.querySelector('.st-forceGraph [role="button"][aria-label^="Inline"]') as Element;
+    expect(inlineNode).toBeTruthy();
+    await fireEvent.click(inlineNode);
+    expect(onselectnode).toHaveBeenLastCalledWith("tool:inline");
+
+    await rerender({
+      snapshot: makeSnapshot({ surveyId: "devmtl-2026-next" }),
+      segments,
+      locale: "en",
+      statsThrottleMs: 0,
+      graphThrottleMs: 0,
+      onselectnode
+    });
+    expect(container.querySelectorAll(".st-forceGraph__node--dim")).toHaveLength(0);
+    expect(onselectnode).toHaveBeenLastCalledWith(null);
+  });
+
+  it("renders per-type segment bars at >= lowNThreshold and stacks projection main layout to avoid table overflow", () => {
+    const { container } = render(SurveyResults, {
+      props: { snapshot: makeSnapshot(), segments, locale: "en", density: "projection" }
+    });
+
+    const root = container.querySelector(".st-surveyResults") as HTMLElement;
+    // Projection with segmented columns stacks main so 18px segment tables & bars never overflow
+    expect(root.classList.contains("st-surveyResults--stackedMain")).toBe(true);
+
+    // Per-type bars are rendered for segments meeting minSegmentSize (manuf=80, startup=92; autre=8 < 10 omitted)
+    const segmentBarCards = container.querySelectorAll(".st-surveyResults__segmentBar");
+    expect(segmentBarCards.length).toBeGreaterThanOrEqual(2);
+    const segmentHeadings = Array.from(
+      container.querySelectorAll(".st-surveyResults__segmentBarTitle")
+    ).map((el) => el.textContent?.trim());
+    expect(segmentHeadings).toContain("Manuf.");
+    expect(segmentHeadings).toContain("Startup");
+    expect(segmentHeadings).not.toContain("Other");
+
+    // Horizontal BarChart uses above-bar placement so category labels never clip on the left
+    const firstCatLabel = container.querySelector(".st-barChart__categoryLabel") as SVGTextElement;
+    expect(firstCatLabel.getAttribute("text-anchor")).toBe("start");
+    expect(Number(firstCatLabel.getAttribute("x"))).toBeGreaterThanOrEqual(0);
+  });
+
+  it("maintains clean a11y semantics: distinct KPI/section labels, valid heading hierarchy, non-spamming lowN alert", () => {
+    const lowNSnap = makeSnapshot({
+      status: "closed",
+      funnel: { enrolled: 90, submitted: 75, complete: 65, partial: 10, returnedWithinWindow: 5 },
+      summary: {
+        facts: [{ fr: "Fait", en: "Fact" }],
+        impacts: [],
+        decision: { fr: "Décision", en: "Decision" }
+      }
+    });
+    const { container } = render(SurveyResults, {
+      props: { snapshot: lowNSnap, segments, locale: "en", lowNThreshold: 120 }
+    });
+
+    const section = container.querySelector("section.st-surveyResults")!;
+    expect(section.getAttribute("aria-label")).toBe("Live survey results");
+
+    const kpis = container.querySelector(".st-surveyResults__kpis")!;
+    expect(kpis.getAttribute("aria-label")).toBe("Room metrics");
+
+    // Without `title`, top-level cards use h2 (not skipping h2) and summary has no nested h2 inside h3
+    expect(container.querySelector(".st-surveyResults__summary h2")?.textContent?.trim()).toBe("Room synthesis");
+    expect(container.querySelectorAll(".st-surveyResults__summary .st-alert")).toHaveLength(0);
+
+    // lowN alert disables live re-announcement spam on 120ms bursts
+    const lowNAlert = container.querySelector(".st-alert--info")!;
+    expect(lowNAlert.getAttribute("aria-live")).toBe("off");
   });
 });
