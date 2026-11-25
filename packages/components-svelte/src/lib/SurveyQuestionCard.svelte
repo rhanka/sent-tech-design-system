@@ -60,7 +60,7 @@
 <div
   {...rest}
   class={classes}
-  data-invalid={errorText ? "true" : undefined}
+  data-invalid={errorText ? "true" : rest["data-invalid"]}
   data-required={required ? "true" : undefined}
 >
   <Card class="st-surveyQuestionCard__card">

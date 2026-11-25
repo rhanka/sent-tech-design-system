@@ -223,6 +223,7 @@
             "Enregistrez une clé d’accès sur cet appareil pour rouvrir plus vite lors de vos prochaines visites.",
           passkeyBtn: "Ajouter une clé d’accès",
           passkeyAdded: "Clé d’accès enregistrée",
+          passkeyError: "Impossible d’enregistrer la clé d’accès. Veuillez réessayer.",
           defaultPrivacyTitle: "Règles de confidentialité",
           defaultPrivacyItems: [
             `Lien envoyé par ${authIssuer}, sans double authentification exigée.`,
@@ -317,6 +318,7 @@
             "Register a local passkey on this device to sign in faster on future visits.",
           passkeyBtn: "Add a passkey",
           passkeyAdded: "Passkey saved",
+          passkeyError: "Could not save the passkey. Please try again.",
           defaultPrivacyTitle: "Privacy & session rules",
           defaultPrivacyItems: [
             `Sign-in link sent by ${authIssuer}, no 2FA required.`,
@@ -350,6 +352,8 @@
   let pendingIdentity = $state<string | null>(null);
   let lastSubmitted = $state<SurveySubmitPayload | null>(null);
   let passkeySaved = $state(false);
+  let registeringPasskey = $state(false);
+  let passkeyError = $state("");
   let isOnline = $state(typeof navigator !== "undefined" ? navigator.onLine : true);
   let thanksHeadingEl = $state<HTMLElement | undefined>(undefined);
   let errorSummaryWrap = $state<HTMLElement | undefined>(undefined);
@@ -406,6 +410,8 @@
       }
 
       passkeySaved = persistDraft ? hasSurveyPasskey(nextIdentity, storageSalt) : false;
+      registeringPasskey = false;
+      passkeyError = "";
       const loadedPending = persistDraft
         ? loadPendingSubmission(id, nextIdentity, storageSalt)
         : null;
@@ -716,6 +722,8 @@
     pendingIdentity = null;
     sessionIdentity = (respondentSeed || "").trim();
     passkeySaved = false;
+    registeringPasskey = false;
+    passkeyError = "";
     step = "enrollment";
   }
 
@@ -748,6 +756,7 @@
   async function deliverSubmission(
     payload: SurveySubmitPayload,
     targetIdentity = activeIdentity,
+    fromExplicitRetry = false,
   ) {
     if (!isOnline) {
       queuePendingSubmission(payload, "offline", targetIdentity);
@@ -764,7 +773,10 @@
         pendingSubmission = null;
         pendingIdentity = null;
       }
-      if (targetIdentity.toLowerCase() === activeIdentity.toLowerCase() && step !== "enrollment") {
+      if (
+        targetIdentity.toLowerCase() === activeIdentity.toLowerCase() &&
+        (step !== "enrollment" || fromExplicitRetry)
+      ) {
         passkeySaved = persistDraft ? hasSurveyPasskey(targetIdentity, storageSalt) : passkeySaved;
         lastSubmitted = payload;
         step = "thanks";
@@ -777,9 +789,9 @@
     }
   }
 
-  async function flushPendingSubmission() {
+  async function flushPendingSubmission(explicit = false) {
     if (!pendingSubmission || !pendingIdentity || submitting) return;
-    await deliverSubmission(pendingSubmission.payload, pendingIdentity);
+    await deliverSubmission(pendingSubmission.payload, pendingIdentity, explicit);
   }
 
   function formatSubmitGateError(ids: string[]): string {
@@ -852,11 +864,24 @@
   }
 
   async function handleRegisterPasskey() {
-    await onregisterpasskey?.();
-    if (persistDraft) {
-      saveSurveyPasskey(activeIdentity, storageSalt);
+    if (registeringPasskey || passkeySaved) return;
+    registeringPasskey = true;
+    passkeyError = "";
+    try {
+      await onregisterpasskey?.();
+      if (persistDraft) {
+        saveSurveyPasskey(activeIdentity, storageSalt);
+      }
+      passkeySaved = true;
+    } catch (err) {
+      const isCancel =
+        err instanceof Error && (err.name === "NotAllowedError" || err.name === "AbortError");
+      if (!isCancel) {
+        passkeyError = copy.passkeyError;
+      }
+    } finally {
+      registeringPasskey = false;
     }
-    passkeySaved = true;
   }
 
   const resolvedPasskeyTitle = $derived(
@@ -879,9 +904,11 @@
   const errorSummaryItems = $derived(
     missingIds.map((id) => {
       const q = survey.questions.find((item) => item.id === id);
+      const label = q ? resolveLocalizedText(q.label, locale) : id;
+      const msg = q ? validationMessageFor(q) || copy.requiredError : copy.requiredError;
       return {
         href: `#st-survey-q-${survey.id}-${id}`,
-        text: q ? resolveLocalizedText(q.label, locale) : id,
+        text: `${label} — ${msg}`,
       };
     }),
   );
@@ -1009,7 +1036,7 @@
                   size="lg"
                   type="button"
                   disabled={submitting}
-                  onclick={() => void flushPendingSubmission()}
+                  onclick={() => void flushPendingSubmission(true)}
                 >
                   {copy.retryNowBtn}
                 </Button>
@@ -1294,12 +1321,16 @@
                           variant="secondary"
                           size="lg"
                           type="button"
+                          disabled={registeringPasskey}
                           onclick={() => void handleRegisterPasskey()}
                         >
                           {resolvedPasskeyBtn}
                         </Button>
                       {/if}
                     </div>
+                    {#if passkeyError}
+                      <Alert tone="error" title={passkeyError} />
+                    {/if}
                   </Stack>
                 </Card>
               {/if}
@@ -1355,7 +1386,8 @@
   }
 
   .st-surveyForm__main {
-    max-width: 38rem;
+    margin-inline: auto;
+    max-width: 44rem;
     min-width: 0;
     width: 100%;
   }
@@ -1409,11 +1441,11 @@
     display: block;
   }
 
-  /* 820px+ tablet & 1280px+ desktop: two-column layout with sticky privacy card */
-  @container st-survey-form (min-width: 760px) {
+  /* 984px+ desktop: two-column layout with sticky privacy card keeping main >= 44rem (>= 600px inner for LikertScale) */
+  @container st-survey-form (min-width: 984px) {
     .st-surveyForm--withPrivacy .st-surveyForm__grid {
       gap: var(--st-spacing-6, 1.5rem);
-      grid-template-columns: minmax(0, min(100%, 38rem)) minmax(17rem, 21rem);
+      grid-template-columns: minmax(0, min(100%, 44rem)) minmax(16rem, 20rem);
       justify-content: center;
     }
 
