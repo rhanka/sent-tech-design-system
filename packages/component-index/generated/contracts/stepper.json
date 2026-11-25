@@ -1,8 +1,8 @@
 {
   "componentId": "stepper",
   "contractSource": "derived",
-  "digest": "sha256:655dd0095ae5e21c100c022953e0d33b97bd6d2ffcbd48e978a4c84d90d3ed76",
-  "entryDigest": "sha256:1449bced178d38f9c2cf63d530194ace15d95392253c481d705dd5e949b36252",
+  "digest": "sha256:582fc9124c1abb7cbe28eb0cc507884683b3f7cd75ec3e70d5ea792644665456",
+  "entryDigest": "sha256:1fdc65358df9e2dbd2a94b2d89848c3246d1ed5f69126c97e8b99d765eb98d77",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
