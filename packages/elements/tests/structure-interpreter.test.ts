@@ -166,7 +166,7 @@ describe("structure interpreter: construction over the committed documents", () 
               allOf: [{ $ref: "https://a2ui.org/specification/v0_9_1/common_types.json#/$defs/ComponentCommon" }],
               properties: {
                 component: { const: "BarChart" },
-                name: { type: "string", maxLength: 1 },
+                step: { type: "number", multipleOf: 2 },
               },
               type: "object",
             },
@@ -175,7 +175,48 @@ describe("structure interpreter: construction over the committed documents", () 
         envelopeSchema: envelopeJson as never,
         commonTypes: a2uiCommonTypes as never,
       }),
-    ).toThrow(/maxLength/);
+    ).toThrow(/multipleOf/);
+  });
+
+  it("matches ajv on maxLength, exclusiveMinimum, and exclusiveMaximum", () => {
+    const customCatalog = {
+      ...(catalogJson as object),
+      components: {
+        Bounded: {
+          type: "object",
+          properties: {
+            component: { const: "Bounded" },
+            name: { type: "string", minLength: 1, maxLength: 4 },
+            level: { type: "number", exclusiveMinimum: 0, exclusiveMaximum: 1 },
+          },
+          required: ["component", "name", "level"],
+          additionalProperties: false,
+        },
+      },
+    } as never;
+    const ajvCustom = createAjvStructure({
+      catalog: customCatalog,
+      envelopeSchema: envelopeJson as never,
+      commonTypes: a2uiCommonTypes as never,
+    });
+    const interpCustom = createInterpreterStructure({
+      catalog: customCatalog,
+      envelopeSchema: envelopeJson as never,
+      commonTypes: a2uiCommonTypes as never,
+    });
+    const cases = [
+      { component: "Bounded", name: "abcd", level: 0.5 },
+      { component: "Bounded", name: "🧪🧪🧪🧪", level: 0.5 }, // 4 astral code points
+      { component: "Bounded", name: "abcde", level: 0.5 },
+      { component: "Bounded", name: "ab", level: 0 },
+      { component: "Bounded", name: "ab", level: 1 },
+      { component: "Bounded", name: "ab", level: -0.1 },
+    ];
+    for (const root of cases) {
+      expect(signaturesOf(interpCustom.validateComponent("Bounded", root))).toEqual(
+        signaturesOf(ajvCustom.validateComponent("Bounded", root)),
+      );
+    }
   });
 
   it("refuses the legacy tuple form of items", () => {

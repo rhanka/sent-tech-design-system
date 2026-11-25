@@ -14,7 +14,8 @@
  * refuse. It implements exactly the keyword surface the committed documents
  * use (measured: `$ref`, `type`, `enum`, `const`, `pattern`, `properties`,
  * `required`, `additionalProperties`, `unevaluatedProperties`, `items`,
- * `minItems`, `maxItems`, `minLength`, `minimum`, `maximum`, `allOf`, `anyOf`, `oneOf`, `not`) and REFUSES
+ * `minItems`, `maxItems`, `minLength`, `maxLength`, `minimum`, `maximum`,
+ * `exclusiveMinimum`, `exclusiveMaximum`, `allOf`, `anyOf`, `oneOf`, `not`) and REFUSES
  * CONSTRUCTION when a registered document grows a standard 2020-12 keyword
  * outside that set, or any UNKNOWN keyword at all, so a catalogue change
  * cannot silently weaken the browser validation. The only allowed
@@ -52,8 +53,11 @@ const IMPLEMENTED_KEYWORDS = new Set([
   "const",
   "pattern",
   "minLength",
+  "maxLength",
   "minimum",
   "maximum",
+  "exclusiveMinimum",
+  "exclusiveMaximum",
   "properties",
   "required",
   "additionalProperties",
@@ -98,9 +102,6 @@ const ANNOTATION_KEYWORDS = new Set([
 /** Standard 2020-12 VALIDATION keywords this interpreter does not implement. */
 const UNSUPPORTED_STANDARD_KEYWORDS = new Set([
   "multipleOf",
-  "exclusiveMaximum",
-  "exclusiveMinimum",
-  "maxLength",
   "maxProperties",
   "minProperties",
   "uniqueItems",
@@ -379,15 +380,24 @@ function validateNode(
   if (typeof pattern === "string" && typeof data === "string" && !new RegExp(pattern, "u").test(data)) {
     fail({ pointer, message: `must match pattern "${pattern}"`, keyword: "pattern" });
   }
-  const { minLength, minimum, maximum } = schema;
+  const { minLength, maxLength, minimum, maximum, exclusiveMinimum, exclusiveMaximum } = schema;
   if (typeof data === "string" && typeof minLength === "number" && [...data].length < minLength) {
     fail({ pointer, message: `must NOT have fewer than ${minLength} characters`, keyword: "minLength" });
+  }
+  if (typeof data === "string" && typeof maxLength === "number" && [...data].length > maxLength) {
+    fail({ pointer, message: `must NOT have more than ${maxLength} characters`, keyword: "maxLength" });
   }
   if (typeof data === "number" && typeof maximum === "number" && data > maximum) {
     fail({ pointer, message: `must be <= ${maximum}`, keyword: "maximum" });
   }
+  if (typeof data === "number" && typeof exclusiveMaximum === "number" && data >= exclusiveMaximum) {
+    fail({ pointer, message: `must be < ${exclusiveMaximum}`, keyword: "exclusiveMaximum" });
+  }
   if (typeof data === "number" && typeof minimum === "number" && data < minimum) {
     fail({ pointer, message: `must be >= ${minimum}`, keyword: "minimum" });
+  }
+  if (typeof data === "number" && typeof exclusiveMinimum === "number" && data <= exclusiveMinimum) {
+    fail({ pointer, message: `must be > ${exclusiveMinimum}`, keyword: "exclusiveMinimum" });
   }
 
   // Object keywords run only for plain objects (ajv's applicability guards).
