@@ -40,7 +40,7 @@
     "measure:port:check": "node scripts/port-metrics.mjs --check"
   },
   "dependencies": {
-    "@sentropic/dataviz-core": "0.5.0",
+    "@sentropic/dataviz-core": "0.5.1",
     "@sentropic/design-system-preact": "0.0.0-p0.0",
     "@sentropic/design-system-themes": "0.16.1",
     "jspdf": "^4.2.1",
@@ -54,7 +54,7 @@
     "@babel/core": "7.29.7",
     "@preact/preset-vite": "2.10.6",
     "@preact/signals": "2.11.4",
-    "@sentropic/dataviz-react": "0.5.0",
+    "@sentropic/dataviz-react": "0.5.1",
     "@sentropic/design-system-react": "0.40.0",
     "@testing-library/preact": "3.2.6",
     "@testing-library/react": "16.3.2",
