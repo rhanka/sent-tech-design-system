@@ -82,7 +82,7 @@ describe("LikertScale — native semantics and selection", () => {
     expect(screen.getByText("Détail 7")).toBeTruthy();
   });
 
-  it("marks step badges aria-hidden when already present in the label, and visible to SR otherwise", () => {
+  it("strips duplicate leading step numbers from labels and hides redundant bare numeric badges", () => {
     const { container: c1 } = render(LikertScale, {
       props: {
         name: "mat",
@@ -90,21 +90,36 @@ describe("LikertScale — native semantics and selection", () => {
         options: maturityOptions
       }
     });
-    const hiddenBadges = [...c1.querySelectorAll(".st-likert__badge")];
-    expect(hiddenBadges.every((el) => el.getAttribute("aria-hidden") === "true")).toBe(true);
+    const badges = [...c1.querySelectorAll(".st-likert__badge")];
+    const labels = [...c1.querySelectorAll(".st-likert__label")];
+    expect(badges.map((el) => el.textContent)).toEqual(["1", "2", "3", "4", "5"]);
+    expect(badges.every((el) => el.getAttribute("aria-hidden") === null)).toBe(true);
+    expect(labels[0]?.textContent).toBe("Aucun usage structuré de l'IA dans l'équipe");
+    expect(labels.every((el) => !/^\d+\s*·/.test(el.textContent ?? ""))).toBe(true);
 
+    const bareNumeric = [
+      { value: "1", label: "1" },
+      { value: "2", label: "2" },
+      { value: "3", label: "3" },
+      { value: "4", label: "4" }
+    ];
     const { container: c2 } = render(LikertScale, {
       props: {
-        name: "short",
-        legend: "Fréquence",
-        options: shortOptions
+        name: "bare",
+        legend: "Note",
+        options: bareNumeric
       }
     });
-    const exposedBadges = [...c2.querySelectorAll(".st-likert__badge")];
-    expect(exposedBadges.every((el) => el.getAttribute("aria-hidden") === null)).toBe(true);
+    expect(c2.querySelectorAll(".st-likert__badge").length).toBe(0);
+    expect([...c2.querySelectorAll(".st-likert__label")].map((el) => el.textContent)).toEqual([
+      "1",
+      "2",
+      "3",
+      "4"
+    ]);
   });
 
-  it("renders minLabel and maxLabel poles", () => {
+  it("exposes minLabel and maxLabel poles to screen readers and wires them via aria-describedby", () => {
     const { container } = render(LikertScale, {
       props: {
         name: "poles",
@@ -114,10 +129,17 @@ describe("LikertScale — native semantics and selection", () => {
         maxLabel: "Élevée"
       }
     });
+    const fieldset = container.querySelector("fieldset") as HTMLFieldSetElement;
     const poles = container.querySelector(".st-likert__poles") as HTMLElement;
+    const radios = screen.getAllByRole("radio") as HTMLInputElement[];
+
     expect(poles).toBeTruthy();
+    expect(poles.id).toBeTruthy();
+    expect(poles.getAttribute("aria-hidden")).toBeNull();
     expect(poles.textContent).toContain("Faible");
     expect(poles.textContent).toContain("Élevée");
+    expect(fieldset.getAttribute("aria-describedby")).toContain(poles.id);
+    expect(radios.every((r) => (r.getAttribute("aria-describedby") ?? "").includes(poles.id))).toBe(true);
   });
 });
 
@@ -140,6 +162,20 @@ describe("LikertScale — responsive layout auto heuristic", () => {
         name: "auto-long",
         legend: "Maturité IA",
         options: maturityOptions
+      }
+    });
+    const fieldset = container.querySelector("fieldset") as HTMLElement;
+    expect(fieldset.classList.contains("st-likert--stacked")).toBe(true);
+    expect(fieldset.classList.contains("st-likert--horizontal-capable")).toBe(false);
+  });
+
+  it("stays stacked for short labels carrying descriptions in layout='auto'", () => {
+    const describedShort = shortOptions.map((o) => ({ ...o, description: "Précision contextuelle" }));
+    const { container } = render(LikertScale, {
+      props: {
+        name: "auto-desc",
+        legend: "Fréquence détaillée",
+        options: describedShort
       }
     });
     const fieldset = container.querySelector("fieldset") as HTMLElement;

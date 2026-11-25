@@ -41,6 +41,8 @@
     errorText?: string;
     /** Marque le groupe comme requis. */
     required?: boolean;
+    /** Accessible screen-reader text announced when required is set. */
+    requiredLabel?: string;
     invalid?: boolean;
     disabled?: boolean;
     class?: string;
@@ -50,7 +52,7 @@
 
   let {
     legend,
-    value = [],
+    value = $bindable<string[]>([]),
     onchange,
     orientation = "vertical",
     variant = "list",
@@ -64,6 +66,7 @@
     helperText,
     errorText,
     required = false,
+    requiredLabel = "required",
     invalid = false,
     disabled = false,
     class: className,
@@ -84,8 +87,11 @@
   const isInvalid = $derived(invalid || Boolean(errorText));
   const hasLimitHint = $derived(maxSelections !== undefined && maxSelections > 0);
   const limitText = $derived(
-    maxSelectionsMessage ??
-      (maxSelections !== undefined ? `${nonExclusiveCount} / ${maxSelections}` : "")
+    maxSelections === undefined
+      ? ""
+      : maxSelectionsMessage
+        ? `${nonExclusiveCount} / ${maxSelections} — ${maxSelectionsMessage}`
+        : `${nonExclusiveCount} / ${maxSelections}`
   );
 
   const describedBy = $derived(
@@ -112,22 +118,21 @@
   );
 
   function toggle(optionValue: string, checked: boolean) {
+    let next: string[];
     if (!checked) {
-      onchange?.(value.filter((v) => v !== optionValue));
-      return;
+      next = value.filter((v) => v !== optionValue);
+    } else if (exclusiveSet.has(optionValue)) {
+      next = [optionValue];
+    } else {
+      const base = value.filter((v) => !exclusiveSet.has(v));
+      if (base.includes(optionValue)) return;
+      if (maxSelections !== undefined && maxSelections > 0 && base.length >= maxSelections) {
+        return;
+      }
+      next = [...base, optionValue];
     }
-
-    if (exclusiveSet.has(optionValue)) {
-      onchange?.([optionValue]);
-      return;
-    }
-
-    const base = value.filter((v) => !exclusiveSet.has(v));
-    if (base.includes(optionValue)) return;
-    if (maxSelections !== undefined && maxSelections > 0 && base.length >= maxSelections) {
-      return;
-    }
-    onchange?.([...base, optionValue]);
+    value = next;
+    onchange?.(next);
   }
 </script>
 
@@ -142,7 +147,7 @@
   data-max-selections={maxSelections}
 >
   <legend class="st-checkboxGroup__legend">
-    {legend}{#if required}<span class="st-checkboxGroup__required" aria-hidden="true"> *</span>{/if}
+    {legend}{#if required}<span class="st-checkboxGroup__required" aria-hidden="true"> *</span><span class="st-visually-hidden"> ({requiredLabel})</span>{/if}
   </legend>
   {#if helperText}
     <p class="st-checkboxGroup__help" id={helpId}>{helperText}</p>
@@ -197,6 +202,18 @@
     color: var(--st-component-field-errorText, var(--st-semantic-feedback-error, #dc2626));
   }
 
+  .st-visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
   .st-checkboxGroup__help,
   .st-checkboxGroup__limit {
     color: var(--st-component-field-helpText, var(--st-semantic-text-secondary, #444455));
@@ -234,7 +251,8 @@
   }
 
   @container (min-width: 520px) {
-    .st-checkboxGroup--card.st-checkboxGroup--cols-2 .st-checkboxGroup__options {
+    .st-checkboxGroup--card.st-checkboxGroup--cols-2 .st-checkboxGroup__options,
+    .st-checkboxGroup--card.st-checkboxGroup--horizontal .st-checkboxGroup__options {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }

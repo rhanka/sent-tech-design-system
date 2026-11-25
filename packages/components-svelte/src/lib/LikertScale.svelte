@@ -59,6 +59,7 @@
 
   const uid = $props.id();
   const helpId = `${uid}-help`;
+  const polesId = `${uid}-poles`;
   const errorId = `${uid}-error`;
 
   const isInvalid = $derived(invalid || Boolean(errorText));
@@ -66,17 +67,44 @@
     [
       rest["aria-describedby"],
       helperText ? helpId : null,
+      minLabel || maxLabel ? polesId : null,
       errorText ? errorId : null
     ]
       .filter(Boolean)
       .join(" ") || undefined
   );
 
+  function escapeRegExp(input: string): string {
+    return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function badgePrefixPattern(badge: string): RegExp | null {
+    const token = badge.trim();
+    if (!token) return null;
+    return new RegExp(`^${escapeRegExp(token)}(?:\\s*[·.:–—-]\\s*|\\s+|$)`);
+  }
+
+  function resolveOptionDisplay(
+    badge: string,
+    label: string
+  ): { displayLabel: string; showBadge: boolean } {
+    const trimmed = label.trim();
+    const re = badgePrefixPattern(badge);
+    if (!re || !re.test(trimmed)) return { displayLabel: label, showBadge: true };
+    const stripped = trimmed.replace(re, "").trim();
+    if (!stripped) return { displayLabel: label, showBadge: false };
+    return { displayLabel: stripped, showBadge: true };
+  }
+
   const canGoHorizontal = $derived(
     layout === "horizontal" ||
       (layout === "auto" &&
         options.length <= 5 &&
-        options.every((o) => o.label.trim().length <= 22))
+        options.every((o, index) => {
+          const badge = o.stepBadge ?? String(index + 1);
+          const { displayLabel } = resolveOptionDisplay(badge, o.label);
+          return displayLabel.trim().length <= 22 && !o.description?.trim();
+        }))
   );
 
   const classes = $derived(
@@ -89,18 +117,6 @@
       .filter(Boolean)
       .join(" ")
   );
-
-  function escapeRegExp(input: string): string {
-    return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  }
-
-  function badgeAlreadyInLabel(badge: string, label: string): boolean {
-    const trimmed = label.trim();
-    const token = badge.trim();
-    if (!token) return false;
-    const re = new RegExp(`^${escapeRegExp(token)}(?:\\s*[·.:–—-]\\s*|\\s+|$)`);
-    return re.test(trimmed);
-  }
 
   function select(optionValue: string, optionDisabled?: boolean) {
     if (disabled || optionDisabled) return;
@@ -131,7 +147,7 @@
     {#each options as option, index (option.value)}
       {@const checked = value === option.value}
       {@const badge = option.stepBadge ?? String(index + 1)}
-      {@const hideBadge = badgeAlreadyInLabel(badge, option.label)}
+      {@const { displayLabel, showBadge } = resolveOptionDisplay(badge, option.label)}
       {@const optionDisabled = Boolean(disabled || option.disabled)}
       <label
         class="st-likert__option"
@@ -150,9 +166,11 @@
           aria-describedby={describedBy}
           onchange={() => select(option.value, option.disabled)}
         />
-        <span class="st-likert__badge" aria-hidden={hideBadge ? "true" : undefined}>{badge}</span>
+        {#if showBadge}
+          <span class="st-likert__badge">{badge}</span>
+        {/if}
         <span class="st-likert__content">
-          <span class="st-likert__label">{option.label}</span>
+          <span class="st-likert__label">{displayLabel}</span>
           {#if option.description}
             <span class="st-likert__description">{option.description}</span>
           {/if}
@@ -162,7 +180,7 @@
   </div>
 
   {#if minLabel || maxLabel}
-    <div class="st-likert__poles" aria-hidden="true">
+    <div class="st-likert__poles" id={polesId}>
       <span class="st-likert__pole st-likert__pole--min">{minLabel ?? ""}</span>
       <span class="st-likert__pole st-likert__pole--max">{maxLabel ?? ""}</span>
     </div>
@@ -228,6 +246,10 @@
       border-color var(--st-motion-fast, 150ms) var(--st-motion-easing, ease),
       box-shadow var(--st-motion-fast, 150ms) var(--st-motion-easing, ease);
     width: 100%;
+  }
+
+  .st-likert__option:not(:has(.st-likert__badge)) {
+    grid-template-columns: auto 1fr;
   }
 
   .st-likert__option:hover:not(.st-likert__option--disabled) {
