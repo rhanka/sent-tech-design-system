@@ -1,8 +1,8 @@
 {
   "componentId": "checkbox",
   "contractSource": "derived",
-  "digest": "sha256:13c390dfb0843099d433f180d176f123bfa4e78d4c0fac1b49ca3e177e0e7034",
-  "entryDigest": "sha256:1152124262a9b1ccfe5300b550411057cb4022f30782124f37174d802acb3a2f",
+  "digest": "sha256:b1d723123d7074153bb35e9017e5e0aa9f62f80e2e6009f37293e73e4314edc0",
+  "entryDigest": "sha256:284a1252b19d1eb47342cd898bf69b5a2c76776e7f92fcc9e2960d1e1171d7e1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -188,6 +188,13 @@
           },
           "label": {
             "type": "string"
+          },
+          "variant": {
+            "description": "Presentation density: compact list row or >= 48px touch card.",
+            "enum": [
+              "list",
+              "card"
+            ]
           }
         },
         "required": [
@@ -202,7 +209,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:9fff15ce6e4bec4b6a53ca2d926806b5eb2fc0fefa53849684ce8c040718a533",
+        "declarationDigest": "sha256:5ab90c08301b6c0ac714626f33ed121eb3aa6563e45650a81e64e94c1a6b1a76",
         "declarationPath": "packages/components-svelte/dist/Checkbox.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CheckboxProps",

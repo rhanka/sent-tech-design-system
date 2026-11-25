@@ -826,7 +826,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:1152124262a9b1ccfe5300b550411057cb4022f30782124f37174d802acb3a2f",
+      "digest": "sha256:284a1252b19d1eb47342cd898bf69b5a2c76776e7f92fcc9e2960d1e1171d7e1",
       "frameworks": [
         "svelte",
         "react",
@@ -853,7 +853,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c8cfa73c88ab4f415ccacde5b73a4729ca6b8753623e03adc0a25e86b44eb3b2",
+      "digest": "sha256:36a8217f6148ce628fb82a562ea714fbfd6563b64129b557e8ec5f906ab783af",
       "frameworks": [
         "svelte",
         "react",
@@ -2728,7 +2728,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:adde280a96a76e82571f7de9c2d7897c8e9bf8bf5fd0d27ee4d6b3322ae0ff40",
+      "digest": "sha256:3d4d11a32022fb113a6ab1c99acdf7e1959fc32d403d659d8deb08458e2d4fa3",
       "frameworks": [
         "svelte",
         "react",
@@ -3993,7 +3993,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c8d40393fbf51238ff6aa564c66f7522db8ca632f8068a1586cc60822fd09c76",
+      "digest": "sha256:eac49e1992753360a4de04f1b885fd73e2801f922af737ed19cf7a3ebc19101d",
       "frameworks": [
         "svelte",
         "react",
@@ -4020,7 +4020,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c7f84decbf576f774b3112abc4450169cf9175ced6fcc61001f8d4b9a342a61b",
+      "digest": "sha256:1a3df8f3c681959327a3ad58aceb290ba458a5c336a8c5daa0ecb268f4d8e9d3",
       "frameworks": [
         "svelte",
         "react",
@@ -4801,7 +4801,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:fd6d54717c5204f1cfebae80681de8bc8b340c9cb5c1f24eb0018614251c9153",
+      "digest": "sha256:47a93578dee3dc56b604ec061a125d2e64f18b6069c29711a98d1afb350311dc",
       "frameworks": [
         "svelte",
         "react",
@@ -5868,6 +5868,6 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "registryRevision": "sha256:275c5f0af675beec534279557e1a8e78b1d476d4bec98dddd5164911d581390d",
-  "sourceCommit": "88866d6c88110ba9520995f3ce12acb24c8088a8"
+  "registryRevision": "sha256:53ccd5e75b3c64c9404240d6a9eb6b4c486a8e83015efa582d6c932b3012771d",
+  "sourceCommit": "e385ba3409b2b41b5ed2784b30ad0539fd0f7556"
 }
