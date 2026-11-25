@@ -603,7 +603,7 @@
       "gitBlob": "43bd36e47930e1348bdaa535607c57b7e7358e08",
       "sha256": "a48bae892eb533058304605566d320ed9925eaf5c62258bff0f807e190f39349",
       "status": "adapted-packaging-only",
-      "destinationSha256": "0934c820aba863d6aa0a11b2c6aab52f587912e7ddef3843c6183a8e5b887170"
+      "destinationSha256": "0405662885407a093b676527e78c711c6e793d44bfefce7b14d6a80334545e80"
     },
     {
       "repository": "dataviz",
@@ -1243,7 +1243,7 @@
       "gitBlob": "8b83d27e619c59aeeb930c0d2c6103a481b2c163",
       "sha256": "79ebf67482becc2f3812a7e732c339fbf6c6150592c200647bd5f12a64cc6104",
       "status": "adapted-local-exports",
-      "destinationSha256": "4680a6b1cb4f8728c21934bfec3610882ce5b6cc80ffa8d841a4cc4f07018407",
+      "destinationSha256": "c69887cfeaa4e7fb71f973596d0198fa06c9b181d991bf93eaf3b384f850c561",
       "note": "PR #65 added the PriorityMatrix exports, including PriorityMatrixObstacle which the public options type references"
     },
     {
@@ -1886,7 +1886,7 @@
       "gitBlob": "0324f1612dd9a0405d50dddd2ba7e1c58a029f2d",
       "sha256": "97141365d0ab46106c6d894e5ede74c342efbf46b4771d9c9d6ba22b3dfc6777",
       "status": "adapted-packaging-only",
-      "destinationSha256": "8ed92238083b7150248779fd8c775aa2e92620c1be2aef71ca9cc143d2d30e52",
+      "destinationSha256": "984ba6b3ff6a8a1463632ae1fe94a1614a3c6061cbb8e07e2e648153957839f3",
       "note": "angular devDeps pinned to exact 21.2.17 (single runtime; ^ resolved a nested 21.2.23 breaking TestBed); @angular/* devDeps moved to exact 21.2.24 by #72 (single hoisted runtime, clears the i18n XSS advisory); @sentropic/design-system-angular dependency bumped to 0.38.0 by the Calendar onMonthChange release; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); @sentropic/design-system-angular dependency bumped to 0.38.1 by the Checkbox centring patch (pin only); @sentropic/design-system-angular dependency bumped to 0.39.0 by the Icon glyph prop release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; DE-1: align @sentropic/design-system-themes pin with 0.15.0; r7 v1 regressions fix: align @sentropic/design-system-themes pin with 0.15.1; DE-2: align workspace dependency pins (themes 0.16.0 / svelte 0.44.0 / vue 0.41.0-next.10); R7 view-all: align workspace dependency pins (tokens/themes 0.16.1, diagram-canvas 0.4.1, svelte 0.44.1, vue 0.41.0-next.12)"
     },
     {
@@ -2044,7 +2044,7 @@
       "gitBlob": "546b6243e5eff9d9bec2a03c1b96c4cc2ce25441",
       "sha256": "a44c704dbcacbcf93081f4f488c5b285de14f469cdc9459768fb246a29553800",
       "status": "adapted-packaging-only",
-      "destinationSha256": "17a28f43140798131a610be9bb4ff83d42522b2d22e03f1155b58e376efd4451",
+      "destinationSha256": "c3a58c5d32171581ef937b839dbdc28cce04b2558dad9457fbb7ea99c8cf8c0e",
       "note": "@sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; DE-1: align @sentropic/design-system-themes pin with 0.15.0; r7 v1 regressions fix: align @sentropic/design-system-themes pin with 0.15.1; DE-2: align workspace dependency pins (themes 0.16.0 / svelte 0.44.0 / vue 0.41.0-next.10); R7 view-all: align workspace dependency pins (tokens/themes 0.16.1, diagram-canvas 0.4.1, svelte 0.44.1, vue 0.41.0-next.12)"
     },
     {
@@ -3593,7 +3593,7 @@
       "gitBlob": "f32a53f263658fb563ecc81febd33693dfe3bc43",
       "sha256": "4de2b350a549668ad67d5972bdc237539dcbcc03e133e835eea3d47657bb0da8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "741d835e6cf08bd7bfbd4fc92577a15367c283f37058e635a8faf2e1bec83ea8",
+      "destinationSha256": "afcb8ada7ffa3b4f84d1016c3f9e5a77295a3a4fcf89518bf4807ecc80e4315b",
       "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure.; diagram initial fit: host patch dependency pin; card body centring: align the design-system-svelte pin with 0.41.5; DE-1: align @sentropic/design-system-themes (0.15.0) and @sentropic/design-system-svelte (0.42.0) pins; review-kit release: align @sentropic/design-system-svelte pin with 0.43.0; r7 v1 regressions fix: align @sentropic/design-system-svelte pin with 0.43.1; align @sentropic/design-system-themes pin with 0.15.1; DE-2: align workspace dependency pins (themes 0.16.0 / svelte 0.44.0 / vue 0.41.0-next.10); R7 view-all: align workspace dependency pins (tokens/themes 0.16.1, diagram-canvas 0.4.1, svelte 0.44.1, vue 0.41.0-next.12); H2.10: align @sentropic/design-system-svelte pin with 0.45.0; Archify L1e: align @sentropic/design-system-svelte pin with 0.46.0"
     },
     {
@@ -5160,7 +5160,7 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-vue-vapor",
-      "destinationSha256": "a4334094535f35967359d0373a80f71e756fe2be1eee8423a45cdfa399558158",
+      "destinationSha256": "8adf7e583794b968256d5b0c920aa1c647ee2da83e9a109f00c24aca6d7cfba4",
       "note": "Vue Vapor SFC port: dual Classic/Vapor builds, exports, published declaration parity and exact Vue toolchain 3.6.0-rc.15; consumer peer ^3.5 || ^3.6.0-0. Current runtime pins: design-system-themes 0.15.1 and design-system-vue 0.41.0-next.9, whose diagram-canvas 0.3.1 -> diagram-core 0.4.1 closure awaits public npm. PR 282 final review: exclude cache markers/maps and enforce source/dist control-byte safety during build. Card body centring: align the design-system-vue pin with 0.41.0-next.7. DE-1: align design-system-themes (0.15.0) and design-system-vue (0.41.0-next.8) pins. r7 v1 regressions fix: align design-system-themes (0.15.1) and design-system-vue (0.41.0-next.9) pins. Upstream identity retained; DE-2: align workspace dependency pins (themes 0.16.0 / svelte 0.44.0 / vue 0.41.0-next.11); R7 view-all: align workspace dependency pins (tokens/themes 0.16.1, diagram-canvas 0.41.1, svelte 0.44.1, vue 0.41.0-next.12); H2.10: align @sentropic/design-system-vue pin with 0.41.0-next.13; elements 0.3.2: align @sentropic/design-system-vue pin with 0.41.0-next.15; elements 0.3.3: align @sentropic/design-system-vue pin with 0.41.0-next.16; Archify L1e: align @sentropic/design-system-vue pin with 0.42.0-next.0"
     },
     {
@@ -9803,6 +9803,18 @@
       "status": "local-monorepo-helper",
       "sha256": "5b3db57ff2d6cc8e06b28d54412cf3817dab0138ac932f8abbde2ab7d4039c50",
       "note": "PR 282: evidence for published type parity, main-origin EventFeedPanel capture and final verification; monorepo-authored, no upstream source."
+    },
+    {
+      "destination": "packages/dataviz-core/src/bench.ts",
+      "status": "local-monorepo-authored",
+      "sha256": "e1dfd46c857689f389fdeda860b8c5201686e02979dad9fd3e2b6876ffad9c6d",
+      "note": "Monorepo-authored bench-charts B1 preset/math module and unit test vectors"
+    },
+    {
+      "destination": "packages/dataviz-core/src/bench.test.ts",
+      "status": "local-monorepo-authored",
+      "sha256": "67177dd8623282bf46b84446ecb701758caf9f312c6bd39918eb102df45ba388",
+      "note": "Monorepo-authored bench-charts B1 preset/math module and unit test vectors"
     }
   ]
 }

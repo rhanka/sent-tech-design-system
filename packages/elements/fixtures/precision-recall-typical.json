@@ -1,0 +1,22 @@
+{
+  "contract": "1.0",
+  "root": {
+    "id": "root",
+    "component": "PrecisionRecallChart",
+    "label": "Retrieval precision vs recall",
+    "domain": "unit",
+    "isoF1": [0.4, 0.6, 0.8],
+    "groups": [
+      { "id": "dense", "label": "Dense" },
+      { "id": "hybrid", "label": "Hybrid" }
+    ],
+    "points": [
+      { "id": "sys-a", "label": "System A", "precision": 0.91, "recall": 0.62, "groupId": "dense" },
+      { "id": "sys-b", "label": "System B", "precision": 0.84, "recall": 0.78, "groupId": "dense" },
+      { "id": "sys-c", "label": "System C", "precision": 0.72, "recall": 0.89, "groupId": "dense" },
+      { "id": "sys-d", "label": "System D", "precision": 0.88, "recall": 0.83, "groupId": "hybrid" },
+      { "id": "sys-e", "label": "System E", "precision": 0.79, "recall": 0.91, "groupId": "hybrid" },
+      { "id": "sys-f", "label": "System F", "precision": 0.65, "recall": 0.71, "groupId": "hybrid" }
+    ]
+  }
+}

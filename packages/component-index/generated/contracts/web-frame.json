@@ -1,8 +1,8 @@
 {
   "componentId": "web-frame",
   "contractSource": "derived",
-  "digest": "sha256:4fa2bedba296aca1e4f8cabfffc9979699ccb0f645755a5ee4e78e6e0388fe9b",
-  "entryDigest": "sha256:6756f60d8c290b61aac03497eb9432ca4571db140bd5999796805ca37abfaf88",
+  "digest": "sha256:2d2d037c887e5067e7a47f919625696cb2717b2a7dbe4f46af46ce1c0df254fa",
+  "entryDigest": "sha256:46fde674b4f89c6ba195f8ff755f48e3683afc79b21c76a2d5d73f7f3c511d50",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -130,7 +130,7 @@
         "declarationPath": "packages/dataviz-react/dist/lib/ObjectLayers.d.ts",
         "package": "@sentropic/dataviz-react",
         "propsType": "WebFrameProps",
-        "version": "0.5.0"
+        "version": "0.5.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -230,7 +230,7 @@
         "declarationPath": "packages/dataviz-svelte/dist/lib/WebFrame.svelte.d.ts",
         "package": "@sentropic/dataviz-svelte",
         "propsType": "WebFrameProps",
-        "version": "0.5.0"
+        "version": "0.5.1"
       },
       "status": "complete",
       "unresolved": [],

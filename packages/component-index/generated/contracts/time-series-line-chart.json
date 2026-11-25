@@ -1,8 +1,8 @@
 {
   "componentId": "time-series-line-chart",
   "contractSource": "derived",
-  "digest": "sha256:dcd6eb618419727710d86c20fca002b7fbdd84936f27a673637c929652d6d41d",
-  "entryDigest": "sha256:e3b66d8a12c3b4ddbfec853a5c31a21834485859a9032cc61c9af4dbaa6224a4",
+  "digest": "sha256:1d2e13f1803404e44ba4f0f915973403b2925399bccdc4a7f33d6452d60d0d9e",
+  "entryDigest": "sha256:360c124ae6ea84d8ba8de60c28fc93d9fdb5e90331c944cacea5260d07003411",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -393,7 +393,7 @@
         "declarationPath": "packages/dataviz-react/dist/lib/TimeSeriesLineChart.d.ts",
         "package": "@sentropic/dataviz-react",
         "propsType": "TimeSeriesLineChartProps",
-        "version": "0.5.0"
+        "version": "0.5.1"
       },
       "status": "partial",
       "unresolved": [],

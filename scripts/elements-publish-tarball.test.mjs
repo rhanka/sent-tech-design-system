@@ -143,9 +143,13 @@ export const TARBALL_REQUIRED_FILES = [
   "README.md",
   "catalog.json",
   "envelope.json",
+  "schemas/AcceptanceRateChart.v1.json",
   "schemas/BarChart.v1.json",
   "schemas/BpmnCanvas.v1.json",
   "schemas/DecisionDossier.v1.json",
+  "schemas/PrecisionRecallChart.v1.json",
+  "schemas/RankCurveChart.v1.json",
+  "schemas/ScoreCostChart.v1.json",
   "schemas/TimeSeriesChart.v1.json",
   "dist/index.js",
   "dist/index.d.ts",
@@ -443,10 +447,16 @@ test("EZ-1: the packed shell manifest pins qualified HTML, modules and input sch
     assert.strictEqual(entry.element, catalog.components[name]["x-sentropic"].element);
     assert.ok(manifest.inputs[entry.schema], `${name}: missing schema fingerprint`);
     if (entry.status === "partial") {
-      assert.strictEqual(name, "BpmnCanvas");
-      assert.strictEqual(entry.fallback, "text");
-      assert.strictEqual(entry.url, "host");
-      assert.ok(entry.complete.bytes >= 983040 || entry.complete.gzip > 153600);
+      if (entry.reason === "element-pending-b2") {
+        assert.ok(["PrecisionRecallChart", "ScoreCostChart", "RankCurveChart", "AcceptanceRateChart"].includes(name));
+        assert.strictEqual(entry.fallback, "text");
+        assert.strictEqual(entry.url, "host");
+      } else {
+        assert.strictEqual(name, "BpmnCanvas");
+        assert.strictEqual(entry.fallback, "text");
+        assert.strictEqual(entry.url, "host");
+        assert.ok(entry.complete.bytes >= 983040 || entry.complete.gzip > 153600);
+      }
       assert.ok(!files.includes(`dist/shells/${name}.html`) && !files.includes(`dist/shells/${name}.js`));
       continue;
     }

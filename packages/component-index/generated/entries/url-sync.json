@@ -9,14 +9,14 @@
       "framework": "svelte",
       "package": "@sentropic/dataviz-svelte",
       "path": "packages/dataviz-svelte/src/lib/UrlSync.svelte",
-      "version": "0.5.0"
+      "version": "0.5.1"
     }
   ],
   "description": {
     "en": "Store ↔ URL binding: declarative deep-linking of dashboard state.",
     "fr": "Liaison store ↔ URL : deep-linking déclaratif de l’état dashboard."
   },
-  "digest": "sha256:cfd787e1351979307afe285f6ab7998ab9f32a2a6b0434e909e5ac432954fdb8",
+  "digest": "sha256:b7db4ae16c07f2c6ff7aea352985d6a15f800a69dea0616710487080b36bca52",
   "displayName": "UrlSync",
   "format": "component-entry/v1",
   "frameworks": [],

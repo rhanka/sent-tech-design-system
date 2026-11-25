@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/dataviz-svelte",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Svelte 5 adapter + dashboard components for @sentropic/dataviz-core, built on @sentropic/design-system-svelte.",
   "type": "module",
   "license": "MIT",
@@ -31,7 +31,7 @@
     "test": "vitest run src"
   },
   "dependencies": {
-    "@sentropic/dataviz-core": "0.5.0",
+    "@sentropic/dataviz-core": "0.5.1",
     "@sentropic/design-system-svelte": "0.46.0",
     "@sentropic/design-system-themes": "0.16.1",
     "jspdf": "^4.2.1",

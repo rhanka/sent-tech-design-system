@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/dataviz-svelte",
       "path": "packages/dataviz-svelte/src/lib/WebFrame.svelte",
-      "version": "0.5.0"
+      "version": "0.5.1"
     },
     {
       "channel": "source",
@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/dataviz-react",
       "path": "packages/dataviz-react/src/lib/ObjectLayers.tsx",
-      "version": "0.5.0"
+      "version": "0.5.1"
     },
     {
       "channel": "source",
@@ -32,7 +32,7 @@
     "en": "Hardened embedded web frame (sandbox, title, lazy loading).",
     "fr": "Cadre web intégré et durci (sandbox, titre, chargement paresseux)."
   },
-  "digest": "sha256:6756f60d8c290b61aac03497eb9432ca4571db140bd5999796805ca37abfaf88",
+  "digest": "sha256:46fde674b4f89c6ba195f8ff755f48e3683afc79b21c76a2d5d73f7f3c511d50",
   "displayName": "WebFrame",
   "format": "component-entry/v1",
   "frameworks": [

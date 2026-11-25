@@ -71,8 +71,17 @@ describe("AC-L1: catalogue identity and component inventory", () => {
     expect(CATALOG_ID).toBe("https://design-system.sent-tech.ca/catalogs/elements/v1/catalog.json");
   });
 
-  it("has the four supported components", () => {
-    expect(Object.keys(catalog.components).sort()).toEqual(["BarChart", "BpmnCanvas", "DecisionDossier", "TimeSeriesChart"]);
+  it("has the eight supported components", () => {
+    expect(Object.keys(catalog.components).sort()).toEqual([
+      "AcceptanceRateChart",
+      "BarChart",
+      "BpmnCanvas",
+      "DecisionDossier",
+      "PrecisionRecallChart",
+      "RankCurveChart",
+      "ScoreCostChart",
+      "TimeSeriesChart",
+    ]);
   });
 
   it("advertises a text fallback for categorical charts", () => {
@@ -90,9 +99,13 @@ describe("AC-L1: catalogue identity and component inventory", () => {
     });
     const anyComponent = defs["anyComponent"] as { oneOf: { $ref: string }[] };
     expect(anyComponent.oneOf.map((entry) => entry.$ref).sort()).toEqual([
+      "#/components/AcceptanceRateChart",
       "#/components/BarChart",
       "#/components/BpmnCanvas",
       "#/components/DecisionDossier",
+      "#/components/PrecisionRecallChart",
+      "#/components/RankCurveChart",
+      "#/components/ScoreCostChart",
       "#/components/TimeSeriesChart",
     ]);
   });

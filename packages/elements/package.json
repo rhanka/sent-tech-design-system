@@ -72,6 +72,7 @@
   },
   "dependencies": {
     "@sentropic/bpmn-canvas": "0.3.0",
+    "@sentropic/dataviz-core": "0.5.1",
     "@sentropic/design-system-review-core": "0.1.1",
     "@sentropic/design-system-svelte": "0.43.2",
     "@sentropic/diagram-canvas": "0.6.0",

@@ -9,14 +9,14 @@
       "framework": "react",
       "package": "@sentropic/dataviz-react",
       "path": "packages/dataviz-react/src/lib/TimeSeriesLineChart.tsx",
-      "version": "0.5.0"
+      "version": "0.5.1"
     }
   ],
   "description": {
     "en": "Continuous time series from a store (React-only).",
     "fr": "Série temporelle continue depuis un store (React uniquement)."
   },
-  "digest": "sha256:e3b66d8a12c3b4ddbfec853a5c31a21834485859a9032cc61c9af4dbaa6224a4",
+  "digest": "sha256:360c124ae6ea84d8ba8de60c28fc93d9fdb5e90331c944cacea5260d07003411",
   "displayName": "TimeSeriesLineChart",
   "format": "component-entry/v1",
   "frameworks": [],
