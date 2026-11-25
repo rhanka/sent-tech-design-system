@@ -15,6 +15,13 @@ export const FOCUS_PROCESS_TARGET_WIDTH = 640;
 
 const measure = sceneCardMeasure(defaultCardMeasure);
 const measureLines = cardLineMeasurer(measure);
+const processMeasureLines: SceneLayoutInput["measureLines"] = (request) => {
+  const layout = measureLines(request);
+  if (request.role !== "edge-label" || layout.width === 0) return layout;
+  // Pad static edge-label boxes by 4 px on each side so fallback sans fonts
+  // (e.g. DejaVu/Liberation Sans on Linux) stay inside their label rect.
+  return { ...layout, width: layout.width + 8 };
+};
 const layoutFailures = new Set([
   "label-unplaced",
   "label-budget-exhausted",
@@ -180,7 +187,7 @@ export function dossierDiagramLayout(scene: SceneDocument) {
     registry: focusSceneRegistry,
     bindings: focusSceneBindings,
     presentation,
-    measureLines,
+    measureLines: processScene ? processMeasureLines : measureLines,
     containers,
     ...(processScene ? { targetWidth: FOCUS_PROCESS_TARGET_WIDTH } : {}),
   };
@@ -193,7 +200,7 @@ export function drawDossierDiagram(
   let drawing: ReturnType<typeof renderSceneSvg>;
   try {
     // renderSceneSvg uses layoutScene and resolveScene for the drawing.
-    drawing = renderSceneSvg(input, { title, measure });
+    drawing = renderSceneSvg(input, isProcessScene(layout.document) ? { title } : { title, measure });
   } catch (error) {
     const result = layoutScene(input);
     if (result.status === "laid-out") throw error;

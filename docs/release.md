@@ -328,6 +328,7 @@ Release tag order for the `process@1` simple-box release train (L1a–L1e), each
 3. `elements-v0.4.0` — L1d Focus `process@1` lowering (`relation:<from>.<to>` + `.2`/`.3` parallel) & `validateSceneDocument` bridge (`generic@1` kept local via `foldableGenericProfile`), `FOCUS_PROCESS_TARGET_WIDTH = 640`, accessible `renderProcessTable` fallback, and 390/820/1280 px Chromium checks; pins `@sentropic/diagram-canvas@0.6.0`.
 4. `svelte-v0.46.0` — L1e `node.kind === "process"` rendering and `renderProcessTable` fallback in `DiagramSceneFigure.svelte`; pins `@sentropic/diagram-canvas@0.6.0`.
 5. `vue-v0.42.0-next.0` (under `next`) — L1e `DiagramProcessNode.vue` + `DiagramSceneFallback.vue` (`process@1` parity across Classic and Vapor); pins `@sentropic/diagram-canvas@0.6.0` and optional BPMN peer `@sentropic/design-system-elements@0.4.0`.
+6. `diagram-codecs-v0.1.2` — cascades the `@sentropic/diagram-canvas@0.6.0` pin.
 
 ```bash
 git push origin main
@@ -336,6 +337,7 @@ git tag diagram-canvas-v0.6.0 && git push origin diagram-canvas-v0.6.0
 git tag elements-v0.4.0 && git push origin elements-v0.4.0
 git tag svelte-v0.46.0 && git push origin svelte-v0.46.0
 git tag vue-v0.42.0-next.0 && git push origin vue-v0.42.0-next.0
+git tag diagram-codecs-v0.1.2 && git push origin diagram-codecs-v0.1.2
 ```
 
 The browser bundle for `elements@0.4.0` is served from the pinned CDN base:
