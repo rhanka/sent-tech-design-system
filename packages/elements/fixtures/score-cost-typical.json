@@ -1,0 +1,26 @@
+{
+  "contract": "1.0",
+  "root": {
+    "id": "root",
+    "component": "ScoreCostChart",
+    "label": "F1 vs inference cost",
+    "scoreLabel": "F1",
+    "costUnit": "USD per 1k items",
+    "frontier": true,
+    "groups": [
+      { "id": "small", "label": "Small" },
+      { "id": "medium", "label": "Medium" },
+      { "id": "large", "label": "Large" }
+    ],
+    "points": [
+      { "id": "sys-a", "label": "System A", "cost": 0.05, "score": 0.62, "groupId": "small" },
+      { "id": "sys-b", "label": "System B", "cost": 0.12, "score": 0.58, "groupId": "small" },
+      { "id": "sys-c", "label": "System C", "cost": 0.25, "score": 0.76, "groupId": "medium" },
+      { "id": "sys-d", "label": "System D", "cost": 0.85, "score": 0.74, "groupId": "medium" },
+      { "id": "sys-e", "label": "System E", "cost": 1.4, "score": 0.85, "groupId": "medium" },
+      { "id": "sys-f", "label": "System F", "cost": 4.2, "score": 0.83, "groupId": "large" },
+      { "id": "sys-g", "label": "System G", "cost": 8.5, "score": 0.91, "groupId": "large" },
+      { "id": "sys-h", "label": "System H", "cost": 12.5, "score": 0.89, "groupId": "large" }
+    ]
+  }
+}

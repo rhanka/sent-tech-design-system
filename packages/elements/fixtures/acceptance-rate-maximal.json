@@ -1,0 +1,157 @@
+{
+  "contract": "1.0",
+  "root": {
+    "id": "root",
+    "component": "AcceptanceRateChart",
+    "label": "Maximal 24-item acceptance rate",
+    "target": 0.8,
+    "order": "rate",
+    "acceptedLabel": "accepted",
+    "items": [
+      {
+        "id": "sys-01",
+        "label": "System 1",
+        "accepted": 10,
+        "total": 400
+      },
+      {
+        "id": "sys-02",
+        "label": "System 2",
+        "accepted": 25,
+        "total": 400
+      },
+      {
+        "id": "sys-03",
+        "label": "System 3",
+        "accepted": 40,
+        "total": 400
+      },
+      {
+        "id": "sys-04",
+        "label": "System 4",
+        "accepted": 55,
+        "total": 400
+      },
+      {
+        "id": "sys-05",
+        "label": "System 5",
+        "accepted": 70,
+        "total": 400
+      },
+      {
+        "id": "sys-06",
+        "label": "System 6",
+        "accepted": 85,
+        "total": 400
+      },
+      {
+        "id": "sys-07",
+        "label": "System 7",
+        "accepted": 100,
+        "total": 400
+      },
+      {
+        "id": "sys-08",
+        "label": "System 8",
+        "accepted": 115,
+        "total": 400
+      },
+      {
+        "id": "sys-09",
+        "label": "System 9",
+        "accepted": 130,
+        "total": 400
+      },
+      {
+        "id": "sys-10",
+        "label": "System 10",
+        "accepted": 145,
+        "total": 400
+      },
+      {
+        "id": "sys-11",
+        "label": "System 11",
+        "accepted": 160,
+        "total": 400
+      },
+      {
+        "id": "sys-12",
+        "label": "System 12",
+        "accepted": 175,
+        "total": 400
+      },
+      {
+        "id": "sys-13",
+        "label": "System 13",
+        "accepted": 190,
+        "total": 400
+      },
+      {
+        "id": "sys-14",
+        "label": "System 14",
+        "accepted": 205,
+        "total": 400
+      },
+      {
+        "id": "sys-15",
+        "label": "System 15",
+        "accepted": 220,
+        "total": 400
+      },
+      {
+        "id": "sys-16",
+        "label": "System 16",
+        "accepted": 235,
+        "total": 400
+      },
+      {
+        "id": "sys-17",
+        "label": "System 17",
+        "accepted": 250,
+        "total": 400
+      },
+      {
+        "id": "sys-18",
+        "label": "System 18",
+        "accepted": 265,
+        "total": 400
+      },
+      {
+        "id": "sys-19",
+        "label": "System 19",
+        "accepted": 280,
+        "total": 400
+      },
+      {
+        "id": "sys-20",
+        "label": "System 20",
+        "accepted": 295,
+        "total": 400
+      },
+      {
+        "id": "sys-21",
+        "label": "System 21",
+        "accepted": 310,
+        "total": 400
+      },
+      {
+        "id": "sys-22",
+        "label": "System 22",
+        "accepted": 325,
+        "total": 400
+      },
+      {
+        "id": "sys-23",
+        "label": "System 23",
+        "accepted": 340,
+        "total": 400
+      },
+      {
+        "id": "sys-24",
+        "label": "System 24",
+        "accepted": 355,
+        "total": 400
+      }
+    ]
+  }
+}

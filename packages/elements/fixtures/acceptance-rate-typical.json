@@ -1,0 +1,17 @@
+{
+  "contract": "1.0",
+  "root": {
+    "id": "root",
+    "component": "AcceptanceRateChart",
+    "label": "Acceptance rate by configuration",
+    "target": 0.8,
+    "order": "rate",
+    "acceptedLabel": "accepted",
+    "items": [
+      { "id": "sys-a", "label": "System A", "accepted": 330, "total": 400 },
+      { "id": "sys-b", "label": "System B", "accepted": 3, "total": 4 },
+      { "id": "sys-c", "label": "System C", "accepted": 180, "total": 200 },
+      { "id": "sys-d", "label": "System D", "accepted": 0, "total": 10 }
+    ]
+  }
+}

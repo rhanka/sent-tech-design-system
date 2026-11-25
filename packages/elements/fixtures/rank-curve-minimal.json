@@ -1,0 +1,15 @@
+{
+  "contract": "1.0",
+  "root": {
+    "id": "root",
+    "component": "RankCurveChart",
+    "label": "Minimal rank curve",
+    "series": [
+      {
+        "id": "sys-a",
+        "label": "System A",
+        "values": [0.8, 0.4]
+      }
+    ]
+  }
+}

@@ -29,6 +29,16 @@ import type { Diagnostic } from "./diagnostics.js";
 import { engineLoadFailed } from "./diagnostics.js";
 import type { StructureIssue, StructureValidator } from "./structure.js";
 import type { TimeSeriesChartProps } from "../contracts/time-series-chart.js";
+import type { AcceptanceRateChartProps } from "../contracts/acceptance-rate-chart.js";
+import type { PrecisionRecallChartProps } from "../contracts/precision-recall-chart.js";
+import type { RankCurveChartProps } from "../contracts/rank-curve-chart.js";
+import type { ScoreCostChartProps } from "../contracts/score-cost-chart.js";
+import {
+  validateAcceptanceRate,
+  validatePrecisionRecall,
+  validateRankCurve,
+  validateScoreCost,
+} from "./bench-charts.js";
 import { validateTimeSeries } from "./time-series.js";
 
 /** The §4.3 item 3 budget: 1 MiB of UTF-8 (the limit itself is accepted). */
@@ -343,6 +353,10 @@ export function createEnvelopeValidatorCore(
       const componentIssues = structure.validateComponent(component, root);
       if (componentIssues.length > 0) return structureDiagnostics(componentIssues, "/root");
       if (component === "TimeSeriesChart") return validateTimeSeries(root as unknown as TimeSeriesChartProps);
+      if (component === "PrecisionRecallChart") return validatePrecisionRecall(root as unknown as PrecisionRecallChartProps);
+      if (component === "ScoreCostChart") return validateScoreCost(root as unknown as ScoreCostChartProps);
+      if (component === "RankCurveChart") return validateRankCurve(root as unknown as RankCurveChartProps);
+      if (component === "AcceptanceRateChart") return validateAcceptanceRate(root as unknown as AcceptanceRateChartProps);
 
       // 9. Semantics, only when the structure is clean (§4.3 item 2).
       const engine = sentropic?.engine;

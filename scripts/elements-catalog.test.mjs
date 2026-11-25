@@ -71,7 +71,16 @@ test("AC-L1: catalog.json has $id equal to catalogId and lists the supported com
     throw new Error(`catalog.json $id (${catalog.$id}) must equal catalogId (${catalog.catalogId})`);
   }
   const components = Object.keys(catalog.components).sort();
-  const expected = ["BarChart", "BpmnCanvas", "DecisionDossier", "TimeSeriesChart"];
+  const expected = [
+    "AcceptanceRateChart",
+    "BarChart",
+    "BpmnCanvas",
+    "DecisionDossier",
+    "PrecisionRecallChart",
+    "RankCurveChart",
+    "ScoreCostChart",
+    "TimeSeriesChart",
+  ];
   if (JSON.stringify(components) !== JSON.stringify(expected)) {
     throw new Error(`catalog.json components must be ${expected.join(", ")}, got ${components.join(", ")}`);
   }
@@ -85,9 +94,13 @@ test("AC-L1: --check refuses a mutated copy in a temp dir and exits non-zero (--
   const artifacts = [
     "catalog.json",
     "envelope.json",
+    "schemas/AcceptanceRateChart.v1.json",
     "schemas/BarChart.v1.json",
     "schemas/BpmnCanvas.v1.json",
     "schemas/DecisionDossier.v1.json",
+    "schemas/PrecisionRecallChart.v1.json",
+    "schemas/RankCurveChart.v1.json",
+    "schemas/ScoreCostChart.v1.json",
     "schemas/TimeSeriesChart.v1.json",
     "src/generated/a2ui-common-types.ts",
   ];
