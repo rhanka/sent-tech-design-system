@@ -18,7 +18,7 @@
      * - `"collapsible"`: always renders the compact collapsible disclosure.
      */
     mode?: SurveyPrivacyNoticeMode;
-    /** Container width threshold (px) for `"auto"` mode (default 520). */
+    /** Parent layout/viewport width threshold (px) for `"auto"` mode (default 520). */
     compactBreakpoint?: number;
     /** Bindable disclosure state when rendered as `Collapsible`. */
     open?: boolean;
@@ -53,32 +53,65 @@
   }: SurveyPrivacyNoticeProps = $props();
 
   let rootEl: HTMLElement | undefined = $state();
-  let autoCompact = $state(false);
+  let measuredWidth: number | null = $state(null);
+
+  function readViewportWidth(): number | null {
+    if (typeof window === "undefined") return null;
+    return window.innerWidth > 0 ? window.innerWidth : null;
+  }
 
   $effect(() => {
-    if (mode !== "auto" || !rootEl || typeof ResizeObserver === "undefined") {
-      autoCompact = false;
+    if (mode !== "auto" || !rootEl) {
+      measuredWidth = null;
       return;
     }
 
+    const host = rootEl.parentElement;
     const updateWidth = (width: number) => {
       if (width > 0) {
-        autoCompact = width <= compactBreakpoint;
+        measuredWidth = width;
+      } else {
+        const viewport = readViewportWidth();
+        if (viewport !== null) measuredWidth = viewport;
       }
     };
 
-    updateWidth(rootEl.getBoundingClientRect().width);
+    updateWidth(host ? host.getBoundingClientRect().width : 0);
 
-    const observer = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      if (entry) {
-        updateWidth(entry.contentRect.width);
+    let observer: ResizeObserver | undefined;
+    if (host && typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver((entries) => {
+        const entry = entries[0];
+        if (entry) {
+          updateWidth(entry.contentRect.width);
+        }
+      });
+      observer.observe(host);
+    }
+
+    const onResize = () => {
+      updateWidth(host ? host.getBoundingClientRect().width : 0);
+    };
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", onResize);
+    }
+
+    return () => {
+      observer?.disconnect();
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", onResize);
       }
-    });
-    observer.observe(rootEl);
-
-    return () => observer.disconnect();
+    };
   });
+
+  const fallbackCompact = $derived.by(() => {
+    const viewport = readViewportWidth();
+    return viewport === null ? true : viewport <= compactBreakpoint;
+  });
+
+  const autoCompact = $derived(
+    measuredWidth !== null ? measuredWidth <= compactBreakpoint : fallbackCompact
+  );
 
   const isCollapsible = $derived(mode === "collapsible" || (mode === "auto" && autoCompact));
 
@@ -94,7 +127,12 @@
   );
 </script>
 
-<aside {...rest} bind:this={rootEl} class={classes}>
+<aside
+  {...rest}
+  aria-label={rest["aria-labelledby"] ? undefined : (rest["aria-label"] ?? title)}
+  bind:this={rootEl}
+  class={classes}
+>
   {#if isCollapsible}
     <Card class="st-surveyPrivacy__card st-surveyPrivacy__card--compact">
       {#if summaryBadge}
