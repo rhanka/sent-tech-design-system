@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DivergentBarChart.svelte",
-      "version": "0.45.0"
+      "version": "0.46.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DivergentBarChart.vue",
-      "version": "0.41.0-next.16"
+      "version": "0.42.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Divergent bars (positive, negative, neutral) around a shared zero axis.",
     "fr": "Barres divergentes positives, négatives et neutres autour d'un axe zéro."
   },
-  "digest": "sha256:1d7c1274045e4b1496dbbbc194cb917e6cedc8681225037ee3cec2d9084cff65",
+  "digest": "sha256:b2e70339b0b11f1fc4229083188473f252e3e2383236c9e81ad3b1c1bfbc4d53",
   "displayName": "DivergentBarChart",
   "format": "component-entry/v1",
   "frameworks": [

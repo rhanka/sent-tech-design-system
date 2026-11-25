@@ -1,7 +1,7 @@
 {
   "componentId": "url-sync",
   "contractSource": "derived",
-  "digest": "sha256:f31cbac683af6c58b8eea253f73a1da3ab21d4efe2af0c9698725d48a7bb490d",
+  "digest": "sha256:e1baff75446972a48ef860f3295e7ab61aa78175f0e1ae7bef12f205d855b30a",
   "entryDigest": "sha256:cfd787e1351979307afe285f6ab7998ab9f32a2a6b0434e909e5ac432954fdb8",
   "format": "component-contract/v1",
   "frameworks": {
@@ -395,7 +395,7 @@
         "declarationPath": "packages/components-vue/dist/UrlSync.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "UrlSyncProps",
-        "version": "0.41.0-next.16"
+        "version": "0.42.0-next.0"
       },
       "status": "none",
       "unresolved": [],

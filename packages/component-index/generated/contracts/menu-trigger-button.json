@@ -1,8 +1,8 @@
 {
   "componentId": "menu-trigger-button",
   "contractSource": "derived",
-  "digest": "sha256:732d5b3a3c523f5f1c2f839634a22c31ca76ffa9ab83233279702827488fc1bb",
-  "entryDigest": "sha256:d6bd04d737f1b1add09bbf4f867f243cded2b61ece6598e467a9d81861b26ab8",
+  "digest": "sha256:8d262b188c36943d28fe01b8d67a46e39123d00a830963a9cc227f0b7f39c4dd",
+  "entryDigest": "sha256:92f3f6b4a75d6f5927b23df648e04f69d2840d9dc49268a124d72f46225924ba",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -179,7 +179,7 @@
         "declarationPath": "packages/components-svelte/dist/MenuTriggerButton.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MenuTriggerButtonProps",
-        "version": "0.45.0"
+        "version": "0.46.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -234,7 +234,7 @@
         "declarationPath": "packages/components-vue/dist/MenuTriggerButton.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MenuTriggerButtonProps",
-        "version": "0.41.0-next.16"
+        "version": "0.42.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

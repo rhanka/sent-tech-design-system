@@ -319,6 +319,31 @@ git push origin diagram-codecs-v0.1.0
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
+### Diagram Core 0.6.1, Diagram Canvas 0.6.0, Elements 0.4.0, Svelte 0.46.0, Vue 0.42.0-next.0 (Archify lot 1)
+
+Release tag order for the `process@1` simple-box release train (L1a–L1e), each pushed only after the previous publish workflow's `post-publish-check` passes:
+
+1. `diagram-core-v0.6.1` — `process@1` profile + `diagram-notation@1` minimal resolver (`notation-resolve.ts`) + validated `sentropic:process-flow` extension.
+2. `diagram-canvas-v0.6.0` — `layout/process.ts` (DFS cycle-break, global step ranking, barycentre swimlanes, `P-R1` fit), `presentation/process.ts`, `renderSceneSvg` dispatch, and `validateSceneDocument` bridge; pins `@sentropic/diagram-core@0.6.1`.
+3. `elements-v0.4.0` — L1d Focus `process@1` lowering (`relation:<from>.<to>` + `.2`/`.3` parallel) & `validateSceneDocument` bridge (`generic@1` kept local via `foldableGenericProfile`), `FOCUS_PROCESS_TARGET_WIDTH = 640`, accessible `renderProcessTable` fallback, and 390/820/1280 px Chromium checks; pins `@sentropic/diagram-canvas@0.6.0`.
+4. `svelte-v0.46.0` — L1e `node.kind === "process"` rendering and `renderProcessTable` fallback in `DiagramSceneFigure.svelte`; pins `@sentropic/diagram-canvas@0.6.0`.
+5. `vue-v0.42.0-next.0` (under `next`) — L1e `DiagramProcessNode.vue` + `DiagramSceneFallback.vue` (`process@1` parity across Classic and Vapor); pins `@sentropic/diagram-canvas@0.6.0` and optional BPMN peer `@sentropic/design-system-elements@0.4.0`.
+
+```bash
+git push origin main
+git tag diagram-core-v0.6.1 && git push origin diagram-core-v0.6.1
+git tag diagram-canvas-v0.6.0 && git push origin diagram-canvas-v0.6.0
+git tag elements-v0.4.0 && git push origin elements-v0.4.0
+git tag svelte-v0.46.0 && git push origin svelte-v0.46.0
+git tag vue-v0.42.0-next.0 && git push origin vue-v0.42.0-next.0
+```
+
+The browser bundle for `elements@0.4.0` is served from the pinned CDN base:
+
+```
+https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.4.0/dist/browser/
+```
+
 ### Elements 0.3.3
 
 `0.3.3` ships the `0.3.2` package content, plus the Focus static kit sizing
