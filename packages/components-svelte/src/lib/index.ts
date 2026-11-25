@@ -261,6 +261,15 @@ export { default as RangeSlider } from "./RangeSlider.svelte";
 export { default as SankeyChart } from "./SankeyChart.svelte";
 export { default as Stack } from "./Stack.svelte";
 export { default as Stepper } from "./Stepper.svelte";
+export { default as SurveyQuestionCard } from "./SurveyQuestionCard.svelte";
+export type { SurveyQuestionCardProps } from "./SurveyQuestionCard.svelte";
+export { default as SurveyNav } from "./SurveyNav.svelte";
+export type { SurveyNavProps } from "./SurveyNav.svelte";
+export { default as SurveyPrivacyNotice } from "./SurveyPrivacyNotice.svelte";
+export type {
+  SurveyPrivacyNoticeMode,
+  SurveyPrivacyNoticeProps
+} from "./SurveyPrivacyNotice.svelte";
 export { default as Sparkline } from "./Sparkline.svelte";
 export { default as StackedBarChart } from "./StackedBarChart.svelte";
 export { default as StructuredList } from "./StructuredList.svelte";
