@@ -52,6 +52,7 @@
 </script>
 
 <script lang="ts">
+  import { tick } from "svelte";
   import Button from "./Button.svelte";
   import Modal from "./Modal.svelte";
 
@@ -85,6 +86,7 @@
     ...rest
   }: SurveyNavProps = $props();
 
+  let navEl: HTMLElement | undefined = $state();
   let confirmOpen = $state(false);
 
   const classes = $derived(
@@ -127,18 +129,33 @@
     confirmOpen = true;
   }
 
+  function restorePartialFocus(onlyIfLost = false) {
+    tick().then(() => {
+      if (onlyIfLost && document.activeElement && document.activeElement !== document.body) {
+        return;
+      }
+      const trigger = navEl?.querySelector<HTMLButtonElement>(".st-surveyNav__btn--partial");
+      if (trigger && !trigger.disabled) {
+        trigger.focus();
+      }
+    });
+  }
+
   function cancelPartialConfirm() {
+    if (!confirmOpen) return;
     confirmOpen = false;
+    restorePartialFocus(false);
   }
 
   function confirmPartialSubmit() {
     if (submitting) return;
     confirmOpen = false;
     onpartialsubmit?.();
+    restorePartialFocus(true);
   }
 </script>
 
-<nav {...rest} class={classes} aria-label={ariaLabel}>
+<nav {...rest} bind:this={navEl} class={classes} aria-label={ariaLabel}>
   <div class="st-surveyNav__inner">
     <div class="st-surveyNav__primary">
       {#if canGoPrevious}
@@ -199,6 +216,7 @@
 {#if allowPartialSubmit}
   <Modal
     open={confirmOpen}
+    class="st-surveyNav__modal"
     title={partialConfirmTitle}
     description={resolvedConfirmDescription}
     closeLabel={partialCloseLabel}
@@ -266,6 +284,13 @@
     min-height: 2.75rem;
   }
 
+  :global(.st-surveyNav__modal .st-modal__close) {
+    height: 2.75rem;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    width: 2.75rem;
+  }
+
   .st-surveyNav__modalFooter {
     display: flex;
     flex-wrap: wrap;
@@ -274,7 +299,7 @@
     width: 100%;
   }
 
-  @container (max-width: 520px) {
+  @container (max-width: 25rem) {
     .st-surveyNav__primary {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
@@ -292,9 +317,20 @@
     .st-surveyNav :global(.st-surveyNav__btn) {
       width: 100%;
     }
+
+    .st-surveyNav--stickyMobile {
+      background: var(--st-semantic-surface-default, #ffffff);
+      border-radius: 0;
+      border-top: 1px solid var(--st-semantic-border-subtle, #d6d9ea);
+      bottom: 0;
+      padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+      padding-top: var(--st-spacing-3, 0.75rem);
+      position: sticky;
+      z-index: var(--st-z-header, 50);
+    }
   }
 
-  @media (max-width: 520px) {
+  @media (max-width: 25rem) {
     .st-surveyNav--stickyMobile {
       background: var(--st-semantic-surface-default, #ffffff);
       border-radius: 0;
