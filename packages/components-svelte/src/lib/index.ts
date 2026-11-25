@@ -201,6 +201,12 @@ export type {
 export { default as ScoreCard } from "./ScoreCard.svelte";
 export type { ScoreCardProps, ScoreCardType, ScoreCardSize } from "./ScoreCard.svelte";
 export { default as LanguageSelector } from "./LanguageSelector.svelte";
+export { default as LikertScale } from "./LikertScale.svelte";
+export type {
+  LikertScaleOption,
+  LikertScaleLayout,
+  LikertScaleProps
+} from "./LikertScale.svelte";
 export { default as LineChart } from "./LineChart.svelte";
 export { default as Link } from "./Link.svelte";
 export { default as LoadingState } from "./LoadingState.svelte";
@@ -556,8 +562,8 @@ export type { HiddenProps, HiddenBreakpoint } from "./Hidden.svelte";
 export type { DividerProps, DividerOrientation, DividerVariant } from "./Divider.svelte";
 export type { AvatarSize, AvatarShape, AvatarTone } from "./Avatar.svelte";
 export type { ButtonGroupOrientation, ButtonGroupSize } from "./ButtonGroup.svelte";
-export type { CheckboxGroupOption } from "./CheckboxGroup.svelte";
-export type { RadioGroupOption } from "./RadioGroup.svelte";
+export type { CheckboxGroupOption, CheckboxGroupVariant } from "./CheckboxGroup.svelte";
+export type { RadioGroupOption, RadioGroupVariant } from "./RadioGroup.svelte";
 export type {
   TypographyVariant,
   TypographyWeight,
