@@ -45,6 +45,14 @@ export {
 } from "./engine.js";
 export { computeNominalCompositionPlan, layoutFolded, layoutMeasured, type LayoutExecutionContext } from "./measured.js";
 export {
+  computeProcessStepNumbers,
+  layoutProcess,
+  measureProcessStepBox,
+  PROCESS_BOX_BOUNDS,
+  PROCESS_LAYOUT_SPACING,
+  type MeasuredProcessStepBox,
+} from "./process.js";
+export {
   createLayoutCache,
   type LayoutCache,
   type LayoutCacheConfig,

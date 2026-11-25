@@ -3,6 +3,7 @@ import { validateFlows } from "@sentropic/diagram-core";
 import { relationVerdict } from "../visibility.js";
 import { DEFAULT_FLOW_TOKENS, planFlows, placeFlowMarks } from "./flows.js";
 import { layoutErd } from "./erd.js";
+import { layoutProcess } from "./process.js";
 import { DEFAULT_EDGE_LABEL_SIZE } from "../camera.js";
 import { diagramAnatomyOf, isR7ConnectorPresentation } from "../r7Mode.js";
 /**
@@ -771,6 +772,7 @@ export function layoutMeasured(
     return { status: "refused", refusals: relationStyleRefusals, diagnostics: [] };
   }
   if (document.profileRefs.length === 1 && document.profileRefs[0] === "erd@1") return layoutErd(document, options, sourceView);
+  if (document.profileRefs.length === 1 && document.profileRefs[0] === "process@1") return layoutProcess(document, options, sourceView);
   let stateCtx: PlanExecutionContext | undefined;
   if (options.hints?.composition !== undefined) {
     let nominalPlan = execution?.plan;

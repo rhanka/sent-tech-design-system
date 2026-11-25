@@ -26,6 +26,7 @@ export * from "./hit.js";
 export * from "./layout/index.js";
 
 export * from "./presentation/erd.js";
+export * from "./presentation/process.js";
 export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./presentation/connectorPath.js";
 export {
   ARROWHEAD_MARKER_GEOMETRY,

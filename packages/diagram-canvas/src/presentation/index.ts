@@ -124,3 +124,5 @@ export type {
 
 export { ERD_GEOMETRY, measureErdCard, renderErdCardSvg, erdMarkerGeometry, renderErdMarkerSvg, renderErdTable } from "./erd.js";
 export type { ErdCard, ErdRow, ErdMarker } from "./erd.js";
+export { PROCESS_BOX_GEOMETRY, measureProcessBox, renderProcessBoxSvg, renderProcessTable } from "./process.js";
+export type { ProcessBoxModel, ProcessBoxVariant } from "./process.js";
