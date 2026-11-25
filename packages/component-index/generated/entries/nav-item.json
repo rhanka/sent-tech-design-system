@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/NavItem.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Canonical navigation row: leading (color swatch or tone), title, muted caption, count bubble, typographic depth, and semantic status.",
     "fr": "Rangée de navigation canonique : tête (pastille couleur ou ton), titre, caption muette, bulle de compte, profondeur typographique et statut sémantique."
   },
-  "digest": "sha256:a5190eb481f2072568345a024402f3fd61f08efbd4a6b10eb709d3d852c3a29b",
+  "digest": "sha256:d0ac66d841fd25d8cadc3a1f95899df8fa7514bb6830fd49462fab656d83910a",
   "displayName": "NavItem",
   "format": "component-entry/v1",
   "frameworks": [

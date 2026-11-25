@@ -1,8 +1,8 @@
 {
   "componentId": "flamegraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:a439eb01f6834b40ca25efe5ddd1f406d890b9449bea015da50604155865f2ce",
-  "entryDigest": "sha256:9f9cafa881e7267fdc50cff262ae7c7a5f22b83defc947c4be8eb0a3fe23002e",
+  "digest": "sha256:428150bc7f7c9feacf3f79c3625a52e9b99945a00c014a80a7d704d7df35b2bf",
+  "entryDigest": "sha256:114f25285aed6c5ea9328c8efff8448fec6681577b1e824c9e0567bd5d909b72",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -215,7 +215,7 @@
         "declarationPath": "packages/components-svelte/dist/FlamegraphChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FlamegraphChartProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "complete",
       "unresolved": [],

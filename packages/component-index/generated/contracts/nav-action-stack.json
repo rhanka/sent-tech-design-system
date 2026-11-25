@@ -1,8 +1,8 @@
 {
   "componentId": "nav-action-stack",
   "contractSource": "derived",
-  "digest": "sha256:0de16daa7b70f2570a41e2bb3f2740dd5a078648d5762e277c93f9f9a92e581c",
-  "entryDigest": "sha256:2af097d8901937ca6a2d5872da4100b8716476e357cc644582f62f8f491a25e9",
+  "digest": "sha256:9865a15209181c00d5c893707ddd3878bd2415c9b75247b35d0c58818cd4ec21",
+  "entryDigest": "sha256:d61ab383e1fddfeab5ef136cbc336939071c18ddb09f51756db078c3e4bb6c6d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -342,7 +342,7 @@
         "declarationPath": "packages/components-svelte/dist/NavActionStack.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "NavActionStackProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "partial",
       "unresolved": [],

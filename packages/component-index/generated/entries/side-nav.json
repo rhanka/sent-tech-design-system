@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SideNav.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Vertical side navigation.",
     "fr": "Navigation latérale verticale."
   },
-  "digest": "sha256:ac2a645d23cbc504efb68ff4878532e75ae467721c855d1dff910b622b3c8ea5",
+  "digest": "sha256:0b2207d815c75ccb9378dfbe7e2be9351ca5da750e801965b97ecdde9d3bcc9b",
   "displayName": "SideNav",
   "format": "component-entry/v1",
   "frameworks": [
