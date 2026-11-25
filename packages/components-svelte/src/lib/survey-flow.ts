@@ -148,7 +148,15 @@ function validateMultiArray(
   question: Extract<SurveyQuestion, { type: "multi" }>,
   arr: string[],
 ): QuestionValidationError {
-  if (question.minSelections != null && arr.length > 0 && arr.length < question.minSelections) {
+  const hasExclusive = Boolean(
+    question.exclusive?.length && arr.some((v) => question.exclusive!.includes(v)),
+  );
+  if (
+    !hasExclusive &&
+    question.minSelections != null &&
+    arr.length > 0 &&
+    arr.length < question.minSelections
+  ) {
     return "minSelections";
   }
   if (question.maxSelections != null && arr.length > question.maxSelections) {
@@ -198,11 +206,12 @@ export function validateSubmission(
     }
   }
 
-  if (mode === "complete") {
-    for (const q of activeQuestions) {
-      if (q.required && !isAnswerPresent(answers[q.id])) {
-        missingSet.add(q.id);
-      }
+  for (const q of activeQuestions) {
+    const err = validateQuestionAnswer(q, answers[q.id]);
+    if (err === "required") {
+      if (mode === "complete") missingSet.add(q.id);
+    } else if (err === "minSelections" || err === "maxSelections") {
+      missingSet.add(q.id);
     }
   }
 

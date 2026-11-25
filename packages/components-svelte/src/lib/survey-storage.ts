@@ -7,6 +7,7 @@ const PASSKEY_PREFIX = `${STORAGE_PREFIX}passkey:`;
 const DEFAULT_SALT = "st-survey-2026-salt";
 
 export const DEFAULT_DRAFT_TTL_MS = 30 * 60 * 1000;
+export const DEFAULT_PENDING_TTL_MS = 24 * 60 * 60 * 1000;
 
 const memoryStore = new Map<string, string>();
 
@@ -144,13 +145,20 @@ export function loadPendingSubmission(
   surveyId: string,
   identity: string,
   salt?: string,
+  now = Date.now(),
+  maxAgeMs = DEFAULT_PENDING_TTL_MS,
 ): SurveyPendingSubmission | null {
   if (!surveyId || !identity.trim()) return null;
-  const raw = safeGet(pendingKey(surveyId, identity, salt));
+  const key = pendingKey(surveyId, identity, salt);
+  const raw = safeGet(key);
   if (!raw) return null;
   try {
     const parsed = JSON.parse(raw) as Partial<SurveyPendingSubmission>;
     if (!parsed || !parsed.payload || typeof parsed.queuedAt !== "number") return null;
+    if (maxAgeMs > 0 && now - parsed.queuedAt >= maxAgeMs) {
+      safeRemove(key);
+      return null;
+    }
     return {
       payload: parsed.payload,
       queuedAt: parsed.queuedAt,

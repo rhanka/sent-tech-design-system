@@ -24,8 +24,10 @@
     initialAnswers?: AnswerMap;
     initialStep?: SurveyStep;
     initialEmail?: string;
+    /** Optional non-PII session seed for local draft isolation and deterministic shuffling when no email is supplied. */
+    respondentSeed?: string;
     readOnly?: boolean;
-    /** Allow opening the poll directly from the link_sent screen (useful for demos/tests). */
+    /** Allow opening the poll directly from the link_sent screen (useful for demos/tests). Default false. */
     allowSimulatedLinkOpen?: boolean;
     /** Optional salt override for salted localStorage draft keys. */
     storageSalt?: string;
@@ -50,7 +52,7 @@
 </script>
 
 <script lang="ts">
-  import { tick } from "svelte";
+  import { tick, untrack } from "svelte";
   import Alert from "./Alert.svelte";
   import Autosave from "./Autosave.svelte";
   import Badge from "./Badge.svelte";
@@ -121,8 +123,9 @@
     initialAnswers,
     initialStep,
     initialEmail = "",
+    respondentSeed,
     readOnly = false,
-    allowSimulatedLinkOpen = true,
+    allowSimulatedLinkOpen = false,
     storageSalt,
     persistDraft = true,
     passkeyOffer,
@@ -197,6 +200,8 @@
           emailHelper: `Vérifiée par lien ${authIssuer} · aucune double authentification exigée.`,
           emailHelperUnverified: "Utilisée uniquement pour retrouver votre brouillon pendant 30 minutes.",
           emailError: "Veuillez saisir une adresse e-mail valide.",
+          offlineLinkError: "Connexion requise pour envoyer votre lien de connexion.",
+          requestLinkError: "Impossible d’envoyer le lien de connexion. Veuillez réessayer.",
           sendLinkBtn: "Recevoir mon lien",
           startSurveyBtn: "Commencer le sondage",
           resumeTitle: "Brouillon actif retrouvé",
@@ -231,9 +236,16 @@
           requiredError: "Veuillez répondre à cette question avant de continuer.",
           minSelError: (min: number) => `Sélectionnez au moins ${min} option(s).`,
           maxSelError: (max: number) => `Sélectionnez au plus ${max} option(s).`,
-          submitGateError:
-            "Répondez au moins à la question 1 requise avant d’envoyer vos réponses.",
+          submitGateSingle: (n: number) =>
+            `Veuillez répondre à la question ${n} requise avant d’envoyer vos réponses.`,
+          submitGateMinSel: (n: number, min: number) =>
+            `Question ${n} : sélectionnez au moins ${min} option(s) avant d’envoyer.`,
+          submitGateMaxSel: (n: number, max: number) =>
+            `Question ${n} : sélectionnez au plus ${max} option(s) avant d’envoyer.`,
+          submitGateMulti: (nums: number[]) =>
+            `Veuillez vérifier les questions (${nums.join(", ")}) avant d’envoyer vos réponses.`,
           errorSummaryHeading: "Vérifiez vos réponses avant l’envoi",
+          navAriaLabel: "Navigation du sondage",
           prevBtn: "Précédent",
           nextBtn: "Suivant",
           submitAllBtn: "Envoyer mes réponses",
@@ -244,6 +256,7 @@
             `Vous avez répondu à ${n} question(s) sur ${tot}. Seules les réponses cochées seront transmises.`,
           partialModalCancel: "Continuer le sondage",
           partialModalConfirm: "Confirmer l’envoi partiel",
+          partialModalClose: "Fermer",
           thanksTitle: "Merci pour vos réponses !",
           thanksComplete: (n: number) => `Votre questionnaire complet (${n} questions) a bien été envoyé.`,
           thanksPartial: (n: number, tot: number) =>
@@ -314,6 +327,8 @@
           emailHelper: `Verified via ${authIssuer} magic link · no 2FA required.`,
           emailHelperUnverified: "Used only to restore your local draft for 30 minutes.",
           emailError: "Please enter a valid email address.",
+          offlineLinkError: "An internet connection is required to send your sign-in link.",
+          requestLinkError: "Could not send your sign-in link. Please try again.",
           sendLinkBtn: "Send my link",
           startSurveyBtn: "Start survey",
           resumeTitle: "Active draft found",
@@ -348,8 +363,16 @@
           requiredError: "Please answer this question before continuing.",
           minSelError: (min: number) => `Select at least ${min} option(s).`,
           maxSelError: (max: number) => `Select at most ${max} option(s).`,
-          submitGateError: "Please answer required question 1 before submitting.",
+          submitGateSingle: (n: number) =>
+            `Please answer required question ${n} before submitting.`,
+          submitGateMinSel: (n: number, min: number) =>
+            `Question ${n}: select at least ${min} option(s) before submitting.`,
+          submitGateMaxSel: (n: number, max: number) =>
+            `Question ${n}: select at most ${max} option(s) before submitting.`,
+          submitGateMulti: (nums: number[]) =>
+            `Please review questions (${nums.join(", ")}) before submitting.`,
           errorSummaryHeading: "Please review your answers before submitting",
+          navAriaLabel: "Survey navigation",
           prevBtn: "Previous",
           nextBtn: "Next",
           submitAllBtn: "Submit my answers",
@@ -360,6 +383,7 @@
             `You answered ${n} out of ${tot} questions. Only selected answers will be submitted.`,
           partialModalCancel: "Keep answering",
           partialModalConfirm: "Confirm partial submit",
+          partialModalClose: "Close",
           thanksTitle: "Thank you for participating!",
           thanksComplete: (n: number) => `Your complete survey (${n} questions) was submitted.`,
           thanksPartial: (n: number, tot: number) =>
@@ -382,10 +406,13 @@
   );
 
   // Flow state
-  let trackedSurveyId = $state("");
+  let trackedInitKey = "";
   let step = $state<SurveyStep>("questions");
   let email = $state("");
   let emailError = $state("");
+  let enrollmentError = $state("");
+  let requestingLink = $state(false);
+  let sessionIdentity = $state("");
   let enrollmentMeta = $state<Record<string, string>>({});
   let answers = $state<AnswerMap>({});
   let questionIndex = $state(0);
@@ -404,46 +431,80 @@
   let missingIds = $state<string[]>([]);
   let submitting = $state(false);
   let pendingSubmission = $state<SurveyPendingSubmission | null>(null);
+  let pendingIdentity = $state<string | null>(null);
   let lastSubmitted = $state<SurveySubmitPayload | null>(null);
   let passkeySaved = $state(false);
   let isOnline = $state(typeof navigator !== "undefined" ? navigator.onLine : true);
   let thanksHeadingEl = $state<HTMLElement | undefined>(undefined);
+  let errorSummaryWrap = $state<HTMLElement | undefined>(undefined);
 
-  // Reset / initialize when survey.id changes
+  // Reset / initialize when survey.id or initial auth/session props change (e.g. async /api/me)
   $effect(() => {
     const id = survey.id;
-    if (id === trackedSurveyId) return;
-    trackedSurveyId = id;
-    step = resolveInitialStep(survey, initialStep);
-    email = initialEmail;
-    emailError = "";
-    enrollmentMeta = {};
-    answers = initialAnswers ? { ...initialAnswers } : {};
-    questionIndex = 0;
-    entryScope = survey.entry?.scope.default ?? null;
-    depthMode = survey.entry?.depth.default ?? null;
-    selectedThemes = (survey.themes ?? []).map((t) => t.id);
-    questionScopes = {};
-    entryError = "";
-    deepMilestonePassed = false;
-    restoredBanner = false;
-    returnedFromDraft = false;
-    questionError = "";
-    submitError = "";
-    missingIds = [];
-    submitting = false;
-    lastSubmitted = null;
-    const identity = (initialEmail || "").trim() || "anonymous";
-    passkeySaved = persistDraft ? hasSurveyPasskey(identity, storageSalt) : false;
-    pendingSubmission = persistDraft ? loadPendingSubmission(id, identity, storageSalt) : null;
-    if (
-      (step === "questions" || step === "entry_scope" || step === "entry_depth") &&
-      draftWindowMinutes > 0
-    ) {
-      expiresAt = Date.now() + draftTtlMs;
-    } else {
-      expiresAt = 0;
-    }
+    const initStep = initialStep;
+    const initEmail = initialEmail;
+    const seed = respondentSeed ?? "";
+    const key = `${id}\0${initStep ?? ""}\0${initEmail}\0${seed}`;
+    if (key === trackedInitKey) return;
+    trackedInitKey = key;
+
+    untrack(() => {
+      const nextStep = resolveInitialStep(survey, initStep);
+      const cleanedEmail = (initEmail || "").trim();
+      const nextIdentity = cleanedEmail || seed.trim() || "anonymous";
+      step = nextStep;
+      email = initEmail;
+      emailError = "";
+      enrollmentError = "";
+      requestingLink = false;
+      sessionIdentity = nextIdentity;
+      entryScope = survey.entry?.scope.default ?? null;
+      depthMode = survey.entry?.depth.default ?? null;
+      selectedThemes = (survey.themes ?? []).map((t) => t.id);
+      questionScopes = {};
+      entryError = "";
+      deepMilestonePassed = false;
+      questionError = "";
+      submitError = "";
+      missingIds = [];
+      submitting = false;
+      lastSubmitted = null;
+
+      const restored =
+        nextStep === "questions" && persistDraft
+          ? loadSurveyDraft(id, nextIdentity, Date.now(), storageSalt)
+          : null;
+
+      if (restored) {
+        answers = { ...(initialAnswers ?? {}), ...restored.answers };
+        questionIndex = Math.min(restored.questionIndex, Math.max(0, survey.questions.length - 1));
+        enrollmentMeta = { ...restored.enrollmentMeta };
+        expiresAt = restored.expiresAt;
+        const hasProgress =
+          countAnsweredQuestions(survey.questions, restored.answers) > 0 ||
+          restored.questionIndex > 0;
+        returnedFromDraft = hasProgress;
+        restoredBanner = hasProgress;
+      } else {
+        answers = initialAnswers ? { ...initialAnswers } : {};
+        questionIndex = 0;
+        enrollmentMeta = {};
+        returnedFromDraft = false;
+        restoredBanner = false;
+        expiresAt =
+          (nextStep === "questions" || nextStep === "entry_scope" || nextStep === "entry_depth") &&
+          draftWindowMinutes > 0
+            ? Date.now() + draftTtlMs
+            : 0;
+      }
+
+      passkeySaved = persistDraft ? hasSurveyPasskey(nextIdentity, storageSalt) : false;
+      const loadedPending = persistDraft
+        ? loadPendingSubmission(id, nextIdentity, storageSalt)
+        : null;
+      pendingSubmission = loadedPending;
+      pendingIdentity = loadedPending ? nextIdentity : null;
+    });
   });
 
   // 1-second draft countdown timer
@@ -479,7 +540,12 @@
     };
     const handleOnline = () => {
       isOnline = true;
-      if (pendingSubmission && !submitting) {
+      if (
+        pendingSubmission &&
+        pendingIdentity &&
+        !submitting &&
+        (step !== "enrollment" || email.trim().toLowerCase() === pendingIdentity.toLowerCase())
+      ) {
         void flushPendingSubmission();
       }
     };
@@ -491,7 +557,7 @@
     };
   });
 
-  const activeIdentity = $derived(email.trim() || "anonymous");
+  const activeIdentity = $derived(sessionIdentity || (respondentSeed || "").trim() || "anonymous");
   const isV2 = $derived(isSurveyDefinitionV2(survey));
   const hasEntry = $derived(Boolean(survey.entry));
 
@@ -599,7 +665,9 @@
     nextIndex: number,
     nextExpires: number,
     nextMeta: Record<string, string> = enrollmentMeta,
+    identityOverride?: string,
   ) {
+    const now = Date.now();
     const draft: SurveyDraft = {
       surveyId: survey.id,
       answers: nextAnswers,
@@ -615,24 +683,57 @@
           }
         : {}),
       expiresAt: nextExpires,
-      updatedAt: Date.now(),
+      updatedAt: now,
     };
-    if (persistDraft && draftWindowMinutes > 0) {
-      saveSurveyDraft(survey.id, activeIdentity, draft, storageSalt);
+    const targetIdentity = identityOverride ?? activeIdentity;
+    const notExpired = nextExpires <= 0 || now < nextExpires;
+    if (persistDraft && draftWindowMinutes > 0 && notExpired) {
+      saveSurveyDraft(survey.id, targetIdentity, draft, storageSalt);
     }
     ondraftchange?.(draft);
   }
 
   async function handleEnrollmentSubmit(event: SubmitEvent) {
     event.preventDefault();
+    if (readOnly || requestingLink) return;
     const cleaned = email.trim();
     if (!isValidSurveyEmail(cleaned)) {
       emailError = copy.emailError;
       return;
     }
     emailError = "";
+    enrollmentError = "";
+
+    if (enrollmentMode === "email-magic-link" && !isOnline) {
+      enrollmentError = copy.offlineLinkError;
+      return;
+    }
 
     const cleanMeta = sanitizeEnrollmentMeta(enrollmentMeta);
+    const neverDisplayIds = new Set(
+      (survey.enrollmentFields ?? []).filter((f) => f.display === "never").map((f) => f.id),
+    );
+    const linkMeta = Object.fromEntries(
+      Object.entries(cleanMeta).filter(([k]) => !neverDisplayIds.has(k)),
+    );
+
+    if (onrequestlink) {
+      requestingLink = true;
+      try {
+        await onrequestlink({
+          surveyId: survey.id,
+          email: cleaned,
+          enrollmentMeta: linkMeta,
+        });
+      } catch {
+        enrollmentError = copy.requestLinkError;
+        return;
+      } finally {
+        requestingLink = false;
+      }
+    }
+
+    sessionIdentity = cleaned;
     const found = persistDraft
       ? loadSurveyDraft(survey.id, cleaned, Date.now(), storageSalt)
       : null;
@@ -657,24 +758,19 @@
     } else {
       answers = initialAnswers ? { ...initialAnswers } : {};
       questionIndex = 0;
+      enrollmentMeta = cleanMeta;
       expiresAt = draftWindowMinutes > 0 ? Date.now() + draftTtlMs : 0;
       returnedFromDraft = false;
       restoredBanner = false;
-      persistCurrentDraft(answers, questionIndex, expiresAt, cleanMeta);
+      persistCurrentDraft(answers, questionIndex, expiresAt, cleanMeta, cleaned);
     }
 
-    pendingSubmission = persistDraft
+    const loadedPending = persistDraft
       ? loadPendingSubmission(survey.id, cleaned, storageSalt)
       : null;
+    pendingSubmission = loadedPending;
+    pendingIdentity = loadedPending ? cleaned : null;
     passkeySaved = persistDraft ? hasSurveyPasskey(cleaned, storageSalt) : false;
-
-    if (onrequestlink) {
-      await onrequestlink({
-        surveyId: survey.id,
-        email: cleaned,
-        enrollmentMeta: cleanMeta,
-      });
-    }
 
     if (enrollmentMode === "email-magic-link") {
       step = "link_sent";
@@ -687,6 +783,8 @@
 
   function handleResumeDraft() {
     if (!existingDraft) return;
+    const cleaned = email.trim();
+    sessionIdentity = cleaned;
     answers = { ...existingDraft.answers };
     if (existingDraft.entryScope !== undefined) entryScope = existingDraft.entryScope;
     if (existingDraft.depthMode !== undefined) depthMode = existingDraft.depthMode;
@@ -703,9 +801,11 @@
     expiresAt = existingDraft.expiresAt;
     returnedFromDraft = true;
     restoredBanner = true;
-    pendingSubmission = persistDraft
-      ? loadPendingSubmission(survey.id, email.trim(), storageSalt)
+    const loadedPending = persistDraft
+      ? loadPendingSubmission(survey.id, cleaned, storageSalt)
       : null;
+    pendingSubmission = loadedPending;
+    pendingIdentity = loadedPending ? cleaned : null;
     step =
       existingDraft.step === "entry_scope" || existingDraft.step === "entry_depth"
         ? existingDraft.step
@@ -907,51 +1007,122 @@
     }
   }
 
-  function leaveForLater() {
-    persistCurrentDraft(answers, questionIndex, expiresAt);
+  function resetToEnrollment() {
+    email = "";
+    emailError = "";
+    enrollmentError = "";
+    requestingLink = false;
+    enrollmentMeta = {};
+    answers = {};
+    questionIndex = 0;
+    expiresAt = 0;
+    restoredBanner = false;
+    returnedFromDraft = false;
+    questionError = "";
+    submitError = "";
+    missingIds = [];
+    pendingSubmission = null;
+    pendingIdentity = null;
+    sessionIdentity = (respondentSeed || "").trim();
+    passkeySaved = false;
     step = "enrollment";
   }
 
-  function queuePendingSubmission(payload: SurveySubmitPayload, errorReason: string) {
+  function leaveForLater() {
+    persistCurrentDraft(answers, questionIndex, expiresAt);
+    resetToEnrollment();
+  }
+
+  function queuePendingSubmission(
+    payload: SurveySubmitPayload,
+    errorReason: string,
+    targetIdentity = activeIdentity,
+  ) {
+    const sameTarget = pendingIdentity?.toLowerCase() === targetIdentity.toLowerCase();
     const entry: SurveyPendingSubmission = {
       payload,
-      queuedAt: pendingSubmission?.queuedAt ?? Date.now(),
-      attempts: (pendingSubmission?.attempts ?? 0) + 1,
+      queuedAt: sameTarget && pendingSubmission ? pendingSubmission.queuedAt : Date.now(),
+      attempts: (sameTarget && pendingSubmission ? pendingSubmission.attempts : 0) + 1,
       lastError: errorReason,
     };
-    pendingSubmission = entry;
     if (persistDraft) {
-      savePendingSubmission(survey.id, activeIdentity, entry, storageSalt);
+      savePendingSubmission(survey.id, targetIdentity, entry, storageSalt);
+    }
+    if (targetIdentity.toLowerCase() === activeIdentity.toLowerCase()) {
+      pendingSubmission = entry;
+      pendingIdentity = targetIdentity;
     }
   }
 
-  async function deliverSubmission(payload: SurveySubmitPayload) {
+  async function deliverSubmission(
+    payload: SurveySubmitPayload,
+    targetIdentity = activeIdentity,
+  ) {
     if (!isOnline) {
-      queuePendingSubmission(payload, "offline");
+      queuePendingSubmission(payload, "offline", targetIdentity);
       return;
     }
     submitting = true;
     try {
       await onsubmit?.(payload);
-      pendingSubmission = null;
       if (persistDraft) {
-        clearPendingSubmission(survey.id, activeIdentity, storageSalt);
-        clearSurveyDraft(survey.id, activeIdentity, storageSalt);
+        clearPendingSubmission(survey.id, targetIdentity, storageSalt);
+        clearSurveyDraft(survey.id, targetIdentity, storageSalt);
       }
-      passkeySaved = persistDraft ? hasSurveyPasskey(activeIdentity, storageSalt) : passkeySaved;
-      lastSubmitted = payload;
-      step = "thanks";
+      if (pendingIdentity?.toLowerCase() === targetIdentity.toLowerCase()) {
+        pendingSubmission = null;
+        pendingIdentity = null;
+      }
+      if (targetIdentity.toLowerCase() === activeIdentity.toLowerCase() && step !== "enrollment") {
+        passkeySaved = persistDraft ? hasSurveyPasskey(targetIdentity, storageSalt) : passkeySaved;
+        lastSubmitted = payload;
+        step = "thanks";
+      }
     } catch (err) {
       const reason = err instanceof Error ? err.message : "submit_failed";
-      queuePendingSubmission(payload, reason);
+      queuePendingSubmission(payload, reason, targetIdentity);
     } finally {
       submitting = false;
     }
   }
 
   async function flushPendingSubmission() {
-    if (!pendingSubmission || submitting) return;
-    await deliverSubmission(pendingSubmission.payload);
+    if (!pendingSubmission || !pendingIdentity || submitting) return;
+    await deliverSubmission(pendingSubmission.payload, pendingIdentity);
+  }
+
+  function formatSubmitGateError(ids: string[]): string {
+    const entries = ids
+      .map((id) => {
+        const idx = survey.questions.findIndex((q) => q.id === id);
+        return idx >= 0 ? { q: survey.questions[idx], num: idx + 1 } : null;
+      })
+      .filter((item): item is { q: SurveyQuestion; num: number } => item !== null);
+    if (entries.length === 1) {
+      const { q, num } = entries[0];
+      const err = validateQuestionAnswer(q, answers[q.id]);
+      if (err === "minSelections" && q.type === "multi" && q.minSelections != null) {
+        return copy.submitGateMinSel(num, q.minSelections);
+      }
+      if (err === "maxSelections" && q.type === "multi" && q.maxSelections != null) {
+        return copy.submitGateMaxSel(num, q.maxSelections);
+      }
+      return copy.submitGateSingle(num);
+    }
+    if (entries.length > 1) {
+      return copy.submitGateMulti(entries.map((e) => e.num));
+    }
+    return copy.submitGateSingle(1);
+  }
+
+  function fieldErrorFor(q: SurveyQuestion): string | undefined {
+    if (survey.rules.mode === "one-per-screen" && currentQuestion?.id === q.id && questionError) {
+      return questionError;
+    }
+    if (missingIds.includes(q.id)) {
+      return validationMessageFor(q) || copy.requiredError;
+    }
+    return undefined;
   }
 
   async function handleExplicitSubmit(requestedMode: "complete" | "partial") {
@@ -959,7 +1130,19 @@
     const check = validateSubmission(survey, answers, requestedMode, activeQuestions);
     if (!check.valid) {
       missingIds = check.missingIds;
-      submitError = copy.submitGateError;
+      submitError = formatSubmitGateError(check.missingIds);
+      if (
+        survey.rules.mode === "one-per-screen" &&
+        currentQuestion &&
+        check.missingIds.includes(currentQuestion.id)
+      ) {
+        questionError = validationMessageFor(currentQuestion) || copy.requiredError;
+      }
+      if (survey.rules.mode === "all-at-once") {
+        tick().then(() => {
+          errorSummaryWrap?.querySelector<HTMLElement>(".st-error-summary")?.focus();
+        });
+      }
       return;
     }
 
@@ -982,7 +1165,7 @@
           }
         : {}),
     });
-    await deliverSubmission(payload);
+    await deliverSubmission(payload, activeIdentity);
   }
 
   async function handleRegisterPasskey() {
@@ -1027,6 +1210,7 @@
   {@const qHelper = q.helperText ? resolveLocalizedText(q.helperText, locale) : undefined}
   {@const isDual = Boolean(q.contextual && entryScope === "both")}
   {@const singleVal = getSingleControlValue(q)}
+  {@const qError = fieldErrorFor(q)}
   <div id={`st-survey-q-${survey.id}-${q.id}`} class="st-surveyForm__questionControl">
     {#if isDual && (q.type === "single" || q.type === "multi" || q.type === "scale" || q.type === "likert" || q.type === "ai_effect")}
       {@const entSide = getScopedSideValue(q.id, "enterprise")}
@@ -1124,6 +1308,8 @@
         legend={qLegend}
         variant="card"
         helperText={qHelper ?? copy.multiHint}
+        errorText={qError}
+        invalid={Boolean(qError)}
         required={q.required}
         exclusiveValues={q.exclusive}
         minSelections={q.minSelections}
@@ -1143,6 +1329,8 @@
         name={`st-survey-${survey.id}-${q.id}`}
         legend={qLegend}
         helperText={qHelper ?? copy.scaleHint}
+        errorText={qError}
+        invalid={Boolean(qError)}
         required={q.required}
         scaleKind={q.type === "ai_effect" ? "bipolar" : (q.scaleKind ?? "ordinal")}
         neutralOptionId={q.type === "ai_effect"
@@ -1170,6 +1358,8 @@
         legend={qLegend}
         variant="card"
         helperText={qHelper ?? copy.singleHint}
+        errorText={qError}
+        invalid={Boolean(qError)}
         required={q.required}
         options={qOptions.map((o) => ({
           value: o.id,
@@ -1270,14 +1460,14 @@
                   {copy.retryNowBtn}
                 </Button>
               {/snippet}
-              <div class="st-surveyForm__autosaveRow">
-                <Autosave
-                  status={submitting ? "saving" : "error"}
-                  locale={lang === "fr" ? "fr-CA" : "en-CA"}
-                  labels={{ saving: copy.autosaveSaving, error: copy.autosavePending }}
-                />
-              </div>
             </Alert>
+            <div class="st-surveyForm__autosaveRow">
+              <Autosave
+                status={submitting ? "saving" : "error"}
+                locale={lang === "fr" ? "fr-CA" : "en-CA"}
+                labels={{ saving: copy.autosaveSaving, error: copy.autosavePending }}
+              />
+            </div>
           {/if}
 
           {#if step === "enrollment"}
@@ -1300,7 +1490,18 @@
                   invalid={Boolean(emailError)}
                   bind:value={email}
                   autocomplete="email"
-                  disabled={readOnly}
+                  disabled={readOnly || requestingLink}
+                  oninput={() => {
+                    emailError = "";
+                    enrollmentError = "";
+                    if (
+                      pendingIdentity &&
+                      email.trim().toLowerCase() !== pendingIdentity.toLowerCase()
+                    ) {
+                      pendingSubmission = null;
+                      pendingIdentity = null;
+                    }
+                  }}
                   required
                 />
 
@@ -1317,7 +1518,7 @@
                       : undefined}
                     maxlength={field.maxLength}
                     value={enrollmentMeta[field.id] ?? ""}
-                    disabled={readOnly}
+                    disabled={readOnly || requestingLink}
                     oninput={(e) => {
                       enrollmentMeta = {
                         ...enrollmentMeta,
@@ -1326,6 +1527,10 @@
                     }}
                   />
                 {/each}
+
+                {#if enrollmentError}
+                  <Alert tone="error" title={enrollmentError} />
+                {/if}
 
                 {#if existingDraft}
                   <Alert
@@ -1351,7 +1556,12 @@
                 {/if}
 
                 <Inline justify="end" gap={2}>
-                  <Button variant="primary" size="lg" type="submit" disabled={readOnly}>
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    type="submit"
+                    disabled={readOnly || requestingLink}
+                  >
                     {enrollmentMode === "email-magic-link"
                       ? copy.sendLinkBtn
                       : copy.startSurveyBtn}
@@ -1372,7 +1582,7 @@
                   variant="ghost"
                   size="lg"
                   type="button"
-                  onclick={() => (step = "enrollment")}
+                  onclick={resetToEnrollment}
                 >
                   {copy.changeEmailBtn}
                 </Button>
@@ -1600,7 +1810,7 @@
                   scopeToggleLabel={copy.scopeToggleLabel}
                   scopeDisabled={readOnly}
                   onscopechange={(nextScope) => handleQuestionScopeChange(currentQuestion, nextScope)}
-                  errorText={questionError || undefined}
+                  data-invalid={fieldErrorFor(currentQuestion) ? "true" : undefined}
                 >
                   {@render renderQuestionControl(currentQuestion)}
                 </SurveyQuestionCard>
@@ -1616,6 +1826,7 @@
                     ? readOnly || answeredCount === 0
                     : false}
                   {submitting}
+                  ariaLabel={copy.navAriaLabel}
                   previousLabel={copy.prevBtn}
                   nextLabel={copy.nextBtn}
                   submitLabel={copy.submitAllBtn}
@@ -1631,6 +1842,7 @@
                   )}
                   partialConfirmLabel={copy.partialModalConfirm}
                   partialCancelLabel={copy.partialModalCancel}
+                  partialCloseLabel={copy.partialModalClose}
                   stickyMobile={true}
                   onprevious={goPrev}
                   onnext={goNext}
@@ -1640,10 +1852,12 @@
                 />
               {:else}
                 {#if errorSummaryItems.length > 0}
-                  <ErrorSummary
-                    heading={copy.errorSummaryHeading}
-                    errors={errorSummaryItems}
-                  />
+                  <div bind:this={errorSummaryWrap}>
+                    <ErrorSummary
+                      heading={copy.errorSummaryHeading}
+                      errors={errorSummaryItems}
+                    />
+                  </div>
                 {/if}
                 <Stack gap={4}>
                   {#each activeQuestions as q, qIdx (q.id)}
@@ -1661,6 +1875,7 @@
                       scopeToggleLabel={copy.scopeToggleLabel}
                       scopeDisabled={readOnly}
                       onscopechange={(nextScope) => handleQuestionScopeChange(q, nextScope)}
+                      data-invalid={fieldErrorFor(q) ? "true" : undefined}
                     >
                       {@render renderQuestionControl(q)}
                     </SurveyQuestionCard>
@@ -1778,7 +1993,9 @@
   }
 
   .st-surveyForm__main {
+    max-width: 38rem;
     min-width: 0;
+    width: 100%;
   }
 
   .st-surveyForm__headingGroup {
@@ -1984,7 +2201,8 @@
   @container st-survey-form (min-width: 760px) {
     .st-surveyForm--withPrivacy .st-surveyForm__grid {
       gap: var(--st-spacing-6, 1.5rem);
-      grid-template-columns: minmax(0, 1fr) minmax(17rem, 21rem);
+      grid-template-columns: minmax(0, min(100%, 38rem)) minmax(17rem, 21rem);
+      justify-content: center;
     }
 
     .st-surveyForm__privacy {
