@@ -1,4 +1,5 @@
 import { renderErdCardSvg } from './erd.js';
+import { renderProcessBoxSvg } from './process.js';
 /** Standalone server-side SVG, consuming exactly the scene model used by the framework hosts. */
 import {
   connectorStrokeWidth,
@@ -41,8 +42,10 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
   if(result.status!=='laid-out') throw new Error('Scene refused: '+JSON.stringify(result.refusals));
   const viewportWidth=input.targetWidth??1440;
   const viewport={viewWidth:viewportWidth,windowHeight:options.windowHeight??900,fitToWindow:options.fitToWindow??false};
-  const scene=resolveScene(result,measuredInput,viewport),box=scene.bounds??{x:0,y:0,width:1,height:1};
-  const fit=sceneFit({bounds:box,...viewport});
+  const isProcess=input.document.profileRefs.length===1&&input.document.profileRefs[0]==='process@1';
+  const resolvedViewport=isProcess?{...viewport,maxDisplayScale:1,...(viewport.fitToWindow?{}:{viewHeight:Math.max(1,(result.fit.height??1)+16)})}:viewport;
+  const scene=resolveScene(result,measuredInput,resolvedViewport),box=scene.bounds??{x:0,y:0,width:1,height:1};
+  const fit=sceneFit({bounds:box,...resolvedViewport});
   const cornerRadius=input.metrics?.edgeCornerRadius??DEFAULT_EDGE_CORNER_RADIUS;
   const linkStrokeWidth=input.metrics?.linkStrokeWidth??DEFAULT_LINK_STROKE_WIDTH;
   const edgeLabelSize=scene.overviewEdgeLabelSize??(scene.r7Connectors ? input.metrics?.edgeLabelSize : undefined)??DEFAULT_EDGE_LABEL_SIZE;
@@ -82,6 +85,7 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
   const drawNode=(node:SceneNodeModel)=>{
     const measure=measureFor(node.collapsed);
     if(node.kind==='erd'&&node.erd!==undefined)return `<g data-scene-occurrence="${escape(node.occurrence)}" transform="translate(${node.rect.x} ${node.rect.y})">${renderErdCardSvg(node.erd)}</g>`;
+    if(node.kind==='process'&&node.processBox!==undefined)return `<g data-scene-occurrence="${escape(node.occurrence)}" transform="translate(${node.rect.x} ${node.rect.y})">${renderProcessBoxSvg(node.processBox)}</g>`;
     const props={entityId:node.entity,resolveGlyph:input.resolveGlyph??getDiagramGlyph};
     const projected=node.kind==='zone'?projectZoneProps(node.presentation,{...props,collapsed:node.collapsed,...(input.metrics?.containerPadding===undefined?{}:{containerPadding:input.metrics.containerPadding}),width:node.rect.width,height:node.rect.height,toggleLabel:node.collapsed?'Expand':'Collapse'}):projectCardProps(node.presentation,props);
     if(projected.kind==='label')return `<text x="${node.rect.x}" y="${node.rect.y+24}">${escape(node.text)}</text>`;
