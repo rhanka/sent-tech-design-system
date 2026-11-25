@@ -2,7 +2,7 @@
   export interface LikertScaleOption {
     value: string;
     label: string;
-    stepBadge?: string;
+    stepBadge?: string | null;
     description?: string;
     disabled?: boolean;
   }
@@ -59,6 +59,7 @@
 
   const uid = $props.id();
   const helpId = `${uid}-help`;
+  const polesId = `${uid}-poles`;
   const errorId = `${uid}-error`;
 
   const isInvalid = $derived(invalid || Boolean(errorText));
@@ -66,17 +67,68 @@
     [
       rest["aria-describedby"],
       helperText ? helpId : null,
+      minLabel || maxLabel ? polesId : null,
       errorText ? errorId : null
     ]
       .filter(Boolean)
       .join(" ") || undefined
   );
 
+  function escapeRegExp(input: string): string {
+    return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function badgePrefixPattern(badge: string): RegExp | null {
+    const token = badge.trim();
+    if (!token) return null;
+    return new RegExp(`^${escapeRegExp(token)}(?:\\s*[·.:–—-]\\s*|\\s+|$)`);
+  }
+
+  const SYMBOL_PREFIX_RE = /^([0-9]{1,2}|[+\-−–—=±/]{1,3}|[A-Za-z][0-9]{1,2})\s*·\s*(.+)$/;
+
+  const hasPrefixedOption = $derived(
+    options.some((o) => o.stepBadge === undefined && SYMBOL_PREFIX_RE.test(o.label.trim()))
+  );
+
+  function stripBadgePrefix(
+    badge: string,
+    label: string
+  ): { badge: string; displayLabel: string; showBadge: boolean } {
+    const trimmed = label.trim();
+    const re = badgePrefixPattern(badge);
+    if (!re || !re.test(trimmed)) return { badge, displayLabel: label, showBadge: true };
+    const stripped = trimmed.replace(re, "").trim();
+    if (!stripped) return { badge, displayLabel: label, showBadge: false };
+    return { badge, displayLabel: stripped, showBadge: true };
+  }
+
+  function resolveOptionDisplay(
+    option: LikertScaleOption,
+    index: number
+  ): { badge: string; displayLabel: string; showBadge: boolean } {
+    if (option.stepBadge !== undefined) {
+      const explicit = (option.stepBadge ?? "").trim();
+      if (!explicit) return { badge: "", displayLabel: option.label, showBadge: false };
+      return stripBadgePrefix(explicit, option.label);
+    }
+    const prefixMatch = option.label.trim().match(SYMBOL_PREFIX_RE);
+    if (prefixMatch) {
+      return { badge: prefixMatch[1], displayLabel: prefixMatch[2].trim(), showBadge: true };
+    }
+    if (hasPrefixedOption) {
+      return { badge: "", displayLabel: option.label, showBadge: false };
+    }
+    return stripBadgePrefix(String(index + 1), option.label);
+  }
+
   const canGoHorizontal = $derived(
     layout === "horizontal" ||
       (layout === "auto" &&
         options.length <= 5 &&
-        options.every((o) => o.label.trim().length <= 22))
+        options.every((o, index) => {
+          const { displayLabel } = resolveOptionDisplay(o, index);
+          return displayLabel.trim().length <= 22 && !o.description?.trim();
+        }))
   );
 
   const classes = $derived(
@@ -89,18 +141,6 @@
       .filter(Boolean)
       .join(" ")
   );
-
-  function escapeRegExp(input: string): string {
-    return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  }
-
-  function badgeAlreadyInLabel(badge: string, label: string): boolean {
-    const trimmed = label.trim();
-    const token = badge.trim();
-    if (!token) return false;
-    const re = new RegExp(`^${escapeRegExp(token)}(?:\\s*[·.:–—-]\\s*|\\s+|$)`);
-    return re.test(trimmed);
-  }
 
   function select(optionValue: string, optionDisabled?: boolean) {
     if (disabled || optionDisabled) return;
@@ -130,8 +170,7 @@
   <div class="st-likert__options">
     {#each options as option, index (option.value)}
       {@const checked = value === option.value}
-      {@const badge = option.stepBadge ?? String(index + 1)}
-      {@const hideBadge = badgeAlreadyInLabel(badge, option.label)}
+      {@const { badge, displayLabel, showBadge } = resolveOptionDisplay(option, index)}
       {@const optionDisabled = Boolean(disabled || option.disabled)}
       <label
         class="st-likert__option"
@@ -147,12 +186,13 @@
           {checked}
           disabled={optionDisabled}
           required={required || undefined}
-          aria-describedby={describedBy}
           onchange={() => select(option.value, option.disabled)}
         />
-        <span class="st-likert__badge" aria-hidden={hideBadge ? "true" : undefined}>{badge}</span>
+        {#if showBadge && badge}
+          <span class="st-likert__badge">{badge}</span>
+        {/if}
         <span class="st-likert__content">
-          <span class="st-likert__label">{option.label}</span>
+          <span class="st-likert__label">{displayLabel}</span>
           {#if option.description}
             <span class="st-likert__description">{option.description}</span>
           {/if}
@@ -162,7 +202,7 @@
   </div>
 
   {#if minLabel || maxLabel}
-    <div class="st-likert__poles" aria-hidden="true">
+    <div class="st-likert__poles" id={polesId}>
       <span class="st-likert__pole st-likert__pole--min">{minLabel ?? ""}</span>
       <span class="st-likert__pole st-likert__pole--max">{maxLabel ?? ""}</span>
     </div>
@@ -180,6 +220,7 @@
     margin: 0;
     min-width: 0;
     padding: 0;
+    width: 100%;
   }
 
   .st-likert__legend {
@@ -228,6 +269,10 @@
       border-color var(--st-motion-fast, 150ms) var(--st-motion-easing, ease),
       box-shadow var(--st-motion-fast, 150ms) var(--st-motion-easing, ease);
     width: 100%;
+  }
+
+  .st-likert__option:not(:has(.st-likert__badge)) {
+    grid-template-columns: auto 1fr;
   }
 
   .st-likert__option:hover:not(.st-likert__option--disabled) {
