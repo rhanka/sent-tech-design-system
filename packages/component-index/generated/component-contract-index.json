@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:859145a4c245aa43f26b69ab0a981a3cb4c60c0ff5e63fdafbf03f42a7405213",
+  "contractsRevision": "sha256:bae7818855e39e1f8fd766b00bd4aca9fc8bcc6bb73ba3102b059ed19b8f88df",
   "counts": {
     "byFramework": {
       "angular": {
@@ -1321,8 +1321,8 @@
         "vue": "partial"
       },
       "componentId": "input",
-      "contractDigest": "sha256:a1a7844a102c95257984570e6baefdd09fb71f9c995f34ea54842dce0a082ed0",
-      "entryDigest": "sha256:adde280a96a76e82571f7de9c2d7897c8e9bf8bf5fd0d27ee4d6b3322ae0ff40",
+      "contractDigest": "sha256:472b1cd95c9544eb1c1dfad64fcde22d1f08ce138e5e9be0b5e48ebc019e762f",
+      "entryDigest": "sha256:3d4d11a32022fb113a6ab1c99acdf7e1959fc32d403d659d8deb08458e2d4fa3",
       "path": "contracts/input.json",
       "producerId": "sentropic-ds"
     },
@@ -2322,8 +2322,8 @@
         "vue": "partial"
       },
       "componentId": "stepper",
-      "contractDigest": "sha256:e19adb70b950efe6d5e6f1d966b4bb8eca1242aa1a9d6dec37fb14889d0e2733",
-      "entryDigest": "sha256:fd6d54717c5204f1cfebae80681de8bc8b340c9cb5c1f24eb0018614251c9153",
+      "contractDigest": "sha256:45a424e59df1090adf8abf6ffb0c559a39d820729cdbffd91e8b4802577be630",
+      "entryDigest": "sha256:47a93578dee3dc56b604ec061a125d2e64f18b6069c29711a98d1afb350311dc",
       "path": "contracts/stepper.json",
       "producerId": "sentropic-ds"
     },
@@ -2530,7 +2530,7 @@
         "vue": "none"
       },
       "componentId": "time-series-line-chart",
-      "contractDigest": "sha256:0594793df3bde171e7e4f9ec0faf1d2d4b3ef3b79793834b37782c7186a5ea5b",
+      "contractDigest": "sha256:596a91fd6b2963c8cd370b0c267e884c9633f8c2c736936fe78108e3bcf50f5a",
       "entryDigest": "sha256:360c124ae6ea84d8ba8de60c28fc93d9fdb5e90331c944cacea5260d07003411",
       "path": "contracts/time-series-line-chart.json",
       "producerId": "sentropic-ds"
@@ -2863,5 +2863,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "7c0db5c95d9cdbfab657d9c20a1847792e97075c"
+  "sourceCommit": "43a87853050f05ddcdc3d6df58b8ab381e94ee56"
 }
