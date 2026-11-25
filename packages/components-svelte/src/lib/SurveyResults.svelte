@@ -715,7 +715,7 @@
   .st-surveyResults__nodeSummary {
     background: var(--st-semantic-surface-subtle, #f1f5f9);
     border-left: 4px solid var(--st-semantic-feedback-info, #0284c7);
-    border-radius: var(--st-radius-sm, 0.25rem);
+    border-radius: 0;
     display: grid;
     gap: var(--st-spacing-1, 0.25rem);
     margin: 0;
