@@ -21,6 +21,11 @@
   `design-system-elements` `0.5.0`, `design-system-svelte` `0.47.0` (above
   PR #350's `0.46.1` Stepper patch), `design-system-vue` `0.43.0-next.0`.
 
+## @sentropic/design-system-svelte 0.46.1 — Stepper horizontal alignment fix
+
+- Stepper: centre horizontal step connectors on the step bubbles and join the
+  last step cleanly (PR #344).
+
 ## Unreleased — DC-2c.1
 
 - diagram-core: additive relation refinements, authored flow types, validation,

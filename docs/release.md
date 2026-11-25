@@ -336,6 +336,16 @@ byte-identical and `process@1` at `2.5 px` `edgeStroke`. Tag order after merge
 4. `svelte-v0.47.0` (`svelte-publish.yml`, following `svelte-v0.46.1` from PR #350) and `vue-v0.43.0-next.0` (`vue-publish.yml`, requires `@sentropic/design-system-elements@0.5.0`, `@sentropic/design-system-themes@0.17.0`, and `@sentropic/diagram-canvas@0.7.0`)
 5. `diagram-codecs-v0.2.0` (`diagram-codecs-publish.yml`, requires `@sentropic/diagram-canvas@0.7.0`)
 
+### Svelte 0.46.1 (Stepper horizontal alignment fix)
+
+Patch release of `@sentropic/design-system-svelte` (`0.46.0` → `0.46.1`) shipping PR #344 (`fix(stepper): centre connectors on bubbles and join the last step`), already tagged on `main` (`svelte-v0.46.1`, superseded by `0.47.0` in DE-3 Milestone 1 above). All runtime `@sentropic/*` pins in `packages/components-svelte/package.json` (`themes@0.16.1`, `diagram-canvas@0.6.0`, `graph@0.3.1`, `rich-text@0.1.1`, `theme-dsfr@0.2.2`, `review-core@0.1.0`) were already on npm:
+
+```bash
+git push origin main
+git tag svelte-v0.46.1
+git push origin svelte-v0.46.1
+```
+
 ### Diagram Core 0.6.1, Diagram Canvas 0.6.0, Elements 0.4.0, Svelte 0.46.0, Vue 0.42.0-next.0 (Archify lot 1)
 
 Release tag order for the `process@1` simple-box release train (L1a–L1e), already published on `main` (superseded for `diagram-canvas`, `elements`, `svelte`, `vue`, and `diagram-codecs` by DE-3 Milestone 1 above and PR #350 `svelte-v0.46.1`):
