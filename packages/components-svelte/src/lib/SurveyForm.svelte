@@ -62,6 +62,7 @@
   import ErrorSummary from "./ErrorSummary.svelte";
   import Inline from "./Inline.svelte";
   import Input from "./Input.svelte";
+  import LikertScale from "./LikertScale.svelte";
   import Modal from "./Modal.svelte";
   import ProgressBar from "./ProgressBar.svelte";
   import RadioGroup from "./RadioGroup.svelte";
@@ -98,7 +99,6 @@
     resolveSurveyLocale,
     shuffleSurveyOptions,
     type AnswerValue,
-    type ScaleQuestion,
     type SurveyPendingSubmission,
     type SurveyQuestion,
   } from "./survey-types.js";
@@ -680,15 +680,6 @@
     passkeySaved = true;
   }
 
-  function scaleLayoutClass(q: ScaleQuestion): string {
-    if (q.layout === "horizontal") return "st-surveyForm__scale--horizontal";
-    if (q.layout === "stacked") return "st-surveyForm__scale--stacked";
-    const maxLen = Math.max(...q.options.map((o) => resolveLocalizedText(o.label, locale).length));
-    return q.options.length <= 5 && maxLen <= 22
-      ? "st-surveyForm__scale--auto"
-      : "st-surveyForm__scale--stacked";
-  }
-
   const resolvedPasskeyTitle = $derived(
     passkeyOffer?.title ? resolveLocalizedText(passkeyOffer.title, locale) : copy.passkeyTitle,
   );
@@ -724,14 +715,18 @@
   <div id={`st-survey-q-${survey.id}-${q.id}`} class="st-surveyForm__questionControl">
     {#if q.type === "multi"}
       <CheckboxGroup
-        class="st-surveyForm__choiceGroup"
         name={`st-survey-${survey.id}-${q.id}`}
         legend={qLegend}
+        variant="card"
         helperText={qHelper ?? copy.multiHint}
+        required={q.required}
+        exclusiveValues={q.exclusive}
+        minSelections={q.minSelections}
+        maxSelections={q.maxSelections}
         options={qOptions.map((o) => ({
           value: o.id,
           label: resolveLocalizedText(o.label, locale),
-          helperText: o.description ? resolveLocalizedText(o.description, locale) : undefined,
+          description: o.description ? resolveLocalizedText(o.description, locale) : undefined,
           disabled: readOnly || o.disabled,
         }))}
         value={Array.isArray(answers[q.id]) ? (answers[q.id] as string[]) : []}
@@ -739,55 +734,35 @@
         onchange={(vals) => handleMultiChange(q, vals)}
       />
     {:else if q.type === "scale" || q.type === "likert"}
-      <fieldset
-        class={["st-surveyForm__scale", scaleLayoutClass(q)].join(" ")}
-        disabled={readOnly}
-      >
-        <legend class="st-surveyForm__scaleLegend">{qLegend}</legend>
-        <p class="st-surveyForm__scaleHint">{qHelper ?? copy.scaleHint}</p>
-        {#if q.minLabel || q.maxLabel}
-          <div class="st-surveyForm__scalePoles" aria-hidden="true">
-            <span>{resolveLocalizedText(q.minLabel, locale)}</span>
-            <span>{resolveLocalizedText(q.maxLabel, locale)}</span>
-          </div>
-        {/if}
-        <div class="st-surveyForm__scaleOptions">
-          {#each qOptions as opt, idx (opt.id)}
-            {@const optLabel = resolveLocalizedText(opt.label, locale)}
-            {@const checked = answers[q.id] === opt.id}
-            <label
-              class={[
-                "st-surveyForm__scaleOption",
-                checked ? "st-surveyForm__scaleOption--checked" : null,
-              ]
-                .filter(Boolean)
-                .join(" ")}
-            >
-              <input
-                type="radio"
-                class="st-surveyForm__scaleInput"
-                name={`st-survey-${survey.id}-${q.id}`}
-                value={opt.id}
-                {checked}
-                disabled={readOnly || opt.disabled}
-                onchange={() => updateAnswer(q.id, opt.id)}
-              />
-              <span class="st-surveyForm__scaleBadge" aria-hidden="true">{idx + 1}</span>
-              <span class="st-surveyForm__scaleLabel">{optLabel}</span>
-            </label>
-          {/each}
-        </div>
-      </fieldset>
-    {:else if q.type === "single"}
-      <RadioGroup
-        class="st-surveyForm__choiceGroup"
+      <LikertScale
         name={`st-survey-${survey.id}-${q.id}`}
         legend={qLegend}
-        helperText={qHelper ?? copy.singleHint}
+        helperText={qHelper ?? copy.scaleHint}
+        required={q.required}
+        layout={q.layout ?? "auto"}
+        minLabel={q.minLabel ? resolveLocalizedText(q.minLabel, locale) : undefined}
+        maxLabel={q.maxLabel ? resolveLocalizedText(q.maxLabel, locale) : undefined}
         options={qOptions.map((o) => ({
           value: o.id,
           label: resolveLocalizedText(o.label, locale),
-          helperText: o.description ? resolveLocalizedText(o.description, locale) : undefined,
+          description: o.description ? resolveLocalizedText(o.description, locale) : undefined,
+          disabled: readOnly || o.disabled,
+        }))}
+        value={typeof answers[q.id] === "string" ? (answers[q.id] as string) : undefined}
+        disabled={readOnly}
+        onchange={(val) => updateAnswer(q.id, val)}
+      />
+    {:else if q.type === "single"}
+      <RadioGroup
+        name={`st-survey-${survey.id}-${q.id}`}
+        legend={qLegend}
+        variant="card"
+        helperText={qHelper ?? copy.singleHint}
+        required={q.required}
+        options={qOptions.map((o) => ({
+          value: o.id,
+          label: resolveLocalizedText(o.label, locale),
+          description: o.description ? resolveLocalizedText(o.description, locale) : undefined,
           disabled: readOnly || o.disabled,
         }))}
         value={typeof answers[q.id] === "string" ? (answers[q.id] as string) : ""}
@@ -1266,152 +1241,6 @@
     min-width: 0;
   }
 
-  /* 48px choice card styling over RadioGroup / CheckboxGroup */
-  .st-surveyForm__questionControl :global(.st-surveyForm__choiceGroup .st-radioGroup__options),
-  .st-surveyForm__questionControl :global(.st-surveyForm__choiceGroup .st-checkboxGroup__options) {
-    gap: var(--st-spacing-2, 0.5rem);
-  }
-
-  .st-surveyForm__questionControl :global(.st-surveyForm__choiceGroup .st-radio),
-  .st-surveyForm__questionControl :global(.st-surveyForm__choiceGroup .st-checkbox) {
-    align-items: center;
-    background: var(--st-semantic-surface-default, #ffffff);
-    border: 1.5px solid var(--st-semantic-border-subtle, #d6d9ea);
-    border-radius: var(--st-radius-md, 0.5rem);
-    box-sizing: border-box;
-    cursor: pointer;
-    min-height: 3rem;
-    padding: var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem);
-    transition:
-      background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
-      border-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
-    width: 100%;
-  }
-
-  .st-surveyForm__questionControl :global(.st-surveyForm__choiceGroup .st-radio:hover),
-  .st-surveyForm__questionControl :global(.st-surveyForm__choiceGroup .st-checkbox:hover) {
-    background: var(--st-semantic-surface-subtle, #f3f4fb);
-    border-color: var(--st-semantic-border-strong, #444455);
-  }
-
-  .st-surveyForm__questionControl :global(.st-surveyForm__choiceGroup .st-radio:has(input:checked)),
-  .st-surveyForm__questionControl :global(.st-surveyForm__choiceGroup .st-checkbox:has(input:checked)) {
-    background: var(--st-semantic-surface-subtle, #f3f4fb);
-    border-color: var(--st-semantic-border-interactive, var(--st-semantic-action-primary, #01055e));
-    box-shadow: 0 0 0 1px
-      var(--st-semantic-border-interactive, var(--st-semantic-action-primary, #01055e));
-  }
-
-  /* Scale / ordinal question control */
-  .st-surveyForm__scale {
-    border: 0;
-    margin: 0;
-    min-width: 0;
-    padding: 0;
-  }
-
-  .st-surveyForm__scaleLegend {
-    color: var(--st-component-field-labelText, var(--st-semantic-text-primary, #1f2437));
-    font-size: var(--st-component-selection-legendFontSize, 0.9375rem);
-    font-weight: 650;
-    line-height: 1.35;
-    padding: 0;
-  }
-
-  .st-surveyForm__scaleHint {
-    color: var(--st-component-field-helpText, var(--st-semantic-text-secondary, #444455));
-    font-size: 0.8125rem;
-    margin: 0.25rem 0 0;
-  }
-
-  .st-surveyForm__scalePoles {
-    color: var(--st-semantic-text-secondary, #444455);
-    display: flex;
-    font-size: 0.8125rem;
-    gap: var(--st-spacing-2, 0.5rem);
-    justify-content: space-between;
-    margin-top: var(--st-spacing-2, 0.5rem);
-  }
-
-  .st-surveyForm__scaleOptions {
-    display: grid;
-    gap: var(--st-spacing-2, 0.5rem);
-    grid-template-columns: minmax(0, 1fr);
-    margin-top: var(--st-spacing-2, 0.5rem);
-  }
-
-  .st-surveyForm__scaleOption {
-    align-items: center;
-    background: var(--st-semantic-surface-default, #ffffff);
-    border: 1.5px solid var(--st-semantic-border-subtle, #d6d9ea);
-    border-radius: var(--st-radius-md, 0.5rem);
-    box-sizing: border-box;
-    cursor: pointer;
-    display: flex;
-    gap: var(--st-spacing-3, 0.75rem);
-    min-height: 3rem;
-    padding: var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem);
-    position: relative;
-    transition:
-      background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
-      border-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
-  }
-
-  .st-surveyForm__scaleOption:hover {
-    background: var(--st-semantic-surface-subtle, #f3f4fb);
-    border-color: var(--st-semantic-border-strong, #444455);
-  }
-
-  .st-surveyForm__scaleOption--checked {
-    background: var(--st-semantic-surface-subtle, #f3f4fb);
-    border-color: var(--st-semantic-border-interactive, var(--st-semantic-action-primary, #01055e));
-    box-shadow: 0 0 0 1px
-      var(--st-semantic-border-interactive, var(--st-semantic-action-primary, #01055e));
-  }
-
-  .st-surveyForm__scaleOption:has(:focus-visible) {
-    outline: var(
-      --st-component-control-anatomy-focus-outline,
-      3px solid var(--st-semantic-border-interactive, #01055e)
-    );
-    outline-offset: var(--st-component-control-anatomy-focus-offset, 2px);
-  }
-
-  .st-surveyForm__scaleInput {
-    accent-color: var(--st-semantic-action-primary, #01055e);
-    flex: 0 0 auto;
-    height: 1.25rem;
-    margin: 0;
-    width: 1.25rem;
-  }
-
-  .st-surveyForm__scaleBadge {
-    align-items: center;
-    background: var(--st-semantic-surface-subtle, #f3f4fb);
-    border: 1px solid var(--st-semantic-border-subtle, #d6d9ea);
-    border-radius: var(--st-radius-pill, 999px);
-    color: var(--st-semantic-text-primary, #1f2437);
-    display: inline-flex;
-    flex: 0 0 auto;
-    font-size: 0.75rem;
-    font-variant-numeric: tabular-nums;
-    font-weight: 700;
-    height: 1.5rem;
-    justify-content: center;
-    width: 1.5rem;
-  }
-
-  .st-surveyForm__scaleOption--checked .st-surveyForm__scaleBadge {
-    background: var(--st-semantic-action-primary, #01055e);
-    border-color: var(--st-semantic-action-primary, #01055e);
-    color: var(--st-semantic-action-primaryText, #ffffff);
-  }
-
-  .st-surveyForm__scaleLabel {
-    font-size: 0.9375rem;
-    line-height: 1.35;
-  }
-
   .st-surveyForm__inlineError {
     color: var(--st-semantic-feedback-error, #dc2626);
     font-size: 0.875rem;
@@ -1484,18 +1313,6 @@
 
     .st-surveyForm__privacyCompact {
       display: none;
-    }
-
-    .st-surveyForm__scale--auto .st-surveyForm__scaleOptions,
-    .st-surveyForm__scale--horizontal .st-surveyForm__scaleOptions {
-      grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
-    }
-
-    .st-surveyForm__scale--auto .st-surveyForm__scaleOption,
-    .st-surveyForm__scale--horizontal .st-surveyForm__scaleOption {
-      align-items: center;
-      flex-direction: column;
-      text-align: center;
     }
   }
 </style>
