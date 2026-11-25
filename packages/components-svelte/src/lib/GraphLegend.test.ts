@@ -15,14 +15,19 @@ const sampleEntries: ForceGraphLegendEntry[] = [
 ];
 
 describe("GraphLegend — defaults & byte-identity", () => {
-  it("defaults to overlay variant and sm size with accessible label", () => {
+  it("keeps default overlay/sm DOM byte-identical with accessible label", () => {
     const { container } = render(GraphLegend, { props: { entries: sampleEntries } });
     const root = container.querySelector(".st-graphLegend") as HTMLElement;
     expect(root).toBeTruthy();
-    expect(root.classList.contains("st-graphLegend--overlay")).toBe(true);
-    expect(root.classList.contains("st-graphLegend--sm")).toBe(true);
+    expect(root.classList.contains("st-graphLegend--inline")).toBe(false);
+    expect(root.classList.contains("st-graphLegend--md")).toBe(false);
+    expect(root.classList.contains("st-graphLegend--lg")).toBe(false);
     expect(root.getAttribute("aria-label")).toBe("Graph legend");
     expect(container.querySelectorAll(".st-graphLegend__entry")).toHaveLength(5);
+
+    const edgeSvg = container.querySelectorAll(".st-graphLegend__entry svg")[4] as SVGElement;
+    expect(edgeSvg.getAttribute("viewBox")).toBe("0 0 16 8");
+    expect(edgeSvg.getAttribute("width")).toBe("16");
   });
 
   it("renders title and uses it as aria-label", () => {

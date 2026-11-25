@@ -39,8 +39,8 @@
   const classes = $derived(
     [
       "st-graphLegend",
-      `st-graphLegend--${variant}`,
-      `st-graphLegend--${size}`,
+      variant !== "overlay" && `st-graphLegend--${variant}`,
+      size !== "sm" && `st-graphLegend--${size}`,
       className
     ]
       .filter(Boolean)
@@ -81,7 +81,7 @@
         {:else}
           <svg
             class="st-graphLegend__swatch"
-            viewBox="0 0 24 8"
+            viewBox="0 0 {swatch.edgeW} 8"
             width={swatch.edgeW}
             height={swatch.edgeH}
             aria-hidden="true"
@@ -89,7 +89,7 @@
             <line
               x1="0"
               y1="4"
-              x2="24"
+              x2={swatch.edgeW}
               y2="4"
               class={[
                 "st-graphLegend__edge",
@@ -110,16 +110,14 @@
 
 <style>
   .st-graphLegend {
+    background: var(--st-semantic-surface-overlay, rgba(0, 0, 0, 0.45));
     border-radius: var(--st-radius-sm, 0.25rem);
+    color: var(--st-semantic-text-inverse, #fff);
     display: inline-flex;
     flex-direction: column;
+    font-size: 0.6875rem;
     gap: var(--st-spacing-1, 0.25rem);
     padding: 0.375rem 0.5rem;
-  }
-
-  .st-graphLegend--overlay {
-    background: var(--st-semantic-surface-overlay, rgba(0, 0, 0, 0.45));
-    color: var(--st-semantic-text-inverse, #fff);
   }
 
   .st-graphLegend--inline {
@@ -131,10 +129,6 @@
     width: 100%;
     box-sizing: border-box;
     padding: var(--st-spacing-2, 0.5rem) var(--st-spacing-3, 0.75rem);
-  }
-
-  .st-graphLegend--sm {
-    font-size: 0.6875rem;
   }
 
   .st-graphLegend--md {
