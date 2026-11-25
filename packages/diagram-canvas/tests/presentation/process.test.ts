@@ -145,6 +145,40 @@ describe("presentation/process.ts and renderSceneSvg dispatch (L1c)", () => {
     }
   });
 
+  it("truncates overflowing long titles and subtitles with an ellipsis inside 220px boxes", () => {
+    const base = createDocument({ documentId: documentRef("long-text"), profileRefs: [PROCESS_PROFILE_ID] });
+    const doc: SemanticDocument = {
+      ...base,
+      entities: {
+        "entity:long": {
+          id: entityRef("long"),
+          profile: PROCESS_PROFILE_ID,
+          type: "step",
+          attributes: {
+            name: text("Validate incoming customer compliance documentation and escalate anomalies immediately"),
+            subtitle: text("Automated Compliance Risk Verification Subsystem"),
+            kind: enumeration("task"),
+          },
+        },
+      },
+      relations: {},
+    };
+    const measurer = cardLineMeasurer();
+    const box = measureProcessBox(doc, entityRef("long"), { stepNumber: "1", measureLines: measurer });
+    expect(box.width).toBeLessThanOrEqual(220);
+    expect(box.titleLines.length).toBeLessThanOrEqual(2);
+    expect(box.subtitleLines.length).toBeLessThanOrEqual(1);
+    expect(box.titleLines.join(" ")).toContain("…");
+    expect(box.subtitleLines[0]).toContain("…");
+    const innerWidth = box.width - 16 * 2 - (20 + 8);
+    for (const line of box.titleLines) {
+      expect(Array.from(line).length * 14 * 0.56).toBeLessThanOrEqual(innerWidth + 10);
+    }
+    for (const line of box.subtitleLines) {
+      expect(Array.from(line).length * 12 * 0.56).toBeLessThanOrEqual(innerWidth + 10);
+    }
+  });
+
   it("renders static SVG goldens for 3-step LR, 5-step TB (at 640px), branching, retry loop, and two lanes", () => {
     const render = (doc: SemanticDocument, targetWidth = 640) =>
       renderSceneSvg({
@@ -185,6 +219,13 @@ describe("presentation/process.ts and renderSceneSvg dispatch (L1c)", () => {
     const retry = render(retryProcess(), 640);
     expect(retry.svg).toContain('data-edge-stroke="dashed"');
     expect(retry.svg).toContain("Retry");
+    expect(retry.svg).not.toContain('data-scene-legend=');
+    expect(retry.svg).not.toContain("Proposed (dashed)");
+    expect(Number(/data-display-scale="([^"]+)"/.exec(retry.svg)?.[1])).toBeGreaterThanOrEqual(0.9);
+    expect(branch.svg).not.toContain('data-scene-legend=');
+    // Process edge labels use 12px (smaller than 14px step titles)
+    expect(retry.svg).toContain('font-size="12"');
+    expect(retry.svg).not.toMatch(/data-scene-label="[^"]+"[^>]*font-size="18"/);
 
     const lanes = render(twoLaneProcess(), 640);
     expect(lanes.svg).toContain('data-process-lane="Requester"');

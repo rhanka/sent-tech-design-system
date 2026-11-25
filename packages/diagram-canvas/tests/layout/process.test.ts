@@ -111,7 +111,7 @@ describe("layout/process.ts (L1b)", () => {
     expect(PROCESS_LAYOUT_SPACING.siblingGap).toBe(24);
     expect(g1.y).toBe(g2.y);
     expect(g2.y).toBe(g3.y);
-    const r12 = relationRoute(result.view, result.view.relationOccurrences["occurrence:s1.s2"]!.id)!;
+    const r12 = relationRoute(result.view, result.view.relationOccurrences["occurrence:r.s1.s2"]!.id)!;
     expect(r12).toHaveLength(2);
     expect(r12[0]!.y).toBe(r12[1]!.y);
   });
@@ -191,7 +191,7 @@ describe("layout/process.ts (L1b)", () => {
     expect(xOf("intake")).toBeLessThan(xOf("review"));
     expect(xOf("review")).toBeLessThan(xOf("decide"));
     expect(xOf("decide")).toBeLessThan(xOf("done"));
-    const retryOcc = result.view.relationOccurrences["occurrence:decide.review"]!;
+    const retryOcc = result.view.relationOccurrences["occurrence:r.decide.review"]!;
     expect(retryOcc.strokeStyle).toBe("dashed");
     const routes = Object.values(result.view.relationOccurrences).map((o) => relationRoute(result.view, o.id)!);
     expect(countRouteCrossings(routes)).toBe(0);
@@ -295,5 +295,219 @@ describe("layout/process.ts (L1b)", () => {
     expect(r3.view.entityOccurrences["occurrence:e.laneB"]!.geometry.y).toBeLessThan(
       r3.view.entityOccurrences["occurrence:e.laneA"]!.geometry.y,
     );
+  });
+
+  const segmentIntersectsRectInterior = (
+    p1: Vec2,
+    p2: Vec2,
+    rect: { readonly x: number; readonly y: number; readonly width: number; readonly height: number },
+  ): boolean => {
+    const minX = Math.min(p1.x, p2.x);
+    const maxX = Math.max(p1.x, p2.x);
+    const minY = Math.min(p1.y, p2.y);
+    const maxY = Math.max(p1.y, p2.y);
+    const eps = 0.5;
+    return maxX > rect.x + eps && minX < rect.x + rect.width - eps && maxY > rect.y + eps && minY < rect.y + rect.height - eps;
+  };
+
+  const assertCleanRoutes = (result: Extract<ReturnType<typeof layoutProcess>, { status: "laid-out" }>, doc: SemanticDocument) => {
+    const stepRects = new Map<string, { readonly x: number; readonly y: number; readonly width: number; readonly height: number }>();
+    for (const occ of Object.values(result.view.entityOccurrences)) {
+      if (doc.entities[occ.entity]?.type === "step") stepRects.set(occ.id, occ.geometry);
+    }
+    const routes: (readonly Vec2[])[] = [];
+    for (const relOcc of Object.values(result.view.relationOccurrences)) {
+      const pts = relationRoute(result.view, relOcc.id)!;
+      routes.push(pts);
+      const endpointIds = new Set(relOcc.endpoints.map((ep) => ep.occurrence as string));
+      for (const [occId, rect] of stepRects) {
+        if (endpointIds.has(occId)) continue;
+        for (let i = 0; i + 1 < pts.length; i += 1) {
+          expect(
+            segmentIntersectsRectInterior(pts[i]!, pts[i + 1]!, rect),
+            `${relOcc.id} segment ${i} pierces ${occId}`,
+          ).toBe(false);
+        }
+      }
+    }
+    expect(countRouteCrossings(routes)).toBe(0);
+  };
+
+  it("prefixes relation occurrences with r. so e -> foo never collides with entity:foo", () => {
+    const base = createDocument({ documentId: documentRef("e-foo"), profileRefs: [PROCESS_PROFILE_ID] });
+    const doc: SemanticDocument = {
+      ...base,
+      entities: {
+        "entity:e": { id: entityRef("e"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("Start"), kind: enumeration("start") } },
+        "entity:foo": { id: entityRef("foo"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("Foo"), kind: enumeration("end") } },
+      },
+      relations: {
+        "relation:e.foo": {
+          id: relationRef("e.foo"),
+          profile: PROCESS_PROFILE_ID,
+          type: "transition",
+          endpoints: [{ role: "source", target: entityRef("e") }, { role: "target", target: entityRef("foo") }],
+          attributes: {},
+        },
+      },
+    };
+    const result = layoutProcess(doc, baseOptions(640));
+    expect(result.status).toBe("laid-out");
+    if (result.status !== "laid-out") return;
+    expect(validateView(result.view, doc, { registry: m3ProfileRegistry, bindings: shippedExecutorBindings })).toEqual([]);
+    expect(result.view.relationOccurrences["occurrence:r.e.foo"]).toBeDefined();
+  });
+
+  it("routes same-lane and multi-rank (>=3) skip edges around intermediate boxes with lanes", () => {
+    const base = createDocument({ documentId: documentRef("skip-in-lane"), profileRefs: [PROCESS_PROFILE_ID] });
+    const doc: SemanticDocument = {
+      ...base,
+      entities: {
+        "entity:l1": { id: entityRef("l1"), profile: PROCESS_PROFILE_ID, type: "lane", attributes: { name: text("Main") } },
+        "entity:s1": { id: entityRef("s1"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("One"), kind: enumeration("start") } },
+        "entity:s2": { id: entityRef("s2"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("Two") } },
+        "entity:s3": { id: entityRef("s3"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("Three") } },
+        "entity:s4": { id: entityRef("s4"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("Four"), kind: enumeration("end") } },
+      },
+      relations: {
+        "relation:l1.s1": { id: relationRef("l1.s1"), profile: PROCESS_PROFILE_ID, type: "inLane", endpoints: [{ role: "lane", target: entityRef("l1") }, { role: "step", target: entityRef("s1") }], attributes: {} },
+        "relation:l1.s2": { id: relationRef("l1.s2"), profile: PROCESS_PROFILE_ID, type: "inLane", endpoints: [{ role: "lane", target: entityRef("l1") }, { role: "step", target: entityRef("s2") }], attributes: {} },
+        "relation:l1.s3": { id: relationRef("l1.s3"), profile: PROCESS_PROFILE_ID, type: "inLane", endpoints: [{ role: "lane", target: entityRef("l1") }, { role: "step", target: entityRef("s3") }], attributes: {} },
+        "relation:l1.s4": { id: relationRef("l1.s4"), profile: PROCESS_PROFILE_ID, type: "inLane", endpoints: [{ role: "lane", target: entityRef("l1") }, { role: "step", target: entityRef("s4") }], attributes: {} },
+        "relation:s1.s2": { id: relationRef("s1.s2"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("s1") }, { role: "target", target: entityRef("s2") }], attributes: {} },
+        "relation:s2.s3": { id: relationRef("s2.s3"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("s2") }, { role: "target", target: entityRef("s3") }], attributes: {} },
+        "relation:s3.s4": { id: relationRef("s3.s4"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("s3") }, { role: "target", target: entityRef("s4") }], attributes: {} },
+        "relation:s1.s3": { id: relationRef("s1.s3"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("s1") }, { role: "target", target: entityRef("s3") }], attributes: {} },
+        "relation:s1.s4": { id: relationRef("s1.s4"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("s1") }, { role: "target", target: entityRef("s4") }], attributes: {} },
+      },
+      extensions: [createProcessFlowExtension({ direction: "LR" })],
+    };
+    const result = layoutProcess(doc, baseOptions(1440));
+    expect(result.status).toBe("laid-out");
+    if (result.status !== "laid-out") return;
+    assertCleanRoutes(result, doc);
+  });
+
+  it("routes interior-lane and cross-lane back-edges without piercing other lanes' steps", () => {
+    const base = createDocument({ documentId: documentRef("lane-back"), profileRefs: [PROCESS_PROFILE_ID] });
+    const doc: SemanticDocument = {
+      ...base,
+      entities: {
+        "entity:l1": { id: entityRef("l1"), profile: PROCESS_PROFILE_ID, type: "lane", attributes: { name: text("Top"), order: quantity(0, "index") } },
+        "entity:l2": { id: entityRef("l2"), profile: PROCESS_PROFILE_ID, type: "lane", attributes: { name: text("Mid"), order: quantity(1, "index") } },
+        "entity:l3": { id: entityRef("l3"), profile: PROCESS_PROFILE_ID, type: "lane", attributes: { name: text("Bot"), order: quantity(2, "index") } },
+        "entity:a1": { id: entityRef("a1"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("A1"), kind: enumeration("start") } },
+        "entity:a2": { id: entityRef("a2"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("A2") } },
+        "entity:a3": { id: entityRef("a3"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("A3") } },
+        "entity:b1": { id: entityRef("b1"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("B1") } },
+        "entity:b2": { id: entityRef("b2"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("B2") } },
+        "entity:b3": { id: entityRef("b3"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("B3") } },
+        "entity:c1": { id: entityRef("c1"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("C1") } },
+        "entity:c2": { id: entityRef("c2"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("C2"), kind: enumeration("end") } },
+      },
+      relations: {
+        "relation:l1.a1": { id: relationRef("l1.a1"), profile: PROCESS_PROFILE_ID, type: "inLane", endpoints: [{ role: "lane", target: entityRef("l1") }, { role: "step", target: entityRef("a1") }], attributes: {} },
+        "relation:l1.a2": { id: relationRef("l1.a2"), profile: PROCESS_PROFILE_ID, type: "inLane", endpoints: [{ role: "lane", target: entityRef("l1") }, { role: "step", target: entityRef("a2") }], attributes: {} },
+        "relation:l1.a3": { id: relationRef("l1.a3"), profile: PROCESS_PROFILE_ID, type: "inLane", endpoints: [{ role: "lane", target: entityRef("l1") }, { role: "step", target: entityRef("a3") }], attributes: {} },
+        "relation:l2.b1": { id: relationRef("l2.b1"), profile: PROCESS_PROFILE_ID, type: "inLane", endpoints: [{ role: "lane", target: entityRef("l2") }, { role: "step", target: entityRef("b1") }], attributes: {} },
+        "relation:l2.b2": { id: relationRef("l2.b2"), profile: PROCESS_PROFILE_ID, type: "inLane", endpoints: [{ role: "lane", target: entityRef("l2") }, { role: "step", target: entityRef("b2") }], attributes: {} },
+        "relation:l2.b3": { id: relationRef("l2.b3"), profile: PROCESS_PROFILE_ID, type: "inLane", endpoints: [{ role: "lane", target: entityRef("l2") }, { role: "step", target: entityRef("b3") }], attributes: {} },
+        "relation:l3.c1": { id: relationRef("l3.c1"), profile: PROCESS_PROFILE_ID, type: "inLane", endpoints: [{ role: "lane", target: entityRef("l3") }, { role: "step", target: entityRef("c1") }], attributes: {} },
+        "relation:l3.c2": { id: relationRef("l3.c2"), profile: PROCESS_PROFILE_ID, type: "inLane", endpoints: [{ role: "lane", target: entityRef("l3") }, { role: "step", target: entityRef("c2") }], attributes: {} },
+        "relation:a1.a2": { id: relationRef("a1.a2"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("a1") }, { role: "target", target: entityRef("a2") }], attributes: {} },
+        "relation:a2.a3": { id: relationRef("a2.a3"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("a2") }, { role: "target", target: entityRef("a3") }], attributes: {} },
+        "relation:a1.b1": { id: relationRef("a1.b1"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("a1") }, { role: "target", target: entityRef("b1") }], attributes: {} },
+        "relation:b1.b2": { id: relationRef("b1.b2"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("b1") }, { role: "target", target: entityRef("b2") }], attributes: {} },
+        "relation:b2.b3": { id: relationRef("b2.b3"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("b2") }, { role: "target", target: entityRef("b3") }], attributes: {} },
+        "relation:b1.c1": { id: relationRef("b1.c1"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("b1") }, { role: "target", target: entityRef("c1") }], attributes: {} },
+        "relation:c1.c2": { id: relationRef("c1.c2"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("c1") }, { role: "target", target: entityRef("c2") }], attributes: {} },
+        // Same-lane back-edge in middle lane l2 + cross-lane back-edge b3 -> a1
+        "relation:b2.b1": { id: relationRef("b2.b1"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("b2") }, { role: "target", target: entityRef("b1") }], attributes: { kind: enumeration("retry") } },
+        "relation:b3.a1": { id: relationRef("b3.a1"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("b3") }, { role: "target", target: entityRef("a1") }], attributes: { kind: enumeration("exception") } },
+      },
+      extensions: [createProcessFlowExtension({ direction: "LR" })],
+    };
+    const result = layoutProcess(doc, baseOptions(1440));
+    expect(result.status).toBe("laid-out");
+    if (result.status !== "laid-out") return;
+    assertCleanRoutes(result, doc);
+    const l2Rect = result.view.entityOccurrences["occurrence:e.l2"]!.geometry;
+    const b2b1Pts = relationRoute(result.view, result.view.relationOccurrences["occurrence:r.b2.b1"]!.id)!;
+    for (const pt of b2b1Pts) {
+      expect(pt.y).toBeGreaterThanOrEqual(l2Rect.y);
+      expect(pt.y).toBeLessThanOrEqual(l2Rect.y + l2Rect.height);
+    }
+  });
+
+  it("keeps multiple same-side back-edges non-crossing with distinct dock points", () => {
+    const base = createDocument({ documentId: documentRef("multi-back"), profileRefs: [PROCESS_PROFILE_ID] });
+    const doc: SemanticDocument = {
+      ...base,
+      entities: {
+        "entity:s1": { id: entityRef("s1"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("S1"), kind: enumeration("start") } },
+        "entity:s2": { id: entityRef("s2"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("S2") } },
+        "entity:s3": { id: entityRef("s3"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("S3"), kind: enumeration("end") } },
+      },
+      relations: {
+        "relation:s1.s2": { id: relationRef("s1.s2"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("s1") }, { role: "target", target: entityRef("s2") }], attributes: {} },
+        "relation:s2.s3": { id: relationRef("s2.s3"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("s2") }, { role: "target", target: entityRef("s3") }], attributes: {} },
+        // Alphabetically reverse order: a_s3_s2 before z_s2_s1 and z_s3_s1
+        "relation:a.s3.s2": { id: relationRef("a.s3.s2"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("s3") }, { role: "target", target: entityRef("s2") }], attributes: { kind: enumeration("retry") } },
+        "relation:z.s2.s1": { id: relationRef("z.s2.s1"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("s2") }, { role: "target", target: entityRef("s1") }], attributes: { kind: enumeration("retry") } },
+        "relation:z.s3.s1": { id: relationRef("z.s3.s1"), profile: PROCESS_PROFILE_ID, type: "transition", endpoints: [{ role: "source", target: entityRef("s3") }, { role: "target", target: entityRef("s1") }], attributes: { kind: enumeration("exception") } },
+      },
+      extensions: [createProcessFlowExtension({ direction: "LR" })],
+    };
+    const result = layoutProcess(doc, baseOptions(1440));
+    expect(result.status).toBe("laid-out");
+    if (result.status !== "laid-out") return;
+    assertCleanRoutes(result, doc);
+    const backDocks: string[] = [];
+    for (const relOcc of Object.values(result.view.relationOccurrences)) {
+      if (relOcc.strokeStyle !== "dashed") continue;
+      const pts = relationRoute(result.view, relOcc.id)!;
+      backDocks.push(`${Math.round(pts[0]!.x * 100)},${Math.round(pts[0]!.y * 100)}`);
+      backDocks.push(`${Math.round(pts.at(-1)!.x * 100)},${Math.round(pts.at(-1)!.y * 100)}`);
+    }
+    expect(new Set(backDocks).size).toBe(backDocks.length);
+  });
+
+  it("caps LR label rank gaps as integers and does not widen TB rank gaps by label width", () => {
+    const base = createDocument({ documentId: documentRef("tb-label"), profileRefs: [PROCESS_PROFILE_ID] });
+    const doc: SemanticDocument = {
+      ...base,
+      entities: {
+        "entity:s1": { id: entityRef("s1"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("S1"), kind: enumeration("start") } },
+        "entity:s2": { id: entityRef("s2"), profile: PROCESS_PROFILE_ID, type: "step", attributes: { name: text("S2"), kind: enumeration("end") } },
+      },
+      relations: {
+        "relation:s1.s2": {
+          id: relationRef("s1.s2"),
+          profile: PROCESS_PROFILE_ID,
+          type: "transition",
+          endpoints: [{ role: "source", target: entityRef("s1") }, { role: "target", target: entityRef("s2") }],
+          attributes: { label: text("Very long transition condition label exceeding normal rank gap") },
+        },
+      },
+    };
+    const tb = layoutProcess(doc, baseOptions(640));
+    expect(tb.status).toBe("laid-out");
+    if (tb.status !== "laid-out") return;
+    // Narrow to force TB
+    const tbForced = layoutProcess({ ...doc, extensions: [createProcessFlowExtension({ direction: "TB" })] }, baseOptions(640));
+    expect(tbForced.status).toBe("laid-out");
+    if (tbForced.status !== "laid-out") return;
+    const g1 = tbForced.view.entityOccurrences["occurrence:e.s1"]!.geometry;
+    const g2 = tbForced.view.entityOccurrences["occurrence:e.s2"]!.geometry;
+    expect(g2.y - (g1.y + g1.height)).toBe(PROCESS_LAYOUT_SPACING.rankGap);
+
+    const lrForced = layoutProcess({ ...doc, extensions: [createProcessFlowExtension({ direction: "LR" })] }, baseOptions(1440));
+    expect(lrForced.status).toBe("laid-out");
+    if (lrForced.status !== "laid-out") return;
+    const lg1 = lrForced.view.entityOccurrences["occurrence:e.s1"]!.geometry;
+    const lg2 = lrForced.view.entityOccurrences["occurrence:e.s2"]!.geometry;
+    const lrGap = lg2.x - (lg1.x + lg1.width);
+    expect(Number.isInteger(lrGap)).toBe(true);
+    expect(lrGap).toBeLessThanOrEqual(160);
   });
 });

@@ -84,7 +84,9 @@ function wrapLines(
   measureLines?: LineMeasurer,
 ): readonly string[] {
   const measureWidth = (candidate: string): number => {
-    if (measureLines === undefined) return approxTextWidth(candidate, fontSize);
+    const fallbackW = approxTextWidth(candidate, fontSize);
+    if (measureLines === undefined) return fallbackW;
+    const baseSize = fontSize >= 14 ? 32 : 24;
     const measured = measureLines({
       text: candidate,
       role: fontSize >= 14 ? "title" : "subtitle",
@@ -92,22 +94,41 @@ function wrapLines(
       allocatedLines: 1,
       folded: false,
     });
-    return Math.min(approxTextWidth(candidate, fontSize), measured.width * (fontSize / 24)) || approxTextWidth(candidate, fontSize);
+    return Math.max(fallbackW, measured.width * (fontSize / baseSize));
+  };
+  const ellipsizeToFit = (value: string, forceEllipsis = false): string => {
+    if (!forceEllipsis && measureWidth(value) <= maxWidth) return value;
+    const chars = Array.from(value);
+    while (chars.length > 1 && measureWidth(`${chars.join("")}…`) > maxWidth) {
+      chars.pop();
+    }
+    return `${chars.join("").trimEnd()}…`;
   };
   const words = textValue.trim().split(/\s+/).filter(Boolean);
   if (words.length === 0) return [];
   const lines: string[] = [];
   let current = "";
-  for (const word of words) {
+  let truncated = false;
+  for (let i = 0; i < words.length; i += 1) {
+    const word = words[i]!;
     const candidate = current === "" ? word : `${current} ${word}`;
-    if (current !== "" && measureWidth(candidate) > maxWidth && lines.length + 1 < maxLines) {
-      lines.push(current);
-      current = word;
+    if (current !== "" && measureWidth(candidate) > maxWidth) {
+      if (lines.length + 1 < maxLines) {
+        lines.push(current);
+        current = word;
+      } else {
+        lines.push(ellipsizeToFit(current, true));
+        current = "";
+        truncated = true;
+        break;
+      }
     } else {
       current = candidate;
     }
   }
-  if (current !== "") lines.push(current);
+  if (!truncated && current !== "") {
+    lines.push(measureWidth(current) > maxWidth ? ellipsizeToFit(current, true) : current);
+  }
   return lines.slice(0, maxLines);
 }
 
@@ -398,18 +419,20 @@ function buildGeometryForDirection(
     if (rankAlongSize[r] === 0) rankAlongSize[r] = lr ? PROCESS_BOX_BOUNDS.minWidth : PROCESS_BOX_BOUNDS.minHeight;
   }
 
-  // Per-gap rankGap: 48 px base, widened up to labelWidth + 24 only when a label on an adjacent-rank edge needs space.
+  // Per-gap rankGap: 48 px base, widened as integer up to 160 px when a label on an adjacent-rank LR edge needs space.
   const rankGaps: number[] = Array.from({ length: Math.max(0, rankCount - 1) }, () => s.rankGap);
-  for (const edge of forwardEdges) {
-    if (!edge.label) continue;
-    const rFrom = ranked.rankOf.get(edge.from) ?? 0;
-    const rTo = ranked.rankOf.get(edge.to) ?? 0;
-    if (rTo - rFrom !== 1) continue;
-    const labelW = measureLines
-      ? measureLines({ text: edge.label, role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).width
-      : approxTextWidth(edge.label, 14);
-    const needed = Math.min(labelW + 24, Math.max(s.rankGap, Math.ceil(labelW + 24)));
-    rankGaps[rFrom] = Math.max(rankGaps[rFrom]!, needed);
+  if (lr) {
+    for (const edge of forwardEdges) {
+      if (!edge.label) continue;
+      const rFrom = ranked.rankOf.get(edge.from) ?? 0;
+      const rTo = ranked.rankOf.get(edge.to) ?? 0;
+      if (rTo - rFrom !== 1) continue;
+      const labelW = measureLines
+        ? measureLines({ text: edge.label, role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).width
+        : approxTextWidth(edge.label, 12);
+      const needed = Math.min(160, Math.max(s.rankGap, Math.ceil(labelW + 24)));
+      rankGaps[rFrom] = Math.max(rankGaps[rFrom]!, needed);
+    }
   }
 
   const rankAlongPos: number[] = [];
@@ -430,9 +453,87 @@ function buildGeometryForDirection(
   const stepRects = new Map<EntityRef, Rect>();
   const laneRects = new Map<EntityRef, Rect>();
 
+  interface CorridorAssignment {
+    readonly edge: ProcessEdge;
+    readonly scope: EntityRef | "unlaned" | "global";
+    readonly side: "low" | "high";
+    readonly trackIndex: number;
+    readonly corridorPos: number;
+  }
+
+  const rankSpanOf = (edge: ProcessEdge): { readonly min: number; readonly max: number } => {
+    const r1 = ranked.rankOf.get(edge.from) ?? 0;
+    const r2 = ranked.rankOf.get(edge.to) ?? 0;
+    return { min: Math.min(r1, r2), max: Math.max(r1, r2) };
+  };
+
+  const intervalsInterleave = (a: { min: number; max: number }, b: { min: number; max: number }): boolean =>
+    (a.min < b.min && b.min < a.max && a.max < b.max) || (b.min < a.min && a.min < b.max && b.max < a.max);
+
+  const assignCorridorTracks = (
+    edges: readonly ProcessEdge[],
+  ): { readonly tracks: readonly (readonly ProcessEdge[])[]; readonly trackOf: ReadonlyMap<string, number> } => {
+    const sorted = [...edges].sort((a, b) => {
+      const sa = rankSpanOf(a);
+      const sb = rankSpanOf(b);
+      return (sa.max - sa.min) - (sb.max - sb.min) || sa.min - sb.min || byCodeUnit(a.id, b.id);
+    });
+    const tracks: ProcessEdge[][] = [];
+    const spansByTrack: { min: number; max: number }[][] = [];
+    const trackOf = new Map<string, number>();
+    for (const edge of sorted) {
+      const span = rankSpanOf(edge);
+      let chosen = -1;
+      for (let t = 0; t < tracks.length; t += 1) {
+        const conflict = spansByTrack[t]!.some((other) => Math.max(span.min, other.min) < Math.min(span.max, other.max));
+        if (!conflict) {
+          chosen = t;
+          break;
+        }
+      }
+      if (chosen === -1) {
+        chosen = tracks.length;
+        tracks.push([]);
+        spansByTrack.push([]);
+      }
+      tracks[chosen]!.push(edge);
+      spansByTrack[chosen]!.push(span);
+      trackOf.set(edge.id, chosen);
+    }
+    return { tracks, trackOf };
+  };
+
+  const splitSidesNonInterleaving = (
+    edges: readonly ProcessEdge[],
+    preferSide: (edge: ProcessEdge) => "low" | "high",
+  ): { readonly low: ProcessEdge[]; readonly high: ProcessEdge[] } => {
+    const low: ProcessEdge[] = [];
+    const high: ProcessEdge[] = [];
+    const sorted = [...edges].sort((a, b) => {
+      const sa = rankSpanOf(a);
+      const sb = rankSpanOf(b);
+      return (sa.max - sa.min) - (sb.max - sb.min) || sa.min - sb.min || byCodeUnit(a.id, b.id);
+    });
+    for (const edge of sorted) {
+      const span = rankSpanOf(edge);
+      const pref = preferSide(edge);
+      const alt = pref === "low" ? "high" : "low";
+      const prefList = pref === "low" ? low : high;
+      const altList = alt === "low" ? low : high;
+      const prefInterleaves = prefList.some((other) => intervalsInterleave(span, rankSpanOf(other)));
+      const altInterleaves = altList.some((other) => intervalsInterleave(span, rankSpanOf(other)));
+      if (prefInterleaves && !altInterleaves) altList.push(edge);
+      else prefList.push(edge);
+    }
+    return { low, high };
+  };
+
   let mainCrossExtent = 0;
+  const intraCorridors: CorridorAssignment[] = [];
+  let globalBackEdges: readonly ProcessEdge[] = [];
 
   if (lanes.length === 0) {
+    globalBackEdges = backEdges;
     const rankCrossHeights: number[] = [];
     for (let r = 0; r < rankCount; r += 1) {
       let totalCross = 0;
@@ -494,6 +595,62 @@ function buildGeometryForDirection(
       ...sortedLanes.map((l) => l.id),
       ...(unlanedSteps.length > 0 ? [undefined] : []),
     ];
+    const bandIndexOfLane = new Map<EntityRef | undefined, number>(bandIds.map((id, idx) => [id, idx]));
+
+    // Assign every forward dummy to a lane band so skip edges never pierce intermediate boxes.
+    const dummiesByBandRank = new Map<string, { readonly id: string; readonly edge: ProcessEdge; readonly otherBand: EntityRef | undefined }[]>();
+    const hasStepInBandRank = new Set<string>();
+    for (const step of steps) {
+      const b = laneOfStep.get(step.id);
+      const r = ranked.rankOf.get(step.id) ?? 0;
+      hasStepInBandRank.add(`${b ?? ""}\n${r}`);
+    }
+    for (const edge of forwardEdges) {
+      const rFrom = ranked.rankOf.get(edge.from) ?? 0;
+      const rTo = ranked.rankOf.get(edge.to) ?? 0;
+      if (rTo - rFrom < 2) continue;
+      const laneFrom = laneOfStep.get(edge.from);
+      const laneTo = laneOfStep.get(edge.to);
+      for (let r = rFrom + 1; r < rTo; r += 1) {
+        const dummyId = `~${edge.id}~${r}`;
+        let assigned: EntityRef | undefined;
+        let otherBand: EntityRef | undefined;
+        if (laneFrom === laneTo) {
+          assigned = laneFrom;
+          otherBand = laneFrom;
+        } else {
+          const fromBusy = hasStepInBandRank.has(`${laneFrom ?? ""}\n${r}`);
+          const toBusy = hasStepInBandRank.has(`${laneTo ?? ""}\n${r}`);
+          if (!fromBusy && toBusy) {
+            assigned = laneFrom;
+            otherBand = laneTo;
+          } else if (fromBusy && !toBusy) {
+            assigned = laneTo;
+            otherBand = laneFrom;
+          } else {
+            assigned = r - rFrom <= rTo - r ? laneFrom : laneTo;
+            otherBand = assigned === laneFrom ? laneTo : laneFrom;
+          }
+        }
+        const key = `${assigned ?? ""}\n${r}`;
+        (dummiesByBandRank.get(key) ?? dummiesByBandRank.set(key, []).get(key)!).push({ id: dummyId, edge, otherBand });
+      }
+    }
+
+    // Partition back-edges: same-lane back-edges get intra-lane corridors inside their lane;
+    // cross-lane back-edges use global corridors / gutters.
+    const intraEdgesByBand = new Map<EntityRef | undefined, ProcessEdge[]>();
+    const crossLaneBacks: ProcessEdge[] = [];
+    for (const edge of backEdges) {
+      const lFrom = laneOfStep.get(edge.from);
+      const lTo = laneOfStep.get(edge.to);
+      if (lFrom === lTo) {
+        (intraEdgesByBand.get(lFrom) ?? intraEdgesByBand.set(lFrom, []).get(lFrom)!).push(edge);
+      } else {
+        crossLaneBacks.push(edge);
+      }
+    }
+    globalBackEdges = crossLaneBacks;
 
     const alongStart = s.laneHeaderSize;
     let bandCursor = 0;
@@ -501,19 +658,72 @@ function buildGeometryForDirection(
       const bandSteps = new Set(
         steps.filter((st) => laneOfStep.get(st.id) === laneId).map((st) => st.id),
       );
-      const rankSizesInBand: number[] = [];
+
+      // Compute ordered items per rank (real steps + assigned dummies).
+      const bandItemsByRank: { readonly keys: string[]; readonly hasRealOrMultiple: boolean; readonly totalSize: number }[] = [];
       let maxBandCross: number = lr ? PROCESS_BOX_BOUNDS.minHeight : PROCESS_BOX_BOUNDS.minWidth;
       for (let r = 0; r < rankCount; r += 1) {
-        const items = ranked.ranks[r]!.filter((k) => !ranked.dummies.has(k) && bandSteps.has(k as EntityRef));
+        const rankOrder = new Map(ranked.ranks[r]!.map((k, idx) => [k, idx]));
+        const realInRank = ranked.ranks[r]!.filter((k) => !ranked.dummies.has(k) && bandSteps.has(k as EntityRef));
+        const dummiesInRank = dummiesByBandRank.get(`${laneId ?? ""}\n${r}`) ?? [];
+        const myIdx = bandIndexOfLane.get(laneId) ?? 0;
+        const beforeDummies = dummiesInRank
+          .filter((d) => d.otherBand !== laneId && (bandIndexOfLane.get(d.otherBand) ?? 0) < myIdx)
+          .sort((a, b) => (rankOrder.get(a.id) ?? 0) - (rankOrder.get(b.id) ?? 0));
+        const sameLaneDummies = dummiesInRank.filter((d) => d.otherBand === laneId);
+        const afterDummies = dummiesInRank
+          .filter((d) => d.otherBand !== laneId && (bandIndexOfLane.get(d.otherBand) ?? 0) > myIdx)
+          .sort((a, b) => (rankOrder.get(a.id) ?? 0) - (rankOrder.get(b.id) ?? 0));
+        const middleMerged = [...realInRank, ...sameLaneDummies.map((d) => d.id)].sort(
+          (a, b) => (rankOrder.get(a) ?? 0) - (rankOrder.get(b) ?? 0),
+        );
+        const keys = [...beforeDummies.map((d) => d.id), ...middleMerged, ...afterDummies.map((d) => d.id)];
+        const hasRealOrMultiple = realInRank.length > 0 || keys.length > 1;
         let sum = 0;
-        items.forEach((key, idx) => {
-          const box = boxes.get(key as EntityRef)!;
-          sum += (lr ? box.height : box.width) + (idx + 1 < items.length ? s.siblingGap : 0);
-        });
-        rankSizesInBand.push(sum);
+        if (hasRealOrMultiple) {
+          keys.forEach((key, idx) => {
+            const size = ranked.dummies.has(key)
+              ? 16
+              : lr
+                ? boxes.get(key as EntityRef)!.height
+                : boxes.get(key as EntityRef)!.width;
+            sum += size + (idx + 1 < keys.length ? s.siblingGap : 0);
+          });
+        }
+        bandItemsByRank.push({ keys, hasRealOrMultiple, totalSize: sum });
         maxBandCross = Math.max(maxBandCross, sum);
       }
-      const bandSpan = maxBandCross + s.lanePadding * 2;
+
+      // Reserve intra-lane corridor tracks for same-lane back-edges so they stay inside their lane.
+      // Prefer the band boundary (low vs high) with fewer crossing cross-lane forward edges.
+      const bandIntra = intraEdgesByBand.get(laneId) ?? [];
+      const myBandIdx = bandIndexOfLane.get(laneId) ?? 0;
+      const preferIntraSide = (edge: ProcessEdge): "low" | "high" => {
+        const span = rankSpanOf(edge);
+        let lowCross = 0;
+        let highCross = 0;
+        for (const fEdge of forwardEdges) {
+          const rf = ranked.rankOf.get(fEdge.from) ?? 0;
+          const rt = ranked.rankOf.get(fEdge.to) ?? 0;
+          if (Math.max(span.min, rf) >= Math.min(span.max, rt)) continue;
+          const bf = bandIndexOfLane.get(laneOfStep.get(fEdge.from)) ?? myBandIdx;
+          const bt = bandIndexOfLane.get(laneOfStep.get(fEdge.to)) ?? myBandIdx;
+          if ((bf === myBandIdx && bt < myBandIdx) || (bt === myBandIdx && bf < myBandIdx) || (bf < myBandIdx && bt > myBandIdx) || (bt < myBandIdx && bf > myBandIdx)) {
+            lowCross += 1;
+          }
+          if ((bf === myBandIdx && bt > myBandIdx) || (bt === myBandIdx && bf > myBandIdx) || (bf < myBandIdx && bt > myBandIdx) || (bt < myBandIdx && bf > myBandIdx)) {
+            highCross += 1;
+          }
+        }
+        return lowCross < highCross ? "low" : "high";
+      };
+      const intraSides = splitSidesNonInterleaving(bandIntra, preferIntraSide);
+      const lowIntra = assignCorridorTracks(intraSides.low);
+      const highIntra = assignCorridorTracks(intraSides.high);
+      const lowIntraSpace = lowIntra.tracks.length * s.corridorGap;
+      const highIntraSpace = highIntra.tracks.length * s.corridorGap;
+
+      const bandSpan = maxBandCross + s.lanePadding * 2 + lowIntraSpace + highIntraSpace;
       if (laneId !== undefined) {
         const rect: Rect = lr
           ? { x: 0, y: bandCursor, width: alongStart + totalAlong + s.lanePadding, height: bandSpan }
@@ -522,9 +732,15 @@ function buildGeometryForDirection(
       }
 
       for (let r = 0; r < rankCount; r += 1) {
-        const items = ranked.ranks[r]!.filter((k) => !ranked.dummies.has(k) && bandSteps.has(k as EntityRef));
-        let cursor = bandCursor + s.lanePadding + (maxBandCross - rankSizesInBand[r]!) / 2;
-        for (const key of items) {
+        const { keys, hasRealOrMultiple, totalSize } = bandItemsByRank[r]!;
+        let cursor = bandCursor + s.lanePadding + lowIntraSpace + (maxBandCross - totalSize) / 2;
+        for (const key of keys) {
+          if (ranked.dummies.has(key)) {
+            const dummySize = hasRealOrMultiple ? 16 : 0;
+            crossCenter.set(key, cursor + dummySize / 2);
+            cursor += dummySize + s.siblingGap;
+            continue;
+          }
           const id = key as EntityRef;
           const box = boxes.get(id)!;
           const stepWidth = lr ? rankAlongSize[r]! : box.width;
@@ -536,21 +752,20 @@ function buildGeometryForDirection(
           cursor += (lr ? stepHeight : stepWidth) + s.siblingGap;
         }
       }
-      bandCursor += bandSpan;
-    }
 
-    // Place dummies in clear gaps near their neighbours' cross-centres.
-    for (let r = 0; r < rankCount; r += 1) {
-      for (const key of ranked.ranks[r]!) {
-        if (!ranked.dummies.has(key)) continue;
-        const linked = ranked.segments
-          .filter((seg) => seg.from === key || seg.to === key)
-          .map((seg) => (seg.from === key ? seg.to : seg.from))
-          .map((other) => crossCenter.get(other))
-          .filter((val): val is number => val !== undefined);
-        const avg = linked.length > 0 ? linked.reduce((a, b) => a + b, 0) / linked.length : bandCursor / 2;
-        crossCenter.set(key, avg);
+      const scope = laneId ?? "unlaned";
+      for (const edge of intraSides.low) {
+        const t = lowIntra.trackOf.get(edge.id) ?? 0;
+        const pos = bandCursor + s.lanePadding + (lowIntra.tracks.length - 1 - t) * s.corridorGap;
+        intraCorridors.push({ edge, scope, side: "low", trackIndex: t, corridorPos: pos });
       }
+      for (const edge of intraSides.high) {
+        const t = highIntra.trackOf.get(edge.id) ?? 0;
+        const pos = bandCursor + s.lanePadding + lowIntraSpace + maxBandCross + (t + 1) * s.corridorGap;
+        intraCorridors.push({ edge, scope, side: "high", trackIndex: t, corridorPos: pos });
+      }
+
+      bandCursor += bandSpan;
     }
     mainCrossExtent = bandCursor;
   }
@@ -666,44 +881,169 @@ function buildGeometryForDirection(
     }
   }
 
-  // Dedicated retry/back-edge corridors: upper-half back-edges use the start-side
-  // corridor, lower-half back-edges use the end-side corridor so parallel branches never cross.
+  // Dedicated retry/back-edge corridors: upper-half back-edges prefer the low
+  // corridor, lower-half prefer the high corridor; same-lane edges stay inside
+  // their lane, tracks pack non-interleavingly by increasing span, and docks
+  // sharing a step side are ordered to avoid crossings and collisions.
   const midCross = mainCrossExtent / 2;
-  const lowCorridorEdges: ProcessEdge[] = [];
-  const highCorridorEdges: ProcessEdge[] = [];
-  for (const edge of [...backEdges].sort((a, b) => byCodeUnit(a.id, b.id))) {
+  const globalSides = splitSidesNonInterleaving(globalBackEdges, (edge) => {
     const avg = ((crossCenter.get(edge.from) ?? midCross) + (crossCenter.get(edge.to) ?? midCross)) / 2;
-    if (avg < midCross - 1) lowCorridorEdges.push(edge);
-    else highCorridorEdges.push(edge);
-  }
+    return avg < midCross - 1 ? "low" : "high";
+  });
+  const globalLowTracks = assignCorridorTracks(globalSides.low);
+  const globalHighTracks = assignCorridorTracks(globalSides.high);
 
   let minCross = 0;
   let maxCross = mainCrossExtent;
 
-  const routeCorridorEdge = (edge: ProcessEdge, side: "low" | "high", trackIndex: number): void => {
-    const r1 = stepRects.get(edge.from)!;
-    const r2 = stepRects.get(edge.to)!;
-    const shift = parallelShift.get(edge.id) ?? 0;
-    const offset = (trackIndex + 1) * s.corridorGap;
-    if (lr) {
-      const corridorY = side === "low" ? -offset : mainCrossExtent + offset;
-      minCross = Math.min(minCross, corridorY);
-      maxCross = Math.max(maxCross, corridorY);
-      const startDock: Vec2 = { x: r1.x + r1.width / 2 + shift, y: side === "low" ? r1.y : r1.y + r1.height };
-      const endDock: Vec2 = { x: r2.x + r2.width / 2 + shift, y: side === "low" ? r2.y : r2.y + r2.height };
-      waypointsByRelation.set(edge.id, [startDock, { x: startDock.x, y: corridorY }, { x: endDock.x, y: corridorY }, endDock]);
-    } else {
-      const corridorX = side === "low" ? -offset : mainCrossExtent + offset;
-      minCross = Math.min(minCross, corridorX);
-      maxCross = Math.max(maxCross, corridorX);
-      const startDock: Vec2 = { x: side === "low" ? r1.x : r1.x + r1.width, y: r1.y + r1.height / 2 + shift };
-      const endDock: Vec2 = { x: side === "low" ? r2.x : r2.x + r2.width, y: r2.y + r2.height / 2 + shift };
-      waypointsByRelation.set(edge.id, [startDock, { x: corridorX, y: startDock.y }, { x: corridorX, y: endDock.y }, endDock]);
+  const allCorridorAssignments: CorridorAssignment[] = [
+    ...intraCorridors,
+    ...globalSides.low.map((edge): CorridorAssignment => {
+      const t = globalLowTracks.trackOf.get(edge.id) ?? 0;
+      const pos = -(t + 1) * s.corridorGap;
+      minCross = Math.min(minCross, pos);
+      return { edge, scope: "global", side: "low", trackIndex: t, corridorPos: pos };
+    }),
+    ...globalSides.high.map((edge): CorridorAssignment => {
+      const t = globalHighTracks.trackOf.get(edge.id) ?? 0;
+      const pos = mainCrossExtent + (t + 1) * s.corridorGap;
+      maxCross = Math.max(maxCross, pos);
+      return { edge, scope: "global", side: "high", trackIndex: t, corridorPos: pos };
+    }),
+  ];
+
+  // Check if a perpendicular leg from `stepId`'s `side` edge to `corridorPos` is blocked by another step box.
+  const isCrossLegBlocked = (alongCenter: number, fromCross: number, toCross: number, ignoreId: EntityRef): boolean => {
+    const lo = Math.min(fromCross, toCross);
+    const hi = Math.max(fromCross, toCross);
+    for (const [id, rect] of stepRects) {
+      if (id === ignoreId) continue;
+      const rAlongStart = lr ? rect.x : rect.y;
+      const rAlongEnd = lr ? rect.x + rect.width : rect.y + rect.height;
+      const rCrossStart = lr ? rect.y : rect.x;
+      const rCrossEnd = lr ? rect.y + rect.height : rect.x + rect.width;
+      if (alongCenter > rAlongStart - 1 && alongCenter < rAlongEnd + 1 && lo < rCrossEnd - 1 && hi > rCrossStart + 1) {
+        return true;
+      }
     }
+    return false;
   };
 
-  lowCorridorEdges.forEach((edge, idx) => routeCorridorEdge(edge, "low", idx));
-  highCorridorEdges.forEach((edge, idx) => routeCorridorEdge(edge, "high", idx));
+  interface CorridorEndPlan {
+    readonly item: CorridorAssignment;
+    readonly isIncoming: boolean;
+    readonly stepId: EntityRef;
+    readonly gutterBypass: boolean;
+  }
+
+  const alongOrigin = lanes.length > 0 ? s.laneHeaderSize : 0;
+  const dockAlongByEdgeEnd = new Map<string, number>();
+  const gutterEscapeCount = new Map<string, number>();
+
+  const directDockBuckets = new Map<string, CorridorEndPlan[]>();
+  const endPlans = new Map<string, { readonly startBypass: boolean; readonly endBypass: boolean }>();
+  for (const item of allCorridorAssignments) {
+    const r1 = stepRects.get(item.edge.from)!;
+    const r2 = stepRects.get(item.edge.to)!;
+    const c1Along = lr ? r1.x + r1.width / 2 : r1.y + r1.height / 2;
+    const c1Cross = item.side === "low" ? (lr ? r1.y : r1.x) : (lr ? r1.y + r1.height : r1.x + r1.width);
+    const c2Along = lr ? r2.x + r2.width / 2 : r2.y + r2.height / 2;
+    const c2Cross = item.side === "low" ? (lr ? r2.y : r2.x) : (lr ? r2.y + r2.height : r2.x + r2.width);
+    const startBypass = isCrossLegBlocked(c1Along, c1Cross, item.corridorPos, item.edge.from);
+    const endBypass = isCrossLegBlocked(c2Along, c2Cross, item.corridorPos, item.edge.to);
+    endPlans.set(item.edge.id, { startBypass, endBypass });
+    if (!startBypass) {
+      const k = `${item.edge.from}\n${item.side}`;
+      (directDockBuckets.get(k) ?? directDockBuckets.set(k, []).get(k)!).push({
+        item,
+        isIncoming: false,
+        stepId: item.edge.from,
+        gutterBypass: false,
+      });
+    }
+    if (!endBypass) {
+      const k = `${item.edge.to}\n${item.side}`;
+      (directDockBuckets.get(k) ?? directDockBuckets.set(k, []).get(k)!).push({
+        item,
+        isIncoming: true,
+        stepId: item.edge.to,
+        gutterBypass: false,
+      });
+    }
+  }
+
+  // Allocate distinct, crossing-free dock along-coordinates for every (step, side) bucket.
+  for (const list of directDockBuckets.values()) {
+    list.sort((a, b) => {
+      if (a.isIncoming !== b.isIncoming) return a.isIncoming ? 1 : -1;
+      const tDiff = a.isIncoming
+        ? b.item.trackIndex - a.item.trackIndex
+        : a.item.trackIndex - b.item.trackIndex;
+      return tDiff || byCodeUnit(a.item.edge.id, b.item.edge.id);
+    });
+    const rect = stepRects.get(list[0]!.stepId)!;
+    const alongStart = lr ? rect.x : rect.y;
+    const alongSpan = lr ? rect.width : rect.height;
+    const center = alongStart + alongSpan / 2;
+    const spacing = list.length <= 1 ? 0 : Math.min(s.parallelOffset, Math.max(4, (alongSpan - 24) / (list.length - 1)));
+    list.forEach((plan, idx) => {
+      const pos = center + (idx - (list.length - 1) / 2) * spacing;
+      dockAlongByEdgeEnd.set(`${plan.item.edge.id}\n${plan.isIncoming ? "to" : "from"}`, pos);
+    });
+  }
+
+  for (const item of allCorridorAssignments) {
+    const { edge, side, corridorPos } = item;
+    const r1 = stepRects.get(edge.from)!;
+    const r2 = stepRects.get(edge.to)!;
+    const { startBypass, endBypass } = endPlans.get(edge.id)!;
+    const rFrom = ranked.rankOf.get(edge.from) ?? 0;
+    const rTo = ranked.rankOf.get(edge.to) ?? 0;
+
+    const makePoint = (along: number, cross: number): Vec2 => (lr ? { x: along, y: cross } : { x: cross, y: along });
+    const stepCrossBounds = (rect: Rect) =>
+      lr ? { start: rect.y, size: rect.height } : { start: rect.x, size: rect.width };
+    const stepAlongBounds = (rect: Rect) =>
+      lr ? { start: rect.x, size: rect.width } : { start: rect.y, size: rect.height };
+
+    const b1Cross = stepCrossBounds(r1);
+    const b2Cross = stepCrossBounds(r2);
+    const b1Along = stepAlongBounds(r1);
+    const b2Along = stepAlongBounds(r2);
+
+    const nextEscapeIdx = (key: string): number => {
+      const cur = gutterEscapeCount.get(key) ?? 0;
+      gutterEscapeCount.set(key, cur + 1);
+      return cur;
+    };
+
+    const pts: Vec2[] = [];
+    if (startBypass && rFrom > 0) {
+      const esc = nextEscapeIdx(`${edge.from}\nfrom`);
+      const crossDir = side === "low" ? -1 : 1;
+      const dockCross = b1Cross.start + b1Cross.size / 2 + crossDir * Math.min(b1Cross.size * 0.3, 8 + esc * 6);
+      const gutterAlong = alongOrigin + rankAlongPos[rFrom]! - rankGaps[rFrom - 1]! * Math.max(0.15, 0.25 - esc * 0.05);
+      pts.push(makePoint(b1Along.start, dockCross), makePoint(gutterAlong, dockCross), makePoint(gutterAlong, corridorPos));
+    } else {
+      const startAlong = dockAlongByEdgeEnd.get(`${edge.id}\nfrom`) ?? b1Along.start + b1Along.size / 2;
+      const startCross = side === "low" ? b1Cross.start : b1Cross.start + b1Cross.size;
+      pts.push(makePoint(startAlong, startCross), makePoint(startAlong, corridorPos));
+    }
+
+    if (endBypass && rTo + 1 < rankCount) {
+      const esc = nextEscapeIdx(`${edge.to}\nto`);
+      const crossDir = side === "low" ? -1 : 1;
+      const dockCross = b2Cross.start + b2Cross.size / 2 + crossDir * Math.min(b2Cross.size * 0.3, 8 + esc * 6);
+      const gutterAlong = alongOrigin + rankAlongPos[rTo]! + rankAlongSize[rTo]! + rankGaps[rTo]! * Math.max(0.15, 0.25 - esc * 0.05);
+      pts.push(makePoint(gutterAlong, corridorPos), makePoint(gutterAlong, dockCross), makePoint(b2Along.start + b2Along.size, dockCross));
+    } else {
+      const endAlong = dockAlongByEdgeEnd.get(`${edge.id}\nto`) ?? b2Along.start + b2Along.size / 2;
+      const endCross = side === "low" ? b2Cross.start : b2Cross.start + b2Cross.size;
+      pts.push(makePoint(endAlong, corridorPos), makePoint(endAlong, endCross));
+    }
+
+    waypointsByRelation.set(edge.id, pts);
+  }
 
   selfLoops.forEach((edge, idx) => {
     const r1 = stepRects.get(edge.from)!;
@@ -906,7 +1246,7 @@ export function layoutProcess(
   for (const edge of edges) {
     const occId =
       Object.values(source?.relationOccurrences ?? {}).find((o) => o.relation === edge.id)?.id ??
-      occurrenceRef(edge.id.slice(edge.id.indexOf(":") + 1));
+      occurrenceRef(`r.${edge.id.slice(edge.id.indexOf(":") + 1)}`);
     const fromOcc = stepOccIdByEntity.get(edge.from)!;
     const toOcc = stepOccIdByEntity.get(edge.to)!;
     const resolvedRel = resolvedNotation.relations[edge.id];

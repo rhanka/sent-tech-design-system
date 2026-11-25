@@ -664,8 +664,10 @@ function resolveSceneAtZoom(
   const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
   const erd = input.document.profileRefs.length === 1 && input.document.profileRefs[0] === 'erd@1';
   const r7Connectors = !erd && (result.routeSpacing !== undefined || isR7ConnectorPresentation(input.presentation, input.view ?? view, input.document));
-  const edgeLabelMeasure = scaleEdgeLabelMeasurer(input.measureLines, r7Connectors ? input.metrics?.edgeLabelSize : undefined, DEFAULT_EDGE_LABEL_SIZE);
-  const baseLabelSize = input.metrics?.edgeLabelSize ?? DEFAULT_EDGE_LABEL_SIZE;
+  const processDefaultLabelSize = isProcessDoc ? 12 : undefined;
+  const effectiveInputLabelSize = input.metrics?.edgeLabelSize ?? processDefaultLabelSize;
+  const edgeLabelMeasure = scaleEdgeLabelMeasurer(input.measureLines, r7Connectors ? effectiveInputLabelSize : undefined, DEFAULT_EDGE_LABEL_SIZE);
+  const baseLabelSize = effectiveInputLabelSize ?? DEFAULT_EDGE_LABEL_SIZE;
   const overviewEdgeLabelSize = r7Connectors && paintZoom !== undefined && baseLabelSize * paintZoom < MIN_EDGE_LABEL_CSS_PX
     ? Math.ceil(MIN_EDGE_LABEL_CSS_PX / paintZoom * 64) / 64
     : undefined;
@@ -910,16 +912,17 @@ function resolveSceneAtZoom(
     const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
     bounds = bounds === undefined ? padded : rectUnion(bounds, padded);
   }
+  const effectiveLegendAnchor = input.legend ?? (isProcessDoc ? "none" : undefined);
   const linkLegend = result.legendResolved
     ? result.linkLegend
     : buildSceneLinkLegend({
         edges,
         contentBounds: bounds,
         measureLines: input.measureLines,
-        ...(input.legend === undefined ? {} : { anchor: input.legend }),
+        ...(effectiveLegendAnchor === undefined ? {} : { anchor: effectiveLegendAnchor }),
         ...(input.legendTitle === undefined ? {} : { title: input.legendTitle }),
         ...(input.legendLabels === undefined ? {} : { labels: input.legendLabels }),
-        ...(input.metrics?.edgeLabelSize === undefined ? {} : { fontSize: input.metrics.edgeLabelSize }),
+        ...(effectiveInputLabelSize === undefined ? {} : { fontSize: effectiveInputLabelSize }),
       });
   if (linkLegend !== undefined) {
     bounds = bounds === undefined ? linkLegend.rect : rectUnion(bounds, linkLegend.rect);
