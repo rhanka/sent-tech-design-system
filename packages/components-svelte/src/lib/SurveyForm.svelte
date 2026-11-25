@@ -57,20 +57,20 @@
   import Button from "./Button.svelte";
   import Card from "./Card.svelte";
   import CheckboxGroup from "./CheckboxGroup.svelte";
-  import Collapsible from "./Collapsible.svelte";
   import Divider from "./Divider.svelte";
   import ErrorSummary from "./ErrorSummary.svelte";
   import Inline from "./Inline.svelte";
   import Input from "./Input.svelte";
   import LikertScale from "./LikertScale.svelte";
-  import Modal from "./Modal.svelte";
   import ProgressBar from "./ProgressBar.svelte";
   import RadioGroup from "./RadioGroup.svelte";
   import Stack from "./Stack.svelte";
   import Stepper from "./Stepper.svelte";
+  import SurveyNav from "./SurveyNav.svelte";
+  import SurveyPrivacyNotice from "./SurveyPrivacyNotice.svelte";
+  import SurveyQuestionCard from "./SurveyQuestionCard.svelte";
   import Tag from "./Tag.svelte";
   import Typography from "./Typography.svelte";
-  import UnorderedList from "./UnorderedList.svelte";
   import {
     buildSubmitPayload,
     computeStepIndex,
@@ -318,7 +318,6 @@
   let questionError = $state("");
   let submitError = $state("");
   let missingIds = $state<string[]>([]);
-  let partialModalOpen = $state(false);
   let submitting = $state(false);
   let pendingSubmission = $state<SurveyPendingSubmission | null>(null);
   let lastSubmitted = $state<SurveySubmitPayload | null>(null);
@@ -342,7 +341,6 @@
     questionError = "";
     submitError = "";
     missingIds = [];
-    partialModalOpen = false;
     submitting = false;
     lastSubmitted = null;
     const identity = (initialEmail || "").trim() || "anonymous";
@@ -653,14 +651,12 @@
     if (!check.valid) {
       missingIds = check.missingIds;
       submitError = copy.submitGateError;
-      partialModalOpen = false;
       return;
     }
 
     missingIds = [];
     submitError = "";
     questionError = "";
-    partialModalOpen = false;
 
     const payload = buildSubmitPayload({
       survey,
@@ -801,7 +797,12 @@
           </Inline>
 
           <div class="st-surveyForm__stepperWrap">
-            <Stepper steps={stepperSteps} current={stepIndex} label={copy.stepperLabel} />
+            <Stepper
+              steps={stepperSteps}
+              current={stepIndex}
+              label={copy.stepperLabel}
+              compactMobile={true}
+            />
           </div>
 
           <Divider />
@@ -955,88 +956,59 @@
               {/if}
 
               {#if survey.rules.mode === "one-per-screen"}
-                <Stack gap={2}>
-                  {#if currentQuestion.moment}
-                    <div>
-                      <Tag tone="neutral" size="sm">
-                        {resolveLocalizedText(currentQuestion.moment, locale)}
-                      </Tag>
-                    </div>
-                  {/if}
-                  <ProgressBar
-                    value={questionIndex + 1}
-                    max={survey.questions.length}
-                    showValue={true}
-                    valueText={`${questionIndex + 1} / ${survey.questions.length}`}
-                    label={copy.questionCounter(questionIndex + 1, survey.questions.length)}
-                  />
-                </Stack>
+                <ProgressBar
+                  value={questionIndex + 1}
+                  max={survey.questions.length}
+                  showValue={true}
+                  valueText={`${questionIndex + 1} / ${survey.questions.length}`}
+                  label={copy.questionCounter(questionIndex + 1, survey.questions.length)}
+                />
 
-                <article class="st-surveyForm__questionCard">
+                <SurveyQuestionCard
+                  index={questionIndex + 1}
+                  total={survey.questions.length}
+                  sectionTag={currentQuestion.moment
+                    ? resolveLocalizedText(currentQuestion.moment, locale)
+                    : undefined}
+                  required={Boolean(currentQuestion.required)}
+                  errorText={questionError || undefined}
+                >
                   {@render renderQuestionControl(currentQuestion)}
-                  {#if questionError}
-                    <p class="st-surveyForm__inlineError" role="alert">{questionError}</p>
-                  {/if}
-                </article>
+                </SurveyQuestionCard>
 
                 {#if submitError}
                   <Alert tone="error" title={submitError} />
                 {/if}
 
-                <div class="st-surveyForm__nav">
-                  <Inline justify="between" align="center" wrap={true} gap={2}>
-                    <Button
-                      variant="secondary"
-                      size="lg"
-                      type="button"
-                      disabled={questionIndex === 0}
-                      onclick={goPrev}
-                    >
-                      {copy.prevBtn}
-                    </Button>
-
-                    {#if questionIndex < survey.questions.length - 1}
-                      <Button variant="primary" size="lg" type="button" onclick={goNext}>
-                        {copy.nextBtn}
-                      </Button>
-                    {:else}
-                      <Button
-                        variant="primary"
-                        size="lg"
-                        type="button"
-                        disabled={readOnly || submitting || answeredCount === 0}
-                        onclick={() => void handleExplicitSubmit("complete")}
-                      >
-                        {copy.submitAllBtn}
-                      </Button>
-                    {/if}
-                  </Inline>
-
-                  {#if enrollmentMode !== "none" || canPartialSubmit}
-                    <Divider />
-                    <Inline justify="between" align="center" wrap={true} gap={2}>
-                      {#if enrollmentMode !== "none"}
-                        <Button variant="ghost" size="lg" type="button" onclick={leaveForLater}>
-                          {copy.leaveBtn}
-                        </Button>
-                      {:else}
-                        <span></span>
-                      {/if}
-
-                      {#if canPartialSubmit}
-                        <Button
-                          variant="secondary"
-                          size="lg"
-                          type="button"
-                          disabled={submitting}
-                          onclick={() => (partialModalOpen = true)}
-                        >
-                          {copy.submitPartialBtn(answeredCount, survey.questions.length)}
-                        </Button>
-                      {/if}
-                    </Inline>
-                  {/if}
-                </div>
+                <SurveyNav
+                  canGoPrevious={questionIndex > 0}
+                  isLast={questionIndex === survey.questions.length - 1}
+                  nextDisabled={questionIndex === survey.questions.length - 1
+                    ? readOnly || answeredCount === 0
+                    : false}
+                  {submitting}
+                  previousLabel={copy.prevBtn}
+                  nextLabel={copy.nextBtn}
+                  submitLabel={copy.submitAllBtn}
+                  leaveLabel={enrollmentMode !== "none" ? copy.leaveBtn : undefined}
+                  allowPartialSubmit={canPartialSubmit}
+                  {answeredCount}
+                  totalQuestions={survey.questions.length}
+                  partialSubmitLabel={copy.submitPartialBtn(answeredCount, survey.questions.length)}
+                  partialConfirmTitle={copy.partialModalTitle}
+                  partialConfirmDescription={copy.partialModalDesc(
+                    answeredCount,
+                    survey.questions.length,
+                  )}
+                  partialConfirmLabel={copy.partialModalConfirm}
+                  partialCancelLabel={copy.partialModalCancel}
+                  stickyMobile={true}
+                  onprevious={goPrev}
+                  onnext={goNext}
+                  onsubmit={() => void handleExplicitSubmit("complete")}
+                  onpartialsubmit={() => void handleExplicitSubmit("partial")}
+                  onleave={leaveForLater}
+                />
               {:else}
                 {#if errorSummaryItems.length > 0}
                   <ErrorSummary
@@ -1045,17 +1017,15 @@
                   />
                 {/if}
                 <Stack gap={4}>
-                  {#each survey.questions as q (q.id)}
-                    <article class="st-surveyForm__questionCard">
-                      {#if q.moment}
-                        <div class="st-surveyForm__momentRow">
-                          <Tag tone="neutral" size="sm">
-                            {resolveLocalizedText(q.moment, locale)}
-                          </Tag>
-                        </div>
-                      {/if}
+                  {#each survey.questions as q, qIdx (q.id)}
+                    <SurveyQuestionCard
+                      index={qIdx + 1}
+                      total={survey.questions.length}
+                      sectionTag={q.moment ? resolveLocalizedText(q.moment, locale) : undefined}
+                      required={Boolean(q.required)}
+                    >
                       {@render renderQuestionControl(q)}
-                    </article>
+                    </SurveyQuestionCard>
                   {/each}
                 </Stack>
                 <Inline justify="end" gap={2}>
@@ -1131,52 +1101,28 @@
     </div>
 
     {#if showPrivacy}
-      <aside class="st-surveyForm__privacy" aria-label={privacyTitle}>
+      <div class="st-surveyForm__privacy">
         <div class="st-surveyForm__privacyDesktop">
-          <Card>
-            <Stack gap={3}>
-              <Typography variant="h5" as="h3">{privacyTitle}</Typography>
-              <UnorderedList items={privacyItems} />
-            </Stack>
-          </Card>
+          <SurveyPrivacyNotice
+            title={privacyTitle}
+            items={privacyItems}
+            mode="card"
+            sticky={true}
+            headingAs="h3"
+          />
         </div>
         <div class="st-surveyForm__privacyCompact">
-          <Collapsible title={privacyTitle} size="lg">
-            <UnorderedList items={privacyItems} />
-          </Collapsible>
+          <SurveyPrivacyNotice
+            title={privacyTitle}
+            items={privacyItems}
+            mode="collapsible"
+            headingAs="h3"
+          />
         </div>
-      </aside>
+      </div>
     {/if}
   </div>
 </div>
-
-<Modal
-  open={partialModalOpen}
-  title={copy.partialModalTitle}
-  description={copy.partialModalDesc(answeredCount, survey.questions.length)}
-  onclose={() => (partialModalOpen = false)}
->
-  {#snippet footer()}
-    <Inline justify="end" gap={2} wrap={true}>
-      <Button
-        variant="ghost"
-        size="lg"
-        type="button"
-        onclick={() => (partialModalOpen = false)}
-      >
-        {copy.partialModalCancel}
-      </Button>
-      <Button
-        variant="primary"
-        size="lg"
-        type="button"
-        onclick={() => void handleExplicitSubmit("partial")}
-      >
-        {copy.partialModalConfirm}
-      </Button>
-    </Inline>
-  {/snippet}
-</Modal>
 
 <style>
   .st-surveyForm {
@@ -1223,34 +1169,8 @@
     margin-top: var(--st-spacing-2, 0.5rem);
   }
 
-  .st-surveyForm__questionCard {
-    background: var(--st-semantic-surface-default, #ffffff);
-    border: 1px solid var(--st-semantic-border-subtle, #d6d9ea);
-    border-radius: var(--st-radius-md, 0.5rem);
-    display: grid;
-    gap: var(--st-spacing-3, 0.75rem);
-    padding: var(--st-spacing-4, 1rem);
-  }
-
-  .st-surveyForm__momentRow {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
   .st-surveyForm__questionControl {
     min-width: 0;
-  }
-
-  .st-surveyForm__inlineError {
-    color: var(--st-semantic-feedback-error, #dc2626);
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin: 0;
-  }
-
-  .st-surveyForm__nav {
-    display: grid;
-    gap: var(--st-spacing-3, 0.75rem);
   }
 
   .st-surveyForm__thanksFocus:focus {
@@ -1272,34 +1192,11 @@
     display: block;
   }
 
-  .st-surveyForm__privacyCompact :global(.st-collapsible__trigger) {
-    min-height: 2.75rem;
-  }
-
-  /* Compact stepper labels on narrow 390px containers */
-  @container st-survey-form (max-width: 480px) {
-    .st-surveyForm__stepperWrap :global(.st-stepper__step:not(.st-stepper__step--current) .st-stepper__text) {
-      border: 0;
-      clip: rect(0 0 0 0);
-      height: 1px;
-      margin: -1px;
-      overflow: hidden;
-      padding: 0;
-      position: absolute;
-      white-space: nowrap;
-      width: 1px;
-    }
-  }
-
   /* 820px+ tablet & 1280px+ desktop: two-column layout with sticky privacy card */
   @container st-survey-form (min-width: 760px) {
     .st-surveyForm--withPrivacy .st-surveyForm__grid {
       gap: var(--st-spacing-6, 1.5rem);
       grid-template-columns: minmax(0, 1fr) minmax(17rem, 21rem);
-    }
-
-    .st-surveyForm__questionCard {
-      padding: var(--st-spacing-6, 1.5rem);
     }
 
     .st-surveyForm__privacy {
