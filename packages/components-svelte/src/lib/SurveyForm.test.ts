@@ -245,7 +245,7 @@ describe("SurveyForm — enrollment, flow, explicit submit & passkey", () => {
     });
   });
 
-  it("detects and resumes an active 30-min local draft for the same email", async () => {
+  it("detects and resumes an active 30-min local draft directly in email-unverified mode", async () => {
     const now = Date.now();
     saveSurveyDraft("demo-c", "alice@devmtl.ca", {
       surveyId: "demo-c",
@@ -258,7 +258,10 @@ describe("SurveyForm — enrollment, flow, explicit submit & passkey", () => {
 
     const { getByLabelText, getByRole, getByText } = render(SurveyForm, {
       props: {
-        survey: TEST_SURVEY,
+        survey: {
+          ...TEST_SURVEY,
+          rules: { ...TEST_SURVEY.rules, enrollment: "email-unverified" },
+        },
         locale: "fr",
       },
     });
@@ -932,5 +935,172 @@ describe("SurveyForm — enrollment, flow, explicit submit & passkey", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("r3 P1-2: avoids empty pre-link drafts, does not inflate returnedFromDraft, and never bypasses email-magic-link auth", async () => {
+    // 1. Submitting email-only in email-magic-link writes NO empty 0-answer draft and Changer d'e-mail never shows resume banner
+    const onrequestlink = vi.fn().mockResolvedValue(undefined);
+    const r1 = render(SurveyForm, {
+      props: {
+        survey: TEST_SURVEY,
+        locale: "fr",
+        onrequestlink,
+      },
+    });
+    await fireEvent.input(r1.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "bob@devmtl.ca" },
+    });
+    await fireEvent.click(r1.getByRole("button", { name: /Recevoir mon lien/i }));
+    await waitFor(() => expect(r1.getByText(/Un lien vient de partir/i)).toBeTruthy());
+    expect(loadSurveyDraft("demo-c", "bob@devmtl.ca")).toBeNull();
+
+    await fireEvent.click(r1.getByRole("button", { name: /Changer d’e-mail/i }));
+    await fireEvent.input(r1.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "bob@devmtl.ca" },
+    });
+    expect(r1.queryByText(/Brouillon actif retrouvé/i)).toBeNull();
+    expect(r1.queryByRole("button", { name: /Reprendre mon brouillon/i })).toBeNull();
+    r1.unmount();
+
+    // 2. Pre-link enrollmentMeta survives magic-link return without surfacing a 0/N resume banner or inflating returnedFromDraft
+    const onrequestlink2 = vi.fn().mockResolvedValue(undefined);
+    const onsubmit2 = vi.fn().mockResolvedValue(undefined);
+    const r2 = render(SurveyForm, {
+      props: {
+        survey: TEST_SURVEY,
+        locale: "fr",
+        onrequestlink: onrequestlink2,
+        onsubmit: onsubmit2,
+      },
+    });
+    await fireEvent.input(r2.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "claire@devmtl.ca" },
+    });
+    await fireEvent.input(r2.getByLabelText(/Entreprise/i), {
+      target: { value: "Studio Nord" },
+    });
+    await fireEvent.click(r2.getByRole("button", { name: /Recevoir mon lien/i }));
+    await waitFor(() => expect(r2.getByText(/Un lien vient de partir/i)).toBeTruthy());
+    await fireEvent.click(r2.getByRole("button", { name: /Changer d’e-mail/i }));
+    await fireEvent.input(r2.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "claire@devmtl.ca" },
+    });
+    expect(r2.queryByText(/Brouillon actif retrouvé/i)).toBeNull();
+    expect(r2.queryByRole("button", { name: /Reprendre mon brouillon/i })).toBeNull();
+
+    // Verified magic-link return restores company_name without restoredBanner or returnedFromDraft=true
+    await r2.rerender({
+      survey: TEST_SURVEY,
+      locale: "fr",
+      initialStep: "questions",
+      initialEmail: "claire@devmtl.ca",
+      onrequestlink: onrequestlink2,
+      onsubmit: onsubmit2,
+    });
+    await waitFor(() => expect(r2.getByText(/Quel type d’organisation/i)).toBeTruthy());
+    expect(r2.queryByText(/Brouillon restauré/i)).toBeNull();
+    await fireEvent.click(r2.getByLabelText("Startup"));
+    await fireEvent.click(r2.getByRole("button", { name: /Envoyer seulement celles-ci \(1\/3\)/i }));
+    await fireEvent.click(r2.getByRole("button", { name: /Confirmer l’envoi partiel/i }));
+    await waitFor(() => expect(onsubmit2).toHaveBeenCalledTimes(1));
+    expect(onsubmit2.mock.calls[0][0]).toMatchObject({
+      enrollmentMeta: { company_name: "Studio Nord" },
+      returnedFromDraft: false,
+    });
+    r2.unmount();
+
+    // 3. Real active draft under email-magic-link (allowSimulatedLinkOpen=false) NEVER bypasses magic-link verification
+    const now = Date.now();
+    saveSurveyDraft("demo-c", "alice@devmtl.ca", {
+      surveyId: "demo-c",
+      answers: { type: "startup" },
+      questionIndex: 1,
+      enrollmentMeta: { company_name: "Atelier" },
+      expiresAt: now + 15 * 60 * 1000,
+      updatedAt: now - 60_000,
+    });
+    const onrequestlink3 = vi.fn().mockResolvedValue(undefined);
+    const r3 = render(SurveyForm, {
+      props: {
+        survey: TEST_SURVEY,
+        locale: "fr",
+        onrequestlink: onrequestlink3,
+      },
+    });
+    await fireEvent.input(r3.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "alice@devmtl.ca" },
+    });
+    expect(r3.getByText(/Brouillon actif retrouvé/i)).toBeTruthy();
+    // Must NOT expose a direct-jump bypass button in email-magic-link mode
+    expect(r3.queryByRole("button", { name: /Reprendre mon brouillon/i })).toBeNull();
+    expect(r3.queryByText(/Quels outils utilisez-vous/i)).toBeNull();
+
+    // Requesting link calls onrequestlink and stays on link_sent (no bypass when allowSimulatedLinkOpen=false)
+    await fireEvent.click(r3.getByRole("button", { name: /Recevoir mon lien/i }));
+    await waitFor(() => expect(onrequestlink3).toHaveBeenCalledTimes(1));
+    expect(r3.getByText(/Un lien vient de partir/i)).toBeTruthy();
+    expect(r3.queryByRole("button", { name: /Ouvrir le sondage/i })).toBeNull();
+    expect(r3.queryByText(/Quels outils utilisez-vous/i)).toBeNull();
+
+    // Only after verified magic-link return does the saved draft restore at Q2
+    await r3.rerender({
+      survey: TEST_SURVEY,
+      locale: "fr",
+      initialStep: "questions",
+      initialEmail: "alice@devmtl.ca",
+      onrequestlink: onrequestlink3,
+    });
+    await waitFor(() => expect(r3.getByText(/Brouillon restauré/i)).toBeTruthy());
+    expect(r3.getByText(/Quels outils utilisez-vous/i)).toBeTruthy();
+    r3.unmount();
+  });
+
+  it("r3 P2-3: localizes CheckboxGroup required/maxSelections in FR and marks requiredForSubmit questions required", () => {
+    const reqSurvey: SurveyDefinition = {
+      ...TEST_SURVEY,
+      rules: {
+        ...TEST_SURVEY.rules,
+        enrollment: "none",
+        mode: "all-at-once",
+        requiredForSubmit: ["type"],
+      },
+      questions: [
+        TEST_SURVEY.questions[0], // "type" has no q.required, required via rules.requiredForSubmit
+        {
+          id: "tools",
+          type: "multi",
+          required: true,
+          maxSelections: 2,
+          label: { fr: "Quels outils ?", en: "Which tools?" },
+          options: [
+            { id: "t1", label: { fr: "Outil Alpha", en: "Alpha Tool" } },
+            { id: "t2", label: { fr: "Outil Beta", en: "Beta Tool" } },
+            { id: "t3", label: { fr: "Outil Gamma", en: "Gamma Tool" } },
+          ],
+        },
+      ],
+    };
+
+    const { container } = render(SurveyForm, {
+      props: {
+        survey: reqSurvey,
+        locale: "fr",
+      },
+    });
+
+    // Q1 ("type") is requiredForSubmit -> RadioGroup has aria-required="true" and card has data-required="true"
+    const radioGroup = container.querySelector('fieldset[role="radiogroup"]') as HTMLElement;
+    expect(radioGroup.getAttribute("aria-required")).toBe("true");
+    const cards = container.querySelectorAll(".st-surveyQuestionCard");
+    expect(cards[0]?.getAttribute("data-required")).toBe("true");
+
+    // Q2 (CheckboxGroup) in locale="fr" renders French screen-reader label "(obligatoire)" instead of "(required)"
+    const srHidden = container.querySelector(".st-checkboxGroup .st-visually-hidden");
+    expect(srHidden?.textContent).toContain("obligatoire");
+    expect(srHidden?.textContent).not.toContain("required");
+    // maxSelections limit hint is localized in FR
+    const limitHint = container.querySelector(".st-checkboxGroup__limit");
+    expect(limitHint?.textContent).toContain("0 / 2");
+    expect(limitHint?.textContent).toMatch(/au plus 2/i);
   });
 });

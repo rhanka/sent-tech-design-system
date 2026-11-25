@@ -162,6 +162,8 @@
           resumeTitle: "Brouillon actif retrouvé",
           resumeMsg: (n: number, tot: number, rem: string) =>
             `${n}/${tot} réponses enregistrées en brouillon (temps restant : ${rem}).`,
+          resumeMagicLinkMsg: (n: number, tot: number, rem: string) =>
+            `${n}/${tot} réponses enregistrées en brouillon (temps restant : ${rem}). Demandez votre lien de connexion pour le reprendre.`,
           resumeBtn: "Reprendre mon brouillon",
           linkSentTitle: "Un lien vient de partir",
           linkSentMsg: (addr: string) =>
@@ -188,6 +190,7 @@
           singleHint: "Choisissez une seule réponse.",
           multiHint: "Plusieurs réponses possibles.",
           scaleHint: "Choisissez le palier qui correspond le mieux.",
+          requiredSrLabel: "obligatoire",
           requiredError: "Veuillez répondre à cette question avant de continuer.",
           minSelError: (min: number) => `Sélectionnez au moins ${min} option(s).`,
           maxSelError: (max: number) => `Sélectionnez au plus ${max} option(s).`,
@@ -257,6 +260,8 @@
           resumeTitle: "Active draft found",
           resumeMsg: (n: number, tot: number, rem: string) =>
             `${n}/${tot} draft answers saved (time left: ${rem}).`,
+          resumeMagicLinkMsg: (n: number, tot: number, rem: string) =>
+            `${n}/${tot} draft answers saved (time left: ${rem}). Request your sign-in link to resume it.`,
           resumeBtn: "Resume my draft",
           linkSentTitle: "A sign-in link was sent",
           linkSentMsg: (addr: string) =>
@@ -283,6 +288,7 @@
           singleHint: "Choose one answer.",
           multiHint: "Select all that apply.",
           scaleHint: "Pick the level that fits best.",
+          requiredSrLabel: "required",
           requiredError: "Please answer this question before continuing.",
           minSelError: (min: number) => `Select at least ${min} option(s).`,
           maxSelError: (max: number) => `Select at most ${max} option(s).`,
@@ -394,9 +400,7 @@
         questionIndex = Math.min(restored.questionIndex, Math.max(0, survey.questions.length - 1));
         enrollmentMeta = { ...restored.enrollmentMeta };
         expiresAt = restored.expiresAt;
-        const hasProgress =
-          countAnsweredQuestions(survey.questions, restored.answers) > 0 ||
-          restored.questionIndex > 0;
+        const hasProgress = draftHasProgress(restored);
         returnedFromDraft = hasProgress;
         restoredBanner = hasProgress;
       } else {
@@ -463,13 +467,24 @@
   });
 
   const activeIdentity = $derived(sessionIdentity || (respondentSeed || "").trim() || "anonymous");
+  const requiredForSubmitSet = $derived(new Set(survey.rules.requiredForSubmit ?? []));
+
+  function isQuestionRequired(q: SurveyQuestion): boolean {
+    return Boolean(q.required || requiredForSubmitSet.has(q.id));
+  }
+
+  function draftHasProgress(draft: SurveyDraft | null | undefined): boolean {
+    if (!draft) return false;
+    return countAnsweredQuestions(survey.questions, draft.answers) > 0 || draft.questionIndex > 0;
+  }
 
   const existingDraft = $derived.by(() => {
     if (!persistDraft || step !== "enrollment") return null;
     const trimmed = email.trim();
     if (!isValidSurveyEmail(trimmed)) return null;
     void nowMs;
-    return loadSurveyDraft(survey.id, trimmed, Date.now(), storageSalt);
+    const loaded = loadSurveyDraft(survey.id, trimmed, Date.now(), storageSalt);
+    return draftHasProgress(loaded) ? loaded : null;
   });
 
   const remainingMs = $derived(expiresAt > 0 ? Math.max(0, expiresAt - nowMs) : 0);
@@ -588,13 +603,28 @@
       ? loadSurveyDraft(survey.id, cleaned, Date.now(), storageSalt)
       : null;
 
-    if (found) {
+    if (enrollmentMode === "email-magic-link") {
+      // Keep prior draft answers locked behind magic-link verification; only persist
+      // non-empty pre-link metadata when no draft exists yet so it survives link return.
+      answers = initialAnswers ? { ...initialAnswers } : {};
+      questionIndex = 0;
+      enrollmentMeta = cleanMeta;
+      expiresAt = draftWindowMinutes > 0 ? Date.now() + draftTtlMs : 0;
+      returnedFromDraft = false;
+      restoredBanner = false;
+      const hasPreLinkContent =
+        countAnsweredQuestions(survey.questions, answers) > 0 || Object.keys(cleanMeta).length > 0;
+      if (!found && hasPreLinkContent) {
+        persistCurrentDraft(answers, questionIndex, expiresAt, cleanMeta, cleaned);
+      }
+    } else if (found) {
+      const hasProgress = draftHasProgress(found);
       answers = { ...found.answers };
       questionIndex = Math.min(found.questionIndex, Math.max(0, survey.questions.length - 1));
       enrollmentMeta = { ...found.enrollmentMeta, ...cleanMeta };
       expiresAt = found.expiresAt;
-      returnedFromDraft = true;
-      restoredBanner = true;
+      returnedFromDraft = hasProgress;
+      restoredBanner = hasProgress;
     } else {
       answers = initialAnswers ? { ...initialAnswers } : {};
       questionIndex = 0;
@@ -602,7 +632,12 @@
       expiresAt = draftWindowMinutes > 0 ? Date.now() + draftTtlMs : 0;
       returnedFromDraft = false;
       restoredBanner = false;
-      persistCurrentDraft(answers, questionIndex, expiresAt, cleanMeta, cleaned);
+      if (
+        countAnsweredQuestions(survey.questions, answers) > 0 ||
+        Object.keys(cleanMeta).length > 0
+      ) {
+        persistCurrentDraft(answers, questionIndex, expiresAt, cleanMeta, cleaned);
+      }
     }
 
     const loadedPending = persistDraft
@@ -616,7 +651,7 @@
   }
 
   function handleResumeDraft() {
-    if (!existingDraft) return;
+    if (!existingDraft || enrollmentMode === "email-magic-link") return;
     const cleaned = email.trim();
     sessionIdentity = cleaned;
     answers = { ...existingDraft.answers };
@@ -634,10 +669,20 @@
   }
 
   function handleOpenFromLink() {
-    if (draftWindowMinutes > 0 && (!expiresAt || Date.now() >= expiresAt)) {
+    const found = persistDraft
+      ? loadSurveyDraft(survey.id, activeIdentity, Date.now(), storageSalt)
+      : null;
+    if (found) {
+      const hasProgress = draftHasProgress(found);
+      answers = { ...(initialAnswers ?? {}), ...found.answers };
+      questionIndex = Math.min(found.questionIndex, Math.max(0, survey.questions.length - 1));
+      enrollmentMeta = { ...found.enrollmentMeta, ...sanitizeEnrollmentMeta(enrollmentMeta) };
+      expiresAt = found.expiresAt;
+      returnedFromDraft = hasProgress;
+      restoredBanner = hasProgress;
+    } else if (draftWindowMinutes > 0 && (!expiresAt || Date.now() >= expiresAt)) {
       expiresAt = Date.now() + draftTtlMs;
     }
-    persistCurrentDraft(answers, questionIndex, expiresAt);
     step = "questions";
   }
 
@@ -728,7 +773,13 @@
   }
 
   function leaveForLater() {
-    persistCurrentDraft(answers, questionIndex, expiresAt);
+    if (
+      countAnsweredQuestions(survey.questions, answers) > 0 ||
+      questionIndex > 0 ||
+      Object.keys(sanitizeEnrollmentMeta(enrollmentMeta)).length > 0
+    ) {
+      persistCurrentDraft(answers, questionIndex, expiresAt);
+    }
     resetToEnrollment();
   }
 
@@ -919,6 +970,7 @@
   {@const qLegend = resolveLocalizedText(q.label, locale)}
   {@const qHelper = q.helperText ? resolveLocalizedText(q.helperText, locale) : undefined}
   {@const qError = fieldErrorFor(q)}
+  {@const qRequired = isQuestionRequired(q)}
   <div id={`st-survey-q-${survey.id}-${q.id}`} class="st-surveyForm__questionControl">
     {#if q.type === "multi"}
       <CheckboxGroup
@@ -928,10 +980,12 @@
         helperText={qHelper ?? copy.multiHint}
         errorText={qError}
         invalid={Boolean(qError)}
-        required={q.required}
+        required={qRequired}
+        requiredLabel={copy.requiredSrLabel}
         exclusiveValues={q.exclusive}
         minSelections={q.minSelections}
         maxSelections={q.maxSelections}
+        maxSelectionsMessage={q.maxSelections != null ? copy.maxSelError(q.maxSelections) : undefined}
         options={qOptions.map((o) => ({
           value: o.id,
           label: resolveLocalizedText(o.label, locale),
@@ -949,7 +1003,7 @@
         helperText={qHelper ?? copy.scaleHint}
         errorText={qError}
         invalid={Boolean(qError)}
-        required={q.required}
+        required={qRequired}
         layout={q.layout ?? "auto"}
         minLabel={q.minLabel ? resolveLocalizedText(q.minLabel, locale) : undefined}
         maxLabel={q.maxLabel ? resolveLocalizedText(q.maxLabel, locale) : undefined}
@@ -971,7 +1025,7 @@
         helperText={qHelper ?? copy.singleHint}
         errorText={qError}
         invalid={Boolean(qError)}
-        required={q.required}
+        required={qRequired}
         options={qOptions.map((o) => ({
           value: o.id,
           label: resolveLocalizedText(o.label, locale),
@@ -1114,26 +1168,38 @@
                 {/if}
 
                 {#if existingDraft}
-                  <Alert
-                    tone="info"
-                    title={copy.resumeTitle}
-                    message={copy.resumeMsg(
-                      countAnsweredQuestions(survey.questions, existingDraft.answers),
-                      survey.questions.length,
-                      formatSurveyCountdown(Math.max(0, existingDraft.expiresAt - nowMs)),
-                    )}
-                  >
-                    {#snippet actions()}
-                      <Button
-                        variant="secondary"
-                        size="lg"
-                        type="button"
-                        onclick={handleResumeDraft}
-                      >
-                        {copy.resumeBtn}
-                      </Button>
-                    {/snippet}
-                  </Alert>
+                  {#if enrollmentMode === "email-magic-link"}
+                    <Alert
+                      tone="info"
+                      title={copy.resumeTitle}
+                      message={copy.resumeMagicLinkMsg(
+                        countAnsweredQuestions(survey.questions, existingDraft.answers),
+                        survey.questions.length,
+                        formatSurveyCountdown(Math.max(0, existingDraft.expiresAt - nowMs)),
+                      )}
+                    />
+                  {:else}
+                    <Alert
+                      tone="info"
+                      title={copy.resumeTitle}
+                      message={copy.resumeMsg(
+                        countAnsweredQuestions(survey.questions, existingDraft.answers),
+                        survey.questions.length,
+                        formatSurveyCountdown(Math.max(0, existingDraft.expiresAt - nowMs)),
+                      )}
+                    >
+                      {#snippet actions()}
+                        <Button
+                          variant="secondary"
+                          size="lg"
+                          type="button"
+                          onclick={handleResumeDraft}
+                        >
+                          {copy.resumeBtn}
+                        </Button>
+                      {/snippet}
+                    </Alert>
+                  {/if}
                 {/if}
 
                 <Inline justify="end" gap={2}>
@@ -1207,7 +1273,7 @@
                   sectionTag={currentQuestion.moment
                     ? resolveLocalizedText(currentQuestion.moment, locale)
                     : undefined}
-                  required={Boolean(currentQuestion.required)}
+                  required={isQuestionRequired(currentQuestion)}
                   data-invalid={fieldErrorFor(currentQuestion) ? "true" : undefined}
                 >
                   {@render renderQuestionControl(currentQuestion)}
@@ -1263,7 +1329,7 @@
                       index={qIdx + 1}
                       total={survey.questions.length}
                       sectionTag={q.moment ? resolveLocalizedText(q.moment, locale) : undefined}
-                      required={Boolean(q.required)}
+                      required={isQuestionRequired(q)}
                       data-invalid={fieldErrorFor(q) ? "true" : undefined}
                     >
                       {@render renderQuestionControl(q)}
