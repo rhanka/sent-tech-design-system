@@ -1,5 +1,6 @@
 import type { DiagramNode } from "@sentropic/focus";
 import { canonicalJson } from "@sentropic/focus/editing";
+import { renderProcessTable } from "@sentropic/diagram-canvas";
 import { drawDossierDiagram, prepareDossierDiagram } from "../../../focus-diagrams/diagram-layout.js";
 import { DossierDiagramError, readDossierScene } from "../../../focus-diagrams/diagram-source.js";
 
@@ -173,5 +174,14 @@ export function createDossierDiagram(
     controls.prepend(button);
   }
   attachViewAll(owner, drawing, viewport, controls, viewport.id);
+  if (scene.profileRefs.includes("process@1")) {
+    const tableTemplate = owner.createElement("template");
+    tableTemplate.innerHTML = renderProcessTable(scene);
+    const table = tableTemplate.content.firstElementChild;
+    if (table !== null) {
+      table.querySelector("summary")?.setAttribute("data-review-passthrough", "");
+      drawing.append(table);
+    }
+  }
   return drawing;
 }

@@ -73,15 +73,18 @@ it("renders the authoritative scene and replots it when a container folds or exp
   expect(drawing().textContent).toContain("Child");
 });
 
-it.each([["ecosystem:overview", "h2a"], [flowchart, "opens"]])(
+it.each([
+  ["ecosystem:overview", "h2a", "generic@1"],
+  [flowchart, "opens", "process@1"],
+])(
   "builds the same companion bytes and renders a source-only diagram %s",
-  (source, label) => {
+  (source, label, expectedProfile) => {
     const doc = dossier(source);
     const original = JSON.stringify(doc);
     const views = buildDossierViews(doc, kit)!;
     expect(views).toMatchObject({
       contract: "focus-views/1", documentDigest: baseDigest(doc), rendererDigest: baseDigest(kit),
-      diagrams: { "diagram-1": { scene: { profileRefs: ["generic@1"] }, views: { expanded: expect.any(Object), folded: expect.any(Object) } } },
+      diagrams: { "diagram-1": { scene: { profileRefs: [expectedProfile] }, views: { expanded: expect.any(Object), folded: expect.any(Object) } } },
     });
     expect(canonicalJson(buildDossierViews(JSON.parse(original), kit))).toBe(canonicalJson(views));
     const { host, rendered } = mount();
@@ -287,4 +290,83 @@ it("keeps container fold/expand interactive in review mode without opening a com
   await tick();
   expect(toggle.getAttribute("aria-expanded")).toBe("true");
   expect(figure.querySelector("svg")?.textContent).toContain("Child");
+});
+
+it("renders 5-step Mermaid and inline process@1 flows as simple boxes at scale >= 0.9 with <=3 LR else TB, straight visible links, no icon, no + button, and a step table", () => {
+  const threeStep = [
+    "flowchart LR",
+    's1["Intake"]',
+    's2["Review"]',
+    's3["Publish"]',
+    "s1 -->|Submit| s2",
+    "s2 -->|Approve| s3",
+  ].join("\n");
+  const fiveStep = [
+    "flowchart LR",
+    's1["Intake"]',
+    's2["Triage"]',
+    's3["Review"]',
+    's4["Approve"]',
+    's5["Archive"]',
+    "s1 -->|Open| s2",
+    "s2 -->|Route| s3",
+    "s3 -->|Verify| s4",
+    "s4 -->|Close| s5",
+  ].join("\n");
+
+  const doc3 = dossier(threeStep);
+  const views3 = buildDossierViews(doc3, kit)!;
+  const mount3 = mount();
+  mount3.rendered.render(doc3, { views: views3, manifest: companionManifest(doc3, views3) });
+  const svg3 = mount3.host.querySelector('[data-anchor-id="diagram-1"] svg')!;
+  expect(Number(svg3.getAttribute("data-display-scale"))).toBeGreaterThanOrEqual(0.9);
+  const view3Occs = Object.values((views3.diagrams["diagram-1"]!.views.expanded as { entityOccurrences: Record<string, { geometry: { x: number; y: number } }> }).entityOccurrences);
+  expect(view3Occs.every((occ) => occ.geometry.y === view3Occs[0]!.geometry.y)).toBe(true);
+
+  const doc5 = dossier(fiveStep);
+  const views5 = buildDossierViews(doc5, kit)!;
+  const mount5 = mount();
+  mount5.rendered.render(doc5, { views: views5, manifest: companionManifest(doc5, views5) });
+  const figure5 = mount5.host.querySelector('[data-anchor-id="diagram-1"]')!;
+  const svg5 = figure5.querySelector("svg")!;
+  expect(Number(svg5.getAttribute("data-display-scale"))).toBeGreaterThanOrEqual(0.9);
+  expect(Number(svg5.getAttribute("data-viewport-width"))).toBe(640);
+  const view5Occs = Object.values((views5.diagrams["diagram-1"]!.views.expanded as { entityOccurrences: Record<string, { geometry: { x: number; y: number } }> }).entityOccurrences);
+  expect(new Set(view5Occs.map((occ) => occ.geometry.y)).size).toBe(5);
+  expect(svg5.querySelectorAll("[data-scene-edge]")).toHaveLength(4);
+  expect(svg5.querySelectorAll('[data-connector-mode="r7"]')).toHaveLength(4);
+  expect(svg5.innerHTML).not.toContain("st-diagramCard-icon");
+  expect(figure5.querySelector("[data-toggle]")).toBeNull();
+  expect(figure5.querySelector("button[aria-expanded]")).toBeNull();
+  const buttonTexts = [...figure5.querySelectorAll("button")].map((b) => b.textContent?.trim() ?? "");
+  expect(buttonTexts).not.toContain("+");
+  expect(buttonTexts).not.toContain("Fold containers");
+  const table5 = figure5.querySelector("details.st-diagramProcessTable table");
+  expect(table5).not.toBeNull();
+  expect(figure5.querySelectorAll("details.st-diagramProcessTable tbody tr")).toHaveLength(5);
+
+  const inlineProcess = {
+    documentId: "document:inline-proc",
+    schemaVersion: { major: 1, minor: 1 },
+    revision: 0,
+    profileRefs: ["process@1"],
+    typeDefinitions: {},
+    ports: {},
+    resources: {},
+    extensions: [],
+    entities: {
+      "entity:a": { id: "entity:a", profile: "process@1", type: "step", attributes: { name: { kind: "text", value: "Start" }, kind: { kind: "enum", value: "start" } } },
+      "entity:b": { id: "entity:b", profile: "process@1", type: "step", attributes: { name: { kind: "text", value: "Check" }, kind: { kind: "enum", value: "decision" } } },
+      "entity:c": { id: "entity:c", profile: "process@1", type: "step", attributes: { name: { kind: "text", value: "Done" }, kind: { kind: "enum", value: "end" } } },
+    },
+    relations: {
+      "relation:a.b": { id: "relation:a.b", profile: "process@1", type: "transition", endpoints: [{ role: "source", target: "entity:a" }, { role: "target", target: "entity:b" }], attributes: {} },
+      "relation:b.c": { id: "relation:b.c", profile: "process@1", type: "transition", endpoints: [{ role: "source", target: "entity:b" }, { role: "target", target: "entity:c" }], attributes: { label: { kind: "text", value: "OK" } } },
+    },
+  };
+  const mountInline = mount();
+  mountInline.rendered.render(dossier("ignored", { scene: inlineProcess }));
+  const inlineFigure = mountInline.host.querySelector('[data-anchor-id="diagram-1"]')!;
+  expect(inlineFigure.querySelector("svg")?.querySelectorAll('[data-process-variant="decision"]')).toHaveLength(1);
+  expect(inlineFigure.querySelector("details.st-diagramProcessTable")).not.toBeNull();
 });
