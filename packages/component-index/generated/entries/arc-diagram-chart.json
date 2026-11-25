@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ArcDiagramChart.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Arc diagram: nodes on an axis, weighted arcs coloured by source.",
     "fr": "Diagramme en arcs : nœuds alignés sur un axe, arcs pondérés colorés par source."
   },
-  "digest": "sha256:14ec45f004931d93c4f61a6d40563e7d7eaabb3478f85331368c1a3af95bbef5",
+  "digest": "sha256:8c4013b1f25c833b60eb40dc51954cf75e8a9642830df638e5d52c09dfef3117",
   "displayName": "ArcDiagramChart",
   "format": "component-entry/v1",
   "frameworks": [

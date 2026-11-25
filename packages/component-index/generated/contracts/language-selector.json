@@ -1,8 +1,8 @@
 {
   "componentId": "language-selector",
   "contractSource": "derived",
-  "digest": "sha256:0e2f37c001185826253a1997cbf0c4a6c4dd5ce0c1b52e8b2508a2514876ccf8",
-  "entryDigest": "sha256:5f886c1c73bbcdc0fe8eed0676165e32feb14356f7e913b4d6dd9f3188a61386",
+  "digest": "sha256:87e1bdda362271c0f3b214451f0ad0700f5b8e42c966b2fd27f09b61b26d1bfe",
+  "entryDigest": "sha256:c7bcdf47ac1c68ba5e92f6407734f50f97269039c4a17b320831c645450863f6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -228,7 +228,7 @@
         "declarationPath": "packages/components-svelte/dist/LanguageSelector.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LanguageSelectorProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "complete",
       "unresolved": [],

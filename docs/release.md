@@ -319,6 +319,16 @@ git push origin diagram-codecs-v0.1.0
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
+### Svelte 0.46.1 (Stepper horizontal alignment fix)
+
+Patch release of `@sentropic/design-system-svelte` (`0.46.0` → `0.46.1`) shipping PR #344 (`fix(stepper): centre connectors on bubbles and join the last step`). All runtime `@sentropic/*` pins in `packages/components-svelte/package.json` (`themes@0.16.1`, `diagram-canvas@0.6.0`, `graph@0.3.1`, `rich-text@0.1.1`, `theme-dsfr@0.2.2`, `review-core@0.1.0`) are already on npm, so `svelte-v0.46.1` can be tagged directly once this commit is on `main`:
+
+```bash
+git push origin main
+git tag svelte-v0.46.1
+git push origin svelte-v0.46.1
+```
+
 ### Diagram Core 0.6.1, Diagram Canvas 0.6.0, Elements 0.4.0, Svelte 0.46.0, Vue 0.42.0-next.0 (Archify lot 1)
 
 Release tag order for the `process@1` simple-box release train (L1a–L1e), each pushed only after the previous publish workflow's `post-publish-check` passes:

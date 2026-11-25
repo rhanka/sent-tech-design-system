@@ -1,8 +1,8 @@
 {
   "componentId": "tooltip",
   "contractSource": "derived",
-  "digest": "sha256:297103e3ce32e705f93215f21393634598cab740438e2b8be087692a54361033",
-  "entryDigest": "sha256:443397b753d42f9424c610adc78cc81a64f0268c57f0782a0405b57d7072ce05",
+  "digest": "sha256:90286b568f38de199c4c3088f3f212cce9265f29d34378eee9c3d311838d4d41",
+  "entryDigest": "sha256:27a4d9354b553d7e38a57284b16f20e540759042884d3e95b1d69190079708d2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -145,7 +145,7 @@
         "declarationPath": "packages/components-svelte/dist/Tooltip.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TooltipProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "complete",
       "unresolved": [],
