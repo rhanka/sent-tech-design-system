@@ -1426,6 +1426,7 @@
       "IdentityButton",
       "IdentityMenu",
       "KanbanBoard",
+      "LikertScale",
       "ListReportPage",
       "MasterDetail",
       "NavDrawer",
