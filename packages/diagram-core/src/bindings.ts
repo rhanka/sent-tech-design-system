@@ -58,6 +58,7 @@ const IMPOSED_ADAPTERS: Readonly<Record<string, DeclarationAdapter>> = {
   "generic@2": SCOPED_CONSTRAINTS_ADAPTER,
   "archimate@2": SCOPED_CONSTRAINTS_ADAPTER,
   "uml@2": SCOPED_CONSTRAINTS_ADAPTER,
+  "process@1": SCOPED_CONSTRAINTS_ADAPTER,
 };
 
 /** The imposed adapter for a shipped profile id, or `undefined` when none applies. */
