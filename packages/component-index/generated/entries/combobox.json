@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Combobox.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Autocomplete text field with selection from a list.",
     "fr": "Champ texte autocomplété avec sélection dans une liste."
   },
-  "digest": "sha256:142e3fda29a1ce6029890850e65b3c2bc16b964a23ecc2ed7c5d8c2c8abda4eb",
+  "digest": "sha256:f8c4e1d66d7bc543df215fea3783332a40684765c563071acb17304e931838c9",
   "displayName": "Combobox",
   "format": "component-entry/v1",
   "frameworks": [

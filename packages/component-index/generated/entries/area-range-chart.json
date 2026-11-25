@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/AreaRangeChart.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Filled band between a low and a high series along an X axis (e.g. daily temperature range, stock min/max).",
     "fr": "Bande remplie entre une série basse et une série haute le long d'un axe X (ex. fourchette de température jour par jour, min/max boursier)."
   },
-  "digest": "sha256:2d1e6714a848aaeecebe404feb8e5c50d8e0a676c63c8eb932e4e8a2adbc5488",
+  "digest": "sha256:d57e2a6bdf8da604b42edfd1e6537ccb7ac600be81c0b0bbe36cef3032a43c86",
   "displayName": "AreaRangeChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "lollipop-chart",
   "contractSource": "derived",
-  "digest": "sha256:49fe92421b7401a82b85e6fed125aaf40cbdc568f9efd448e499db7cb73a13fd",
-  "entryDigest": "sha256:8f1369ef102fb9608ca163ed16c1279ff53bb5dad4adf8b3d0ee849feffa4a58",
+  "digest": "sha256:0afc73d36072b73e2fe5e067e9b90651327d66988a3cf1bf0bef1bf54acd5e3a",
+  "entryDigest": "sha256:173f3a9ed2cc14c57cb9ffbd0c29386020ba86054dd4667d1ea54ab2e5226ffc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -291,7 +291,7 @@
         "declarationPath": "packages/components-svelte/dist/LollipopChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LollipopChartProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "complete",
       "unresolved": [],

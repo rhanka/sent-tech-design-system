@@ -1,8 +1,8 @@
 {
   "componentId": "streaming-message",
   "contractSource": "derived",
-  "digest": "sha256:f2291a6c1dea5a51d1750c9bef47ab04088bd7b8cd324822c06d020d433d12d6",
-  "entryDigest": "sha256:b0c77c25f3e92f6cbb2086f54606420e41122e9ff607a7074256eff09e3d795d",
+  "digest": "sha256:e600b3ddd4d979ad1db0381896a177ab085818857ae0d73779f6751c0cc08c90",
+  "entryDigest": "sha256:6c04cc4867e6d83388442d650d0e17a05c9e6bb874d64da443abef37ba5cb147",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -668,7 +668,7 @@
         "declarationPath": "packages/components-svelte/dist/StreamingMessage.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StreamingMessageProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "complete",
       "unresolved": [],

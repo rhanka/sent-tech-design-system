@@ -1,8 +1,8 @@
 {
   "componentId": "calendar",
   "contractSource": "derived",
-  "digest": "sha256:7fbfa0f540f67e2143a5ccaac49c1b159c077eccf2c1b5ad3ecd6a512ffb1609",
-  "entryDigest": "sha256:98a2905ecb9b554f360729e4e0b2399f28f5fab5c15062e39c2b20f46b270c18",
+  "digest": "sha256:55706b35b0e73550d53e6e583f608a15be2bc2fe0c092d4e565ff1b767836144",
+  "entryDigest": "sha256:3c241d9824b9ccc906189f3d078be4aa89ef0ed7917fc136d53db8feef687246",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -404,7 +404,7 @@
         "declarationPath": "packages/components-svelte/dist/Calendar.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CalendarProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "complete",
       "unresolved": [],

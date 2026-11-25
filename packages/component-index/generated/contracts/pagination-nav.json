@@ -1,8 +1,8 @@
 {
   "componentId": "pagination-nav",
   "contractSource": "derived",
-  "digest": "sha256:5eea896f304fb93414852a4ef2cbbd4af7f1bc8f4490de0b84efc6574dfe1f46",
-  "entryDigest": "sha256:6c33b58a5aceb7863b58eef25b644a9163c4a84b35df653e2bf85007958e33d7",
+  "digest": "sha256:61b4f13d31d2f06ca65eb324b8637f4779eb60000aeb619513400ce95b11bd2c",
+  "entryDigest": "sha256:4a23d141b933b3aad52280708e4b8fce219ad914bdda5a36525523a5238122fa",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -193,7 +193,7 @@
         "declarationPath": "packages/components-svelte/dist/PaginationNav.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PaginationNavProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "complete",
       "unresolved": [],

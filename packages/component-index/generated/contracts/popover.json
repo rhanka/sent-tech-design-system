@@ -1,8 +1,8 @@
 {
   "componentId": "popover",
   "contractSource": "derived",
-  "digest": "sha256:ece9458b9271b853d8c352ec82ba4a21fdaf8a97192e9a00697070f3d2ac66cf",
-  "entryDigest": "sha256:09d800acc40fb54a2c7b1a055002a2a50f2e9e6063c8294e84f63043893e63bd",
+  "digest": "sha256:991770dc1f1975121e058af8f17f330340ff3f13dd9e04088282493b21eede95",
+  "entryDigest": "sha256:4e9e3eab5884147dc1b67b41decf4242418c83451adc5612ff002973bb471adf",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -190,7 +190,7 @@
         "declarationPath": "packages/components-svelte/dist/Popover.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PopoverProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "complete",
       "unresolved": [],

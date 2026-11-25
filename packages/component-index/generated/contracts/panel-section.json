@@ -1,8 +1,8 @@
 {
   "componentId": "panel-section",
   "contractSource": "derived",
-  "digest": "sha256:e954e2fdb3ec4566f3f327ec007e3a08296b0d61b43639493ff70d17dfd8ed42",
-  "entryDigest": "sha256:2b065c2bb2a8d475c9f0b4ab9d491715efd9e600c8e41e81098891cb393efc72",
+  "digest": "sha256:754fd12c5249c1201e59ff9d8e59a1e40d3e11ca32da8ea34f9977bc34653055",
+  "entryDigest": "sha256:c7abfdbb18074bfdf463ea570a0542dcc178e48110c89245c71c95970a1a8ca4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -157,7 +157,7 @@
         "declarationPath": "packages/components-svelte/dist/PanelSection.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PanelSectionProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "complete",
       "unresolved": [],

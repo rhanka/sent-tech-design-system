@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/HeatmapChart.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Colored matrix for crossing two categorical dimensions.",
     "fr": "Matrice colorée pour croiser deux dimensions catégorielles."
   },
-  "digest": "sha256:b2042a8e0fd968a73f05a47a89b14ade83e91637c87414f18978c83dede74f21",
+  "digest": "sha256:17fa3f6020ac430742b1f932e59ad7ba2b862310453bb3c321767f7b8d940e23",
   "displayName": "HeatmapChart",
   "format": "component-entry/v1",
   "frameworks": [

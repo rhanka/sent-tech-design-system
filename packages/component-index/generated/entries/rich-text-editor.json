@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/rich-text-editor/RichTextEditor.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -24,7 +24,7 @@
     "en": "Structured document editor with capture, Markdown profiles, and collaboration.",
     "fr": "Éditeur de documents structurés, avec capture, profils Markdown et collaboration."
   },
-  "digest": "sha256:3a866808142c14f42091e3aee3f9bebcf5bfffaa0c0e2d996a02d2ea6cb705a6",
+  "digest": "sha256:e2567addcb9b18360a66f02d2c67f15db66110bdee21afe46d4089f904ca39a6",
   "displayName": "RichTextEditor",
   "format": "component-entry/v1",
   "frameworks": [

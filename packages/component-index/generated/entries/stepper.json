@@ -5,11 +5,11 @@
   "delivery": [
     {
       "channel": "source",
-      "digest": "sha256:6fc2c4fe7b31e3ab1491a5889b19df582969f64f60f4d6caf3420003cbf061ce",
+      "digest": "sha256:f05a066cbae83e779d79f31d90f3c01f58b52fd25b3fb0fe3470f9275aa1b47d",
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Stepper.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Step indicator for a flow, horizontal or vertical.",
     "fr": "Indicateur d'étapes d'un parcours, horizontal ou vertical."
   },
-  "digest": "sha256:bc89e0821f3fe9d8a24ccb73b076007d0a79325052a81ae374f4d99e3135ba84",
+  "digest": "sha256:66136daee3dedbb1f19ab4f9c1083ef505cfc63278a42938cea484f15950c1ca",
   "displayName": "Stepper",
   "format": "component-entry/v1",
   "frameworks": [
