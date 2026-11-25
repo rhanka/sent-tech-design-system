@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:11f152db789b5c8bbee176d5010fba1912d1a71c1e50908c310de44b8a4580c8",
+  "contractsRevision": "sha256:130793501840aba7ef6469befdf481ca81b753b4f40f477709a8395869230ad4",
   "counts": {
     "byFramework": {
       "angular": {
@@ -788,8 +788,8 @@
         "vue": "partial"
       },
       "componentId": "diagram-scene-figure",
-      "contractDigest": "sha256:26b95b598410d6743b5cd198044e79cfd8d952c632aab8cf533f6203dc33513b",
-      "entryDigest": "sha256:1e5c28353ab82759a04ee08e280548ccf81b727c5357a8afb1e241d4cdd486e3",
+      "contractDigest": "sha256:547848268a8669a7a19bdadbe4173ec04627feb61c07b92f42360718a34364be",
+      "entryDigest": "sha256:21519d8c2c4679aad875bff990e5b1b906468f25ee18d3b0486d018279597cbd",
       "path": "contracts/diagram-scene-figure.json",
       "producerId": "sentropic-ds"
     },
@@ -2322,8 +2322,8 @@
         "vue": "partial"
       },
       "componentId": "stepper",
-      "contractDigest": "sha256:5a7c3cc2d10f59dd7df7ce1fb43a3997f6310cbd0c4c35d23e1cf20373ddba21",
-      "entryDigest": "sha256:df99a836d076e3228d20ae5da272497c63ae37b325e3dbced16aa0430d00f373",
+      "contractDigest": "sha256:e19adb70b950efe6d5e6f1d966b4bb8eca1242aa1a9d6dec37fb14889d0e2733",
+      "entryDigest": "sha256:fd6d54717c5204f1cfebae80681de8bc8b340c9cb5c1f24eb0018614251c9153",
       "path": "contracts/stepper.json",
       "producerId": "sentropic-ds"
     },
@@ -2863,5 +2863,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "3a7c969d85307a0be9174ed46a1d179762c7411e"
+  "sourceCommit": "88866d6c88110ba9520995f3ce12acb24c8088a8"
 }

@@ -247,4 +247,8 @@ test('should enforce combined legend count <= 1 and zero overlap for authored le
   assert.deepEqual(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes, labels, paths }), []);
   assert.ok(combinedLegendFindings({ legend: auto, authoredLegends: [authored], nodes, labels, paths }).some(f => f.includes('2')));
   assert.ok(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes, labels: [{ id: 'overlap', left: 150, top: 100, right: 220, bottom: 130 }], paths }).some(f => f.includes('overlaps label')));
+  // Interior foreign cards and interior edge labels must be flagged; enclosing outer zones must not.
+  assert.ok(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes: [...nodes, { id: 'inside-card', kind: 'card', left: 30, top: 30, right: 90, bottom: 90 }], labels, paths }).some(f => f.includes('overlaps box inside-card')));
+  assert.ok(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes, labels: [{ id: 'inside-label', left: 30, top: 30, right: 90, bottom: 50 }], paths }).some(f => f.includes('overlaps label inside-label')));
+  assert.deepEqual(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes: [...nodes, { id: 'outer-zone', kind: 'zone', left: 0, top: 0, right: 220, bottom: 180 }], labels, paths }), []);
 });

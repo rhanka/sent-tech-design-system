@@ -349,8 +349,8 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
           <div class="st-diagramSceneFigure-world" :style="worldStyle">
             <template v-if="scene !== undefined">
               <template v-for="layer in paintLayers" :key="layer.plane">
-              <svg v-if="layer.plane === 'connectors'" class="st-diagramSceneFigure-edges" aria-hidden="true" :style="animating ? `opacity:${eased}` : undefined">
-                <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" :markerUnits="scene.r7Connectors ? 'userSpaceOnUse' : undefined" :markerWidth="scene.r7Connectors ? '10.5' : '7'" :markerHeight="scene.r7Connectors ? '10.5' : '7'" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" :fill="scene.r7Connectors ? 'var(--st-component-diagramScene-linkStroke, #0f172a)' : 'var(--st-component-diagramScene-edgeStroke, #64748b)'" /></marker><marker v-for="marker in extraMarkers" :key="marker.id" :id="marker.id" :data-arrowhead-kind="marker.kind" :data-arrowhead-emphasis="marker.emphasis" :viewBox="marker.viewBox" :refX="marker.refX" :refY="marker.refY" :markerUnits="marker.markerUnits" :markerWidth="marker.markerWidth" :markerHeight="marker.markerHeight" :orient="marker.orient"><path :d="marker.path" :fill="marker.fill" :stroke="marker.stroke" :stroke-width="marker.strokeWidth" /></marker><mask v-if="connectorMask !== undefined" :id="maskId" maskUnits="userSpaceOnUse" :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height"><rect :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height" fill="#fff" /><rect v-for="(cutout, index) in connectorMask.cutouts" :key="index" :data-scene-cutout="index" :x="cutout.x" :y="cutout.y" :width="cutout.width" :height="cutout.height" fill="#000" /></mask></defs>
+              <svg v-if="layer.plane === 'connectors'" class="st-diagramSceneFigure-edges" :data-process-connectors="scene.processConnectors ? '' : undefined" aria-hidden="true" :style="animating ? `opacity:${eased}` : undefined">
+                <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" :markerUnits="scene.r7Connectors ? 'userSpaceOnUse' : undefined" :markerWidth="scene.r7Connectors ? '10.5' : '7'" :markerHeight="scene.r7Connectors ? '10.5' : '7'" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" :fill="scene.r7Connectors && !scene.processConnectors ? 'var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))' : 'var(--st-component-diagramScene-edgeStroke, #64748b)'" /></marker><marker v-for="marker in extraMarkers" :key="marker.id" :id="marker.id" :data-arrowhead-kind="marker.kind" :data-arrowhead-emphasis="marker.emphasis" :viewBox="marker.viewBox" :refX="marker.refX" :refY="marker.refY" :markerUnits="marker.markerUnits" :markerWidth="marker.markerWidth" :markerHeight="marker.markerHeight" :orient="marker.orient"><path :d="marker.path" :fill="marker.fill" :stroke="marker.stroke" :stroke-width="marker.strokeWidth" /></marker><mask v-if="connectorMask !== undefined" :id="maskId" maskUnits="userSpaceOnUse" :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height"><rect :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height" fill="#fff" /><rect v-for="(cutout, index) in connectorMask.cutouts" :key="index" :data-scene-cutout="index" :x="cutout.x" :y="cutout.y" :width="cutout.width" :height="cutout.height" fill="#000" /></mask></defs>
                 <g data-scene-connectors="" :mask="connectorMask === undefined ? undefined : `url(#${maskId})`">
                 <template v-for="edge in scene.edges" :key="edge.occurrence">
                   <path v-if="edge.r7" :marker-end="connectorMarkerRef(edge, markerIds)" :stroke-dasharray="connectorDashArray(edge.strokeStyle)" :style="connectorDashPaint(edge.strokeStyle)" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" data-connector-mode="r7" :data-edge-stroke="edge.strokeStyle" :data-edge-arrowhead="edge.arrowhead" :data-edge-emphasis="edge.emphasis" :d="pathOf(edge.points)" />
@@ -558,11 +558,15 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     vector-effect: non-scaling-stroke;
   }
   .st-diagramSceneFigure-edge[data-connector-mode="r7"] {
-    stroke: var(--st-component-diagramScene-linkStroke, #0f172a);
+    stroke: var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a));
     stroke-width: var(--st-diagram-link-stroke-width, var(--st-component-diagramScene-linkStrokeWidth, 3.5px));
   }
   .st-diagramSceneFigure-edge[data-connector-mode="r7"][data-edge-arrowhead="none"] {
     stroke-width: var(--st-diagram-link-related-stroke-width, var(--st-component-diagramScene-linkRelatedStrokeWidth, 3.5px));
+  }
+  .st-diagramSceneFigure-edges[data-process-connectors] .st-diagramSceneFigure-edge[data-connector-mode="r7"] {
+    stroke: var(--st-component-diagramScene-edgeStroke, var(--st-semantic-border-strong));
+    stroke-width: var(--st-component-diagramScene-processStrokeWidth, 2.5px);
   }
   .st-diagramSceneFigure-edge[data-connector-mode="r7"][data-edge-emphasis="emphasis"] {
     stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));

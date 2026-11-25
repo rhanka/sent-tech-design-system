@@ -450,7 +450,7 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     } as DiagramSceneFigureProps);
     await tick();
     const r7MarkerPath = r7View.container.querySelector("defs marker path");
-    expect(r7MarkerPath?.getAttribute("fill")).toBe("var(--st-component-diagramScene-linkStroke, #0f172a)");
+    expect(r7MarkerPath?.getAttribute("fill")).toBe("var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))");
     r7View.unmount();
 
     const v1 = nestedZoneFixture({ outside: false });

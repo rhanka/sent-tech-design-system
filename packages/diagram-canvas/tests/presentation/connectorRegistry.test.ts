@@ -127,7 +127,7 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     const markerIdsInOrder = [...svg.matchAll(/<marker id="([^"]+)"/g)].map((m) => m[1]);
     expect(markerIdsInOrder[0]).toBe("scene-arrow");
     expect(markerIdsInOrder).toEqual(["scene-arrow", "scene-arrow-emphasis"]);
-    expect(svg).toContain('<marker id="scene-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="10.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-linkStroke, #0f172a)"/></marker>');
+    expect(svg).toContain('<marker id="scene-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="10.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))"/></marker>');
     expect(svg).toContain('markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="10.5"');
 
     const edgeTag = (id: string) => {
@@ -139,7 +139,7 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     // solid + arrow + default
     const solidTag = edgeTag("occurrence:r.solid-default");
     expect(solidTag).not.toContain("stroke-dasharray");
-    expect(solidTag).toContain('stroke="var(--st-component-diagramScene-linkStroke, #0f172a)"');
+    expect(solidTag).toContain('stroke="var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))"');
     expect(solidTag).toContain('stroke-width="3.5"');
     expect(solidTag).toContain('marker-end="url(#scene-arrow)"');
 

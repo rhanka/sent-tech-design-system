@@ -29,6 +29,7 @@ import { renderSceneSvg } from "../../src/presentation/renderSceneSvg.js";
 import { hCondInput } from "../layout/dc2a/h-cond.js";
 import { flowFixture } from "../../test-support/flowFixture.js";
 import { nestedZoneFixture } from "../../test-support/nestedZoneFixture.js";
+import { r7AuthoredLegendFixture } from "../../test-support/r7AuthoredLegendFixture.js";
 
 const measureLines = cardLineMeasurer(sceneCardMeasure(defaultCardMeasure));
 const r7NestedFixture = () => {
@@ -66,9 +67,9 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     const base = renderSceneSvg({ ...fixture, measureLines, collapsed: [] });
     expect(base.scene.r7Connectors).toBe(true);
     expect(base.svg).toContain('data-connector-mode="r7"');
-    expect(base.svg).toContain('stroke="var(--st-component-diagramScene-linkStroke, #0f172a)"');
+    expect(base.svg).toContain('stroke="var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))"');
     expect(base.svg).toContain('stroke-width="3.5"');
-    expect(base.svg).toContain('<marker id="scene-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="10.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-linkStroke, #0f172a)"/></marker>');
+    expect(base.svg).toContain('<marker id="scene-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="10.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))"/></marker>');
     expect(base.svg).toContain('vector-effect="non-scaling-stroke"');
     expect(base.svg).toContain('font-size="18"');
     expect(base.svg).toContain("--st-component-diagramScene-linkStroke:#0f172a");
@@ -145,7 +146,7 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
       expect(r7EdgeBlock, `${name} r7 edge rule must not use zone borderWidth`).not.toContain(
         "diagramZone-borderWidth",
       );
-      expect(source, `${name} r7 marker uses linkStroke`).toContain("--st-component-diagramScene-linkStroke, #0f172a");
+      expect(source, `${name} r7 marker uses linkStroke`).toContain("--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a)");
       expect(source, `${name} emphasis rule`).toContain("--st-component-diagramScene-linkEmphasisStroke");
       expect(source, `${name} emphasis width`).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth");
       expect(source, `${name} edgeLabelSize`).toContain("--st-component-diagramScene-edgeLabelSize");
@@ -463,5 +464,53 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     const shaft = reopened.svg.match(new RegExp(`<path data-scene-edge="${r0}"[^>]+>`))?.[0];
     expect.soft(shaft ?? "").toContain('stroke-dasharray="8 6"');
     expect.soft(reopened.scene.linkLegend?.entries.map((e) => e.key)).toEqual(["solid:arrow:default", "dashed:arrow:default"]);
+  });
+
+  it("keeps process@1 transitions at 2.5px edgeStroke and emits data-authored-legend on untitled r7 legend text", () => {
+    const processDoc = {
+      documentId: "document:process-stroke-guard",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["process@1"],
+      typeDefinitions: {},
+      entities: {
+        "entity:a": { id: "entity:a", profile: "process@1", type: "step", attributes: { name: { kind: "text", value: "Start" }, kind: { kind: "enum", value: "start" } } },
+        "entity:b": { id: "entity:b", profile: "process@1", type: "step", attributes: { name: { kind: "text", value: "End" }, kind: { kind: "enum", value: "end" } } },
+      },
+      relations: {
+        "relation:a.b": { id: "relation:a.b", profile: "process@1", type: "transition", endpoints: [{ role: "source", target: "entity:a" }, { role: "target", target: "entity:b" }], attributes: {} },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SemanticDocument;
+    const renderedProcess = renderSceneSvg({
+      document: processDoc,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: { contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN }, entities: {}, legends: {}, categoryTokens: [] },
+      measureLines,
+      collapsed: [],
+    });
+    expect(renderedProcess.scene.processConnectors).toBe(true);
+    expect(renderedProcess.svg).toContain('stroke="var(--st-component-diagramScene-edgeStroke, #64748b)" stroke-width="2.5"');
+    expect(renderedProcess.svg).not.toContain('stroke-width="3.5"');
+
+    const legendFixture = r7AuthoredLegendFixture(false);
+    const untitled = renderSceneSvg({
+      document: legendFixture.document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [],
+      presentation: {
+        ...legendFixture.presentation,
+        entities: {
+          ...legendFixture.presentation.entities,
+          "occurrence:e.legend": { form: "legend", anatomy: "v2", text: {} },
+        },
+      },
+    });
+    expect(untitled.svg).toContain('<text data-scene-occurrence="occurrence:e.legend" data-authored-legend=""');
   });
 });

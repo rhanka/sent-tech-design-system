@@ -377,18 +377,17 @@ export function combinedLegendFindings({ legend, authoredLegends = [], nodes = [
   for (const authored of authoredLegends) {
     for (const node of nodes) {
       if (node.id === authored.id || node.kind === 'legend-key') continue;
-      const insideAuthored = node.left >= authored.left - tolerance && node.right <= authored.right + tolerance
-        && node.top >= authored.top - tolerance && node.bottom <= authored.bottom + tolerance;
-      if (insideAuthored) continue;
+      // An enclosing container zone surrounds the authored legend rather than overlapping it.
+      const enclosesAuthored = node.kind === 'zone'
+        && authored.left >= node.left - tolerance && authored.right <= node.right + tolerance
+        && authored.top >= node.top - tolerance && authored.bottom <= node.bottom + tolerance;
+      if (enclosesAuthored) continue;
       if (boxesOverlap(authored, node, tolerance)) {
         findings.push(`authored legend ${authored.id} overlaps box ${node.id}`);
       }
     }
     for (const label of labels) {
       if (label.isEdgeLabel === false) continue;
-      const insideAuthored = label.left >= authored.left - tolerance && label.right <= authored.right + tolerance
-        && label.top >= authored.top - tolerance && label.bottom <= authored.bottom + tolerance;
-      if (insideAuthored) continue;
       if (boxesOverlap(authored, label, tolerance)) {
         findings.push(`authored legend ${authored.id} overlaps label ${label.id}`);
       }

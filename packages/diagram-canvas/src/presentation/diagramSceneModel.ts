@@ -82,7 +82,7 @@ import { measureBundleLabel, type BundleLabelGroup } from "../layout/bundleLabel
 import { LABEL_CLEARANCE_REFERENCE_SCALE } from "../layout/labels.js";
 import { getDiagramGlyph } from "./registry.js";
 import { anatomyZoneGeometry, lineBoxHeight, ZONE_GEOMETRY } from "./diagramCardModel.js";
-import { buildSceneLinkLegend, placeSceneLinkLegend, type LinkLegendAnchor, type SceneLinkLegend } from "./linkLegend.js";
+import { buildSceneLinkLegend, LINK_LEGEND_GAP, placeSceneLinkLegend, type LinkLegendAnchor, type SceneLinkLegend } from "./linkLegend.js";
 import { clearSceneLabels } from "./sceneLabelClearance.js";
 import type { EntityPresentation } from "@sentropic/diagram-core";
 import type { AlignPinned, AnatomyPinned, DepthPinned, DiagramAnatomy } from "./diagramCardModel.js";
@@ -509,6 +509,8 @@ export interface SceneModel {
   readonly labels: readonly SceneLabelModel[];
   /** True when the scene uses the r7 connector path (`REQ-R7-11..17`); false for existing v1, ERD, and flow scenes (`REQ-R7-28`). */
   readonly r7Connectors: boolean;
+  /** True for `process@1` scenes that keep rounded `r7` routing at `2.5px` `edgeStroke` (`REQ-R7-28`). */
+  readonly processConnectors?: true;
   /**
    * Footer text box of every expanded zone, grown by the label clearance: the
    * one text a frame paints where routes run. A route may cross a zone footer
@@ -677,7 +679,7 @@ function resolveSceneAtZoom(
   // Non-scaling connector paint occupies more world units at a smaller zoom.
   const relationPresentation = input.presentation.relations;
   const baseLinkStrokeWidth = r7Connectors
-    ? (input.metrics?.linkStrokeWidth ?? DEFAULT_LINK_STROKE_WIDTH)
+    ? (input.metrics?.linkStrokeWidth ?? (isProcessDoc ? 2.5 : DEFAULT_LINK_STROKE_WIDTH))
     : 1.5;
   const paintClearance = margin + baseLinkStrokeWidth / (2 * clearanceZoom);
   const zoneInset = input.metrics?.containerPadding ?? ZONE_GEOMETRY.contentInsetInline;
@@ -692,7 +694,7 @@ function resolveSceneAtZoom(
       );
       continue;
     }
-    if (node.kind !== "zone" || node.collapsed) {
+    if (node.kind !== "zone" || node.collapsed || node.presentation?.form === "legend") {
       blockers.push(node.rect);
       continue;
     }
@@ -897,37 +899,27 @@ function resolveSceneAtZoom(
     });
   }
   const hasVisibleAuthoredLegend = nodes.some((node) => node.presentation?.form === "legend");
-  let preBounds = bounds;
-  for (const { box } of labels) {
-    const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
-    preBounds = preBounds === undefined ? padded : rectUnion(preBounds, padded);
-  }
   const effectiveLegendAnchor = input.legend ?? (isProcessDoc ? "none" : undefined);
-  const preLinkLegend = hasVisibleAuthoredLegend
-    ? undefined
-    : result.legendResolved
-      ? result.linkLegend
-      : buildSceneLinkLegend({
-          edges,
-          contentBounds: preBounds,
-          measureLines: input.measureLines,
-          ...(effectiveLegendAnchor === undefined ? {} : { anchor: effectiveLegendAnchor }),
-          ...(input.legendTitle === undefined ? {} : { title: input.legendTitle }),
-          ...(input.legendLabels === undefined ? {} : { labels: input.legendLabels }),
-          ...(effectiveInputLabelSize === undefined ? {} : { fontSize: effectiveInputLabelSize }),
-        });
+  const freeCellLegendRect =
+    !hasVisibleAuthoredLegend && result.legendResolved && result.linkLegend?.anchor === "free-cell"
+      ? result.linkLegend.rect
+      : undefined;
   const allBlockers = [
     ...blockers,
-    ...(preLinkLegend === undefined ? [] : [preLinkLegend.rect]),
+    ...(freeCellLegendRect === undefined ? [] : [freeCellLegendRect]),
     ...badges.map(badge => badge.box),
     ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box)),
   ];
+  const strokeMetrics =
+    isProcessDoc && input.metrics?.linkStrokeWidth === undefined
+      ? { ...input.metrics, linkStrokeWidth: 2.5, linkRelatedStrokeWidth: 2.5 }
+      : input.metrics;
   const clearedLabels = r7Connectors
     ? clearSceneLabels(labels, edges.map(edge => edge.points),
       allBlockers,
       paintClearance, cornerRadius,
       edges.map(edge => edge.r7
-        ? Math.max(0, connectorStrokeWidth(edge, input.metrics) - baseLinkStrokeWidth) / (2 * clearanceZoom)
+        ? Math.max(0, connectorStrokeWidth(edge, strokeMetrics) - baseLinkStrokeWidth) / (2 * clearanceZoom)
         : 0))
     : clearSceneLabels(labels, edges.map(edge => edge.points),
       allBlockers,
@@ -936,14 +928,24 @@ function resolveSceneAtZoom(
     const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
     bounds = bounds === undefined ? padded : rectUnion(bounds, padded);
   }
+  const legendNeedsReposition =
+    result.legendResolved
+    && result.linkLegend !== undefined
+    && result.linkLegend.anchor !== "free-cell"
+    && bounds !== undefined
+    && (
+      overviewEdgeLabelSize !== undefined
+      || (result.linkLegend.anchor === "right" && bounds.x + bounds.width + LINK_LEGEND_GAP > result.linkLegend.rect.x)
+      || (result.linkLegend.anchor === "bottom" && bounds.y + bounds.height + LINK_LEGEND_GAP > result.linkLegend.rect.y)
+    );
   const linkLegend = hasVisibleAuthoredLegend
     ? undefined
     : result.legendResolved
-      ? (result.linkLegend !== undefined && overviewEdgeLabelSize !== undefined && result.linkLegend.anchor !== "free-cell" && bounds !== undefined
+      ? (legendNeedsReposition
           ? placeSceneLinkLegend(
-              { ...result.linkLegend, width: result.linkLegend.rect.width, height: result.linkLegend.rect.height },
-              result.linkLegend.anchor,
-              bounds,
+              { ...result.linkLegend!, width: result.linkLegend!.rect.width, height: result.linkLegend!.rect.height },
+              result.linkLegend!.anchor,
+              bounds!,
             )
           : result.linkLegend)
       : buildSceneLinkLegend({
@@ -972,6 +974,7 @@ function resolveSceneAtZoom(
     labels: clearedLabels,
     ...(overviewEdgeLabelSize === undefined ? {} : { overviewEdgeLabelSize }),
     r7Connectors,
+    ...(isProcessDoc ? { processConnectors: true as const } : {}),
     connectorCutouts,
     ...(linkLegend === undefined ? {} : { linkLegend }),
     ...(bounds === undefined ? {} : { bounds }),

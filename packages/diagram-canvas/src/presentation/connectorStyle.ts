@@ -56,7 +56,7 @@ export const ARROWHEAD_MARKER_GEOMETRY = Object.freeze({
  */
 export const LINK_STROKE_FALLBACK = "#0f172a";
 export const LINK_STROKE =
-  `var(--st-component-diagramScene-linkStroke, ${LINK_STROKE_FALLBACK})`;
+  `var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, ${LINK_STROKE_FALLBACK}))`;
 
 /**
  * Single emphasis-stroke token expression shared across Svelte, Vue and SVG
