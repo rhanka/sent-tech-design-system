@@ -51,7 +51,7 @@ describe('ERD Vue/Svelte DOM and ARIA parity', () => {
       .map(rule => rule.replace(/\s+/g, ' ').trim()).filter(Boolean).sort();
     const svelte = unwrapSvelteGlobal(styles('../components-svelte/src/lib/DiagramSceneFigure.svelte'));
     const fallback = svelte.match(/\.st-diagramSceneFigure-fallback\s*\{[^}]*\}/)?.[0] ?? '';
-    const shared = styles('src/DiagramErdNode.vue') + styles('src/DiagramSceneFallback.vue');
+    const shared = styles('src/DiagramErdNode.vue') + styles('src/DiagramProcessNode.vue') + styles('src/DiagramSceneFallback.vue');
     expect(rules(fallback + svelte.slice(svelte.indexOf('  .st-diagramErd-toggle')))).toEqual(
       rules(shared + styles('src/DiagramSceneFigureBase.vue')));
   });

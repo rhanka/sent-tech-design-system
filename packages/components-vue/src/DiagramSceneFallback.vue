@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { renderErdTable } from '@sentropic/diagram-canvas';
+import { renderErdTable, renderProcessTable } from '@sentropic/diagram-canvas';
 import { sceneTextRows, type SceneModel, type DiagramSceneFigureProps } from '@sentropic/diagram-canvas/diagramSceneModel';
 const props = defineProps<{ scene: SceneModel | undefined; document: DiagramSceneFigureProps['document']; containsLabel?: string }>();
 const erdTable = computed(() => props.document.profileRefs.includes('erd@1') ? renderErdTable(props.document) : '');
+const processTable = computed(() => props.document.profileRefs.includes('process@1') ? renderProcessTable(props.document) : '');
 const rows = computed(() => props.scene === undefined ? [] : sceneTextRows(props.scene, props.document, props.containsLabel === undefined ? undefined : { contains: props.containsLabel }));
 </script>
 <template>
   <div v-if="scene" class="st-diagramSceneFigure-fallback"><p v-for="(row, i) in rows" :key="i">{{ row }}</p></div>
   <div v-if="erdTable" class="st-diagramErd-fallback" v-html="erdTable" />
+  <div v-if="processTable" class="st-diagramProcess-fallback" v-html="processTable" />
 </template>
 <style>
   .st-diagramSceneFigure-fallback { position: absolute; width: var(--st-component-diagramCard-ruleHeight, 1px); height: var(--st-component-diagramCard-ruleHeight, 1px); padding: 0; margin: calc(-1 * var(--st-component-diagramCard-ruleHeight, 1px)); overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .st-diagramSceneFigure-edgeLabel[data-erd-label] { background: var(--st-semantic-surface-default); }
   .st-diagramErd-fallback { grid-column: 1 / -1; overflow: auto; color: var(--st-semantic-text-primary); }
+  .st-diagramProcess-fallback { grid-column: 1 / -1; overflow: auto; color: var(--st-semantic-text-primary); }
 </style>
