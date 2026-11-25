@@ -70,12 +70,15 @@
   import SurveyPrivacyNotice from "./SurveyPrivacyNotice.svelte";
   import SurveyQuestionCard from "./SurveyQuestionCard.svelte";
   import Tag from "./Tag.svelte";
+  import Textarea from "./Textarea.svelte";
   import Typography from "./Typography.svelte";
   import {
     buildSubmitPayload,
     computeStepIndex,
     countAnsweredQuestions,
     formatSurveyCountdown,
+    getActiveSurveyQuestions,
+    getCoreSurveyQuestions,
     isValidSurveyEmail,
     resolveExclusiveMultiChange,
     resolveInitialStep,
@@ -95,12 +98,21 @@
     saveSurveyPasskey,
   } from "./survey-storage.js";
   import {
+    DEFAULT_AI_EFFECT_NEUTRAL_ID,
+    DEFAULT_AI_EFFECT_NON_SUBSTANTIVE,
+    isScopedAnswerValue,
+    isSurveyDefinitionV2,
+    resolveAiEffectOptions,
     resolveLocalizedText,
     resolveSurveyLocale,
     shuffleSurveyOptions,
     type AnswerValue,
+    type PrimitiveAnswerValue,
+    type SurveyDepthMode,
+    type SurveyEntryScope,
     type SurveyPendingSubmission,
     type SurveyQuestion,
+    type SurveyScope,
   } from "./survey-types.js";
 
   let {
@@ -141,9 +153,42 @@
             { label: "Sondage" },
             { label: "Merci" },
           ],
+          stepsMagicV2: [
+            { label: "E-mail" },
+            { label: "Lien envoyé" },
+            { label: "Cadrage" },
+            { label: "Sondage" },
+            { label: "Merci" },
+          ],
           stepsEmail: [{ label: "E-mail" }, { label: "Sondage" }, { label: "Merci" }],
+          stepsEmailV2: [
+            { label: "E-mail" },
+            { label: "Cadrage" },
+            { label: "Sondage" },
+            { label: "Merci" },
+          ],
           stepsDirect: [{ label: "Sondage" }, { label: "Merci" }],
+          stepsDirectV2: [{ label: "Cadrage" }, { label: "Sondage" }, { label: "Merci" }],
           stepperLabel: "Progression du sondage",
+          entryStepCounter: (i: number) => `Cadrage · ${i} / 2`,
+          continueBtn: "Continuer",
+          startFromDepthBtn: "Commencer",
+          scopeRequiredError: "Veuillez choisir votre contexte de réponse avant de continuer.",
+          depthRequiredError: "Veuillez choisir la durée souhaitée avant de commencer.",
+          enterpriseShort: "Entreprise",
+          personalShort: "Perso",
+          scopeToggleLabel: "Contexte de réponse",
+          dualHint: "Répondez pour l’entreprise, pour votre pratique perso, ou pour les deux.",
+          openTextNotice:
+            "Facultatif · jamais affiché mot à mot à l’écran (seul le compteur est montré en salle).",
+          optionalBadge: "Facultatif",
+          deepMilestoneTitle: "Thèmes d’approfondissement",
+          deepMilestoneIntro:
+            "Votre tronc commun est complété. Vous pouvez envoyer vos réponses maintenant ou choisir les thèmes à approfondir.",
+          deepMilestoneLabel: "Choisissez les thèmes à approfondir",
+          deepMilestoneSubmitNow: "Envoyer déjà mes réponses",
+          deepMilestoneContinue: "Continuer l’approfondissement",
+          themeQuestionsCount: (n: number) => `${n} question${n > 1 ? "s" : ""}`,
           emailTitle: "Accéder au sondage",
           emailIntro:
             "Saisissez votre e-mail pour ouvrir votre session. Vos réponses restent anonymes ; le brouillon est conservé 30 minutes.",
@@ -225,9 +270,42 @@
             { label: "Poll" },
             { label: "Thanks" },
           ],
+          stepsMagicV2: [
+            { label: "Email" },
+            { label: "Link sent" },
+            { label: "Setup" },
+            { label: "Poll" },
+            { label: "Thanks" },
+          ],
           stepsEmail: [{ label: "Email" }, { label: "Poll" }, { label: "Thanks" }],
+          stepsEmailV2: [
+            { label: "Email" },
+            { label: "Setup" },
+            { label: "Poll" },
+            { label: "Thanks" },
+          ],
           stepsDirect: [{ label: "Poll" }, { label: "Thanks" }],
+          stepsDirectV2: [{ label: "Setup" }, { label: "Poll" }, { label: "Thanks" }],
           stepperLabel: "Survey progress",
+          entryStepCounter: (i: number) => `Setup · ${i} / 2`,
+          continueBtn: "Continue",
+          startFromDepthBtn: "Start",
+          scopeRequiredError: "Please choose your answering perspective before continuing.",
+          depthRequiredError: "Please choose how much time you want to spend before starting.",
+          enterpriseShort: "Company",
+          personalShort: "Personal",
+          scopeToggleLabel: "Answering perspective",
+          dualHint: "Answer for your company, your personal practice, or both.",
+          openTextNotice:
+            "Optional · never displayed verbatim on screen (only the counter is shown in the room).",
+          optionalBadge: "Optional",
+          deepMilestoneTitle: "Deep-dive themes",
+          deepMilestoneIntro:
+            "Your core questions are complete. You can submit your answers now or pick themes to explore further.",
+          deepMilestoneLabel: "Choose themes to explore",
+          deepMilestoneSubmitNow: "Submit my answers now",
+          deepMilestoneContinue: "Continue deep dive",
+          themeQuestionsCount: (n: number) => `${n} question${n > 1 ? "s" : ""}`,
           emailTitle: "Open the survey",
           emailIntro:
             "Enter your email to start your session. Your answers stay anonymous; your draft is kept for 30 minutes.",
@@ -311,6 +389,12 @@
   let enrollmentMeta = $state<Record<string, string>>({});
   let answers = $state<AnswerMap>({});
   let questionIndex = $state(0);
+  let entryScope = $state<SurveyEntryScope | null>(null);
+  let depthMode = $state<SurveyDepthMode | null>(null);
+  let selectedThemes = $state<string[]>([]);
+  let questionScopes = $state<Record<string, SurveyScope>>({});
+  let entryError = $state("");
+  let deepMilestonePassed = $state(false);
   let expiresAt = $state(0);
   let nowMs = $state(Date.now());
   let restoredBanner = $state(false);
@@ -336,6 +420,12 @@
     enrollmentMeta = {};
     answers = initialAnswers ? { ...initialAnswers } : {};
     questionIndex = 0;
+    entryScope = survey.entry?.scope.default ?? null;
+    depthMode = survey.entry?.depth.default ?? null;
+    selectedThemes = (survey.themes ?? []).map((t) => t.id);
+    questionScopes = {};
+    entryError = "";
+    deepMilestonePassed = false;
     restoredBanner = false;
     returnedFromDraft = false;
     questionError = "";
@@ -346,7 +436,10 @@
     const identity = (initialEmail || "").trim() || "anonymous";
     passkeySaved = persistDraft ? hasSurveyPasskey(identity, storageSalt) : false;
     pendingSubmission = persistDraft ? loadPendingSubmission(id, identity, storageSalt) : null;
-    if (step === "questions" && draftWindowMinutes > 0) {
+    if (
+      (step === "questions" || step === "entry_scope" || step === "entry_depth") &&
+      draftWindowMinutes > 0
+    ) {
       expiresAt = Date.now() + draftTtlMs;
     } else {
       expiresAt = 0;
@@ -355,7 +448,15 @@
 
   // 1-second draft countdown timer
   $effect(() => {
-    if (step !== "questions" && step !== "link_sent") return;
+    if (
+      step !== "questions" &&
+      step !== "link_sent" &&
+      step !== "entry_scope" &&
+      step !== "entry_depth" &&
+      step !== "deep_themes"
+    ) {
+      return;
+    }
     nowMs = Date.now();
     const timer = setInterval(() => {
       nowMs = Date.now();
@@ -391,6 +492,8 @@
   });
 
   const activeIdentity = $derived(email.trim() || "anonymous");
+  const isV2 = $derived(isSurveyDefinitionV2(survey));
+  const hasEntry = $derived(Boolean(survey.entry));
 
   const existingDraft = $derived.by(() => {
     if (!persistDraft || step !== "enrollment") return null;
@@ -402,24 +505,42 @@
 
   const remainingMs = $derived(expiresAt > 0 ? Math.max(0, expiresAt - nowMs) : 0);
   const draftExpired = $derived(
-    step === "questions" && draftWindowMinutes > 0 && expiresAt > 0 && remainingMs <= 0,
+    (step === "questions" || step === "deep_themes") &&
+      draftWindowMinutes > 0 &&
+      expiresAt > 0 &&
+      remainingMs <= 0,
   );
 
   const stepperSteps = $derived(
-    enrollmentMode === "email-magic-link"
-      ? copy.stepsMagic
-      : enrollmentMode === "email-unverified"
-        ? copy.stepsEmail
-        : copy.stepsDirect,
+    hasEntry
+      ? enrollmentMode === "email-magic-link"
+        ? copy.stepsMagicV2
+        : enrollmentMode === "email-unverified"
+          ? copy.stepsEmailV2
+          : copy.stepsDirectV2
+      : enrollmentMode === "email-magic-link"
+        ? copy.stepsMagic
+        : enrollmentMode === "email-unverified"
+          ? copy.stepsEmail
+          : copy.stepsDirect,
   );
-  const stepIndex = $derived(computeStepIndex(step, enrollmentMode));
-  const currentQuestion = $derived(survey.questions[questionIndex] ?? survey.questions[0]);
-  const answeredCount = $derived(countAnsweredQuestions(survey.questions, answers));
+  const stepIndex = $derived(computeStepIndex(step, enrollmentMode, hasEntry));
+  const activeQuestions = $derived(
+    isV2
+      ? getActiveSurveyQuestions(survey, {
+          depthMode: depthMode ?? "fast",
+          selectedThemes,
+        })
+      : survey.questions,
+  );
+  const coreQuestionsCount = $derived(getCoreSurveyQuestions(survey).length);
+  const currentQuestion = $derived(activeQuestions[questionIndex] ?? activeQuestions[0]);
+  const answeredCount = $derived(countAnsweredQuestions(activeQuestions, answers));
   const canPartialSubmit = $derived(
     !readOnly &&
       survey.rules.allowPartialSubmit !== false &&
       answeredCount > 0 &&
-      answeredCount < survey.questions.length,
+      answeredCount < activeQuestions.length,
   );
 
   const privacyTitle = $derived(
@@ -441,10 +562,36 @@
   );
 
   function getOrderedOptions(question: SurveyQuestion) {
+    if (question.type === "ai_effect") {
+      return resolveAiEffectOptions(question);
+    }
     if (question.type === "multi" && survey.rules.shuffleMultiOptions !== false) {
       return shuffleSurveyOptions(question, `${survey.id}:${activeIdentity.toLowerCase()}`);
     }
-    return "options" in question ? question.options : [];
+    return "options" in question && question.options ? question.options : [];
+  }
+
+  function isContextualV2Question(question: SurveyQuestion): boolean {
+    return Boolean(question.contextual && entryScope);
+  }
+
+  function activeScopeFor(qid: string): SurveyScope {
+    if (questionScopes[qid]) return questionScopes[qid];
+    return entryScope === "personal" ? "personal" : "enterprise";
+  }
+
+  function getScopedSideValue(qid: string, scope: SurveyScope): PrimitiveAnswerValue | undefined {
+    const raw = answers[qid];
+    if (isScopedAnswerValue(raw)) return raw[scope];
+    return undefined;
+  }
+
+  function getSingleControlValue(question: SurveyQuestion): PrimitiveAnswerValue | undefined {
+    if (isContextualV2Question(question) && entryScope !== "both") {
+      return getScopedSideValue(question.id, activeScopeFor(question.id));
+    }
+    const raw = answers[question.id];
+    return isScopedAnswerValue(raw) ? undefined : (raw as PrimitiveAnswerValue | undefined);
   }
 
   function persistCurrentDraft(
@@ -458,6 +605,15 @@
       answers: nextAnswers,
       questionIndex: nextIndex,
       enrollmentMeta: sanitizeEnrollmentMeta(nextMeta),
+      ...(isV2
+        ? {
+            entryScope,
+            depthMode,
+            selectedThemes: selectedThemes.slice(),
+            questionScopes: { ...questionScopes },
+            step,
+          }
+        : {}),
       expiresAt: nextExpires,
       updatedAt: Date.now(),
     };
@@ -483,7 +639,17 @@
 
     if (found) {
       answers = { ...found.answers };
-      questionIndex = Math.min(found.questionIndex, Math.max(0, survey.questions.length - 1));
+      if (found.entryScope !== undefined) entryScope = found.entryScope;
+      if (found.depthMode !== undefined) depthMode = found.depthMode;
+      if (found.selectedThemes) selectedThemes = found.selectedThemes.slice();
+      if (found.questionScopes) questionScopes = { ...found.questionScopes };
+      const restoredList = isV2
+        ? getActiveSurveyQuestions(survey, {
+            depthMode: found.depthMode ?? "fast",
+            selectedThemes: found.selectedThemes ?? selectedThemes,
+          })
+        : survey.questions;
+      questionIndex = Math.min(found.questionIndex, Math.max(0, restoredList.length - 1));
       enrollmentMeta = { ...found.enrollmentMeta, ...cleanMeta };
       expiresAt = found.expiresAt;
       returnedFromDraft = true;
@@ -510,13 +676,29 @@
       });
     }
 
-    step = enrollmentMode === "email-magic-link" ? "link_sent" : "questions";
+    if (enrollmentMode === "email-magic-link") {
+      step = "link_sent";
+    } else if (hasEntry && (!entryScope || !depthMode)) {
+      step = "entry_scope";
+    } else {
+      step = "questions";
+    }
   }
 
   function handleResumeDraft() {
     if (!existingDraft) return;
     answers = { ...existingDraft.answers };
-    questionIndex = Math.min(existingDraft.questionIndex, Math.max(0, survey.questions.length - 1));
+    if (existingDraft.entryScope !== undefined) entryScope = existingDraft.entryScope;
+    if (existingDraft.depthMode !== undefined) depthMode = existingDraft.depthMode;
+    if (existingDraft.selectedThemes) selectedThemes = existingDraft.selectedThemes.slice();
+    if (existingDraft.questionScopes) questionScopes = { ...existingDraft.questionScopes };
+    const restoredList = isV2
+      ? getActiveSurveyQuestions(survey, {
+          depthMode: existingDraft.depthMode ?? "fast",
+          selectedThemes: existingDraft.selectedThemes ?? selectedThemes,
+        })
+      : survey.questions;
+    questionIndex = Math.min(existingDraft.questionIndex, Math.max(0, restoredList.length - 1));
     enrollmentMeta = { ...existingDraft.enrollmentMeta, ...sanitizeEnrollmentMeta(enrollmentMeta) };
     expiresAt = existingDraft.expiresAt;
     returnedFromDraft = true;
@@ -524,15 +706,65 @@
     pendingSubmission = persistDraft
       ? loadPendingSubmission(survey.id, email.trim(), storageSalt)
       : null;
-    step = "questions";
+    step =
+      existingDraft.step === "entry_scope" || existingDraft.step === "entry_depth"
+        ? existingDraft.step
+        : "questions";
   }
 
   function handleOpenFromLink() {
     if (draftWindowMinutes > 0 && (!expiresAt || Date.now() >= expiresAt)) {
       expiresAt = Date.now() + draftTtlMs;
     }
+    step = hasEntry && (!entryScope || !depthMode) ? "entry_scope" : "questions";
     persistCurrentDraft(answers, questionIndex, expiresAt);
+  }
+
+  function handleScopeContinue() {
+    if (!entryScope) {
+      entryError = copy.scopeRequiredError;
+      return;
+    }
+    entryError = "";
+    step = "entry_depth";
+    persistCurrentDraft(answers, questionIndex, expiresAt);
+  }
+
+  function handleDepthBack() {
+    entryError = "";
+    step = "entry_scope";
+  }
+
+  function handleDepthStart() {
+    if (!depthMode) {
+      entryError = copy.depthRequiredError;
+      return;
+    }
+    entryError = "";
+    selectedThemes = depthMode === "deep" ? (survey.themes ?? []).map((t) => t.id) : [];
+    deepMilestonePassed = false;
+    questionIndex = 0;
+    if (draftWindowMinutes > 0 && expiresAt === 0) {
+      expiresAt = Date.now() + draftTtlMs;
+    }
     step = "questions";
+    persistCurrentDraft(answers, questionIndex, expiresAt);
+  }
+
+  function handleDeepThemesBack() {
+    step = "questions";
+    questionIndex = Math.max(0, coreQuestionsCount - 1);
+  }
+
+  function handleDeepThemesContinue() {
+    deepMilestonePassed = true;
+    const nextList = getActiveSurveyQuestions(survey, {
+      depthMode: "deep",
+      selectedThemes,
+    });
+    questionIndex = Math.min(coreQuestionsCount, Math.max(0, nextList.length - 1));
+    step = "questions";
+    persistCurrentDraft(answers, questionIndex, expiresAt);
   }
 
   function handleRenewDraft() {
@@ -551,15 +783,70 @@
     persistCurrentDraft(next, questionIndex, expiresAt);
   }
 
-  function handleMultiChange(question: Extract<SurveyQuestion, { type: "multi" }>, nextVals: string[]) {
+  function updateSingleControlAnswer(question: SurveyQuestion, val: PrimitiveAnswerValue) {
+    if (isContextualV2Question(question) && entryScope !== "both") {
+      const scope = activeScopeFor(question.id);
+      updateAnswer(question.id, { [scope]: val });
+    } else {
+      updateAnswer(question.id, val);
+    }
+  }
+
+  function handleQuestionScopeChange(question: SurveyQuestion, nextScope: SurveyScope) {
     if (readOnly) return;
-    const prev = Array.isArray(answers[question.id]) ? (answers[question.id] as string[]) : [];
+    const prevScope = activeScopeFor(question.id);
+    if (prevScope === nextScope) return;
+    questionScopes = { ...questionScopes, [question.id]: nextScope };
+    const existing = answers[question.id];
+    if (isScopedAnswerValue(existing) && existing[prevScope] !== undefined) {
+      answers = { ...answers, [question.id]: { [nextScope]: existing[prevScope] } };
+    }
+    persistCurrentDraft(answers, questionIndex, expiresAt);
+  }
+
+  function updateDualSideAnswer(
+    question: SurveyQuestion,
+    scope: SurveyScope,
+    val: PrimitiveAnswerValue,
+  ) {
+    const raw = answers[question.id];
+    const prev = isScopedAnswerValue(raw) ? raw : {};
+    updateAnswer(question.id, { ...prev, [scope]: val });
+  }
+
+  function handleMultiChange(
+    question: Extract<SurveyQuestion, { type: "multi" }>,
+    nextVals: string[],
+  ) {
+    if (readOnly) return;
+    const currentVal = getSingleControlValue(question);
+    const prev = Array.isArray(currentVal) ? (currentVal as string[]) : [];
     const resolved = resolveExclusiveMultiChange(prev, nextVals, question.exclusive);
     if (question.maxSelections != null && resolved.length > question.maxSelections) {
       questionError = copy.maxSelError(question.maxSelections);
       return;
     }
-    updateAnswer(question.id, resolved);
+    updateSingleControlAnswer(question, resolved);
+  }
+
+  function handleDualMultiToggle(
+    question: Extract<SurveyQuestion, { type: "multi" }>,
+    scope: SurveyScope,
+    optionId: string,
+    checked: boolean,
+  ) {
+    if (readOnly) return;
+    const rawSide = getScopedSideValue(question.id, scope);
+    const prev = Array.isArray(rawSide) ? (rawSide as string[]) : [];
+    const rawNext = checked
+      ? [...prev.filter((id) => id !== optionId), optionId]
+      : prev.filter((id) => id !== optionId);
+    const resolved = resolveExclusiveMultiChange(prev, rawNext, question.exclusive);
+    if (question.maxSelections != null && resolved.length > question.maxSelections) {
+      questionError = copy.maxSelError(question.maxSelections);
+      return;
+    }
+    updateDualSideAnswer(question, scope, resolved);
   }
 
   function validationMessageFor(q: SurveyQuestion): string {
@@ -577,6 +864,16 @@
   function goPrev() {
     questionError = "";
     submitError = "";
+    if (
+      isV2 &&
+      depthMode === "deep" &&
+      deepMilestonePassed &&
+      (survey.themes?.length ?? 0) > 0 &&
+      questionIndex === coreQuestionsCount
+    ) {
+      step = "deep_themes";
+      return;
+    }
     if (questionIndex > 0) {
       questionIndex -= 1;
       persistCurrentDraft(answers, questionIndex, expiresAt);
@@ -592,7 +889,19 @@
     }
     questionError = "";
     submitError = "";
-    if (questionIndex < survey.questions.length - 1) {
+    if (
+      isV2 &&
+      depthMode === "deep" &&
+      !deepMilestonePassed &&
+      (survey.themes?.length ?? 0) > 0 &&
+      currentQuestion.tier === "core" &&
+      questionIndex === coreQuestionsCount - 1
+    ) {
+      step = "deep_themes";
+      persistCurrentDraft(answers, questionIndex, expiresAt);
+      return;
+    }
+    if (questionIndex < activeQuestions.length - 1) {
       questionIndex += 1;
       persistCurrentDraft(answers, questionIndex, expiresAt);
     }
@@ -647,7 +956,7 @@
 
   async function handleExplicitSubmit(requestedMode: "complete" | "partial") {
     if (readOnly || submitting) return;
-    const check = validateSubmission(survey, answers, requestedMode);
+    const check = validateSubmission(survey, answers, requestedMode, activeQuestions);
     if (!check.valid) {
       missingIds = check.missingIds;
       submitError = copy.submitGateError;
@@ -660,10 +969,18 @@
 
     const payload = buildSubmitPayload({
       survey,
+      activeQuestions,
       answers,
       enrollmentMeta,
       requestedMode,
       returnedFromDraft,
+      ...(isV2
+        ? {
+            entryScope,
+            depthMode,
+            selectedThemes: depthMode === "deep" ? selectedThemes : [],
+          }
+        : {}),
     });
     await deliverSubmission(payload);
   }
@@ -695,7 +1012,7 @@
 
   const errorSummaryItems = $derived(
     missingIds.map((id) => {
-      const q = survey.questions.find((item) => item.id === id);
+      const q = activeQuestions.find((item) => item.id === id);
       return {
         href: `#st-survey-q-${survey.id}-${id}`,
         text: q ? resolveLocalizedText(q.label, locale) : id,
@@ -708,8 +1025,100 @@
   {@const qOptions = getOrderedOptions(q)}
   {@const qLegend = resolveLocalizedText(q.label, locale)}
   {@const qHelper = q.helperText ? resolveLocalizedText(q.helperText, locale) : undefined}
+  {@const isDual = Boolean(q.contextual && entryScope === "both")}
+  {@const singleVal = getSingleControlValue(q)}
   <div id={`st-survey-q-${survey.id}-${q.id}`} class="st-surveyForm__questionControl">
-    {#if q.type === "multi"}
+    {#if isDual && (q.type === "single" || q.type === "multi" || q.type === "scale" || q.type === "likert" || q.type === "ai_effect")}
+      {@const entSide = getScopedSideValue(q.id, "enterprise")}
+      {@const perSide = getScopedSideValue(q.id, "personal")}
+      {@const isMulti = q.type === "multi"}
+      <fieldset class="st-surveyDual" disabled={readOnly}>
+        <legend class="st-surveyDual__legend">{qLegend}</legend>
+        <p class="st-surveyDual__help">{qHelper ?? copy.dualHint}</p>
+        <div class="st-surveyDual__header" aria-hidden="true">
+          <span class="st-surveyDual__colLabel"></span>
+          <span class="st-surveyDual__colHead">{copy.enterpriseShort}</span>
+          <span class="st-surveyDual__colHead">{copy.personalShort}</span>
+        </div>
+        <div class="st-surveyDual__rows">
+          {#each qOptions as opt (opt.id)}
+            {@const optLabel = resolveLocalizedText(opt.label, locale)}
+            {@const entChecked = isMulti
+              ? Array.isArray(entSide) && entSide.includes(opt.id)
+              : entSide === opt.id}
+            {@const perChecked = isMulti
+              ? Array.isArray(perSide) && perSide.includes(opt.id)
+              : perSide === opt.id}
+            <div class="st-surveyDual__row">
+              <span class="st-surveyDual__optLabel">{optLabel}</span>
+              <div class="st-surveyDual__cells">
+                <label
+                  class="st-surveyDual__cell"
+                  class:st-surveyDual__cell--checked={entChecked}
+                >
+                  {#if isMulti}
+                    <input
+                      class="st-surveyDual__input"
+                      type="checkbox"
+                      name={`st-survey-${survey.id}-${q.id}-enterprise`}
+                      value={opt.id}
+                      checked={entChecked}
+                      disabled={readOnly || opt.disabled}
+                      aria-label={`${optLabel} — ${copy.enterpriseShort}`}
+                      onchange={(e) =>
+                        handleDualMultiToggle(q, "enterprise", opt.id, e.currentTarget.checked)}
+                    />
+                  {:else}
+                    <input
+                      class="st-surveyDual__input"
+                      type="radio"
+                      name={`st-survey-${survey.id}-${q.id}-enterprise`}
+                      value={opt.id}
+                      checked={entChecked}
+                      disabled={readOnly || opt.disabled}
+                      aria-label={`${optLabel} — ${copy.enterpriseShort}`}
+                      onchange={() => updateDualSideAnswer(q, "enterprise", opt.id)}
+                    />
+                  {/if}
+                  <span class="st-surveyDual__mobileTag">{copy.enterpriseShort}</span>
+                </label>
+
+                <label
+                  class="st-surveyDual__cell"
+                  class:st-surveyDual__cell--checked={perChecked}
+                >
+                  {#if isMulti}
+                    <input
+                      class="st-surveyDual__input"
+                      type="checkbox"
+                      name={`st-survey-${survey.id}-${q.id}-personal`}
+                      value={opt.id}
+                      checked={perChecked}
+                      disabled={readOnly || opt.disabled}
+                      aria-label={`${optLabel} — ${copy.personalShort}`}
+                      onchange={(e) =>
+                        handleDualMultiToggle(q, "personal", opt.id, e.currentTarget.checked)}
+                    />
+                  {:else}
+                    <input
+                      class="st-surveyDual__input"
+                      type="radio"
+                      name={`st-survey-${survey.id}-${q.id}-personal`}
+                      value={opt.id}
+                      checked={perChecked}
+                      disabled={readOnly || opt.disabled}
+                      aria-label={`${optLabel} — ${copy.personalShort}`}
+                      onchange={() => updateDualSideAnswer(q, "personal", opt.id)}
+                    />
+                  {/if}
+                  <span class="st-surveyDual__mobileTag">{copy.personalShort}</span>
+                </label>
+              </div>
+            </div>
+          {/each}
+        </div>
+      </fieldset>
+    {:else if q.type === "multi"}
       <CheckboxGroup
         name={`st-survey-${survey.id}-${q.id}`}
         legend={qLegend}
@@ -725,16 +1134,23 @@
           description: o.description ? resolveLocalizedText(o.description, locale) : undefined,
           disabled: readOnly || o.disabled,
         }))}
-        value={Array.isArray(answers[q.id]) ? (answers[q.id] as string[]) : []}
+        value={Array.isArray(singleVal) ? (singleVal as string[]) : []}
         disabled={readOnly}
         onchange={(vals) => handleMultiChange(q, vals)}
       />
-    {:else if q.type === "scale" || q.type === "likert"}
+    {:else if q.type === "scale" || q.type === "likert" || q.type === "ai_effect"}
       <LikertScale
         name={`st-survey-${survey.id}-${q.id}`}
         legend={qLegend}
         helperText={qHelper ?? copy.scaleHint}
         required={q.required}
+        scaleKind={q.type === "ai_effect" ? "bipolar" : (q.scaleKind ?? "ordinal")}
+        neutralOptionId={q.type === "ai_effect"
+          ? (q.neutralOptionId ?? DEFAULT_AI_EFFECT_NEUTRAL_ID)
+          : q.neutralOptionId}
+        nonSubstantive={q.type === "ai_effect"
+          ? (q.nonSubstantive ?? [...DEFAULT_AI_EFFECT_NON_SUBSTANTIVE])
+          : q.nonSubstantive}
         layout={q.layout ?? "auto"}
         minLabel={q.minLabel ? resolveLocalizedText(q.minLabel, locale) : undefined}
         maxLabel={q.maxLabel ? resolveLocalizedText(q.maxLabel, locale) : undefined}
@@ -744,9 +1160,9 @@
           description: o.description ? resolveLocalizedText(o.description, locale) : undefined,
           disabled: readOnly || o.disabled,
         }))}
-        value={typeof answers[q.id] === "string" ? (answers[q.id] as string) : undefined}
+        value={typeof singleVal === "string" ? singleVal : undefined}
         disabled={readOnly}
-        onchange={(val) => updateAnswer(q.id, val)}
+        onchange={(val) => updateSingleControlAnswer(q, val)}
       />
     {:else if q.type === "single"}
       <RadioGroup
@@ -761,10 +1177,40 @@
           description: o.description ? resolveLocalizedText(o.description, locale) : undefined,
           disabled: readOnly || o.disabled,
         }))}
-        value={typeof answers[q.id] === "string" ? (answers[q.id] as string) : ""}
+        value={typeof singleVal === "string" ? singleVal : ""}
         disabled={readOnly}
-        onchange={(val) => updateAnswer(q.id, val)}
+        onchange={(val) => updateSingleControlAnswer(q, val)}
       />
+    {:else if q.type === "text_long" || q.type === "text_short"}
+      {@const textVal = typeof singleVal === "string" ? singleVal : ""}
+      <div class="st-surveyForm__openField">
+        {#if q.type === "text_long"}
+          <Textarea
+            label={qLegend}
+            placeholder={q.placeholder ? resolveLocalizedText(q.placeholder, locale) : undefined}
+            helperText={qHelper ?? (q.display === "agent_summary_only" ? copy.openTextNotice : undefined)}
+            maxlength={q.maxLength}
+            value={textVal}
+            disabled={readOnly}
+            oninput={(e) => updateSingleControlAnswer(q, e.currentTarget.value)}
+          />
+        {:else}
+          <Input
+            type="text"
+            size="lg"
+            label={qLegend}
+            placeholder={q.placeholder ? resolveLocalizedText(q.placeholder, locale) : undefined}
+            helperText={qHelper ?? (q.display === "agent_summary_only" ? copy.openTextNotice : undefined)}
+            maxlength={q.maxLength}
+            value={textVal}
+            disabled={readOnly}
+            oninput={(e) => updateSingleControlAnswer(q, e.currentTarget.value)}
+          />
+        {/if}
+        {#if q.maxLength}
+          <p class="st-surveyForm__charCount">{textVal.length} / {q.maxLength}</p>
+        {/if}
+      </div>
     {/if}
   </div>
 {/snippet}
@@ -785,7 +1231,7 @@
                 </Typography>
               {/if}
             </div>
-            {#if step === "questions" && draftWindowMinutes > 0 && expiresAt > 0}
+            {#if (step === "questions" || step === "deep_themes") && draftWindowMinutes > 0 && expiresAt > 0}
               <Tag
                 tone={draftExpired ? "error" : "info"}
                 size="sm"
@@ -886,8 +1332,8 @@
                     tone="info"
                     title={copy.resumeTitle}
                     message={copy.resumeMsg(
-                      countAnsweredQuestions(survey.questions, existingDraft.answers),
-                      survey.questions.length,
+                      countAnsweredQuestions(activeQuestions, existingDraft.answers),
+                      activeQuestions.length,
                       formatSurveyCountdown(Math.max(0, existingDraft.expiresAt - nowMs)),
                     )}
                   >
@@ -937,6 +1383,173 @@
                 {/if}
               </Inline>
             </Stack>
+          {:else if step === "entry_scope" && survey.entry}
+            <Stack gap={4}>
+              <Inline justify="between" align="center" gap={2}>
+                <Badge tone="neutral" size="sm">{copy.entryStepCounter(1)}</Badge>
+              </Inline>
+
+              <RadioGroup
+                name={`st-survey-${survey.id}-entry-scope`}
+                legend={resolveLocalizedText(survey.entry.scope.label, locale)}
+                variant="card"
+                helperText={survey.entry.scope.perQuestionHint
+                  ? resolveLocalizedText(survey.entry.scope.perQuestionHint, locale)
+                  : undefined}
+                required={true}
+                invalid={Boolean(entryError)}
+                errorText={entryError || undefined}
+                options={survey.entry.scope.options.map((opt) => ({
+                  value: opt.id,
+                  label: resolveLocalizedText(opt.label, locale),
+                  description: opt.description
+                    ? resolveLocalizedText(opt.description, locale)
+                    : undefined,
+                  disabled: readOnly,
+                }))}
+                value={entryScope ?? ""}
+                disabled={readOnly}
+                onchange={(val) => {
+                  entryError = "";
+                  entryScope = val as SurveyEntryScope;
+                }}
+              />
+
+              {#if survey.entry.scope.privacyNotice}
+                <Alert
+                  tone="info"
+                  title={privacyTitle}
+                  message={resolveLocalizedText(survey.entry.scope.privacyNotice, locale)}
+                />
+              {/if}
+
+              <Inline justify="end" gap={2}>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  type="button"
+                  disabled={readOnly}
+                  onclick={handleScopeContinue}
+                >
+                  {copy.continueBtn}
+                </Button>
+              </Inline>
+            </Stack>
+          {:else if step === "entry_depth" && survey.entry}
+            <Stack gap={4}>
+              <Inline justify="between" align="center" gap={2}>
+                <Badge tone="neutral" size="sm">{copy.entryStepCounter(2)}</Badge>
+              </Inline>
+
+              <RadioGroup
+                name={`st-survey-${survey.id}-entry-depth`}
+                legend={resolveLocalizedText(survey.entry.depth.label, locale)}
+                variant="card"
+                required={true}
+                invalid={Boolean(entryError)}
+                errorText={entryError || undefined}
+                options={survey.entry.depth.options.map((opt) => ({
+                  value: opt.id,
+                  label: resolveLocalizedText(opt.label, locale),
+                  description: opt.stopAnytimeNote
+                    ? resolveLocalizedText(opt.stopAnytimeNote, locale)
+                    : undefined,
+                  disabled: readOnly,
+                }))}
+                value={depthMode ?? ""}
+                disabled={readOnly}
+                onchange={(val) => {
+                  entryError = "";
+                  depthMode = val as SurveyDepthMode;
+                }}
+              />
+
+              <Inline justify="between" wrap={true} gap={2}>
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  type="button"
+                  disabled={readOnly}
+                  onclick={handleDepthBack}
+                >
+                  {copy.prevBtn}
+                </Button>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  type="button"
+                  disabled={readOnly}
+                  onclick={handleDepthStart}
+                >
+                  {copy.startFromDepthBtn}
+                </Button>
+              </Inline>
+            </Stack>
+          {:else if step === "deep_themes" && survey.themes?.length}
+            <Stack gap={4}>
+              <Stack gap={1}>
+                <Typography variant="h5" as="h3">{copy.deepMilestoneTitle}</Typography>
+                <Typography variant="body-sm" tone="secondary">
+                  {copy.deepMilestoneIntro}
+                </Typography>
+              </Stack>
+
+              <CheckboxGroup
+                name={`st-survey-${survey.id}-deep-themes`}
+                legend={copy.deepMilestoneLabel}
+                variant="card"
+                options={survey.themes.map((theme) => ({
+                  value: theme.id,
+                  label: resolveLocalizedText(theme.label, locale),
+                  description:
+                    theme.questionCount != null
+                      ? copy.themeQuestionsCount(theme.questionCount)
+                      : undefined,
+                  disabled: readOnly,
+                }))}
+                value={selectedThemes}
+                disabled={readOnly}
+                onchange={(vals) => {
+                  selectedThemes = vals;
+                }}
+              />
+
+              {#if submitError}
+                <Alert tone="error" title={submitError} />
+              {/if}
+
+              <Inline justify="between" wrap={true} gap={2}>
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  type="button"
+                  disabled={readOnly}
+                  onclick={handleDeepThemesBack}
+                >
+                  {copy.prevBtn}
+                </Button>
+                <Inline gap={2} wrap={true}>
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    type="button"
+                    disabled={readOnly || submitting || answeredCount === 0}
+                    onclick={() => void handleExplicitSubmit("partial")}
+                  >
+                    {copy.deepMilestoneSubmitNow}
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    type="button"
+                    disabled={readOnly}
+                    onclick={handleDeepThemesContinue}
+                  >
+                    {copy.deepMilestoneContinue}
+                  </Button>
+                </Inline>
+              </Inline>
+            </Stack>
           {:else if step === "questions" && currentQuestion}
             <Stack gap={4}>
               {#if draftExpired}
@@ -958,19 +1571,35 @@
               {#if survey.rules.mode === "one-per-screen"}
                 <ProgressBar
                   value={questionIndex + 1}
-                  max={survey.questions.length}
+                  max={activeQuestions.length}
                   showValue={true}
-                  valueText={`${questionIndex + 1} / ${survey.questions.length}`}
-                  label={copy.questionCounter(questionIndex + 1, survey.questions.length)}
+                  valueText={`${questionIndex + 1} / ${activeQuestions.length}`}
+                  label={copy.questionCounter(questionIndex + 1, activeQuestions.length)}
                 />
 
                 <SurveyQuestionCard
                   index={questionIndex + 1}
-                  total={survey.questions.length}
+                  total={activeQuestions.length}
                   sectionTag={currentQuestion.moment
                     ? resolveLocalizedText(currentQuestion.moment, locale)
                     : undefined}
                   required={Boolean(currentQuestion.required)}
+                  optionalLabel={(currentQuestion.type === "text_long" ||
+                    currentQuestion.type === "text_short") &&
+                  currentQuestion.optional
+                    ? copy.optionalBadge
+                    : undefined}
+                  contextual={Boolean(
+                    currentQuestion.contextual && entryScope && entryScope !== "both",
+                  )}
+                  activeScope={currentQuestion.contextual && entryScope && entryScope !== "both"
+                    ? activeScopeFor(currentQuestion.id)
+                    : undefined}
+                  enterpriseLabel={copy.enterpriseShort}
+                  personalLabel={copy.personalShort}
+                  scopeToggleLabel={copy.scopeToggleLabel}
+                  scopeDisabled={readOnly}
+                  onscopechange={(nextScope) => handleQuestionScopeChange(currentQuestion, nextScope)}
                   errorText={questionError || undefined}
                 >
                   {@render renderQuestionControl(currentQuestion)}
@@ -982,8 +1611,8 @@
 
                 <SurveyNav
                   canGoPrevious={questionIndex > 0}
-                  isLast={questionIndex === survey.questions.length - 1}
-                  nextDisabled={questionIndex === survey.questions.length - 1
+                  isLast={questionIndex === activeQuestions.length - 1}
+                  nextDisabled={questionIndex === activeQuestions.length - 1
                     ? readOnly || answeredCount === 0
                     : false}
                   {submitting}
@@ -993,12 +1622,12 @@
                   leaveLabel={enrollmentMode !== "none" ? copy.leaveBtn : undefined}
                   allowPartialSubmit={canPartialSubmit}
                   {answeredCount}
-                  totalQuestions={survey.questions.length}
-                  partialSubmitLabel={copy.submitPartialBtn(answeredCount, survey.questions.length)}
+                  totalQuestions={activeQuestions.length}
+                  partialSubmitLabel={copy.submitPartialBtn(answeredCount, activeQuestions.length)}
                   partialConfirmTitle={copy.partialModalTitle}
                   partialConfirmDescription={copy.partialModalDesc(
                     answeredCount,
-                    survey.questions.length,
+                    activeQuestions.length,
                   )}
                   partialConfirmLabel={copy.partialModalConfirm}
                   partialCancelLabel={copy.partialModalCancel}
@@ -1017,12 +1646,21 @@
                   />
                 {/if}
                 <Stack gap={4}>
-                  {#each survey.questions as q, qIdx (q.id)}
+                  {#each activeQuestions as q, qIdx (q.id)}
                     <SurveyQuestionCard
                       index={qIdx + 1}
-                      total={survey.questions.length}
+                      total={activeQuestions.length}
                       sectionTag={q.moment ? resolveLocalizedText(q.moment, locale) : undefined}
                       required={Boolean(q.required)}
+                      contextual={Boolean(q.contextual && entryScope && entryScope !== "both")}
+                      activeScope={q.contextual && entryScope && entryScope !== "both"
+                        ? activeScopeFor(q.id)
+                        : undefined}
+                      enterpriseLabel={copy.enterpriseShort}
+                      personalLabel={copy.personalShort}
+                      scopeToggleLabel={copy.scopeToggleLabel}
+                      scopeDisabled={readOnly}
+                      onscopechange={(nextScope) => handleQuestionScopeChange(q, nextScope)}
                     >
                       {@render renderQuestionControl(q)}
                     </SurveyQuestionCard>
@@ -1171,6 +1809,156 @@
 
   .st-surveyForm__questionControl {
     min-width: 0;
+  }
+
+  .st-surveyForm__openField {
+    display: grid;
+    gap: var(--st-spacing-1, 0.25rem);
+  }
+
+  .st-surveyForm__openField :global(.st-field) {
+    max-width: 100%;
+  }
+
+  .st-surveyForm__openField :global(.st-textarea) {
+    font-size: 1rem;
+  }
+
+  .st-surveyForm__charCount {
+    color: var(--st-semantic-text-secondary, #444455);
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+    margin: 0;
+    text-align: end;
+  }
+
+  .st-surveyDual {
+    border: 0;
+    container-type: inline-size;
+    margin: 0;
+    min-width: 0;
+    padding: 0;
+  }
+
+  .st-surveyDual__legend {
+    color: var(--st-component-field-labelText, var(--st-semantic-text-primary, #1f2437));
+    font-size: 0.9375rem;
+    font-weight: 650;
+    line-height: 1.3;
+    padding: 0;
+  }
+
+  .st-surveyDual__help {
+    color: var(--st-component-field-helpText, var(--st-semantic-text-secondary, #444455));
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    margin: 0.25rem 0 0;
+  }
+
+  .st-surveyDual__header {
+    display: none;
+  }
+
+  .st-surveyDual__rows {
+    display: grid;
+    gap: var(--st-spacing-2, 0.5rem);
+    margin-top: var(--st-spacing-3, 0.75rem);
+  }
+
+  .st-surveyDual__row {
+    background: var(--st-component-card-background, var(--st-semantic-surface-default, #ffffff));
+    border: 1.5px solid var(--st-component-card-border, var(--st-semantic-border-subtle, #d6d9ea));
+    border-radius: var(--st-component-card-radius, var(--st-component-control-radius, 0.5rem));
+    display: grid;
+    gap: var(--st-spacing-2, 0.5rem);
+    padding: var(--st-spacing-3, 0.75rem);
+  }
+
+  .st-surveyDual__optLabel {
+    color: var(--st-semantic-text-primary, #1f2437);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .st-surveyDual__cells {
+    display: grid;
+    gap: var(--st-spacing-2, 0.5rem);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .st-surveyDual__cell {
+    align-items: center;
+    background: var(--st-semantic-surface-subtle, #f3f4fb);
+    border: 1.5px solid var(--st-semantic-border-subtle, #d6d9ea);
+    border-radius: var(--st-component-control-radius, 0.5rem);
+    box-sizing: border-box;
+    color: var(--st-semantic-text-primary, #1f2437);
+    cursor: var(--st-cursor-interactive, pointer);
+    display: inline-flex;
+    gap: var(--st-spacing-2, 0.5rem);
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .st-surveyDual__cell--checked {
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle, #f3f4fb));
+    border-color: var(--st-semantic-border-interactive, #01055e);
+    box-shadow: 0 0 0 1px var(--st-semantic-border-interactive, #01055e);
+  }
+
+  .st-surveyDual__cell:has(.st-surveyDual__input:focus-visible) {
+    outline: var(--st-component-control-anatomy-focus-outline, 2px solid var(--st-component-control-focusRing, #01055e));
+    outline-offset: var(--st-component-control-anatomy-focus-offset, 1px);
+  }
+
+  .st-surveyDual__input {
+    accent-color: var(--st-semantic-action-primary, #01055e);
+    cursor: inherit;
+    height: 1.25rem;
+    margin: 0;
+    width: 1.25rem;
+  }
+
+  .st-surveyDual__mobileTag {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  @container (min-width: 560px) {
+    .st-surveyDual__header {
+      align-items: center;
+      color: var(--st-semantic-text-secondary, #444455);
+      display: grid;
+      font-size: 0.8125rem;
+      font-weight: 650;
+      gap: var(--st-spacing-2, 0.5rem);
+      grid-template-columns: minmax(0, 1fr) 7rem 7rem;
+      margin-top: var(--st-spacing-3, 0.75rem);
+      padding: 0 var(--st-spacing-3, 0.75rem);
+    }
+
+    .st-surveyDual__colHead {
+      text-align: center;
+    }
+
+    .st-surveyDual__rows {
+      margin-top: var(--st-spacing-1, 0.25rem);
+    }
+
+    .st-surveyDual__row {
+      align-items: center;
+      grid-template-columns: minmax(0, 1fr) 14.5rem;
+    }
+
+    .st-surveyDual__cells {
+      grid-template-columns: repeat(2, 7rem);
+    }
+
+    .st-surveyDual__mobileTag {
+      display: none;
+    }
   }
 
   .st-surveyForm__thanksFocus:focus {
