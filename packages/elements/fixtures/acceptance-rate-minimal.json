@@ -1,0 +1,16 @@
+{
+  "contract": "1.0",
+  "root": {
+    "id": "root",
+    "component": "AcceptanceRateChart",
+    "label": "Minimal acceptance rate",
+    "items": [
+      {
+        "id": "sys-a",
+        "label": "System A",
+        "accepted": 3,
+        "total": 4
+      }
+    ]
+  }
+}

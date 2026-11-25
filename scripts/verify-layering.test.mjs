@@ -18,6 +18,15 @@ import { join } from "node:path";
 const FORBIDDEN = [/^@sentropic\/dataviz(-|$)/, /^@sentropic\/diagram-core$/, /^@sentropic\/diagram-codecs$/];
 const DEPENDENCY_FIELDS = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"];
 
+// `@sentropic/design-system-elements` is the composed catalogue-element package
+// (not a primitive DS library) and imports pure presets from `@sentropic/dataviz-core`
+// per spec/SPEC_EVOL_BENCH_CHARTS.md §14 (lot B1). Framework dataviz adapters and
+// diagram-core/diagram-codecs remain forbidden everywhere, and `@sentropic/dataviz-core`
+// remains forbidden in every other `@sentropic/design-system*` package.
+function isAllowedEdge(packageName, specifier) {
+  return packageName === "@sentropic/design-system-elements" && specifier === "@sentropic/dataviz-core";
+}
+
 // Cardinality floor for the source-import scan below. Measured on the current tree
 // (2026-09-25): dsPackageDirs() walks 147 package directories and sourceFiles()
 // finds 1597 matching source files in total (1253 of those across the four
@@ -50,6 +59,7 @@ test("no design system package depends on the dataviz or diagram-model layers", 
     const manifest = JSON.parse(readFileSync(join(packagesDir, dir, "package.json"), "utf8"));
     for (const field of DEPENDENCY_FIELDS) {
       for (const dependency of Object.keys(manifest[field] ?? {})) {
+        if (isAllowedEdge(manifest.name, dependency)) continue;
         if (FORBIDDEN.some((pattern) => pattern.test(dependency))) {
           offenders.push(`${manifest.name} → ${dependency} (${field})`);
         }
@@ -75,6 +85,7 @@ test("no design system source file imports the dataviz or diagram-model layers",
   const importPattern = /(?:from|import)\s*\(?\s*["'](@sentropic\/[^"']+)["']/g;
   let examined = 0;
   for (const dir of dsPackageDirs()) {
+    const manifest = JSON.parse(readFileSync(join(packagesDir, dir, "package.json"), "utf8"));
     const root = join(packagesDir, dir, "src");
     const files = sourceFiles(root);
     examined += files.length;
@@ -82,6 +93,7 @@ test("no design system source file imports the dataviz or diagram-model layers",
       const text = readFileSync(file, "utf8");
       for (const match of text.matchAll(importPattern)) {
         const specifier = match[1];
+        if (isAllowedEdge(manifest.name, specifier)) continue;
         if (FORBIDDEN.some((pattern) => pattern.test(specifier))) {
           offenders.push(`${file.slice(packagesDir.length)} → ${specifier}`);
         }

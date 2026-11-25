@@ -650,3 +650,34 @@ export { placePriorityLabels, priorityQuadrant, estimatePriorityLabelBox } from 
 
 // Shared UI contract types (framework-agnostic, consumed by dataviz-{react,vue,svelte})
 export type TimeRange = { from: string; to: string; relativeLabel?: string };
+
+// Benchmark chart presets and maths
+export type {
+  IsoF1Domain,
+  CurvePoint2D,
+  ParetoFrontierOptions,
+  ParetoFrontierResult,
+  RankCurveAxis,
+  RankCurveOptions,
+  RankCurvePoint,
+  RankCurveSummary,
+  RankCurveZeroBand,
+  RankCurveModel,
+  AcceptanceRateInput,
+  AcceptanceRateOrder,
+  AcceptanceRateOptions,
+  AcceptanceRateRow,
+  PointLabelPosition,
+  PointLabelAnchor,
+  PointLabelBox,
+  PointLabelPlot,
+} from './bench.js';
+export {
+  isoF1Curve,
+  paretoFrontier,
+  buildRankCurve,
+  wilsonInterval95,
+  buildAcceptanceRates,
+  placePointLabels,
+  estimateBenchLabelBox,
+} from './bench.js';

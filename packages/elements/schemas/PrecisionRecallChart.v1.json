@@ -1,0 +1,247 @@
+{
+  "$defs": {
+    "CatalogComponentCommon": {
+      "properties": {
+        "weight": {
+          "description": "The relative weight of this component within a Row or Column. This is similar to the CSS 'flex-grow' property. Note: this may ONLY be set when the component is a direct descendant of a Row or Column.",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "component": {
+      "allOf": [
+        {
+          "$ref": "https://a2ui.org/specification/v0_9_1/common_types.json#/$defs/ComponentCommon"
+        },
+        {
+          "$ref": "#/$defs/CatalogComponentCommon"
+        },
+        {
+          "properties": {
+            "accessibility": {
+              "additionalProperties": false,
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "component": {
+              "const": "PrecisionRecallChart"
+            },
+            "domain": {
+              "description": "\"unit\" = both axes [0, 1] (default). \"fit\" = tight domain around the points.",
+              "enum": [
+                "fit",
+                "unit"
+              ],
+              "type": "string"
+            },
+            "groups": {
+              "description": "Optional groups for categorical tone assignment.",
+              "items": {
+                "additionalProperties": false,
+                "description": "Optional grouping; drives the categorical tone (category1..8) in first-appearance order.",
+                "properties": {
+                  "id": {
+                    "description": "Stable identifier, unique within the chart.",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9._:-]+$",
+                    "type": "string"
+                  },
+                  "label": {
+                    "description": "Human-readable name.",
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "label"
+                ],
+                "type": "object"
+              },
+              "maxItems": 8,
+              "minItems": 0,
+              "type": "array"
+            },
+            "isoF1": {
+              "description": "Iso-F1 levels, strictly increasing. Default [0.2, 0.4, 0.6, 0.8].",
+              "items": {
+                "description": "An iso-F1 level, strictly inside (0, 1).",
+                "exclusiveMaximum": 1,
+                "exclusiveMinimum": 0,
+                "type": "number"
+              },
+              "maxItems": 9,
+              "minItems": 0,
+              "type": "array"
+            },
+            "label": {
+              "description": "Chart name and accessible name.",
+              "maxLength": 80,
+              "minLength": 1,
+              "type": "string"
+            },
+            "points": {
+              "description": "Evaluated points in draw order.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "groupId": {
+                    "description": "Stable identifier, unique within the chart.",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9._:-]+$",
+                    "type": "string"
+                  },
+                  "id": {
+                    "description": "Stable identifier, unique within the chart.",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9._:-]+$",
+                    "type": "string"
+                  },
+                  "label": {
+                    "description": "Human-readable name.",
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "precision": {
+                    "description": "A proportion.",
+                    "maximum": 1,
+                    "minimum": 0,
+                    "type": "number"
+                  },
+                  "recall": {
+                    "description": "A proportion.",
+                    "maximum": 1,
+                    "minimum": 0,
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "precision",
+                  "recall"
+                ],
+                "type": "object"
+              },
+              "maxItems": 200,
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          "required": [
+            "component",
+            "label",
+            "points"
+          ],
+          "type": "object"
+        }
+      ],
+      "type": "object",
+      "unevaluatedProperties": false,
+      "x-sentropic": {
+        "contract": "1.0",
+        "element": "st-precision-recall-chart",
+        "engine": "core",
+        "events": [],
+        "example": {
+          "component": "PrecisionRecallChart",
+          "groups": [
+            {
+              "id": "g1",
+              "label": "Baseline"
+            }
+          ],
+          "id": "root",
+          "label": "Retrieval precision vs recall",
+          "points": [
+            {
+              "groupId": "g1",
+              "id": "sys-a",
+              "label": "System A",
+              "precision": 0.85,
+              "recall": 0.72
+            },
+            {
+              "groupId": "g1",
+              "id": "sys-b",
+              "label": "System B",
+              "precision": 0.74,
+              "recall": 0.88
+            }
+          ]
+        },
+        "fallback": "text",
+        "parity": {
+          "angular": {
+            "file": "packages/components-angular",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          },
+          "react": {
+            "file": "packages/components-react",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          },
+          "svelte": {
+            "file": "packages/elements/src/contracts/precision-recall-chart.ts",
+            "note": "Reference pilot (§3.1); the catalogue is derived from it.",
+            "status": "source-of-truth",
+            "type": "PrecisionRecallChartProps"
+          },
+          "vue": {
+            "file": "packages/components-vue",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          }
+        },
+        "schema": "https://design-system.sent-tech.ca/catalogs/elements/v1/components/PrecisionRecallChart.json"
+      }
+    }
+  },
+  "$id": "https://design-system.sent-tech.ca/catalogs/elements/v1/components/PrecisionRecallChart.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "The envelope schema specialised to one component (§5.2): the §4.2 render envelope (optional catalogId, contract, optional mode, root) whose root is the PrecisionRecallChart component object; its component part ($defs.component) is equivalent, after canonical sorting, to catalog.json#/components/PrecisionRecallChart. Requires the A2UI common types under https://a2ui.org/specification/v0_9_1/common_types.json.",
+  "properties": {
+    "catalogId": {
+      "const": "https://design-system.sent-tech.ca/catalogs/elements/v1/catalog.json",
+      "description": "Optional catalogue identifier; absent = the renderer's catalogue (§4.2).",
+      "type": "string"
+    },
+    "contract": {
+      "description": "Component-contract version the producer targets (§4.2, §4.4).",
+      "pattern": "^[0-9]+\\.[0-9]+$",
+      "type": "string"
+    },
+    "mode": {
+      "description": "\"snapshot\" (default) | \"preview\" (reserved, §10.3).",
+      "enum": [
+        "preview",
+        "snapshot"
+      ],
+      "type": "string"
+    },
+    "root": {
+      "$ref": "#/$defs/component"
+    }
+  },
+  "required": [
+    "contract",
+    "root"
+  ],
+  "title": "PrecisionRecallChart standalone envelope schema",
+  "type": "object",
+  "unevaluatedProperties": false
+}

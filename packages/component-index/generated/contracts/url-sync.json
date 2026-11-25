@@ -1,8 +1,8 @@
 {
   "componentId": "url-sync",
   "contractSource": "derived",
-  "digest": "sha256:f31cbac683af6c58b8eea253f73a1da3ab21d4efe2af0c9698725d48a7bb490d",
-  "entryDigest": "sha256:cfd787e1351979307afe285f6ab7998ab9f32a2a6b0434e909e5ac432954fdb8",
+  "digest": "sha256:af404715559ca10b28ffaacc1afdfcb75c8070d1ad9b57f82a02430b6907486c",
+  "entryDigest": "sha256:b7db4ae16c07f2c6ff7aea352985d6a15f800a69dea0616710487080b36bca52",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -374,7 +374,7 @@
         "declarationPath": "packages/dataviz-svelte/dist/lib/UrlSync.svelte.d.ts",
         "package": "@sentropic/dataviz-svelte",
         "propsType": "UrlSyncProps",
-        "version": "0.5.0"
+        "version": "0.5.1"
       },
       "status": "partial",
       "unresolved": [],

@@ -505,7 +505,16 @@ async function verifyReviewCore() {
 async function verifyElements() {
   const mod = await import("@sentropic/design-system-elements");
   const names = mod.contracts.map((contract) => contract.component);
-  const expected = ["BarChart", "BpmnCanvas", "DecisionDossier", "TimeSeriesChart"];
+  const expected = [
+    "BarChart",
+    "BpmnCanvas",
+    "DecisionDossier",
+    "TimeSeriesChart",
+    "PrecisionRecallChart",
+    "ScoreCostChart",
+    "RankCurveChart",
+    "AcceptanceRateChart",
+  ];
   if (JSON.stringify(names) !== JSON.stringify(expected)) {
     fail(
       "@sentropic/design-system-elements",

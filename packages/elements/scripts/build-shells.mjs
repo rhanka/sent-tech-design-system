@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { gzipSync } from "fflate";
 import { build, normalizePath } from "vite";
@@ -65,6 +65,22 @@ export async function buildComponentShells(packageDir, compileSvelte) {
 
   for (const [name, entry] of Object.entries(catalog.components)) {
     const { element, fallback } = entry["x-sentropic"];
+    const schema = `schemas/${name}.v1.json`;
+    inputs[schema] = fingerprint(read(schema));
+    const elementModule = join(packageDir, "src", "element", "dom", `${element.slice(3)}-element.svelte`);
+    if (!existsSync(elementModule)) {
+      components[name] = {
+        element,
+        schema,
+        fallback,
+        url: "host",
+        status: "partial",
+        reason: "element-pending-b2",
+        complete: { bytes: 0, sha256: digest(""), gzip: 0 },
+      };
+      console.log(`${name}: partial (element module pending lot B2)`);
+      continue;
+    }
     const result = await build({
       configFile: false,
       root: packageDir,
@@ -96,8 +112,6 @@ export async function buildComponentShells(packageDir, compileSvelte) {
       gzip: gzipSync(Buffer.from(html), { level: compression.level, mtime: compression.mtime }).length,
     };
     const inBudget = complete.bytes < budgets.rawExclusive && complete.gzip <= budgets.gzipInclusive;
-    const schema = `schemas/${name}.v1.json`;
-    inputs[schema] = fingerprint(read(schema));
 
     if (inBudget) {
       const module = `${name}.js`;

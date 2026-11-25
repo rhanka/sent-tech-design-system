@@ -258,9 +258,13 @@ const packages = [
       "dist/index.d.ts",
       "catalog.json",
       "envelope.json",
+      "schemas/AcceptanceRateChart.v1.json",
       "schemas/BarChart.v1.json",
       "schemas/BpmnCanvas.v1.json",
       "schemas/DecisionDossier.v1.json",
+      "schemas/PrecisionRecallChart.v1.json",
+      "schemas/RankCurveChart.v1.json",
+      "schemas/ScoreCostChart.v1.json",
       "schemas/TimeSeriesChart.v1.json",
       "dist/browser/elements.js",
       "dist/browser/sri.json",
@@ -456,7 +460,7 @@ const deepVerify = {
   // until release (ETARGET otherwise) — so that tarball is packed locally;
   // the walk pulls its own local closure (incl. review-core) with it.
   [reviewCoreName]: { closure: [], peers: [] },
-  "@sentropic/design-system-elements": { closure: ["@sentropic/design-system-svelte"], peers: [] },
+  "@sentropic/design-system-elements": { closure: ["@sentropic/dataviz-core", "@sentropic/design-system-svelte"], peers: [] },
   "@sentropic/design-system-react": {
     closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens"],
     peers: [

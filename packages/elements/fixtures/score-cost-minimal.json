@@ -1,0 +1,17 @@
+{
+  "contract": "1.0",
+  "root": {
+    "id": "root",
+    "component": "ScoreCostChart",
+    "label": "Minimal score vs cost",
+    "costUnit": "USD per 1k items",
+    "points": [
+      {
+        "id": "sys-a",
+        "label": "System A",
+        "cost": 0.5,
+        "score": 0.75
+      }
+    ]
+  }
+}

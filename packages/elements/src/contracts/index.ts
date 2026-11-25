@@ -6,9 +6,13 @@
 
 import type { ContractModule } from "./types.js";
 
+import { acceptanceRateChartContract } from "./acceptance-rate-chart.js";
 import { barChartContract } from "./bar-chart.js";
 import { bpmnCanvasContract } from "./bpmn-canvas.js";
 import { decisionDossierContract } from "./decision-dossier.js";
+import { precisionRecallChartContract } from "./precision-recall-chart.js";
+import { rankCurveChartContract } from "./rank-curve-chart.js";
+import { scoreCostChartContract } from "./score-cost-chart.js";
 import { timeSeriesChartContract } from "./time-series-chart.js";
 
 export type { ContractModule } from "./types.js";
@@ -28,6 +32,11 @@ export {
 export { type BpmnCanvasDocument, type BpmnCanvasProps } from "./bpmn-canvas.js";
 export { type DecisionDossierDocumentRef, type DecisionDossierProps } from "./decision-dossier.js";
 export type { EpochMilliseconds, TimeSeries, TimeSeriesChartProps, TimeSeriesPoint } from "./time-series-chart.js";
+export type { BenchGroup, BenchId, BenchLabel, IsoF1Level, UnitInterval } from "./bench-types.js";
+export type { PrecisionRecallChartProps, PrecisionRecallPoint } from "./precision-recall-chart.js";
+export type { ScoreCostChartProps, ScoreCostPoint } from "./score-cost-chart.js";
+export type { RankCurveChartProps, RankCurveSeries } from "./rank-curve-chart.js";
+export type { AcceptanceRateChartProps, AcceptanceRateItem } from "./acceptance-rate-chart.js";
 
 /** The catalogue identity (§5.2): `$id` = `catalogId`. */
 export const CATALOG_ID = "https://design-system.sent-tech.ca/catalogs/elements/v1/catalog.json";
@@ -57,4 +66,8 @@ export const contracts: readonly ContractModule[] = [
   bpmnCanvasContract,
   decisionDossierContract,
   timeSeriesChartContract,
+  precisionRecallChartContract,
+  scoreCostChartContract,
+  rankCurveChartContract,
+  acceptanceRateChartContract,
 ];

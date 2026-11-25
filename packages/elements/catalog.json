@@ -635,6 +635,18 @@
         },
         {
           "$ref": "#/components/TimeSeriesChart"
+        },
+        {
+          "$ref": "#/components/PrecisionRecallChart"
+        },
+        {
+          "$ref": "#/components/ScoreCostChart"
+        },
+        {
+          "$ref": "#/components/RankCurveChart"
+        },
+        {
+          "$ref": "#/components/AcceptanceRateChart"
         }
       ]
     },
@@ -651,6 +663,163 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "catalogId": "https://design-system.sent-tech.ca/catalogs/elements/v1/catalog.json",
   "components": {
+    "AcceptanceRateChart": {
+      "allOf": [
+        {
+          "$ref": "https://a2ui.org/specification/v0_9_1/common_types.json#/$defs/ComponentCommon"
+        },
+        {
+          "$ref": "#/$defs/CatalogComponentCommon"
+        },
+        {
+          "properties": {
+            "acceptedLabel": {
+              "description": "Name of the accepted outcome in labels. Default \"accepted\".",
+              "maxLength": 24,
+              "minLength": 1,
+              "type": "string"
+            },
+            "accessibility": {
+              "additionalProperties": false,
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "component": {
+              "const": "AcceptanceRateChart"
+            },
+            "items": {
+              "description": "Systems or configurations to compare.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "accepted": {
+                    "description": "Accepted count.",
+                    "maximum": 1000000000,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "id": {
+                    "description": "Stable identifier, unique within the chart.",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9._:-]+$",
+                    "type": "string"
+                  },
+                  "label": {
+                    "description": "Human-readable name.",
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "total": {
+                    "description": "Total evaluated count.",
+                    "maximum": 1000000000,
+                    "minimum": 1,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "accepted",
+                  "id",
+                  "label",
+                  "total"
+                ],
+                "type": "object"
+              },
+              "maxItems": 24,
+              "minItems": 1,
+              "type": "array"
+            },
+            "label": {
+              "description": "Chart name and accessible name.",
+              "maxLength": 80,
+              "minLength": 1,
+              "type": "string"
+            },
+            "order": {
+              "description": "Row order: as given (default) or by rate descending.",
+              "enum": [
+                "given",
+                "rate"
+              ],
+              "type": "string"
+            },
+            "target": {
+              "description": "Target rate, drawn as the bullet target on every row.",
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            }
+          },
+          "required": [
+            "component",
+            "items",
+            "label"
+          ],
+          "type": "object"
+        }
+      ],
+      "type": "object",
+      "unevaluatedProperties": false,
+      "x-sentropic": {
+        "contract": "1.0",
+        "element": "st-acceptance-rate-chart",
+        "engine": "core",
+        "events": [],
+        "example": {
+          "component": "AcceptanceRateChart",
+          "id": "root",
+          "items": [
+            {
+              "accepted": 330,
+              "id": "sys-a",
+              "label": "System A",
+              "total": 400
+            },
+            {
+              "accepted": 3,
+              "id": "sys-b",
+              "label": "System B",
+              "total": 4
+            }
+          ],
+          "label": "Acceptance rate by configuration",
+          "target": 0.8
+        },
+        "fallback": "text",
+        "parity": {
+          "angular": {
+            "file": "packages/components-angular",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          },
+          "react": {
+            "file": "packages/components-react",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          },
+          "svelte": {
+            "file": "packages/elements/src/contracts/acceptance-rate-chart.ts",
+            "note": "Reference pilot (§3.1); the catalogue is derived from it.",
+            "status": "source-of-truth",
+            "type": "AcceptanceRateChartProps"
+          },
+          "vue": {
+            "file": "packages/components-vue",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          }
+        },
+        "schema": "https://design-system.sent-tech.ca/catalogs/elements/v1/components/AcceptanceRateChart.json"
+      }
+    },
     "BarChart": {
       "allOf": [
         {
@@ -1378,6 +1547,563 @@
           "sha256": "f4b5247f025e99081c20fd9a8b0ed98b32a061c4a98597010be0264e5e564c6c",
           "source": "focus"
         }
+      }
+    },
+    "PrecisionRecallChart": {
+      "allOf": [
+        {
+          "$ref": "https://a2ui.org/specification/v0_9_1/common_types.json#/$defs/ComponentCommon"
+        },
+        {
+          "$ref": "#/$defs/CatalogComponentCommon"
+        },
+        {
+          "properties": {
+            "accessibility": {
+              "additionalProperties": false,
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "component": {
+              "const": "PrecisionRecallChart"
+            },
+            "domain": {
+              "description": "\"unit\" = both axes [0, 1] (default). \"fit\" = tight domain around the points.",
+              "enum": [
+                "fit",
+                "unit"
+              ],
+              "type": "string"
+            },
+            "groups": {
+              "description": "Optional groups for categorical tone assignment.",
+              "items": {
+                "additionalProperties": false,
+                "description": "Optional grouping; drives the categorical tone (category1..8) in first-appearance order.",
+                "properties": {
+                  "id": {
+                    "description": "Stable identifier, unique within the chart.",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9._:-]+$",
+                    "type": "string"
+                  },
+                  "label": {
+                    "description": "Human-readable name.",
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "label"
+                ],
+                "type": "object"
+              },
+              "maxItems": 8,
+              "minItems": 0,
+              "type": "array"
+            },
+            "isoF1": {
+              "description": "Iso-F1 levels, strictly increasing. Default [0.2, 0.4, 0.6, 0.8].",
+              "items": {
+                "description": "An iso-F1 level, strictly inside (0, 1).",
+                "exclusiveMaximum": 1,
+                "exclusiveMinimum": 0,
+                "type": "number"
+              },
+              "maxItems": 9,
+              "minItems": 0,
+              "type": "array"
+            },
+            "label": {
+              "description": "Chart name and accessible name.",
+              "maxLength": 80,
+              "minLength": 1,
+              "type": "string"
+            },
+            "points": {
+              "description": "Evaluated points in draw order.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "groupId": {
+                    "description": "Stable identifier, unique within the chart.",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9._:-]+$",
+                    "type": "string"
+                  },
+                  "id": {
+                    "description": "Stable identifier, unique within the chart.",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9._:-]+$",
+                    "type": "string"
+                  },
+                  "label": {
+                    "description": "Human-readable name.",
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "precision": {
+                    "description": "A proportion.",
+                    "maximum": 1,
+                    "minimum": 0,
+                    "type": "number"
+                  },
+                  "recall": {
+                    "description": "A proportion.",
+                    "maximum": 1,
+                    "minimum": 0,
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "precision",
+                  "recall"
+                ],
+                "type": "object"
+              },
+              "maxItems": 200,
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          "required": [
+            "component",
+            "label",
+            "points"
+          ],
+          "type": "object"
+        }
+      ],
+      "type": "object",
+      "unevaluatedProperties": false,
+      "x-sentropic": {
+        "contract": "1.0",
+        "element": "st-precision-recall-chart",
+        "engine": "core",
+        "events": [],
+        "example": {
+          "component": "PrecisionRecallChart",
+          "groups": [
+            {
+              "id": "g1",
+              "label": "Baseline"
+            }
+          ],
+          "id": "root",
+          "label": "Retrieval precision vs recall",
+          "points": [
+            {
+              "groupId": "g1",
+              "id": "sys-a",
+              "label": "System A",
+              "precision": 0.85,
+              "recall": 0.72
+            },
+            {
+              "groupId": "g1",
+              "id": "sys-b",
+              "label": "System B",
+              "precision": 0.74,
+              "recall": 0.88
+            }
+          ]
+        },
+        "fallback": "text",
+        "parity": {
+          "angular": {
+            "file": "packages/components-angular",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          },
+          "react": {
+            "file": "packages/components-react",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          },
+          "svelte": {
+            "file": "packages/elements/src/contracts/precision-recall-chart.ts",
+            "note": "Reference pilot (§3.1); the catalogue is derived from it.",
+            "status": "source-of-truth",
+            "type": "PrecisionRecallChartProps"
+          },
+          "vue": {
+            "file": "packages/components-vue",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          }
+        },
+        "schema": "https://design-system.sent-tech.ca/catalogs/elements/v1/components/PrecisionRecallChart.json"
+      }
+    },
+    "RankCurveChart": {
+      "allOf": [
+        {
+          "$ref": "https://a2ui.org/specification/v0_9_1/common_types.json#/$defs/ComponentCommon"
+        },
+        {
+          "$ref": "#/$defs/CatalogComponentCommon"
+        },
+        {
+          "properties": {
+            "accessibility": {
+              "additionalProperties": false,
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "component": {
+              "const": "RankCurveChart"
+            },
+            "itemLabel": {
+              "description": "Noun for one ranked item, e.g. \"query\". Default \"item\".",
+              "maxLength": 24,
+              "minLength": 1,
+              "type": "string"
+            },
+            "label": {
+              "description": "Chart name and accessible name.",
+              "maxLength": 80,
+              "minLength": 1,
+              "type": "string"
+            },
+            "rankAxis": {
+              "description": "x axis: absolute rank (default) or rank as a share of the series length.",
+              "enum": [
+                "percent",
+                "rank"
+              ],
+              "type": "string"
+            },
+            "series": {
+              "description": "Series to compare as small-multiple rank curves.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "description": "Stable identifier, unique within the chart.",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9._:-]+$",
+                    "type": "string"
+                  },
+                  "label": {
+                    "description": "Human-readable name.",
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "values": {
+                    "description": "One value per evaluated item, in any order.",
+                    "items": {
+                      "description": "A proportion.",
+                      "maximum": 1,
+                      "minimum": 0,
+                      "type": "number"
+                    },
+                    "maxItems": 2000,
+                    "minItems": 1,
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "values"
+                ],
+                "type": "object"
+              },
+              "maxItems": 4,
+              "minItems": 1,
+              "type": "array"
+            },
+            "valueLabel": {
+              "description": "Axis title of the value. Default \"Recall\".",
+              "maxLength": 24,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "component",
+            "label",
+            "series"
+          ],
+          "type": "object"
+        }
+      ],
+      "type": "object",
+      "unevaluatedProperties": false,
+      "x-sentropic": {
+        "contract": "1.0",
+        "element": "st-rank-curve-chart",
+        "engine": "core",
+        "events": [],
+        "example": {
+          "component": "RankCurveChart",
+          "id": "root",
+          "itemLabel": "query",
+          "label": "Per-query recall distribution",
+          "series": [
+            {
+              "id": "sys-a",
+              "label": "System A",
+              "values": [
+                0.95,
+                0.82,
+                0.6,
+                0
+              ]
+            },
+            {
+              "id": "sys-b",
+              "label": "System B",
+              "values": [
+                0.9,
+                0.75,
+                0.55,
+                0.2
+              ]
+            }
+          ],
+          "valueLabel": "Recall"
+        },
+        "fallback": "text",
+        "parity": {
+          "angular": {
+            "file": "packages/components-angular",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          },
+          "react": {
+            "file": "packages/components-react",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          },
+          "svelte": {
+            "file": "packages/elements/src/contracts/rank-curve-chart.ts",
+            "note": "Reference pilot (§3.1); the catalogue is derived from it.",
+            "status": "source-of-truth",
+            "type": "RankCurveChartProps"
+          },
+          "vue": {
+            "file": "packages/components-vue",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          }
+        },
+        "schema": "https://design-system.sent-tech.ca/catalogs/elements/v1/components/RankCurveChart.json"
+      }
+    },
+    "ScoreCostChart": {
+      "allOf": [
+        {
+          "$ref": "https://a2ui.org/specification/v0_9_1/common_types.json#/$defs/ComponentCommon"
+        },
+        {
+          "$ref": "#/$defs/CatalogComponentCommon"
+        },
+        {
+          "properties": {
+            "accessibility": {
+              "additionalProperties": false,
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "component": {
+              "const": "ScoreCostChart"
+            },
+            "costUnit": {
+              "description": "Unit printed on the cost axis and in the table, e.g. \"USD per 1k items\".",
+              "maxLength": 32,
+              "minLength": 1,
+              "type": "string"
+            },
+            "frontier": {
+              "description": "Draw the Pareto frontier (lowest cost for a given score or better). Default true.",
+              "type": "boolean"
+            },
+            "groups": {
+              "description": "Optional groups for categorical tone assignment.",
+              "items": {
+                "additionalProperties": false,
+                "description": "Optional grouping; drives the categorical tone (category1..8) in first-appearance order.",
+                "properties": {
+                  "id": {
+                    "description": "Stable identifier, unique within the chart.",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9._:-]+$",
+                    "type": "string"
+                  },
+                  "label": {
+                    "description": "Human-readable name.",
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "label"
+                ],
+                "type": "object"
+              },
+              "maxItems": 8,
+              "minItems": 0,
+              "type": "array"
+            },
+            "label": {
+              "description": "Chart name and accessible name.",
+              "maxLength": 80,
+              "minLength": 1,
+              "type": "string"
+            },
+            "points": {
+              "description": "Evaluated points in draw order.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "cost": {
+                    "description": "Strictly positive cost in `costUnit`.",
+                    "exclusiveMinimum": 0,
+                    "maximum": 1000000000000,
+                    "type": "number"
+                  },
+                  "groupId": {
+                    "description": "Stable identifier, unique within the chart.",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9._:-]+$",
+                    "type": "string"
+                  },
+                  "id": {
+                    "description": "Stable identifier, unique within the chart.",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9._:-]+$",
+                    "type": "string"
+                  },
+                  "label": {
+                    "description": "Human-readable name.",
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "score": {
+                    "description": "The score (F1 by default).",
+                    "maximum": 1,
+                    "minimum": 0,
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "cost",
+                  "id",
+                  "label",
+                  "score"
+                ],
+                "type": "object"
+              },
+              "maxItems": 200,
+              "minItems": 1,
+              "type": "array"
+            },
+            "scoreLabel": {
+              "description": "Axis title of the score. Default \"F1\".",
+              "maxLength": 24,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "component",
+            "costUnit",
+            "label",
+            "points"
+          ],
+          "type": "object"
+        }
+      ],
+      "type": "object",
+      "unevaluatedProperties": false,
+      "x-sentropic": {
+        "contract": "1.0",
+        "element": "st-score-cost-chart",
+        "engine": "core",
+        "events": [],
+        "example": {
+          "component": "ScoreCostChart",
+          "costUnit": "USD per 1k items",
+          "id": "root",
+          "label": "F1 vs inference cost",
+          "points": [
+            {
+              "cost": 0.4,
+              "id": "sys-a",
+              "label": "System A",
+              "score": 0.72
+            },
+            {
+              "cost": 1.8,
+              "id": "sys-b",
+              "label": "System B",
+              "score": 0.86
+            }
+          ]
+        },
+        "fallback": "text",
+        "parity": {
+          "angular": {
+            "file": "packages/components-angular",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          },
+          "react": {
+            "file": "packages/components-react",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          },
+          "svelte": {
+            "file": "packages/elements/src/contracts/score-cost-chart.ts",
+            "note": "Reference pilot (§3.1); the catalogue is derived from it.",
+            "status": "source-of-truth",
+            "type": "ScoreCostChartProps"
+          },
+          "vue": {
+            "file": "packages/components-vue",
+            "note": "No counterpart in this framework package (§5.1: components with no framework counterpart record that fact).",
+            "status": "no-counterpart"
+          }
+        },
+        "schema": "https://design-system.sent-tech.ca/catalogs/elements/v1/components/ScoreCostChart.json"
       }
     },
     "TimeSeriesChart": {
