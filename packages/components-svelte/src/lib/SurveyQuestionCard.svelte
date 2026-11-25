@@ -2,6 +2,8 @@
   import type { Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
 
+  export type SurveyQuestionScope = "enterprise" | "personal";
+
   export type SurveyQuestionCardProps = Omit<HTMLAttributes<HTMLDivElement>, "class" | "title"> & {
     /** 1-based question number displayed in the counter badge. */
     index: number;
@@ -21,6 +23,20 @@
     optionalLabel?: string;
     /** Localized prefix for the question counter (default "Question"). */
     counterLabel?: string;
+    /** Enables the per-question company/personal orientation toggle in the card header. */
+    contextual?: boolean;
+    /** Active orientation for a contextual question. */
+    activeScope?: SurveyQuestionScope;
+    /** Label for the company option in the per-question toggle. */
+    enterpriseLabel?: string;
+    /** Label for the personal option in the per-question toggle. */
+    personalLabel?: string;
+    /** Accessible group label for the per-question toggle. */
+    scopeToggleLabel?: string;
+    /** Disables the per-question toggle when read-only. */
+    scopeDisabled?: boolean;
+    /** Fires when the respondent switches the per-question orientation. */
+    onscopechange?: (scope: SurveyQuestionScope) => void;
     /** Validation message announced immediately via `role="alert"`. */
     errorText?: string;
     /** Optional trailing header slot (e.g. draft countdown tag). */
@@ -47,6 +63,13 @@
     requiredLabel,
     optionalLabel,
     counterLabel = "Question",
+    contextual = false,
+    activeScope,
+    enterpriseLabel = "Entreprise",
+    personalLabel = "Perso",
+    scopeToggleLabel = "Contexte de réponse",
+    scopeDisabled = false,
+    onscopechange,
     errorText,
     headerTrailing,
     class: className,
@@ -54,7 +77,30 @@
     ...rest
   }: SurveyQuestionCardProps = $props();
 
+  let enterpriseBtnEl = $state<HTMLButtonElement | undefined>(undefined);
+  let personalBtnEl = $state<HTMLButtonElement | undefined>(undefined);
+
   const classes = $derived(["st-surveyQuestionCard", className].filter(Boolean).join(" "));
+  const showScopeToggle = $derived(Boolean(contextual && activeScope));
+
+  function handleScopeSelect(next: SurveyQuestionScope) {
+    if (scopeDisabled || next === activeScope) return;
+    onscopechange?.(next);
+  }
+
+  function handleScopeKeydown(event: KeyboardEvent, current: SurveyQuestionScope) {
+    if (scopeDisabled) return;
+    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      const target: SurveyQuestionScope = current === "enterprise" ? "personal" : "enterprise";
+      onscopechange?.(target);
+      if (target === "enterprise") {
+        enterpriseBtnEl?.focus();
+      } else {
+        personalBtnEl?.focus();
+      }
+    }
+  }
 </script>
 
 <div
@@ -62,6 +108,7 @@
   class={classes}
   data-invalid={errorText ? "true" : undefined}
   data-required={required ? "true" : undefined}
+  data-scope={showScopeToggle ? activeScope : undefined}
 >
   <Card class="st-surveyQuestionCard__card">
     <div class="st-surveyQuestionCard__inner">
@@ -79,9 +126,43 @@
             <Badge tone="neutral" size="sm">{optionalLabel}</Badge>
           {/if}
         </div>
-        {#if headerTrailing}
+        {#if showScopeToggle || headerTrailing}
           <div class="st-surveyQuestionCard__trailing">
-            {@render headerTrailing()}
+            {#if showScopeToggle}
+              <div
+                class="st-surveyQuestionCard__scopeToggle"
+                role="group"
+                aria-label={scopeToggleLabel}
+              >
+                <button
+                  bind:this={enterpriseBtnEl}
+                  type="button"
+                  class="st-surveyQuestionCard__scopeBtn"
+                  class:st-surveyQuestionCard__scopeBtn--active={activeScope === "enterprise"}
+                  aria-pressed={activeScope === "enterprise" ? "true" : "false"}
+                  disabled={scopeDisabled}
+                  onclick={() => handleScopeSelect("enterprise")}
+                  onkeydown={(e) => handleScopeKeydown(e, "enterprise")}
+                >
+                  {enterpriseLabel}
+                </button>
+                <button
+                  bind:this={personalBtnEl}
+                  type="button"
+                  class="st-surveyQuestionCard__scopeBtn"
+                  class:st-surveyQuestionCard__scopeBtn--active={activeScope === "personal"}
+                  aria-pressed={activeScope === "personal" ? "true" : "false"}
+                  disabled={scopeDisabled}
+                  onclick={() => handleScopeSelect("personal")}
+                  onkeydown={(e) => handleScopeKeydown(e, "personal")}
+                >
+                  {personalLabel}
+                </button>
+              </div>
+            {/if}
+            {#if headerTrailing}
+              {@render headerTrailing()}
+            {/if}
           </div>
         {/if}
       </header>
@@ -153,7 +234,52 @@
     align-items: center;
     display: inline-flex;
     flex: 0 0 auto;
+    flex-wrap: wrap;
     gap: var(--st-spacing-2, 0.5rem);
+  }
+
+  .st-surveyQuestionCard__scopeToggle {
+    background: var(--st-semantic-surface-subtle, #f3f4fb);
+    border: 1px solid var(--st-semantic-border-subtle, #d6d9ea);
+    border-radius: var(--st-component-control-radius, 0.5rem);
+    display: inline-flex;
+    padding: 0.125rem;
+  }
+
+  .st-surveyQuestionCard__scopeBtn {
+    background: transparent;
+    border: 0;
+    border-radius: calc(var(--st-component-control-radius, 0.5rem) - 0.125rem);
+    color: var(--st-semantic-text-secondary, #444455);
+    cursor: var(--st-cursor-interactive, pointer);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    min-height: 2.75rem;
+    padding: 0 0.875rem;
+    transition:
+      background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
+      color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+  }
+
+  .st-surveyQuestionCard__scopeBtn:hover:not(:disabled):not(.st-surveyQuestionCard__scopeBtn--active) {
+    color: var(--st-semantic-text-primary, #1f2437);
+  }
+
+  .st-surveyQuestionCard__scopeBtn--active {
+    background: var(--st-semantic-surface-default, #ffffff);
+    box-shadow: inset 0 0 0 1.5px var(--st-semantic-border-interactive, #01055e);
+    color: var(--st-semantic-text-primary, #1f2437);
+  }
+
+  .st-surveyQuestionCard__scopeBtn:focus-visible {
+    outline: var(--st-component-control-anatomy-focus-outline, 2px solid var(--st-component-control-focusRing, #01055e));
+    outline-offset: var(--st-component-control-anatomy-focus-offset, 1px);
+  }
+
+  .st-surveyQuestionCard__scopeBtn:disabled {
+    cursor: var(--st-cursor-disabled, not-allowed);
+    opacity: 0.6;
   }
 
   .st-surveyQuestionCard__body {

@@ -9,6 +9,8 @@
 
   export type LikertScaleLayout = "auto" | "stacked" | "horizontal";
 
+  export type LikertScaleKind = "ordinal" | "bipolar";
+
   export interface LikertScaleProps {
     /** Shared radio group name. */
     name: string;
@@ -16,6 +18,12 @@
     legend: string;
     /** Ordered scale steps (4 to 7 recommended). */
     options: LikertScaleOption[];
+    /** Ordinal (1..N) or symmetric bipolar (e.g. --, -, 0, +, ++) scale. */
+    scaleKind?: LikertScaleKind;
+    /** Option value representing the neutral midpoint on a bipolar scale. */
+    neutralOptionId?: string;
+    /** Option values (e.g. "I don't know") visually separated from the main scale inside the same radiogroup. */
+    nonSubstantive?: string[];
     /** Low-end pole label. */
     minLabel?: string;
     /** High-end pole label. */
@@ -43,6 +51,9 @@
     name,
     legend,
     options,
+    scaleKind = "ordinal",
+    neutralOptionId,
+    nonSubstantive = [],
     minLabel,
     maxLabel,
     layout = "auto",
@@ -61,6 +72,10 @@
   const helpId = `${uid}-help`;
   const errorId = `${uid}-error`;
 
+  const nonSubSet = $derived(new Set(nonSubstantive));
+  const substantiveOptions = $derived(options.filter((o) => !nonSubSet.has(o.value)));
+  const nonSubstantiveOptions = $derived(options.filter((o) => nonSubSet.has(o.value)));
+
   const isInvalid = $derived(invalid || Boolean(errorText));
   const describedBy = $derived(
     [
@@ -75,13 +90,14 @@
   const canGoHorizontal = $derived(
     layout === "horizontal" ||
       (layout === "auto" &&
-        options.length <= 5 &&
-        options.every((o) => o.label.trim().length <= 22))
+        substantiveOptions.length <= 5 &&
+        substantiveOptions.every((o) => o.label.trim().length <= 22))
   );
 
   const classes = $derived(
     [
       "st-likert",
+      scaleKind === "bipolar" ? "st-likert--bipolar" : null,
       canGoHorizontal ? "st-likert--horizontal-capable" : "st-likert--stacked",
       isInvalid ? "st-likert--invalid" : null,
       className
@@ -89,6 +105,14 @@
       .filter(Boolean)
       .join(" ")
   );
+
+  function defaultStepBadge(index: number, count: number): string {
+    if (scaleKind === "bipolar") {
+      if (count === 5) return ["−−", "−", "0", "+", "++"][index] ?? String(index + 1);
+      if (count === 7) return ["−−−", "−−", "−", "0", "+", "++", "+++"][index] ?? String(index + 1);
+    }
+    return String(index + 1);
+  }
 
   function escapeRegExp(input: string): string {
     return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -128,15 +152,18 @@
   {/if}
 
   <div class="st-likert__options">
-    {#each options as option, index (option.value)}
+    {#each substantiveOptions as option, index (option.value)}
       {@const checked = value === option.value}
-      {@const badge = option.stepBadge ?? String(index + 1)}
+      {@const badge = option.stepBadge ?? defaultStepBadge(index, substantiveOptions.length)}
       {@const hideBadge = badgeAlreadyInLabel(badge, option.label)}
+      {@const isNeutral = Boolean(neutralOptionId && option.value === neutralOptionId)}
       {@const optionDisabled = Boolean(disabled || option.disabled)}
       <label
         class="st-likert__option"
         class:st-likert__option--checked={checked}
+        class:st-likert__option--neutral={isNeutral}
         class:st-likert__option--disabled={optionDisabled}
+        data-neutral={isNeutral ? "true" : undefined}
         data-invalid={isInvalid ? "true" : undefined}
       >
         <input
@@ -165,6 +192,40 @@
     <div class="st-likert__poles" aria-hidden="true">
       <span class="st-likert__pole st-likert__pole--min">{minLabel ?? ""}</span>
       <span class="st-likert__pole st-likert__pole--max">{maxLabel ?? ""}</span>
+    </div>
+  {/if}
+
+  {#if nonSubstantiveOptions.length > 0}
+    <div class="st-likert__nonSubstantive">
+      {#each nonSubstantiveOptions as option (option.value)}
+        {@const checked = value === option.value}
+        {@const optionDisabled = Boolean(disabled || option.disabled)}
+        <label
+          class="st-likert__option st-likert__option--nonSubstantive"
+          class:st-likert__option--checked={checked}
+          class:st-likert__option--disabled={optionDisabled}
+          data-non-substantive="true"
+          data-invalid={isInvalid ? "true" : undefined}
+        >
+          <input
+            class="st-likert__input"
+            type="radio"
+            {name}
+            value={option.value}
+            {checked}
+            disabled={optionDisabled}
+            required={required || undefined}
+            aria-describedby={describedBy}
+            onchange={() => select(option.value, option.disabled)}
+          />
+          <span class="st-likert__content">
+            <span class="st-likert__label">{option.label}</span>
+            {#if option.description}
+              <span class="st-likert__description">{option.description}</span>
+            {/if}
+          </span>
+        </label>
+      {/each}
     </div>
   {/if}
 
@@ -333,6 +394,23 @@
     margin: var(--st-spacing-2, 0.5rem) 0 0;
   }
 
+  .st-likert__option--neutral:not(.st-likert__option--checked) {
+    background: var(--st-semantic-surface-subtle, #f3f4fb);
+  }
+
+  .st-likert__nonSubstantive {
+    border-top: 1px dashed var(--st-semantic-border-subtle, #d6d9ea);
+    display: grid;
+    gap: var(--st-spacing-2, 0.5rem);
+    margin-top: var(--st-spacing-3, 0.75rem);
+    padding-top: var(--st-spacing-3, 0.75rem);
+  }
+
+  .st-likert__option--nonSubstantive {
+    background: var(--st-semantic-surface-subtle, #f3f4fb);
+    grid-template-columns: auto 1fr;
+  }
+
   @container (min-width: 600px) {
     .st-likert--horizontal-capable .st-likert__options {
       grid-auto-columns: minmax(0, 1fr);
@@ -340,7 +418,7 @@
       grid-template-columns: none;
     }
 
-    .st-likert--horizontal-capable .st-likert__option {
+    .st-likert--horizontal-capable .st-likert__options .st-likert__option {
       align-content: start;
       gap: var(--st-spacing-2, 0.5rem);
       grid-template-columns: 1fr;
