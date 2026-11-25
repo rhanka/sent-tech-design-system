@@ -1574,13 +1574,14 @@ export function FileUploader({
   );
 }
 
-export type FooterProps = React.HTMLAttributes<HTMLElement> & {
+export type FooterProps = Omit<React.HTMLAttributes<HTMLElement>, "className"> & {
   brand?: React.ReactNode;
   columns?: Array<{ title?: React.ReactNode; links: Array<{ label: React.ReactNode; href: string }> }>;
   links?: Array<{ label: React.ReactNode; href: string }>;
   legalLinks?: Array<{ label: React.ReactNode; href: string }>;
   copyright?: React.ReactNode;
   legalNavLabel?: string;
+  className?: string;
 };
 export function Footer({ brand, columns, links, legalLinks, copyright, legalNavLabel = "Legal links", className, ...rest }: FooterProps) {
   const groups = columns ?? (links ? [{ links }] : []);
@@ -2952,13 +2953,14 @@ export function deriveInitials(name?: string): string {
     .map((part) => part[0]?.toUpperCase())
     .join("");
 }
-export type HeaderProps = React.HTMLAttributes<HTMLElement> & {
+export type HeaderProps = Omit<React.HTMLAttributes<HTMLElement>, "className"> & {
   brand?: React.ReactNode;
   title?: React.ReactNode;
   navigation?: Array<{ label: React.ReactNode; href: string }>;
   navItems?: Array<{ label: React.ReactNode; href: string }>;
   account?: HeaderAccount;
   sticky?: boolean;
+  className?: string;
 };
 export function Header({ brand, title, navigation, navItems, account, sticky = false, className, ...rest }: HeaderProps) {
   const links = navigation ?? navItems ?? [];
@@ -5757,7 +5759,7 @@ export interface SideNavItem {
   active?: boolean;
   children?: SideNavItem[];
 }
-export type SideNavProps = React.HTMLAttributes<HTMLElement> & { items: SideNavItem[]; label?: string };
+export type SideNavProps = Omit<React.HTMLAttributes<HTMLElement>, "className"> & { items: SideNavItem[]; label?: string; className?: string };
 export function SideNav({ items, label = "Navigation", className, ...rest }: SideNavProps) {
   return (
     <nav {...rest} className={classNames("st-sidenav st-sideNav", className)} aria-label={label}>

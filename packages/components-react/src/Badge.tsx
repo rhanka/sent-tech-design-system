@@ -20,10 +20,11 @@ export type BadgeShape = "pill" | "circle";
  */
 export type BadgeSize = "sm" | "md";
 
-export type BadgeProps = React.HTMLAttributes<HTMLSpanElement> & {
+export type BadgeProps = Omit<React.HTMLAttributes<HTMLSpanElement>, "className"> & {
   tone?: BadgeTone;
   shape?: BadgeShape;
   size?: BadgeSize;
+  className?: string;
 };
 
 export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(

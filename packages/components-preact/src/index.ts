@@ -144,6 +144,28 @@ export { TimeRangePicker } from "./TimeRangePicker.js";
 export type { TimeRangePickerProps } from "./TimeRangePicker.js";
 export { Toggle } from "./Toggle.js";
 export type { ToggleProps } from "./Toggle.js";
+export { Header, deriveInitials } from "./Header.js";
+export type { HeaderProps, HeaderAccount } from "./Header.js";
+export { Footer } from "./Footer.js";
+export type { FooterProps } from "./Footer.js";
+export { SideNav } from "./SideNav.js";
+export type { SideNavProps, SideNavItem } from "./SideNav.js";
+export { NavItem } from "./NavItem.js";
+export type { NavItemProps, NavItemDepth, NavItemStatus, NavItemSwatch } from "./NavItem.js";
+export { NavActionStack } from "./NavActionStack.js";
+export type {
+  NavActionStackProps,
+  NavAction,
+  NavActionDangerZone,
+  NavActionKind,
+  NavActionStackOrientation,
+} from "./NavActionStack.js";
+export { LanguageToggle } from "./LanguageToggle.js";
+export type { LanguageToggleProps, LanguageToggleLocale } from "./LanguageToggle.js";
+export { Badge } from "./Badge.js";
+export type { BadgeProps, BadgeTone, BadgeShape, BadgeSize } from "./Badge.js";
+export { ColorSwatch } from "./ColorSwatch.js";
+export type { ColorSwatchProps, ColorSwatchShape } from "./ColorSwatch.js";
 export {
   computeSubMenuPosition,
   pointInSafeTriangle,
