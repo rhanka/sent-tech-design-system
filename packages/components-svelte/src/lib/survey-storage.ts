@@ -110,6 +110,13 @@ export function loadSurveyDraft(
         parsed.enrollmentMeta && typeof parsed.enrollmentMeta === "object"
           ? parsed.enrollmentMeta
           : {},
+      ...(parsed.entryScope !== undefined ? { entryScope: parsed.entryScope } : {}),
+      ...(parsed.depthMode !== undefined ? { depthMode: parsed.depthMode } : {}),
+      ...(Array.isArray(parsed.selectedThemes) ? { selectedThemes: parsed.selectedThemes } : {}),
+      ...(parsed.questionScopes && typeof parsed.questionScopes === "object"
+        ? { questionScopes: parsed.questionScopes }
+        : {}),
+      ...(typeof parsed.step === "string" ? { step: parsed.step } : {}),
       expiresAt: parsed.expiresAt,
       updatedAt: typeof parsed.updatedAt === "number" ? parsed.updatedAt : now,
     };
