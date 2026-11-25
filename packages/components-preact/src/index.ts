@@ -144,6 +144,16 @@ export { TimeRangePicker } from "./TimeRangePicker.js";
 export type { TimeRangePickerProps } from "./TimeRangePicker.js";
 export { Toggle } from "./Toggle.js";
 export type { ToggleProps } from "./Toggle.js";
+export { Drawer } from "./Drawer.js";
+export type { DrawerProps } from "./Drawer.js";
+export { LanguageSelector } from "./LanguageSelector.js";
+export type { LanguageSelectorProps, LanguageOption } from "./LanguageSelector.js";
+export { SkipLink } from "./SkipLink.js";
+export type { SkipLinkProps } from "./SkipLink.js";
+export { SlideIndicator } from "./SlideIndicator.js";
+export type { SlideIndicatorProps, SlideIndicatorVariant } from "./SlideIndicator.js";
+export { TreeView } from "./TreeView.js";
+export type { TreeViewProps, TreeNode } from "./TreeView.js";
 export {
   computeSubMenuPosition,
   pointInSafeTriangle,

@@ -110,6 +110,11 @@ const switched = [
   "TimePicker",
   "TimeRangePicker",
   "Toggle",
+  "Drawer",
+  "LanguageSelector",
+  "SkipLink",
+  "SlideIndicator",
+  "TreeView",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -186,6 +191,11 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   TimePicker: handWrittenCatalog.TimePicker,
   TimeRangePicker: handWrittenTimeRangePicker.TimeRangePicker,
   Toggle: handWrittenCatalog.Toggle,
+  Drawer: handWrittenCatalog.Drawer,
+  LanguageSelector: handWrittenCatalog.LanguageSelector,
+  SkipLink: handWrittenCatalog.SkipLink,
+  SlideIndicator: handWrittenCatalog.SlideIndicator,
+  TreeView: handWrittenCatalog.TreeView,
 };
 
 describe("React leg provenance", () => {

@@ -30,6 +30,7 @@ test("coverage manifest owns the spike modules plus lots P1 and P2, no more", ()
     "CopyButton",
     "DatePicker",
     "Divider",
+    "Drawer",
     "Dropdown",
     "EmptyState",
     "ErrorSummary",
@@ -45,6 +46,7 @@ test("coverage manifest owns the spike modules plus lots P1 and P2, no more", ()
     "Inline",
     "InlineLoading",
     "Input",
+    "LanguageSelector",
     "Link",
     "LoadingState",
     "Menu",
@@ -70,6 +72,8 @@ test("coverage manifest owns the spike modules plus lots P1 and P2, no more", ()
     "SelectableList",
     "SelectableRow",
     "SkeletonText",
+    "SkipLink",
+    "SlideIndicator",
     "Slider",
     "Stack",
     "StatusDot",
@@ -84,6 +88,7 @@ test("coverage manifest owns the spike modules plus lots P1 and P2, no more", ()
     "Timeline",
     "Toast",
     "Toggle",
+    "TreeView",
   ]);
   assert.deepEqual(sourceModules().map((file) => file.replace(/\.tsx$/, "")).sort(), manifest.modules.map((row) => row.module).sort());
 });
@@ -99,6 +104,11 @@ test("coverage manifest lots are W3 conversion lots; hard set overlaps P5", () =
   assert.deepEqual(lots.get("Menu"), "P3");
   assert.deepEqual(lots.get("MenuPopover"), "P3");
   assert.deepEqual(lots.get("ContentSwitcher"), "P3");
+  assert.deepEqual(lots.get("Drawer"), "P3");
+  assert.deepEqual(lots.get("LanguageSelector"), "P3");
+  assert.deepEqual(lots.get("SkipLink"), "P3");
+  assert.deepEqual(lots.get("SlideIndicator"), "P3");
+  assert.deepEqual(lots.get("TreeView"), "P3");
   for (const name of [
     "Calendar",
     "Checkbox",

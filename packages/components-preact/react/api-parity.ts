@@ -134,6 +134,14 @@ export type PropsParity = [
   Expect<Equal<Emitted.TimePickerFormat, HandWritten.TimePickerFormat>>,
   Expect<Equal<Emitted.TimeRangePickerProps, HandWritten.TimeRangePickerProps>>,
   Expect<Equal<Emitted.ToggleProps, HandWritten.ToggleProps>>,
+  Expect<Equal<Emitted.DrawerProps, HandWritten.DrawerProps>>,
+  Expect<Equal<Emitted.LanguageSelectorProps, HandWritten.LanguageSelectorProps>>,
+  Expect<Equal<Emitted.LanguageOption, HandWritten.LanguageOption>>,
+  Expect<Equal<Emitted.SkipLinkProps, HandWritten.SkipLinkProps>>,
+  Expect<Equal<Emitted.SlideIndicatorProps, HandWritten.SlideIndicatorProps>>,
+  Expect<Equal<Emitted.SlideIndicatorVariant, HandWritten.SlideIndicatorVariant>>,
+  Expect<Equal<Emitted.TreeViewProps, HandWritten.TreeViewProps>>,
+  Expect<Equal<Emitted.TreeNode, HandWritten.TreeNode>>,
   Expect<Equal<Emitted.AbsoluteDraft, HandWritten.AbsoluteDraft>>,
   Expect<Equal<Emitted.AbsoluteSplit, HandWritten.AbsoluteSplit>>,
   Expect<Equal<Emitted.TimeRange, HandWritten.TimeRange>>,
@@ -221,6 +229,11 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.TimePicker, typeof HandWritten.TimePicker>>,
   Expect<Equal<typeof Emitted.TimeRangePicker, typeof HandWritten.TimeRangePicker>>,
   Expect<Equal<typeof Emitted.Toggle, typeof HandWritten.Toggle>>,
+  Expect<Equal<typeof Emitted.Drawer, typeof HandWritten.Drawer>>,
+  Expect<Equal<typeof Emitted.LanguageSelector, typeof HandWritten.LanguageSelector>>,
+  Expect<Equal<typeof Emitted.SkipLink, typeof HandWritten.SkipLink>>,
+  Expect<Equal<typeof Emitted.SlideIndicator, typeof HandWritten.SlideIndicator>>,
+  Expect<Equal<typeof Emitted.TreeView, typeof HandWritten.TreeView>>,
 ];
 
 export type ValueParity = [

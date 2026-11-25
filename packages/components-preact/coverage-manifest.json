@@ -666,6 +666,51 @@
       "lot": "P2",
       "hardSet": false,
       "renderable": true
+    },
+    {
+      "module": "Drawer",
+      "file": "src/Drawer.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "overlay",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "LanguageSelector",
+      "file": "src/LanguageSelector.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "SkipLink",
+      "file": "src/SkipLink.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "SlideIndicator",
+      "file": "src/SlideIndicator.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "TreeView",
+      "file": "src/TreeView.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
     }
   ],
   "adaptersNote": "The three adapters are owned by lot P5 (hard set) and reused by every conversion lot. Their file set must stay identical to the ADAPTERS map of scripts/emit-react.mjs: the emission is the lint of the single-source rule.",
