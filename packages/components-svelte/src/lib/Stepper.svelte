@@ -21,6 +21,8 @@
     onStepClick?: (index: number) => void;
     /** Étiquette a11y de la liste d'étapes. */
     label?: string;
+    /** Replie les libellés des étapes non courantes sous 480 px tout en les gardant lisibles aux lecteurs d'écran. */
+    compactMobile?: boolean;
     class?: string;
   };
 
@@ -31,12 +33,20 @@
     clickable = false,
     onStepClick,
     label = "Progression",
+    compactMobile = false,
     class: className,
     ...rest
   }: StepperProps = $props();
 
   const classes = $derived(
-    ["st-stepper", `st-stepper--${orientation}`, className].filter(Boolean).join(" ")
+    [
+      "st-stepper",
+      `st-stepper--${orientation}`,
+      compactMobile ? "st-stepper--compactMobile" : null,
+      className
+    ]
+      .filter(Boolean)
+      .join(" ")
   );
 
   function stateOf(index: number): "complete" | "current" | "upcoming" {
@@ -253,5 +263,46 @@
 
   .st-stepper__step--current .st-stepper__label {
     color: var(--st-semantic-action-primary);
+  }
+
+  .st-stepper--compactMobile.st-stepper--horizontal {
+    container-type: inline-size;
+  }
+
+  @container (max-width: 480px) {
+    .st-stepper--compactMobile.st-stepper--horizontal .st-stepper__step {
+      flex: 0 0 auto;
+    }
+
+    .st-stepper--compactMobile.st-stepper--horizontal .st-stepper__step--current {
+      flex: 1 1 auto;
+    }
+
+    .st-stepper--compactMobile.st-stepper--horizontal
+      .st-stepper__step:not(.st-stepper__step--current)
+      .st-stepper__indicator {
+      min-width: 2.75rem;
+    }
+
+    .st-stepper--compactMobile.st-stepper--horizontal
+      .st-stepper__step:last-child:not(.st-stepper__step--current)
+      .st-stepper__indicator {
+      min-width: auto;
+    }
+
+    .st-stepper--compactMobile.st-stepper--horizontal
+      .st-stepper__step:not(.st-stepper__step--current)
+      .st-stepper__text {
+      border: 0;
+      clip: rect(0, 0, 0, 0);
+      clip-path: inset(50%);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      white-space: nowrap;
+      width: 1px;
+    }
   }
 </style>
