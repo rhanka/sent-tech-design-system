@@ -63,7 +63,13 @@ describe("docs navigation model", () => {
           name !== "CommentThread" &&
           name !== "OrphanList" &&
           name !== "ReviewModeToggle" &&
-          name !== "ThreadPanel"
+          name !== "ThreadPanel" &&
+          // Survey kit (S-1..S-3) — entrées catalogue / documentation livrées en S-5
+          name !== "LikertScale" &&
+          name !== "SurveyForm" &&
+          name !== "SurveyNav" &&
+          name !== "SurveyPrivacyNotice" &&
+          name !== "SurveyQuestionCard"
       )
       .sort();
     const catalogComponents = COMPONENTS.map((component) => component.name).sort();
