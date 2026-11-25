@@ -127,6 +127,14 @@
     flex-direction: column;
   }
 
+  .st-stepper--horizontal .st-stepper__step:last-child {
+    flex: 0 0 auto;
+  }
+
+  .st-stepper--horizontal .st-stepper__step:last-child:not(:first-child) {
+    max-width: 40%;
+  }
+
   .st-stepper--vertical .st-stepper__step {
     align-items: flex-start;
     flex: 0 0 auto;
@@ -143,6 +151,7 @@
 
   .st-stepper--horizontal .st-stepper__indicator {
     flex-direction: row;
+    justify-content: flex-start;
     width: 100%;
   }
 
@@ -199,11 +208,9 @@
 
   .st-stepper--horizontal .st-stepper__connector {
     height: 2px;
-    margin-top: calc(0.75rem - 1px);
   }
 
   .st-stepper--vertical .st-stepper__connector {
-    margin-left: calc(0.75rem - 1px);
     min-height: 1.5rem;
     width: 2px;
   }
@@ -215,6 +222,8 @@
   }
 
   .st-stepper--horizontal .st-stepper__text {
+    box-sizing: border-box;
+    max-width: 100%;
     padding-right: var(--st-spacing-3, 0.75rem);
     padding-top: var(--st-spacing-2, 0.5rem);
   }
@@ -227,11 +236,15 @@
     color: var(--st-semantic-text-primary);
     font-size: 0.875rem;
     font-weight: 600;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .st-stepper__description {
     color: var(--st-semantic-text-secondary);
     font-size: 0.8125rem;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   /* State: complete */
