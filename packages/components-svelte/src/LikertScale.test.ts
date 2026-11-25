@@ -119,7 +119,54 @@ describe("LikertScale — native semantics and selection", () => {
     ]);
   });
 
-  it("exposes minLabel and maxLabel poles to screen readers and wires them via aria-describedby", () => {
+  it("auto-extracts bipolar symbol prefixes and hides badges for NSP or empty/null stepBadge", () => {
+    const bipolarWithNsp = [
+      { value: "m2", label: "−− · Fortement négatif" },
+      { value: "m1", label: "− · Plutôt négatif" },
+      { value: "0", label: "= · Neutre" },
+      { value: "p1", label: "+ · Plutôt positif" },
+      { value: "p2", label: "++ · Fortement positif" },
+      { value: "nsp", label: "Je ne sais pas ou non concerné" }
+    ];
+    const { container: cBipolar } = render(LikertScale, {
+      props: { name: "ai-impact", legend: "Impact IA", options: bipolarWithNsp }
+    });
+    expect([...cBipolar.querySelectorAll(".st-likert__badge")].map((el) => el.textContent)).toEqual([
+      "−−",
+      "−",
+      "=",
+      "+",
+      "++"
+    ]);
+    expect([...cBipolar.querySelectorAll(".st-likert__label")].map((el) => el.textContent)).toEqual([
+      "Fortement négatif",
+      "Plutôt négatif",
+      "Neutre",
+      "Plutôt positif",
+      "Fortement positif",
+      "Je ne sais pas ou non concerné"
+    ]);
+    const optionEls = [...cBipolar.querySelectorAll(".st-likert__option")];
+    expect(optionEls[5]?.querySelector(".st-likert__badge")).toBeNull();
+
+    const { container: cExplicitEmpty } = render(LikertScale, {
+      props: {
+        name: "explicit-empty",
+        legend: "Sans pastille",
+        options: [
+          { value: "a", label: "Option A", stepBadge: "" },
+          { value: "b", label: "Option B", stepBadge: "   " },
+          { value: "c", label: "Option C", stepBadge: null },
+          { value: "d", label: "Option D", stepBadge: "D" }
+        ]
+      }
+    });
+    expect(
+      [...cExplicitEmpty.querySelectorAll(".st-likert__badge")].map((el) => el.textContent)
+    ).toEqual(["D"]);
+  });
+
+  it("exposes minLabel and maxLabel poles to screen readers on fieldset without duplicating onto radios", () => {
     const { container } = render(LikertScale, {
       props: {
         name: "poles",
@@ -139,7 +186,7 @@ describe("LikertScale — native semantics and selection", () => {
     expect(poles.textContent).toContain("Faible");
     expect(poles.textContent).toContain("Élevée");
     expect(fieldset.getAttribute("aria-describedby")).toContain(poles.id);
-    expect(radios.every((r) => (r.getAttribute("aria-describedby") ?? "").includes(poles.id))).toBe(true);
+    expect(radios.every((r) => r.getAttribute("aria-describedby") === null)).toBe(true);
   });
 });
 
@@ -228,13 +275,13 @@ describe("LikertScale — validation, accessibility and styling contract", () =>
     expect(fieldset.getAttribute("aria-invalid")).toBe("true");
     expect(fieldset.getAttribute("aria-describedby")).toContain(help.id);
     expect(fieldset.getAttribute("aria-describedby")).toContain(alert.id);
-    expect(radios.every((r) => r.required && (r.getAttribute("aria-describedby") ?? "").includes(alert.id))).toBe(true);
+    expect(radios.every((r) => r.required && r.getAttribute("aria-describedby") === null)).toBe(true);
   });
 
-  it("enforces 48px touch targets, container queries, zero inline style attrs, and devmtl tokens", () => {
+  it("enforces 48px touch targets, container queries with full width, zero inline style attrs, and devmtl tokens", () => {
     const src = readFileSync(join(here, "lib/LikertScale.svelte"), "utf8");
     expect(src).toContain("min-height: 3rem");
-    expect(src).toContain("container-type: inline-size");
+    expect(src).toMatch(/\.st-likert\s*\{[^}]*container-type:\s*inline-size;[^}]*width:\s*100%;/s);
     expect(src).toContain("@container");
     expect(src).toContain("--st-component-control-hoverBackground");
     expect(src).not.toMatch(/\sstyle=/);

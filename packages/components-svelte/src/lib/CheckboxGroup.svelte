@@ -170,7 +170,6 @@
         checked={isChecked}
         disabled={Boolean(option.disabled || isCapped)}
         invalid={isInvalid}
-        aria-describedby={describedBy}
         onchange={(event) => toggle(option.value, event.currentTarget.checked)}
       />
     {/each}
@@ -184,10 +183,14 @@
 <style>
   .st-checkboxGroup {
     border: 0;
-    container-type: inline-size;
     margin: 0;
     min-width: 0;
     padding: 0;
+  }
+
+  .st-checkboxGroup--card {
+    container-type: inline-size;
+    width: 100%;
   }
 
   .st-checkboxGroup__legend {

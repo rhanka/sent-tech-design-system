@@ -2,7 +2,7 @@
   export interface LikertScaleOption {
     value: string;
     label: string;
-    stepBadge?: string;
+    stepBadge?: string | null;
     description?: string;
     disabled?: boolean;
   }
@@ -84,16 +84,41 @@
     return new RegExp(`^${escapeRegExp(token)}(?:\\s*[·.:–—-]\\s*|\\s+|$)`);
   }
 
-  function resolveOptionDisplay(
+  const SYMBOL_PREFIX_RE = /^([0-9]{1,2}|[+\-−–—=±/]{1,3}|[A-Za-z][0-9]{1,2})\s*·\s*(.+)$/;
+
+  const hasPrefixedOption = $derived(
+    options.some((o) => o.stepBadge === undefined && SYMBOL_PREFIX_RE.test(o.label.trim()))
+  );
+
+  function stripBadgePrefix(
     badge: string,
     label: string
-  ): { displayLabel: string; showBadge: boolean } {
+  ): { badge: string; displayLabel: string; showBadge: boolean } {
     const trimmed = label.trim();
     const re = badgePrefixPattern(badge);
-    if (!re || !re.test(trimmed)) return { displayLabel: label, showBadge: true };
+    if (!re || !re.test(trimmed)) return { badge, displayLabel: label, showBadge: true };
     const stripped = trimmed.replace(re, "").trim();
-    if (!stripped) return { displayLabel: label, showBadge: false };
-    return { displayLabel: stripped, showBadge: true };
+    if (!stripped) return { badge, displayLabel: label, showBadge: false };
+    return { badge, displayLabel: stripped, showBadge: true };
+  }
+
+  function resolveOptionDisplay(
+    option: LikertScaleOption,
+    index: number
+  ): { badge: string; displayLabel: string; showBadge: boolean } {
+    if (option.stepBadge !== undefined) {
+      const explicit = (option.stepBadge ?? "").trim();
+      if (!explicit) return { badge: "", displayLabel: option.label, showBadge: false };
+      return stripBadgePrefix(explicit, option.label);
+    }
+    const prefixMatch = option.label.trim().match(SYMBOL_PREFIX_RE);
+    if (prefixMatch) {
+      return { badge: prefixMatch[1], displayLabel: prefixMatch[2].trim(), showBadge: true };
+    }
+    if (hasPrefixedOption) {
+      return { badge: "", displayLabel: option.label, showBadge: false };
+    }
+    return stripBadgePrefix(String(index + 1), option.label);
   }
 
   const canGoHorizontal = $derived(
@@ -101,8 +126,7 @@
       (layout === "auto" &&
         options.length <= 5 &&
         options.every((o, index) => {
-          const badge = o.stepBadge ?? String(index + 1);
-          const { displayLabel } = resolveOptionDisplay(badge, o.label);
+          const { displayLabel } = resolveOptionDisplay(o, index);
           return displayLabel.trim().length <= 22 && !o.description?.trim();
         }))
   );
@@ -146,8 +170,7 @@
   <div class="st-likert__options">
     {#each options as option, index (option.value)}
       {@const checked = value === option.value}
-      {@const badge = option.stepBadge ?? String(index + 1)}
-      {@const { displayLabel, showBadge } = resolveOptionDisplay(badge, option.label)}
+      {@const { badge, displayLabel, showBadge } = resolveOptionDisplay(option, index)}
       {@const optionDisabled = Boolean(disabled || option.disabled)}
       <label
         class="st-likert__option"
@@ -163,10 +186,9 @@
           {checked}
           disabled={optionDisabled}
           required={required || undefined}
-          aria-describedby={describedBy}
           onchange={() => select(option.value, option.disabled)}
         />
-        {#if showBadge}
+        {#if showBadge && badge}
           <span class="st-likert__badge">{badge}</span>
         {/if}
         <span class="st-likert__content">
@@ -198,6 +220,7 @@
     margin: 0;
     min-width: 0;
     padding: 0;
+    width: 100%;
   }
 
   .st-likert__legend {

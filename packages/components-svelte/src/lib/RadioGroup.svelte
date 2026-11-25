@@ -118,7 +118,6 @@
         disabled={option.disabled}
         required={required || undefined}
         invalid={isInvalid}
-        aria-describedby={describedBy}
         onchange={() => select(option.value)}
       />
     {/each}
@@ -132,10 +131,14 @@
 <style>
   .st-radioGroup {
     border: 0;
-    container-type: inline-size;
     margin: 0;
     min-width: 0;
     padding: 0;
+  }
+
+  .st-radioGroup--card {
+    container-type: inline-size;
+    width: 100%;
   }
 
   .st-radioGroup__legend {
