@@ -40,14 +40,26 @@ const REVIEW_KIT_SVELTE_ONLY = new Set([
   "ThreadPanel",
 ]);
 
+const SURVEY_KIT_SVELTE_ONLY = new Set([
+  "SurveyNav",
+  "SurveyPrivacyNotice",
+  "SurveyQuestionCard",
+]);
+
 const componentNames = [
   ...svelteIndex.matchAll(/^export \{ default as (\w+)(?:,| \})/gm),
 ]
   .map((match) => match[1])
   // AppShell + IdentityButton = chrome applicatif svelte-only (ex-paquet app-shell,
-  // replié dans design-system-svelte) ; review-kit (DS-3..DS-5) est svelte-only à ce lot
-  // (Vue en DS-6, aucun port Angular dans le périmètre).
-  .filter((name) => name !== "AppShell" && name !== "IdentityButton" && !REVIEW_KIT_SVELTE_ONLY.has(name))
+  // replié dans design-system-svelte) ; review-kit (DS-3..DS-5) et survey-kit (S-2)
+  // sont svelte-only à ce lot (parité Angular/React/Vue planifiée ultérieurement).
+  .filter(
+    (name) =>
+      name !== "AppShell" &&
+      name !== "IdentityButton" &&
+      !REVIEW_KIT_SVELTE_ONLY.has(name) &&
+      !SURVEY_KIT_SVELTE_ONLY.has(name),
+  )
   .filter((name) => !absentFromAngular.has(name));
 
 describe("Angular public surface", () => {
