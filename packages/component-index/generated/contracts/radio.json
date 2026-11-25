@@ -1,8 +1,8 @@
 {
   "componentId": "radio",
   "contractSource": "derived",
-  "digest": "sha256:272ff96b30afce268b92962f3c7315c189124d5bbc23d252f9896378ec53cb66",
-  "entryDigest": "sha256:c8d40393fbf51238ff6aa564c66f7522db8ca632f8068a1586cc60822fd09c76",
+  "digest": "sha256:d13b830cf7ba86511dd93c62f6ea7e203d9b032cde9a81fe0f8580a791f1f79e",
+  "entryDigest": "sha256:eac49e1992753360a4de04f1b885fd73e2801f922af737ed19cf7a3ebc19101d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -162,6 +162,10 @@
           "class": {
             "type": "string"
           },
+          "description": {
+            "description": "Secondary muted description line under the label.",
+            "type": "string"
+          },
           "helperText": {
             "type": "string"
           },
@@ -170,6 +174,13 @@
           },
           "label": {
             "type": "string"
+          },
+          "variant": {
+            "description": "Presentation density: compact list row or >= 48px touch card.",
+            "enum": [
+              "list",
+              "card"
+            ]
           }
         },
         "required": [
@@ -180,7 +191,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:64f64bcb53cb9368ca234808ab33eb7c5b5ade0340d9b47e609ec9ef7ccf737e",
+        "declarationDigest": "sha256:633521e7da4c9655e42ad0213f2a613f5d26da71ef74f053766a68495ca7534f",
         "declarationPath": "packages/components-svelte/dist/Radio.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RadioProps",
