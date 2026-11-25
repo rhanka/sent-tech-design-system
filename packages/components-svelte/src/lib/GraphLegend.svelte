@@ -50,7 +50,7 @@
 
 <div
   class={classes}
-  role={variant === "inline" ? "region" : "group"}
+  role={variant === "inline" ? "region" : undefined}
   aria-label={title ?? "Graph legend"}
 >
   {#if title}

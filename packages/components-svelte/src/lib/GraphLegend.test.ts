@@ -83,7 +83,7 @@ describe("GraphLegend — size & variant extensions (S-4)", () => {
     expect(root.getAttribute("role")).toBe("region");
 
     const overlay = render(GraphLegend, { props: { entries: sampleEntries } }).container;
-    expect(overlay.querySelector(".st-graphLegend")?.getAttribute("role")).toBe("group");
+    expect(overlay.querySelector(".st-graphLegend")?.getAttribute("role")).toBeNull();
     expect(overlay.querySelector(".st-graphLegend")?.getAttribute("aria-label")).toBe("Graph legend");
 
     const source = readFileSync(
