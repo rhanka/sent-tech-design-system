@@ -1,5 +1,10 @@
 # Changelog
 
+## @sentropic/design-system-svelte 0.46.1 — Stepper horizontal alignment fix
+
+- Stepper: centre horizontal step connectors on the step bubbles and join the
+  last step cleanly (PR #344).
+
 ## Unreleased — DC-2c.1
 
 - diagram-core: additive relation refinements, authored flow types, validation,

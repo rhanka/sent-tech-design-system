@@ -1,8 +1,8 @@
 {
   "componentId": "portal",
   "contractSource": "derived",
-  "digest": "sha256:b50a3389afcef8d11456fd32931b41ea641ec016c5adb0c967fd7a37ce863016",
-  "entryDigest": "sha256:c4b82a822e7535ca647f993bdc4cf4e6acf28ac06ae441eaf7eb5c49e83b800a",
+  "digest": "sha256:7ad6ffae78ebacddb2d9d12bb78f3fb4cf583ef0873ab308f32c5fa0fd918a34",
+  "entryDigest": "sha256:64f43d76514dc6edbd5aa87371bd1e9cd3a6fdee60369830280faa0519732348",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -158,7 +158,7 @@
         "declarationPath": "packages/components-svelte/dist/Portal.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PortalProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "partial",
       "unresolved": [],

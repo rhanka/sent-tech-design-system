@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:78bfd2bb232268ff6f12348d8e8d75fd606bec1ea9237e18c3848d78fd11e8c7",
-  "entryDigest": "sha256:0268f15716505e17aa596256aff9a597a4a447f3358f2be097d169611632bddf",
+  "digest": "sha256:b43c614955c7fb37fe53c078d87c75f6f793e3cf2e71cae1096239ec7539b33e",
+  "entryDigest": "sha256:cc71cacf3780aec3e9775bd8673d52988406ecb11408032d3e32e0edf9215133",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -5157,7 +5157,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "partial",
       "unresolved": [

@@ -1,8 +1,8 @@
 {
   "componentId": "back-to-top",
   "contractSource": "derived",
-  "digest": "sha256:b121c997b30f257a069739cd293639cb8f03a5775b67745f314e777682386960",
-  "entryDigest": "sha256:04a553a9c7f589fa50e315b236686c9ce8e9d79884f7c51bd1d4b5d79b0f9aff",
+  "digest": "sha256:61f467c451da8cb16f2c47f1d8987e84bfc721688ff5747663b4a378a3285ad1",
+  "entryDigest": "sha256:a96c95531fccfaa08b60f58df6d85f756b4f998c5090478b2caa043db4c08d38",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -152,7 +152,7 @@
         "declarationPath": "packages/components-svelte/dist/BackToTop.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BackToTopProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "complete",
       "unresolved": [],

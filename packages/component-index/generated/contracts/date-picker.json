@@ -1,8 +1,8 @@
 {
   "componentId": "date-picker",
   "contractSource": "derived",
-  "digest": "sha256:334eafe2eb24c37e5eee1a86b5477cb006387b639899fd45696f8fcb9d83c1b7",
-  "entryDigest": "sha256:2a4b4fd9801b7f8816920a51a8a9a2f4cbee4f57c64e419bb86edf0d56e833b7",
+  "digest": "sha256:b8a375ad087c2a59eb845fe625ad73d59e04bb8cd406413ef2805f37864785d0",
+  "entryDigest": "sha256:7e273aa91a9e15d4e97fbf466b5dadeeb56e806c19fadf7f6bafb96fe1b575f6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -563,7 +563,7 @@
         "declarationPath": "packages/components-svelte/dist/DatePicker.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DatePickerProps",
-        "version": "0.46.0"
+        "version": "0.46.1"
       },
       "status": "partial",
       "unresolved": [],

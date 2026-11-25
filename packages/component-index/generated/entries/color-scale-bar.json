@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ColorScaleBar.svelte",
-      "version": "0.46.0"
+      "version": "0.46.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Continuous color scale (gradient) from arbitrary stops, with optional min/max end labels.",
     "fr": "Échelle de couleur continue (gradient) à partir de stops arbitraires, avec libellés d'extrémités min/max."
   },
-  "digest": "sha256:9cb7a743a023675cb837ada5d9ff343842e00ec639c68121cbe1030c12f6a6fb",
+  "digest": "sha256:6950b4ff37043aed6571b751280fab4f515516a559ffa9fcb8858623dc726376",
   "displayName": "ColorScaleBar",
   "format": "component-entry/v1",
   "frameworks": [
