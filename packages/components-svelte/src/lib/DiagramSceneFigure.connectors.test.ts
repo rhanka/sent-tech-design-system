@@ -1,10 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render } from "@testing-library/svelte";
 import { tick } from "svelte";
-import { DIAGRAM_PRESENTATION_V2_CONTRACT_PIN } from "../../../diagram-canvas/tests/scene-host-fixtures.js";
+import {
+  DIAGRAM_PRESENTATION_CONTRACT_PIN,
+  DIAGRAM_PRESENTATION_V2_CONTRACT_PIN,
+  m3ProfileRegistry,
+  shippedExecutorBindings,
+} from "../../../diagram-canvas/tests/scene-host-fixtures.js";
 import { expectConnectorPaint, scenePaintOrder } from "../../../diagram-canvas/tests/host-support/connectorHostContract.js";
 import { flowFixture, flowMeasure } from "../../../diagram-canvas/test-support/flowFixture.js";
 import { nestedZoneFixture } from "../../../diagram-canvas/test-support/nestedZoneFixture.js";
+import { r7AuthoredLegendFixture } from "../../../diagram-canvas/test-support/r7AuthoredLegendFixture.js";
 import DiagramSceneFigure, { type DiagramSceneFigureProps } from "./DiagramSceneFigure.svelte";
 
 beforeEach(() => {
@@ -389,5 +395,69 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     } as DiagramSceneFigureProps);
     await tick();
     expect(seenSeeds.at(-1)).toEqual({ root: "columns" });
+  });
+
+  it("DE3-L1a: renders exactly one legend on r7-authored-legend (unfolded and folded) and omits data-authored-legend on v1", async () => {
+    const r7 = r7AuthoredLegendFixture(false);
+    const props = {
+      document: r7.document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: r7.presentation,
+      measureLines: flowMeasure,
+      collapsed: [],
+    } as DiagramSceneFigureProps;
+    const view = render(DiagramSceneFigure, props);
+    await tick();
+    expect(view.container.querySelectorAll("[data-authored-legend]")).toHaveLength(1);
+    expect(view.container.querySelectorAll("[data-scene-legend]")).toHaveLength(0);
+
+    const coreToggle = view.container.querySelector<HTMLButtonElement>('[data-scene-occurrence="occurrence:e.zone-core"] button[aria-expanded="true"]')!;
+    await fireEvent.click(coreToggle);
+    await tick();
+    expect(view.container.querySelectorAll("[data-authored-legend]")).toHaveLength(1);
+    expect(view.container.querySelectorAll("[data-scene-legend]")).toHaveLength(0);
+    view.unmount();
+
+    const v1View = render(DiagramSceneFigure, {
+      ...props,
+      presentation: {
+        ...r7.presentation,
+        contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+        entities: Object.fromEntries(
+          Object.entries(r7.presentation.entities).map(([id, entry]) => {
+            const { anatomy: _ignored, ...rest } = entry as { anatomy?: unknown; form: string; text: unknown };
+            return [id, rest];
+          }),
+        ),
+        relations: {},
+      },
+    } as DiagramSceneFigureProps);
+    await tick();
+    expect(v1View.container.querySelectorAll("[data-authored-legend]")).toHaveLength(0);
+    expect(v1View.container.querySelectorAll("[data-scene-legend]")).toHaveLength(0);
+  });
+
+  it("DE3-L2a: uses linkStroke for r7 default marker fill while preserving edgeStroke on v1", async () => {
+    const r7 = r7AuthoredLegendFixture(false);
+    const r7View = render(DiagramSceneFigure, {
+      document: r7.document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: r7.presentation,
+      measureLines: flowMeasure,
+      collapsed: [],
+    } as DiagramSceneFigureProps);
+    await tick();
+    const r7MarkerPath = r7View.container.querySelector("defs marker path");
+    expect(r7MarkerPath?.getAttribute("fill")).toBe("var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))");
+    r7View.unmount();
+
+    const v1 = nestedZoneFixture({ outside: false });
+    const v1View = render(DiagramSceneFigure, propsOf(v1));
+    await tick();
+    const v1MarkerPath = v1View.container.querySelector("defs marker path");
+    expect(v1MarkerPath?.getAttribute("fill")).toBe("var(--st-component-diagramScene-edgeStroke, #64748b)");
+    v1View.unmount();
   });
 });

@@ -81,9 +81,9 @@ export interface LayoutMetrics {
   readonly routeBorderClearance?: number;
   /** World-unit corner radius for rounded-elbow connectors (DE-2, default 12). */
   readonly edgeCornerRadius?: number;
-  /** Dedicated resting connector stroke width, CSS px (token `diagramScene.linkStrokeWidth`, DE-2, default 2.5). */
+  /** Dedicated resting connector stroke width, CSS px (token `diagramScene.linkStrokeWidth`, DE-2 / DE3-L2a, default 3.5). */
   readonly linkStrokeWidth?: number;
-  /** Stroke width for undirected related links on the r7 path. */
+  /** Stroke width for undirected related links on the r7 path (default 3.5). */
   readonly linkRelatedStrokeWidth?: number;
   /** Emphasized connector stroke width, CSS px (token `diagramScene.linkEmphasisStrokeWidth`, DE-2, default 3.5). */
   readonly linkEmphasisStrokeWidth?: number;

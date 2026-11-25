@@ -38,3 +38,11 @@ export function legendFindings(input: {
   readonly expectedStyles?: readonly string[];
   readonly tolerance?: number;
 }): string[];
+export function combinedLegendFindings(input: {
+  readonly legend: (PaintBox & { readonly id: string; readonly anchor: string | null; readonly styles: readonly string[] }) | null;
+  readonly authoredLegends?: readonly (PaintBox & { readonly id: string })[];
+  readonly nodes?: readonly (PaintBox & { readonly id: string; readonly kind?: string | null })[];
+  readonly labels?: readonly (PaintBox & { readonly id: string; readonly isEdgeLabel?: boolean })[];
+  readonly paths?: readonly { readonly id: string; readonly points: readonly PaintPoint[] }[];
+  readonly tolerance?: number;
+}): string[];
