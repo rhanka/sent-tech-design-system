@@ -97,11 +97,11 @@ export function fixture(name) {
       relations: spec.relations,
       hintsV2: payload.hints,
     });
-    return { ...common, document: built.document, presentation: built.presentation, hints: built.hints, collapsed: [] };
+    return { ...common, document: built.document, presentation: built.presentation, hints: built.hints, defaultFolds: [] };
   }
   if (name === 'h2-aspect-16-9') {
     const built = buildH2Appctx16x9Fixture(architecture, architectureView);
-    return { ...common, document: built.document, view: built.view, presentation: built.presentation, hints: built.hints, collapsed: [] };
+    return { ...common, document: built.document, view: built.view, presentation: built.presentation, hints: built.hints, defaultFolds: [] };
   }
   if (name.startsWith('numbered-flows')) {
     const source = flowFixture(name.endsWith('-bundled') ? 6 : 3, { labels: true, folded: true, reverse: true });
