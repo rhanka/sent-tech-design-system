@@ -285,6 +285,7 @@ export type {
   SurveyResultsLocale,
   SurveyResultsProps,
   SurveyResultsSegment,
+  SurveySegmentBarGroup,
   SurveySnapshotStatus
 } from "./SurveyResults.svelte";
 export { default as Switch } from "./Switch.svelte";
@@ -334,7 +335,7 @@ export type { TileMapChartTile } from "./TileMapChart.svelte";
 export type { DumbbellChartDatum, DumbbellChartTone } from "./DumbbellChart.svelte";
 export type { ErrorBarChartDatum, ErrorBarChartTone } from "./ErrorBarChart.svelte";
 export type { BellCurveChartTone } from "./BellCurveChart.svelte";
-export type { BarChartDatum, BarChartTone } from "./BarChart.svelte";
+export type { BarChartDatum, BarChartLabelPlacement, BarChartTone } from "./BarChart.svelte";
 export type { BoxPlotChartDatum, BoxPlotChartTone } from "./BoxPlotChart.svelte";
 export type { HeatmapChartDatum, HeatmapChartScale, HeatmapChartTone } from "./HeatmapChart.svelte";
 export type { DashboardGridProps, DashboardGridTile } from "./DashboardGrid.svelte";

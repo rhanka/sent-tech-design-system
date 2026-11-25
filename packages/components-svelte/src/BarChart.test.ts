@@ -258,3 +258,149 @@ describe("BarChart analytical overlays + error bars", () => {
     expect(listItems(container)).toEqual(["A: 4", "B: 8", "C: 2"]);
   });
 });
+
+describe("BarChart horizontal labelPlacement (P1-1)", () => {
+  it("keeps short horizontal labels unchanged at default margin (44px, x=38, text-anchor=end)", () => {
+    const { container } = render(BarChart, {
+      props: { label: "Short", data, orientation: "horizontal", width: 480, height: 200 }
+    });
+    const labels = Array.from(container.querySelectorAll(".st-barChart__categoryLabel"));
+    expect(labels).toHaveLength(3);
+    expect(labels[0].getAttribute("x")).toBe("38");
+    expect(labels[0].getAttribute("text-anchor")).toBe("end");
+    expect(labels[0].textContent?.trim()).toBe("A");
+    expect(labels[0].getAttribute("aria-label")).toBeNull();
+  });
+
+  it("auto-expands left margin for medium labels up to ~40% of width without clipping", () => {
+    const medium: BarChartDatum[] = [
+      { label: "Inline completion", value: 70 },
+      { label: "Code review", value: 45 }
+    ];
+    const { container } = render(BarChart, {
+      props: { label: "Medium", data: medium, orientation: "horizontal", width: 640, height: 200 }
+    });
+    const yAxis = container.querySelectorAll(".st-barChart__axis")[0];
+    const axisX = Number(yAxis.getAttribute("x1"));
+    expect(axisX).toBeGreaterThan(44);
+    expect(axisX).toBeLessThanOrEqual(Math.round(640 * 0.4));
+    const firstLabel = container.querySelector(".st-barChart__categoryLabel")!;
+    expect(firstLabel.textContent?.trim()).toBe("Inline completion");
+  });
+
+  it("auto-switches to above-bar when longest label exceeds ~40% of width and never clips start", () => {
+    const longLabel = "Intégration continue avec revue automatisée et génération de tests unitaires";
+    const longData: BarChartDatum[] = [
+      { label: longLabel, value: 82 },
+      { label: "Autre outil", value: 18 }
+    ];
+    const { container } = render(BarChart, {
+      props: { label: "Long", data: longData, orientation: "horizontal", width: 480, height: 220 }
+    });
+    const firstBar = container.querySelector(".st-barChart__bar") as SVGRectElement;
+    const firstLabel = container.querySelector(".st-barChart__categoryLabel") as SVGTextElement;
+    expect(firstLabel.getAttribute("text-anchor")).toBe("start");
+    expect(Number(firstLabel.getAttribute("x"))).toBeGreaterThanOrEqual(0);
+    // Above-bar places label y above the bar's top edge
+    expect(Number(firstLabel.getAttribute("y"))).toBeLessThan(Number(firstBar.getAttribute("y")));
+    // If truncated, ellipsis is at the end only and start is preserved
+    const text = firstLabel.textContent?.trim() ?? "";
+    expect(text.startsWith("Intégration")).toBe(true);
+    if (text !== longLabel) {
+      expect(text.endsWith("…")).toBe(true);
+      expect(firstLabel.getAttribute("aria-label")).toBe(longLabel);
+    }
+  });
+
+  it("supports explicit margin mode capped at ~40% with end-ellipsis, tooltip & aria-label preserving full label", async () => {
+    const longLabel = "Plateforme interne d'orchestration d'agents autonomes en production";
+    const { container } = render(BarChart, {
+      props: {
+        label: "MarginCap",
+        data: [{ label: longLabel, value: 65 }],
+        orientation: "horizontal",
+        labelPlacement: "margin",
+        width: 480,
+        height: 160
+      }
+    });
+    const yAxis = container.querySelectorAll(".st-barChart__axis")[0];
+    expect(Number(yAxis.getAttribute("x1"))).toBeLessThanOrEqual(Math.round(480 * 0.4));
+
+    const catLabel = container.querySelector(".st-barChart__categoryLabel") as SVGTextElement;
+    const visibleText = catLabel.textContent?.trim() ?? "";
+    expect(visibleText.startsWith("Plateforme")).toBe(true);
+    expect(visibleText.endsWith("…")).toBe(true);
+    expect(Number(catLabel.getAttribute("x"))).toBeGreaterThanOrEqual(0);
+    expect(catLabel.getAttribute("text-anchor")).toBe("start");
+    expect(catLabel.getAttribute("aria-label")).toBe(longLabel);
+
+    // Full label in accessible ChartDataList and hover tooltip
+    expect(listItems(container)).toContain(`${longLabel}: 65`);
+    const bar = container.querySelector(".st-barChart__bar")!;
+    await fireEvent.pointerMove(bar);
+    expect(container.querySelector(".st-barChart__tooltipLabel")?.textContent?.trim()).toBe(longLabel);
+  });
+
+  it("supports above-bar, inside-bar, and after-value placements with right margin for outside dataLabels", () => {
+    const sample: BarChartDatum[] = [
+      { label: "Inline completion", value: 100 },
+      { label: "Chat", value: 5 }
+    ];
+
+    const above = render(BarChart, {
+      props: {
+        label: "Above",
+        data: sample,
+        orientation: "horizontal",
+        labelPlacement: "above-bar",
+        domain: [0, 100],
+        dataLabels: { format: (v) => `${v} %` },
+        width: 480,
+        height: 200
+      }
+    }).container;
+    const aboveBar = above.querySelector(".st-barChart__bar") as SVGRectElement;
+    const aboveLabel = above.querySelector(".st-barChart__categoryLabel") as SVGTextElement;
+    const aboveVal = above.querySelector(".st-barChart__dataLabel") as SVGTextElement;
+    expect(Number(aboveLabel.getAttribute("y"))).toBeLessThan(Number(aboveBar.getAttribute("y")));
+    // 100% data label must leave right margin so it stays well inside viewBox width
+    expect(Number(aboveVal.getAttribute("x"))).toBeLessThan(480 - 24);
+
+    const inside = render(BarChart, {
+      props: {
+        label: "Inside",
+        data: sample,
+        orientation: "horizontal",
+        labelPlacement: "inside-bar",
+        domain: [0, 100],
+        width: 480,
+        height: 200
+      }
+    }).container;
+    const insideBars = inside.querySelectorAll(".st-barChart__bar");
+    const insideLabels = inside.querySelectorAll(".st-barChart__categoryLabel");
+    // Wide bar (100%) places label inside the bar
+    expect(Number(insideLabels[0].getAttribute("x"))).toBeGreaterThan(Number(insideBars[0].getAttribute("x")));
+    expect(insideLabels[0].classList.contains("st-barChart__categoryLabel--inside")).toBe(true);
+    // Narrow bar (5%) falls back outside past bar end so text remains legible
+    expect(insideLabels[1].classList.contains("st-barChart__categoryLabel--inside")).toBe(false);
+
+    const after = render(BarChart, {
+      props: {
+        label: "After",
+        data: sample,
+        orientation: "horizontal",
+        labelPlacement: "after-value",
+        domain: [0, 100],
+        dataLabels: { format: (v) => `${v}%` },
+        width: 480,
+        height: 200
+      }
+    }).container;
+    const afterVal = after.querySelector(".st-barChart__dataLabel") as SVGTextElement;
+    const afterLabel = after.querySelector(".st-barChart__categoryLabel") as SVGTextElement;
+    expect(afterLabel.getAttribute("text-anchor")).toBe("start");
+    expect(Number(afterLabel.getAttribute("x"))).toBeGreaterThan(Number(afterVal.getAttribute("x")));
+  });
+});
