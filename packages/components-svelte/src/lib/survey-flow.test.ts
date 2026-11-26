@@ -5,6 +5,7 @@ import {
   countAnsweredQuestions,
   extractCleanAnswers,
   formatSurveyCountdown,
+  getActiveSurveyQuestions,
   isValidSurveyEmail,
   resolveExclusiveMultiChange,
   resolveInitialStep,
@@ -237,5 +238,240 @@ describe("survey-flow helpers", () => {
 
     expect(computeStepIndex("questions", "none")).toBe(0);
     expect(computeStepIndex("thanks", "none")).toBe(1);
+  });
+
+  it("filters v2 active questions by depth mode and selected themes", () => {
+    const v2Survey: SurveyDefinition = {
+      schemaVersion: 2,
+      id: "V2",
+      title: { fr: "Sondage v2", en: "Survey v2" },
+      entry: {
+        scope: {
+          label: { fr: "Je réponds pour :", en: "Answering for:" },
+          default: null,
+          options: [
+            { id: "enterprise", label: { fr: "Entreprise", en: "Company" } },
+            { id: "personal", label: { fr: "Perso", en: "Personal" } },
+            { id: "both", label: { fr: "Les deux", en: "Both" } },
+          ],
+        },
+        depth: {
+          label: { fr: "Durée :", en: "Duration:" },
+          options: [
+            { id: "fast", label: { fr: "~2 min", en: "~2 min" } },
+            { id: "deep", label: { fr: "6–8 min", en: "6–8 min" }, allowThemeSelection: true },
+          ],
+        },
+      },
+      themes: [
+        { id: "usine", label: { fr: "Usine", en: "Factory" } },
+        { id: "decision", label: { fr: "Décision", en: "Decision" } },
+      ],
+      rules: {
+        mode: "one-per-screen",
+        enrollment: "none",
+        explicitSubmitOnly: true,
+        requiredForSubmit: ["type"],
+      },
+      questions: [
+        {
+          id: "type",
+          tier: "core",
+          contextual: false,
+          type: "single",
+          label: "Secteur",
+          options: [
+            { id: "startup", label: "Startup" },
+            { id: "pme", label: "PME" },
+          ],
+        },
+        {
+          id: "code_tools",
+          tier: "core",
+          contextual: true,
+          type: "multi",
+          maxSelections: 2,
+          label: "Outils",
+          options: [
+            { id: "a", label: "A" },
+            { id: "b", label: "B" },
+            { id: "c", label: "C" },
+          ],
+        },
+        {
+          id: "sdlc",
+          tier: "deep",
+          deepTheme: "usine",
+          contextual: true,
+          type: "single",
+          label: "SDLC",
+          options: [
+            { id: "m1", label: "1" },
+            { id: "m2", label: "2" },
+          ],
+        },
+        {
+          id: "spec",
+          tier: "deep",
+          deepTheme: "decision",
+          contextual: true,
+          type: "single",
+          label: "Specs",
+          options: [
+            { id: "s1", label: "1" },
+            { id: "s2", label: "2" },
+          ],
+        },
+        {
+          id: "open_feedback",
+          tier: "closing",
+          contextual: false,
+          type: "text_long",
+          placement: "closing",
+          display: "agent_summary_only",
+          optional: true,
+          maxLength: 280,
+          label: "Question ouverte",
+        },
+      ],
+    };
+
+    expect(resolveInitialStep(v2Survey)).toBe("entry_scope");
+    expect(computeStepIndex("entry_scope", "none", true)).toBe(0);
+    expect(computeStepIndex("entry_depth", "none", true)).toBe(0);
+    expect(computeStepIndex("questions", "none", true)).toBe(1);
+    expect(computeStepIndex("deep_themes", "none", true)).toBe(1);
+    expect(computeStepIndex("thanks", "none", true)).toBe(2);
+
+    expect(
+      getActiveSurveyQuestions(v2Survey, { depthMode: "fast" }).map((q) => q.id),
+    ).toEqual(["type", "code_tools", "open_feedback"]);
+
+    expect(
+      getActiveSurveyQuestions(v2Survey, {
+        depthMode: "deep",
+        selectedThemes: ["usine"],
+      }).map((q) => q.id),
+    ).toEqual(["type", "code_tools", "sdlc", "open_feedback"]);
+
+    // Scoped answers count, clean, validate, and build v2 submit payload
+    const rawAnswers = {
+      type: "startup",
+      code_tools: { enterprise: ["a"], personal: [] },
+      sdlc: { personal: "" },
+    };
+    const fastQs = getActiveSurveyQuestions(v2Survey, { depthMode: "fast" });
+    expect(countAnsweredQuestions(fastQs, rawAnswers)).toBe(2);
+    expect(extractCleanAnswers(fastQs, rawAnswers)).toEqual({
+      type: "startup",
+      code_tools: { enterprise: ["a"] },
+    });
+    expect(
+      validateQuestionAnswer(v2Survey.questions[1], {
+        enterprise: ["a", "b", "c"],
+      }),
+    ).toBe("maxSelections");
+
+    const payload = buildSubmitPayload({
+      survey: v2Survey,
+      activeQuestions: fastQs,
+      answers: rawAnswers,
+      enrollmentMeta: {},
+      entryScope: "enterprise",
+      depthMode: "fast",
+      requestedMode: "partial",
+      returnedFromDraft: false,
+      nowIso: "2026-11-27T15:00:00.000Z",
+    });
+    expect(payload.schemaVersion).toBe(2);
+    expect(payload.entryScope).toBe("enterprise");
+    expect(payload.depthMode).toBe("fast");
+    expect(payload.answeredCount).toBe(2);
+    expect(payload.totalQuestions).toBe(3);
+  });
+
+  it("enforces minSelections, maxSelections, and exclusive exemption on v2 scoped multi answers in validateSubmission", () => {
+    const v2MultiSurvey: SurveyDefinition = {
+      schemaVersion: 2,
+      id: "V2-MULTI",
+      title: "V2 Multi",
+      rules: {
+        mode: "one-per-screen",
+        enrollment: "none",
+        explicitSubmitOnly: true,
+        requiredForSubmit: ["type"],
+      },
+      questions: [
+        {
+          id: "type",
+          tier: "core",
+          type: "single",
+          label: "Secteur",
+          options: [{ id: "startup", label: "Startup" }],
+        },
+        {
+          id: "code_tools",
+          tier: "core",
+          contextual: true,
+          type: "multi",
+          exclusive: ["aucun"],
+          minSelections: 2,
+          maxSelections: 2,
+          label: "Outils",
+          options: [
+            { id: "a", label: "A" },
+            { id: "b", label: "B" },
+            { id: "c", label: "C" },
+            { id: "aucun", label: "Aucun" },
+          ],
+        },
+        {
+          id: "deep_q",
+          tier: "deep",
+          deepTheme: "usine",
+          type: "single",
+          required: true,
+          label: "Deep required",
+          options: [{ id: "d1", label: "D1" }],
+        },
+      ],
+    };
+
+    const fastQs = getActiveSurveyQuestions(v2MultiSurvey, { depthMode: "fast" });
+    // Too few on enterprise side fails both complete and partial
+    expect(
+      validateSubmission(
+        v2MultiSurvey,
+        { type: "startup", code_tools: { enterprise: ["a"] } },
+        "complete",
+        fastQs,
+      ),
+    ).toEqual({ valid: false, missingIds: ["code_tools"] });
+    expect(
+      validateSubmission(
+        v2MultiSurvey,
+        { type: "startup", code_tools: { personal: ["a"] } },
+        "partial",
+        fastQs,
+      ),
+    ).toEqual({ valid: false, missingIds: ["code_tools"] });
+    // Exclusive option ("aucun") on enterprise or personal satisfies minSelections > 1
+    expect(
+      validateSubmission(
+        v2MultiSurvey,
+        { type: "startup", code_tools: { enterprise: ["aucun"], personal: ["a", "b"] } },
+        "complete",
+        fastQs,
+      ),
+    ).toEqual({ valid: true, missingIds: [] });
+    // Too many on personal side fails
+    expect(
+      validateSubmission(
+        v2MultiSurvey,
+        { type: "startup", code_tools: { enterprise: ["a", "b"], personal: ["a", "b", "c"] } },
+        "complete",
+        fastQs,
+      ),
+    ).toEqual({ valid: false, missingIds: ["code_tools"] });
   });
 });

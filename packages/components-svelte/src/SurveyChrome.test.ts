@@ -217,6 +217,43 @@ describe("SurveyQuestionCard", () => {
     );
     expect(source).not.toContain("0.0625rem");
   });
+
+  it("renders a >= 44px per-question orientation toggle when contextual is true", async () => {
+    const onscopechange = vi.fn();
+    render(SurveyQuestionCard, {
+      props: {
+        index: 3,
+        total: 8,
+        contextual: true,
+        activeScope: "enterprise",
+        enterpriseLabel: "Entreprise",
+        personalLabel: "Perso",
+        scopeToggleLabel: "Contexte de réponse",
+        onscopechange,
+        children: snippet("<div>Q3</div>")
+      }
+    });
+
+    const group = screen.getByRole("group", { name: "Contexte de réponse" });
+    expect(group).toBeTruthy();
+    const entBtn = screen.getByRole("button", { name: "Entreprise" });
+    const perBtn = screen.getByRole("button", { name: "Perso" });
+    expect(entBtn.getAttribute("aria-pressed")).toBe("true");
+    expect(perBtn.getAttribute("aria-pressed")).toBe("false");
+
+    await fireEvent.click(entBtn);
+    expect(onscopechange).not.toHaveBeenCalled();
+
+    await fireEvent.click(perBtn);
+    expect(onscopechange).toHaveBeenCalledWith("personal");
+
+    // Keyboard ArrowRight switches focus/selection
+    await fireEvent.keyDown(entBtn, { key: "ArrowRight" });
+    expect(onscopechange).toHaveBeenCalledTimes(2);
+
+    const source = readFileSync(join(here, "lib", "SurveyQuestionCard.svelte"), "utf8");
+    expect(source).toContain("min-height: 2.75rem");
+  });
 });
 
 describe("SurveyNav", () => {

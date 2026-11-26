@@ -1,8 +1,8 @@
 {
   "componentId": "textarea",
   "contractSource": "derived",
-  "digest": "sha256:87e78efd3eb38c82f818a61f19e156d1e3496a50652d6e57a7f9220696d6da8e",
-  "entryDigest": "sha256:473f7580463eac56af9a73664e6461a48ea23e19a6fda705db5818a0a1a1d243",
+  "digest": "sha256:a64795218c67c5404e62200aa4143a8e0b88ac7acb7fd8a4f198f793eeab4d24",
+  "entryDigest": "sha256:60e0c1270fee127a4f8a8f6d14b77bafb0ce9a2158589c45b79e88e89b23f58b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

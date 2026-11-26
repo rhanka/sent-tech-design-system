@@ -204,6 +204,7 @@ export type { ScoreCardProps, ScoreCardType, ScoreCardSize } from "./ScoreCard.s
 export { default as LanguageSelector } from "./LanguageSelector.svelte";
 export { default as LikertScale } from "./LikertScale.svelte";
 export type {
+  LikertScaleKind,
   LikertScaleOption,
   LikertScaleLayout,
   LikertScaleProps
@@ -269,7 +270,10 @@ export { default as SankeyChart } from "./SankeyChart.svelte";
 export { default as Stack } from "./Stack.svelte";
 export { default as Stepper } from "./Stepper.svelte";
 export { default as SurveyQuestionCard } from "./SurveyQuestionCard.svelte";
-export type { SurveyQuestionCardProps } from "./SurveyQuestionCard.svelte";
+export type {
+  SurveyQuestionCardProps,
+  SurveyQuestionScope,
+} from "./SurveyQuestionCard.svelte";
 export { default as SurveyNav } from "./SurveyNav.svelte";
 export type { SurveyNavProps } from "./SurveyNav.svelte";
 export { default as SurveyPrivacyNotice } from "./SurveyPrivacyNotice.svelte";
@@ -669,19 +673,38 @@ export type { DiagramSceneSize, SceneLayoutCache } from "@sentropic/diagram-canv
 export { default as SurveyForm } from "./SurveyForm.svelte";
 export type { SurveyFormProps, SurveyFormPasskeyOffer } from "./SurveyForm.svelte";
 export {
+  DEFAULT_AI_EFFECT_NEUTRAL_ID,
+  DEFAULT_AI_EFFECT_NON_SUBSTANTIVE,
+  DEFAULT_AI_EFFECT_OPTIONS,
   fromKeynoteQuestionnaire,
+  isScopedAnswerValue,
+  isSurveyDefinitionV2,
+  resolveAiEffectOptions,
   resolveLocalizedText,
   shuffleSurveyOptions,
 } from "./survey-types.js";
 export type {
   SurveyLocale,
+  SurveySchemaVersion,
   LocalizedText,
+  SurveyScope,
+  SurveyEntryScope,
+  SurveyDepthMode,
+  SurveyQuestionTier,
+  SurveyScaleKind,
+  SurveyTextPlacement,
+  SurveyTextDisplay,
   SurveyOption,
   EnrollmentField,
+  SurveyEntryScopeOption,
+  SurveyEntryDepthOption,
+  SurveyEntryConfig,
+  SurveyDeepTheme,
   QuestionBase,
   SingleChoiceQuestion,
   MultiChoiceQuestion,
   ScaleQuestion,
+  AiEffectQuestion,
   RatingQuestion,
   NpsQuestion,
   SliderQuestion,
@@ -694,6 +717,8 @@ export type {
   SurveyRules,
   SurveyPrivacyNoticeConfig,
   SurveyDefinition,
+  PrimitiveAnswerValue,
+  ScopedAnswerValue,
   AnswerValue,
   AnswerMap,
   SurveyStep,
@@ -703,6 +728,10 @@ export type {
   SurveyDraft,
   SurveyPendingSubmission,
   KeynoteOption,
+  KeynoteEntryScopeOption,
+  KeynoteEntryDepthOption,
+  KeynoteEntryConfig,
+  KeynoteTheme,
   KeynoteQuestion,
   KeynoteFormat,
   KeynoteQuestionnaireDoc,
@@ -724,8 +753,12 @@ export {
 export {
   isValidSurveyEmail,
   resolveExclusiveMultiChange,
+  getActiveSurveyQuestions,
+  getCoreSurveyQuestions,
+  getDeepQuestionsForThemes,
+  getClosingSurveyQuestions,
   validateSubmission,
   formatSurveyCountdown,
   buildSubmitPayload,
 } from "./survey-flow.js";
-export type { QuestionValidationError } from "./survey-flow.js";
+export type { ActiveQuestionsOptions, QuestionValidationError } from "./survey-flow.js";

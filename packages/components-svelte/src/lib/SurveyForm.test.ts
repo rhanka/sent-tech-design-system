@@ -1104,3 +1104,696 @@ describe("SurveyForm — enrollment, flow, explicit submit & passkey", () => {
     expect(limitHint?.textContent).toMatch(/au plus 2/i);
   });
 });
+
+const V2_SURVEY: SurveyDefinition = {
+  schemaVersion: 2,
+  id: "devmtl-v2",
+  title: { fr: "Du code à la décision", en: "From Code to Decision" },
+  subtitle: "/dev/mtl 2026",
+  entry: {
+    scope: {
+      id: "default_scope",
+      label: { fr: "Je réponds pour :", en: "I am answering for:" },
+      default: null,
+      options: [
+        {
+          id: "enterprise",
+          label: {
+            fr: "La pratique observée dans mon entreprise",
+            en: "Practice observed in my company",
+          },
+          short: "Entreprise",
+        },
+        {
+          id: "personal",
+          label: { fr: "Ma pratique perso", en: "My personal practice" },
+          short: "Perso",
+        },
+        {
+          id: "both",
+          label: { fr: "Les deux", en: "Both" },
+          short: "Les deux",
+        },
+      ],
+      privacyNotice: {
+        fr: "Seul le secteur d’activité est utilisé dans l’analyse.",
+        en: "Only the sector is used in the analysis.",
+      },
+    },
+    depth: {
+      id: "depth_mode",
+      label: { fr: "Temps souhaité :", en: "Time you want to spend:" },
+      default: null,
+      options: [
+        {
+          id: "fast",
+          label: { fr: "~2 min · 8 questions", en: "~2 min · 8 questions" },
+          durationLabel: { fr: "~2 min", en: "~2 min" },
+          questionsMax: 8,
+        },
+        {
+          id: "deep",
+          label: { fr: "6–8 min · jusqu’à 39 questions", en: "6–8 min · up to 39 questions" },
+          durationLabel: { fr: "6–8 min", en: "6–8 min" },
+          questionsMax: 39,
+          allowThemeSelection: true,
+        },
+      ],
+    },
+  },
+  themes: [
+    {
+      id: "usine",
+      label: { fr: "Usine & outils", en: "Factory & tools" },
+      questionCount: 1,
+    },
+    {
+      id: "decision",
+      label: { fr: "Décision", en: "Decision" },
+      questionCount: 1,
+    },
+  ],
+  rules: {
+    mode: "one-per-screen",
+    enrollment: "none",
+    draftWindowMinutes: 30,
+    explicitSubmitOnly: true,
+    allowPartialSubmit: true,
+    requiredForSubmit: ["type"],
+    shuffleMultiOptions: false,
+    anonymous: true,
+  },
+  questions: [
+    {
+      id: "type",
+      tier: "core",
+      contextual: false,
+      type: "single",
+      label: { fr: "Quel secteur ?", en: "Which sector?" },
+      options: [
+        { id: "manuf", label: { fr: "Manufacturier", en: "Manufacturing" } },
+        { id: "startup", label: { fr: "Startup", en: "Startup" } },
+      ],
+    },
+    {
+      id: "ai_impact_year",
+      tier: "core",
+      contextual: false,
+      type: "ai_effect",
+      label: {
+        fr: "Sur l’année, l’IA a eu sur votre travail un effet :",
+        en: "Over the past year, AI has had on your work an effect:",
+      },
+    },
+    {
+      id: "code_tools",
+      tier: "core",
+      contextual: true,
+      type: "multi",
+      exclusive: ["aucun"],
+      label: { fr: "Quels assistants utilisez-vous ?", en: "Which assistants do you use?" },
+      options: [
+        { id: "a1", label: { fr: "Assistant Alpha", en: "Alpha Assistant" } },
+        { id: "a2", label: { fr: "Assistant Beta", en: "Beta Assistant" } },
+        { id: "aucun", label: { fr: "Aucun", en: "None" } },
+      ],
+    },
+    {
+      id: "quotas",
+      tier: "core",
+      contextual: true,
+      type: "single",
+      label: { fr: "Avez-vous touché une limite de quota ?", en: "Hit a quota limit?" },
+      options: [
+        { id: "q_week", label: { fr: "Oui, cette semaine", en: "Yes, this week" } },
+        { id: "q_never", label: { fr: "Non, jamais", en: "No, never" } },
+      ],
+    },
+    {
+      id: "sdlc",
+      tier: "deep",
+      deepTheme: "usine",
+      contextual: true,
+      type: "scale",
+      label: { fr: "Maturité du cycle ?", en: "Lifecycle maturity?" },
+      options: [
+        { id: "m1", label: { fr: "1 · Aucun", en: "1 · None" } },
+        { id: "m2", label: { fr: "2 · Essais", en: "2 · Trials" } },
+        { id: "m3", label: { fr: "3 · Quotidien", en: "3 · Daily" } },
+        { id: "m4", label: { fr: "4 · Intégré", en: "4 · Integrated" } },
+      ],
+    },
+    {
+      id: "spec",
+      tier: "deep",
+      deepTheme: "decision",
+      contextual: true,
+      type: "single",
+      label: { fr: "Pratique de spécification ?", en: "Spec practice?" },
+      options: [
+        { id: "sp1", label: { fr: "Légère", en: "Light" } },
+        { id: "sp2", label: { fr: "En lots", en: "Batched" } },
+      ],
+    },
+    {
+      id: "open_feedback",
+      tier: "closing",
+      contextual: false,
+      type: "text_long",
+      placement: "closing",
+      display: "agent_summary_only",
+      optional: true,
+      maxLength: 280,
+      label: { fr: "Question ouverte (facultatif)", en: "Open question (optional)" },
+      placeholder: { fr: "280 caractères max.", en: "280 chars max." },
+    },
+  ],
+};
+
+describe("SurveyForm v2 — two entry screens, orientation toggle, ai_effect & P1 flows", () => {
+  beforeEach(() => {
+    clearAllSurveyStorage();
+    setNavigatorOnline(true);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    clearAllSurveyStorage();
+    setNavigatorOnline(true);
+  });
+
+  it("enforces no pre-selection on scope entry, walks two short entry screens (~2 min), toggles scope per question, renders ai_effect + optional open text", async () => {
+    const onsubmit = vi.fn();
+    const { container, getByLabelText, getByRole, getByText, queryByRole } = render(SurveyForm, {
+      props: {
+        survey: V2_SURVEY,
+        locale: "fr",
+        onsubmit,
+      },
+    });
+
+    // Entry screen 1: orientation with NO pre-selection + sector-only promise
+    expect(getByText(/Je réponds pour/i)).toBeTruthy();
+    expect(getByText(/Seul le secteur/i)).toBeTruthy();
+    const scopeRadios = [...container.querySelectorAll('input[type="radio"]')] as HTMLInputElement[];
+    expect(scopeRadios).toHaveLength(3);
+    expect(scopeRadios.every((r) => !r.checked)).toBe(true);
+
+    // Trying to continue without choosing scope shows validation error
+    await fireEvent.click(getByRole("button", { name: /Continuer/i }));
+    expect(getByRole("alert")).toBeTruthy();
+
+    // Pick Enterprise and move to Entry screen 2 (depth)
+    await fireEvent.click(getByLabelText(/La pratique observée dans mon entreprise/i));
+    await fireEvent.click(getByRole("button", { name: /Continuer/i }));
+
+    // Entry screen 2: displayed durations ~2 min and 6–8 min
+    expect(getByText(/~2 min/i)).toBeTruthy();
+    expect(getByText(/6–8 min/i)).toBeTruthy();
+    await fireEvent.click(getByLabelText(/~2 min/i));
+    await fireEvent.click(getByRole("button", { name: /Commencer/i }));
+
+    // Q1: non-contextual sector -> NO per-question toggle
+    expect(getByText(/Quel secteur/i)).toBeTruthy();
+    expect(queryByRole("group", { name: /Contexte de réponse/i })).toBeNull();
+    await fireEvent.click(getByLabelText("Startup"));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    // Q2: ai_effect symmetric bipolar scale with separated "Je ne sais pas"
+    expect(container.querySelector(".st-likert--bipolar")).toBeTruthy();
+    expect(container.querySelector('[data-neutral="true"]')).toBeTruthy();
+    expect(container.querySelector(".st-likert__nonSubstantive")).toBeTruthy();
+    await fireEvent.click(getByLabelText(/Je ne sais pas/i));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    // Q3: contextual multi -> toggle defaults to Entreprise
+    expect(getByRole("group", { name: /Contexte de réponse/i })).toBeTruthy();
+    expect(getByRole("button", { name: "Entreprise" }).getAttribute("aria-pressed")).toBe("true");
+    await fireEvent.click(getByLabelText("Assistant Alpha"));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    // Q4: contextual single -> toggle to Perso for this question only
+    expect(getByRole("button", { name: "Entreprise" }).getAttribute("aria-pressed")).toBe("true");
+    await fireEvent.click(getByRole("button", { name: "Perso" }));
+    expect(getByRole("button", { name: "Perso" }).getAttribute("aria-pressed")).toBe("true");
+    await fireEvent.click(getByLabelText("Oui, cette semaine"));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    // Closing optional open question (fast mode skips deep questions)
+    expect(getByText(/Question ouverte/i)).toBeTruthy();
+    const textarea = getByLabelText(/Question ouverte/i) as HTMLTextAreaElement;
+    await fireEvent.input(textarea, { target: { value: "Plus d'exemples sur les specs." } });
+    expect(getByText(/30 \/ 280/)).toBeTruthy();
+
+    await fireEvent.click(getByRole("button", { name: /Envoyer mes réponses/i }));
+    await waitFor(() => expect(onsubmit).toHaveBeenCalledTimes(1));
+
+    const payload = onsubmit.mock.calls[0][0] as SurveySubmitPayload;
+    expect(payload.schemaVersion).toBe(2);
+    expect(payload.mode).toBe("complete");
+    expect(payload.entryScope).toBe("enterprise");
+    expect(payload.depthMode).toBe("fast");
+    expect(payload.answers).toEqual({
+      type: "startup",
+      ai_impact_year: "imp_nsp",
+      code_tools: { enterprise: ["a1"] },
+      quotas: { personal: "q_week" },
+      open_feedback: "Plus d'exemples sur les specs.",
+    });
+  });
+
+  it("supports P1 deep-dive theme milestone after core questions and 'both' side-by-side dual answers", async () => {
+    const onsubmit = vi.fn();
+    const { container, getByLabelText, getByRole, getByText, queryByText } = render(SurveyForm, {
+      props: {
+        survey: V2_SURVEY,
+        locale: "fr",
+        onsubmit,
+      },
+    });
+
+    // Screen 1: pick "Les deux"
+    await fireEvent.click(getByLabelText(/Les deux/i));
+    await fireEvent.click(getByRole("button", { name: /Continuer/i }));
+
+    // Screen 2: pick "6–8 min" (deep)
+    await fireEvent.click(getByLabelText(/6–8 min/i));
+    await fireEvent.click(getByRole("button", { name: /Commencer/i }));
+
+    // Q1 sector
+    await fireEvent.click(getByLabelText("Manufacturier"));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    // Q2 ai_effect
+    await fireEvent.click(getByLabelText(/Plutôt positif/i));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    // Q3 contextual multi in 'both' mode -> dual side-by-side inputs
+    expect(container.querySelector(".st-surveyDual")).toBeTruthy();
+    await fireEvent.click(getByLabelText("Assistant Alpha — Entreprise"));
+    await fireEvent.click(getByLabelText("Assistant Beta — Perso"));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    // Q4 contextual single in 'both' mode -> independent enterprise & personal answers
+    await fireEvent.click(getByLabelText("Non, jamais — Entreprise"));
+    await fireEvent.click(getByLabelText("Oui, cette semaine — Perso"));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    // Milestone after core questions: select only "Usine & outils" (uncheck "Décision")
+    expect(getByText(/Thèmes d’approfondissement/i)).toBeTruthy();
+    await fireEvent.click(getByLabelText(/Décision/i));
+    await fireEvent.click(getByRole("button", { name: /Continuer l’approfondissement/i }));
+
+    // Deep question from "usine" renders; "spec" from "decision" is skipped
+    expect(getByText(/Maturité du cycle/i)).toBeTruthy();
+    await fireEvent.click(getByLabelText(/3 · Quotidien — Entreprise/i));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    expect(queryByText(/Pratique de spécification/i)).toBeNull();
+    expect(getByText(/Question ouverte/i)).toBeTruthy();
+
+    // Leave open question blank -> still complete submit!
+    await fireEvent.click(getByRole("button", { name: /Envoyer mes réponses/i }));
+    await waitFor(() => expect(onsubmit).toHaveBeenCalledTimes(1));
+
+    const payload = onsubmit.mock.calls[0][0] as SurveySubmitPayload;
+    expect(payload.mode).toBe("complete");
+    expect(payload.entryScope).toBe("both");
+    expect(payload.depthMode).toBe("deep");
+    expect(payload.selectedThemes).toEqual(["usine"]);
+    expect(payload.answers).toEqual({
+      type: "manuf",
+      ai_impact_year: "imp_pos",
+      code_tools: { enterprise: ["a1"], personal: ["a2"] },
+      quotas: { enterprise: "q_never", personal: "q_week" },
+      sdlc: { enterprise: "m3" },
+    });
+  });
+
+  it("allows back navigation between entry screens, re-tags an answered contextual question on toggle, and submits immediately from the deep-dive milestone", async () => {
+    const onsubmit = vi.fn();
+    const { getByLabelText, getByRole, getByText } = render(SurveyForm, {
+      props: {
+        survey: V2_SURVEY,
+        locale: "en",
+        onsubmit,
+      },
+    });
+
+    // Screen 1 -> Screen 2 -> Back to Screen 1 (selection preserved) -> Screen 2 -> Start (deep)
+    await fireEvent.click(getByLabelText(/Practice observed in my company/i));
+    await fireEvent.click(getByRole("button", { name: /^Continue$/i }));
+    await fireEvent.click(getByRole("button", { name: /^Previous$/i }));
+    expect(
+      (getByLabelText(/Practice observed in my company/i) as HTMLInputElement).checked,
+    ).toBe(true);
+    await fireEvent.click(getByRole("button", { name: /^Continue$/i }));
+
+    await fireEvent.click(getByLabelText(/6–8 min/i));
+    await fireEvent.click(getByRole("button", { name: /^Start$/i }));
+
+    // Core Q1..Q4; on Q4 answer first under Company, then toggle to Personal -> re-tags to personal
+    await fireEvent.click(getByLabelText("Startup"));
+    await fireEvent.click(getByRole("button", { name: /^Next$/i }));
+    await fireEvent.click(getByLabelText(/Neutral/i));
+    await fireEvent.click(getByRole("button", { name: /^Next$/i }));
+    await fireEvent.click(getByLabelText("Alpha Assistant"));
+    await fireEvent.click(getByRole("button", { name: /^Next$/i }));
+
+    await fireEvent.click(getByLabelText("Yes, this week"));
+    await fireEvent.click(getByRole("button", { name: "Personal" }));
+    await fireEvent.click(getByRole("button", { name: /^Next$/i }));
+
+    // Milestone screen: submit core answers immediately
+    expect(getByText(/Deep-dive themes/i)).toBeTruthy();
+    await fireEvent.click(getByRole("button", { name: /Submit my answers now/i }));
+    await waitFor(() => expect(onsubmit).toHaveBeenCalledTimes(1));
+
+    const payload = onsubmit.mock.calls[0][0] as SurveySubmitPayload;
+    expect(payload.answers).toEqual({
+      type: "startup",
+      ai_impact_year: "imp_neutral",
+      code_tools: { enterprise: ["a1"] },
+      quotas: { personal: "q_week" },
+    });
+  });
+
+  it("P1-2: restores v2 draft on magic-link return / async /api/me and routes entryScope === null through entry screens", async () => {
+    const v2MagicSurvey: SurveyDefinition = {
+      ...V2_SURVEY,
+      rules: { ...V2_SURVEY.rules, enrollment: "email-magic-link" },
+      enrollmentFields: TEST_SURVEY.enrollmentFields,
+    };
+
+    // Case A: pre-link draft has company_name but no entryScope yet -> async /api/me must route to entry_scope and preserve enrollmentMeta
+    const now = Date.now();
+    saveSurveyDraft("devmtl-v2", "alice@devmtl.ca", {
+      surveyId: "devmtl-v2",
+      answers: {},
+      questionIndex: 0,
+      enrollmentMeta: { company_name: "Atelier Nord" },
+      entryScope: null,
+      depthMode: null,
+      step: "link_sent",
+      expiresAt: now + 20 * 60 * 1000,
+      updatedAt: now - 5_000,
+    });
+
+    const onsubmit = vi.fn();
+    const r1 = render(SurveyForm, {
+      props: { survey: v2MagicSurvey, locale: "fr", onsubmit },
+    });
+    expect(r1.getByText(/Accéder au sondage/i)).toBeTruthy();
+
+    await r1.rerender({
+      survey: v2MagicSurvey,
+      locale: "fr",
+      initialStep: "questions",
+      initialEmail: "alice@devmtl.ca",
+      onsubmit,
+    });
+
+    // Must land on entry_scope (NOT skip cadrage with entryScope === null)
+    await waitFor(() => expect(r1.getByText(/Je réponds pour/i)).toBeTruthy());
+    await fireEvent.click(r1.getByLabelText(/Ma pratique perso/i));
+    await fireEvent.click(r1.getByRole("button", { name: /Continuer/i }));
+    await fireEvent.click(r1.getByLabelText(/~2 min/i));
+    await fireEvent.click(r1.getByRole("button", { name: /Commencer/i }));
+
+    // Walk to Q3 (contextual) -> per-question toggle must be present & answer scoped to personal
+    await fireEvent.click(r1.getByLabelText("Startup"));
+    await fireEvent.click(r1.getByRole("button", { name: /Suivant/i }));
+    await fireEvent.click(r1.getByLabelText(/Neutre/i));
+    await fireEvent.click(r1.getByRole("button", { name: /Suivant/i }));
+    expect(r1.getByRole("group", { name: /Contexte de réponse/i })).toBeTruthy();
+    expect(r1.getByRole("button", { name: "Perso" }).getAttribute("aria-pressed")).toBe("true");
+    await fireEvent.click(r1.getByLabelText("Assistant Alpha"));
+    await fireEvent.click(r1.getByRole("button", { name: /Envoyer seulement celles-ci/i }));
+    await fireEvent.click(r1.getByRole("button", { name: /Confirmer l’envoi partiel/i }));
+
+    await waitFor(() => expect(onsubmit).toHaveBeenCalledTimes(1));
+    expect(onsubmit.mock.calls[0][0]).toMatchObject({
+      entryScope: "personal",
+      depthMode: "fast",
+      enrollmentMeta: { company_name: "Atelier Nord" },
+      answers: {
+        type: "startup",
+        ai_impact_year: "imp_neutral",
+        code_tools: { personal: ["a1"] },
+      },
+    });
+    r1.unmount();
+    clearAllSurveyStorage();
+
+    // Case B: direct mount with initialStep="questions" and no draft -> still forces entry_scope
+    const r2 = render(SurveyForm, {
+      props: { survey: V2_SURVEY, locale: "fr", initialStep: "questions" },
+    });
+    expect(r2.getByText(/Je réponds pour/i)).toBeTruthy();
+    r2.unmount();
+
+    // Case C: magic-link return with completed v2 entry choices restores v2 state + contextual toggle
+    saveSurveyDraft("devmtl-v2", "bob@devmtl.ca", {
+      surveyId: "devmtl-v2",
+      answers: { type: "manuf", ai_impact_year: "imp_pos" },
+      questionIndex: 2,
+      enrollmentMeta: { company_name: "Forge QC" },
+      entryScope: "personal",
+      depthMode: "fast",
+      selectedThemes: [],
+      questionScopes: {},
+      step: "questions",
+      expiresAt: Date.now() + 20 * 60 * 1000,
+      updatedAt: Date.now() - 2_000,
+    });
+    const r3 = render(SurveyForm, {
+      props: {
+        survey: v2MagicSurvey,
+        locale: "fr",
+        initialStep: "questions",
+        initialEmail: "bob@devmtl.ca",
+      },
+    });
+    expect(r3.getByText(/Brouillon restauré/i)).toBeTruthy();
+    expect(r3.getByRole("group", { name: /Contexte de réponse/i })).toBeTruthy();
+    expect(r3.getByRole("button", { name: "Perso" }).getAttribute("aria-pressed")).toBe("true");
+    r3.unmount();
+  });
+
+  it("P1-3: blocks magic-link bypass on draft resume, avoids persisting step='enrollment', and restores deep_themes + deepMilestonePassed", async () => {
+    const v2MagicSurvey: SurveyDefinition = {
+      ...V2_SURVEY,
+      rules: { ...V2_SURVEY.rules, enrollment: "email-magic-link" },
+    };
+
+    // Requesting a link must not persist step='enrollment' and must not expose a direct resume bypass
+    const onrequestlink = vi.fn().mockResolvedValue(undefined);
+    const r1 = render(SurveyForm, {
+      props: { survey: v2MagicSurvey, locale: "fr", onrequestlink },
+    });
+    await fireEvent.input(r1.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "alice@devmtl.ca" },
+    });
+    await fireEvent.click(r1.getByRole("button", { name: /Recevoir mon lien/i }));
+    await waitFor(() => expect(r1.getByText(/Un lien vient de partir/i)).toBeTruthy());
+
+    const savedPreLink = loadSurveyDraft("devmtl-v2", "alice@devmtl.ca");
+    expect(savedPreLink?.step).not.toBe("enrollment");
+
+    // Going back to enrollment and typing alice@devmtl.ca must NOT expose a direct-resume bypass button
+    await fireEvent.click(r1.getByRole("button", { name: /Changer d’e-mail/i }));
+    await fireEvent.input(r1.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "alice@devmtl.ca" },
+    });
+    expect(r1.queryByRole("button", { name: /Reprendre mon brouillon/i })).toBeNull();
+    r1.unmount();
+
+    // Even with answered progress under email-magic-link, no direct unauthenticated resume button is rendered
+    saveSurveyDraft("devmtl-v2", "alice@devmtl.ca", {
+      surveyId: "devmtl-v2",
+      answers: { type: "startup" },
+      questionIndex: 1,
+      enrollmentMeta: {},
+      entryScope: "enterprise",
+      depthMode: "fast",
+      step: "questions",
+      expiresAt: Date.now() + 20 * 60 * 1000,
+      updatedAt: Date.now() - 1_000,
+    });
+    const r2 = render(SurveyForm, {
+      props: { survey: v2MagicSurvey, locale: "fr" },
+    });
+    await fireEvent.input(r2.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "alice@devmtl.ca" },
+    });
+    expect(r2.getByText(/Brouillon actif retrouvé/i)).toBeTruthy();
+    expect(r2.queryByRole("button", { name: /Reprendre mon brouillon/i })).toBeNull();
+    r2.unmount();
+    clearAllSurveyStorage();
+
+    // Under email-unverified: resuming a draft with step='enrollment' & entryScope=null routes to entry_scope
+    const v2Unverified: SurveyDefinition = {
+      ...V2_SURVEY,
+      rules: { ...V2_SURVEY.rules, enrollment: "email-unverified" },
+    };
+    saveSurveyDraft("devmtl-v2", "carol@devmtl.ca", {
+      surveyId: "devmtl-v2",
+      answers: { type: "startup" },
+      questionIndex: 0,
+      enrollmentMeta: {},
+      entryScope: null,
+      depthMode: null,
+      step: "enrollment",
+      expiresAt: Date.now() + 20 * 60 * 1000,
+      updatedAt: Date.now() - 1_000,
+    });
+    const r3 = render(SurveyForm, {
+      props: { survey: v2Unverified, locale: "fr" },
+    });
+    await fireEvent.input(r3.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "carol@devmtl.ca" },
+    });
+    await fireEvent.click(r3.getByRole("button", { name: /Reprendre mon brouillon/i }));
+    expect(r3.getByText(/Je réponds pour/i)).toBeTruthy();
+    r3.unmount();
+    clearAllSurveyStorage();
+
+    // Resuming a draft saved at deep_themes restores step='deep_themes'
+    saveSurveyDraft("devmtl-v2", "dave@devmtl.ca", {
+      surveyId: "devmtl-v2",
+      answers: { type: "startup", ai_impact_year: "imp_pos", code_tools: { enterprise: ["a1"] }, quotas: { enterprise: "q_week" } },
+      questionIndex: 3,
+      enrollmentMeta: {},
+      entryScope: "enterprise",
+      depthMode: "deep",
+      selectedThemes: ["usine"],
+      deepMilestonePassed: false,
+      step: "deep_themes",
+      expiresAt: Date.now() + 20 * 60 * 1000,
+      updatedAt: Date.now() - 1_000,
+    });
+    const r4 = render(SurveyForm, {
+      props: { survey: v2Unverified, locale: "fr" },
+    });
+    await fireEvent.input(r4.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "dave@devmtl.ca" },
+    });
+    // P2-6 check: existingDraft count uses draft's depthMode='deep' & selectedThemes=['usine'] -> 4/6 (not fast 4/5)
+    expect(r4.getByText(/4\/6/)).toBeTruthy();
+    await fireEvent.click(r4.getByRole("button", { name: /Reprendre mon brouillon/i }));
+    expect(r4.getByText(/Thèmes d’approfondissement/i)).toBeTruthy();
+    r4.unmount();
+    clearAllSurveyStorage();
+
+    // Resuming a draft AFTER deepMilestonePassed restores deepMilestonePassed so Précédent returns to deep_themes
+    saveSurveyDraft("devmtl-v2", "eve@devmtl.ca", {
+      surveyId: "devmtl-v2",
+      answers: { type: "startup", ai_impact_year: "imp_pos", code_tools: { enterprise: ["a1"] }, quotas: { enterprise: "q_week" } },
+      questionIndex: 4,
+      enrollmentMeta: {},
+      entryScope: "enterprise",
+      depthMode: "deep",
+      selectedThemes: ["usine"],
+      deepMilestonePassed: true,
+      step: "questions",
+      expiresAt: Date.now() + 20 * 60 * 1000,
+      updatedAt: Date.now() - 1_000,
+    });
+    const r5 = render(SurveyForm, {
+      props: {
+        survey: v2MagicSurvey,
+        locale: "fr",
+        initialStep: "questions",
+        initialEmail: "eve@devmtl.ca",
+      },
+    });
+    expect(r5.getByText(/Maturité du cycle/i)).toBeTruthy();
+    await fireEvent.click(r5.getByRole("button", { name: /Précédent/i }));
+    expect(r5.getByText(/Thèmes d’approfondissement/i)).toBeTruthy();
+    r5.unmount();
+  });
+
+  it("P1-4 & P2-5/6: validates dual-mode multi with SR semantics, wires open-text aria-describedby, allows Q1 back to entry_depth, and hides partial submit on optional closing", async () => {
+    const v2MinSurvey: SurveyDefinition = {
+      ...V2_SURVEY,
+      questions: V2_SURVEY.questions.map((q) =>
+        q.id === "code_tools" && q.type === "multi"
+          ? { ...q, minSelections: 2, required: true }
+          : q,
+      ),
+    };
+    const onsubmit = vi.fn();
+    const { container, getByLabelText, getByRole, getByText, queryByRole, queryByText } = render(
+      SurveyForm,
+      {
+        props: { survey: v2MinSurvey, locale: "fr", onsubmit },
+      },
+    );
+
+    // Entry -> Both -> Fast (~2 min)
+    await fireEvent.click(getByLabelText(/Les deux/i));
+    await fireEvent.click(getByRole("button", { name: /Continuer/i }));
+    await fireEvent.click(getByLabelText(/~2 min/i));
+    await fireEvent.click(getByRole("button", { name: /Commencer/i }));
+
+    // P2-6: On Q1, Précédent is enabled and navigates back to entry_depth
+    const prevQ1 = getByRole("button", { name: /Précédent/i }) as HTMLButtonElement;
+    expect(prevQ1.disabled).toBe(false);
+    await fireEvent.click(prevQ1);
+    expect(getByText(/Temps souhaité/i)).toBeTruthy();
+    await fireEvent.click(getByRole("button", { name: /Commencer/i }));
+
+    // Answer Q1 & Q2
+    await fireEvent.click(getByLabelText("Startup"));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+    await fireEvent.click(getByLabelText(/Neutre/i));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    // Q3: dual-mode multi (minSelections: 2, exclusive: ["aucun"])
+    const dualFieldset = container.querySelector("fieldset.st-surveyDual") as HTMLFieldSetElement;
+    const dualHelp = container.querySelector(".st-surveyDual__help") as HTMLElement;
+    expect(dualHelp.id).toBeTruthy();
+    expect(dualFieldset.getAttribute("aria-describedby")).toContain(dualHelp.id);
+    const mobileTags = [...container.querySelectorAll(".st-surveyDual__mobileTag")];
+    expect(mobileTags.length).toBeGreaterThan(0);
+    expect(mobileTags.every((t) => t.getAttribute("aria-hidden") === "true")).toBe(true);
+
+    // Select only 1 option on Enterprise and try Next -> shows error, aria-invalid="true", aria-describedby includes error
+    await fireEvent.click(getByLabelText("Assistant Alpha — Entreprise"));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+    expect(dualFieldset.getAttribute("aria-invalid")).toBe("true");
+    const alphaEnt = getByLabelText("Assistant Alpha — Entreprise") as HTMLInputElement;
+    expect(alphaEnt.getAttribute("aria-invalid")).toBe("true");
+    const dualDescribedIds = (dualFieldset.getAttribute("aria-describedby") ?? "")
+      .split(/\s+/)
+      .filter(Boolean);
+    expect(
+      dualDescribedIds.some((id) => document.getElementById(id)?.textContent?.includes("au moins 2")),
+    ).toBe(true);
+
+    // Exclusive "Aucun" satisfies minSelections: 2
+    await fireEvent.click(getByLabelText("Aucun — Entreprise"));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    // Q4 quotas
+    await fireEvent.click(getByLabelText("Oui, cette semaine — Entreprise"));
+    await fireEvent.click(getByRole("button", { name: /Suivant/i }));
+
+    // Q5 optional closing open_feedback
+    expect(getByText(/Question ouverte/i)).toBeTruthy();
+    // P2-5: textarea aria-describedby links BOTH helperText ("jamais affiché mot à mot") AND char count ("0 / 280")
+    const textarea = getByLabelText(/Question ouverte/i) as HTMLTextAreaElement;
+    const taDescIds = (textarea.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean);
+    const taDescTexts = taDescIds.map((id) => document.getElementById(id)?.textContent ?? "");
+    expect(taDescTexts.some((t) => t.includes("jamais affiché mot à mot"))).toBe(true);
+    expect(taDescTexts.some((t) => t.includes("0 / 280"))).toBe(true);
+
+    // P2-6: All 4 non-optional questions answered -> partial submit button NOT shown on optional closing question
+    expect(queryByRole("button", { name: /Envoyer seulement celles-ci/i })).toBeNull();
+
+    // Complete submit succeeds
+    await fireEvent.click(getByRole("button", { name: /Envoyer mes réponses/i }));
+    await waitFor(() => expect(onsubmit).toHaveBeenCalledTimes(1));
+    expect(queryByText(/question 1/i)).toBeNull();
+  });
+});

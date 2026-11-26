@@ -1,27 +1,93 @@
-import type {
-  AnswerMap,
-  AnswerValue,
-  SurveyDefinition,
-  SurveyEnrollmentMode,
-  SurveyQuestion,
-  SurveyStep,
-  SurveySubmissionMode,
-  SurveySubmitPayload,
+import {
+  isScopedAnswerValue,
+  isSurveyDefinitionV2,
+  type AnswerMap,
+  type AnswerValue,
+  type PrimitiveAnswerValue,
+  type ScopedAnswerValue,
+  type SurveyDefinition,
+  type SurveyDepthMode,
+  type SurveyEnrollmentMode,
+  type SurveyEntryScope,
+  type SurveyQuestion,
+  type SurveyStep,
+  type SurveySubmissionMode,
+  type SurveySubmitPayload,
 } from "./survey-types.js";
 
 export type QuestionValidationError = "required" | "minSelections" | "maxSelections" | null;
+
+export interface ActiveQuestionsOptions {
+  depthMode?: SurveyDepthMode | null;
+  selectedThemes?: string[];
+  includeClosing?: boolean;
+}
 
 export function isValidSurveyEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value ?? "").trim());
 }
 
-export function isAnswerPresent(value: AnswerValue | undefined): boolean {
+function isPrimitiveAnswerPresent(value: PrimitiveAnswerValue | undefined): boolean {
   if (value === undefined || value === null) return false;
   if (typeof value === "string") return value.trim().length > 0;
   if (typeof value === "number") return Number.isFinite(value);
   if (Array.isArray(value)) return value.length > 0;
   if (typeof value === "object") return Object.keys(value).length > 0;
   return false;
+}
+
+export function isAnswerPresent(value: AnswerValue | undefined): boolean {
+  if (value === undefined || value === null) return false;
+  if (isScopedAnswerValue(value)) {
+    return (
+      isPrimitiveAnswerPresent(value.enterprise) || isPrimitiveAnswerPresent(value.personal)
+    );
+  }
+  return isPrimitiveAnswerPresent(value);
+}
+
+function clonePrimitiveValue(val: PrimitiveAnswerValue): PrimitiveAnswerValue {
+  if (Array.isArray(val)) return val.slice();
+  if (typeof val === "object" && val !== null) return { ...val };
+  return val;
+}
+
+export function getCoreSurveyQuestions(survey: SurveyDefinition): SurveyQuestion[] {
+  const hasTiers = survey.questions.some((q) => q.tier != null);
+  if (!hasTiers) return survey.questions;
+  return survey.questions.filter((q) => q.tier === "core" || q.tier == null);
+}
+
+export function getDeepQuestionsForThemes(
+  survey: SurveyDefinition,
+  selectedThemes?: string[],
+): SurveyQuestion[] {
+  const deep = survey.questions.filter((q) => q.tier === "deep");
+  if (selectedThemes == null) return deep;
+  const set = new Set(selectedThemes);
+  return deep.filter((q) => q.deepTheme != null && set.has(q.deepTheme));
+}
+
+export function getClosingSurveyQuestions(survey: SurveyDefinition): SurveyQuestion[] {
+  return survey.questions.filter((q) => q.tier === "closing");
+}
+
+export function getActiveSurveyQuestions(
+  survey: SurveyDefinition,
+  options: ActiveQuestionsOptions = {},
+): SurveyQuestion[] {
+  const hasTiers = survey.questions.some((q) => q.tier != null);
+  if (!hasTiers) return survey.questions;
+
+  const core = getCoreSurveyQuestions(survey);
+  const closing = options.includeClosing === false ? [] : getClosingSurveyQuestions(survey);
+
+  if (options.depthMode === "deep") {
+    const deep = getDeepQuestionsForThemes(survey, options.selectedThemes);
+    return [...core, ...deep, ...closing];
+  }
+
+  return [...core, ...closing];
 }
 
 export function countAnsweredQuestions(
@@ -43,12 +109,19 @@ export function extractCleanAnswers(
   for (const q of questions) {
     const val = answers[q.id];
     if (!isAnswerPresent(val)) continue;
-    if (Array.isArray(val)) {
-      clean[q.id] = val.slice();
-    } else if (typeof val === "object" && val !== null) {
-      clean[q.id] = { ...val };
-    } else {
-      clean[q.id] = val;
+    if (isScopedAnswerValue(val)) {
+      const scoped: ScopedAnswerValue = {};
+      if (isPrimitiveAnswerPresent(val.enterprise) && val.enterprise !== undefined) {
+        scoped.enterprise = clonePrimitiveValue(val.enterprise);
+      }
+      if (isPrimitiveAnswerPresent(val.personal) && val.personal !== undefined) {
+        scoped.personal = clonePrimitiveValue(val.personal);
+      }
+      if (Object.keys(scoped).length > 0) {
+        clean[q.id] = scoped;
+      }
+    } else if (val !== undefined) {
+      clean[q.id] = clonePrimitiveValue(val);
     }
   }
   return clean;
@@ -71,6 +144,27 @@ export function resolveExclusiveMultiChange(
   return next;
 }
 
+function validateMultiArray(
+  question: Extract<SurveyQuestion, { type: "multi" }>,
+  arr: string[],
+): QuestionValidationError {
+  const hasExclusive = Boolean(
+    question.exclusive?.length && arr.some((v) => question.exclusive!.includes(v)),
+  );
+  if (
+    !hasExclusive &&
+    question.minSelections != null &&
+    arr.length > 0 &&
+    arr.length < question.minSelections
+  ) {
+    return "minSelections";
+  }
+  if (question.maxSelections != null && arr.length > question.maxSelections) {
+    return "maxSelections";
+  }
+  return null;
+}
+
 export function validateQuestionAnswer(
   question: SurveyQuestion,
   value: AnswerValue | undefined,
@@ -79,20 +173,19 @@ export function validateQuestionAnswer(
   if (question.required && !present) {
     return "required";
   }
-  if (question.type === "multi" && Array.isArray(value)) {
-    const hasExclusive = Boolean(
-      question.exclusive?.length && value.some((v) => question.exclusive!.includes(v)),
-    );
-    if (
-      !hasExclusive &&
-      question.minSelections != null &&
-      value.length > 0 &&
-      value.length < question.minSelections
-    ) {
-      return "minSelections";
+  if (question.type === "multi") {
+    if (Array.isArray(value)) {
+      return validateMultiArray(question, value);
     }
-    if (question.maxSelections != null && value.length > question.maxSelections) {
-      return "maxSelections";
+    if (isScopedAnswerValue(value)) {
+      if (Array.isArray(value.enterprise)) {
+        const err = validateMultiArray(question, value.enterprise);
+        if (err) return err;
+      }
+      if (Array.isArray(value.personal)) {
+        const err = validateMultiArray(question, value.personal);
+        if (err) return err;
+      }
     }
   }
   return null;
@@ -102,16 +195,18 @@ export function validateSubmission(
   survey: SurveyDefinition,
   answers: AnswerMap,
   mode: SurveySubmissionMode,
+  activeQuestions: SurveyQuestion[] = survey.questions,
 ): { valid: boolean; missingIds: string[] } {
   const missingSet = new Set<string>();
+  const activeIds = new Set(activeQuestions.map((q) => q.id));
 
   for (const id of survey.rules.requiredForSubmit ?? []) {
-    if (!isAnswerPresent(answers[id])) {
+    if (activeIds.has(id) && !isAnswerPresent(answers[id])) {
       missingSet.add(id);
     }
   }
 
-  for (const q of survey.questions) {
+  for (const q of activeQuestions) {
     const err = validateQuestionAnswer(q, answers[q.id]);
     if (err === "required") {
       if (mode === "complete") missingSet.add(q.id);
@@ -125,10 +220,10 @@ export function validateSubmission(
     return { valid: false, missingIds };
   }
 
-  if (countAnsweredQuestions(survey.questions, answers) === 0) {
+  if (countAnsweredQuestions(activeQuestions, answers) === 0) {
     return {
       valid: false,
-      missingIds: survey.questions.length > 0 ? [survey.questions[0].id] : [],
+      missingIds: activeQuestions.length > 0 ? [activeQuestions[0].id] : [],
     };
   }
 
@@ -148,25 +243,46 @@ export function resolveInitialStep(
 ): SurveyStep {
   if (initialStep) return initialStep;
   const enrollment = survey.rules.enrollment ?? "none";
-  return enrollment === "none" ? "questions" : "enrollment";
+  if (enrollment !== "none") return "enrollment";
+  return survey.entry ? "entry_scope" : "questions";
 }
 
 export function computeStepIndex(
   step: SurveyStep,
   enrollmentMode: SurveyEnrollmentMode = "none",
+  hasEntry = false,
 ): number {
+  if (!hasEntry) {
+    if (enrollmentMode === "email-magic-link") {
+      if (step === "enrollment") return 0;
+      if (step === "link_sent") return 1;
+      if (step === "questions" || step === "deep_themes") return 2;
+      return 3;
+    }
+    if (enrollmentMode === "email-unverified") {
+      if (step === "enrollment" || step === "link_sent") return 0;
+      if (step === "questions" || step === "deep_themes") return 1;
+      return 2;
+    }
+    return step === "thanks" ? 1 : 0;
+  }
+
   if (enrollmentMode === "email-magic-link") {
     if (step === "enrollment") return 0;
     if (step === "link_sent") return 1;
-    if (step === "questions") return 2;
-    return 3;
+    if (step === "entry_scope" || step === "entry_depth") return 2;
+    if (step === "questions" || step === "deep_themes") return 3;
+    return 4;
   }
   if (enrollmentMode === "email-unverified") {
     if (step === "enrollment" || step === "link_sent") return 0;
-    if (step === "questions") return 1;
-    return 2;
+    if (step === "entry_scope" || step === "entry_depth") return 1;
+    if (step === "questions" || step === "deep_themes") return 2;
+    return 3;
   }
-  return step === "thanks" ? 1 : 0;
+  if (step === "entry_scope" || step === "entry_depth") return 0;
+  if (step === "questions" || step === "deep_themes") return 1;
+  return 2;
 }
 
 export function sanitizeEnrollmentMeta(
@@ -182,27 +298,43 @@ export function sanitizeEnrollmentMeta(
 
 export function buildSubmitPayload(params: {
   survey: SurveyDefinition;
+  activeQuestions?: SurveyQuestion[];
   answers: AnswerMap;
   enrollmentMeta: Record<string, string>;
   requestedMode: SurveySubmissionMode;
   returnedFromDraft: boolean;
+  entryScope?: SurveyEntryScope | null;
+  depthMode?: SurveyDepthMode | null;
+  selectedThemes?: string[];
   nowIso?: string;
 }): SurveySubmitPayload {
-  const cleanAnswers = extractCleanAnswers(params.survey.questions, params.answers);
+  const targetQuestions = params.activeQuestions ?? params.survey.questions;
+  const cleanAnswers = extractCleanAnswers(targetQuestions, params.answers);
   const answeredCount = Object.keys(cleanAnswers).length;
-  const totalQuestions = params.survey.questions.length;
+  const totalQuestions = targetQuestions.length;
+  const nonOptionalCount = targetQuestions.filter(
+    (q) => !(q.type === "text_long" || q.type === "text_short") || !q.optional,
+  ).length;
   const effectiveMode: SurveySubmissionMode =
-    params.requestedMode === "complete" && answeredCount === totalQuestions
+    params.requestedMode === "complete" && answeredCount >= nonOptionalCount && answeredCount > 0
       ? "complete"
       : "partial";
 
+  const isV2 = isSurveyDefinitionV2(params.survey);
+
   return {
+    ...(isV2 ? { schemaVersion: 2 as const } : {}),
     surveyId: params.survey.id,
     mode: effectiveMode,
     answeredCount,
     totalQuestions,
     answers: cleanAnswers,
     enrollmentMeta: sanitizeEnrollmentMeta(params.enrollmentMeta),
+    ...(params.entryScope ? { entryScope: params.entryScope } : {}),
+    ...(params.depthMode ? { depthMode: params.depthMode } : {}),
+    ...(params.selectedThemes && params.selectedThemes.length > 0
+      ? { selectedThemes: params.selectedThemes.slice() }
+      : {}),
     returnedFromDraft: params.returnedFromDraft,
     submittedAt: params.nowIso ?? new Date().toISOString(),
   };

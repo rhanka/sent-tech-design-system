@@ -294,3 +294,96 @@ describe("LikertScale — validation, accessibility and styling contract", () =>
     expect(missing, "phantom tokens in LikertScale.svelte").toEqual([]);
   });
 });
+
+describe("LikertScale — symmetric bipolar neutral scale with non-substantive option", () => {
+  const bipolarOptions = [
+    { value: "imp_vneg", label: "−− · Très négatif" },
+    { value: "imp_neg", label: "− · Plutôt négatif" },
+    { value: "imp_neutral", label: "0 · Neutre" },
+    { value: "imp_pos", label: "+ · Plutôt positif" },
+    { value: "imp_vpos", label: "++ · Très positif" },
+    { value: "imp_nsp", label: "Je ne sais pas" }
+  ];
+
+  it("renders bipolar neutral center and visually separates nonSubstantive 'I don't know' inside one radiogroup", async () => {
+    const onchange = vi.fn();
+    const { container } = render(LikertScale, {
+      props: {
+        name: "ai_impact_year",
+        legend: "Sur l'année, l'IA a eu sur votre travail un effet :",
+        options: bipolarOptions,
+        scaleKind: "bipolar",
+        neutralOptionId: "imp_neutral",
+        nonSubstantive: ["imp_nsp"],
+        onchange
+      }
+    });
+
+    const fieldset = container.querySelector("fieldset") as HTMLFieldSetElement;
+    expect(fieldset.classList.contains("st-likert--bipolar")).toBe(true);
+
+    // 5 substantive options in main scale + 1 separated non-substantive option
+    const substantive = container.querySelectorAll(".st-likert__options .st-likert__option");
+    const nonSub = container.querySelectorAll(".st-likert__nonSubstantive .st-likert__option");
+    expect(substantive).toHaveLength(5);
+    expect(nonSub).toHaveLength(1);
+
+    // Neutral center is explicitly marked
+    const neutral = container.querySelector('[data-neutral="true"]');
+    expect(neutral).toBeTruthy();
+    expect(neutral?.textContent).toContain("Neutre");
+
+    // Non-substantive option does not display a misleading numeric step badge
+    expect(nonSub[0]?.querySelector(".st-likert__badge")).toBeNull();
+
+    // All 6 share the same radio group name and can toggle cleanly
+    const radios = screen.getAllByRole("radio") as HTMLInputElement[];
+    expect(radios).toHaveLength(6);
+    expect(radios.every((r) => r.name === "ai_impact_year")).toBe(true);
+
+    await fireEvent.click(screen.getByLabelText(/Je ne sais pas/i));
+    expect(onchange).toHaveBeenCalledWith("imp_nsp");
+
+    await fireEvent.click(screen.getByLabelText(/Neutre/i));
+    expect(onchange).toHaveBeenCalledWith("imp_neutral");
+  });
+
+  it("derives symmetric badges (--, -, 0, +, ++) when bipolar labels omit symbols and allows horizontal layout for 5 short substantive options + NSP", () => {
+    const shortBipolar = [
+      { value: "vneg", label: "Très négatif" },
+      { value: "neg", label: "Plutôt négatif" },
+      { value: "neu", label: "Neutre" },
+      { value: "pos", label: "Plutôt positif" },
+      { value: "vpos", label: "Très positif" },
+      { value: "nsp", label: "Je ne sais pas" }
+    ];
+
+    const { container } = render(LikertScale, {
+      props: {
+        name: "ai_short",
+        legend: "Effet de l'IA",
+        options: shortBipolar,
+        scaleKind: "bipolar",
+        neutralOptionId: "neu",
+        nonSubstantive: ["nsp"]
+      }
+    });
+
+    const fieldset = container.querySelector("fieldset") as HTMLElement;
+    expect(fieldset.classList.contains("st-likert--horizontal-capable")).toBe(true);
+    const badges = [...container.querySelectorAll(".st-likert__options .st-likert__badge")].map(
+      (el) => el.textContent
+    );
+    expect(badges).toEqual(["−−", "−", "0", "+", "++"]);
+  });
+
+  it("scopes nonSubstantive subtle background with :not(.st-likert__option--checked) so checked background is not overridden", () => {
+    const src = readFileSync(join(here, "lib/LikertScale.svelte"), "utf8");
+    expect(src).toMatch(
+      /\.st-likert__option--nonSubstantive:not\(\.st-likert__option--checked\)\s*\{[^}]*background:/s,
+    );
+    expect(src).not.toMatch(
+      /\.st-likert__option--nonSubstantive\s*\{[^}]*background:/s,
+    );
+  });
+});
