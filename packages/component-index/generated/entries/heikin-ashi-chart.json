@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/HeikinAshiChart.svelte",
-      "version": "0.47.0"
+      "version": "0.48.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Heikin-Ashi candlesticks: OHLC smoothed by successive averages to surface the trend.",
     "fr": "Chandeliers Heikin-Ashi : OHLC lissé par moyennes successives pour faire ressortir la tendance."
   },
-  "digest": "sha256:11de3531ff75ec757d2f78d3ef124b1520a2ba2254dd25c019ce89457970c0ba",
+  "digest": "sha256:fbd34a5d6c72f2a7190e8228cba1f7cf2cef182dc81e56404700c69d196a0641",
   "displayName": "HeikinAshiChart",
   "format": "component-entry/v1",
   "frameworks": [

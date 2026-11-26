@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/OrderedList.svelte",
-      "version": "0.47.0"
+      "version": "0.48.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Numbered ordered list, with nesting.",
     "fr": "Liste ordonnée numérotée, avec imbrication."
   },
-  "digest": "sha256:8ac124e8026035cc247f553ef6e0b66ac4dd35ca492bfe40d1e51e09f3a9f76f",
+  "digest": "sha256:8ac82c479a04ba101e4a7a8a2251b25d241d64b9c0d3ec8892b38d8b204c848f",
   "displayName": "OrderedList",
   "format": "component-entry/v1",
   "frameworks": [

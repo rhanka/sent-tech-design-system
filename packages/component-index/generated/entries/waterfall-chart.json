@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/WaterfallChart.svelte",
-      "version": "0.47.0"
+      "version": "0.48.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Waterfall chart (increases, decreases, totals) with optional connectors.",
     "fr": "Graphique en cascade (augmentations, diminutions, totaux) avec connecteurs."
   },
-  "digest": "sha256:5c30f52368b310bc0046e70177e514501158aaee7163c7f45f19d57d21f9637e",
+  "digest": "sha256:ad7b273f26e097ddee3f2f27f7c70dc84e604221de7ef96e585c2758c929e62d",
   "displayName": "WaterfallChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "table",
   "contractSource": "derived",
-  "digest": "sha256:3fd3f83c780248f973f38344abe2bdfc14fe30ffedc99d1d897d906cf98cd3cf",
-  "entryDigest": "sha256:fd2336d1f0474e048b8ffec28c7f7ea8fb5401d99ec2f5faa7e063c38280b64c",
+  "digest": "sha256:03d6017fc987fdb2e149a4e47012dc7d3e27fdd9a332f0da923a8ef8f4ff64fa",
+  "entryDigest": "sha256:5be87a467875538bf535e05eba029cfa15491465c159873fa26b5d6275f89927",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -273,7 +273,7 @@
         "declarationPath": "packages/components-svelte/dist/Table.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TableProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "partial",
       "unresolved": [],

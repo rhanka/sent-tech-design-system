@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DataImage.svelte",
-      "version": "0.47.0"
+      "version": "0.48.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Data-driven image controlled by props/state (src, alt, object-fit, sizing, radius).",
     "fr": "Image pilotée par props/état (src, alt, object-fit, dimensions, rayon)."
   },
-  "digest": "sha256:f4f98f7bc7fb8b931d99bf130a6ea53ccd980e38f3da37b034aff98b657b198c",
+  "digest": "sha256:c73cf5fb5d044fdd1ff87b35c4c862bac39797071a0a5e392aa7afeb5300b110",
   "displayName": "DataImage",
   "format": "component-entry/v1",
   "frameworks": [

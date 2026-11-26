@@ -1,8 +1,8 @@
 {
   "componentId": "slider",
   "contractSource": "derived",
-  "digest": "sha256:48acc97d1c0402725ff45ccd49aea1c225fb5cc435c160cf7d37e73f711c5c6e",
-  "entryDigest": "sha256:1657e1926b795f6a263fd723f60f1e440df326a1eac0e4c7c40d73d23e1ce1a5",
+  "digest": "sha256:5d51e470588db87aa65fd3295c00f0bf740b920221895458510600dfc880c3aa",
+  "entryDigest": "sha256:6d26d5edbd67435ba432be7690e2352674ac5a123dc96e94a332b0f62a831072",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -259,7 +259,7 @@
         "declarationPath": "packages/components-svelte/dist/Slider.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SliderProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "partial",
       "unresolved": [],

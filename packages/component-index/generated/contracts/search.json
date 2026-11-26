@@ -1,8 +1,8 @@
 {
   "componentId": "search",
   "contractSource": "derived",
-  "digest": "sha256:0376fc2e4d63965a824db537ee86fd116e45686fe9a3edc4d08c32554b78842d",
-  "entryDigest": "sha256:ccdb267c837e1bf217760927850bc7200ef645680fe1488e44dcee57dce094ff",
+  "digest": "sha256:b2b2f985db5715714add20ac9ccf6d66ac7dbe67b089e860d9b6b09adb68eaff",
+  "entryDigest": "sha256:22e1fe87480beb659bd109c3211caf670404ee187b0a2ce0382833d050b3a315",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -269,7 +269,7 @@
         "declarationPath": "packages/components-svelte/dist/Search.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SearchProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "complete",
       "unresolved": [],

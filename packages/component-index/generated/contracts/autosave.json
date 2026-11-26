@@ -1,8 +1,8 @@
 {
   "componentId": "autosave",
   "contractSource": "derived",
-  "digest": "sha256:2a0587e54d1730b13c7dc899a3aaa2787b82045aeb8136330b2b4b5e6c3c20eb",
-  "entryDigest": "sha256:b00ee0b63d4eb998df656402e4dba57a171873942f26a8e97dae27dafa95c624",
+  "digest": "sha256:c82c1e3076102374e55a122e6a7e27116eabdaf09bb9ad486f34476c8cd3d3a2",
+  "entryDigest": "sha256:25ccdeeef2f8187a4456a8077102b3d7d9695614e00d2933ca952c650a9f4633",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -288,7 +288,7 @@
         "declarationPath": "packages/components-svelte/dist/Autosave.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AutosaveProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "partial",
       "unresolved": [],

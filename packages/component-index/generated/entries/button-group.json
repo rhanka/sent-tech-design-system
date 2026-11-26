@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ButtonGroup.svelte",
-      "version": "0.47.0"
+      "version": "0.48.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Groups buttons, either attached as segments or spaced.",
     "fr": "Regroupe des boutons, en segments joints ou espacés."
   },
-  "digest": "sha256:3ac11c9d107bb94b4d40b4a77e04e545e22f88dc5d0c5eaea9e58b0d22a8ebae",
+  "digest": "sha256:379f83aa6305b0d2d23d192fa7a2bbe887aecd5734e4143eb808b82db8813134",
   "displayName": "ButtonGroup",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "sunburst-chart",
   "contractSource": "derived",
-  "digest": "sha256:5c09435dad65551bb267d4707da9c6efc17b38138c96bb105dc06f5946aa051d",
-  "entryDigest": "sha256:f551314c6041369ac87a91463300ec97d47de6f555ca01cebafa20c1fc0d1c68",
+  "digest": "sha256:38705f544c82cb6ebdd433216d7df31a00a826c3018440ec63060b205be5cc92",
+  "entryDigest": "sha256:cc30484ace39630677c0572889affd1b9ab0b55274c6e2174dbed943e41aacad",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -252,7 +252,7 @@
         "declarationPath": "packages/components-svelte/dist/SunburstChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SunburstChartProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "complete",
       "unresolved": [],

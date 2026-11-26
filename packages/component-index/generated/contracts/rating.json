@@ -1,8 +1,8 @@
 {
   "componentId": "rating",
   "contractSource": "derived",
-  "digest": "sha256:efaf4d96645d12f66f910724abc6706419747aa59b0d69aa40d29710f05f84e0",
-  "entryDigest": "sha256:ff8a1cdfa407f2d57b16dc5f1de561d79ddaeaff91f00e6166d47db54373f8a9",
+  "digest": "sha256:efa47c9eb7fb558f69da4deba7c19c0b25e5fa29a1ccf0c71eaae2eca9488787",
+  "entryDigest": "sha256:20bcfe3fef5c993e7b16203ae8705e0f0e8d520b07393372d7f2fe006adee071",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -215,7 +215,7 @@
         "declarationPath": "packages/components-svelte/dist/Rating.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RatingProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "complete",
       "unresolved": [],
