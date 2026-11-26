@@ -1,8 +1,8 @@
 {
   "componentId": "hidden",
   "contractSource": "derived",
-  "digest": "sha256:e6c570422184d2f8d2f4fba15b4bf7e8e0643092c11659eab9a9eff3b0d37ec5",
-  "entryDigest": "sha256:8dff3ea3508b1b5d3f2a05817b9c05c32f4c7d5fba58e0f78823b197e8224794",
+  "digest": "sha256:d403adaf684325ffaee04b6d624df6ebfa902caade5fc6817c2d70a85558dccc",
+  "entryDigest": "sha256:42268604b2a33b63dcf2dc3ae5c66620ffdf16e9318b5e79507631a0d444c301",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -167,7 +167,7 @@
         "declarationPath": "packages/components-svelte/dist/Hidden.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HiddenProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "complete",
       "unresolved": [],

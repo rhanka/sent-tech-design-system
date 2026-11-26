@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/GanttChart.svelte",
-      "version": "0.47.0"
+      "version": "0.48.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Gantt chart: one row per task, a horizontal start→end bar on a time axis, colour by category.",
     "fr": "Diagramme de Gantt : une ligne par tâche, barre horizontale start→end sur un axe temporel, couleur par catégorie."
   },
-  "digest": "sha256:0d919a01de96ca19f033598688873599f390b855ca6f4ba4b88f4b822d573ddd",
+  "digest": "sha256:50c7b032034fb3e567df68c819463c79ac43683e45247ce04761c206c1d28bfd",
   "displayName": "GanttChart",
   "format": "component-entry/v1",
   "frameworks": [

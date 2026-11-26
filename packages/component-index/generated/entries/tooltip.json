@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Tooltip.svelte",
-      "version": "0.47.0"
+      "version": "0.48.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Contextual hint on hover/focus.",
     "fr": "Info contextuelle au survol/focus."
   },
-  "digest": "sha256:854990fcb7e150c8b5c4b6055308ad3ac46750b49d6d0a116b43aeafae1ae43d",
+  "digest": "sha256:482c3ebbfebc63e142f0a467e108bfe08b54507fc84881fd7d85e3638e3d2350",
   "displayName": "Tooltip",
   "format": "component-entry/v1",
   "frameworks": [

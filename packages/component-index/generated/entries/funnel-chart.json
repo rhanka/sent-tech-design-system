@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/FunnelChart.svelte",
-      "version": "0.47.0"
+      "version": "0.48.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Vertical or horizontal funnel with per-step conversion percentages.",
     "fr": "Entonnoir vertical ou horizontal avec pourcentages de conversion par étape."
   },
-  "digest": "sha256:b203af2f50b3750eefe5608690ffd8945df3f28d5203ba82836b9d78ede05295",
+  "digest": "sha256:e530802587bf005e32c0f6cba2f69a1184ffb69213b0b35c40afb205f178494c",
   "displayName": "FunnelChart",
   "format": "component-entry/v1",
   "frameworks": [

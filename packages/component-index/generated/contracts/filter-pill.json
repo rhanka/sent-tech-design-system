@@ -1,8 +1,8 @@
 {
   "componentId": "filter-pill",
   "contractSource": "derived",
-  "digest": "sha256:8055b1d3058e131d1e483076bb1041789c32c6de1b4b1351553a8e345656bae1",
-  "entryDigest": "sha256:c886130965aa825b230e92a3a6e2a0df5b2787535e84f0b8890749ad6b060739",
+  "digest": "sha256:1049f5b4b56514396ab28694c64df6e91d2ff25a7a145985ae11545818f4bf58",
+  "entryDigest": "sha256:28cb8a19026c10d7bad46a7cc4b07b78719bd270ddf41208e14a33e24495366e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-svelte/dist/FilterPill.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FilterPillProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "complete",
       "unresolved": [],
