@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Stack.svelte",
-      "version": "0.46.1"
+      "version": "0.47.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Stack.vue",
-      "version": "0.42.0-next.0"
+      "version": "0.43.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Vertical stack with uniform gap (Flex column shorthand).",
     "fr": "Empilement vertical avec gap homogène (raccourci Flex column)."
   },
-  "digest": "sha256:6545bf70615c310472daf9506e966097fc9d9658d0996ce1d9e6178a97a6e340",
+  "digest": "sha256:1091b477711ae7c773e66ef10bb9c0c70f970cf3abe4444a6b262dee28bdda80",
   "displayName": "Stack",
   "format": "component-entry/v1",
   "frameworks": [

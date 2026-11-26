@@ -206,11 +206,9 @@
     color: var(--st-semantic-text-primary);
     cursor: pointer;
     display: inline-flex;
-    height: 2.75rem;
+    height: 2rem;
     justify-content: center;
-    min-height: 2.75rem;
-    min-width: 2.75rem;
-    width: 2.75rem;
+    width: 2rem;
   }
 
   .st-modal__body {

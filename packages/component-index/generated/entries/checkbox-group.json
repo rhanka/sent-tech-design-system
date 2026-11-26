@@ -5,11 +5,11 @@
   "delivery": [
     {
       "channel": "source",
-      "digest": "sha256:96c95a42b80884c1b62945e09ae3215af7ce942e487147c9ba3e71b86ecb5d2b",
+      "digest": "sha256:7a44ca9959b2d3f3af347fea007145db6f81f588dd6e39e1b2b6df4865755d00",
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/CheckboxGroup.svelte",
-      "version": "0.46.1"
+      "version": "0.47.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/CheckboxGroup.vue",
-      "version": "0.42.0-next.0"
+      "version": "0.43.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Set of checkboxes with a legend and multiple values.",
     "fr": "Ensemble de cases à cocher avec légende, valeurs multiples."
   },
-  "digest": "sha256:4c592f20577b9e6c1b5c643bc241790181f5ff201b7e0a62cbb00a0ab8ee9922",
+  "digest": "sha256:36a8217f6148ce628fb82a562ea714fbfd6563b64129b557e8ec5f906ab783af",
   "displayName": "CheckboxGroup",
   "format": "component-entry/v1",
   "frameworks": [

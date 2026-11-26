@@ -1,6 +1,9 @@
 import {
   CURRENT_SCHEMA_VERSION,
+  DIAGRAM_PRESENTATION_CONTRACT_PIN,
   DIAGRAM_PRESENTATION_V2_CONTRACT_PIN,
+  entityRef,
+  lowerLayoutHintsV2,
   m3ProfileRegistry,
   occurrenceRef,
   shippedExecutorBindings,
@@ -11,6 +14,7 @@ import {
   buildSceneLinkLegend,
   collectLinkLegendStyles,
   defaultLinkStyleLabel,
+  layoutMeasured,
   LINK_LEGEND_GAP,
   LINK_LEGEND_MIN_WIDTH,
   linkLegendSwatchGeometry,
@@ -20,6 +24,7 @@ import {
 import { cardLineMeasurer, defaultCardMeasure, sceneCardMeasure } from "../../src/presentation/diagramCardModel.js";
 import { layoutScene, resolveScene, sceneFit, type ScenePresentation } from "../../src/presentation/diagramSceneModel.js";
 import { renderSceneSvg } from "../../src/presentation/renderSceneSvg.js";
+import { r7AuthoredLegendFixture } from "../../test-support/r7AuthoredLegendFixture.js";
 
 const measureLines = cardLineMeasurer(sceneCardMeasure(defaultCardMeasure));
 
@@ -123,6 +128,9 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
 
     const swatch = linkLegendSwatchGeometry(forward[4]!);
     expect(swatch.dashArray).toBe("2 5");
+    expect(swatch.stroke).toBe("var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))");
+    expect(swatch.arrowFill).toBe("var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))");
+    expect(swatch.strokeWidth).toBe(3.5);
     expect(swatch.arrowPath).toBeTruthy();
     expect(swatch.arrowStroke).toBeUndefined();
     const undirected = linkLegendSwatchGeometry(forward[1]!);
@@ -397,5 +405,177 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
     expect(legend!.rect.width).toBeGreaterThanOrEqual(LINK_LEGEND_MIN_WIDTH);
     expect(legend!.rect.width).toBeLessThan(1000);
     expect(legend!.rect.x + legend!.rect.width).toBeCloseTo(rendered.scene.bounds!.x + rendered.scene.bounds!.width, 6);
+  });
+
+  it("DE3-L1a: enforces single legend authority (authored form:legend suppresses automatic linkLegend, data-authored-legend is r7-only)", () => {
+    const r7 = r7AuthoredLegendFixture(false);
+    const r7Base = {
+      document: r7.document,
+      presentation: r7.presentation,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [] as ReturnType<typeof occurrenceRef>[],
+    };
+    const unfolded = renderSceneSvg(r7Base);
+    expect(unfolded.scene.r7Connectors).toBe(true);
+    const authoredUnfolded = unfolded.scene.nodes.filter((n) => n.presentation?.form === "legend");
+    expect(authoredUnfolded).toHaveLength(1);
+    expect(unfolded.scene.linkLegend).toBeUndefined();
+    expect(authoredUnfolded.length + (unfolded.scene.linkLegend ? 1 : 0)).toBeLessThanOrEqual(1);
+    expect(unfolded.svg).toContain('data-authored-legend=""');
+    expect(unfolded.svg).not.toContain("data-scene-legend");
+
+    const folded = renderSceneSvg({ ...r7Base, collapsed: [occurrenceRef("e.zone-core")] });
+    const authoredFolded = folded.scene.nodes.filter((n) => n.presentation?.form === "legend");
+    expect(authoredFolded).toHaveLength(1);
+    expect(folded.scene.linkLegend).toBeUndefined();
+    expect(authoredFolded.length + (folded.scene.linkLegend ? 1 : 0)).toBeLessThanOrEqual(1);
+    expect(folded.svg).toContain('data-authored-legend=""');
+    expect(folded.svg).not.toContain("data-scene-legend");
+
+    // Composed scene with authored legend (expanded and collapsed) suppresses automatic linkLegend in measured.ts too.
+    const composedHints = lowerLayoutHintsV2({
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      legend: "free-cell",
+      grids: {
+        root: {
+          stage_columns: ["s1", "s2", "s3"],
+          transverse_bands: [
+            { id: "main", items: [entityRef("zone-core"), entityRef("gamma"), entityRef("delta")] },
+            { id: "foot", items: [entityRef("legend")] },
+          ],
+          cells: {
+            [entityRef("zone-core")]: { column: "s1" },
+            [entityRef("gamma")]: { column: "s2" },
+            [entityRef("delta")]: { column: "s3" },
+            [entityRef("legend")]: { column: "s1" },
+          },
+        },
+      },
+    });
+    for (const collapsed of [[], [occurrenceRef("e.legend")]] as const) {
+      const laid = layoutMeasured(r7.document, {
+        registry: m3ProfileRegistry,
+        bindings: shippedExecutorBindings,
+        presentation: r7.presentation,
+        measureLines,
+        measureText: (text) => ({ width: text.length * 8, height: 20 }),
+        hints: composedHints,
+        targetWidth: 1440,
+        collapsed: [...collapsed],
+      });
+      expect(laid.status).toBe("laid-out");
+      if (laid.status !== "laid-out") continue;
+      expect(laid.legendResolved).toBe(true);
+      expect(laid.linkLegend).toBeUndefined();
+      const resolved = resolveScene(laid, {
+        document: r7.document,
+        presentation: r7.presentation,
+        measureLines,
+      });
+      const authored = resolved.nodes.filter((n) => n.presentation?.form === "legend");
+      expect(authored).toHaveLength(1);
+      expect(resolved.linkLegend).toBeUndefined();
+      expect(authored.length + (resolved.linkLegend ? 1 : 0)).toBeLessThanOrEqual(1);
+    }
+
+    // Frozen v1 authored legend omits data-authored-legend and keeps combined count <= 1.
+    const v1Presentation = {
+      ...r7.presentation,
+      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      entities: Object.fromEntries(
+        Object.entries(r7.presentation.entities).map(([id, entry]) => {
+          const { anatomy: _ignored, ...rest } = entry as { anatomy?: unknown; form: string; text: unknown };
+          return [id, rest];
+        }),
+      ),
+      relations: {},
+    } as unknown as ScenePresentation;
+    const v1 = renderSceneSvg({ ...r7Base, presentation: v1Presentation });
+    expect(v1.scene.r7Connectors).toBe(false);
+    const authoredV1 = v1.scene.nodes.filter((n) => n.presentation?.form === "legend");
+    expect(authoredV1).toHaveLength(1);
+    expect(v1.scene.linkLegend).toBeUndefined();
+    expect(authoredV1.length + (v1.scene.linkLegend ? 1 : 0)).toBeLessThanOrEqual(1);
+    expect(v1.svg).not.toContain("data-authored-legend");
+  });
+
+  it("DE3-L1a (PR #327 P2 #1): keeps enlarged overview labels clear of linkLegend and re-anchors non-free-cell legends under fitToWindow", () => {
+    const { document, presentation } = multiStyleFixture();
+    // Make the rightmost cross-zone relation carry a very long label so overview zoom enlargement would reach right-strip legend.
+    const wideLabelDoc = {
+      ...document,
+      relations: {
+        ...document.relations,
+        "relation:r-proposed": {
+          ...document.relations["relation:r-proposed"]!,
+          attributes: { label: { kind: "text", value: "extremely long cross boundary edge label near right strip" } },
+        },
+      },
+    } as unknown as SemanticDocument;
+
+    const uncomposedInput = {
+      document: wideLabelDoc,
+      presentation,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [] as ReturnType<typeof occurrenceRef>[],
+    };
+    const uncomposedLayout = layoutScene(uncomposedInput);
+    expect(uncomposedLayout.status).toBe("laid-out");
+    if (uncomposedLayout.status !== "laid-out") return;
+    const uncomposedOverview = resolveScene(uncomposedLayout, uncomposedInput, {
+      viewWidth: 420,
+      windowHeight: 280,
+      fitToWindow: true,
+    });
+    expect(uncomposedOverview.overviewEdgeLabelSize).toBeDefined();
+    expect(uncomposedOverview.linkLegend).toBeDefined();
+    for (const label of uncomposedOverview.labels) {
+      expect(rectsIntersect(label.box, uncomposedOverview.linkLegend!.rect)).toBe(false);
+    }
+
+    // Composed scene with right legend and free-cell legend under fitToWindow overview zoom.
+    for (const legendMode of ["right", "free-cell"] as const) {
+      const hints = lowerLayoutHintsV2({
+        vocabulary: "ds-layout-hints@2",
+        mode: "stage-columns",
+        legend: legendMode,
+        grids: {
+          root: {
+            stage_columns: ["s1", "s2"],
+            transverse_bands: [
+              { id: "b1", items: [entityRef("zone")] },
+              { id: "b2", items: [entityRef("ext")] },
+            ],
+            cells: {
+              [entityRef("zone")]: { column: "s1" },
+              [entityRef("ext")]: { column: "s2" },
+            },
+          },
+        },
+      });
+      const composedInput = { ...uncomposedInput, hints };
+      const laid = layoutScene(composedInput);
+      expect(laid.status).toBe("laid-out");
+      if (laid.status !== "laid-out") continue;
+      const overview = resolveScene(laid, composedInput, {
+        viewWidth: 420,
+        windowHeight: 280,
+        fitToWindow: true,
+      });
+      expect(overview.overviewEdgeLabelSize).toBeDefined();
+      expect(overview.linkLegend).toBeDefined();
+      for (const label of overview.labels) {
+        expect(rectsIntersect(label.box, overview.linkLegend!.rect), `${legendMode}:${label.occurrence}`).toBe(false);
+      }
+      if (legendMode === "right") {
+        const maxLabelRight = Math.max(...overview.labels.map((l) => l.box.x + l.box.width));
+        expect(overview.linkLegend!.rect.x).toBeGreaterThanOrEqual(maxLabelRight + LINK_LEGEND_GAP - 1);
+      }
+    }
   });
 });

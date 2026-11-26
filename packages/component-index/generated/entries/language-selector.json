@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/LanguageSelector.svelte",
-      "version": "0.46.1"
+      "version": "0.47.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/LanguageSelector.vue",
-      "version": "0.42.0-next.0"
+      "version": "0.43.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact language switcher (i18n): current locale + menu.",
     "fr": "Sélecteur de langue compact (i18n) : langue courante + menu."
   },
-  "digest": "sha256:c7bcdf47ac1c68ba5e92f6407734f50f97269039c4a17b320831c645450863f6",
+  "digest": "sha256:00e27f02b2f7e33a4b47a21e1092e984b1bbc10e2342ce5dfb7de9e090013cc9",
   "displayName": "LanguageSelector",
   "format": "component-entry/v1",
   "frameworks": [

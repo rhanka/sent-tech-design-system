@@ -1,8 +1,8 @@
 {
   "componentId": "stacked-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:7dd15d01318455f66d3246655f56b5c474a6f3a8e8b13945b2c69e7a4d376818",
-  "entryDigest": "sha256:1293eed24015637432ecb723ea2d6b0cd4f28ed97f611324643b7b2b3be5d707",
+  "digest": "sha256:7cc9d31be73a24fa4cbcafcc1aecb86b106b2ac2c7373759bfe2b3fedfdbdb57",
+  "entryDigest": "sha256:ce397e71d24b6728b6626e43a09c66b2a990d64a4aaa9da02038343237faf91a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -442,7 +442,7 @@
         "declarationPath": "packages/components-svelte/dist/StackedBarChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StackedBarChartProps",
-        "version": "0.46.1"
+        "version": "0.47.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -595,7 +595,7 @@
         "declarationPath": "packages/components-vue/dist/StackedBarChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StackedBarChartProps",
-        "version": "0.42.0-next.0"
+        "version": "0.43.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

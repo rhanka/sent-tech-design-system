@@ -171,7 +171,7 @@ describe("SurveyForm — enrollment, flow, explicit submit & passkey", () => {
     await fireEvent.click(getByRole("button", { name: /Suivant/i }));
 
     // Q3 scale
-    await fireEvent.click(getByLabelText(/3 · Autonome/i));
+    await fireEvent.click(getByLabelText(/3\s+Autonome/i));
     expect(onsubmit).not.toHaveBeenCalled();
 
     // Explicit complete submit
@@ -245,7 +245,7 @@ describe("SurveyForm — enrollment, flow, explicit submit & passkey", () => {
     });
   });
 
-  it("detects and resumes an active 30-min local draft for the same email", async () => {
+  it("detects and resumes an active 30-min local draft directly in email-unverified mode", async () => {
     const now = Date.now();
     saveSurveyDraft("demo-c", "alice@devmtl.ca", {
       surveyId: "demo-c",
@@ -706,10 +706,11 @@ describe("SurveyForm — enrollment, flow, explicit submit & passkey", () => {
     // Error must reference question 2, not hardcoded "question 1"
     expect(r1.queryByText(/question 1/i)).toBeNull();
     expect(r1.getByText(/Question 2 : sélectionnez au moins 2/i)).toBeTruthy();
-    // Control has aria-invalid="true" and aria-describedby linked to error text
+    // Control has aria-invalid="true" and group fieldset aria-describedby linked to error text
     const alphaCheckbox = r1.getByLabelText("Outil Alpha") as HTMLInputElement;
     expect(alphaCheckbox.getAttribute("aria-invalid")).toBe("true");
-    const descIds = (alphaCheckbox.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean);
+    const groupFieldset = alphaCheckbox.closest("fieldset");
+    const descIds = (groupFieldset?.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean);
     expect(descIds.some((id) => document.getElementById(id)?.textContent?.includes("au moins 2"))).toBe(true);
     r1.unmount();
     clearAllSurveyStorage();
@@ -764,24 +765,135 @@ describe("SurveyForm — enrollment, flow, explicit submit & passkey", () => {
     const nestedAlerts = container.querySelectorAll('[role="alert"] [role="alert"]');
     expect(nestedAlerts.length).toBe(0);
 
-    // Modal close target >= 44px (2.75rem) & SurveyNav stickyMobile uses @container
-    const modalSource = readFileSync(
-      join(dirname(fileURLToPath(import.meta.url)), "Modal.svelte"),
-      "utf8",
-    );
-    expect(modalSource).toMatch(/\.st-modal__close\s*\{[^}]*2\.75rem/s);
-
+    // Modal close target >= 44px (2.75rem) scoped in SurveyNav & stickyMobile uses @container
     const navSource = readFileSync(
       join(dirname(fileURLToPath(import.meta.url)), "SurveyNav.svelte"),
       "utf8",
     );
-    expect(navSource).toMatch(/@container\s*\(max-width:\s*520px\)\s*\{[\s\S]*\.st-surveyNav--stickyMobile/);
+    expect(navSource).toMatch(/\.st-surveyNav__modal\s+\.st-modal__close\s*\)\s*\{[^}]*2\.75rem/s);
+    expect(navSource).toMatch(/@container\s*\(max-width:\s*25rem\)\s*\{[\s\S]*\.st-surveyNav--stickyMobile/);
 
     const formSource = readFileSync(
       join(dirname(fileURLToPath(import.meta.url)), "SurveyForm.svelte"),
       "utf8",
     );
-    expect(formSource).toMatch(/\.st-surveyForm__main[\s\S]*38rem/);
+    expect(formSource).toMatch(/\.st-surveyForm__main[\s\S]*44rem/);
+  });
+
+  it("P2-3: preserves data-invalid on SurveyQuestionCard and gives LikertScale >= 600px inner width", async () => {
+    const onsubmit = vi.fn();
+    const { container, getByRole } = render(SurveyForm, {
+      props: {
+        survey: {
+          ...TEST_SURVEY,
+          rules: { ...TEST_SURVEY.rules, enrollment: "none", mode: "all-at-once" },
+        },
+        locale: "fr",
+        onsubmit,
+      },
+    });
+
+    // Answer Q2 only, omit required Q1, submit -> Q1's SurveyQuestionCard must expose data-invalid="true"
+    await fireEvent.click(container.querySelector('input[value="t1"]') as HTMLInputElement);
+    await fireEvent.click(getByRole("button", { name: /Envoyer mes réponses/i }));
+
+    const cards = container.querySelectorAll(".st-surveyQuestionCard");
+    expect(cards[0]?.getAttribute("data-invalid")).toBe("true");
+    expect(cards[1]?.getAttribute("data-invalid")).toBeNull();
+
+    // Main column max-width >= 44rem (704px - 35px Card - 51px SurveyQuestionCard = 618px >= 600px LikertScale breakpoint)
+    const formSource = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), "SurveyForm.svelte"),
+      "utf8",
+    );
+    const mainMaxMatch = formSource.match(/\.st-surveyForm__main\s*\{[^}]*max-width:\s*(\d+(?:\.\d+)?)rem/s);
+    expect(mainMaxMatch).not.toBeNull();
+    expect(Number(mainMaxMatch![1]) * 16 - 86).toBeGreaterThanOrEqual(600);
+    const gridContainerMatch = formSource.match(/@container\s+st-survey-form\s*\(min-width:\s*(\d+)px\)/);
+    expect(gridContainerMatch).not.toBeNull();
+    // At the 2-column breakpoint, main column (container - 24px gap - 256px privacy min) must still fit >= 686px
+    expect(Number(gridContainerMatch![1]) - 24 - 256 - 86).toBeGreaterThanOrEqual(600);
+  });
+
+  it("P2-4: handles WebAuthn cancel cleanly with in-flight disable, enriches ErrorSummary links, and confirms enrollment retry", async () => {
+    // 1. ErrorSummary links include both question label and validation message
+    const summarySurvey: SurveyDefinition = {
+      ...TEST_SURVEY,
+      rules: { ...TEST_SURVEY.rules, enrollment: "none", mode: "all-at-once", requiredForSubmit: ["type"] },
+      questions: [
+        TEST_SURVEY.questions[0],
+        {
+          id: "tools",
+          type: "multi",
+          label: { fr: "Choisissez au moins 2 outils", en: "Pick at least 2 tools" },
+          minSelections: 2,
+          options: [
+            { id: "t1", label: { fr: "Outil Alpha", en: "Alpha Tool" } },
+            { id: "t2", label: { fr: "Outil Beta", en: "Beta Tool" } },
+          ],
+        },
+      ],
+    };
+    const rSummary = render(SurveyForm, {
+      props: { survey: summarySurvey, locale: "fr", onsubmit: vi.fn() },
+    });
+    await fireEvent.click(rSummary.getByLabelText("Outil Alpha"));
+    await fireEvent.click(rSummary.getByRole("button", { name: /Envoyer mes réponses/i }));
+    const summaryLinks = Array.from(rSummary.container.querySelectorAll(".st-error-summary a"));
+    expect(summaryLinks.length).toBe(2);
+    expect(summaryLinks[0].textContent).toMatch(/Quel type d’organisation/i);
+    expect(summaryLinks[0].textContent).toMatch(/répondre à cette question/i);
+    expect(summaryLinks[1].textContent).toMatch(/Choisissez au moins 2 outils/i);
+    expect(summaryLinks[1].textContent).toMatch(/au moins 2/i);
+    rSummary.unmount();
+
+    // 2. Returning respondent on enrollment clicking Retry now transitions to thanks confirmation
+    savePendingSubmission("demo-c", "alice@devmtl.ca", {
+      payload: {
+        surveyId: "demo-c",
+        mode: "partial",
+        answeredCount: 1,
+        totalQuestions: 3,
+        answers: { type: "startup" },
+        enrollmentMeta: {},
+        returnedFromDraft: false,
+        submittedAt: "2026-11-27T14:00:00.000Z",
+      },
+      queuedAt: Date.now(),
+      attempts: 1,
+      lastError: "offline",
+    });
+    const retrySubmit = vi.fn().mockResolvedValue(undefined);
+    let rejectPasskey!: (err: Error) => void;
+    const onregisterpasskey = vi.fn(
+      () =>
+        new Promise<void>((_res, rej) => {
+          rejectPasskey = rej;
+        }),
+    );
+    const rRetry = render(SurveyForm, {
+      props: {
+        survey: TEST_SURVEY,
+        locale: "fr",
+        initialStep: "enrollment",
+        initialEmail: "alice@devmtl.ca",
+        onsubmit: retrySubmit,
+        onregisterpasskey,
+      },
+    });
+    await fireEvent.click(rRetry.getByRole("button", { name: /Réessayer maintenant/i }));
+    await waitFor(() => expect(retrySubmit).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(rRetry.getByText(/Merci pour vos réponses/i)).toBeTruthy());
+
+    // 3. Passkey registration disables button while in-flight and handles WebAuthn NotAllowedError cancel without unhandled rejection
+    const passkeyBtn = rRetry.getByRole("button", { name: /Ajouter une clé d’accès/i }) as HTMLButtonElement;
+    await fireEvent.click(passkeyBtn);
+    expect(passkeyBtn.disabled).toBe(true);
+    const cancelErr = Object.assign(new Error("User cancelled WebAuthn"), { name: "NotAllowedError" });
+    rejectPasskey(cancelErr);
+    await waitFor(() => expect(passkeyBtn.disabled).toBe(false));
+    expect(rRetry.queryByText(/Clé d’accès enregistrée/i)).toBeNull();
+    rRetry.unmount();
   });
 
   it("P2-6: does not persist dead drafts after 30-min expiry and persists again after renewing window", async () => {
@@ -823,6 +935,173 @@ describe("SurveyForm — enrollment, flow, explicit submit & passkey", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("r3 P1-2: avoids empty pre-link drafts, does not inflate returnedFromDraft, and never bypasses email-magic-link auth", async () => {
+    // 1. Submitting email-only in email-magic-link writes NO empty 0-answer draft and Changer d'e-mail never shows resume banner
+    const onrequestlink = vi.fn().mockResolvedValue(undefined);
+    const r1 = render(SurveyForm, {
+      props: {
+        survey: TEST_SURVEY,
+        locale: "fr",
+        onrequestlink,
+      },
+    });
+    await fireEvent.input(r1.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "bob@devmtl.ca" },
+    });
+    await fireEvent.click(r1.getByRole("button", { name: /Recevoir mon lien/i }));
+    await waitFor(() => expect(r1.getByText(/Un lien vient de partir/i)).toBeTruthy());
+    expect(loadSurveyDraft("demo-c", "bob@devmtl.ca")).toBeNull();
+
+    await fireEvent.click(r1.getByRole("button", { name: /Changer d’e-mail/i }));
+    await fireEvent.input(r1.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "bob@devmtl.ca" },
+    });
+    expect(r1.queryByText(/Brouillon actif retrouvé/i)).toBeNull();
+    expect(r1.queryByRole("button", { name: /Reprendre mon brouillon/i })).toBeNull();
+    r1.unmount();
+
+    // 2. Pre-link enrollmentMeta survives magic-link return without surfacing a 0/N resume banner or inflating returnedFromDraft
+    const onrequestlink2 = vi.fn().mockResolvedValue(undefined);
+    const onsubmit2 = vi.fn().mockResolvedValue(undefined);
+    const r2 = render(SurveyForm, {
+      props: {
+        survey: TEST_SURVEY,
+        locale: "fr",
+        onrequestlink: onrequestlink2,
+        onsubmit: onsubmit2,
+      },
+    });
+    await fireEvent.input(r2.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "claire@devmtl.ca" },
+    });
+    await fireEvent.input(r2.getByLabelText(/Entreprise/i), {
+      target: { value: "Studio Nord" },
+    });
+    await fireEvent.click(r2.getByRole("button", { name: /Recevoir mon lien/i }));
+    await waitFor(() => expect(r2.getByText(/Un lien vient de partir/i)).toBeTruthy());
+    await fireEvent.click(r2.getByRole("button", { name: /Changer d’e-mail/i }));
+    await fireEvent.input(r2.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "claire@devmtl.ca" },
+    });
+    expect(r2.queryByText(/Brouillon actif retrouvé/i)).toBeNull();
+    expect(r2.queryByRole("button", { name: /Reprendre mon brouillon/i })).toBeNull();
+
+    // Verified magic-link return restores company_name without restoredBanner or returnedFromDraft=true
+    await r2.rerender({
+      survey: TEST_SURVEY,
+      locale: "fr",
+      initialStep: "questions",
+      initialEmail: "claire@devmtl.ca",
+      onrequestlink: onrequestlink2,
+      onsubmit: onsubmit2,
+    });
+    await waitFor(() => expect(r2.getByText(/Quel type d’organisation/i)).toBeTruthy());
+    expect(r2.queryByText(/Brouillon restauré/i)).toBeNull();
+    await fireEvent.click(r2.getByLabelText("Startup"));
+    await fireEvent.click(r2.getByRole("button", { name: /Envoyer seulement celles-ci \(1\/3\)/i }));
+    await fireEvent.click(r2.getByRole("button", { name: /Confirmer l’envoi partiel/i }));
+    await waitFor(() => expect(onsubmit2).toHaveBeenCalledTimes(1));
+    expect(onsubmit2.mock.calls[0][0]).toMatchObject({
+      enrollmentMeta: { company_name: "Studio Nord" },
+      returnedFromDraft: false,
+    });
+    r2.unmount();
+
+    // 3. Real active draft under email-magic-link (allowSimulatedLinkOpen=false) NEVER bypasses magic-link verification
+    const now = Date.now();
+    saveSurveyDraft("demo-c", "alice@devmtl.ca", {
+      surveyId: "demo-c",
+      answers: { type: "startup" },
+      questionIndex: 1,
+      enrollmentMeta: { company_name: "Atelier" },
+      expiresAt: now + 15 * 60 * 1000,
+      updatedAt: now - 60_000,
+    });
+    const onrequestlink3 = vi.fn().mockResolvedValue(undefined);
+    const r3 = render(SurveyForm, {
+      props: {
+        survey: TEST_SURVEY,
+        locale: "fr",
+        onrequestlink: onrequestlink3,
+      },
+    });
+    await fireEvent.input(r3.getByLabelText(/Adresse e-mail/i), {
+      target: { value: "alice@devmtl.ca" },
+    });
+    expect(r3.getByText(/Brouillon actif retrouvé/i)).toBeTruthy();
+    // Must NOT expose a direct-jump bypass button in email-magic-link mode
+    expect(r3.queryByRole("button", { name: /Reprendre mon brouillon/i })).toBeNull();
+    expect(r3.queryByText(/Quels outils utilisez-vous/i)).toBeNull();
+
+    // Requesting link calls onrequestlink and stays on link_sent (no bypass when allowSimulatedLinkOpen=false)
+    await fireEvent.click(r3.getByRole("button", { name: /Recevoir mon lien/i }));
+    await waitFor(() => expect(onrequestlink3).toHaveBeenCalledTimes(1));
+    expect(r3.getByText(/Un lien vient de partir/i)).toBeTruthy();
+    expect(r3.queryByRole("button", { name: /Ouvrir le sondage/i })).toBeNull();
+    expect(r3.queryByText(/Quels outils utilisez-vous/i)).toBeNull();
+
+    // Only after verified magic-link return does the saved draft restore at Q2
+    await r3.rerender({
+      survey: TEST_SURVEY,
+      locale: "fr",
+      initialStep: "questions",
+      initialEmail: "alice@devmtl.ca",
+      onrequestlink: onrequestlink3,
+    });
+    await waitFor(() => expect(r3.getByText(/Brouillon restauré/i)).toBeTruthy());
+    expect(r3.getByText(/Quels outils utilisez-vous/i)).toBeTruthy();
+    r3.unmount();
+  });
+
+  it("r3 P2-3: localizes CheckboxGroup required/maxSelections in FR and marks requiredForSubmit questions required", () => {
+    const reqSurvey: SurveyDefinition = {
+      ...TEST_SURVEY,
+      rules: {
+        ...TEST_SURVEY.rules,
+        enrollment: "none",
+        mode: "all-at-once",
+        requiredForSubmit: ["type"],
+      },
+      questions: [
+        TEST_SURVEY.questions[0], // "type" has no q.required, required via rules.requiredForSubmit
+        {
+          id: "tools",
+          type: "multi",
+          required: true,
+          maxSelections: 2,
+          label: { fr: "Quels outils ?", en: "Which tools?" },
+          options: [
+            { id: "t1", label: { fr: "Outil Alpha", en: "Alpha Tool" } },
+            { id: "t2", label: { fr: "Outil Beta", en: "Beta Tool" } },
+            { id: "t3", label: { fr: "Outil Gamma", en: "Gamma Tool" } },
+          ],
+        },
+      ],
+    };
+
+    const { container } = render(SurveyForm, {
+      props: {
+        survey: reqSurvey,
+        locale: "fr",
+      },
+    });
+
+    // Q1 ("type") is requiredForSubmit -> RadioGroup has aria-required="true" and card has data-required="true"
+    const radioGroup = container.querySelector('fieldset[role="radiogroup"]') as HTMLElement;
+    expect(radioGroup.getAttribute("aria-required")).toBe("true");
+    const cards = container.querySelectorAll(".st-surveyQuestionCard");
+    expect(cards[0]?.getAttribute("data-required")).toBe("true");
+
+    // Q2 (CheckboxGroup) in locale="fr" renders French screen-reader label "(obligatoire)" instead of "(required)"
+    const srHidden = container.querySelector(".st-checkboxGroup .st-visually-hidden");
+    expect(srHidden?.textContent).toContain("obligatoire");
+    expect(srHidden?.textContent).not.toContain("required");
+    // maxSelections limit hint is localized in FR
+    const limitHint = container.querySelector(".st-checkboxGroup__limit");
+    expect(limitHint?.textContent).toContain("0 / 2");
+    expect(limitHint?.textContent).toMatch(/au plus 2/i);
   });
 });
 

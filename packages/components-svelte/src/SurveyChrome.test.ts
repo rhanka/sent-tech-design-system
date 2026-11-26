@@ -101,11 +101,44 @@ describe("Stepper — compactMobile", () => {
     }
   });
 
-  it("uses a container query at max-width: 480px to keep non-current labels visually hidden on narrow screens", () => {
+  it("uses a container query at max-width: 25rem (400px) to keep non-current labels visually hidden on phone columns", () => {
     const source = readFileSync(join(here, "lib", "Stepper.svelte"), "utf8");
     expect(source).toContain("container-type: inline-size");
-    expect(source).toMatch(/@container\s*\(max-width:\s*480px\)/);
+    expect(source).toMatch(/@container\s*\(max-width:\s*25rem\)/);
     expect(source).toContain(".st-stepper--compactMobile");
+  });
+
+  it("keeps the final step indicator left-aligned, prevents 0px intrinsic collapse, and enlarges clickable step buttons to >= 44px", async () => {
+    const onStepClick = vi.fn();
+    const { container } = render(Stepper, {
+      props: {
+        steps,
+        current: steps.length - 1,
+        compactMobile: true,
+        clickable: true,
+        onStepClick
+      }
+    });
+
+    const current = container.querySelector('[aria-current="step"]') as HTMLElement;
+    expect(current).toBeTruthy();
+    expect(current.textContent).toContain("Merci");
+
+    const buttons = container.querySelectorAll("button.st-stepper__circle--button");
+    expect(buttons).toHaveLength(steps.length);
+    await fireEvent.click(buttons[steps.length - 1]);
+    expect(onStepClick).toHaveBeenCalledWith(steps.length - 1);
+
+    const source = readFileSync(join(here, "lib", "Stepper.svelte"), "utf8");
+    expect(source).toMatch(
+      /\.st-stepper--horizontal\s+\.st-stepper__indicator\s*\{[^}]*justify-content:\s*flex-start/s
+    );
+    expect(source).toMatch(
+      /\.st-stepper--compactMobile\.st-stepper--horizontal\s*\{[^}]*width:\s*100%/s
+    );
+    expect(source).toMatch(
+      /\.st-stepper__circle--button\s*\{[^}]*min-height:\s*2\.75rem[^}]*min-width:\s*2\.75rem/s
+    );
   });
 });
 
@@ -174,11 +207,15 @@ describe("SurveyQuestionCard", () => {
     expect(screen.getByTestId("timer").textContent).toBe("29:45");
   });
 
-  it("adapts card padding via container query from 1rem to 1.5rem", () => {
+  it("adapts card padding via container query from 1rem to 1.5rem at 25rem and keeps AA contrast on inline errors", () => {
     const source = readFileSync(join(here, "lib", "SurveyQuestionCard.svelte"), "utf8");
     expect(source).toContain("container-type: inline-size");
-    expect(source).toMatch(/@container\s*\(min-width:/);
+    expect(source).toMatch(/@container\s*\(min-width:\s*25rem\)/);
     expect(source).toContain("var(--st-spacing-6, 1.5rem)");
+    expect(source).toMatch(
+      /\.st-surveyQuestionCard__error\s*\{[^}]*color:\s*var\(--st-semantic-text-primary/s
+    );
+    expect(source).not.toContain("0.0625rem");
   });
 
   it("renders a >= 44px per-question orientation toggle when contextual is true", async () => {
@@ -299,20 +336,44 @@ describe("SurveyNav", () => {
     expect(trigger.classList.contains("st-button--lg")).toBe(true);
 
     // First click opens modal — must NOT submit yet
+    trigger.focus();
     await fireEvent.click(trigger);
+    await tick();
     expect(onpartialsubmit).not.toHaveBeenCalled();
-    expect(screen.getByRole("dialog", { name: "Confirmer l'envoi partiel" })).toBeTruthy();
+    const dialog = screen.getByRole("dialog", { name: "Confirmer l'envoi partiel" });
+    expect(dialog).toBeTruthy();
+    expect(dialog.classList.contains("st-surveyNav__modal")).toBe(true);
+    expect(dialog.contains(document.activeElement)).toBe(true);
 
-    // Cancel closes modal without submitting
-    await fireEvent.click(screen.getByRole("button", { name: "Continuer le sondage" }));
+    // Cancel closes modal without submitting and restores focus to the trigger
+    const cancelBtn = screen.getByRole("button", { name: "Continuer le sondage" });
+    cancelBtn.focus();
+    await fireEvent.click(cancelBtn);
+    await tick();
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(onpartialsubmit).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(trigger);
 
-    // Re-open and explicitly confirm
+    // Re-open and explicitly confirm; focus returns to trigger if consumer stays on page
+    trigger.focus();
     await fireEvent.click(trigger);
-    await fireEvent.click(screen.getByRole("button", { name: "Confirmer l'envoi" }));
+    await tick();
+    const confirmBtn = screen.getByRole("button", { name: "Confirmer l'envoi" });
+    confirmBtn.focus();
+    await fireEvent.click(confirmBtn);
+    await tick();
     expect(onpartialsubmit).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  it("enforces >= 44px close button on the partial-submit modal and @container support on stickyMobile", () => {
+    const source = readFileSync(join(here, "lib", "SurveyNav.svelte"), "utf8");
+    expect(source).toMatch(
+      /\.st-surveyNav__modal\s+\.st-modal__close\)\s*\{[^}]*min-height:\s*2\.75rem[^}]*min-width:\s*2\.75rem/s
+    );
+    expect(source).toMatch(/@container\s*\(max-width:\s*25rem\)/);
+    expect(source).toMatch(/@container\s*\(max-width:\s*25rem\)\s*\{[\s\S]*\.st-surveyNav--stickyMobile/);
   });
 
   it("renders optional leave ghost button and supports stickyMobile safe-area padding", async () => {
@@ -346,7 +407,7 @@ describe("SurveyPrivacyNotice", () => {
     "Cellules inférieures à 5 masquées."
   ];
 
-  it("renders expanded Card with heading, summary badge, and UnorderedList in card mode", () => {
+  it("renders expanded Card with heading, summary badge, named landmark, and UnorderedList in card mode", () => {
     const { container } = render(SurveyPrivacyNotice, {
       props: {
         title: "Confidentialité et anonymat",
@@ -357,6 +418,8 @@ describe("SurveyPrivacyNotice", () => {
       }
     });
 
+    const aside = screen.getByRole("complementary", { name: "Confidentialité et anonymat" });
+    expect(aside).toBeTruthy();
     expect(container.querySelector(".st-surveyPrivacy--sticky")).toBeTruthy();
     expect(screen.getByText("Confidentialité et anonymat")).toBeTruthy();
     expect(screen.getByText("Anonyme · < 5 masqué")).toBeTruthy();
@@ -389,18 +452,79 @@ describe("SurveyPrivacyNotice", () => {
     }
   });
 
-  it("switches between collapsible (390px) and card (820px) in auto mode without duplicating items", async () => {
+  it("observes parent layout width (not 300px side-rail <aside> width) and keeps Card + sticky at 820/1280px", async () => {
     let observerCallback: ResizeObserverCallback | undefined;
+    let observedTarget: Element | undefined;
     const OriginalResizeObserver = globalThis.ResizeObserver;
     class MockResizeObserver {
       constructor(cb: ResizeObserverCallback) {
         observerCallback = cb;
       }
-      observe() {}
+      observe(target: Element) {
+        observedTarget = target;
+      }
       unobserve() {}
       disconnect() {}
     }
     globalThis.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
+
+    const host = document.createElement("div");
+    document.body.appendChild(host);
+    vi.spyOn(host, "getBoundingClientRect").mockReturnValue({ width: 820 } as DOMRect);
+
+    try {
+      const { container } = render(SurveyPrivacyNotice, {
+        target: host,
+        props: {
+          title: "Confidentialité",
+          summaryBadge: "Anonyme",
+          items: rules,
+          mode: "auto",
+          sticky: true
+        }
+      });
+
+      const root = container.querySelector(".st-surveyPrivacy") as HTMLElement;
+      expect(root).toBeTruthy();
+      vi.spyOn(root, "getBoundingClientRect").mockReturnValue({ width: 300 } as DOMRect);
+
+      await tick();
+      // Must observe the parent layout container, NOT <aside>'s own 300px rail
+      expect(observedTarget).toBe(host);
+      expect(container.querySelector(".st-collapsible__trigger")).toBeNull();
+      expect(root.classList.contains("st-surveyPrivacy--sticky")).toBe(true);
+      expect(screen.getAllByText(rules[0])).toHaveLength(1);
+
+      // Simulate 390px phone layout container
+      observerCallback?.(
+        [{ target: host, contentRect: { width: 390 } } as unknown as ResizeObserverEntry],
+        {} as ResizeObserver
+      );
+      await tick();
+      expect(container.querySelector(".st-collapsible__trigger")).toBeTruthy();
+      expect(root.classList.contains("st-surveyPrivacy--sticky")).toBe(false);
+      expect(screen.queryByText(rules[0])).toBeNull();
+
+      // Simulate 1280px desktop layout while <aside> remains 300px side rail
+      observerCallback?.(
+        [{ target: host, contentRect: { width: 1280 } } as unknown as ResizeObserverEntry],
+        {} as ResizeObserver
+      );
+      await tick();
+      expect(container.querySelector(".st-collapsible__trigger")).toBeNull();
+      expect(root.classList.contains("st-surveyPrivacy--sticky")).toBe(true);
+      expect(screen.getAllByText(rules[0])).toHaveLength(1);
+    } finally {
+      globalThis.ResizeObserver = OriginalResizeObserver;
+      host.remove();
+    }
+  });
+
+  it("renders Collapsible immediately on a 390px viewport before ResizeObserver fires (no Card->Collapsible flash)", () => {
+    const originalWidth = window.innerWidth;
+    const OriginalResizeObserver = globalThis.ResizeObserver;
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 390 });
+    globalThis.ResizeObserver = undefined as unknown as typeof ResizeObserver;
 
     try {
       const { container } = render(SurveyPrivacyNotice, {
@@ -408,31 +532,15 @@ describe("SurveyPrivacyNotice", () => {
           title: "Confidentialité",
           summaryBadge: "Anonyme",
           items: rules,
-          mode: "auto"
+          mode: "auto",
+          sticky: true
         }
       });
 
-      const root = container.querySelector(".st-surveyPrivacy") as HTMLElement;
-      expect(root).toBeTruthy();
-
-      // Simulate 390px phone container
-      observerCallback?.(
-        [{ target: root, contentRect: { width: 390 } } as unknown as ResizeObserverEntry],
-        {} as ResizeObserver
-      );
-      await tick();
       expect(container.querySelector(".st-collapsible__trigger")).toBeTruthy();
-      expect(screen.queryByText(rules[0])).toBeNull();
-
-      // Simulate 820px tablet/desktop container
-      observerCallback?.(
-        [{ target: root, contentRect: { width: 820 } } as unknown as ResizeObserverEntry],
-        {} as ResizeObserver
-      );
-      await tick();
-      expect(container.querySelector(".st-collapsible__trigger")).toBeNull();
-      expect(screen.getAllByText(rules[0])).toHaveLength(1);
+      expect(container.querySelector(".st-surveyPrivacy--sticky")).toBeNull();
     } finally {
+      Object.defineProperty(window, "innerWidth", { configurable: true, value: originalWidth });
       globalThis.ResizeObserver = OriginalResizeObserver;
     }
   });

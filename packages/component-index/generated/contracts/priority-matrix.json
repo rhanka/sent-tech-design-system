@@ -1,8 +1,8 @@
 {
   "componentId": "priority-matrix",
   "contractSource": "derived",
-  "digest": "sha256:302c753b5bc986aec475a276178565b6ca8765fb1018c49b1a4c44f51a89ef71",
-  "entryDigest": "sha256:186b128f09f05f7bc8e4ba0e703d04af3ab7f2a80cf9054188f4b26825ec1a49",
+  "digest": "sha256:4c87b79737b67bfea92460d49ee8898dd4ff4d070f072c5bbe21837214f84614",
+  "entryDigest": "sha256:60faffbff840a517641a862917d850aea50f74f0ca5e6c14d8dc423bf090980b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -314,7 +314,7 @@
         "declarationPath": "packages/components-svelte/dist/PriorityMatrix.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PriorityMatrixProps",
-        "version": "0.46.1"
+        "version": "0.47.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -420,7 +420,7 @@
         "declarationPath": "packages/components-vue/dist/PriorityMatrix.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PriorityMatrixProps",
-        "version": "0.42.0-next.0"
+        "version": "0.43.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

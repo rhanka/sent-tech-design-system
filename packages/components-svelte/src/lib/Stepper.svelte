@@ -21,7 +21,7 @@
     onStepClick?: (index: number) => void;
     /** Étiquette a11y de la liste d'étapes. */
     label?: string;
-    /** Replie les libellés des étapes non courantes sous 480 px tout en les gardant lisibles aux lecteurs d'écran. */
+    /** Replie les libellés des étapes non courantes sous 25rem (400 px) tout en les gardant lisibles aux lecteurs d'écran. */
     compactMobile?: boolean;
     class?: string;
   };
@@ -192,7 +192,11 @@
     font: inherit;
     font-size: 0.75rem;
     font-weight: 600;
+    height: 2.75rem;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
     padding: 0;
+    width: 2.75rem;
     transition:
       background var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
       border-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
@@ -280,15 +284,23 @@
 
   .st-stepper--compactMobile.st-stepper--horizontal {
     container-type: inline-size;
+    width: 100%;
   }
 
-  @container (max-width: 480px) {
+  @container (max-width: 25rem) {
     .st-stepper--compactMobile.st-stepper--horizontal .st-stepper__step {
       flex: 0 0 auto;
     }
 
-    .st-stepper--compactMobile.st-stepper--horizontal .st-stepper__step--current {
+    .st-stepper--compactMobile.st-stepper--horizontal .st-stepper__step--current,
+    .st-stepper--compactMobile.st-stepper--horizontal
+      .st-stepper__step--current:last-child:not(:first-child) {
       flex: 1 1 auto;
+      max-width: none;
+    }
+
+    .st-stepper--compactMobile.st-stepper--horizontal .st-stepper__connector {
+      min-width: 0.5rem;
     }
 
     .st-stepper--compactMobile.st-stepper--horizontal

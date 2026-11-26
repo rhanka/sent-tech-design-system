@@ -1,8 +1,8 @@
 {
   "componentId": "checkbox-group",
   "contractSource": "derived",
-  "digest": "sha256:a4c44db77e2e658a85f3e3a0529ecd9136c7b0f9df5179240b9e68740ad749c3",
-  "entryDigest": "sha256:4c592f20577b9e6c1b5c643bc241790181f5ff201b7e0a62cbb00a0ab8ee9922",
+  "digest": "sha256:1b410fbabb2dde762197818c6503754f9b56ed1f83e5732e4eee1618b98db380",
+  "entryDigest": "sha256:36a8217f6148ce628fb82a562ea714fbfd6563b64129b557e8ec5f906ab783af",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -220,7 +220,9 @@
       "warnings": []
     },
     "svelte": {
-      "bindable": [],
+      "bindable": [
+        "value"
+      ],
       "dropped": [],
       "events": [
         {
@@ -338,6 +340,10 @@
             "description": "Marque le groupe comme requis.",
             "type": "boolean"
           },
+          "requiredLabel": {
+            "description": "Accessible screen-reader text announced when required is set.",
+            "type": "string"
+          },
           "value": {
             "description": "Valeurs cochées (liste contrôlée).",
             "items": {
@@ -365,11 +371,11 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:93fa60e1e34a3df36a1e1ad67470cffc394deb95fc463972dd280a1640273e2e",
+        "declarationDigest": "sha256:8343bb8bf6abcb58cfa98cc264fceffa4dd13b255448c0c2dc5269fabc3f8757",
         "declarationPath": "packages/components-svelte/dist/CheckboxGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CheckboxGroupProps",
-        "version": "0.46.1"
+        "version": "0.47.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -489,7 +495,7 @@
         "declarationPath": "packages/components-vue/dist/CheckboxGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CheckboxGroupProps",
-        "version": "0.42.0-next.0"
+        "version": "0.43.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

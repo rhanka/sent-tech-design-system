@@ -39,7 +39,7 @@
 
   let {
     legend,
-    value,
+    value = $bindable<string | undefined>(undefined),
     onchange,
     orientation = "vertical",
     variant = "list",
@@ -85,6 +85,7 @@
 
   function select(optionValue: string) {
     if (optionValue === value) return;
+    value = optionValue;
     onchange?.(optionValue);
   }
 </script>
@@ -117,7 +118,6 @@
         disabled={option.disabled}
         required={required || undefined}
         invalid={isInvalid}
-        aria-describedby={describedBy}
         onchange={() => select(option.value)}
       />
     {/each}
@@ -131,10 +131,14 @@
 <style>
   .st-radioGroup {
     border: 0;
-    container-type: inline-size;
     margin: 0;
     min-width: 0;
     padding: 0;
+  }
+
+  .st-radioGroup--card {
+    container-type: inline-size;
+    width: 100%;
   }
 
   .st-radioGroup__legend {
@@ -186,12 +190,9 @@
     grid-template-columns: 1fr;
   }
 
-  .st-radioGroup--card.st-radioGroup--horizontal .st-radioGroup__options {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   @container (min-width: 520px) {
-    .st-radioGroup--card.st-radioGroup--cols-2 .st-radioGroup__options {
+    .st-radioGroup--card.st-radioGroup--cols-2 .st-radioGroup__options,
+    .st-radioGroup--card.st-radioGroup--horizontal .st-radioGroup__options {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }

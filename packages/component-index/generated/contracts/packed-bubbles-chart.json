@@ -1,8 +1,8 @@
 {
   "componentId": "packed-bubbles-chart",
   "contractSource": "derived",
-  "digest": "sha256:3be1670df5c990ce62dace11aab7786c7dd23bdc0e09d65f5c508313a21ccbbe",
-  "entryDigest": "sha256:9db3ad0fa027e6bcf5ad34a44e7a4454a1b74ea9bc573a7f2b2e82c7f4675725",
+  "digest": "sha256:d293dd593542760389cd47be5f3efd37672d2ded9b0c9a755b47af9ea0ae8fb8",
+  "entryDigest": "sha256:265e2dcbe42a8cd17e499508d400f355affb0c3ad24a2441cfadf6f9ce9921b3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -237,7 +237,7 @@
         "declarationPath": "packages/components-svelte/dist/PackedBubblesChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PackedBubblesChartProps",
-        "version": "0.46.1"
+        "version": "0.47.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -316,7 +316,7 @@
         "declarationPath": "packages/components-vue/dist/PackedBubblesChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PackedBubblesChartProps",
-        "version": "0.42.0-next.0"
+        "version": "0.43.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

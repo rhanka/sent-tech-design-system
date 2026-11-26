@@ -29,6 +29,7 @@ import { renderSceneSvg } from "../../src/presentation/renderSceneSvg.js";
 import { hCondInput } from "../layout/dc2a/h-cond.js";
 import { flowFixture } from "../../test-support/flowFixture.js";
 import { nestedZoneFixture } from "../../test-support/nestedZoneFixture.js";
+import { r7AuthoredLegendFixture } from "../../test-support/r7AuthoredLegendFixture.js";
 
 const measureLines = cardLineMeasurer(sceneCardMeasure(defaultCardMeasure));
 const r7NestedFixture = () => {
@@ -45,8 +46,8 @@ const r7NestedFixture = () => {
 
 describe("DE-2 link tokens, emphasis token and edge-label size", () => {
   it("exports dedicated link stroke widths, emphasis width, corner radius and label size defaults", () => {
-    expect(DEFAULT_LINK_STROKE_WIDTH).toBe(2.5);
-    expect(DEFAULT_LINK_RELATED_STROKE_WIDTH).toBe(3);
+    expect(DEFAULT_LINK_STROKE_WIDTH).toBe(3.5);
+    expect(DEFAULT_LINK_RELATED_STROKE_WIDTH).toBe(3.5);
     expect(DEFAULT_LINK_PRIMARY_STROKE_WIDTH).toBe(3.5);
     expect(DEFAULT_LINK_EMPHASIS_STROKE_WIDTH).toBe(3.5);
     expect(DEFAULT_EDGE_CORNER_RADIUS).toBe(12);
@@ -59,20 +60,28 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     expect(v1Rendered.scene.r7Connectors).toBe(false);
     expect(v1Rendered.svg).toContain("<polyline data-scene-edge=");
     expect(v1Rendered.svg).toContain('stroke-width="1.5"');
+    expect(v1Rendered.svg).toContain('<marker id="scene-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)"/></marker>');
     expect(v1Rendered.svg).not.toContain('data-connector-mode="r7"');
 
     const fixture = r7NestedFixture();
     const base = renderSceneSvg({ ...fixture, measureLines, collapsed: [] });
     expect(base.scene.r7Connectors).toBe(true);
     expect(base.svg).toContain('data-connector-mode="r7"');
-    expect(base.svg).toContain('stroke-width="2.5"');
+    expect(base.svg).toContain('stroke="var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))"');
+    expect(base.svg).toContain('stroke-width="3.5"');
+    expect(base.svg).toContain('<marker id="scene-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="10.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))"/></marker>');
     expect(base.svg).toContain('vector-effect="non-scaling-stroke"');
     expect(base.svg).toContain('font-size="18"');
-    expect(base.svg).toContain("--st-component-diagramScene-linkStrokeWidth:2.5px");
+    expect(base.svg).toContain("--st-component-diagramScene-linkStroke:#0f172a");
+    expect(base.svg).toContain("--st-component-diagramScene-linkStrokeWidth:3.5px");
+    expect(base.svg).toContain("--st-component-diagramScene-linkRelatedStrokeWidth:3.5px");
     expect(base.svg).toContain("--st-component-diagramScene-linkEmphasisStroke:");
     expect(base.svg).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth:3.5px");
     expect(base.svg).toContain("--st-component-diagramScene-edgeLabelSize:18px");
     expect(base.svg).not.toContain('data-scene-edge="occurrence:lnk-0" d="');
+    // Pin DE3-L2a r7 label positions under 3.5 px paintClearance.
+    const baselineAt25 = resolveScene(layoutScene({ ...fixture, measureLines, collapsed: [], metrics: { linkStrokeWidth: 2.5 } }) as Extract<ReturnType<typeof layoutScene>, { status: "laid-out" }>, { ...fixture, measureLines, metrics: { linkStrokeWidth: 2.5 } });
+    expect(base.scene.labels.map((l) => l.box)).not.toEqual(baselineAt25.labels.map((l) => l.box));
 
     const thicker = renderSceneSvg({
       ...fixture,
@@ -105,6 +114,13 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     // Wider linkStrokeWidth enlarges connector cutout clearance strictly.
     expect(wideScene.connectorCutouts[0]!.width).toBeGreaterThan(narrowScene.connectorCutouts[0]!.width);
     expect(wideScene.connectorCutouts[0]!.height).toBeGreaterThan(narrowScene.connectorCutouts[0]!.height);
+    // At 3.5 px linkStrokeWidth, cutout padding covers both 0.30 floor stroke and 0.45 reserve.
+    const defaultResult = layoutScene({ ...fixture, measureLines, collapsed: [] });
+    if (defaultResult.status !== "laid-out") throw new Error("expected laid-out");
+    const defaultScene = resolveScene(defaultResult, { ...fixture, measureLines });
+    const z0 = defaultScene.nodes.find((n) => n.kind === "zone")!;
+    const c0 = defaultScene.connectorCutouts[0]!;
+    expect(z0.rect.x + 16 - c0.x).toBeGreaterThanOrEqual(4 + 3.5 / 0.6 + 3.5 / 0.9);
   });
 
   it("decouples r7 edge CSS from diagramZone.borderWidth while preserving 1.5px base for v1/ERD/flow and wiring emphasis + edgeLabelSize tokens", () => {
@@ -125,10 +141,12 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
         "diagramZone-borderWidth",
       );
       const r7EdgeBlock = /\.st-diagramSceneFigure-edge\[data-connector-mode="r7"\]\s*\{[^}]*\}/.exec(source)?.[0] ?? "";
+      expect(r7EdgeBlock, `${name} r7 edge rule uses linkStroke`).toContain("--st-component-diagramScene-linkStroke");
       expect(r7EdgeBlock, `${name} r7 edge rule uses linkStrokeWidth`).toContain("--st-component-diagramScene-linkStrokeWidth");
       expect(r7EdgeBlock, `${name} r7 edge rule must not use zone borderWidth`).not.toContain(
         "diagramZone-borderWidth",
       );
+      expect(source, `${name} r7 marker uses linkStroke`).toContain("--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a)");
       expect(source, `${name} emphasis rule`).toContain("--st-component-diagramScene-linkEmphasisStroke");
       expect(source, `${name} emphasis width`).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth");
       expect(source, `${name} edgeLabelSize`).toContain("--st-component-diagramScene-edgeLabelSize");
@@ -328,7 +346,7 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     expect(byView.scene.r7Connectors).toBe(true);
     expect(byView.result.routeSpacing).toBeDefined();
     expect(byView.svg).toContain('data-connector-mode="r7"');
-    expect(byView.svg).toContain('stroke-width="2.5"');
+    expect(byView.svg).toContain('stroke-width="3.5"');
     expect(byView.svg).not.toContain("<polyline data-scene-edge=");
 
     // 2. entity anatomy: "v2" under @1
@@ -446,5 +464,53 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     const shaft = reopened.svg.match(new RegExp(`<path data-scene-edge="${r0}"[^>]+>`))?.[0];
     expect.soft(shaft ?? "").toContain('stroke-dasharray="8 6"');
     expect.soft(reopened.scene.linkLegend?.entries.map((e) => e.key)).toEqual(["solid:arrow:default", "dashed:arrow:default"]);
+  });
+
+  it("keeps process@1 transitions at 2.5px edgeStroke and emits data-authored-legend on untitled r7 legend text", () => {
+    const processDoc = {
+      documentId: "document:process-stroke-guard",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["process@1"],
+      typeDefinitions: {},
+      entities: {
+        "entity:a": { id: "entity:a", profile: "process@1", type: "step", attributes: { name: { kind: "text", value: "Start" }, kind: { kind: "enum", value: "start" } } },
+        "entity:b": { id: "entity:b", profile: "process@1", type: "step", attributes: { name: { kind: "text", value: "End" }, kind: { kind: "enum", value: "end" } } },
+      },
+      relations: {
+        "relation:a.b": { id: "relation:a.b", profile: "process@1", type: "transition", endpoints: [{ role: "source", target: "entity:a" }, { role: "target", target: "entity:b" }], attributes: {} },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SemanticDocument;
+    const renderedProcess = renderSceneSvg({
+      document: processDoc,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: { contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN }, entities: {}, legends: {}, categoryTokens: [] },
+      measureLines,
+      collapsed: [],
+    });
+    expect(renderedProcess.scene.processConnectors).toBe(true);
+    expect(renderedProcess.svg).toContain('stroke="var(--st-component-diagramScene-edgeStroke, #64748b)" stroke-width="2.5"');
+    expect(renderedProcess.svg).not.toContain('stroke-width="3.5"');
+
+    const legendFixture = r7AuthoredLegendFixture(false);
+    const untitled = renderSceneSvg({
+      document: legendFixture.document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [],
+      presentation: {
+        ...legendFixture.presentation,
+        entities: {
+          ...legendFixture.presentation.entities,
+          "occurrence:e.legend": { form: "legend", anatomy: "v2", text: {} },
+        },
+      },
+    });
+    expect(untitled.svg).toContain('<text data-scene-occurrence="occurrence:e.legend" data-authored-legend=""');
   });
 });

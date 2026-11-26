@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ScoreCard.svelte",
-      "version": "0.46.1"
+      "version": "0.47.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ScoreCard.vue",
-      "version": "0.42.0-next.0"
+      "version": "0.43.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Indicator card aggregated from a store (renders KpiCard).",
     "fr": "Carte d’indicateur agrégée depuis un store (rend KpiCard)."
   },
-  "digest": "sha256:ad94d4819c67503accaa2238fadcc33bded57ecd9196351d8c5e0db4752e7923",
+  "digest": "sha256:ac5d86d77864487b74503a2c6a9405cc5a33c908263f0a7a51abcb1b88c31480",
   "displayName": "ScoreCard (dataviz)",
   "format": "component-entry/v1",
   "frameworks": [

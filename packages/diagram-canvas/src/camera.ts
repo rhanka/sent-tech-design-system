@@ -22,10 +22,10 @@ export const DEFAULT_EDGE_LABEL_SIZE = 18;
 export const DEFAULT_EDGE_LABEL_FONT_SIZE = DEFAULT_EDGE_LABEL_SIZE;
 /** World line box of an edge label, px (token `diagramScene.edgeLabelLineHeight`). */
 export const DEFAULT_EDGE_LABEL_LINE_HEIGHT = 22;
-/** Dedicated resting connector stroke width, CSS px (token `diagramScene.linkStrokeWidth`, DE-2). */
-export const DEFAULT_LINK_STROKE_WIDTH = 2.5;
-/** Related flow connector stroke width, CSS px (token `diagramScene.linkRelatedStrokeWidth`, DE-2). */
-export const DEFAULT_LINK_RELATED_STROKE_WIDTH = 3;
+/** Dedicated resting connector stroke width, CSS px (token `diagramScene.linkStrokeWidth`, DE-2 / DE3-L2a). */
+export const DEFAULT_LINK_STROKE_WIDTH = 3.5;
+/** Related flow connector stroke width, CSS px (token `diagramScene.linkRelatedStrokeWidth`, DE-2 / DE3-L2a). */
+export const DEFAULT_LINK_RELATED_STROKE_WIDTH = 3.5;
 /** Primary flow connector stroke width, CSS px (token `diagramScene.linkPrimaryStrokeWidth`, DE-2). */
 export const DEFAULT_LINK_PRIMARY_STROKE_WIDTH = 3.5;
 /** Emphasized connector stroke width, CSS px (token `diagramScene.linkEmphasisStrokeWidth`, DE-2 / G6). */

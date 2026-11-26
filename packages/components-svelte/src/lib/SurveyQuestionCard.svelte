@@ -297,7 +297,7 @@
     );
     border: 1px solid var(--st-semantic-feedback-error, #dc2626);
     border-radius: var(--st-radius-sm, 0.25rem);
-    color: var(--st-semantic-feedback-error, #dc2626);
+    color: var(--st-semantic-text-primary, #1f2437);
     display: flex;
     font-size: 0.875rem;
     font-weight: 600;
@@ -307,11 +307,12 @@
   }
 
   .st-surveyQuestionCard :global(.st-surveyQuestionCard__errorIcon) {
+    color: var(--st-semantic-feedback-error, #dc2626);
     flex: 0 0 auto;
-    margin-top: 0.0625rem;
+    margin-top: 0;
   }
 
-  @container (min-width: 520px) {
+  @container (min-width: 25rem) {
     .st-surveyQuestionCard :global(.st-surveyQuestionCard__card) {
       padding: var(--st-spacing-6, 1.5rem);
     }

@@ -120,7 +120,7 @@ describe("RadioGroup — card density, columns, validation and aria-describedby"
         helperText: "Une seule réponse",
         errorText: "Veuillez choisir une option.",
         options: [
-          { label: "PME", value: "pme" },
+          { label: "PME", value: "pme", description: "Moins de 250 personnes" },
           { label: "Startup", value: "startup" }
         ]
       }
@@ -140,8 +140,38 @@ describe("RadioGroup — card density, columns, validation and aria-describedby"
 
     for (const radio of radios) {
       expect(radio.required).toBe(true);
-      expect(radio.getAttribute("aria-describedby")).toContain(alert.id);
+      const radioDescribedBy = radio.getAttribute("aria-describedby") ?? "";
+      expect(radioDescribedBy).not.toContain(help.id);
+      expect(radioDescribedBy).not.toContain(alert.id);
     }
+    expect(radios[0].getAttribute("aria-describedby")).toBeTruthy();
+    expect(radios[1].getAttribute("aria-describedby")).toBeNull();
+  });
+
+  it("self-updates selection when used uncontrolled without external state", async () => {
+    const onchange = vi.fn();
+    render(RadioGroup, {
+      props: {
+        legend: "Équipe",
+        name: "team-uncontrolled",
+        variant: "card",
+        onchange,
+        options: [
+          { label: "Produit", value: "product" },
+          { label: "Plateforme", value: "platform" }
+        ]
+      }
+    });
+
+    const product = screen.getByRole("radio", { name: "Produit" }) as HTMLInputElement;
+    const platform = screen.getByRole("radio", { name: "Plateforme" }) as HTMLInputElement;
+    expect(product.checked).toBe(false);
+    expect(platform.checked).toBe(false);
+
+    await fireEvent.click(platform);
+    expect(platform.checked).toBe(true);
+    expect(product.checked).toBe(false);
+    expect(onchange).toHaveBeenCalledWith("platform");
   });
 });
 
@@ -275,20 +305,65 @@ describe("CheckboxGroup — card density, exclusiveValues, maxSelections and val
     });
 
     const fieldset = container.querySelector("fieldset") as HTMLFieldSetElement;
+    const legend = container.querySelector("legend") as HTMLLegendElement;
     const alert = screen.getByRole("alert");
     const help = container.querySelector(".st-checkboxGroup__help") as HTMLElement;
     const boxes = screen.getAllByRole("checkbox") as HTMLInputElement[];
 
     expect(alert.textContent).toBe("Sélectionnez au moins une option.");
     expect(fieldset.getAttribute("data-required")).toBe("true");
+    expect(legend.querySelector(".st-visually-hidden")?.textContent).toContain("required");
     expect(fieldset.getAttribute("data-invalid")).toBe("true");
     expect(fieldset.getAttribute("aria-describedby")).toContain(help.id);
     expect(fieldset.getAttribute("aria-describedby")).toContain(alert.id);
 
     for (const box of boxes) {
       expect(box.getAttribute("aria-invalid")).toBe("true");
-      expect(box.getAttribute("aria-describedby")).toContain(alert.id);
+      const boxDescribedBy = box.getAttribute("aria-describedby") ?? "";
+      expect(boxDescribedBy).not.toContain(help.id);
+      expect(boxDescribedBy).not.toContain(alert.id);
     }
+    expect(boxes[0].getAttribute("aria-describedby")).toBeTruthy();
+    expect(boxes[1].getAttribute("aria-describedby")).toBeNull();
+  });
+
+  it("enforces exclusiveValues, maxSelections and live maxSelectionsMessage updates when uncontrolled", async () => {
+    const { container } = render(CheckboxGroup, {
+      props: {
+        legend: "Outils",
+        name: "tools-uncontrolled",
+        variant: "card",
+        exclusiveValues: ["none"],
+        maxSelections: 2,
+        maxSelectionsMessage: "Maximum 2 choix",
+        options: baseOptions
+      }
+    });
+
+    const linter = screen.getByRole("checkbox", { name: /Linter/ }) as HTMLInputElement;
+    const formatter = screen.getByRole("checkbox", { name: /Formateur/ }) as HTMLInputElement;
+    const unitTests = screen.getByRole("checkbox", { name: /Tests unitaires/ }) as HTMLInputElement;
+    const none = screen.getByRole("checkbox", { name: /Aucun de ces outils/ }) as HTMLInputElement;
+    const limitStatus = container.querySelector(".st-checkboxGroup__limit") as HTMLElement;
+
+    expect(limitStatus.textContent).toContain("0 / 2");
+    expect(limitStatus.textContent).toContain("Maximum 2 choix");
+
+    await fireEvent.click(linter);
+    expect(linter.checked).toBe(true);
+    expect(limitStatus.textContent).toContain("1 / 2");
+
+    await fireEvent.click(formatter);
+    expect(formatter.checked).toBe(true);
+    expect(unitTests.disabled).toBe(true);
+    expect(limitStatus.textContent).toContain("2 / 2");
+
+    await fireEvent.click(none);
+    expect(none.checked).toBe(true);
+    expect(linter.checked).toBe(false);
+    expect(formatter.checked).toBe(false);
+    expect(unitTests.disabled).toBe(false);
+    expect(limitStatus.textContent).toContain("0 / 2");
   });
 });
 
@@ -308,10 +383,25 @@ describe("Choice components — devmtl token hygiene and container queries", () 
     }
   });
 
-  it("uses @container queries for responsive multi-column card layouts", () => {
-    expect(radioGroupSrc).toContain("container-type: inline-size");
-    expect(radioGroupSrc).toContain("@container");
-    expect(checkboxGroupSrc).toContain("container-type: inline-size");
-    expect(checkboxGroupSrc).toContain("@container");
+  it("scopes container-type: inline-size and width: 100% to card variants and guards 2-col grids at 520px", () => {
+    expect(radioGroupSrc).toMatch(/\.st-radioGroup\s*\{[^}]*\}/);
+    expect(radioGroupSrc.match(/\.st-radioGroup\s*\{[^}]*\}/)?.[0]).not.toContain("container-type");
+    expect(radioGroupSrc).toMatch(
+      /\.st-radioGroup--card\s*\{[^}]*container-type:\s*inline-size;[^}]*width:\s*100%;/s
+    );
+    expect(checkboxGroupSrc.match(/\.st-checkboxGroup\s*\{[^}]*\}/)?.[0]).not.toContain(
+      "container-type"
+    );
+    expect(checkboxGroupSrc).toMatch(
+      /\.st-checkboxGroup--card\s*\{[^}]*container-type:\s*inline-size;[^}]*width:\s*100%;/s
+    );
+
+    const radioContainerIdx = radioGroupSrc.indexOf("@container (min-width: 520px)");
+    const radioHorizIdx = radioGroupSrc.indexOf(".st-radioGroup--card.st-radioGroup--horizontal");
+    expect(radioHorizIdx).toBeGreaterThan(radioContainerIdx);
+
+    const checkboxContainerIdx = checkboxGroupSrc.indexOf("@container (min-width: 520px)");
+    const checkboxHorizIdx = checkboxGroupSrc.indexOf(".st-checkboxGroup--card.st-checkboxGroup--horizontal");
+    expect(checkboxHorizIdx).toBeGreaterThan(checkboxContainerIdx);
   });
 });

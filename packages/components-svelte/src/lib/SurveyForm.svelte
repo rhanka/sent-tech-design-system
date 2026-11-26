@@ -207,6 +207,8 @@
           resumeTitle: "Brouillon actif retrouvé",
           resumeMsg: (n: number, tot: number, rem: string) =>
             `${n}/${tot} réponses enregistrées en brouillon (temps restant : ${rem}).`,
+          resumeMagicLinkMsg: (n: number, tot: number, rem: string) =>
+            `${n}/${tot} réponses enregistrées en brouillon (temps restant : ${rem}). Demandez votre lien de connexion pour le reprendre.`,
           resumeBtn: "Reprendre mon brouillon",
           linkSentTitle: "Un lien vient de partir",
           linkSentMsg: (addr: string) =>
@@ -233,6 +235,7 @@
           singleHint: "Choisissez une seule réponse.",
           multiHint: "Plusieurs réponses possibles.",
           scaleHint: "Choisissez le palier qui correspond le mieux.",
+          requiredSrLabel: "obligatoire",
           requiredError: "Veuillez répondre à cette question avant de continuer.",
           minSelError: (min: number) => `Sélectionnez au moins ${min} option(s).`,
           maxSelError: (max: number) => `Sélectionnez au plus ${max} option(s).`,
@@ -268,6 +271,7 @@
             "Enregistrez une clé d’accès sur cet appareil pour rouvrir plus vite lors de vos prochaines visites.",
           passkeyBtn: "Ajouter une clé d’accès",
           passkeyAdded: "Clé d’accès enregistrée",
+          passkeyError: "Impossible d’enregistrer la clé d’accès. Veuillez réessayer.",
           defaultPrivacyTitle: "Règles de confidentialité",
           defaultPrivacyItems: [
             `Lien envoyé par ${authIssuer}, sans double authentification exigée.`,
@@ -334,6 +338,8 @@
           resumeTitle: "Active draft found",
           resumeMsg: (n: number, tot: number, rem: string) =>
             `${n}/${tot} draft answers saved (time left: ${rem}).`,
+          resumeMagicLinkMsg: (n: number, tot: number, rem: string) =>
+            `${n}/${tot} draft answers saved (time left: ${rem}). Request your sign-in link to resume it.`,
           resumeBtn: "Resume my draft",
           linkSentTitle: "A sign-in link was sent",
           linkSentMsg: (addr: string) =>
@@ -360,6 +366,7 @@
           singleHint: "Choose one answer.",
           multiHint: "Select all that apply.",
           scaleHint: "Pick the level that fits best.",
+          requiredSrLabel: "required",
           requiredError: "Please answer this question before continuing.",
           minSelError: (min: number) => `Select at least ${min} option(s).`,
           maxSelError: (max: number) => `Select at most ${max} option(s).`,
@@ -395,6 +402,7 @@
             "Register a local passkey on this device to sign in faster on future visits.",
           passkeyBtn: "Add a passkey",
           passkeyAdded: "Passkey saved",
+          passkeyError: "Could not save the passkey. Please try again.",
           defaultPrivacyTitle: "Privacy & session rules",
           defaultPrivacyItems: [
             `Sign-in link sent by ${authIssuer}, no 2FA required.`,
@@ -434,6 +442,8 @@
   let pendingIdentity = $state<string | null>(null);
   let lastSubmitted = $state<SurveySubmitPayload | null>(null);
   let passkeySaved = $state(false);
+  let registeringPasskey = $state(false);
+  let passkeyError = $state("");
   let isOnline = $state(typeof navigator !== "undefined" ? navigator.onLine : true);
   let thanksHeadingEl = $state<HTMLElement | undefined>(undefined);
   let errorSummaryWrap = $state<HTMLElement | undefined>(undefined);
@@ -527,9 +537,7 @@
         questionIndex = Math.min(restored.questionIndex, Math.max(0, restoredList.length - 1));
         enrollmentMeta = { ...restored.enrollmentMeta };
         expiresAt = restored.expiresAt;
-        const hasProgress =
-          countAnsweredQuestions(restoredList, restored.answers) > 0 ||
-          restored.questionIndex > 0;
+        const hasProgress = draftHasProgress(restored, restoredList);
         returnedFromDraft = hasProgress;
         restoredBanner = hasProgress;
         step = resolvePostAuthStep({
@@ -569,6 +577,8 @@
       }
 
       passkeySaved = persistDraft ? hasSurveyPasskey(nextIdentity, storageSalt) : false;
+      registeringPasskey = false;
+      passkeyError = "";
       const loadedPending = persistDraft
         ? loadPendingSubmission(id, nextIdentity, storageSalt)
         : null;
@@ -630,13 +640,38 @@
   const activeIdentity = $derived(sessionIdentity || (respondentSeed || "").trim() || "anonymous");
   const isV2 = $derived(isSurveyDefinitionV2(survey));
   const hasEntry = $derived(Boolean(survey.entry));
+  const requiredForSubmitSet = $derived(new Set(survey.rules.requiredForSubmit ?? []));
+
+  function isQuestionRequired(q: SurveyQuestion): boolean {
+    return Boolean(q.required || requiredForSubmitSet.has(q.id));
+  }
+
+  function getDraftQuestions(draft: SurveyDraft): SurveyQuestion[] {
+    return isV2
+      ? getActiveSurveyQuestions(survey, {
+          depthMode: draft.depthMode ?? "fast",
+          selectedThemes: draft.selectedThemes,
+        })
+      : survey.questions;
+  }
+
+  function draftHasProgress(
+    draft: SurveyDraft | null | undefined,
+    questionsOverride?: SurveyQuestion[],
+  ): boolean {
+    if (!draft) return false;
+    const list = questionsOverride ?? getDraftQuestions(draft);
+    return countAnsweredQuestions(list, draft.answers) > 0 || draft.questionIndex > 0;
+  }
 
   const existingDraft = $derived.by(() => {
     if (!persistDraft || step !== "enrollment") return null;
     const trimmed = email.trim();
     if (!isValidSurveyEmail(trimmed)) return null;
     void nowMs;
-    return loadSurveyDraft(survey.id, trimmed, Date.now(), storageSalt);
+    const loaded = loadSurveyDraft(survey.id, trimmed, Date.now(), storageSalt);
+    if (!loaded) return null;
+    return draftHasProgress(loaded) || Boolean(loaded.entryScope) ? loaded : null;
   });
 
   const existingDraftQuestions = $derived.by(() => {
@@ -842,7 +877,22 @@
       : null;
 
     let nextStep: SurveyStep;
-    if (found) {
+    if (enrollmentMode === "email-magic-link") {
+      // Keep prior draft answers locked behind magic-link verification; only persist
+      // non-empty pre-link metadata when no draft exists yet so it survives link return.
+      answers = initialAnswers ? { ...initialAnswers } : {};
+      questionIndex = 0;
+      enrollmentMeta = cleanMeta;
+      expiresAt = draftWindowMinutes > 0 ? Date.now() + draftTtlMs : 0;
+      returnedFromDraft = false;
+      restoredBanner = false;
+      nextStep = "link_sent";
+      const hasPreLinkContent =
+        countAnsweredQuestions(survey.questions, answers) > 0 || Object.keys(cleanMeta).length > 0;
+      if (!found && hasPreLinkContent) {
+        persistCurrentDraft(answers, questionIndex, expiresAt, cleanMeta, cleaned, nextStep);
+      }
+    } else if (found) {
       answers = { ...found.answers };
       if (found.entryScope !== undefined) entryScope = found.entryScope;
       if (found.depthMode !== undefined) depthMode = found.depthMode;
@@ -858,20 +908,16 @@
       questionIndex = Math.min(found.questionIndex, Math.max(0, restoredList.length - 1));
       enrollmentMeta = { ...found.enrollmentMeta, ...cleanMeta };
       expiresAt = found.expiresAt;
-      const hasProgress =
-        countAnsweredQuestions(restoredList, found.answers) > 0 || found.questionIndex > 0;
+      const hasProgress = draftHasProgress(found, restoredList);
       returnedFromDraft = hasProgress;
       restoredBanner = hasProgress;
-      nextStep =
-        enrollmentMode === "email-magic-link"
-          ? "link_sent"
-          : resolvePostAuthStep({
-              requestedStep: "questions",
-              draftStep: found.step,
-              scope: entryScope,
-              depth: depthMode,
-              milestonePassed: deepMilestonePassed,
-            });
+      nextStep = resolvePostAuthStep({
+        requestedStep: "questions",
+        draftStep: found.step,
+        scope: entryScope,
+        depth: depthMode,
+        milestonePassed: deepMilestonePassed,
+      });
     } else {
       answers = initialAnswers ? { ...initialAnswers } : {};
       questionIndex = 0;
@@ -879,16 +925,18 @@
       expiresAt = draftWindowMinutes > 0 ? Date.now() + draftTtlMs : 0;
       returnedFromDraft = false;
       restoredBanner = false;
-      nextStep =
-        enrollmentMode === "email-magic-link"
-          ? "link_sent"
-          : resolvePostAuthStep({
-              requestedStep: "questions",
-              scope: entryScope,
-              depth: depthMode,
-              milestonePassed: false,
-            });
-      persistCurrentDraft(answers, questionIndex, expiresAt, cleanMeta, cleaned, nextStep);
+      nextStep = resolvePostAuthStep({
+        requestedStep: "questions",
+        scope: entryScope,
+        depth: depthMode,
+        milestonePassed: false,
+      });
+      if (
+        countAnsweredQuestions(survey.questions, answers) > 0 ||
+        Object.keys(cleanMeta).length > 0
+      ) {
+        persistCurrentDraft(answers, questionIndex, expiresAt, cleanMeta, cleaned, nextStep);
+      }
     }
 
     const loadedPending = persistDraft
@@ -937,12 +985,31 @@
   }
 
   function handleOpenFromLink() {
-    if (draftWindowMinutes > 0 && (!expiresAt || Date.now() >= expiresAt)) {
-      expiresAt = Date.now() + draftTtlMs;
-    }
     const found = persistDraft
       ? loadSurveyDraft(survey.id, activeIdentity, Date.now(), storageSalt)
       : null;
+    if (found) {
+      if (found.entryScope !== undefined) entryScope = found.entryScope;
+      if (found.depthMode !== undefined) depthMode = found.depthMode;
+      if (found.selectedThemes) selectedThemes = found.selectedThemes.slice();
+      if (found.questionScopes) questionScopes = { ...found.questionScopes };
+      deepMilestonePassed = Boolean(found.deepMilestonePassed);
+      const restoredList = isV2
+        ? getActiveSurveyQuestions(survey, {
+            depthMode: found.depthMode ?? "fast",
+            selectedThemes: found.selectedThemes ?? selectedThemes,
+          })
+        : survey.questions;
+      const hasProgress = draftHasProgress(found, restoredList);
+      answers = { ...(initialAnswers ?? {}), ...found.answers };
+      questionIndex = Math.min(found.questionIndex, Math.max(0, restoredList.length - 1));
+      enrollmentMeta = { ...found.enrollmentMeta, ...sanitizeEnrollmentMeta(enrollmentMeta) };
+      expiresAt = found.expiresAt;
+      returnedFromDraft = hasProgress;
+      restoredBanner = hasProgress;
+    } else if (draftWindowMinutes > 0 && (!expiresAt || Date.now() >= expiresAt)) {
+      expiresAt = Date.now() + draftTtlMs;
+    }
     step = resolvePostAuthStep({
       requestedStep: "questions",
       draftStep: found?.step,
@@ -950,7 +1017,6 @@
       depth: depthMode,
       milestonePassed: deepMilestonePassed,
     });
-    persistCurrentDraft(answers, questionIndex, expiresAt);
   }
 
   function handleScopeContinue() {
@@ -1173,11 +1239,20 @@
     pendingIdentity = null;
     sessionIdentity = (respondentSeed || "").trim();
     passkeySaved = false;
+    registeringPasskey = false;
+    passkeyError = "";
     step = "enrollment";
   }
 
   function leaveForLater() {
-    persistCurrentDraft(answers, questionIndex, expiresAt);
+    if (
+      countAnsweredQuestions(activeQuestions, answers) > 0 ||
+      questionIndex > 0 ||
+      Boolean(entryScope) ||
+      Object.keys(sanitizeEnrollmentMeta(enrollmentMeta)).length > 0
+    ) {
+      persistCurrentDraft(answers, questionIndex, expiresAt);
+    }
     resetToEnrollment();
   }
 
@@ -1205,6 +1280,7 @@
   async function deliverSubmission(
     payload: SurveySubmitPayload,
     targetIdentity = activeIdentity,
+    fromExplicitRetry = false,
   ) {
     if (!isOnline) {
       queuePendingSubmission(payload, "offline", targetIdentity);
@@ -1221,7 +1297,10 @@
         pendingSubmission = null;
         pendingIdentity = null;
       }
-      if (targetIdentity.toLowerCase() === activeIdentity.toLowerCase() && step !== "enrollment") {
+      if (
+        targetIdentity.toLowerCase() === activeIdentity.toLowerCase() &&
+        (step !== "enrollment" || fromExplicitRetry)
+      ) {
         passkeySaved = persistDraft ? hasSurveyPasskey(targetIdentity, storageSalt) : passkeySaved;
         lastSubmitted = payload;
         step = "thanks";
@@ -1234,9 +1313,9 @@
     }
   }
 
-  async function flushPendingSubmission() {
+  async function flushPendingSubmission(explicit = false) {
     if (!pendingSubmission || !pendingIdentity || submitting) return;
-    await deliverSubmission(pendingSubmission.payload, pendingIdentity);
+    await deliverSubmission(pendingSubmission.payload, pendingIdentity, explicit);
   }
 
   function formatSubmitGateError(ids: string[]): string {
@@ -1317,11 +1396,24 @@
   }
 
   async function handleRegisterPasskey() {
-    await onregisterpasskey?.();
-    if (persistDraft) {
-      saveSurveyPasskey(activeIdentity, storageSalt);
+    if (registeringPasskey || passkeySaved) return;
+    registeringPasskey = true;
+    passkeyError = "";
+    try {
+      await onregisterpasskey?.();
+      if (persistDraft) {
+        saveSurveyPasskey(activeIdentity, storageSalt);
+      }
+      passkeySaved = true;
+    } catch (err) {
+      const isCancel =
+        err instanceof Error && (err.name === "NotAllowedError" || err.name === "AbortError");
+      if (!isCancel) {
+        passkeyError = copy.passkeyError;
+      }
+    } finally {
+      registeringPasskey = false;
     }
-    passkeySaved = true;
   }
 
   const resolvedPasskeyTitle = $derived(
@@ -1344,9 +1436,11 @@
   const errorSummaryItems = $derived(
     missingIds.map((id) => {
       const q = activeQuestions.find((item) => item.id === id);
+      const label = q ? resolveLocalizedText(q.label, locale) : id;
+      const msg = q ? validationMessageFor(q) || copy.requiredError : copy.requiredError;
       return {
         href: `#st-survey-q-${survey.id}-${id}`,
-        text: q ? resolveLocalizedText(q.label, locale) : id,
+        text: `${label} — ${msg}`,
       };
     }),
   );
@@ -1359,6 +1453,7 @@
   {@const isDual = Boolean(q.contextual && entryScope === "both")}
   {@const singleVal = getSingleControlValue(q)}
   {@const qError = fieldErrorFor(q)}
+  {@const qRequired = isQuestionRequired(q)}
   <div id={`st-survey-q-${survey.id}-${q.id}`} class="st-surveyForm__questionControl">
     {#if isDual && (q.type === "single" || q.type === "multi" || q.type === "scale" || q.type === "likert" || q.type === "ai_effect")}
       {@const entSide = getScopedSideValue(q.id, "enterprise")}
@@ -1478,10 +1573,12 @@
         helperText={qHelper ?? copy.multiHint}
         errorText={qError}
         invalid={Boolean(qError)}
-        required={q.required}
+        required={qRequired}
+        requiredLabel={copy.requiredSrLabel}
         exclusiveValues={q.exclusive}
         minSelections={q.minSelections}
         maxSelections={q.maxSelections}
+        maxSelectionsMessage={q.maxSelections != null ? copy.maxSelError(q.maxSelections) : undefined}
         options={qOptions.map((o) => ({
           value: o.id,
           label: resolveLocalizedText(o.label, locale),
@@ -1499,7 +1596,7 @@
         helperText={qHelper ?? copy.scaleHint}
         errorText={qError}
         invalid={Boolean(qError)}
-        required={q.required}
+        required={qRequired}
         scaleKind={q.type === "ai_effect" ? "bipolar" : (q.scaleKind ?? "ordinal")}
         neutralOptionId={q.type === "ai_effect"
           ? (q.neutralOptionId ?? DEFAULT_AI_EFFECT_NEUTRAL_ID)
@@ -1528,7 +1625,7 @@
         helperText={qHelper ?? copy.singleHint}
         errorText={qError}
         invalid={Boolean(qError)}
-        required={q.required}
+        required={qRequired}
         options={qOptions.map((o) => ({
           value: o.id,
           label: resolveLocalizedText(o.label, locale),
@@ -1630,7 +1727,7 @@
                   size="lg"
                   type="button"
                   disabled={submitting}
-                  onclick={() => void flushPendingSubmission()}
+                  onclick={() => void flushPendingSubmission(true)}
                 >
                   {copy.retryNowBtn}
                 </Button>
@@ -1708,17 +1805,27 @@
                 {/if}
 
                 {#if showExistingDraftBanner && existingDraft}
-                  <Alert
-                    tone="info"
-                    title={copy.resumeTitle}
-                    message={copy.resumeMsg(
-                      existingDraftAnsweredCount,
-                      existingDraftQuestions.length,
-                      formatSurveyCountdown(Math.max(0, existingDraft.expiresAt - nowMs)),
-                    )}
-                  >
-                    {#snippet actions()}
-                      {#if enrollmentMode !== "email-magic-link"}
+                  {#if enrollmentMode === "email-magic-link"}
+                    <Alert
+                      tone="info"
+                      title={copy.resumeTitle}
+                      message={copy.resumeMagicLinkMsg(
+                        existingDraftAnsweredCount,
+                        existingDraftQuestions.length,
+                        formatSurveyCountdown(Math.max(0, existingDraft.expiresAt - nowMs)),
+                      )}
+                    />
+                  {:else}
+                    <Alert
+                      tone="info"
+                      title={copy.resumeTitle}
+                      message={copy.resumeMsg(
+                        existingDraftAnsweredCount,
+                        existingDraftQuestions.length,
+                        formatSurveyCountdown(Math.max(0, existingDraft.expiresAt - nowMs)),
+                      )}
+                    >
+                      {#snippet actions()}
                         <Button
                           variant="secondary"
                           size="lg"
@@ -1727,9 +1834,9 @@
                         >
                           {copy.resumeBtn}
                         </Button>
-                      {/if}
-                    {/snippet}
-                  </Alert>
+                      {/snippet}
+                    </Alert>
+                  {/if}
                 {/if}
 
                 <Inline justify="end" gap={2}>
@@ -1971,7 +2078,7 @@
                   sectionTag={currentQuestion.moment
                     ? resolveLocalizedText(currentQuestion.moment, locale)
                     : undefined}
-                  required={Boolean(currentQuestion.required)}
+                  required={isQuestionRequired(currentQuestion)}
                   optionalLabel={(currentQuestion.type === "text_long" ||
                     currentQuestion.type === "text_short") &&
                   currentQuestion.optional
@@ -2043,7 +2150,7 @@
                       index={qIdx + 1}
                       total={activeQuestions.length}
                       sectionTag={q.moment ? resolveLocalizedText(q.moment, locale) : undefined}
-                      required={Boolean(q.required)}
+                      required={isQuestionRequired(q)}
                       contextual={Boolean(q.contextual && entryScope && entryScope !== "both")}
                       activeScope={q.contextual && entryScope && entryScope !== "both"
                         ? activeScopeFor(q.id)
@@ -2110,12 +2217,16 @@
                           variant="secondary"
                           size="lg"
                           type="button"
+                          disabled={registeringPasskey}
                           onclick={() => void handleRegisterPasskey()}
                         >
                           {resolvedPasskeyBtn}
                         </Button>
                       {/if}
                     </div>
+                    {#if passkeyError}
+                      <Alert tone="error" title={passkeyError} />
+                    {/if}
                   </Stack>
                 </Card>
               {/if}
@@ -2171,7 +2282,8 @@
   }
 
   .st-surveyForm__main {
-    max-width: 38rem;
+    margin-inline: auto;
+    max-width: 44rem;
     min-width: 0;
     width: 100%;
   }
@@ -2382,11 +2494,11 @@
     display: block;
   }
 
-  /* 820px+ tablet & 1280px+ desktop: two-column layout with sticky privacy card */
-  @container st-survey-form (min-width: 760px) {
+  /* 984px+ desktop: two-column layout with sticky privacy card keeping main >= 44rem (>= 600px inner for LikertScale) */
+  @container st-survey-form (min-width: 984px) {
     .st-surveyForm--withPrivacy .st-surveyForm__grid {
       gap: var(--st-spacing-6, 1.5rem);
-      grid-template-columns: minmax(0, min(100%, 38rem)) minmax(17rem, 21rem);
+      grid-template-columns: minmax(0, min(100%, 44rem)) minmax(16rem, 20rem);
       justify-content: center;
     }
 
