@@ -46,6 +46,25 @@
 
   /** Value-axis scale type. `log` requires strictly positive values. */
   export type ChartScale = "linear" | "log";
+
+  /**
+   * Category label placement for horizontal bar charts.
+   * - `"auto"` (default): measures longest label for left margin up to ~40% of
+   *   width and switches to `"above-bar"` beyond. Short labels stay at the
+   *   default 44 px margin.
+   * - `"margin"`: left margin capped at ~40% of width with end-ellipsis.
+   * - `"above-bar"`: left-aligned label above each horizontal bar.
+   * - `"inside-bar"`: left-aligned label inside each bar (falls back outside
+   *   when a bar is too narrow).
+   * - `"after-value"`: label placed after the bar end (and after outside value
+   *   data labels when enabled).
+   */
+  export type BarChartLabelPlacement =
+    | "auto"
+    | "margin"
+    | "after-value"
+    | "inside-bar"
+    | "above-bar";
 </script>
 
 <script lang="ts">
@@ -155,6 +174,22 @@
      * keyboard navigation on. Independent of `onSelect`/`selectedKeys`.
      */
     onSelectKey?: (key: string | null) => void;
+    /**
+     * Category label placement for horizontal bars (default `"auto"`).
+     * `"auto"` measures the longest label for the left margin up to ~40 % of
+     * `width` and switches to `"above-bar"` beyond; short labels keep the
+     * default 44 px margin unchanged. Never clips the start of a label —
+     * ellipsis is applied at the end only, with full text in tooltip and
+     * `aria-label`.
+     */
+    labelPlacement?: BarChartLabelPlacement;
+    /**
+     * Explicit SVG label font size in user-unit px (default `0.6875rem` / 11 px).
+     * Scales horizontal label width estimation, end-truncation, and margins in lockstep
+     * with the rendered SVG font size so enlarged labels (e.g. 18 px projection mode)
+     * never overflow the chart viewBox.
+     */
+    labelFontSize?: number;
     class?: string;
   };
 
@@ -179,6 +214,8 @@
     onHoverKeyChange,
     keyboardNav,
     onSelectKey,
+    labelPlacement = "auto",
+    labelFontSize,
     class: className
   }: BarChartProps = $props();
 
@@ -186,7 +223,58 @@
   // double as one); it is part of the contract for cross-chart parity and is a
   // deliberate no-op here. Intentionally destructured-but-unused.
 
-  const MARGIN = { top: 12, right: 16, bottom: 32, left: 44 };
+  const BASE_MARGIN = { top: 12, right: 16, bottom: 32, left: 44 };
+  const HORIZ_MIN_LEFT = 12;
+
+  const validLabelFontSize = $derived(
+    typeof labelFontSize === "number" && Number.isFinite(labelFontSize) && labelFontSize > 0
+      ? labelFontSize
+      : undefined
+  );
+  // Include an 8 % safety factor above 11 px to absorb semibold weight and system font width variance.
+  const labelFontScale = $derived(
+    validLabelFontSize === undefined
+      ? 1
+      : (validLabelFontSize / 11) * (validLabelFontSize > 11 ? 1.08 : 1)
+  );
+  const horizontalTickOffset = $derived(
+    validLabelFontSize !== undefined && validLabelFontSize > 11
+      ? Math.round(validLabelFontSize * 1.25)
+      : 16
+  );
+
+  function estimateCharWidth(ch: string, fontScale = 1): number {
+    let base: number;
+    if (ch === " ") base = 3.5;
+    else if ("ijlI1.,;:|!'’".includes(ch)) base = 3.8;
+    else if ("MW@#%&—–".includes(ch)) base = 9.5;
+    else if (ch >= "A" && ch <= "Z") base = 8;
+    else base = 6.8;
+    return base * fontScale;
+  }
+
+  function estimateTextWidth(text: string, fontScale = 1): number {
+    let w = 0;
+    for (const ch of text) w += estimateCharWidth(ch, fontScale);
+    return w;
+  }
+
+  function truncateEnd(text: string, maxWidthPx: number, fontScale = 1): string {
+    if (estimateTextWidth(text, fontScale) <= maxWidthPx) return text;
+    const ellipsis = "…";
+    const budget = Math.max(0, maxWidthPx - estimateTextWidth(ellipsis, fontScale));
+    let acc = 0;
+    let end = 0;
+    const chars = Array.from(text);
+    for (let i = 0; i < chars.length; i++) {
+      const cw = estimateCharWidth(chars[i], fontScale);
+      if (i > 0 && acc + cw > budget) break;
+      acc += cw;
+      end = i + 1;
+    }
+    const prefix = chars.slice(0, Math.max(1, end)).join("").trimEnd();
+    return `${prefix || chars[0] || ""}${ellipsis}`;
+  }
 
   function niceTicks(min: number, max: number, target = 5): number[] {
     if (!Number.isFinite(min) || !Number.isFinite(max) || min === max) {
@@ -338,6 +426,62 @@
 
   const valueAxis = $derived(orientation === "vertical" ? "y" : "x");
 
+  const dataLabelOpts = $derived(normalizeDataLabels(dataLabels));
+
+  const maxLeftCap = $derived(Math.max(BASE_MARGIN.left, Math.round(width * 0.4)));
+
+  const longestLabelPx = $derived(
+    data.reduce((max, d) => Math.max(max, estimateTextWidth(d.label, labelFontScale)), 0)
+  );
+
+  const resolvedLabelPlacement = $derived.by<"margin" | "after-value" | "inside-bar" | "above-bar">(() => {
+    if (orientation === "vertical") return "margin";
+    if (labelPlacement !== "auto") return labelPlacement;
+    const neededLeft = Math.ceil(longestLabelPx) + 12;
+    return neededLeft > maxLeftCap ? "above-bar" : "margin";
+  });
+
+  const margin = $derived.by(() => {
+    if (orientation === "vertical") return BASE_MARGIN;
+    const outsideDataLabels =
+      dataLabelOpts.enabled &&
+      (dataLabelOpts.position ?? "outside") !== "inside" &&
+      (dataLabelOpts.position ?? "outside") !== "center";
+    const maxDataLabelPx = outsideDataLabels
+      ? data.reduce(
+          (max, d) =>
+            Math.max(max, estimateTextWidth(formatDataLabel(d.value, dataLabelOpts, formatTick), labelFontScale)),
+          0
+        )
+      : 0;
+
+    let left = BASE_MARGIN.left;
+    let right = BASE_MARGIN.right;
+    const bottom =
+      validLabelFontSize !== undefined && validLabelFontSize > 11
+        ? Math.max(BASE_MARGIN.bottom, Math.ceil(validLabelFontSize * 2))
+        : BASE_MARGIN.bottom;
+
+    if (resolvedLabelPlacement === "margin") {
+      const neededLeft = Math.ceil(longestLabelPx) + 12;
+      left = neededLeft <= BASE_MARGIN.left ? BASE_MARGIN.left : Math.min(neededLeft, maxLeftCap);
+    } else {
+      left = HORIZ_MIN_LEFT;
+    }
+
+    if (resolvedLabelPlacement === "after-value") {
+      const neededRight = Math.ceil(
+        (outsideDataLabels ? maxDataLabelPx + 12 : 0) + longestLabelPx + 14
+      );
+      right = Math.min(Math.max(BASE_MARGIN.right, neededRight), Math.round(width * 0.4));
+    } else if (outsideDataLabels) {
+      const neededRight = Math.ceil(maxDataLabelPx) + 16;
+      right = Math.min(Math.max(BASE_MARGIN.right, neededRight), Math.round(width * 0.25));
+    }
+
+    return { top: BASE_MARGIN.top, right, bottom, left };
+  });
+
   const scales = $derived.by(() => {
     const values = data.map((d) => d.value);
     const errorExtents = data.flatMap((d) =>
@@ -365,8 +509,8 @@
       const ticks = validDomain ? fixedLogTicks(minRaw, maxRaw) : logTicks(minRaw, maxRaw);
       const domainMin = ticks[0];
       const domainMax = ticks[ticks.length - 1];
-      const plotWidth = Math.max(width - MARGIN.left - MARGIN.right, 1);
-      const plotHeight = Math.max(height - MARGIN.top - MARGIN.bottom, 1);
+      const plotWidth = Math.max(width - margin.left - margin.right, 1);
+      const plotHeight = Math.max(height - margin.top - margin.bottom, 1);
       return { ticks, domainMin, domainMax, plotWidth, plotHeight };
     }
     minRaw = validDomain ? validDomain[0] : Math.min(0, ...values);
@@ -379,8 +523,8 @@
     const ticks = validDomain ? fixedTicks(minRaw, maxRaw, 5) : niceTicks(minRaw, maxRaw, 5);
     const domainMin = ticks[0];
     const domainMax = ticks[ticks.length - 1];
-    const plotWidth = Math.max(width - MARGIN.left - MARGIN.right, 1);
-    const plotHeight = Math.max(height - MARGIN.top - MARGIN.bottom, 1);
+    const plotWidth = Math.max(width - margin.left - margin.right, 1);
+    const plotHeight = Math.max(height - margin.top - margin.bottom, 1);
     return { ticks, domainMin, domainMax, plotWidth, plotHeight };
   });
 
@@ -418,14 +562,14 @@
         const valueY = yOf(d.value);
         const y = Math.min(valueY, zeroY);
         const h = Math.abs(zeroY - valueY);
-        const x = MARGIN.left + band * i + (band - barWidth) / 2;
+        const x = margin.left + band * i + (band - barWidth) / 2;
         return {
           x,
-          y: MARGIN.top + y,
+          y: margin.top + y,
           width: barWidth,
           height: Math.max(h, 0.5),
-          cx: MARGIN.left + band * (i + 0.5),
-          cy: MARGIN.top + valueY,
+          cx: margin.left + band * (i + 0.5),
+          cy: margin.top + valueY,
           datum: d,
           tone: d.tone ?? "category1"
         };
@@ -433,22 +577,45 @@
     }
     // horizontal
     const band = plotHeight / data.length;
-    const barHeight = band * 0.62;
     // Pixel x for a value (fraction 0 → left, 1 → right of the plot).
     const xOf = (v: number) => plotWidth * valueFraction(v);
     const zeroX = xOf(baselineValue);
+    if (resolvedLabelPlacement === "above-bar") {
+      const labelBand =
+        validLabelFontSize !== undefined && validLabelFontSize > 11
+          ? Math.min(band * 0.48, Math.max(24, Math.ceil(validLabelFontSize * 1.45)))
+          : Math.min(band * 0.44, 24);
+      const barHeight = Math.max(6, (band - labelBand) * 0.68);
+      return data.map((d, i) => {
+        const valueX = xOf(d.value);
+        const x = Math.min(valueX, zeroX);
+        const w = Math.abs(valueX - zeroX);
+        const y = margin.top + band * i + labelBand;
+        return {
+          x: margin.left + x,
+          y,
+          width: Math.max(w, 0.5),
+          height: barHeight,
+          cx: margin.left + valueX,
+          cy: y + barHeight / 2,
+          datum: d,
+          tone: d.tone ?? "category1"
+        };
+      });
+    }
+    const barHeight = band * 0.62;
     return data.map((d, i) => {
       const valueX = xOf(d.value);
       const x = Math.min(valueX, zeroX);
       const w = Math.abs(valueX - zeroX);
-      const y = MARGIN.top + band * i + (band - barHeight) / 2;
+      const y = margin.top + band * i + (band - barHeight) / 2;
       return {
-        x: MARGIN.left + x,
+        x: margin.left + x,
         y,
         width: Math.max(w, 0.5),
         height: barHeight,
-        cx: MARGIN.left + valueX,
-        cy: MARGIN.top + band * (i + 0.5),
+        cx: margin.left + valueX,
+        cy: margin.top + band * (i + 0.5),
         datum: d,
         tone: d.tone ?? "category1"
       };
@@ -462,8 +629,8 @@
   const valuePos = $derived((v: number) => {
     const { plotWidth, plotHeight } = scales;
     return isVertical
-      ? MARGIN.top + plotHeight * (1 - valueFraction(v))
-      : MARGIN.left + plotWidth * valueFraction(v);
+      ? margin.top + plotHeight * (1 - valueFraction(v))
+      : margin.left + plotWidth * valueFraction(v);
   });
 
   const bandRects = $derived(
@@ -473,8 +640,8 @@
         const p1 = valuePos(b.from);
         const p2 = valuePos(b.to);
         return isVertical
-          ? { key: i, x: MARGIN.left, y: Math.min(p1, p2), width: scales.plotWidth, height: Math.max(Math.abs(p2 - p1), 0.5), label: b.label, tone: b.tone }
-          : { key: i, x: Math.min(p1, p2), y: MARGIN.top, width: Math.max(Math.abs(p2 - p1), 0.5), height: scales.plotHeight, label: b.label, tone: b.tone };
+          ? { key: i, x: margin.left, y: Math.min(p1, p2), width: scales.plotWidth, height: Math.max(Math.abs(p2 - p1), 0.5), label: b.label, tone: b.tone }
+          : { key: i, x: Math.min(p1, p2), y: margin.top, width: Math.max(Math.abs(p2 - p1), 0.5), height: scales.plotHeight, label: b.label, tone: b.tone };
       })
   );
 
@@ -484,8 +651,8 @@
       .map((r, i) => {
         const p = valuePos(r.value);
         return isVertical
-          ? { key: i, x1: MARGIN.left, x2: MARGIN.left + scales.plotWidth, y1: p, y2: p, label: r.label, tone: r.tone }
-          : { key: i, x1: p, x2: p, y1: MARGIN.top, y2: MARGIN.top + scales.plotHeight, label: r.label, tone: r.tone };
+          ? { key: i, x1: margin.left, x2: margin.left + scales.plotWidth, y1: p, y2: p, label: r.label, tone: r.tone }
+          : { key: i, x1: p, x2: p, y1: margin.top, y2: margin.top + scales.plotHeight, label: r.label, tone: r.tone };
       })
   );
 
@@ -539,11 +706,11 @@
   const categoryPixel = $derived((v: number | string): number | null => {
     const bar = bars.find((b) => b.datum.label === String(v));
     if (!bar) return null;
-    return isVertical ? bar.cx - MARGIN.left : bar.cy - MARGIN.top;
+    return isVertical ? bar.cx - margin.left : bar.cy - margin.top;
   });
   const valuePixelRel = $derived((v: number): number | null => {
     if (!Number.isFinite(v)) return null;
-    return valuePos(v) - (isVertical ? MARGIN.top : MARGIN.left);
+    return valuePos(v) - (isVertical ? margin.top : margin.left);
   });
   const transposeAnnotations = $derived((list: ChartAnnotation[] | undefined): ChartAnnotation[] | undefined => {
     if (!list || isVertical) return list;
@@ -573,8 +740,8 @@
     resolveAnnotations(transposeAnnotations(annotations), {
       xScale: annXScale,
       yScale: annYScale,
-      plotLeft: MARGIN.left,
-      plotTop: MARGIN.top,
+      plotLeft: margin.left,
+      plotTop: margin.top,
       plotWidth: scales.plotWidth,
       plotHeight: scales.plotHeight
     })
@@ -582,11 +749,111 @@
   const annotationRegions = $derived(resolvedAnnotations.filter((a) => a.kind === "region"));
   const annotationAbove = $derived(resolvedAnnotations.filter((a) => a.kind !== "region"));
 
+  // --- Horizontal category labels -------------------------------------------
+  const horizontalCategoryLabels = $derived.by(() => {
+    if (orientation !== "horizontal") return [];
+    const outsideDataLabels =
+      dataLabelOpts.enabled &&
+      (dataLabelOpts.position ?? "outside") !== "inside" &&
+      (dataLabelOpts.position ?? "outside") !== "center";
+    return bars.map((bar, i) => {
+      const full = bar.datum.label;
+      if (resolvedLabelPlacement === "above-bar") {
+        const avail = Math.max(24, scales.plotWidth - 4);
+        const text = truncateEnd(full, avail, labelFontScale);
+        return {
+          key: full,
+          index: i,
+          x: margin.left + 2,
+          y: bar.y - 5,
+          anchor: "start" as const,
+          baseline: "auto" as const,
+          text,
+          full,
+          truncated: text !== full,
+          inside: false
+        };
+      }
+      if (resolvedLabelPlacement === "inside-bar") {
+        const minInsideBarWidth = 36;
+        if (bar.width >= minInsideBarWidth) {
+          const avail = Math.max(16, bar.width - 12);
+          const text = truncateEnd(full, avail, labelFontScale);
+          return {
+            key: full,
+            index: i,
+            x: bar.x + 6,
+            y: bar.y + bar.height / 2,
+            anchor: "start" as const,
+            baseline: "middle" as const,
+            text,
+            full,
+            truncated: text !== full,
+            inside: true
+          };
+        }
+        const valPad = outsideDataLabels
+          ? estimateTextWidth(formatDataLabel(bar.datum.value, dataLabelOpts, formatTick), labelFontScale) + 12
+          : 0;
+        const x = bar.x + bar.width + 6 + valPad;
+        const avail = Math.max(24, width - 4 - x);
+        const text = truncateEnd(full, avail, labelFontScale);
+        return {
+          key: full,
+          index: i,
+          x,
+          y: bar.y + bar.height / 2,
+          anchor: "start" as const,
+          baseline: "middle" as const,
+          text,
+          full,
+          truncated: text !== full,
+          inside: false
+        };
+      }
+      if (resolvedLabelPlacement === "after-value") {
+        const valPad = outsideDataLabels
+          ? estimateTextWidth(formatDataLabel(bar.datum.value, dataLabelOpts, formatTick), labelFontScale) + 12
+          : 0;
+        const x = bar.cx + (outsideDataLabels ? 4 + valPad : 6);
+        const avail = Math.max(24, width - 4 - x);
+        const text = truncateEnd(full, avail, labelFontScale);
+        return {
+          key: full,
+          index: i,
+          x,
+          y: bar.y + bar.height / 2,
+          anchor: "start" as const,
+          baseline: "middle" as const,
+          text,
+          full,
+          truncated: text !== full,
+          inside: false
+        };
+      }
+      // "margin"
+      const avail = Math.max(16, margin.left - 10);
+      const text = truncateEnd(full, avail, labelFontScale);
+      const truncated = text !== full;
+      return {
+        key: full,
+        index: i,
+        x: truncated ? 4 : margin.left - 6,
+        y: bar.y + bar.height / 2,
+        anchor: truncated ? ("start" as const) : ("end" as const),
+        baseline: "middle" as const,
+        text,
+        full,
+        truncated,
+        inside: false
+      };
+    });
+  });
+
   // --- Data labels ----------------------------------------------------------
   // One value label per bar, placed at the bar's value end. Default `outside`:
   // above the bar (vertical) / past the bar end (horizontal). `inside`/`center`
   // sit at the bar's mid-length. aria-hidden (values are in the ChartDataList).
-  const dataLabelOpts = $derived(normalizeDataLabels(dataLabels));
   const dataLabelItems = $derived.by(() => {
     if (!dataLabelOpts.enabled) return [] as { key: string; x: number; y: number; text: string; anchor: "start" | "middle" | "end"; baseline: string }[];
     return bars.map((bar) => {
@@ -615,9 +882,9 @@
     if (orientation === "vertical") {
       return ticks.map((tick) => ({
         value: tick,
-        x1: MARGIN.left,
-        x2: MARGIN.left + plotWidth,
-        y: MARGIN.top + plotHeight * (1 - valueFraction(tick)),
+        x1: margin.left,
+        x2: margin.left + plotWidth,
+        y: margin.top + plotHeight * (1 - valueFraction(tick)),
         x: undefined,
         y1: undefined,
         y2: undefined
@@ -625,9 +892,9 @@
     }
     return ticks.map((tick) => ({
       value: tick,
-      x: MARGIN.left + plotWidth * valueFraction(tick),
-      y1: MARGIN.top,
-      y2: MARGIN.top + plotHeight,
+      x: margin.left + plotWidth * valueFraction(tick),
+      y1: margin.top,
+      y2: margin.top + plotHeight,
       x1: undefined,
       x2: undefined,
       y: undefined
@@ -694,7 +961,12 @@
   const classes = () => ["st-barChart", className].filter(Boolean).join(" ");
 </script>
 
-<div class={classes()}>
+<div
+  class={classes()}
+  style={validLabelFontSize !== undefined
+    ? `--st-component-barChart-labelFontSize: ${validLabelFontSize}px`
+    : undefined}
+>
   <div
     class="st-barChart__visual"
     role="img"
@@ -703,6 +975,7 @@
     onpointerleave={handleLeave}
   >
     <svg
+      class:st-barChart__svg--horizontal={orientation === "horizontal"}
       viewBox="0 0 {width} {height}"
       preserveAspectRatio="xMidYMid meet"
       width="100%"
@@ -722,7 +995,7 @@
         />
         <text
           class="st-barChart__tickLabel"
-          x={MARGIN.left - 6}
+          x={margin.left - 6}
           y={tick.y}
           text-anchor="end"
           dominant-baseline="middle"
@@ -742,7 +1015,7 @@
         <text
           class="st-barChart__tickLabel"
           x={tick.x}
-          y={height - MARGIN.bottom + 16}
+          y={height - margin.bottom + horizontalTickOffset}
           text-anchor="middle"
         >
           {formatTick(tick.value)}
@@ -753,42 +1026,47 @@
     <!-- axes -->
     <line
       class="st-barChart__axis"
-      x1={MARGIN.left}
-      x2={MARGIN.left}
-      y1={MARGIN.top}
-      y2={height - MARGIN.bottom}
+      x1={margin.left}
+      x2={margin.left}
+      y1={margin.top}
+      y2={height - margin.bottom}
     />
     <line
       class="st-barChart__axis"
-      x1={MARGIN.left}
-      x2={width - MARGIN.right}
-      y1={height - MARGIN.bottom}
-      y2={height - MARGIN.bottom}
+      x1={margin.left}
+      x2={width - margin.right}
+      y1={height - margin.bottom}
+      y2={height - margin.bottom}
     />
 
     <!-- category labels -->
-    {#each bars as bar, i (bar.datum.label)}
-      {#if orientation === "vertical"}
+    {#if orientation === "vertical"}
+      {#each bars as bar (bar.datum.label)}
         <text
           class="st-barChart__categoryLabel"
           x={bar.x + bar.width / 2}
-          y={height - MARGIN.bottom + 16}
+          y={height - margin.bottom + 16}
           text-anchor="middle"
         >
           {bar.datum.label}
         </text>
-      {:else}
+      {/each}
+    {:else}
+      {#each horizontalCategoryLabels as item (item.key)}
         <text
           class="st-barChart__categoryLabel"
-          x={MARGIN.left - 6}
-          y={bar.y + bar.height / 2}
-          text-anchor="end"
-          dominant-baseline="middle"
+          class:st-barChart__categoryLabel--inside={item.inside}
+          x={item.x}
+          y={item.y}
+          text-anchor={item.anchor}
+          dominant-baseline={item.baseline}
+          aria-label={item.truncated ? item.full : undefined}
+          data-chart-index={item.truncated ? item.index : undefined}
         >
-          {bar.datum.label}
+          {#if item.truncated}<title>{item.full}</title>{/if}{item.text}
         </text>
-      {/if}
-    {/each}
+      {/each}
+    {/if}
 
     <!-- Analytical overlays — bands + reference lines BELOW the bars. -->
     {#each bandRects as b (b.key)}
@@ -803,8 +1081,8 @@
       {#if r.label}
         <text
           class="st-barChart__overlayLabel"
-          x={isVertical ? MARGIN.left + scales.plotWidth - 4 : r.x1 + 4}
-          y={isVertical ? r.y1 - 4 : MARGIN.top + 11}
+          x={isVertical ? margin.left + scales.plotWidth - 4 : r.x1 + 4}
+          y={isVertical ? r.y1 - 4 : margin.top + 11}
           text-anchor={isVertical ? "end" : "start"}
         >{r.label}</text>
       {/if}
@@ -864,14 +1142,14 @@
     <!-- Goal line — emphasised, ABOVE the bars. -->
     {#if goalGeom}
       {#if isVertical}
-        <line class="st-barChart__goalLine" x1={MARGIN.left} x2={MARGIN.left + scales.plotWidth} y1={goalGeom.p} y2={goalGeom.p} />
+        <line class="st-barChart__goalLine" x1={margin.left} x2={margin.left + scales.plotWidth} y1={goalGeom.p} y2={goalGeom.p} />
       {:else}
-        <line class="st-barChart__goalLine" x1={goalGeom.p} x2={goalGeom.p} y1={MARGIN.top} y2={MARGIN.top + scales.plotHeight} />
+        <line class="st-barChart__goalLine" x1={goalGeom.p} x2={goalGeom.p} y1={margin.top} y2={margin.top + scales.plotHeight} />
       {/if}
       <text
         class="st-barChart__goalLabel"
-        x={isVertical ? MARGIN.left + scales.plotWidth - 4 : goalGeom.p + 4}
-        y={isVertical ? goalGeom.p - 4 : MARGIN.top + 11}
+        x={isVertical ? margin.left + scales.plotWidth - 4 : goalGeom.p + 4}
+        y={isVertical ? goalGeom.p - 4 : margin.top + 11}
         text-anchor={isVertical ? "end" : "start"}
       >{goalGeom.label ?? `Objectif ${goalGeom.value}`}</text>
     {/if}
@@ -885,8 +1163,8 @@
             {#if a.label}
               <text
                 class="st-barChart__annotationLabel"
-                x={a.axis === "x" ? a.x1 + 4 : MARGIN.left + scales.plotWidth - 4}
-                y={a.axis === "x" ? MARGIN.top + 11 : a.y1 - 4}
+                x={a.axis === "x" ? a.x1 + 4 : margin.left + scales.plotWidth - 4}
+                y={a.axis === "x" ? margin.top + 11 : a.y1 - 4}
                 text-anchor={a.axis === "x" ? "start" : "end"}
               >{a.label}</text>
             {/if}
@@ -923,9 +1201,9 @@
       {@const cb = bars[activeIndex]}
       <g class="st-barChart__crosshair" aria-hidden="true">
         {#if isVertical}
-          <line class="st-barChart__crosshairLine" x1={cb.cx} x2={cb.cx} y1={MARGIN.top} y2={MARGIN.top + scales.plotHeight} />
+          <line class="st-barChart__crosshairLine" x1={cb.cx} x2={cb.cx} y1={margin.top} y2={margin.top + scales.plotHeight} />
         {:else}
-          <line class="st-barChart__crosshairLine" x1={MARGIN.left} x2={MARGIN.left + scales.plotWidth} y1={cb.cy} y2={cb.cy} />
+          <line class="st-barChart__crosshairLine" x1={margin.left} x2={margin.left + scales.plotWidth} y1={cb.cy} y2={cb.cy} />
         {/if}
       </g>
     {/if}
@@ -1016,6 +1294,10 @@
     overflow: visible;
   }
 
+  .st-barChart svg.st-barChart__svg--horizontal {
+    overflow: hidden;
+  }
+
   .st-barChart__visual {
     display: block;
   }
@@ -1035,7 +1317,12 @@
   .st-barChart__tickLabel,
   .st-barChart__categoryLabel {
     fill: var(--st-component-barChart-labelColor, var(--st-semantic-text-secondary));
-    font-size: 0.6875rem;
+    font-size: var(--st-component-barChart-labelFontSize, 0.6875rem);
+  }
+
+  .st-barChart__categoryLabel--inside {
+    fill: var(--st-semantic-text-inverse, #fff);
+    font-weight: 600;
   }
 
   .st-barChart__bar {
@@ -1249,7 +1536,7 @@
   /* Data labels — per-bar value, drawn on top. Token-only colour. */
   .st-barChart__dataLabel {
     fill: var(--st-semantic-text-primary);
-    font-size: 0.6875rem;
+    font-size: var(--st-component-barChart-labelFontSize, 0.6875rem);
     font-weight: 600;
   }
 
