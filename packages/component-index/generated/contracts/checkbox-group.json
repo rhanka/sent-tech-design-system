@@ -1,8 +1,8 @@
 {
   "componentId": "checkbox-group",
   "contractSource": "derived",
-  "digest": "sha256:1b410fbabb2dde762197818c6503754f9b56ed1f83e5732e4eee1618b98db380",
-  "entryDigest": "sha256:36a8217f6148ce628fb82a562ea714fbfd6563b64129b557e8ec5f906ab783af",
+  "digest": "sha256:640ed73d87969dce1e5a6eba196ea20160f0fe3dc1cf1cce90f3ccbc1065d671",
+  "entryDigest": "sha256:3fc8189f61aaf40b0edd0c9e276c787a428414a8b8f0c4b25811e9bdc03ec243",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -375,7 +375,7 @@
         "declarationPath": "packages/components-svelte/dist/CheckboxGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CheckboxGroupProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "complete",
       "unresolved": [],

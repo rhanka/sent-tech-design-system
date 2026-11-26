@@ -1,8 +1,8 @@
 {
   "componentId": "vector-field-chart",
   "contractSource": "derived",
-  "digest": "sha256:bce5e245ae9267c5a490170fdb0b556087a84d55a6947f750f90df2aefd4a6bb",
-  "entryDigest": "sha256:5214d1e5ba17b195a22301ee51c35132001e2e3f689c8d9b6fca123122693cf3",
+  "digest": "sha256:f6982e4f8cf4285b7c248e270d11420aa4dd65865cb559406d53157b63b814e7",
+  "entryDigest": "sha256:3887e403830dd597670ac1445b09eba6779f233cb5fd5a0d4362c406287708e8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -234,7 +234,7 @@
         "declarationPath": "packages/components-svelte/dist/VectorFieldChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "VectorFieldChartProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "complete",
       "unresolved": [],

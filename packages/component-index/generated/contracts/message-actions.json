@@ -1,8 +1,8 @@
 {
   "componentId": "message-actions",
   "contractSource": "derived",
-  "digest": "sha256:a410c1b350f49910b4998484b335e7149dfb09019fe7934ea8b79be5472c6a0c",
-  "entryDigest": "sha256:afda46ad776f72ef3c34ec9acca96fd056e40e635c2f2ae461f6ebb94f8bd7f9",
+  "digest": "sha256:c7f6712f2981a3753616cff90e4d006c33849a5c1df9c80e01d82a9eb0457518",
+  "entryDigest": "sha256:6318b7b08a7273dc510d4123b86eadb3584cc09c7e56b0a646f88b82dbe8ad4a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -264,7 +264,7 @@
         "declarationPath": "packages/components-svelte/dist/MessageActions.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MessageActionsProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "partial",
       "unresolved": [],

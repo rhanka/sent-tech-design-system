@@ -1,8 +1,8 @@
 {
   "componentId": "labelled-icon-button",
   "contractSource": "derived",
-  "digest": "sha256:6632196375fe8d866297f3f97b3b62ce51d9c680ee67f571d45bdc357e56f0a5",
-  "entryDigest": "sha256:d893164b9cd7e63466970ac05615199944150380983a923ff00ce7a9a6b4fda1",
+  "digest": "sha256:02415873a5249e6c8c381e6ed7f4517f1e4435d6aca11eba37d8311dfb4dbaeb",
+  "entryDigest": "sha256:d33fe9b9bb37c64de28599129061c7884bc9d2f015a948d1b09b4318bdd92235",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -141,7 +141,7 @@
         "declarationPath": "packages/components-svelte/dist/LabelledIconButton.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LabelledIconButtonProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "partial",
       "unresolved": [

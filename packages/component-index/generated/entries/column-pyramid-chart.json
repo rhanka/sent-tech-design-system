@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ColumnPyramidChart.svelte",
-      "version": "0.47.0"
+      "version": "0.48.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Pyramid columns: each category is a triangle, base on the X axis and apex at the value height.",
     "fr": "Colonnes pyramidales : chaque catégorie est un triangle, base sur l'axe X et sommet à la hauteur de la valeur."
   },
-  "digest": "sha256:9c52ff8625339cc11f4b35152f9c58fd8b965d851e0552fe376fb4ff4e4e630d",
+  "digest": "sha256:0568883a095fd677be0ae3667f16b9613d1549b75a3024440ccfab51a2ed9c3c",
   "displayName": "ColumnPyramidChart",
   "format": "component-entry/v1",
   "frameworks": [

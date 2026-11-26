@@ -1,8 +1,8 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:faec4168f2f24dcba502a6c848bac5b8a5454fe2e034246e4919ae30333bfecb",
-  "entryDigest": "sha256:f3ca0280c28ee7b9c1cdc71cb9d82a7ebb363da6db58fa943d3679c42e5bff44",
+  "digest": "sha256:ef234fc70d8ed43acf9d9e67b0facd46fbd89582dac4987320b7f7ce7854b14c",
+  "entryDigest": "sha256:7345c98a9837455a32401af9a263bfa7dacca2252471f18376e9b14be166f69b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -587,7 +587,7 @@
         "declarationPath": "packages/components-svelte/dist/Menu.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MenuProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "partial",
       "unresolved": [],

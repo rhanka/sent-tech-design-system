@@ -1,5 +1,13 @@
 # Changelog
 
+## @sentropic/design-system-svelte 0.48.0 — Survey kit (S-1..S-4)
+
+- **S-1 (PR #347)**: add `LikertScale` (4–7 steps, `@container` auto/stacked/horizontal layout, `aria-describedby` poles); add `card` variant (`>= 48 px` touch targets), `columns={2}` / `horizontal` `@container (min-width: 520px)` layout, `$bindable` `value`, validation/error wiring (`description`, `required`, `invalid`, `errorText`) to `Radio`/`RadioGroup` and `Checkbox`/`CheckboxGroup`, plus `exclusiveValues`, `minSelections`, `maxSelections` and live status region on `CheckboxGroup`.
+- **S-2 (PR #348)**: add `SurveyQuestionCard`, `SurveyNav` (with explicit partial-submit confirmation `Modal` and `>= 44 px` controls), and `SurveyPrivacyNotice` (`auto` / `card` / `collapsible`, `sticky` side card); add `Stepper` `compactMobile` (`< 25rem` container query) and `Input` `aria-describedby` linking for `helperText` / `errorText`.
+- **S-3 (PR #345)**: add `SurveyForm` and `survey-types`, `survey-storage`, `survey-flow` helpers (`fromKeynoteQuestionnaire`, `shuffleSurveyOptions`, salted `hashSurveyEmail`, 30 min draft TTL, 24 h explicit offline submission queue, magic-link flow without draft resume bypass, optional passkey prompt).
+- **S-4 (PR #346)**: add `SurveyResults` and `survey-results-model` (16:9 projection/standard SSE snapshot room view, client privacy thresholds `minCellSize = 5`, `minSegmentSize = 10`, `lowNThreshold = 120`, `ForceGraph` co-response network, segmented `BarChart` / `Table` breakdowns); add `BarChart` `labelPlacement` (`"auto" | "margin" | "after-value" | "inside-bar" | "above-bar"`) and `labelFontSize`; add `GraphLegend` `size` (`"sm" | "md" | "lg"`), `variant` (`"overlay" | "inline"`), and typed edge colours.
+- Align `@sentropic/design-system-svelte` `0.48.0` pins in `dataviz-svelte`, `artifact-shell`, and `apps/docs`, lockfile, `component-index` artifacts, and `docs/graph-dataviz-m1-provenance.json`.
+
 ## Unreleased — DE-3 Milestone 1 (DE3-L1a, DE3-L2a)
 
 - diagram-canvas, Svelte and Vue `DiagramSceneFigure`: suppress auto-generated

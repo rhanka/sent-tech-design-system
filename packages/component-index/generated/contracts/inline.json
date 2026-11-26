@@ -1,8 +1,8 @@
 {
   "componentId": "inline",
   "contractSource": "derived",
-  "digest": "sha256:b0b15a1057d936ca7278265328ff012379dda838a3ff7ae129b81f6ff5c6adaf",
-  "entryDigest": "sha256:6a380cf23b384184d46aeacadb498708a20f95de149506c662d53a807ee8fff4",
+  "digest": "sha256:614479c8c99aa87fb07c31ff740676cfe237fc7b7f9f1d46f0893c8dbe47127c",
+  "entryDigest": "sha256:747f06828275a1cd777815175bf252de04edbe74bcb27dad210ab93b765b32f9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-svelte/dist/Inline.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "InlineProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "complete",
       "unresolved": [],

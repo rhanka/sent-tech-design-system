@@ -1,8 +1,8 @@
 {
   "componentId": "button-group",
   "contractSource": "derived",
-  "digest": "sha256:5a01fc3798941c56e6ad8a143e483534de42cedeac8ffa34c812534caf996941",
-  "entryDigest": "sha256:3ac11c9d107bb94b4d40b4a77e04e545e22f88dc5d0c5eaea9e58b0d22a8ebae",
+  "digest": "sha256:7e5900a9fd5f1cd22eb9fa3f7d4f2d16db4b12d5ae561b5b1cbcc495df797796",
+  "entryDigest": "sha256:379f83aa6305b0d2d23d192fa7a2bbe887aecd5734e4143eb808b82db8813134",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -180,7 +180,7 @@
         "declarationPath": "packages/components-svelte/dist/ButtonGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ButtonGroupProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "complete",
       "unresolved": [],

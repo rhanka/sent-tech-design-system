@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/KpiCard.svelte",
-      "version": "0.47.0"
+      "version": "0.48.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "KPI card with value, delta, trend indicator, and optional sparkline.",
     "fr": "Carte indicateur clé avec valeur, delta, tendance et sparkline optionnelle."
   },
-  "digest": "sha256:087861c6121777f6010893083cef9e109f11d851decc2797311599038b9fa10f",
+  "digest": "sha256:220b019b4eebbe340f1241626a555e2751aa12055223f17f8ce75af4ee8333bc",
   "displayName": "KpiCard",
   "format": "component-entry/v1",
   "frameworks": [

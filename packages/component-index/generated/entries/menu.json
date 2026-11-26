@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Menu.svelte",
-      "version": "0.47.0"
+      "version": "0.48.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Contextual actions menu.",
     "fr": "Menu d’actions contextuel."
   },
-  "digest": "sha256:f3ca0280c28ee7b9c1cdc71cb9d82a7ebb363da6db58fa943d3679c42e5bff44",
+  "digest": "sha256:7345c98a9837455a32401af9a263bfa7dacca2252471f18376e9b14be166f69b",
   "displayName": "Menu",
   "format": "component-entry/v1",
   "frameworks": [
