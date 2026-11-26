@@ -6,7 +6,7 @@ import {
   type SceneDocument,
   type SceneLayoutInput,
   type SceneOccurrenceRef,
-} from "@sentropic/diagram-canvas/diagramSceneModel";
+} from "@sentropic/diagram-canvas/focus-bridge";
 import { cardLineMeasurer, projectCardProps, projectZoneProps, renderSceneSvg } from "@sentropic/diagram-canvas/diagram-render";
 import { DossierDiagramError } from "./diagram-source.js";
 

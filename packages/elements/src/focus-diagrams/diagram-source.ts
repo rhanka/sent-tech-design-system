@@ -1,5 +1,5 @@
 import type { DiagramNode } from "@sentropic/focus";
-import { validateSceneDocument, type SceneDocument } from "@sentropic/diagram-canvas/diagramSceneModel";
+import { validateSceneDocument, type SceneDocument } from "@sentropic/diagram-canvas/focus-bridge";
 import { focusSceneBindings, focusSceneRegistry } from "./diagram-layout.js";
 import ecosystem from "./ecosystem.json" with { type: "json" };
 

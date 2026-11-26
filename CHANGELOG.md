@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased — @sentropic/diagram-canvas 0.8.0 (focus-bridge subpath)
+
+- diagram-canvas: publish `@sentropic/diagram-canvas/focus-bridge` subpath
+  re-exporting `validateSceneDocument`, `layoutScene`, `renderProcessTable`,
+  `shippedSceneRegistry`, `shippedSceneBindings` and scene types without DOM
+  or side effects.
+- design-system-elements: switch Focus dossier diagram imports to
+  `@sentropic/diagram-canvas/focus-bridge`.
+- Bump `@sentropic/diagram-canvas` to `0.8.0` and update exact pins in
+  `design-system-elements`, `design-system-svelte`, `design-system-vue`, and
+  `diagram-codecs` plus `package-lock.json`.
+
 ## @sentropic/design-system-svelte 0.48.0 — Survey kit (S-1..S-4)
 
 - **S-1 (PR #347)**: add `LikertScale` (4–7 steps, `@container` auto/stacked/horizontal layout, `aria-describedby` poles); add `card` variant (`>= 48 px` touch targets), `columns={2}` / `horizontal` `@container (min-width: 520px)` layout, `$bindable` `value`, validation/error wiring (`description`, `required`, `invalid`, `errorText`) to `Radio`/`RadioGroup` and `Checkbox`/`CheckboxGroup`, plus `exclusiveValues`, `minSelections`, `maxSelections` and live status region on `CheckboxGroup`.

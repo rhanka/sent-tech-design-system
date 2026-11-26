@@ -319,6 +319,20 @@ git push origin diagram-codecs-v0.1.0
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
+### Diagram Canvas 0.8.0 (`@sentropic/diagram-canvas/focus-bridge`)
+
+Minor bump of `@sentropic/diagram-canvas` (`0.7.0` → `0.8.0`, tag
+`diagram-canvas-v0.8.0`, requiring published `@sentropic/diagram-core@0.6.1`)
+adding the publishable, DOM-free, side-effect-free subpath export
+`@sentropic/diagram-canvas/focus-bridge` (`validateSceneDocument`,
+`layoutScene`, `renderProcessTable`, `shippedSceneRegistry`,
+`shippedSceneBindings`, and scene types), switching
+`@sentropic/design-system-elements` Focus dossier imports to that subpath, and
+aligning the exact workspace `@sentropic/diagram-canvas` pins (`0.8.0`) in
+`elements`, `components-svelte`, `components-vue`, and `diagram-codecs`.
+Follows `diagram-canvas-v0.7.0` before downstream `elements`, `svelte`, `vue`,
+and `diagram-codecs` tags.
+
 ### Svelte 0.48.0 (Survey kit S-1..S-4 for the keynote)
 
 Minor release of `@sentropic/design-system-svelte` (`0.47.0` → `0.48.0`) publishing the Svelte-only keynote survey kit merged on `main` across lots S-1..S-4 (PRs #347, #348, #345, #346):

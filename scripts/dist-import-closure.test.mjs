@@ -32,6 +32,7 @@ test('should import every repaired canvas entry using core 0.2.0 and mark an unp
   const result = await checkPackage(workspace('diagram-canvas'), { workspaces: [workspace('diagram-core')], log: line => logs.push(line) });
   assert(logs.some(line => line.includes('@sentropic/diagram-canvas/flowModel')));
   assert(logs.some(line => line.includes('@sentropic/diagram-canvas/diagram-render')));
+  assert(logs.some(line => line.includes('@sentropic/diagram-canvas/focus-bridge')));
   assert.deepEqual(result.lanes, ['node']);
   // After release this naturally switches to the real registry version.
   for (const sibling of result.unpublishedSiblings) assert(logs.some(line => line.includes(`UNPUBLISHED SIBLING ${sibling}`)));
