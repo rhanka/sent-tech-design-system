@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/GeoChart.svelte",
-      "version": "0.48.0"
+      "version": "0.49.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Generic layered 2D map (GeoJSON, choropleth, points, density, flows, hexbin, clusters), equirectangular or Mercator projection, accessible value list.",
     "fr": "Carte 2D générique à couches (GeoJSON, choroplèthe, points, densité, flux, hexbin, clusters), projection équirectangulaire ou Mercator, liste de valeurs accessible."
   },
-  "digest": "sha256:5cb20b1cddae83e53fec7e70017c8c4098395e9f3e49b62dd69c7099ffb8a302",
+  "digest": "sha256:a421daf625a1581266d8b2e24123ed786c1841d63a05071cef05ef6cfe52a6df",
   "displayName": "GeoChart",
   "format": "component-entry/v1",
   "frameworks": [

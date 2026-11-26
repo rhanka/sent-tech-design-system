@@ -1,8 +1,8 @@
 {
   "componentId": "stepper",
   "contractSource": "derived",
-  "digest": "sha256:b61f68b4cd8067278fc7728ac8ec7e948618accc21afa8843ae432b4c8d51a56",
-  "entryDigest": "sha256:2ef81e67cdbcd62ea94139519372f81e7fcbfbffb11b049aec0b3f0506132ac7",
+  "digest": "sha256:1b3eb6e7bfdb7b425dafbfd2f1f9daccb2d3ef2681753eaabbe85440e00f9c50",
+  "entryDigest": "sha256:3659c46a20c96169243a3cdcead478d5e23b1d13a594abf5d669e8b08bbc8f2c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/Stepper.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StepperProps",
-        "version": "0.48.0"
+        "version": "0.49.0"
       },
       "status": "complete",
       "unresolved": [],

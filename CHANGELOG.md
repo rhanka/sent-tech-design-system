@@ -1,5 +1,11 @@
 # Changelog
 
+## @sentropic/design-system-svelte 0.49.0 — Survey v2 questionnaire (S-3b)
+
+- **S-3b (PR #349)**: upgrade the keynote survey kit to `SurveyDefinition` v2 (`schemaVersion: 1 | 2`, backwards-compatible with v1) with `entry` framing (`enterprise | personal | both`, `fast` / `deep` modes), `themes`, question tiers (`core`, `deep`, `closing`), `ai_effect` question type (`DEFAULT_AI_EFFECT_OPTIONS`, `DEFAULT_AI_EFFECT_NEUTRAL_ID`, `DEFAULT_AI_EFFECT_NON_SUBSTANTIVE`, `resolveAiEffectOptions`), scoped answers (`ScopedAnswerValue`, `isScopedAnswerValue`), and `fromKeynoteQuestionnaire` v2 support (`keynote-poll/questionnaires@2`).
+- **S-3b (`LikertScale`, `SurveyQuestionCard`, `SurveyForm`, `survey-flow`, `survey-storage`)**: add `scaleKind="bipolar"` with neutral midpoint (`neutralOptionId`), symmetric step badges (`−−`, `−`, `0`, `+`, `++`), and visually separated `nonSubstantive` option (`"I don't know"`) inside one `radiogroup`; add per-question `contextual` orientation toggle on `SurveyQuestionCard`; implement two-screen entry framing, `deep_themes` milestone, dual-answer side-by-side `both` mode, `ai_effect` rendering, optional closing `Textarea` with character counter, 30 min v2 draft persistence, and magic-link return / validation hardening.
+- Align `@sentropic/design-system-svelte` `0.49.0` pins in `dataviz-svelte`, `artifact-shell`, and `apps/docs`, regenerate lockfile and `component-index` artifacts, and update `docs/graph-dataviz-m1-provenance.json`.
+
 ## @sentropic/design-system-svelte 0.48.0 — Survey kit (S-1..S-4)
 
 - **S-1 (PR #347)**: add `LikertScale` (4–7 steps, `@container` auto/stacked/horizontal layout, `aria-describedby` poles); add `card` variant (`>= 48 px` touch targets), `columns={2}` / `horizontal` `@container (min-width: 520px)` layout, `$bindable` `value`, validation/error wiring (`description`, `required`, `invalid`, `errorText`) to `Radio`/`RadioGroup` and `Checkbox`/`CheckboxGroup`, plus `exclusiveValues`, `minSelections`, `maxSelections` and live status region on `CheckboxGroup`.

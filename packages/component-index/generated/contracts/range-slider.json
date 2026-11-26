@@ -1,8 +1,8 @@
 {
   "componentId": "range-slider",
   "contractSource": "derived",
-  "digest": "sha256:ebe332c0143b469bdb513ca05c36904aba1658ccf87fcb6a123ebd468f307dc5",
-  "entryDigest": "sha256:d897a292220551ad254929f03e08413060993b3a8f908ce8f484a28e6d2b3f1a",
+  "digest": "sha256:ffe1c7cf9277fa86ab19ebda30040f6bf9d8eb62d2676ba8d1aa18933ccdfb51",
+  "entryDigest": "sha256:38e7e4f94157c337ab45ce037a58c60f7de2481ecfd3e78636ba6cb979e880a9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -376,7 +376,7 @@
         "declarationPath": "packages/components-svelte/dist/RangeSlider.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RangeSliderProps",
-        "version": "0.48.0"
+        "version": "0.49.0"
       },
       "status": "partial",
       "unresolved": [],

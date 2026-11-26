@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Transcription.svelte",
-      "version": "0.48.0"
+      "version": "0.49.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Collapsible transcript panel with timestamps and speaker labels.",
     "fr": "Bloc repliable de transcription audio/vidéo avec horodatage et intervenant."
   },
-  "digest": "sha256:3877400663fac8b95bffeaf00b243eb27eeec92580f70615b321c01350b56d70",
+  "digest": "sha256:f62174bb4c52272493d1fe571c5096aaf7986aaa56c6e6af2eaf99b48fd64f73",
   "displayName": "Transcription",
   "format": "component-entry/v1",
   "frameworks": [

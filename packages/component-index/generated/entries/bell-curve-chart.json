@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/BellCurveChart.svelte",
-      "version": "0.48.0"
+      "version": "0.49.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "From a raw sample of numbers, computes the mean μ and standard deviation σ then draws the normal-distribution density (bell curve) with markers at μ and μ±σ, μ±2σ.",
     "fr": "À partir d'un échantillon de nombres bruts, calcule la moyenne μ et l'écart-type σ puis trace la densité de la loi normale (courbe en cloche) avec repères à μ et μ±σ, μ±2σ."
   },
-  "digest": "sha256:8f3f59b85b24a6f12c3f1d82ac45b86a66ab5f0f8041a8d6ab8aa53d2b195ae0",
+  "digest": "sha256:5d68015b8c3b933e6de716a41d51c9d26615d56ab6249cf27b717b269557012e",
   "displayName": "BellCurveChart",
   "format": "component-entry/v1",
   "frameworks": [

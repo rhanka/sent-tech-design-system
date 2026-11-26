@@ -1,8 +1,8 @@
 {
   "componentId": "row",
   "contractSource": "derived",
-  "digest": "sha256:2aacfcb98c0b46869b4dd4f60b305353abf95c83ac63cf2e4f6b9f6d886e5b7e",
-  "entryDigest": "sha256:a7982a9910f7c65758bb310c09b9902142023273f029ffd270a5ab822fc9fef2",
+  "digest": "sha256:2c709427dbe5fd9bc9f6107d1fd1d09a34ffd45f1db0db6b18d52ec2ae4983ff",
+  "entryDigest": "sha256:928dafee3e0cff42d3f2fec8d8855fa6419142c15a2d4189a02311db1933df3e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -192,7 +192,7 @@
         "declarationPath": "packages/components-svelte/dist/Row.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RowProps",
-        "version": "0.48.0"
+        "version": "0.49.0"
       },
       "status": "complete",
       "unresolved": [],
