@@ -333,6 +333,23 @@ aligning the exact workspace `@sentropic/diagram-canvas` pins (`0.8.0`) in
 Follows `diagram-canvas-v0.7.0` before downstream `elements`, `svelte`, `vue`,
 and `diagram-codecs` tags.
 
+### Svelte 0.48.0 (Survey kit S-1..S-4 for the keynote)
+
+Minor release of `@sentropic/design-system-svelte` (`0.47.0` → `0.48.0`) publishing the Svelte-only keynote survey kit merged on `main` across lots S-1..S-4 (PRs #347, #348, #345, #346):
+
+- S-1 (#347): `LikertScale`, `Radio`/`RadioGroup` and `Checkbox`/`CheckboxGroup` `card` variants, `exclusiveValues`, `minSelections`/`maxSelections`, and validation wiring.
+- S-2 (#348): `SurveyQuestionCard`, `SurveyNav`, `SurveyPrivacyNotice`, `Stepper` (`compactMobile`), and `Input` (`aria-describedby`).
+- S-3 (#345): `SurveyForm` and `survey-types` / `survey-storage` / `survey-flow` helpers.
+- S-4 (#346): `SurveyResults` and `survey-results-model`, `BarChart` (`labelPlacement`, `labelFontSize`), and `GraphLegend` (`size`, `variant`).
+
+All runtime `@sentropic/*` pins in `packages/components-svelte/package.json` (`themes@0.17.0`, `diagram-canvas@0.7.0`, `graph@0.3.1`, `rich-text@0.1.1`, `theme-dsfr@0.2.2`, `review-core@0.1.0`) are already published on npm, so `svelte-v0.48.0` can be tagged directly once this release commit is merged to `main`:
+
+```bash
+git push origin main
+git tag svelte-v0.48.0
+git push origin svelte-v0.48.0
+```
+
 ### DE-3 Milestone 1 (`DE3-L1a`, `DE3-L2a`)
 
 Minor bumps for changed `r7` token/link defaults and single-legend authority

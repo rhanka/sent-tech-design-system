@@ -1,8 +1,8 @@
 {
   "componentId": "toast",
   "contractSource": "derived",
-  "digest": "sha256:c39265b3826660f327c886a735e54ad6a6e065a70c8273bba1f7aca4889542d0",
-  "entryDigest": "sha256:6b2102e9e93353d05418645e32020e936d261e37747b4e4f781904aa8243b9c2",
+  "digest": "sha256:ba5dc2033f0952fb0a67a4afa09e7f14da32dfc1a59c0b4ac16e1a05a6fdd962",
+  "entryDigest": "sha256:a6196fb88a17a00a36d25f702ba59bb758c7f3286ba79d7ba261d7b441f30061",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -252,7 +252,7 @@
         "declarationPath": "packages/components-svelte/dist/Toast.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ToastProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "complete",
       "unresolved": [],

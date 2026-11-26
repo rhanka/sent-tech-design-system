@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/StatusHistoryChart.svelte",
-      "version": "0.47.0"
+      "version": "0.48.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Time × entity grid: each cell encodes a discrete status per time bucket.",
     "fr": "Grille temps × entité : chaque cellule encode un statut discret par bucket temporel."
   },
-  "digest": "sha256:8fa57d268debbc622a79098d40c8ccd2ce1ebe120fb1a2fd6cb8f8e6102cde0b",
+  "digest": "sha256:79ed95f824ffe0c6e1ce6250ea8dec7f8c3997bd882295707252ddf2bc6971ff",
   "displayName": "StatusHistoryChart",
   "format": "component-entry/v1",
   "frameworks": [

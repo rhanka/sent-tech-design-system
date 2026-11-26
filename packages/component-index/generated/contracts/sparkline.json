@@ -1,8 +1,8 @@
 {
   "componentId": "sparkline",
   "contractSource": "derived",
-  "digest": "sha256:2101d093fd8e87b53f5ef7c15c1aacd26fe2259ba01d181c6c3a42ce4bac05ab",
-  "entryDigest": "sha256:979f77da4e717f4ae323e9c2e64cc6b4d748dc6e3981fe1619892855ed24536d",
+  "digest": "sha256:b58dd4703be3b32d2d4d6ab65161b6a5dfa1bd98b89bb6c7758a4ac08f12d4a4",
+  "entryDigest": "sha256:e0b772c2158b72fa631a0e1d6b73f07c8b484ee76bae11aecd4b40c5c8329959",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -185,7 +185,7 @@
         "declarationPath": "packages/components-svelte/dist/Sparkline.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SparklineProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "complete",
       "unresolved": [],

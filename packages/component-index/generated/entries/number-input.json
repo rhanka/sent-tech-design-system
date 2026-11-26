@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/NumberInput.svelte",
-      "version": "0.47.0"
+      "version": "0.48.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Numeric field with increment/decrement.",
     "fr": "Champ numérique avec incrément/décrément."
   },
-  "digest": "sha256:9e014e369c2660ae5702cf5877edabf3f1592a0d9bc88c7a6b1ea2b491a27ad2",
+  "digest": "sha256:1f7de4ab80f33d891be1f381a8e1a2612c0bf277b426ac9b0d5040b94f53b556",
   "displayName": "NumberInput",
   "format": "component-entry/v1",
   "frameworks": [

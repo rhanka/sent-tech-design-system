@@ -40,14 +40,30 @@ const REVIEW_KIT_SVELTE_ONLY = new Set([
   "ThreadPanel",
 ]);
 
+// Survey kit (lots S-1..S-4) — Svelte-only until catalog/multi-framework lots.
+const SURVEY_KIT_SVELTE_ONLY = new Set([
+  "LikertScale",
+  "SurveyForm",
+  "SurveyNav",
+  "SurveyPrivacyNotice",
+  "SurveyQuestionCard",
+  "SurveyResults",
+]);
+
 const componentNames = [
   ...svelteIndex.matchAll(/^export \{ default as (\w+)(?:,| \})/gm),
 ]
   .map((match) => match[1])
   // AppShell + IdentityButton = chrome applicatif svelte-only (ex-paquet app-shell,
-  // replié dans design-system-svelte) ; review-kit (DS-3..DS-5) est svelte-only à ce lot
-  // (Vue en DS-6, aucun port Angular dans le périmètre).
-  .filter((name) => name !== "AppShell" && name !== "IdentityButton" && !REVIEW_KIT_SVELTE_ONLY.has(name))
+  // replié dans design-system-svelte) ; review-kit (DS-3..DS-5) et survey-kit (S-1..S-4)
+  // sont svelte-only à ce lot (aucun port Angular dans le périmètre).
+  .filter(
+    (name) =>
+      name !== "AppShell" &&
+      name !== "IdentityButton" &&
+      !REVIEW_KIT_SVELTE_ONLY.has(name) &&
+      !SURVEY_KIT_SVELTE_ONLY.has(name),
+  )
   .filter((name) => !absentFromAngular.has(name));
 
 describe("Angular public surface", () => {
@@ -55,6 +71,17 @@ describe("Angular public surface", () => {
     const value = angular[name];
     expect(typeof value).toBe("function");
     expect((value as { stComponentName?: string }).stComponentName).toBe(name);
+  });
+
+  it("tracks Svelte-only survey kit exports in component-index barrelOnly parity baseline", () => {
+    const parityBaseline = JSON.parse(
+      readFileSync(resolve("../component-index/parity-baseline.json"), "utf8"),
+    );
+    const barrelOnlySvelte = new Set<string>(parityBaseline.barrelOnly?.svelte ?? []);
+    for (const name of SURVEY_KIT_SVELTE_ONLY) {
+      expect(svelteIndex).toMatch(new RegExp(`^export \\{ default as ${name}(?:,| \\})`, "m"));
+      expect(barrelOnlySvelte.has(name)).toBe(true);
+    }
   });
 
   it("exports Svelte-canonical runtime helpers", () => {

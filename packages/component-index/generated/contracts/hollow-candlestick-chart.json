@@ -1,8 +1,8 @@
 {
   "componentId": "hollow-candlestick-chart",
   "contractSource": "derived",
-  "digest": "sha256:4272f3b1ba9c6e20ef8edb1ec87c1c61e365a80bf4b5660939bf6f2dd8e44afa",
-  "entryDigest": "sha256:6cdacdcbb0268e5d3bd96c72fd87ed7fdfcddd971e2031d0e2504261711d6ab2",
+  "digest": "sha256:b4d7ef137aab07ee9b125433a3c9a3a610934c96c866330f96dec040acdbad7a",
+  "entryDigest": "sha256:9c91826382da48183c13a8883cd9c7f87e0040bdb1e308020dfc1e51e88169e4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/HollowCandlestickChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HollowCandlestickChartProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "complete",
       "unresolved": [],

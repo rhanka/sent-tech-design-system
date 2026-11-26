@@ -121,6 +121,7 @@ export { default as Flex } from "./Flex.svelte";
 export { default as Footer } from "./Footer.svelte";
 export { default as ForceGraph } from "./ForceGraph.svelte";
 export { default as GraphLegend } from "./GraphLegend.svelte";
+export type { GraphLegendProps, GraphLegendSize, GraphLegendVariant } from "./GraphLegend.svelte";
 export { default as Grid } from "./Grid.svelte";
 export { default as Form } from "./Form.svelte";
 export { default as FormGroup } from "./FormGroup.svelte";
@@ -201,6 +202,12 @@ export type {
 export { default as ScoreCard } from "./ScoreCard.svelte";
 export type { ScoreCardProps, ScoreCardType, ScoreCardSize } from "./ScoreCard.svelte";
 export { default as LanguageSelector } from "./LanguageSelector.svelte";
+export { default as LikertScale } from "./LikertScale.svelte";
+export type {
+  LikertScaleOption,
+  LikertScaleLayout,
+  LikertScaleProps
+} from "./LikertScale.svelte";
 export { default as LineChart } from "./LineChart.svelte";
 export { default as Link } from "./Link.svelte";
 export { default as LoadingState } from "./LoadingState.svelte";
@@ -274,6 +281,28 @@ export { default as Sparkline } from "./Sparkline.svelte";
 export { default as StackedBarChart } from "./StackedBarChart.svelte";
 export { default as StructuredList } from "./StructuredList.svelte";
 export { default as SunburstChart } from "./SunburstChart.svelte";
+export { default as SurveyResults } from "./SurveyResults.svelte";
+export type {
+  SanitizedSurveyGraph,
+  SurveyAggregateFunnel,
+  SurveyAggregateGraph,
+  SurveyAggregateOption,
+  SurveyAggregateQuestion,
+  SurveyAggregateSnapshot,
+  SurveyAggregateSummary,
+  SurveyAggregateWord,
+  SurveyGraphEdge,
+  SurveyGraphFamily,
+  SurveyGraphNode,
+  SurveyLocalizedText,
+  SurveyResultsDensity,
+  SurveyResultsLabels,
+  SurveyResultsLocale,
+  SurveyResultsProps,
+  SurveyResultsSegment,
+  SurveySegmentBarGroup,
+  SurveySnapshotStatus
+} from "./SurveyResults.svelte";
 export { default as Switch } from "./Switch.svelte";
 export { default as Table } from "./Table.svelte";
 export { default as Tabs } from "./Tabs.svelte";
@@ -321,7 +350,7 @@ export type { TileMapChartTile } from "./TileMapChart.svelte";
 export type { DumbbellChartDatum, DumbbellChartTone } from "./DumbbellChart.svelte";
 export type { ErrorBarChartDatum, ErrorBarChartTone } from "./ErrorBarChart.svelte";
 export type { BellCurveChartTone } from "./BellCurveChart.svelte";
-export type { BarChartDatum, BarChartTone } from "./BarChart.svelte";
+export type { BarChartDatum, BarChartLabelPlacement, BarChartTone } from "./BarChart.svelte";
 export type { BoxPlotChartDatum, BoxPlotChartTone } from "./BoxPlotChart.svelte";
 export type { HeatmapChartDatum, HeatmapChartScale, HeatmapChartTone } from "./HeatmapChart.svelte";
 export type { DashboardGridProps, DashboardGridTile } from "./DashboardGrid.svelte";
@@ -565,8 +594,8 @@ export type { HiddenProps, HiddenBreakpoint } from "./Hidden.svelte";
 export type { DividerProps, DividerOrientation, DividerVariant } from "./Divider.svelte";
 export type { AvatarSize, AvatarShape, AvatarTone } from "./Avatar.svelte";
 export type { ButtonGroupOrientation, ButtonGroupSize } from "./ButtonGroup.svelte";
-export type { CheckboxGroupOption } from "./CheckboxGroup.svelte";
-export type { RadioGroupOption } from "./RadioGroup.svelte";
+export type { CheckboxGroupOption, CheckboxGroupVariant } from "./CheckboxGroup.svelte";
+export type { RadioGroupOption, RadioGroupVariant } from "./RadioGroup.svelte";
 export type {
   TypographyVariant,
   TypographyWeight,
@@ -635,3 +664,68 @@ export type {
 export { createLayoutCache } from "@sentropic/diagram-canvas";
 export type { LayoutCacheConfig, LayoutCacheStats } from "@sentropic/diagram-canvas";
 export type { DiagramSceneSize, SceneLayoutCache } from "@sentropic/diagram-canvas/diagramSceneModel";
+
+// Survey kit (S-3)
+export { default as SurveyForm } from "./SurveyForm.svelte";
+export type { SurveyFormProps, SurveyFormPasskeyOffer } from "./SurveyForm.svelte";
+export {
+  fromKeynoteQuestionnaire,
+  resolveLocalizedText,
+  shuffleSurveyOptions,
+} from "./survey-types.js";
+export type {
+  SurveyLocale,
+  LocalizedText,
+  SurveyOption,
+  EnrollmentField,
+  QuestionBase,
+  SingleChoiceQuestion,
+  MultiChoiceQuestion,
+  ScaleQuestion,
+  RatingQuestion,
+  NpsQuestion,
+  SliderQuestion,
+  TextQuestion,
+  YesNoQuestion,
+  RankingQuestion,
+  MatrixQuestion,
+  SurveyQuestion,
+  SurveyEnrollmentMode,
+  SurveyRules,
+  SurveyPrivacyNoticeConfig,
+  SurveyDefinition,
+  AnswerValue,
+  AnswerMap,
+  SurveyStep,
+  SurveySubmissionMode,
+  SurveySubmitPayload,
+  SurveyRequestLinkPayload,
+  SurveyDraft,
+  SurveyPendingSubmission,
+  KeynoteOption,
+  KeynoteQuestion,
+  KeynoteFormat,
+  KeynoteQuestionnaireDoc,
+  KeynoteAdapterOptions,
+} from "./survey-types.js";
+export {
+  DEFAULT_DRAFT_TTL_MS,
+  hashSurveyEmail,
+  loadSurveyDraft,
+  saveSurveyDraft,
+  clearSurveyDraft,
+  loadPendingSubmission,
+  savePendingSubmission,
+  clearPendingSubmission,
+  hasSurveyPasskey,
+  saveSurveyPasskey,
+  clearAllSurveyStorage,
+} from "./survey-storage.js";
+export {
+  isValidSurveyEmail,
+  resolveExclusiveMultiChange,
+  validateSubmission,
+  formatSurveyCountdown,
+  buildSubmitPayload,
+} from "./survey-flow.js";
+export type { QuestionValidationError } from "./survey-flow.js";

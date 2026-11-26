@@ -1,8 +1,8 @@
 {
   "componentId": "contour-chart",
   "contractSource": "derived",
-  "digest": "sha256:2b98e4440d55e018e868644df249243613c135bbe3df1adcf90e98f3f50943ca",
-  "entryDigest": "sha256:1a15b56a2d1bb9b633e10f77229e9c009ea866f826b9d4b4ad77aa0cf99c751b",
+  "digest": "sha256:5f89d74c3daf80b9ed4269b7163b8773cb238f542486d93d4f0a02a67becd4f6",
+  "entryDigest": "sha256:09cb37dcb8670b4682ace8ee646d11cfb79e29473e6015032b15a1d0facbfd63",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -247,7 +247,7 @@
         "declarationPath": "packages/components-svelte/dist/ContourChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ContourChartProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "complete",
       "unresolved": [],

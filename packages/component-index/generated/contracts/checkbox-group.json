@@ -1,8 +1,8 @@
 {
   "componentId": "checkbox-group",
   "contractSource": "derived",
-  "digest": "sha256:608e32ffc6aed207f4f033072511fde10a3998a573e449b94da65f3ff6e738d4",
-  "entryDigest": "sha256:c8cfa73c88ab4f415ccacde5b73a4729ca6b8753623e03adc0a25e86b44eb3b2",
+  "digest": "sha256:640ed73d87969dce1e5a6eba196ea20160f0fe3dc1cf1cce90f3ccbc1065d671",
+  "entryDigest": "sha256:3fc8189f61aaf40b0edd0c9e276c787a428414a8b8f0c4b25811e9bdc03ec243",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -220,7 +220,9 @@
       "warnings": []
     },
     "svelte": {
-      "bindable": [],
+      "bindable": [
+        "value"
+      ],
       "dropped": [],
       "events": [
         {
@@ -248,6 +250,9 @@
           "CheckboxGroupOption": {
             "additionalProperties": false,
             "properties": {
+              "description": {
+                "type": "string"
+              },
               "disabled": {
                 "type": "boolean"
               },
@@ -273,16 +278,47 @@
           "class": {
             "type": "string"
           },
+          "columns": {
+            "description": "Optional 2-column grid on wide containers (>= 520px) for card variant.",
+            "enum": [
+              2,
+              1
+            ]
+          },
           "disabled": {
-            "description": "Marque le groupe comme requis.",
             "type": "boolean"
+          },
+          "errorText": {
+            "type": "string"
+          },
+          "exclusiveValues": {
+            "description": "Option values mutually exclusive with all other options (e.g. [\"none\"]).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           },
           "helperText": {
             "description": "Description optionnelle affichée sous la légende.",
             "type": "string"
           },
+          "invalid": {
+            "type": "boolean"
+          },
           "legend": {
             "type": "string"
+          },
+          "maxSelections": {
+            "description": "Maximum number of non-exclusive selections allowed.",
+            "type": "number"
+          },
+          "maxSelectionsMessage": {
+            "description": "Optional localized status message shown when maxSelections is set.",
+            "type": "string"
+          },
+          "minSelections": {
+            "description": "Advisory minimum number of selections.",
+            "type": "number"
           },
           "name": {
             "description": "Nom partagé par les cases (utile pour la soumission de formulaire).",
@@ -300,12 +336,27 @@
               "vertical"
             ]
           },
+          "required": {
+            "description": "Marque le groupe comme requis.",
+            "type": "boolean"
+          },
+          "requiredLabel": {
+            "description": "Accessible screen-reader text announced when required is set.",
+            "type": "string"
+          },
           "value": {
             "description": "Valeurs cochées (liste contrôlée).",
             "items": {
               "type": "string"
             },
             "type": "array"
+          },
+          "variant": {
+            "description": "Presentation density: list rows (default) or >= 48px choice cards.",
+            "enum": [
+              "list",
+              "card"
+            ]
           }
         },
         "required": [
@@ -320,11 +371,11 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:e4ea257b34850708e35d7fbdb54816f79dd9ac6aa761b8dbdf23cc6dd0de68b5",
+        "declarationDigest": "sha256:8343bb8bf6abcb58cfa98cc264fceffa4dd13b255448c0c2dc5269fabc3f8757",
         "declarationPath": "packages/components-svelte/dist/CheckboxGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CheckboxGroupProps",
-        "version": "0.47.0"
+        "version": "0.48.0"
       },
       "status": "complete",
       "unresolved": [],
