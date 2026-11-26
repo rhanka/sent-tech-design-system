@@ -664,3 +664,68 @@ export type {
 export { createLayoutCache } from "@sentropic/diagram-canvas";
 export type { LayoutCacheConfig, LayoutCacheStats } from "@sentropic/diagram-canvas";
 export type { DiagramSceneSize, SceneLayoutCache } from "@sentropic/diagram-canvas/diagramSceneModel";
+
+// Survey kit (S-3)
+export { default as SurveyForm } from "./SurveyForm.svelte";
+export type { SurveyFormProps, SurveyFormPasskeyOffer } from "./SurveyForm.svelte";
+export {
+  fromKeynoteQuestionnaire,
+  resolveLocalizedText,
+  shuffleSurveyOptions,
+} from "./survey-types.js";
+export type {
+  SurveyLocale,
+  LocalizedText,
+  SurveyOption,
+  EnrollmentField,
+  QuestionBase,
+  SingleChoiceQuestion,
+  MultiChoiceQuestion,
+  ScaleQuestion,
+  RatingQuestion,
+  NpsQuestion,
+  SliderQuestion,
+  TextQuestion,
+  YesNoQuestion,
+  RankingQuestion,
+  MatrixQuestion,
+  SurveyQuestion,
+  SurveyEnrollmentMode,
+  SurveyRules,
+  SurveyPrivacyNoticeConfig,
+  SurveyDefinition,
+  AnswerValue,
+  AnswerMap,
+  SurveyStep,
+  SurveySubmissionMode,
+  SurveySubmitPayload,
+  SurveyRequestLinkPayload,
+  SurveyDraft,
+  SurveyPendingSubmission,
+  KeynoteOption,
+  KeynoteQuestion,
+  KeynoteFormat,
+  KeynoteQuestionnaireDoc,
+  KeynoteAdapterOptions,
+} from "./survey-types.js";
+export {
+  DEFAULT_DRAFT_TTL_MS,
+  hashSurveyEmail,
+  loadSurveyDraft,
+  saveSurveyDraft,
+  clearSurveyDraft,
+  loadPendingSubmission,
+  savePendingSubmission,
+  clearPendingSubmission,
+  hasSurveyPasskey,
+  saveSurveyPasskey,
+  clearAllSurveyStorage,
+} from "./survey-storage.js";
+export {
+  isValidSurveyEmail,
+  resolveExclusiveMultiChange,
+  validateSubmission,
+  formatSurveyCountdown,
+  buildSubmitPayload,
+} from "./survey-flow.js";
+export type { QuestionValidationError } from "./survey-flow.js";

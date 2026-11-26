@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:0aa52a2e060f1b454f6e88c3f58ce8e211edd4716d29cc186430d67b10deeb37",
+  "contractsRevision": "sha256:13784f979ebf5560d516c53d545b3052a6a061d4500ae76969a6f301d0cb0cb4",
   "counts": {
     "byFramework": {
       "angular": {
@@ -2530,7 +2530,7 @@
         "vue": "none"
       },
       "componentId": "time-series-line-chart",
-      "contractDigest": "sha256:0f2eb1d9c92e750a319b27cad1fbc1594312b316049cab35829d17b7180e16f9",
+      "contractDigest": "sha256:d3886b2ac99e3d4fa858083b545450ffec5bc87c375a48fcf7ded3632dc3e345",
       "entryDigest": "sha256:360c124ae6ea84d8ba8de60c28fc93d9fdb5e90331c944cacea5260d07003411",
       "path": "contracts/time-series-line-chart.json",
       "producerId": "sentropic-ds"
@@ -2863,5 +2863,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "bc43742bb86f2738254290751ee5e1ba3c5f37c8"
+  "sourceCommit": "e30979e3757481d589694ae0d56b587fc293b073"
 }
