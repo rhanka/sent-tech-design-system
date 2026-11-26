@@ -6,7 +6,7 @@
 - **S-2 (PR #348)**: add `SurveyQuestionCard`, `SurveyNav` (with explicit partial-submit confirmation `Modal` and `>= 44 px` controls), and `SurveyPrivacyNotice` (`auto` / `card` / `collapsible`, `sticky` side card); add `Stepper` `compactMobile` (`< 25rem` container query) and `Input` `aria-describedby` linking for `helperText` / `errorText`.
 - **S-3 (PR #345)**: add `SurveyForm` and `survey-types`, `survey-storage`, `survey-flow` helpers (`fromKeynoteQuestionnaire`, `shuffleSurveyOptions`, salted `hashSurveyEmail`, 30 min draft TTL, 24 h explicit offline submission queue, magic-link flow without draft resume bypass, optional passkey prompt).
 - **S-4 (PR #346)**: add `SurveyResults` and `survey-results-model` (16:9 projection/standard SSE snapshot room view, client privacy thresholds `minCellSize = 5`, `minSegmentSize = 10`, `lowNThreshold = 120`, `ForceGraph` co-response network, segmented `BarChart` / `Table` breakdowns); add `BarChart` `labelPlacement` (`"auto" | "margin" | "after-value" | "inside-bar" | "above-bar"`) and `labelFontSize`; add `GraphLegend` `size` (`"sm" | "md" | "lg"`), `variant` (`"overlay" | "inline"`), and typed edge colours.
-- Align `@sentropic/design-system-svelte` `0.48.0` pins in `dataviz-svelte`, `artifact-shell`, and `apps/docs`, lockfile, `component-index` artifacts, and `docs/graph-dataviz-m1-provenance.json`.
+- Align `@sentropic/design-system-svelte` `0.48.0` pins in `dataviz-svelte`, `artifact-shell`, and `apps/docs`, align `theme-devmtl` `tokens`/`themes` `0.17.0` pins with its committed `devmtl.css`, regenerate lockfile and `component-index` artifacts, and update `docs/graph-dataviz-m1-provenance.json`.
 
 ## Unreleased — DE-3 Milestone 1 (DE3-L1a, DE3-L2a)
 
