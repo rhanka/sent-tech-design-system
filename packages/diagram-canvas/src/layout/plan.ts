@@ -178,10 +178,10 @@ export function computeAspectSlack(args: {
     const { map, capReached } = distribute(deltaW, args.xTrackIds, args.capX);
     return { sigmaCols: map, sigmaBands: {}, capReached, ratio };
   }
-  // Too wide: add height across root bands
-  const deltaH = Math.round(args.width / target - args.height);
-  const { map, capReached } = distribute(deltaH, args.yTrackIds, args.capY);
-  return { sigmaCols: {}, sigmaBands: map, capReached, ratio };
+  // Too wide: Rule V-1 (DE3-L6a1 / REQ-R7-34) bans injecting internal vertical
+  // slack (`sigmaBands = {}`); wide scenes emit informational `aspect-unreached`
+  // when still above 16:9 + 2%.
+  return { sigmaCols: {}, sigmaBands: {}, capReached: false, ratio };
 }
 
 export interface FrozenAutoPackLevel {

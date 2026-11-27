@@ -159,8 +159,13 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
     expect(laid.combGroups?.some((g) => g.kind === "fan-in" && g.members.length === 4)).toBe(true);
     expect(laid.warnings.filter((w) => w.code === "comb-fallback" && w.details?.reason === "v1-path")).toHaveLength(0);
     expect(laid.linkLegend).toBeDefined();
-    expect(Math.abs(m.aspectRatio / ASPECT_16_9_TARGET - 1)).toBeLessThanOrEqual(ASPECT_16_9_TOLERANCE);
-    expect(laid.warnings.filter((w) => w.code === "aspect-unreached")).toHaveLength(0);
+    expect(laid.composition?.sigmaBands).toEqual({});
+    expect(laid.composition?.sigmaCols).toEqual({});
+    // Before V-S1 removal: 3654.70 x 2056 (ratio 1.7776, sigmaBands={main: 48}).
+    // After V-S1 removal: 3654.70 x 2008 (ratio 1.8201, +2.38%, zero vertical slack, informational aspect-unreached).
+    expect(m.paintedHeight).toBe(2008);
+    expect(m.aspectRatio).toBeCloseTo(3654.703125 / 2008, 3);
+    expect(laid.warnings.filter((w) => w.code === "aspect-unreached")).toHaveLength(1);
     expect(m.conflictCount).toBe(0);
     expect(m.unplacedLabelCount).toBe(0);
   });
@@ -315,9 +320,9 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
       if (item.expectAspect16x9 === true) {
         expect(resolved.bounds, `${item.name}:bounds`).toBeDefined();
         const ratio = resolved.bounds!.width / resolved.bounds!.height;
-        expect(Math.abs(ratio / ASPECT_16_9_TARGET - 1), `${item.name}:ratio=${ratio.toFixed(4)}`).toBeLessThanOrEqual(
-          ASPECT_16_9_TOLERANCE,
-        );
+        expect(laid.composition?.sigmaBands, `${item.name}:no-sigmaBands`).toEqual({});
+        expect(ratio, `${item.name}:ratio=${ratio.toFixed(4)}`).toBeGreaterThanOrEqual(ASPECT_16_9_TARGET * (1 - ASPECT_16_9_TOLERANCE));
+        expect(ratio, `${item.name}:ratio=${ratio.toFixed(4)}`).toBeLessThanOrEqual(ASPECT_16_9_TARGET * 1.03);
       }
 
       // Verify edge label & expanded-zone header clearance >= 4 world units (labelPadding token at scale 1, matching browser.mjs)

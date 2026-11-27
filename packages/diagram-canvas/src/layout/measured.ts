@@ -1571,11 +1571,43 @@ function layoutMeasuredPass(
   const subtreeMemo = planCtx?.mode === "state" ? planCtx.memo : undefined;
   const innerWidenMap: ReadonlyMap<string, number> | undefined =
     nominalPlan === undefined ? undefined : new Map(Object.entries(nominalPlan.innerWiden));
+  const expandedRootStageTrackIds = (): ReadonlySet<string> => {
+    const out = new Set<string>();
+    const rootGrid = composition?.grids.root;
+    if (rootGrid === undefined) return out;
+    if (!Array.isArray(rootGrid.stage_columns)) {
+      const hasExpanded = rootGrid.transverse_bands.some((band) =>
+        band.items.some((item) => visible(item) && isStretchedBox(item)),
+      );
+      if (hasExpanded) out.add("__main__");
+      return out;
+    }
+    const stageCols = rootGrid.stage_columns;
+    for (const band of rootGrid.transverse_bands) {
+      for (const item of band.items) {
+        if (!visible(item) || !isStretchedBox(item)) continue;
+        const cell = rootGrid.cells?.[item];
+        if (cell?.column === undefined) continue;
+        const c0 = stageCols.indexOf(cell.column);
+        const c1 = cell.to_column === undefined ? c0 : stageCols.indexOf(cell.to_column);
+        if (c0 < 0 || c1 < c0) continue;
+        for (let c = c0; c <= c1; c += 1) out.add(stageCols[c]!);
+      }
+    }
+    return out;
+  };
+  const activeExpandableTracks = expandedRootStageTrackIds();
+  const effectiveNominalSigmaCols: Readonly<Record<string, number>> | undefined =
+    nominalPlan === undefined
+      ? undefined
+      : Object.fromEntries(
+          Object.entries(nominalPlan.sigmaCols).filter(([colId]) => activeExpandableTracks.has(colId)),
+        );
   const sigmaColsMap: ReadonlyMap<string, number> | undefined =
     planCtx?.sigmaColsOverride !== undefined
       ? new Map(Object.entries(planCtx.sigmaColsOverride))
-      : nominalPlan !== undefined && Object.keys(nominalPlan.sigmaCols).length > 0
-        ? new Map(Object.entries(nominalPlan.sigmaCols))
+      : effectiveNominalSigmaCols !== undefined && Object.keys(effectiveNominalSigmaCols).length > 0
+        ? new Map(Object.entries(effectiveNominalSigmaCols))
         : undefined;
   const sigmaBandsMap: ReadonlyMap<string, number> | undefined =
     planCtx?.sigmaBandsOverride !== undefined
@@ -2336,7 +2368,9 @@ function layoutMeasuredPass(
       planCtx.capture.sizingReport = {
         rootWidth: rootGridLayout?.width ?? 0,
         rootHeight: rootGridLayout?.height ?? 0,
-        xTrackIds: (rootGridLayout?.columns ?? []).filter((c) => c.kind === "stage").map((c) => c.id),
+        xTrackIds: (rootGridLayout?.columns ?? [])
+          .filter((c) => c.kind === "stage" && activeExpandableTracks.has(c.id))
+          .map((c) => c.id),
         yTrackIds: (rootGridLayout?.bands ?? []).filter((b) => b.kind === "band").map((b) => b.id),
         capX: rowGaps.maxX,
         capY: rowGaps.maxY,
@@ -4499,7 +4533,7 @@ function layoutMeasuredPass(
           : {
               nominalAspect: nominalPlan.nominalAspect,
               tau: nominalPlan.tau,
-              sigmaCols: nominalPlan.sigmaCols,
+              sigmaCols: effectiveNominalSigmaCols ?? nominalPlan.sigmaCols,
               sigmaBands: nominalPlan.sigmaBands,
               ...(nominalPlan.postRouteCorrectionRounds === undefined
                 ? {}

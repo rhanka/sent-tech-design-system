@@ -426,8 +426,10 @@ function check(state, scene) {
       const top = Math.min(...drawing.map(p => p.top));
       const bottom = Math.max(...drawing.map(p => p.bottom));
       const ratio = (right - left) / (bottom - top);
-      assert.ok(Math.abs(ratio / (16 / 9) - 1) <= 0.02,
-        `h2-aspect-16-9 nominal ratio ${ratio.toFixed(4)} outside 16:9 ± 2%`);
+      // DE3-L6a1 Rule V-1: zero empty vertical sigmaBands slack (before: 1.7776 with +48px slack;
+      // after: natural ~1.8201 without injecting vertical air).
+      assert.ok(ratio >= (16 / 9) * 0.98 && ratio <= (16 / 9) * 1.05,
+        `h2-aspect-16-9 nominal ratio ${ratio.toFixed(4)} outside expected [1.742, 1.867] range without sigmaBands`);
     }
   }
   // Label placement reserves the non-scaling stroke in world units at 0.45.

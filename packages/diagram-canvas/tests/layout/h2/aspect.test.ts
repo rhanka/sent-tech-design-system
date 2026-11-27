@@ -141,7 +141,7 @@ describe("H2.6 aspect: '16:9' (τ ladder, σ slack, legend bounds, post-route co
     expect(tall.sigmaBands).toEqual({});
     expect(tall.capReached).toBe(false);
 
-    // Too wide: deltaH = round(2600 / (16/9) - 1000) = 463 across 3 bands -> 154, 154, 155
+    // Too wide: Rule V-1 (DE3-L6a1 / REQ-R7-34) bans empty vertical σ_bands slack -> always {}
     const wide = computeAspectSlack({
       width: 2600,
       height: 1000,
@@ -151,7 +151,7 @@ describe("H2.6 aspect: '16:9' (τ ladder, σ slack, legend bounds, post-route co
       capY: 240,
     });
     expect(wide.sigmaCols).toEqual({});
-    expect(wide.sigmaBands).toEqual({ b1: 154, b2: 154, b3: 155 });
+    expect(wide.sigmaBands).toEqual({});
     expect(wide.capReached).toBe(false);
 
     // Cap reached on extreme tall ratio
@@ -286,29 +286,42 @@ describe("H2.6 aspect: '16:9' (τ ladder, σ slack, legend bounds, post-route co
     const longRes = mustLayOut(layoutMeasured(scene.document, longOpts), "long");
     expect(longRes.linkLegend!.rect.width).toBeGreaterThan(shortRes.linkLegend!.rect.width);
     expect(longRes.composition?.planDigest).not.toBe(shortRes.composition?.planDigest);
-    // Both reach 16:9 ± 2%; longer legend shifts nominal bounds & σ distribution
+    // shortRes reaches 16:9 ± 2% via sigmaCols (zero sigmaBands); longRes is already wider than 16:9 due to the
+    // oversized legend and keeps sigmaBands === {} (Rule V-1: zero empty vertical air, emits aspect-unreached).
     const shortPainted = paintedRatioOf(shortRes);
     const longPainted = paintedRatioOf(longRes);
     expect(longPainted.width).toBeGreaterThan(shortPainted.width);
+    expect(shortRes.composition?.sigmaBands).toEqual({});
+    expect(longRes.composition?.sigmaBands).toEqual({});
     expect(Math.abs(shortPainted.ratio / ASPECT_16_9_TARGET - 1)).toBeLessThanOrEqual(ASPECT_16_9_TOLERANCE);
-    expect(Math.abs(longPainted.ratio / ASPECT_16_9_TARGET - 1)).toBeLessThanOrEqual(ASPECT_16_9_TOLERANCE);
+    expect(longPainted.ratio).toBeGreaterThan(ASPECT_16_9_TARGET * (1 + ASPECT_16_9_TOLERANCE));
+    expect(longRes.warnings.some((w) => w.code === "aspect-unreached")).toBe(true);
     expect((longRes.composition?.postRouteCorrectionRounds ?? 0) <= 1).toBe(true);
   });
 
-  it("lands the H2.2 16:9 candidate (appctx-architecture) within 16/9 ± 2% at nominal and preserves F-1/F-2 on fold", () => {
+  it("empirically measures appctx-architecture at capX=96 vs 240, enforces sigmaBands={} (Rule V-1), and preserves F-1/F-2 on fold", () => {
     const scene = buildAppctxArchitecture16x9();
+    for (const capX of [96, 240] as const) {
+      const measured = mustLayOut(
+        layoutMeasured(scene.document, baseOptionsOf(scene, { collapsed: [], metrics: { gapInlineMax: capX } }), scene.sourceView),
+        `appctx:capX=${String(capX)}`,
+      );
+      const painted = paintedRatioOf(measured);
+      // Without V-S1 sigmaBands ({main: 48} before), appctx-architecture sits at natural 3654.7 x 2008 (ratio ~1.8201, +2.38%).
+      expect(measured.composition?.sigmaBands).toEqual({});
+      expect(measured.composition?.sigmaCols).toEqual({});
+      expect(painted.height).toBe(2008);
+      expect(painted.ratio).toBeCloseTo(3654.703125 / 2008, 3);
+      expect(measured.warnings.some((w) => w.code === "aspect-unreached")).toBe(true);
+    }
+
     const cache = createLayoutCache({ maxEntries: 64 });
     const nominal = mustLayOut(
       cache.layout(scene.document, baseOptionsOf(scene, { collapsed: [] }), scene.sourceView),
       "appctx:nom",
     );
-    const painted = paintedRatioOf(nominal);
-    expect(Math.abs(painted.ratio / ASPECT_16_9_TARGET - 1)).toBeLessThanOrEqual(ASPECT_16_9_TOLERANCE);
+    expect(nominal.composition?.sigmaBands).toEqual({});
     expect(nominal.composition?.nominalAspect).toBeDefined();
-    expect(Math.abs(nominal.composition!.nominalAspect! / ASPECT_16_9_TARGET - 1)).toBeLessThanOrEqual(
-      ASPECT_16_9_TOLERANCE,
-    );
-    expect(nominal.warnings.some((w) => w.code === "aspect-unreached")).toBe(false);
     expect((nominal.composition?.postRouteCorrectionRounds ?? 0) <= 1).toBe(true);
 
     // Folded states keep structure (F-1/F-2) and the same plan digest; ratio is not constrained
@@ -328,7 +341,90 @@ describe("H2.6 aspect: '16:9' (τ ladder, σ slack, legend bounds, post-route co
     }
   });
 
-  it("reports painted gaps between folded sibling zones in σ-widened tracks as token + σ shares (F-6)", () => {
+  it("never injects vertical sigmaBands on wide multi-band 16:9 composed scenes and restricts sigmaCols to expandable-container tracks (DE3-L6a1 Rule V-1)", () => {
+    const wideHints: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      aspect: "16:9",
+      grids: {
+        root: {
+          stage_columns: ["s1", "s2", "s3", "s4"],
+          transverse_bands: [
+            { id: "b1", items: [entityRef("a1"), entityRef("a2"), entityRef("a3"), entityRef("a4")] },
+            { id: "b2", items: [entityRef("b1"), entityRef("b2"), entityRef("b3"), entityRef("b4")] },
+          ],
+          cells: {
+            [entityRef("a1")]: { column: "s1" },
+            [entityRef("a2")]: { column: "s2" },
+            [entityRef("a3")]: { column: "s3" },
+            [entityRef("a4")]: { column: "s4" },
+            [entityRef("b1")]: { column: "s1" },
+            [entityRef("b2")]: { column: "s2" },
+            [entityRef("b3")]: { column: "s3" },
+            [entityRef("b4")]: { column: "s4" },
+          },
+        },
+      },
+    };
+    const wideScene = buildGenericScene({
+      id: "wide-no-sigmabands",
+      carries: ["REQ-R7-34"],
+      hintsV2: wideHints,
+      entities: [
+        { id: "a1", title: "A1" }, { id: "a2", title: "A2" }, { id: "a3", title: "A3" }, { id: "a4", title: "A4" },
+        { id: "b1", title: "B1" }, { id: "b2", title: "B2" }, { id: "b3", title: "B3" }, { id: "b4", title: "B4" },
+      ],
+      relations: [],
+    });
+    const wideRes = mustLayOut(layoutMeasured(wideScene.document, baseOptionsOf(wideScene, { collapsed: [] })), "wide-no-sigma");
+    expect(wideRes.composition?.sigmaBands).toEqual({});
+    expect(wideRes.composition!.grids["root"]!.bands.map((b) => b.size)).toEqual([154, 154]);
+    expect(wideRes.warnings.some((w) => w.code === "aspect-unreached")).toBe(true);
+
+    // Tall scene with one leaf-only stage column (s-leaf) and one expandable-container stage column (s-zone):
+    // sigmaCols must widen s-zone only, leaving s-leaf at natural card width.
+    const mixedHints: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      aspect: "16:9",
+      grids: {
+        root: {
+          stage_columns: ["s-leaf", "s-zone"],
+          transverse_bands: [
+            { id: "r1", items: [entityRef("leaf1"), entityRef("zone1")] },
+            { id: "r2", items: [entityRef("leaf2"), entityRef("zone2")] },
+          ],
+          cells: {
+            [entityRef("leaf1")]: { column: "s-leaf" },
+            [entityRef("zone1")]: { column: "s-zone" },
+            [entityRef("leaf2")]: { column: "s-leaf" },
+            [entityRef("zone2")]: { column: "s-zone" },
+          },
+        },
+      },
+    };
+    const mixedScene = buildGenericScene({
+      id: "tall-expandable-tracks-only",
+      carries: ["REQ-R7-34"],
+      hintsV2: mixedHints,
+      entities: [
+        { id: "leaf1", title: "Leaf 1" },
+        { id: "leaf2", title: "Leaf 2" },
+        { id: "zone1", container: true, title: "Zone 1" },
+        { id: "z1a", parent: "zone1", title: "Z1A" },
+        { id: "zone2", container: true, title: "Zone 2" },
+        { id: "z2a", parent: "zone2", title: "Z2A" },
+      ],
+      relations: [],
+    });
+    const mixedRes = mustLayOut(layoutMeasured(mixedScene.document, baseOptionsOf(mixedScene, { collapsed: [] })), "tall-mixed");
+    expect(mixedRes.composition?.sigmaCols?.["s-leaf"]).toBeUndefined();
+    expect(mixedRes.composition?.sigmaCols?.["s-zone"]).toBeGreaterThan(0);
+    const rootCols = mixedRes.composition!.grids["root"]!.columns;
+    expect(rootCols.find((c) => c.id === "s-leaf")!.size).toBe(352);
+  });
+
+  it("drops folded-column σ contribution when no expanded occupant remains in that track (F-6 / L-σ / PR #327 P2 #2)", () => {
     // Two columns, two bands of zones -> natural ratio is taller than 16:9, so 16:9 adds positive σ to s1 & s2.
     // When z1 and z2 are folded, each is a centered fixed-footprint card inside its σ-widened column:
     // paintedGap(z1, z2) === zoneGutter (96) + fromSlack + toSlack, listed in paintedGapsAboveToken!
@@ -383,7 +479,8 @@ describe("H2.6 aspect: '16:9' (τ ladder, σ slack, legend bounds, post-route co
     expect(sigmaS1).toBeGreaterThan(0);
     expect(sigmaS2).toBeGreaterThan(0);
 
-    // Fold ALL 4 zones -> each sits centered in its column of width (cardW + sigma_k) -> slack = sigma_k / 2 per side!
+    // Fold ALL 4 zones -> neither column has any expanded occupant remaining, so σ_cols drops to 0 on fold:
+    // paintedGap(z1, z2) === zoneGutter (96) and paintedGapsAboveToken is empty!
     const allFolded = mustLayOut(
       layoutMeasured(
         scene.document,
@@ -393,22 +490,28 @@ describe("H2.6 aspect: '16:9' (τ ladder, σ slack, legend bounds, post-route co
       ),
       "sigma:all-folded",
     );
-    // Underlying gutter stays at zoneGutter token (96)
     for (const ch of allFolded.channels ?? []) {
       if (ch.zone === true) expect(ch.gap).toBe(96);
     }
-    const pairZ1Z2 = allFolded.composition?.paintedGapsAboveToken?.find(
-      (g) => g.scope === "root" && g.axis === "horizontal" && g.left === entityRef("z1") && g.right === entityRef("z2"),
-    );
-    expect(pairZ1Z2).toBeDefined();
-    expect(pairZ1Z2!.token).toBe(96);
+    expect(allFolded.composition?.paintedGapsAboveToken).toEqual([]);
     const geomZ1 = allFolded.view.entityOccurrences[occurrenceRef("e.z1")]!.geometry;
     const geomZ2 = allFolded.view.entityOccurrences[occurrenceRef("e.z2")]!.geometry;
     const paintedZ1Z2 = geomZ2.x - (geomZ1.x + geomZ1.width);
-    expect(Math.abs(paintedZ1Z2 - (96 + sigmaS1 / 2 + sigmaS2 / 2))).toBeLessThanOrEqual(TOL);
-    expect(Math.abs(pairZ1Z2!.paintedGap - paintedZ1Z2)).toBeLessThanOrEqual(TOL);
-    expect(Math.abs(pairZ1Z2!.fromSlack - sigmaS1 / 2)).toBeLessThanOrEqual(TOL);
-    expect(Math.abs(pairZ1Z2!.toSlack - sigmaS2 / 2)).toBeLessThanOrEqual(TOL);
+    expect(Math.abs(paintedZ1Z2 - 96)).toBeLessThanOrEqual(TOL);
+
+    // Partial fold: fold z1 and z3 (emptying s1 of expanded containers) while z2 and z4 stay expanded in s2 ->
+    // s1 drops its σ share while s2 keeps sigmaS2.
+    const leftFolded = mustLayOut(
+      layoutMeasured(
+        scene.document,
+        baseOptionsOf(scene, { collapsed: [occurrenceRef("e.z1"), occurrenceRef("e.z3")] }),
+      ),
+      "sigma:left-folded",
+    );
+    expect(leftFolded.composition?.sigmaCols).toEqual({ s2: sigmaS2 });
+    const leftCols = leftFolded.composition!.grids["root"]!.columns;
+    expect(leftCols.find((c) => c.id === "s1")!.size).toBe(352);
+    expect(leftCols.find((c) => c.id === "s2")!.size).toBeGreaterThan(352);
   });
 
   it("keeps aspect: 'free' byte-identical to DE-2 output (no ladder search, no σ) while aspect: '16:9' reshapes it", () => {
@@ -435,8 +538,6 @@ describe("H2.6 aspect: '16:9' (τ ladder, σ slack, legend bounds, post-route co
         { id: "c2", parent: "pack-host", title: "Card 2" },
         { id: "c3", parent: "pack-host", title: "Card 3" },
         { id: "c4", parent: "pack-host", title: "Card 4" },
-        { id: "c5", parent: "pack-host", title: "Card 5" },
-        { id: "c6", parent: "pack-host", title: "Card 6" },
       ],
       relations: [],
     });
@@ -455,25 +556,32 @@ describe("H2.6 aspect: '16:9' (τ ladder, σ slack, legend bounds, post-route co
     expect(freeRes.composition?.sigmaCols).toBeUndefined();
     expect(freeRes.composition?.sigmaBands).toBeUndefined();
 
-    // Non-vacuity: aspect: "16:9" on the exact same scene searches τ / adds σ and diverges from DE-2 bytes.
+    // Non-vacuity: aspect: "16:9" on the exact same scene adds σ_cols (zero σ_bands) and diverges from DE-2 bytes.
     const res16x9 = mustLayOut(layoutMeasured(scene.document, baseOptionsOf(scene, { hints: aspect16x9Hints })), "16:9");
     expect(canonicalise(res16x9.view, "view")).not.toBe(canonicalise(de2Res.view, "view"));
     expect(res16x9.composition?.nominalAspect).toBeDefined();
+    expect(res16x9.composition?.sigmaBands).toEqual({});
     expect(Math.abs(paintedRatioOf(res16x9).ratio / ASPECT_16_9_TARGET - 1)).toBeLessThanOrEqual(ASPECT_16_9_TOLERANCE);
   });
 
   it("picks a non-default τ from the ladder on an auto-packed container to reach 16:9 without needing excessive σ", () => {
-    // Single root stage column holding one auto-packed container with 6 cards; ladder picks wide τ
+    // Tall side stack + auto-packed container: ladder picks compact τ + σ_cols to hit 16:9 ± 2% with zero σ_bands.
     const hintsV2: DsLayoutHintsV2 = {
       vocabulary: "ds-layout-hints@2",
       mode: "stage-columns",
       aspect: "16:9",
       grids: {
         root: {
-          stage_columns: ["s1"],
-          transverse_bands: [{ id: "r1", items: [entityRef("pack-host")] }],
-          cells: { [entityRef("pack-host")]: { column: "s1" } },
+          stage_columns: ["s1", "s2"],
+          transverse_bands: [{ id: "r1", items: [entityRef("pack-host"), entityRef("side")] }],
+          cells: {
+            [entityRef("pack-host")]: { column: "s1" },
+            [entityRef("side")]: { column: "s2" },
+          },
         },
+      },
+      stacks: {
+        [entityRef("side")]: { axis: "column" },
       },
     };
     const scene = buildGenericScene({
@@ -488,12 +596,24 @@ describe("H2.6 aspect: '16:9' (τ ladder, σ slack, legend bounds, post-route co
         { id: "c4", parent: "pack-host", title: "Card 4" },
         { id: "c5", parent: "pack-host", title: "Card 5" },
         { id: "c6", parent: "pack-host", title: "Card 6" },
+        { id: "c7", parent: "pack-host", title: "Card 7" },
+        { id: "c8", parent: "pack-host", title: "Card 8" },
+        { id: "side", container: true, title: "Side Stack" },
+        { id: "p1", parent: "side", title: "Side 1" },
+        { id: "p2", parent: "side", title: "Side 2" },
+        { id: "p3", parent: "side", title: "Side 3" },
+        { id: "p4", parent: "side", title: "Side 4" },
+        { id: "p5", parent: "side", title: "Side 5" },
+        { id: "p6", parent: "side", title: "Side 6" },
+        { id: "p7", parent: "side", title: "Side 7" },
       ],
       relations: [],
     });
     const res = mustLayOut(layoutMeasured(scene.document, baseOptionsOf(scene, { collapsed: [] })), "autopack-16x9");
     const painted = paintedRatioOf(res);
+    expect(res.composition?.sigmaBands).toEqual({});
     expect(Math.abs(painted.ratio / ASPECT_16_9_TARGET - 1)).toBeLessThanOrEqual(ASPECT_16_9_TOLERANCE);
     expect(ASPECT_TAU_LADDER).toContain(res.composition?.tau);
+    expect(res.composition?.tau).not.toBe(1.78);
   });
 });
