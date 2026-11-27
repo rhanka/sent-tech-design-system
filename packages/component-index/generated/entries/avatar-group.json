@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/AvatarGroup.svelte",
-      "version": "0.48.0"
+      "version": "0.49.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Overlapping avatar stack with a “+N” overflow token.",
     "fr": "Pile d'avatars avec recouvrement et jeton de débordement « +N »."
   },
-  "digest": "sha256:1c823f666f60b3d8f0c721f9285688cd26dac11b5336256b22cac8d3b023c603",
+  "digest": "sha256:26361ae5095226102330a808275b0179d773e699a18321671c82a37a97727efd",
   "displayName": "AvatarGroup",
   "format": "component-entry/v1",
   "frameworks": [

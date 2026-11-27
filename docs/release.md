@@ -332,6 +332,20 @@ Tag order: `diagram-core-v0.7.0` must publish before `diagram-canvas-v0.9.0`,
 and `diagram-canvas-v0.9.0` before downstream `elements`, `svelte`, `vue`, and
 `diagram-codecs` pins (`0.9.0`).
 
+### Svelte 0.49.0 (Survey lot S-3b: SurveyDefinition v2 questionnaire)
+
+Minor release of `@sentropic/design-system-svelte` (`0.48.0` → `0.49.0`) publishing survey lot S-3b (PR #349) on top of `0.48.0`:
+
+- S-3b (#349): `SurveyDefinition` v2 (`schemaVersion: 1 | 2`, `fromKeynoteQuestionnaire` v2 adapter), single multi-orientation questionnaire (`entry_scope`, `entry_depth`, `deep_themes` milestone, optional closing open feedback), per-question `contextual` orientation toggle on `SurveyQuestionCard`, dual-answer `both` mode, symmetric bipolar `LikertScale` with neutral midpoint and separated `nonSubstantive` (`"I don't know"`) option, `ai_effect` question type, and `aria-describedby` (`errorText` / `helperText`) wiring on `Textarea`.
+
+The other runtime `@sentropic/*` pins in `packages/components-svelte/package.json` (`themes@0.17.0`, `graph@0.3.1`, `rich-text@0.1.1`, `theme-dsfr@0.2.2`, `review-core@0.1.0`) are already published on npm; wait for `@sentropic/diagram-canvas@0.8.0` (`diagram-canvas-v0.8.0`) to be visible on npm before tagging `svelte-v0.49.0` once this release commit is merged to `main`:
+
+```bash
+git push origin main
+git tag svelte-v0.49.0
+git push origin svelte-v0.49.0
+```
+
 ### Diagram Canvas 0.8.0 (`@sentropic/diagram-canvas/focus-bridge`)
 
 Minor bump of `@sentropic/diagram-canvas` (`0.7.0` → `0.8.0`, tag

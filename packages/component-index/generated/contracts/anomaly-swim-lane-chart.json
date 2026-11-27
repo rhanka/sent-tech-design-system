@@ -1,8 +1,8 @@
 {
   "componentId": "anomaly-swim-lane-chart",
   "contractSource": "derived",
-  "digest": "sha256:1dd5f767123eceabf25faa21f6e7140f2ae171f4028c6fcba6747c1aa6dbe638",
-  "entryDigest": "sha256:7d44b4de4cdb680ec56256f46c22c63342521af227124f2725d415a8bbaf5d0d",
+  "digest": "sha256:324ab923e1dddc3b0bed8ed7e475c14ddf11143bf59290b2ec7d58efa61ee02e",
+  "entryDigest": "sha256:b74f5774a89c6f5aea3f8b37ad6419b15733a4c37ec60eb2e30d7cea37ae2f26",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -290,7 +290,7 @@
         "declarationPath": "packages/components-svelte/dist/AnomalySwimLaneChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AnomalySwimLaneChartProps",
-        "version": "0.48.0"
+        "version": "0.49.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Modal.svelte",
-      "version": "0.48.0"
+      "version": "0.49.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Centered modal dialog.",
     "fr": "Dialogue modal recentré."
   },
-  "digest": "sha256:adefd9190ea7a6410775ef703bbf97268a7e452f2839068be217e0c1bfee09c5",
+  "digest": "sha256:059afbf5118aa2e2ccf19e7f7468fa19636da5335317d993c82ceabb6de127dc",
   "displayName": "Modal",
   "format": "component-entry/v1",
   "frameworks": [

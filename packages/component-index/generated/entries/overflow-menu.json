@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/OverflowMenu.svelte",
-      "version": "0.48.0"
+      "version": "0.49.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Secondary actions menu accessible through a compact trigger.",
     "fr": "Menu d’actions secondaires accessibles via un déclencheur compact."
   },
-  "digest": "sha256:59e7baa18675fe024eb29bab4339bb0e9f54d7ed56a55598c9c64698c5aca8ca",
+  "digest": "sha256:13eb5cb3f19ed7085815b2f9d10a58f748e5fe069a54324fb9e94528fb7a1dcb",
   "displayName": "OverflowMenu",
   "format": "component-entry/v1",
   "frameworks": [
