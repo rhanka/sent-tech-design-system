@@ -23,6 +23,7 @@ import {
   linkStrokeWidthFindings,
   roundedElbowFindings,
   segmentInterval,
+  verticalEconomyFindings,
 } from "../../../../../tools/diagram-first-paint/geometry.mjs";
 import {
   buildAll13ReferenceScenes,
@@ -31,6 +32,7 @@ import {
   buildExampleA,
   buildExampleB,
   buildGenericScene,
+  enumerateVisibleFoldStates,
   runZeroConflictGate,
   type H2ReferenceScene,
 } from "./fixtures/referenceSet.js";
@@ -387,4 +389,54 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
     expect(v1Schema).toContain("ds-layout-hints@1");
     expect(v1Schema).not.toContain("ds-layout-hints@2");
   });
+
+  it("BLOCKING DE3-L6c VERTICAL ECONOMY GATE: zero sigmaBands, zero I-13 spanner overlap, all vertical gutters <= 144, and zero empty vertical bands > 144 across ALL 14 H2 reference scenes and ALL 108 fold states", () => {
+    const all14: readonly H2ReferenceScene[] = [...buildAll13ReferenceScenes(), buildAppctxArchitecture16x9()];
+    const violations: string[] = [];
+    for (const scene of all14) {
+      const states = enumerateVisibleFoldStates(scene.document, scene.containers, scene.sourceView);
+      for (const collapsed of states) {
+        const res = mustLayOut(
+          layoutMeasured(scene.document, baseOptionsOf(scene, { collapsed }), scene.sourceView),
+          `${scene.id}:ve:${collapsed.join(",")}`,
+        );
+        if (Object.keys(res.composition?.sigmaBands ?? {}).length > 0) {
+          violations.push(`${scene.id}[${collapsed.join(",")}]: non-empty sigmaBands`);
+        }
+        for (const ch of res.channels ?? []) {
+          if (ch.axis === "vertical" && ch.gap > 144 + TOL) {
+            violations.push(`${scene.id}[${collapsed.join(",")}]: channel ${ch.id} gap=${ch.gap} > 144`);
+          }
+        }
+        for (const [scope, grid] of Object.entries(res.composition?.grids ?? {})) {
+          for (const cell of grid.cells) {
+            if (cell.bandEnd > cell.bandStart && cell.bandEnd + 1 < grid.bands.length) {
+              const nextBand = grid.bands[cell.bandEnd + 1]!;
+              if (cell.boxRect.y + cell.boxRect.height > nextBand.start + TOL) {
+                violations.push(`${scene.id}[${collapsed.join(",")}]: ${scope} ${cell.entity} overlaps band ${nextBand.id}`);
+              }
+            }
+          }
+        }
+        const resolved = resolveScene(res, {
+          document: scene.document,
+          presentation: scene.presentation,
+          measureLines: scene.measureLines,
+        });
+        const bandVoids = verticalEconomyFindings({
+          scale: 1,
+          maxVerticalGap: 144,
+          nodes: resolved.nodes.map((n) => ({
+            id: String(n.occurrence),
+            top: n.rect.y,
+            bottom: n.rect.y + n.rect.height,
+          })),
+        });
+        for (const f of bandVoids) {
+          violations.push(`${scene.id}[${collapsed.join(",")}]: ${f}`);
+        }
+      }
+    }
+    expect(violations, violations.join("\n")).toEqual([]);
+  }, 90_000);
 });

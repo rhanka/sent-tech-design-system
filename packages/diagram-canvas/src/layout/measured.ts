@@ -2273,12 +2273,13 @@ function layoutMeasuredPass(
         2 * contentInset,
         zoneGeo.headerInset + headerHeight + contentInset + contentInset,
       );
-      // V-S4 (REQ-R7-34 / DE3-L6a2): on r7, reserve south U-channel headroom only when
-      // a south U-channel actually runs (never unconditionally pre-added on Pass 1);
-      // v1 (!r7Routing) keeps exact legacy conditional uExtra unchanged.
+      // V-S4 (REQ-R7-34 / DE3-L6a2): on composed r7 scenes (`r7Routing && composition !== undefined`),
+      // reserve south U-channel headroom only when a south U-channel actually runs (never
+      // unconditionally pre-added on Pass 1); v1 and hints-free/auto-pack DE-2 keep legacy
+      // conditional uExtra untouched (REQ-R7-28).
       const packed = packedRuns.get(run.key);
       let uExtra = 0;
-      if (r7Routing) {
+      if (r7Routing && composition !== undefined) {
         uExtra = plan?.southUExtra?.get(id) ?? 0;
       } else if (packed !== undefined) {
         const zone = runHasZone(run);
@@ -2868,7 +2869,7 @@ function layoutMeasuredPass(
               sideOverrides.set(id, { source: side, target: side, turn: true });
               usedUTracks.set(trackKey, attempt + 1);
               placed = true;
-              if (r7Routing && side === "south" && containerKey !== "root") {
+              if (r7Routing && composition !== undefined && side === "south" && containerKey !== "root") {
                 const existing = plan?.southUExtra?.get(containerKey as EntityRef) ?? 0;
                 if (existing > 0) {
                   southUDemand.set(
@@ -2881,7 +2882,7 @@ function layoutMeasuredPass(
           }
           if (placed) break;
         }
-        if (r7Routing && !placed && within !== undefined && containerKey !== "root") {
+        if (r7Routing && composition !== undefined && !placed && within !== undefined && containerKey !== "root") {
           for (let attempt = used; attempt < used + 3; attempt += 1) {
             if (laneFreeRow("south", attempt, true)) {
               const southTop = Math.max(a.y + a.height, b.y + b.height) + uEdgeClearance + attempt * pitch;
@@ -4704,19 +4705,28 @@ function layoutMeasuredPass(
   // flipping that level's orientation (`rows` <-> `columns`) and adopt it ONLY
   // when it completely resolves all route-spacing conflicts without introducing
   // obstructions.
-  // H2 F-2 / R-9: never run orientation retry on planned/composed scenes.
+  // H2 F-2 / R-9 (PR #327 P2 #5): gate post-pass orientation retry per planned level
+  // (`!nominalPlan?.autoPackLevels[key]` and non-composed grid/stack levels) rather than whole-scene.
   if (
-    composition === undefined &&
     routeSpacing > 0 &&
     filteredGraph.nodes.size <= 25 &&
     outcome.result.status === "laid-out" &&
     (outcome.result.routeSpacing?.conflictCount ?? 0) > 0
   ) {
+    const isLevelPlanned = (levelKey: string): boolean => {
+      if (nominalPlan?.autoPackLevels[levelKey] !== undefined) return true;
+      if (composition === undefined) return false;
+      if (levelKey === ROOT_LEVEL_KEY) return true;
+      return (
+        Object.entries(composition.grids).some(([k]) => representativeOf(k as EntityRef) === levelKey) ||
+        Object.entries(composition.stacks).some(([k]) => representativeOf(k as EntityRef) === levelKey)
+      );
+    };
     const candidateKeys = new Set<string>();
     for (const conflict of outcome.result.routeSpacing!.conflicts) {
       if (conflict.kind !== "channel-capacity-exceeded" || conflict.channelId === undefined) continue;
       const key = conflict.channelId.split("|")[0];
-      if (key !== undefined && outcome.result.orientations?.[key] !== undefined) {
+      if (key !== undefined && !isLevelPlanned(key) && outcome.result.orientations?.[key] !== undefined) {
         candidateKeys.add(key);
       }
     }

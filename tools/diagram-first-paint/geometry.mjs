@@ -462,3 +462,40 @@ export function headOverlapFindings({ heads = [], tolerance = 0.25 }) {
   }
   return findings;
 }
+
+/**
+ * REQ-R7-34 / DE3-L6c: sweep-line vertical gap check in rendered DOM or world coordinates.
+ * Merges vertical intervals of visible boxes into disjoint occupied bands and flags any
+ * full-width empty vertical gap exceeding `maxVerticalGap * scale + tolerance` (allowing
+ * `96 px` zone gutters and `<= 144 px` capped vertical widening, catching `sigmaBands`,
+ * `I-13` double-gutters, and uncapped vertical channel bloat).
+ */
+export function verticalEconomyFindings({ nodes = [], scale = 1, maxVerticalGap = 144, tolerance = 1 }) {
+  if (!(scale > 0) || nodes.length < 2) return [];
+  const intervals = nodes
+    .filter(n => Number.isFinite(n.top) && Number.isFinite(n.bottom) && n.bottom > n.top)
+    .map(n => ({ top: n.top, bottom: n.bottom }))
+    .sort((a, b) => a.top - b.top || a.bottom - b.bottom);
+  if (intervals.length < 2) return [];
+  const merged = [{ ...intervals[0] }];
+  for (let i = 1; i < intervals.length; i += 1) {
+    const cur = intervals[i];
+    const last = merged[merged.length - 1];
+    if (cur.top <= last.bottom + tolerance) {
+      last.bottom = Math.max(last.bottom, cur.bottom);
+    } else {
+      merged.push({ ...cur });
+    }
+  }
+  const findings = [];
+  const maxScaled = maxVerticalGap * scale;
+  for (let i = 1; i < merged.length; i += 1) {
+    const gapScaled = merged[i].top - merged[i - 1].bottom;
+    if (gapScaled > maxScaled + tolerance) {
+      findings.push(
+        `empty vertical band gap ${(gapScaled / scale).toFixed(1)} world px exceeds ${maxVerticalGap} px`,
+      );
+    }
+  }
+  return findings;
+}

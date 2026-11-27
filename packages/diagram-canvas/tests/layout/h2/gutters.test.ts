@@ -373,4 +373,66 @@ describe("H2.3 emitted gutters, strips and zoneRule on both routing paths", () =
       expect(v1Gap).toBeLessThanOrEqual(240);
     }
   });
+
+  it("PR #327 P2 #6: honours explicit @1 authored gap below axis baseGap (authoredBase) vs default min gap", () => {
+    const hintsV2: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      grids: {
+        root: {
+          stage_columns: ["s1", "s2"],
+          transverse_bands: [{ id: "r1", items: [entityRef("a"), entityRef("b")] }],
+          cells: {
+            [entityRef("a")]: { column: "s1" },
+            [entityRef("b")]: { column: "s2" },
+          },
+        },
+      },
+    };
+    const scene = buildGenericScene({
+      id: "p2-6-authored-base",
+      carries: ["P2-6"],
+      anatomy: "v1",
+      hintsV2,
+      entities: [
+        { id: "a", title: "Card A" },
+        { id: "b", title: "Card B" },
+      ],
+      relations: [],
+    });
+    const v1Presentation = toV1Presentation(scene.presentation);
+    // Authored `cardGapX: 48` (< default gapMin = 96): sets authoredBase=true so base=48 and expected=48 (not clamped up to 96).
+    const baseHints = lowerLayoutHints({
+      vocabulary: DS_LAYOUT_VOCABULARY,
+      mode: "order",
+      order: [entityRef("a"), entityRef("b")],
+    });
+    const authoredRes = layoutMeasured(scene.document, {
+      registry: scene.registry,
+      bindings: scene.bindings,
+      presentation: v1Presentation,
+      measureLines: scene.measureLines,
+      measureText: () => ({ width: 80, height: 20 }),
+      targetWidth: 1440,
+      hints: { ...baseHints, cardGapX: 48 },
+    });
+    const defaultRes = layoutMeasured(scene.document, {
+      registry: scene.registry,
+      bindings: scene.bindings,
+      presentation: v1Presentation,
+      measureLines: scene.measureLines,
+      measureText: () => ({ width: 80, height: 20 }),
+      targetWidth: 1440,
+      hints: baseHints,
+    });
+    expect(authoredRes.status).toBe("laid-out");
+    expect(defaultRes.status).toBe("laid-out");
+    if (authoredRes.status === "laid-out" && defaultRes.status === "laid-out") {
+      const aRect = authoredRes.view.entityOccurrences[occurrenceRef("e.a")]!.geometry;
+      const bRect = authoredRes.view.entityOccurrences[occurrenceRef("e.b")]!.geometry;
+      expect(bRect.x - (aRect.x + aRect.width)).toBe(48);
+      expect(authoredRes.channels![0]!.expected).toBe(48);
+      expect(defaultRes.channels![0]!.expected).toBe(96);
+    }
+  });
 });

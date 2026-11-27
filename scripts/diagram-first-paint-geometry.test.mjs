@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { borderDistance, centredBodyFindings, centredContainerContentFindings, combinedLegendFindings, compactCardFindings, connectorFindings, exposedSegments, headOverlapFindings, legendFindings, linkStrokeWidthFindings, roundedElbowFindings, segmentInterval } from '../tools/diagram-first-paint/geometry.mjs';
+import { borderDistance, centredBodyFindings, centredContainerContentFindings, combinedLegendFindings, compactCardFindings, connectorFindings, exposedSegments, headOverlapFindings, legendFindings, linkStrokeWidthFindings, roundedElbowFindings, segmentInterval, verticalEconomyFindings } from '../tools/diagram-first-paint/geometry.mjs';
 import { cases, expectedLegendAnchor, expectedLegendStyles, expectedVisibleCounts, foldTargets } from '../tools/diagram-first-paint/scenes.js';
 
 test('should clip a crossing connector against the stroke-inset badge disk', () => {
@@ -327,4 +327,20 @@ test('should verify targetDock contact for trimmed shafts and flag overlapping a
     ],
   });
   assert.ok(overlap.some(f => f.includes('overlap')));
+
+  assert.deepEqual(verticalEconomyFindings({
+    scale: 0.5,
+    nodes: [
+      { id: 'a', top: 0, bottom: 77 },
+      { id: 'b', top: 149, bottom: 226 },
+    ],
+  }), []);
+  const verticalGap = verticalEconomyFindings({
+    scale: 0.5,
+    nodes: [
+      { id: 'a', top: 0, bottom: 77 },
+      { id: 'b', top: 170, bottom: 247 },
+    ],
+  });
+  assert.ok(verticalGap.some(f => f.includes('exceeds 144')));
 });
