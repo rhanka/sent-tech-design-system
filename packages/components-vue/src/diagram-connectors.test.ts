@@ -538,4 +538,27 @@ describe("DiagramSceneFigure numbered flow connectors — Vue", () => {
     expect(markView.container.querySelector('[data-scene-legend] [data-legend-mark="proposed"]')).not.toBeNull();
     expect(markView.container.querySelector('[data-scene-legend] [data-legend-mark="folded-zone"]')).not.toBeNull();
   });
+
+  it("PR #356 P1 #2: places .st-diagramSceneFigure-authoredCombined divider at topOffset - rowGap so first row aligns with topOffset", async () => {
+    const r7 = r7AuthoredLegendFixture(false);
+    const view = render({
+      document: r7.document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: r7.presentation,
+      measureLines: flowMeasure,
+      collapsed: [],
+    } as DiagramSceneFigureProps);
+    await tick();
+    const combined = view.container.querySelector<HTMLElement>("[data-authored-legend] .st-diagramSceneFigure-authoredCombined")!;
+    expect(combined).not.toBeNull();
+    const rowGap = parseFloat(combined.style.getPropertyValue("--st-diagram-legend-row-gap"));
+    const topPx = parseFloat(combined.style.top);
+    const keyNodes = [...view.container.querySelectorAll<HTMLElement>('[data-scene-kind="legend-key"]')];
+    const authoredNode = view.container.querySelector<HTMLElement>("[data-authored-legend]")!;
+    const maxKeyRelBottom = Math.max(...keyNodes.map((el) => parseFloat(el.style.top) + parseFloat(el.style.height))) - parseFloat(authoredNode.style.top);
+    const headerGap = parseFloat(combined.style.getPropertyValue("--st-diagram-legend-header-gap"));
+    expect(topPx).toBe(maxKeyRelBottom + headerGap);
+    expect(rowGap).toBe(6);
+  });
 });

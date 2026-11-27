@@ -153,6 +153,8 @@ export function labelDetour(input: {
   readonly borderClearance?: number;
   /** Expanded ancestor zone rects whose parallel borders must keep `borderClearance` (crossings allowed). */
   readonly passableZones?: readonly Rect[];
+  /** Opt-in 4-bend loop fallback when 1/2-bend detours cannot hold a label inside `within`. */
+  readonly allowLoop?: boolean;
 }): readonly Vec2[] | undefined {
   const { request, shapes, earlier } = input;
   const step = input.step ?? 2;
@@ -244,6 +246,16 @@ export function labelDetour(input: {
     for (const x of input.xs) {
       tryRoute([{ x, y: s.y }, { x, y }, { x: t.x, y }]);
       tryRoute([{ x: s.x, y }, { x, y }, { x, y: t.y }]);
+    }
+  }
+  if (best === undefined && input.allowLoop) {
+    for (const x1 of input.xs) {
+      for (const y1 of input.ys) {
+        for (const x2 of input.xs) {
+          if (x2 === x1) continue;
+          tryRoute([{ x: x1, y: s.y }, { x: x1, y: y1 }, { x: x2, y: y1 }, { x: x2, y: t.y }]);
+        }
+      }
     }
   }
   return best;

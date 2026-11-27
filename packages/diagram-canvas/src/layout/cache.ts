@@ -140,7 +140,7 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
     return digestWith(inputDigests, value, normalised);
   }
 
-  function measurerDigest(options: LayoutOptions, measured: boolean, flows: boolean): string {
+  function measurerDigest(options: LayoutOptions, measured: boolean, flows: boolean, r7Routing: boolean): string {
     const fn = measured ? options.measureLines : options.measureText;
     if (fn === undefined) return "missing";
     const known = measurers.get(fn);
@@ -154,7 +154,9 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
       digest = digestOf(canonicalise({ version: fn.version, probe }));
       measurers.set(fn, { version: fn.version, flows, digest });
     }
-    if (measured && options.hints?.composition !== undefined && options.measureLines !== undefined) {
+    const hasAuthoredLegend =
+      r7Routing && Object.values(options.presentation?.entities ?? {}).some((entry) => entry.form === "legend");
+    if (measured && (options.hints?.composition !== undefined || hasAuthoredLegend) && options.measureLines !== undefined) {
       const legendProbe = measureLegendProbe(options.measureLines, options.legendTitle, options.legendLabels);
       return digest + digestOf(canonicalise(legendProbe));
     }
@@ -197,11 +199,12 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
         registryDigest: registry,
         bindingsDigest,
         includeTargetWidth: true,
+        r7Routing,
       }),
     );
     // Invalid serialisable inputs still reach the engine's normal refusal path.
     if (!input.ok) return undefined;
-    const mDigest = measurerDigest(options, measured, Object.values(document.relations).some((r) => r.type === "flow-step"));
+    const mDigest = measurerDigest(options, measured, Object.values(document.relations).some((r) => r.type === "flow-step"), r7Routing);
     const base = digestOf(input.text) + mDigest;
     const composed = measured && options.hints?.composition !== undefined;
     // Include previousOrientation in the exact result key for composed scenes too (F-4):
@@ -227,6 +230,7 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
         registryDigest: registry,
         bindingsDigest,
         includeTargetWidth: false,
+        r7Routing,
       }),
     );
     if (!planInput.ok) return { base, exact };

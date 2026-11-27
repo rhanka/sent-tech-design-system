@@ -14,6 +14,7 @@ import {
   buildSceneLinkLegend,
   collectLegendEntityMarks,
   collectLinkLegendStyles,
+  createLayoutCache,
   defaultLegendMarkLabel,
   defaultLegendTitle,
   defaultLinkStyleLabel,
@@ -163,7 +164,7 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
     expect(unfoldedResult.status).toBe("laid-out");
     if (unfoldedResult.status !== "laid-out") return;
 
-    const withLegend = resolveScene(unfoldedResult, baseInput);
+    const withLegend = resolveScene(unfoldedResult, { ...baseInput, legend: "right" });
     const suppressed = resolveScene(unfoldedResult, { ...baseInput, legend: "none" });
 
     expect(suppressed.linkLegend).toBeUndefined();
@@ -205,7 +206,7 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
     expect(foldedScene.linkLegend).toBeUndefined();
 
     // Unfold again from retained view: all 4 styles and right-anchored legend return deterministically.
-    const refoldedInput = { ...baseInput, view: foldedResult.view, collapsed: [] as never[] };
+    const refoldedInput = { ...baseInput, view: foldedResult.view, collapsed: [] as never[], legend: "right" as const };
     const refoldedResult = layoutScene(refoldedInput);
     expect(refoldedResult.status).toBe("laid-out");
     if (refoldedResult.status !== "laid-out") return;
@@ -224,6 +225,7 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
       bindings: shippedExecutorBindings,
       measureLines,
       collapsed: [],
+      legend: "right",
       legendTitle: "Connectors",
       legendLabels: { [customKey]: "Planned link" },
     });
@@ -407,6 +409,7 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
         bindings: shippedExecutorBindings,
         measureLines: cardLineMeasurer(measureWithoutLineWidths),
         collapsed: [],
+        legend: "right",
       },
       { measure: measureWithoutLineWidths },
     );
@@ -876,5 +879,278 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
     });
     expect(v1.svg).not.toContain("data-legend-key-swatch");
     expect(v1.svg).not.toContain("data-legend-style");
+  });
+
+  it("PR #356 P1 #1: defaults omitted legend to 'auto' on r7 scenes and keeps pocket anchor clear of overview labels under fitToWindow", () => {
+    // 1. Uncomposed r7 scene with open >= 24 px corner pocket defaults to pocket when legend is omitted.
+    const pocketDoc = {
+      documentId: "document:r7-default-auto-pocket",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: {
+        "entity:top-a": { id: "entity:top-a", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Top Left" } } },
+        "entity:bot-a": { id: "entity:bot-a", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Bottom Left" } } },
+        "entity:bot-b": { id: "entity:bot-b", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Bottom Right" } } },
+        "entity:bot-c": { id: "entity:bot-c", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Bottom Far Right" } } },
+      },
+      relations: {
+        "relation:r1": { id: "relation:r1", profile: "generic@2", type: "link", endpoints: [{ role: "source", target: "entity:top-a" }, { role: "target", target: "entity:bot-a" }], attributes: { label: { kind: "text", value: "feeds" } } },
+        "relation:r2": { id: "relation:r2", profile: "generic@2", type: "link", endpoints: [{ role: "source", target: "entity:bot-a" }, { role: "target", target: "entity:bot-b" }], attributes: { label: { kind: "text", value: "streams" } } },
+        "relation:r3": { id: "relation:r3", profile: "generic@2", type: "link", endpoints: [{ role: "source", target: "entity:bot-b" }, { role: "target", target: "entity:bot-c" }], attributes: { label: { kind: "text", value: "persists" } } },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SemanticDocument;
+    const pocketPres = {
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+      entities: {
+        "occurrence:e.top-a": { form: "card", anatomy: "v2", text: { title: "Top Left" } },
+        "occurrence:e.bot-a": { form: "card", anatomy: "v2", text: { title: "Bottom Left" } },
+        "occurrence:e.bot-b": { form: "card", anatomy: "v2", text: { title: "Bottom Right" } },
+        "occurrence:e.bot-c": { form: "card", anatomy: "v2", text: { title: "Bottom Far Right" } },
+      },
+      relations: {
+        "relation:r1": { strokeStyle: "solid", arrowhead: "arrow" },
+        "relation:r2": { strokeStyle: "dashed", arrowhead: "arrow" },
+      },
+      legends: {},
+      categoryTokens: [],
+    } as unknown as ScenePresentation;
+
+    // Composed scene where every root cell is occupied in band 1/2 (or band 1 has 1 item spanning or no empty cell? Use 2 bands where band 1 top-right is open pocket via peripheral or stage layout).
+    const composedPocketHints = lowerLayoutHintsV2({
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      grids: {
+        root: {
+          stage_columns: ["s1", "s2", "s3"],
+          transverse_bands: [
+            { id: "b1", items: [entityRef("top-a")] },
+            { id: "b2", items: [entityRef("bot-a"), entityRef("bot-b"), entityRef("bot-c")] },
+          ],
+          cells: {
+            [entityRef("top-a")]: { column: "s1", to_column: "s3", align: "start" },
+            [entityRef("bot-a")]: { column: "s1" },
+            [entityRef("bot-b")]: { column: "s2" },
+            [entityRef("bot-c")]: { column: "s3" },
+          },
+        },
+      },
+    });
+    const composedLaid = layoutScene({
+      document: pocketDoc,
+      presentation: pocketPres,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      hints: composedPocketHints,
+      collapsed: [],
+    });
+    expect(composedLaid.status).toBe("laid-out");
+    if (composedLaid.status !== "laid-out") return;
+    expect(composedLaid.linkLegend).toBeDefined();
+    expect(composedLaid.linkLegend!.anchor).toBe("pocket");
+
+    // Under fitToWindow overview zoom, pocket legend stays "pocket" and enlarged labels stay clear of it.
+    const longLabelDoc = {
+      ...pocketDoc,
+      relations: {
+        ...pocketDoc.relations,
+        "relation:r1": {
+          ...pocketDoc.relations["relation:r1"]!,
+          attributes: { label: { kind: "text", value: "very long connector label near top-right pocket" } },
+        },
+      },
+    } as unknown as SemanticDocument;
+    const overviewLaid = layoutScene({
+      document: longLabelDoc,
+      presentation: pocketPres,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      hints: composedPocketHints,
+      collapsed: [],
+    });
+    expect(overviewLaid.status).toBe("laid-out");
+    if (overviewLaid.status !== "laid-out") return;
+    expect(overviewLaid.linkLegend?.anchor).toBe("pocket");
+    const overviewScene = resolveScene(
+      overviewLaid,
+      { document: longLabelDoc, presentation: pocketPres, measureLines },
+      { viewWidth: 390, windowHeight: 300, fitToWindow: true },
+    );
+    expect(overviewScene.overviewEdgeLabelSize).toBeDefined();
+    expect(overviewScene.linkLegend?.anchor).toBe("pocket");
+    for (const label of overviewScene.labels) {
+      expect(rectsIntersect(label.box, overviewScene.linkLegend!.rect), String(label.occurrence)).toBe(false);
+    }
+
+    // Uncomposed r7 scene with open corner pocket defaults to pocket when legend is omitted.
+    const uncomposedPocketDoc = {
+      documentId: "document:r7-uncomposed-default-pocket",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: {
+        "entity:a": { id: "entity:a", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Alpha" } } },
+        "entity:b": { id: "entity:b", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Beta" } } },
+        "entity:c": { id: "entity:c", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Gamma" } } },
+        "entity:d": { id: "entity:d", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Delta" } } },
+        "entity:e": { id: "entity:e", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Epsilon" } } },
+      },
+      relations: {
+        "relation:r1": { id: "relation:r1", profile: "generic@2", type: "link", endpoints: [{ role: "source", target: "entity:a" }, { role: "target", target: "entity:b" }], attributes: {} },
+        "relation:r2": { id: "relation:r2", profile: "generic@2", type: "link", endpoints: [{ role: "source", target: "entity:b" }, { role: "target", target: "entity:c" }], attributes: {} },
+        "relation:r3": { id: "relation:r3", profile: "generic@2", type: "link", endpoints: [{ role: "source", target: "entity:c" }, { role: "target", target: "entity:d" }], attributes: {} },
+        "relation:r4": { id: "relation:r4", profile: "generic@2", type: "link", endpoints: [{ role: "source", target: "entity:d" }, { role: "target", target: "entity:e" }], attributes: {} },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SemanticDocument;
+    const uncomposedPocketPres = {
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+      entities: {
+        "occurrence:e.a": { form: "card", anatomy: "v2", text: { title: "Alpha" } },
+        "occurrence:e.b": { form: "card", anatomy: "v2", text: { title: "Beta" } },
+        "occurrence:e.c": { form: "card", anatomy: "v2", text: { title: "Gamma" } },
+        "occurrence:e.d": { form: "card", anatomy: "v2", text: { title: "Delta" } },
+        "occurrence:e.e": { form: "card", anatomy: "v2", text: { title: "Epsilon" } },
+      },
+      relations: {
+        "relation:r1": { strokeStyle: "solid", arrowhead: "arrow" },
+        "relation:r2": { strokeStyle: "dashed", arrowhead: "arrow" },
+      },
+      legends: {},
+      categoryTokens: [],
+    } as unknown as ScenePresentation;
+    const uncomposedRendered = renderSceneSvg({
+      document: uncomposedPocketDoc,
+      presentation: uncomposedPocketPres,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [],
+    });
+    expect(uncomposedRendered.scene.linkLegend?.anchor).toBe("pocket");
+  });
+
+  it("PR #356 P1 #2: aligns SVG authored combinedLegend rows at cl.topOffset with cl.rowGap below divider", () => {
+    const r7 = r7AuthoredLegendFixture(false);
+    const rendered = renderSceneSvg({
+      document: r7.document,
+      presentation: r7.presentation,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [],
+    });
+    const authoredZone = rendered.scene.nodes.find((n) => n.presentation?.form === "legend")!;
+    const cl = authoredZone.combinedLegend!;
+    expect(cl.entries[0]!.rowY).toBe(0);
+    const legendStart = rendered.svg.indexOf('data-scene-occurrence="occurrence:e.legend"');
+    const authoredGroup = legendStart >= 0 ? rendered.svg.slice(legendStart) : "";
+    const dividerTranslate = `translate(0 ${cl.topOffset - cl.rowGap})`;
+    expect(authoredGroup).toContain(dividerTranslate);
+    // Rows must be shifted down by cl.rowGap below the divider (never sharing y=0 with the divider path).
+    expect(authoredGroup).toContain(`<g transform="translate(0 ${cl.rowGap})"><g data-legend-style=`);
+  });
+
+  it("PR #356 P2 #1 & #2: keeps category-less legend-key neutral, maps real theme tokens, and sizes/caches uncomposed r7 authored legend titles/labels", () => {
+    // P2 #1a: compiled theme CSS variable names for KNOWN_SWATCH_TOKENS
+    expect(resolveLegendKeySwatch("accent.secondary").fill).toContain("--st-semantic-data-category2");
+    expect(resolveLegendKeySwatch("st-feedback-warning").fill).toContain("--st-semantic-feedback-warning");
+    expect(resolveLegendKeySwatch("st-feedback-positive").fill).toContain("--st-semantic-feedback-success");
+    expect(resolveLegendKeySwatch("st-feedback-negative").fill).toContain("--st-semantic-feedback-error");
+
+    // P2 #1b: neutral key without attributes.category must not adopt first categoryTokens entry
+    const r7 = r7AuthoredLegendFixture(false);
+    const neutralDoc = {
+      ...r7.document,
+      entities: {
+        ...r7.document.entities,
+        "entity:key-core": {
+          ...r7.document.entities[entityRef("key-core")]!,
+          attributes: { name: { kind: "text", value: "Neutral Key" } },
+        },
+      },
+    } as unknown as SemanticDocument;
+    const baseLaid = layoutScene({
+      document: r7.document,
+      presentation: r7.presentation,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [],
+    });
+    expect(baseLaid.status).toBe("laid-out");
+    if (baseLaid.status === "laid-out") {
+      const neutralScene = resolveScene(baseLaid, {
+        document: neutralDoc,
+        presentation: r7.presentation,
+        measureLines,
+      });
+      const neutralNode = neutralScene.nodes.find((n) => n.occurrence === occurrenceRef("e.key-core"));
+      expect(neutralNode?.swatch?.fill).not.toContain("--st-semantic-action-primary");
+    }
+
+    // P2 #2: uncomposed r7 authored legend widens with custom French legendLabels and misses cache when labels/title change
+    const wideLabels = { "solid:arrow:default": "Flux synchrone principal très détaillé et étendu" };
+    const cache = createLayoutCache();
+    const defaultLaid = layoutScene({
+      document: r7.document,
+      presentation: r7.presentation,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [],
+      cache,
+    });
+    const repeatLaid = layoutScene({
+      document: r7.document,
+      presentation: r7.presentation,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [],
+      cache,
+    });
+    const wideLaid = layoutScene({
+      document: r7.document,
+      presentation: r7.presentation,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [],
+      legendTitle: "Légende complète",
+      legendLabels: wideLabels,
+      cache,
+    });
+    const titleChangedLaid = layoutScene({
+      document: r7.document,
+      presentation: r7.presentation,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [],
+      legendTitle: "Titre alternatif très long pour légende",
+      legendLabels: wideLabels,
+      cache,
+    });
+    expect(cache.stats().hits).toBe(1);
+    expect(cache.stats().misses).toBe(3);
+    expect(repeatLaid.status).toBe("laid-out");
+    expect(titleChangedLaid.status).toBe("laid-out");
+    expect(defaultLaid.status).toBe("laid-out");
+    expect(wideLaid.status).toBe("laid-out");
+    if (defaultLaid.status === "laid-out" && wideLaid.status === "laid-out") {
+      const defRect = defaultLaid.view.entityOccurrences[occurrenceRef("e.legend")]!.geometry!;
+      const wideRect = wideLaid.view.entityOccurrences[occurrenceRef("e.legend")]!.geometry!;
+      expect(wideRect.width).toBeGreaterThan(defRect.width);
+    }
   });
 });

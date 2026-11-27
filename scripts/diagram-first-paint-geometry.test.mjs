@@ -158,7 +158,11 @@ test('should include 3 r7 reference scenes and 3 H2 composed scenes with expecte
   assert.deepEqual(expectedLegendStyles('h2-aspect-16-9'), ['solid:arrow:default', 'dashed:arrow:default']);
   assert.equal(expectedLegendAnchor('h2-example-a'), 'free-cell');
   assert.equal(expectedLegendAnchor('h2-example-b'), 'right');
-  assert.equal(expectedLegendAnchor('h2-aspect-16-9'), 'right');
+  assert.equal(expectedLegendAnchor('h2-aspect-16-9'), 'pocket');
+  assert.equal(expectedLegendAnchor('r7-connectors'), 'right');
+  assert.equal(expectedLegendAnchor('r7-connectors-folded'), 'pocket');
+  assert.equal(expectedLegendAnchor('r7-nested-styles'), 'pocket');
+  assert.equal(expectedLegendAnchor('h2-stacked-zones'), 'free-cell');
 });
 
 test('should verify rounded elbow radius cap (<= 16, <= half shorter leg) and trimmed final leg pullback', () => {
@@ -268,7 +272,7 @@ test('should verify widened container horizontal centring and flag left-packed c
   assert.deepEqual(foldTargets('h2-stacked-zones'), ['occurrence:e.zone-one', 'occurrence:e.zone-nested', 'occurrence:e.sub-narrow']);
   assert.deepEqual(expectedLegendStyles('h2-stacked-zones'), ['solid:arrow:default', 'dashed:arrow:default']);
   assert.deepEqual(expectedLegendStyles('h2-stacked-zones--folded:occurrence:e.zone-one'), ['solid:arrow:default', 'dashed:arrow:default']);
-  assert.equal(expectedLegendAnchor('h2-stacked-zones'), 'right');
+  assert.equal(expectedLegendAnchor('h2-stacked-zones'), 'free-cell');
 
   assert.deepEqual(centredContainerContentFindings({
     zones: [

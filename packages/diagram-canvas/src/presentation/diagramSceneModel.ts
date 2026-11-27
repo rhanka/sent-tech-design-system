@@ -61,6 +61,7 @@ import {
   layoutMeasured,
   placeEdgeLabels,
   rectUnion,
+  rectsIntersect,
   relationRoute,
   scaleEdgeLabelMeasurer,
   sceneNodes,
@@ -85,6 +86,7 @@ import { anatomyZoneGeometry, lineBoxHeight, ZONE_GEOMETRY } from "./diagramCard
 import {
   buildSceneLinkLegend,
   collectLegendEntityMarks,
+  findLegendPocket,
   inferLegendLocale,
   LINK_LEGEND_GAP,
   measureSceneLinkLegend,
@@ -378,6 +380,10 @@ export interface SceneLayoutInput {
 export function layoutScene(input: SceneLayoutInput): LayoutResult {
   const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, input.view, input.resolveGlyph,
     input.depthParityStart === undefined ? {} : { depthParityStart: input.depthParityStart });
+  const hasAuthoredLegend =
+    isR7ConnectorPresentation(resolved.presentation, input.view, input.document) &&
+    Object.values(resolved.presentation.entities).some((entry) => entry.form === "legend");
+  const forwardLegendMeta = input.hints?.composition !== undefined || hasAuthoredLegend;
   const options: LayoutOptions = {
     registry: input.registry,
     ...(input.flows === undefined ? {} : { flows: input.flows }),
@@ -404,8 +410,8 @@ export function layoutScene(input: SceneLayoutInput): LayoutResult {
     ...(input.reportSurfaceSame === undefined ? {} : { reportSurfaceSame: input.reportSurfaceSame }),
     ...(input.conventions === undefined ? {} : { conventions: input.conventions }),
     ...(input.hints?.composition !== undefined && input.legend !== undefined ? { legend: input.legend } : {}),
-    ...(input.hints?.composition !== undefined && input.legendTitle !== undefined ? { legendTitle: input.legendTitle } : {}),
-    ...(input.hints?.composition !== undefined && input.legendLabels !== undefined ? { legendLabels: input.legendLabels } : {}),
+    ...(forwardLegendMeta && input.legendTitle !== undefined ? { legendTitle: input.legendTitle } : {}),
+    ...(forwardLegendMeta && input.legendLabels !== undefined ? { legendLabels: input.legendLabels } : {}),
   };
   const result = input.cache !== undefined
     ? (input.view === undefined
@@ -714,15 +720,14 @@ function resolveSceneAtZoom(
       if (!r7Connectors || kind !== "legend-key") return undefined;
       const category = readStringAttr("category");
       const parentLegend = legendParentByKeyEntity.get(node.entity);
-      const tokenEntry =
-        resolved.presentation.categoryTokens.find(
-          (entry) =>
-            (category === undefined || entry.category === category) &&
-            (parentLegend === undefined || entry.legendRef === parentLegend),
-        ) ??
-        resolved.presentation.categoryTokens.find(
-          (entry) => category !== undefined && entry.category === category,
-        );
+      const tokenEntry = category === undefined
+        ? undefined
+        : resolved.presentation.categoryTokens.find(
+            (entry) =>
+              entry.category === category &&
+              (parentLegend === undefined || entry.legendRef === parentLegend),
+          ) ??
+          resolved.presentation.categoryTokens.find((entry) => entry.category === category);
       return resolveLegendKeySwatch(tokenEntry?.token, category);
     })();
     return {
@@ -1023,14 +1028,16 @@ function resolveSceneAtZoom(
     });
   }
   const hasVisibleAuthoredLegend = nodes.some((node) => node.presentation?.form === "legend");
-  const effectiveLegendAnchor = input.legend ?? (isProcessDoc ? "none" : undefined);
-  const freeCellLegendRect =
-    !hasVisibleAuthoredLegend && result.legendResolved && result.linkLegend?.anchor === "free-cell"
+  const effectiveLegendAnchor = input.legend ?? (isProcessDoc ? "none" : r7Connectors ? "auto" : "right");
+  const interiorLegendRect =
+    !hasVisibleAuthoredLegend &&
+    result.legendResolved &&
+    (result.linkLegend?.anchor === "free-cell" || result.linkLegend?.anchor === "pocket")
       ? result.linkLegend.rect
       : undefined;
   const allBlockers = [
     ...blockers,
-    ...(freeCellLegendRect === undefined ? [] : [freeCellLegendRect]),
+    ...(interiorLegendRect === undefined ? [] : [interiorLegendRect]),
     ...badges.map(badge => badge.box),
     ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box)),
     ...edges.flatMap(edge => edge.head === undefined ? [] : [edge.head.box]),
@@ -1045,19 +1052,32 @@ function resolveSceneAtZoom(
     : clearSceneLabels(labels, edges.map(edge => edge.points),
       allBlockers,
       paintClearance);
-  for (const { box } of clearedLabels) {
-    const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
+  const clearedLabelBoxes = clearedLabels.map(({ box }) => ({
+    x: box.x - margin,
+    y: box.y - margin,
+    width: box.width + 2 * margin,
+    height: box.height + 2 * margin,
+  }));
+  for (const padded of clearedLabelBoxes) {
     bounds = bounds === undefined ? padded : rectUnion(bounds, padded);
   }
+  const pocketLegendCollides =
+    result.legendResolved &&
+    result.linkLegend?.anchor === "pocket" &&
+    clearedLabelBoxes.some((labelBox) => rectsIntersect(labelBox, result.linkLegend!.rect));
   const legendNeedsReposition =
     result.legendResolved
     && result.linkLegend !== undefined
     && result.linkLegend.anchor !== "free-cell"
     && bounds !== undefined
     && (
-      overviewEdgeLabelSize !== undefined
-      || (result.linkLegend.anchor === "right" && bounds.x + bounds.width + LINK_LEGEND_GAP > result.linkLegend.rect.x)
-      || (result.linkLegend.anchor === "bottom" && bounds.y + bounds.height + LINK_LEGEND_GAP > result.linkLegend.rect.y)
+      result.linkLegend.anchor === "pocket"
+        ? pocketLegendCollides
+        : (
+            overviewEdgeLabelSize !== undefined
+            || (result.linkLegend.anchor === "right" && bounds.x + bounds.width + LINK_LEGEND_GAP > result.linkLegend.rect.x)
+            || (result.linkLegend.anchor === "bottom" && bounds.y + bounds.height + LINK_LEGEND_GAP > result.linkLegend.rect.y)
+          )
     );
   const legendLocale = inferLegendLocale(
     input.legendTitle ?? nodes.find((n) => n.presentation?.form === "legend")?.presentation?.text.title,
@@ -1134,26 +1154,35 @@ function resolveSceneAtZoom(
     ? undefined
     : result.legendResolved
       ? (legendNeedsReposition
-          ? placeSceneLinkLegend(
-              { ...result.linkLegend!, width: result.linkLegend!.rect.width, height: result.linkLegend!.rect.height },
-              result.linkLegend!.anchor,
-              bounds!,
-            )
+          ? (() => {
+              const measuredLegend = {
+                ...result.linkLegend!,
+                width: result.linkLegend!.rect.width,
+                height: result.linkLegend!.rect.height,
+              };
+              if (result.linkLegend!.anchor === "pocket") {
+                const pocket = findLegendPocket(
+                  measuredLegend,
+                  bounds!,
+                  [...nodes.map((n) => n.rect), ...clearedLabelBoxes],
+                  edges.map((e) => e.points),
+                );
+                return pocket !== undefined
+                  ? placeSceneLinkLegend(measuredLegend, "pocket", bounds!, pocket)
+                  : placeSceneLinkLegend(measuredLegend, "right", bounds!);
+              }
+              return placeSceneLinkLegend(measuredLegend, result.linkLegend!.anchor, bounds!);
+            })()
           : result.linkLegend)
       : buildSceneLinkLegend({
           edges,
           contentBounds: bounds,
           measureLines: input.measureLines,
           nodes: nodes.map((n) => n.rect),
-          labelBoxes: clearedLabels.map((l) => ({
-            x: l.box.x - margin,
-            y: l.box.y - margin,
-            width: l.box.width + 2 * margin,
-            height: l.box.height + 2 * margin,
-          })),
+          labelBoxes: clearedLabelBoxes,
           ...(entityMarks.length === 0 ? {} : { entityMarks }),
           locale: legendLocale,
-          ...(effectiveLegendAnchor === undefined ? {} : { anchor: effectiveLegendAnchor }),
+          anchor: effectiveLegendAnchor,
           ...(input.legendTitle === undefined ? {} : { title: input.legendTitle }),
           ...(input.legendLabels === undefined ? {} : { labels: input.legendLabels }),
           ...(effectiveInputLabelSize === undefined ? {} : { fontSize: effectiveInputLabelSize }),

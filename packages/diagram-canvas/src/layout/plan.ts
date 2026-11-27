@@ -389,8 +389,12 @@ export function buildLayoutKeyRecord(args: {
   readonly registryDigest: readonly unknown[];
   readonly bindingsDigest: string | undefined;
   readonly includeTargetWidth: boolean;
+  readonly r7Routing?: boolean;
 }): Record<string, unknown> {
   const { options, measured } = args;
+  const hasAuthoredLegend =
+    args.r7Routing === true &&
+    Object.values(options.presentation?.entities ?? {}).some((entry) => entry.form === "legend");
   const metrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics };
   const edgeLabelSize =
     metrics.edgeLabelSize !== undefined && Number.isFinite(metrics.edgeLabelSize) && metrics.edgeLabelSize > 0
@@ -423,11 +427,13 @@ export function buildLayoutKeyRecord(args: {
     bindings: args.bindingsDigest,
     ...(options.reportSurfaceSame === true ? { reportSurfaceSame: true } : {}),
     ...(options.conventions === undefined ? {} : { conventions: options.conventions }),
-    ...(options.hints?.composition === undefined
+    ...(options.hints?.composition === undefined && !hasAuthoredLegend
       ? {}
       : {
           legend: {
-            anchor: options.legend ?? "right",
+            ...(options.hints?.composition === undefined
+              ? {}
+              : { anchor: options.legend ?? (args.r7Routing ? "auto" : "right") }),
             title: options.legendTitle ?? "Legend",
             labels: options.legendLabels ?? {},
           },
@@ -485,6 +491,7 @@ export function computeCompositionPlanKey(
     registryDigest,
     bindingsDigest,
     includeTargetWidth: false,
+    r7Routing,
   });
   const encoded = tryCanonicalise(record);
   if (!encoded.ok) return undefined;

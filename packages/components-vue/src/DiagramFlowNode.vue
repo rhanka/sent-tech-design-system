@@ -27,7 +27,7 @@ const zone = computed(() => {
     <div
       v-if="node.combinedLegend !== undefined"
       class="st-diagramSceneFigure-authoredCombined"
-      :style="`top:${node.combinedLegend.topOffset}px;left:${node.combinedLegend.padding}px;right:${node.combinedLegend.padding}px;--st-diagram-legend-header-gap:${node.combinedLegend.headerGap}px;--st-diagram-legend-row-height:${node.combinedLegend.rowHeight}px;--st-diagram-legend-row-gap:${node.combinedLegend.rowGap}px;--st-diagram-legend-swatch-width:${node.combinedLegend.swatchWidth}px;--st-diagram-legend-swatch-height:${node.combinedLegend.swatchHeight}px;--st-diagram-legend-swatch-gap:${node.combinedLegend.swatchGap}px;--st-diagram-legend-font-size:${node.combinedLegend.fontSize}px`"
+      :style="`top:${node.combinedLegend.topOffset - node.combinedLegend.rowGap}px;left:${node.combinedLegend.padding}px;right:${node.combinedLegend.padding}px;--st-diagram-legend-header-gap:${node.combinedLegend.headerGap}px;--st-diagram-legend-row-height:${node.combinedLegend.rowHeight}px;--st-diagram-legend-row-gap:${node.combinedLegend.rowGap}px;--st-diagram-legend-swatch-width:${node.combinedLegend.swatchWidth}px;--st-diagram-legend-swatch-height:${node.combinedLegend.swatchHeight}px;--st-diagram-legend-swatch-gap:${node.combinedLegend.swatchGap}px;--st-diagram-legend-font-size:${node.combinedLegend.fontSize}px`"
     >
       <ul class="st-diagramSceneFigure-legendList">
         <li

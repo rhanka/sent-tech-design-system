@@ -223,7 +223,10 @@ function measure() {
     authoredLegends: [...figure.querySelectorAll('[data-authored-legend]')].map(el => ({
       id: el.dataset.sceneOccurrence ?? 'authored-legend',
       ...box(el),
+      styles: [...el.querySelectorAll('[data-legend-style]')].map(box),
+      hasToggle: el.querySelector('button[aria-expanded]') !== null,
     })),
+    legendKeySwatches: [...figure.querySelectorAll('[data-legend-key-swatch]')].map(box),
     relations: window.__relations ?? null,
     labels, paths, heads, occluders };
 }
@@ -362,6 +365,21 @@ function check(state, scene) {
     occluders: state.occluders, relations: state.relations ?? undefined, tolerance: 1 }), [], 'connectors');
   assert.deepEqual(combinedLegendFindings({ legend: state.legend, authoredLegends: state.authoredLegends,
     nodes: state.nodes, labels: state.labels, paths: state.paths }), [], 'combined legend count <= 1 and zero overlap');
+  for (const authored of state.authoredLegends) {
+    assert.equal(authored.hasToggle, false, `authored legend ${authored.id} must omit fold toggle`);
+    assert.ok(authored.styles.length >= 2, `authored legend ${authored.id} must render combined link-style rows`);
+    for (const row of authored.styles) {
+      assert.ok(row.left >= authored.left - epsilon && row.right <= authored.right + epsilon
+        && row.top >= authored.top - epsilon && row.bottom <= authored.bottom + epsilon,
+      `authored legend ${authored.id} row overflows frame`);
+    }
+  }
+  if (state.authoredLegends.length > 0) {
+    assert.ok(state.legendKeySwatches.length >= 2, 'authored legend must paint legend-key swatches');
+    for (const swatch of state.legendKeySwatches) {
+      assert.ok(swatch.width > 0 && swatch.height > 0, 'legend-key swatch must have non-zero painted dimensions');
+    }
+  }
   if (scene.startsWith('r7-')) {
     assert.deepEqual(roundedElbowFindings({ paths: state.paths, maxRadius: 16 }), [], 'r7 rounded elbow radius cap');
     assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths, emphasisWidth: 5 }), [], 'r7 link stroke widths');

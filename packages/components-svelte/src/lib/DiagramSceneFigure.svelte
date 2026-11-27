@@ -1449,7 +1449,7 @@
                     {@const cl = node.combinedLegend}
                     <div
                       class="st-diagramSceneFigure-authoredCombined"
-                      style={`top:${cl.topOffset}px;left:${cl.padding}px;right:${cl.padding}px;--st-diagram-legend-header-gap:${cl.headerGap}px;--st-diagram-legend-row-height:${cl.rowHeight}px;--st-diagram-legend-row-gap:${cl.rowGap}px;--st-diagram-legend-swatch-width:${cl.swatchWidth}px;--st-diagram-legend-swatch-height:${cl.swatchHeight}px;--st-diagram-legend-swatch-gap:${cl.swatchGap}px;--st-diagram-legend-font-size:${cl.fontSize}px`}
+                      style={`top:${cl.topOffset - cl.rowGap}px;left:${cl.padding}px;right:${cl.padding}px;--st-diagram-legend-header-gap:${cl.headerGap}px;--st-diagram-legend-row-height:${cl.rowHeight}px;--st-diagram-legend-row-gap:${cl.rowGap}px;--st-diagram-legend-swatch-width:${cl.swatchWidth}px;--st-diagram-legend-swatch-height:${cl.swatchHeight}px;--st-diagram-legend-swatch-gap:${cl.swatchGap}px;--st-diagram-legend-font-size:${cl.fontSize}px`}
                     >
                       <ul class="st-diagramSceneFigure-legendList">
                         {#each cl.entries as entry (entry.key)}
@@ -1902,9 +1902,10 @@
   }
   .st-diagramSceneFigure-authoredCombined {
     border-top: var(--st-component-diagramScene-labelBorderWidth, 1px) solid var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
+    box-sizing: border-box;
     font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
     font-size: var(--st-diagram-legend-font-size, var(--st-component-diagramScene-edgeLabelSize, 18px));
-    padding-top: var(--st-diagram-legend-row-gap, 6px);
+    padding-top: max(0px, calc(var(--st-diagram-legend-row-gap, 6px) - var(--st-component-diagramScene-labelBorderWidth, 1px)));
     position: absolute;
   }
   .st-diagramSceneFigure-legendTitle {

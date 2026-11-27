@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:81cafe22e84579ff76c6ebf9a22e001952b4e4786c3ea60659906dbe63e53f9e",
-  "entryDigest": "sha256:6a917d059e203939f3454015f9e842e3f9dd868c3491e4174acb473b4c94be32",
+  "digest": "sha256:45559650094597871457a79684a801581a669749a01d70a69d4535c7f5c1d904",
+  "entryDigest": "sha256:ab79198b1599b0153341134c6a7fd0b9f32b675806471b967cfde250bbd03fe5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -4740,7 +4740,8 @@
               "auto",
               "none",
               "right",
-              "bottom"
+              "bottom",
+              "free-cell"
             ]
           },
           "legendLabels": {
@@ -10506,7 +10507,8 @@
               "auto",
               "none",
               "right",
-              "bottom"
+              "bottom",
+              "free-cell"
             ]
           },
           "legendLabels": {

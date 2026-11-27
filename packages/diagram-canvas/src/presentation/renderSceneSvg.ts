@@ -141,7 +141,7 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
     const rendered=projected.kind==='zone'?renderZoneSvg({...projected.props,autoSize:true},{measure}):renderCardSvg({...projected.props,autoSize:true,height:node.rect.height},measure);
     if(rendered.kind!=='rendered')throw new Error('Content must never refuse a component');
     const cl=node.combinedLegend;
-    const combinedSvg=cl===undefined?'':`<g transform="translate(0 ${cl.topOffset-cl.rowGap})"><path d="M${cl.padding} 0H${node.rect.width-cl.padding}" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)"/>${drawLegendRowsSvg(cl.entries,cl.entityMarks,{padding:cl.padding,swatchWidth:cl.swatchWidth,swatchHeight:cl.swatchHeight,swatchGap:cl.swatchGap,fontSize:cl.fontSize})}</g>`;
+    const combinedSvg=cl===undefined?'':`<g transform="translate(0 ${cl.topOffset-cl.rowGap})"><path d="M${cl.padding} 0.5H${node.rect.width-cl.padding}" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)"/><g transform="translate(0 ${cl.rowGap})">${drawLegendRowsSvg(cl.entries,cl.entityMarks,{padding:cl.padding,swatchWidth:cl.swatchWidth,swatchHeight:cl.swatchHeight,swatchGap:cl.swatchGap,fontSize:cl.fontSize})}</g></g>`;
     return `<g data-scene-occurrence="${escape(node.occurrence)}"${authoredLegendAttr} transform="translate(${node.rect.x} ${node.rect.y})">${rendered.svg}${combinedSvg}</g>`;
   };
   // Expanded zone surfaces are opaque: they paint under the connectors, the boxes above them.

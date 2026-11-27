@@ -29,10 +29,10 @@ export type LegendLocale = "en" | "fr";
 export type LegendEntityMarkKind = "proposed" | "folded-zone";
 
 /** Where the automatic link-style legend strip sits relative to the functional drawing. */
-export type LinkLegendAnchor = "right" | "bottom" | "auto" | "none";
+export type LinkLegendAnchor = "right" | "bottom" | "free-cell" | "auto" | "none";
 
 /** Resolved anchor emitted on `SceneLinkLegend`, including H2 `"free-cell"` and DE3-L1b `"pocket"`. */
-export type SceneLinkLegendAnchor = Exclude<LinkLegendAnchor, "none" | "auto"> | "free-cell" | "pocket";
+export type SceneLinkLegendAnchor = Exclude<LinkLegendAnchor, "none" | "auto"> | "pocket";
 
 /** Canonical sort orders over the three closed connector registry axes. */
 export const LINK_LEGEND_STROKE_ORDER: readonly StrokeStyle[] = Object.freeze([
@@ -218,12 +218,12 @@ export function defaultLinkStyleLabel(style: LinkLegendStyleKey, locale: LegendL
 
 const KNOWN_SWATCH_TOKENS: Readonly<Record<string, [string, string]>> = {
   "accent.primary": ["--st-semantic-action-primary", "#2563eb"],
-  "accent.secondary": ["--st-semantic-accent-secondary", "#7c3aed"],
+  "accent.secondary": ["--st-semantic-data-category2", "#f28e2b"],
   "st-accent-primary": ["--st-semantic-action-primary", "#2563eb"],
   "st-semantic-action-primary": ["--st-semantic-action-primary", "#2563eb"],
-  "st-feedback-warning": ["--st-feedback-warning", "#d97706"],
-  "st-feedback-positive": ["--st-feedback-positive", "#059669"],
-  "st-feedback-negative": ["--st-feedback-negative", "#dc2626"],
+  "st-feedback-warning": ["--st-semantic-feedback-warning", "#d97706"],
+  "st-feedback-positive": ["--st-semantic-feedback-success", "#059669"],
+  "st-feedback-negative": ["--st-semantic-feedback-error", "#dc2626"],
 };
 
 const SWATCH_FALLBACK_PALETTE = [
@@ -375,7 +375,7 @@ export interface MeasuredSceneLinkLegend {
 
 export interface BuildSceneLinkLegendInput extends MeasureSceneLinkLegendInput {
   readonly contentBounds: Rect | undefined;
-  /** Anchor edge strip or `"auto"` pocket probe (`"right"` by default). `"none"` suppresses the legend. */
+  /** Anchor edge strip or `"auto"` pocket probe (`"auto"` by default). `"none"` suppresses the legend. */
   readonly anchor?: LinkLegendAnchor;
   /** Visible node rectangles for `"auto"` corner-pocket collision checks. */
   readonly nodes?: readonly Rect[];
@@ -642,7 +642,7 @@ export function placeSceneLinkLegend(
  * two distinct styles are drawn.
  */
 export function buildSceneLinkLegend(input: BuildSceneLinkLegendInput): SceneLinkLegend | undefined {
-  const anchor = input.anchor ?? "right";
+  const anchor = input.anchor ?? "auto";
   if (anchor === "none" || input.contentBounds === undefined) return undefined;
   const measured = measureSceneLinkLegend(input);
   if (measured === undefined) return undefined;

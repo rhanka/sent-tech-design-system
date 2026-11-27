@@ -1444,7 +1444,7 @@ function layoutMeasuredPass(
     composition === undefined
       ? "none"
       : composition.legend === "host"
-        ? (options.legend ?? "right")
+        ? (options.legend ?? (r7Routing ? "auto" : "right"))
         : composition.legend;
   const hasVisibleAuthoredLegend = [...graph.nodes.keys()].some((id) => {
     if (!visible(id)) return false;
@@ -3838,6 +3838,14 @@ function layoutMeasuredPass(
             wideYs.add(y + routeSpacing);
           }
           if (composition !== undefined) {
+            for (const rect of shapes) {
+              wideYs.add(rect.y - edgeClearance);
+              wideYs.add(rect.y + rect.height + edgeClearance);
+            }
+            const seedYs = [...wideYs].sort((a, b) => a - b);
+            for (let idx = 0; idx + 1 < seedYs.length; idx += 1) {
+              wideYs.add((seedYs[idx]! + seedYs[idx + 1]!) / 2);
+            }
             const takenDy = Math.max(edgeClearance, entry.size.height / 2 + metrics.labelMargin);
             for (const box of taken) {
               wideYs.add(box.y - takenDy);
@@ -3899,9 +3907,9 @@ function layoutMeasuredPass(
             }
             return true;
           };
-          const adjustDockAway = (dock: Dock, role: "source" | "target"): Dock => {
+          const dockCandidatesFor = (dock: Dock, role: "source" | "target"): readonly Dock[] => {
             const rect = rects.get(dock.entity);
-            if (rect === undefined || dock.port !== undefined || !(routeSpacing > 0)) return dock;
+            if (rect === undefined || dock.port !== undefined || !(routeSpacing > 0)) return [dock];
             const vertical = dock.side === "east" || dock.side === "west";
             const startCoord = (vertical ? rect.y : rect.x) + dockCornerInset;
             const endCoord = (vertical ? rect.y + rect.height : rect.x + rect.width) - dockCornerInset;
@@ -3921,48 +3929,68 @@ function layoutMeasuredPass(
             const base = vertical ? dock.point.y : dock.point.x;
             const isClearCoord = (c: number): boolean =>
               c >= startCoord - 1e-4 && c <= endCoord + 1e-4 && occupied.every((u) => Math.abs(u - c) >= routeSpacing - 1e-4);
-            if (isClearCoord(base)) return dock;
-            for (let step = 1; step <= 16; step += 1) {
-              for (const delta of [-step * spacing, step * spacing]) {
-                const c = base + delta;
-                if (!isClearCoord(c)) continue;
-                const point = vertical ? { x: dock.point.x, y: c } : { x: c, y: dock.point.y };
-                const anchor = vertical ? (c - rect.y) / rect.height : (c - rect.x) / rect.width;
-                return { ...dock, point, anchor };
+            if (isClearCoord(base)) return [dock];
+            const rawCoords: number[] = [];
+            for (const occ of occupied) {
+              for (let step = 1; step <= 4; step += 1) {
+                rawCoords.push(occ - step * spacing, occ + step * spacing);
               }
             }
-            return dock;
+            for (let step = 1; step <= 16; step += 1) {
+              rawCoords.push(base - step * spacing, base + step * spacing);
+            }
+            const unique: number[] = [];
+            for (const c of rawCoords.filter(isClearCoord).sort((a, b) => Math.abs(a - base) - Math.abs(b - base) || a - b)) {
+              if (unique.every((prev) => Math.abs(prev - c) > 0.5)) unique.push(c);
+              if (unique.length >= 4) break;
+            }
+            if (unique.length === 0) return [dock];
+            return unique.map((c) => {
+              const point = vertical ? { x: dock.point.x, y: c } : { x: c, y: dock.point.y };
+              const anchor = vertical ? (c - rect.y) / rect.height : (c - rect.x) / rect.width;
+              return { ...dock, point, anchor };
+            });
           };
           for (const [source, target] of facePairs) {
             const overrides = new Map(sideOverrides);
             overrides.set(entry.id, { source, target, turn: source === target });
-            let pair = dockEdges({ graph: filteredGraph, rects, direction: "top-to-bottom", metrics,
+            const basePair = dockEdges({ graph: filteredGraph, rects, direction: "top-to-bottom", metrics,
               labelSizes: new Map(), fixed: true, cornerInset: dockCornerInset, sideOverrides: overrides }).docks.get(entry.id)!;
-            if (composition !== undefined && !docksClear(pair) && routeSpacing > 0) {
-              pair = {
-                source: adjustDockAway(pair.source, "source"),
-                target: adjustDockAway(pair.target, "target"),
-              };
-            }
-            if (!docksClear(pair)) continue;
-            const alternative = { ...request, start: pair.source.point, startExit: pair.source.exit,
-              end: pair.target.point, endExit: pair.target.exit };
-            let route = labelDetour({ request: alternative, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
-              xs: sortedXs, ys: sortedYs,
-              accepts: (points) => placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined,
-            });
-            if (route === undefined && composition !== undefined && routeSpacing > 0) {
-              const wide = ensureWideGrid();
-              route = labelDetour({ request: alternative, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
-                xs: wide.xs, ys: wide.ys,
+            const candidatePairs: EdgeDocks[] = docksClear(basePair)
+              ? [basePair]
+              : composition !== undefined && routeSpacing > 0
+                ? dockCandidatesFor(basePair.source, "source").flatMap((sDock) =>
+                    dockCandidatesFor(basePair.target, "target").map((tDock) => ({ source: sDock, target: tDock })),
+                  )
+                : [];
+            let acceptedPair: EdgeDocks | undefined;
+            let acceptedRoute: readonly Vec2[] | undefined;
+            for (const pair of candidatePairs) {
+              if (!docksClear(pair)) continue;
+              const alternative = { ...request, start: pair.source.point, startExit: pair.source.exit,
+                end: pair.target.point, endExit: pair.target.exit };
+              let route = labelDetour({ request: alternative, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
+                xs: sortedXs, ys: sortedYs,
                 accepts: (points) => placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined,
               });
+              if (route === undefined && composition !== undefined && routeSpacing > 0) {
+                const wide = ensureWideGrid();
+                route = labelDetour({ request: alternative, shapes, earlier: samePair, allFixed, passableZones: edgePassableZones, step: detourStep, routeSpacing, borderClearance: detourClearance,
+                  xs: wide.xs, ys: wide.ys, allowLoop: true,
+                  accepts: (points) => placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined,
+                });
+              }
+              if (route !== undefined) {
+                acceptedPair = pair;
+                acceptedRoute = route;
+                break;
+              }
             }
-            if (route === undefined) continue;
-            retryRoutes.set(entry.id, route);
+            if (acceptedRoute === undefined || acceptedPair === undefined) continue;
+            retryRoutes.set(entry.id, acceptedRoute);
             retryObstructed.delete(entry.id);
-            finalDocks.set(entry.id, pair);
-            choice = placePackedLabel({ ...entry, route }, fixedShapes, taken, metrics.labelMargin);
+            finalDocks.set(entry.id, acceptedPair);
+            choice = placePackedLabel({ ...entry, route: acceptedRoute }, fixedShapes, taken, metrics.labelMargin);
             break;
           }
         }
