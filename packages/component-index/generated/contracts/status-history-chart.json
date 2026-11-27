@@ -1,8 +1,8 @@
 {
   "componentId": "status-history-chart",
   "contractSource": "derived",
-  "digest": "sha256:8a50a8e1a328857d907a116ea22e7fe4f66300731c5b473a065e920baffef9e0",
-  "entryDigest": "sha256:79ed95f824ffe0c6e1ce6250ea8dec7f8c3997bd882295707252ddf2bc6971ff",
+  "digest": "sha256:0578fb62503849420e553105d4665dc78b45fd42818f15180f233b38614cb32f",
+  "entryDigest": "sha256:08b8e69ba8c44c96fede04a32c5afd3e743fe6b0c55ab8b1cdab6e32c8745c71",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -335,7 +335,7 @@
         "declarationPath": "packages/components-svelte/dist/StatusHistoryChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StatusHistoryChartProps",
-        "version": "0.48.0"
+        "version": "0.49.0"
       },
       "status": "complete",
       "unresolved": [],

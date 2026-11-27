@@ -1,8 +1,8 @@
 {
   "componentId": "column-pyramid-chart",
   "contractSource": "derived",
-  "digest": "sha256:ea502885c8dd9ae0a703c21cbf61e0fc45ff3f3586529d0093d6a5baa1930b3e",
-  "entryDigest": "sha256:0568883a095fd677be0ae3667f16b9613d1549b75a3024440ccfab51a2ed9c3c",
+  "digest": "sha256:9be9a380f68beed8cc4420d0b9e7241e9aa6b51554ddebc6fdae61b83dd6b5f6",
+  "entryDigest": "sha256:4921eca1fef0dd3b871e3b1665c30d708f6dfc1d6503a1423442060884ab94ec",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -273,7 +273,7 @@
         "declarationPath": "packages/components-svelte/dist/ColumnPyramidChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ColumnPyramidChartProps",
-        "version": "0.48.0"
+        "version": "0.49.0"
       },
       "status": "complete",
       "unresolved": [],

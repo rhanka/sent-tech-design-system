@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TimelineChart.svelte",
-      "version": "0.48.0"
+      "version": "0.49.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Timeline: events positioned on a graduated horizontal axis, categorical markers and labels alternated above/below.",
     "fr": "Frise chronologique : événements positionnés sur un axe horizontal gradué, marqueurs catégoriels et libellés alternés au-dessus/dessous."
   },
-  "digest": "sha256:dba2b9e25d8c13f0fd7daa5309ddfca0a2fd3b8459eeb4dd1e7035ac477e8986",
+  "digest": "sha256:93445ea68649aa88551528caffa7d4235eb8d08d5e23f98b349e6a3e59b4e312",
   "displayName": "TimelineChart",
   "format": "component-entry/v1",
   "frameworks": [

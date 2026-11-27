@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:2304d46caa496c8729d1468dbd5c3179c1b2f5b7426bf35a8d28c10eb58ecd61",
-  "entryDigest": "sha256:c04e7f29fe1a6c0e3942912496f4f6921a56cd873f1fe29494a94f365b077c1b",
+  "digest": "sha256:231b16a5395eef50403ada2bfa50820987e389c623abd0b93543a2cc50532ffc",
+  "entryDigest": "sha256:c11ac695a3b5f95ae24b75662da2b437774695c2dd8c3f257b4fa150e2befa44",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -284,7 +284,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramCardProps",
-        "version": "0.48.0"
+        "version": "0.49.0"
       },
       "status": "partial",
       "unresolved": [],

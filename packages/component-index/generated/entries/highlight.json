@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Highlight.svelte",
-      "version": "0.48.0"
+      "version": "0.49.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Editorial highlight / callout box, with accent tone.",
     "fr": "Mise en avant / encart éditorial, avec tonalité d'accent."
   },
-  "digest": "sha256:a4813d30c36c52f2894560ff4eb669cbc9e2e67b2e34b02e716bec83aa090671",
+  "digest": "sha256:4a07d78e6d626a4d5fef642562178edfedba9a2549ee85b031c1f2ceb638f45d",
   "displayName": "Highlight",
   "format": "component-entry/v1",
   "frameworks": [

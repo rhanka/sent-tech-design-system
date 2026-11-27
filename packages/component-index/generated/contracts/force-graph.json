@@ -1,8 +1,8 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:4fe39100e02daa924e386d0c52c39f588a84572f934a91d873998c9410182287",
-  "entryDigest": "sha256:f01eda75759a80d6bc49702dad98672630a6a7eb548c36179b2297a835e529c8",
+  "digest": "sha256:495107d32dbc1c49d28e6b446e1b86240ce0ea99a99d158f17a5ad8a915eaa0f",
+  "entryDigest": "sha256:6795d1a77316644022050e5ac674695f6b4354feb0bbcacbb767521d6a05a589",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1000,7 +1000,7 @@
         "declarationPath": "packages/components-svelte/dist/ForceGraph.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ForceGraphProps",
-        "version": "0.48.0"
+        "version": "0.49.0"
       },
       "status": "complete",
       "unresolved": [],
