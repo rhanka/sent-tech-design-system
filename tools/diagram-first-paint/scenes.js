@@ -1,4 +1,4 @@
-export const cases = ['architecture-folded', 'architecture-unfolded', 'ontology-folded', 'ontology-unfolded', 'nested-zones', 'nested-zones-outside', 'three-cards', 'three-cards-compact', 'numbered-flows', 'numbered-flows-bundled', 'r7-connectors', 'r7-connectors-folded', 'r7-nested-styles', 'r7-authored-legend', 'h2-example-a', 'h2-example-b', 'h2-aspect-16-9'];
+export const cases = ['architecture-folded', 'architecture-unfolded', 'ontology-folded', 'ontology-unfolded', 'nested-zones', 'nested-zones-outside', 'three-cards', 'three-cards-compact', 'numbered-flows', 'numbered-flows-bundled', 'r7-connectors', 'r7-connectors-folded', 'r7-nested-styles', 'r7-authored-legend', 'h2-example-a', 'h2-example-b', 'h2-aspect-16-9', 'h2-stacked-zones'];
 
 /** Expected canonical link-style legend entries for the r7 and H2 reference scenes (and their folded states). */
 export function expectedLegendStyles(name) {
@@ -23,7 +23,7 @@ export function expectedLegendStyles(name) {
   if (name === 'h2-example-b--folded:occurrence:e.layer-b') {
     return [];
   }
-  if (name === 'h2-example-b' || name.startsWith('h2-example-b--folded') || name === 'h2-aspect-16-9' || name.startsWith('h2-aspect-16-9--folded')) {
+  if (name === 'h2-example-b' || name.startsWith('h2-example-b--folded') || name === 'h2-aspect-16-9' || name.startsWith('h2-aspect-16-9--folded') || name === 'h2-stacked-zones' || name.startsWith('h2-stacked-zones--folded')) {
     return ['solid:arrow:default', 'dashed:arrow:default'];
   }
   return null;
@@ -34,7 +34,7 @@ export function expectedLegendAnchor(name) {
   if (name === 'r7-authored-legend' || name.startsWith('r7-authored-legend--folded')) return null;
   if (name === 'h2-example-b--folded:occurrence:e.layer-b') return null;
   if (name === 'h2-example-a' || name.startsWith('h2-example-a--folded')) return 'free-cell';
-  if (name === 'h2-example-b' || name.startsWith('h2-example-b--folded') || name === 'h2-aspect-16-9' || name.startsWith('h2-aspect-16-9--folded') || name.startsWith('r7-')) return 'right';
+  if (name === 'h2-example-b' || name.startsWith('h2-example-b--folded') || name === 'h2-aspect-16-9' || name.startsWith('h2-aspect-16-9--folded') || name === 'h2-stacked-zones' || name.startsWith('h2-stacked-zones--folded') || name.startsWith('r7-')) return 'right';
   return null;
 }
 
@@ -44,6 +44,7 @@ export function foldTargets(name) {
   if (name === 'r7-nested-styles') return ['occurrence:e.zone-platform', 'occurrence:e.zone-core'];
   if (name === 'h2-example-a') return ['occurrence:e.tools'];
   if (name === 'h2-example-b') return ['occurrence:e.layer-a', 'occurrence:e.layer-b'];
+  if (name === 'h2-stacked-zones') return ['occurrence:e.zone-one', 'occurrence:e.zone-nested', 'occurrence:e.sub-narrow'];
   if (name === 'h2-aspect-16-9') {
     return [
       'occurrence:zone-immo',

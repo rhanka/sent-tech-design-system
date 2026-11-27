@@ -319,6 +319,19 @@ git push origin diagram-codecs-v0.1.0
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
+### Diagram Core 0.7.0 & Diagram Canvas 0.9.0 (`DE3-L7` centring & refused-diagnostic guard)
+
+Minor bumps of `@sentropic/diagram-core` (`0.6.1` → `0.7.0`, tag
+`diagram-core-v0.7.0`) and `@sentropic/diagram-canvas` (`0.8.0` → `0.9.0`, tag
+`diagram-canvas-v0.9.0`, requiring published `@sentropic/diagram-core@0.7.0`):
+centres inner boxes horizontally inside widened non-inheriting stacked zones and
+nested sub-zones (`DE3-L7`), refuses `align: "stretch"` on card-bearing column
+stacks at both `validateLayoutHintsV2` and layout, and guarantees every
+`status: "refused"` `LayoutResult` carries at least one `Diagnostic`.
+Tag order: `diagram-core-v0.7.0` must publish before `diagram-canvas-v0.9.0`,
+and `diagram-canvas-v0.9.0` before downstream `elements`, `svelte`, `vue`, and
+`diagram-codecs` pins (`0.9.0`).
+
 ### Diagram Canvas 0.8.0 (`@sentropic/diagram-canvas/focus-bridge`)
 
 Minor bump of `@sentropic/diagram-canvas` (`0.7.0` → `0.8.0`, tag

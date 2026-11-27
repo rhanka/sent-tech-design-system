@@ -9,7 +9,7 @@ const { tmpdir } = await import('node:os');
 const { join } = await import('node:path');
 const { buildHarness, root } = await import('./build.mjs');
 const { cases, expectedLegendAnchor, expectedLegendStyles, expectedVisibleCounts, foldTargets } = await import('./scenes.js');
-const { segmentInterval, exposedSegments, centredBodyFindings, combinedLegendFindings, compactCardFindings, connectorFindings, roundedElbowFindings, linkStrokeWidthFindings, legendFindings } = await import('./geometry.mjs');
+const { segmentInterval, exposedSegments, centredBodyFindings, centredContainerContentFindings, combinedLegendFindings, compactCardFindings, connectorFindings, roundedElbowFindings, linkStrokeWidthFindings, legendFindings } = await import('./geometry.mjs');
 const { preview } = await import('vite');
 const { default: puppeteer } = await import('puppeteer-core');
 const assert = (await import('node:assert/strict')).default;
@@ -361,6 +361,22 @@ function check(state, scene) {
       assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths }), [], 'h2 link stroke widths');
       assert.deepEqual(legendFindings({ legend: state.legend, nodes: state.nodes, expectedAnchor: expectedAnchor ?? 'right', expectedStyles }),
         [], 'h2 link legend order and anchor');
+    }
+    if (scene === 'h2-stacked-zones' || scene.startsWith('h2-stacked-zones--folded')) {
+      const nodeById = new Map(state.nodes.map(n => [n.id, n]));
+      const expectedChildren = [
+        ['occurrence:e.zone-one', ['occurrence:e.c1']],
+        ['occurrence:e.zone-two', ['occurrence:e.c2', 'occurrence:e.c3']],
+        ['occurrence:e.zone-three', ['occurrence:e.c4', 'occurrence:e.c5', 'occurrence:e.c6']],
+        ['occurrence:e.sub-narrow', ['occurrence:e.s1']],
+      ];
+      const zones = expectedChildren.flatMap(([zoneId, childIds]) => {
+        const zoneNode = nodeById.get(zoneId);
+        const children = childIds.map(id => nodeById.get(id)).filter(Boolean);
+        if (!zoneNode || zoneNode.kind !== 'zone' || children.length === 0) return [];
+        return [{ ...zoneNode, children }];
+      });
+      assert.deepEqual(centredContainerContentFindings({ zones, tolerance: 1 }), [], 'widened stacked zones centring');
     }
     if (scene === 'h2-aspect-16-9') {
       // Measure actual painted drawing bounds rather than `.st-diagramSceneFigure-extent`,

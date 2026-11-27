@@ -7,16 +7,17 @@ import { DIAGRAM_SCENE_SPACING as spacing } from './spacing.generated.js';
  * one call (direction chosen, zoom, warnings), never persisted content.
  */
 
-import type {
-  Diagnostic,
-  DiagramPresentation,
-  EntityPresentation,
-  ExecutorProfileBindings,
-  OccurrenceRef,
-  ProfileRegistry,
-  RelationPresentation,
-  ViewDocument,
-  ViewRef,
+import {
+  diagnostic,
+  type Diagnostic,
+  type DiagramPresentation,
+  type EntityPresentation,
+  type ExecutorProfileBindings,
+  type OccurrenceRef,
+  type ProfileRegistry,
+  type RelationPresentation,
+  type ViewDocument,
+  type ViewRef,
 } from "@sentropic/diagram-core";
 import type { AlignPinned, AnatomyPinned, DepthPinned } from "../presentation/diagramCardModel.js";
 
@@ -393,3 +394,37 @@ export type LayoutResult =
       /** `validateDocument`'s diagnostics, verbatim, when the refusal is `document-invalid`. */
       readonly diagnostics: readonly Diagnostic[];
     };
+
+/**
+ * Construct a refused `LayoutResult` that is guaranteed to carry at least one
+ * `LayoutRefusal` and at least one `Diagnostic`, so callers reading either field
+ * always see the explicit code and message.
+ */
+export function refusedLayout(
+  refusals: readonly LayoutRefusal[],
+  diagnostics: readonly Diagnostic[] = [],
+): Extract<LayoutResult, { readonly status: "refused" }> {
+  const safeRefusals: readonly LayoutRefusal[] =
+    refusals.length > 0
+      ? refusals
+      : diagnostics.length > 0
+        ? diagnostics.map((d) => ({
+            code: "document-invalid" as const,
+            path: d.path,
+            message: d.message,
+            ...(d.refs === undefined ? {} : { refs: d.refs }),
+          }))
+        : [{ code: "document-invalid" as const, path: "layout", message: "layout refused" }];
+  const safeDiagnostics: readonly Diagnostic[] =
+    diagnostics.length > 0
+      ? diagnostics
+      : safeRefusals.map((r) =>
+          diagnostic({
+            code: r.code,
+            path: r.path,
+            message: r.message,
+            ...(r.refs === undefined ? {} : { refs: r.refs }),
+          }),
+        );
+  return { status: "refused", refusals: safeRefusals, diagnostics: safeDiagnostics };
+}

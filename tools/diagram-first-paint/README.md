@@ -4,7 +4,7 @@
 with Chrome for Testing and `puppeteer-core`, matching the graph golden setup.
 The runner refuses execution outside GitHub CI. Never run it locally.
 
-The 68 cases (`2 frameworks × 2 viewports × cases.length` from `scenes.js`) mount
+The 72 cases (`2 frameworks × 2 viewports × cases.length` from `scenes.js`) mount
 the actual Svelte and Vue `DiagramSceneFigure` sources with the production theme:
 architecture and ontology h-cond fixtures, each folded and unfolded, an ERD-style
 ontology whose class cards sit in two nested zones (with and without a route
@@ -12,9 +12,11 @@ leaving the inner zone), three generic cards (v1 frozen and v2 compact 352×154)
 numbered flows with and without bundles, four r7 reference scenes
 (`r7-connectors`, `r7-connectors-folded`, `r7-nested-styles`, `r7-authored-legend`) exercising rounded
 elbows, link stroke widths, right-anchored link legends, single-legend authority, and live fold/unfold
-legend updates, and three H2 `ds-layout-hints@2` composed scenes (`h2-example-a`
+legend updates, and four H2 `ds-layout-hints@2` composed scenes (`h2-example-a`
 with free-cell legend and fan-out comb, `h2-example-b` with inherited stage
-columns and fan-in comb, and `h2-aspect-16-9` targeting `16:9 ± 2%`), at
+columns and fan-in comb, `h2-aspect-16-9` targeting `16:9 ± 2%`, and
+`h2-stacked-zones` verifying DE3-L7 horizontal centring inside widened stacked
+zones and nested sub-zones), at
 1440×900 and 390×844. `overlay.html` in this harness presents all 14 H2
 reference scenes side-by-side with their tagged `T-` / `NE-` residuals and live
 T-09 / T-49 / T-50 / T-37 / T-45 offset readouts. They

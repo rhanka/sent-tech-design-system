@@ -82,7 +82,7 @@
   },
   "dependencies": {
     "@sentropic/design-system-themes": "0.17.0",
-    "@sentropic/diagram-canvas": "0.8.0",
+    "@sentropic/diagram-canvas": "0.9.0",
     "@sentropic/graph": "0.3.1",
     "@sentropic/design-system-rich-text": "0.1.1"
   },

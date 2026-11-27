@@ -46,3 +46,7 @@ export function combinedLegendFindings(input: {
   readonly paths?: readonly { readonly id: string; readonly points: readonly PaintPoint[] }[];
   readonly tolerance?: number;
 }): string[];
+export function centredContainerContentFindings(input: {
+  readonly zones: readonly (PaintBox & { readonly id: string; readonly children: readonly PaintBox[] })[];
+  readonly tolerance?: number;
+}): string[];

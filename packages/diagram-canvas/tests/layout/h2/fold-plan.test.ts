@@ -60,6 +60,7 @@ function relativeChildrenSignature(
   res: Extract<LayoutResult, { status: "laid-out" }>,
   parent: EntityRef,
   document: H2ReferenceScene["document"],
+  alignBlockLeft = false,
 ): string | undefined {
   const occByEntity = new Map<EntityRef, { id: OccurrenceRef; geometry: Rect }>();
   for (const occ of Object.values(res.view.entityOccurrences)) {
@@ -85,7 +86,21 @@ function relativeChildrenSignature(
     });
   }
   children.sort((a, b) => (a.entity < b.entity ? -1 : a.entity > b.entity ? 1 : 0));
+  if (alignBlockLeft && children.length > 0) {
+    const minDx = Math.min(...children.map((c) => c.dx));
+    return JSON.stringify(children.map((c) => ({ ...c, dx: Math.round((c.dx - minDx) * 1024) / 1024 })));
+  }
   return JSON.stringify(children);
+}
+
+function containerWidthOf(
+  res: Extract<LayoutResult, { status: "laid-out" }>,
+  entity: EntityRef,
+): number | undefined {
+  for (const occ of Object.values(res.view.entityOccurrences)) {
+    if (occ.entity === entity) return occ.geometry.width;
+  }
+  return undefined;
 }
 
 /** Collect all containers that inherit columns (directly or transitively) inside a composition. */
@@ -565,8 +580,9 @@ describe("H2.5 fold-aware nominal plan, plan cache, subtree memo (D-6), invarian
 
         for (const container of scene.containers) {
           if (f3Changed.has(container)) continue;
-          const sigNom = relativeChildrenSignature(nominal, container, scene.document);
-          const sigFold = relativeChildrenSignature(foldedRes, container, scene.document);
+          const widthChanged = containerWidthOf(nominal, container) !== containerWidthOf(foldedRes, container);
+          const sigNom = relativeChildrenSignature(nominal, container, scene.document, widthChanged);
+          const sigFold = relativeChildrenSignature(foldedRes, container, scene.document, widthChanged);
           expect(sigFold, `${scene.id}:F-3:${toggledEntity}->${container}`).toBe(sigNom);
         }
 
@@ -892,11 +908,15 @@ describe("H2.5 fold-aware nominal plan, plan cache, subtree memo (D-6), invarian
     expect(Math.abs(centerX(geom(f1On, "z2-l")) - (foldedCols[0]!.start + foldedCols[0]!.size / 2))).toBeLessThanOrEqual(TOL);
     expect(Math.abs(centerX(geom(f1On, "z2-r")) - (foldedCols[1]!.start + foldedCols[1]!.size / 2))).toBeLessThanOrEqual(TOL);
 
-    // Non-inheriting container z3 stretched in s1 narrows its frame with s1 while keeping its internal layout byte-identical
+    // Non-inheriting container z3 stretched in s1 narrows its frame with s1 while keeping its internal
+    // block-relative layout byte-identical and centring its cards when widened (DE3-L7).
     expect(geom(f1On, "z3").width).toBeLessThan(geom(u1On, "z3").width);
-    expect(relativeChildrenSignature(f1On, entityRef("z3"), scene.document)).toBe(
-      relativeChildrenSignature(u1On, entityRef("z3"), scene.document),
+    expect(relativeChildrenSignature(f1On, entityRef("z3"), scene.document, true)).toBe(
+      relativeChildrenSignature(u1On, entityRef("z3"), scene.document, true),
     );
+    const z3U = geom(u1On, "z3");
+    const z3aU = geom(u1On, "z3-a");
+    expect(Math.abs((z3aU.x - z3U.x) - (z3U.x + z3U.width - (z3aU.x + z3aU.width)))).toBeLessThanOrEqual(TOL);
     expect(cacheOn.planStats().memoHits).toBeGreaterThan(0);
 
     // Same check on Example B folding layer-b: layer-a's cards move closer together, memo on/off identical

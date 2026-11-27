@@ -96,6 +96,10 @@ export interface LayoutHintsContext {
   readonly diagramPresentation?: boolean;
   /** The presentation vocabulary of the declaring profile, when it has one (`diagram-notation@1`). */
   readonly presentationVocabulary?: string;
+  /** Container entity references when validating stack stretch against a document scope. */
+  readonly containers?: ReadonlySet<EntityRef> | readonly EntityRef[];
+  /** Placement parent map (`child -> parent`) when validating stack stretch against a document scope. */
+  readonly parentOf?: ReadonlyMap<EntityRef, EntityRef | undefined> | Readonly<Record<string, EntityRef | undefined>>;
 }
 
 const ENTITY_REF_PATTERN = "^entity:[A-Za-z0-9][A-Za-z0-9._-]*$";

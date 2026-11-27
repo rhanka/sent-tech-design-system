@@ -129,7 +129,17 @@ export type DiagnosticCode =
   /** A hint the selected mode does not read. */
   | "layout-hint-out-of-scope"
   /** Two authored statements that cannot both hold. */
-  | "layout-hint-conflict";
+  | "layout-hint-conflict"
+  // --- Layout engine refusals -------------------------------------------
+  | "document-invalid"
+  | "target-width-invalid"
+  | "entity-profile-unsupported"
+  | "entity-type-unsupported"
+  | "relation-type-unsupported"
+  | "layout-hint-invalid"
+  | "measure-lines-missing"
+  | "stretch-unstable"
+  | "row-pack-invalid";
 
 export type DiagnosticSeverity = "error" | "warning";
 

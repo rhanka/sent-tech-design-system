@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased — @sentropic/diagram-canvas 0.9.0 & @sentropic/diagram-core 0.7.0
+
+- diagram-canvas (`DE3-L7` / `REQ-R7-35`): centre inner content horizontally
+  inside `forcedSize`- and `run.stretch`-widened non-inheriting expanded zones
+  and nested sub-zones (`seatBox`), preserving `packedSizes`, header-floor-only
+  zones, `stage_columns: "inherit"` axes, `v1` byte identity, and `F-4`
+  `subtreeMemo` cache parity.
+- diagram-core & diagram-canvas: refuse `align: "stretch"` on column stacks
+  containing leaf cards at both `validateLayoutHintsV2` and `layoutScene` /
+  `layoutMeasured`, and guarantee every `status: "refused"` layout result
+  carries at least one `Diagnostic` alongside `refusals`.
+- Bump `@sentropic/diagram-core` to `0.7.0` and `@sentropic/diagram-canvas` to
+  `0.9.0` with exact workspace pins in `diagram-canvas`,
+  `design-system-elements`, `design-system-svelte`, `design-system-vue`, and
+  `diagram-codecs` plus `package-lock.json`.
+
 ## Unreleased — @sentropic/diagram-canvas 0.8.0 (focus-bridge subpath)
 
 - diagram-canvas: publish `@sentropic/diagram-canvas/focus-bridge` subpath
