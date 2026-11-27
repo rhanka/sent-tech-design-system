@@ -1501,15 +1501,12 @@
                     </div>
                   {/if}
                 {:else if node.kind === "legend-key" && node.swatch !== undefined}
-                  <div class="st-diagramSceneFigure-label st-diagramSceneFigure-legendKey" data-entity={node.entity}>
-                    <span
+                  <div class="st-diagramSceneFigure-label st-diagramSceneFigure-legendKey" data-entity={node.entity}><span
                       class="st-diagramSceneFigure-legendKeySwatch"
                       data-legend-key-swatch=""
                       style={`background:${node.swatch.fill};border-color:${node.swatch.stroke}`}
                       aria-hidden="true"
-                    ></span>
-                    <span class="st-diagramSceneFigure-legendKeyText">{node.text}</span>
-                  </div>
+                    ></span><span class="st-diagramSceneFigure-legendKeyText">{node.text}</span></div>
                 {:else}
                   <div class="st-diagramSceneFigure-label" data-entity={node.entity}>{node.text}</div>
                 {/if}

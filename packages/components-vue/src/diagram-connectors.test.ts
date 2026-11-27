@@ -493,6 +493,7 @@ describe("DiagramSceneFigure numbered flow connectors — Vue", () => {
     const authored = view.container.querySelector<HTMLElement>("[data-authored-legend]")!;
     expect(authored).not.toBeNull();
     expect(view.container.querySelectorAll('[data-scene-kind="legend-key"] [data-legend-key-swatch]')).toHaveLength(2);
+    expect(view.container.querySelector('[data-scene-kind="legend-key"] .st-diagramSceneFigure-legendKey')?.textContent).toBe("Core Services");
     expect(authored.querySelectorAll("[data-legend-style]").length).toBeGreaterThanOrEqual(2);
     expect(authored.querySelector("button[aria-expanded]")).toBeNull();
     expect(view.container.querySelectorAll('[data-scene-occurrence="occurrence:e.zone-core"] button[aria-expanded]')).toHaveLength(1);
