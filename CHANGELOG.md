@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased — @sentropic/diagram-canvas 0.9.0 & @sentropic/diagram-core 0.7.0
+
+- diagram-canvas (`DE3-L7` / `REQ-R7-35`): centre inner content horizontally
+  inside `forcedSize`- and `run.stretch`-widened non-inheriting expanded zones
+  and nested sub-zones (`seatBox`), preserving `packedSizes`, header-floor-only
+  zones, `stage_columns: "inherit"` axes, `v1` byte identity, and `F-4`
+  `subtreeMemo` cache parity.
+- diagram-core & diagram-canvas: refuse `align: "stretch"` on column stacks
+  containing leaf cards at both `validateLayoutHintsV2` and `layoutScene` /
+  `layoutMeasured`, and guarantee every `status: "refused"` layout result
+  carries at least one `Diagnostic` alongside `refusals`.
+- Bump `@sentropic/diagram-core` to `0.7.0` and `@sentropic/diagram-canvas` to
+  `0.9.0` with exact workspace pins in `diagram-canvas`,
+  `design-system-elements`, `design-system-svelte`, `design-system-vue`, and
+  `diagram-codecs` plus `package-lock.json`.
+
 ## @sentropic/design-system-svelte 0.49.0 — Survey v2 questionnaire (S-3b)
 
 - **S-3b (PR #349)**: upgrade the keynote survey kit to `SurveyDefinition` v2 (`schemaVersion: 1 | 2`, backwards-compatible with v1) with `entry` framing (`enterprise | personal | both`, `fast` / `deep` modes), `themes`, question tiers (`core`, `deep`, `closing`), `ai_effect` question type (`DEFAULT_AI_EFFECT_OPTIONS`, `DEFAULT_AI_EFFECT_NEUTRAL_ID`, `DEFAULT_AI_EFFECT_NON_SUBSTANTIVE`, `resolveAiEffectOptions`), scoped answers (`ScopedAnswerValue`, `isScopedAnswerValue`), and `fromKeynoteQuestionnaire` v2 support (`keynote-poll/questionnaires@2`).

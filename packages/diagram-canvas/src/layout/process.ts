@@ -21,7 +21,7 @@ import {
 } from "@sentropic/diagram-core";
 import type { Rect, Vec2 } from "../transform.js";
 import type { LineMeasurer } from "./measure.js";
-import type { FlowDirection, LayoutOptions, LayoutResult, LayoutWarning } from "./types.js";
+import { refusedLayout, type FlowDirection, type LayoutOptions, type LayoutResult, type LayoutWarning } from "./types.js";
 
 export const PROCESS_LAYOUT_SPACING = {
   rankGap: 48,
@@ -1103,34 +1103,27 @@ export function layoutProcess(
     ...(options.bindings ? { bindings: options.bindings } : {}),
   });
   if (diagnostics.some((d) => d.severity === "error")) {
-    return {
-      status: "refused",
-      refusals: [{ code: "document-invalid", path: "document", message: "Invalid process document" }],
+    return refusedLayout(
+      [{ code: "document-invalid", path: "document", message: "Invalid process document" }],
       diagnostics,
-    };
+    );
   }
   if (!Number.isFinite(options.targetWidth) || options.targetWidth <= 0) {
-    return {
-      status: "refused",
-      refusals: [
-        {
-          code: "target-width-invalid",
-          path: "targetWidth",
-          message: `the target width is a positive number of CSS px, got ${String(options.targetWidth)}`,
-        },
-      ],
-      diagnostics: [],
-    };
+    return refusedLayout([
+      {
+        code: "target-width-invalid",
+        path: "targetWidth",
+        message: `the target width is a positive number of CSS px, got ${String(options.targetWidth)}`,
+      },
+    ]);
   }
 
   const profile = options.registry.get(PROCESS_PROFILE_ID);
   const notationBlock = notationForProfile(PROCESS_PROFILE_ID);
   if (profile === undefined || notationBlock === undefined) {
-    return {
-      status: "refused",
-      refusals: [{ code: "entity-profile-unsupported", path: "profileRefs", message: "process@1 profile not registered" }],
-      diagnostics: [],
-    };
+    return refusedLayout([
+      { code: "entity-profile-unsupported", path: "profileRefs", message: "process@1 profile not registered" },
+    ]);
   }
 
   const resolvedNotation = resolveNotation(notationBlock, profile, document);

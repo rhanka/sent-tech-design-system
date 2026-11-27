@@ -409,3 +409,23 @@ export function combinedLegendFindings({ legend, authoredLegends = [], nodes = [
   }
   return findings;
 }
+
+/**
+ * DE3-L7 / REQ-R7-35: verifies that each widened non-inheriting expanded zone
+ * centres its visible child bounding box horizontally within `tolerance` CSS px
+ * (never leaving cards packed left with an unjustified right gap).
+ */
+export function centredContainerContentFindings({ zones, tolerance = 1 }) {
+  const findings = [];
+  for (const zone of zones) {
+    if (!zone.children || zone.children.length === 0) continue;
+    const minLeft = Math.min(...zone.children.map(c => c.left));
+    const maxRight = Math.max(...zone.children.map(c => c.right));
+    const leftGap = minLeft - zone.left;
+    const rightGap = zone.right - maxRight;
+    if (Math.abs(leftGap - rightGap) > tolerance) {
+      findings.push(`zone ${zone.id} children off-centre: leftGap=${leftGap.toFixed(2)} rightGap=${rightGap.toFixed(2)}`);
+    }
+  }
+  return findings;
+}

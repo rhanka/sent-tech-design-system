@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { borderDistance, centredBodyFindings, combinedLegendFindings, compactCardFindings, connectorFindings, exposedSegments, legendFindings, linkStrokeWidthFindings, roundedElbowFindings, segmentInterval } from '../tools/diagram-first-paint/geometry.mjs';
+import { borderDistance, centredBodyFindings, centredContainerContentFindings, combinedLegendFindings, compactCardFindings, connectorFindings, exposedSegments, legendFindings, linkStrokeWidthFindings, roundedElbowFindings, segmentInterval } from '../tools/diagram-first-paint/geometry.mjs';
 import { cases, expectedLegendAnchor, expectedLegendStyles, expectedVisibleCounts, foldTargets } from '../tools/diagram-first-paint/scenes.js';
 
 test('should clip a crossing connector against the stroke-inset badge disk', () => {
@@ -251,4 +251,36 @@ test('should enforce combined legend count <= 1 and zero overlap for authored le
   assert.ok(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes: [...nodes, { id: 'inside-card', kind: 'card', left: 30, top: 30, right: 90, bottom: 90 }], labels, paths }).some(f => f.includes('overlaps box inside-card')));
   assert.ok(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes, labels: [{ id: 'inside-label', left: 30, top: 30, right: 90, bottom: 50 }], paths }).some(f => f.includes('overlaps label inside-label')));
   assert.deepEqual(combinedLegendFindings({ legend: null, authoredLegends: [authored], nodes: [...nodes, { id: 'outer-zone', kind: 'zone', left: 0, top: 0, right: 220, bottom: 180 }], labels, paths }), []);
+});
+
+test('should verify widened container horizontal centring and flag left-packed cards (DE3-L7)', () => {
+  assert.ok(cases.includes('h2-stacked-zones'));
+  assert.deepEqual(foldTargets('h2-stacked-zones'), ['occurrence:e.zone-one', 'occurrence:e.zone-nested', 'occurrence:e.sub-narrow']);
+  assert.deepEqual(expectedLegendStyles('h2-stacked-zones'), ['solid:arrow:default', 'dashed:arrow:default']);
+  assert.deepEqual(expectedLegendStyles('h2-stacked-zones--folded:occurrence:e.zone-one'), ['solid:arrow:default', 'dashed:arrow:default']);
+  assert.equal(expectedLegendAnchor('h2-stacked-zones'), 'right');
+
+  assert.deepEqual(centredContainerContentFindings({
+    zones: [
+      {
+        id: 'occurrence:e.zone-one',
+        left: 0, top: 0, right: 800, bottom: 250,
+        children: [{ left: 224, top: 60, right: 576, bottom: 214 }],
+      },
+    ],
+    tolerance: 1,
+  }), []);
+
+  const leftPacked = centredContainerContentFindings({
+    zones: [
+      {
+        id: 'occurrence:e.zone-one',
+        left: 0, top: 0, right: 800, bottom: 250,
+        children: [{ left: 16, top: 60, right: 368, bottom: 214 }],
+      },
+    ],
+    tolerance: 1,
+  });
+  assert.equal(leftPacked.length, 1);
+  assert.ok(leftPacked[0].includes('off-centre'));
 });

@@ -2,18 +2,18 @@ import { validateDocument, createView, occurrenceRef, viewRef, erdEntityOccurren
 import { ERD_GEOMETRY as T, measureErdCard, erdFields } from '../presentation/erd.js';
 import { packRows } from './pack.js';
 import { routeEdges, type RouteRequest } from './route.js';
-import { resolveRowPack, validateRowPack, type LayoutOptions, type LayoutResult, type LayoutWarning } from './types.js';
+import { refusedLayout, resolveRowPack, validateRowPack, type LayoutOptions, type LayoutResult, type LayoutWarning } from './types.js';
 import type { Rect, Vec2 } from '../transform.js';
 /** ERD measurement plugs into the existing variable-size shelf packer and orthogonal router. */
 export function layoutErd(document: SemanticDocument, options: LayoutOptions, source?: ViewDocument): LayoutResult {
   const diagnostics = validateDocument(document, { registry: options.registry, ...(options.bindings ? { bindings: options.bindings } : {}) });
   if (diagnostics.some(d => d.severity === 'error'))
-    return { status: 'refused', refusals: [{ code: 'document-invalid', path: 'document', message: 'Invalid ERD document' }], diagnostics };
+    return refusedLayout([{ code: 'document-invalid', path: 'document', message: 'Invalid ERD document' }], diagnostics);
   if (!Number.isFinite(options.targetWidth) || options.targetWidth <= 0)
-    return { status: 'refused', refusals: [{ code: 'target-width-invalid', path: 'targetWidth', message: 'Positive finite width required' }], diagnostics: [] };
+    return refusedLayout([{ code: 'target-width-invalid', path: 'targetWidth', message: 'Positive finite width required' }]);
   const objective = resolveRowPack(options.rowPack), refusals = validateRowPack(objective);
   if (refusals.length)
-    return { status: 'refused', refusals, diagnostics: [] };
+    return refusedLayout(refusals);
   const collapsed = new Set(options.collapsed ?? Object.values(source?.groups ?? {}).filter(g => g.collapsed).map(g => g.occurrence!));
   const entities = Object.values(document.entities).sort((a, b) => a.id < b.id ? -1 : 1);
   const ids = new Map(entities.map(e => [e.id, Object.values(source?.entityOccurrences ?? {}).find(o => o.entity === e.id)?.id ?? erdEntityOccurrence(e.id)]));

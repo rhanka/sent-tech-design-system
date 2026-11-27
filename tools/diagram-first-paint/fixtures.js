@@ -15,6 +15,7 @@ import {
 import { nestedZoneFixture } from '../../packages/diagram-canvas/test-support/nestedZoneFixture.ts';
 import { r7AuthoredLegendFixture } from '../../packages/diagram-canvas/test-support/r7AuthoredLegendFixture.ts';
 import { r7ConnectorsFixture } from '../../packages/diagram-canvas/test-support/r7ConnectorsFixture.ts';
+import { stackedZonesWidenedFixture } from '../../packages/diagram-canvas/test-support/stackedZonesWidenedFixture.ts';
 
 import { cases, expectedLegendAnchor, expectedLegendStyles } from './scenes.js';
 export { cases, expectedLegendAnchor, expectedLegendStyles } from './scenes.js';
@@ -102,6 +103,10 @@ export function fixture(name) {
   if (name === 'h2-aspect-16-9') {
     const built = buildH2Appctx16x9Fixture(architecture, architectureView);
     return { ...common, document: built.document, view: built.view, presentation: built.presentation, hints: built.hints, defaultFolds: [] };
+  }
+  if (name === 'h2-stacked-zones') {
+    const built = stackedZonesWidenedFixture();
+    return { ...common, document: built.document, presentation: built.presentation, hints: built.hints, defaultFolds: [] };
   }
   if (name.startsWith('numbered-flows')) {
     const source = flowFixture(name.endsWith('-bundled') ? 6 : 3, { labels: true, folded: true, reverse: true });

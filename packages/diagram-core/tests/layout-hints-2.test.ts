@@ -191,6 +191,35 @@ describe("ds-layout-hints@2 validation", () => {
       }
     }
   });
+  it("refuses align: stretch on column stacks without container-only scope or with leaf children", () => {
+    const stacked = {
+      ...stage,
+      stacks: { [a]: { axis: "column", align: "stretch" } },
+    };
+    const withoutScope = validateLayoutHintsV2(stacked);
+    expect(withoutScope).toContainEqual(
+      expect.objectContaining({
+        code: "layout-hint-conflict",
+        path: `layout.stacks.${a}.align`,
+      }),
+    );
+    const withLeaves = validateLayoutHintsV2(stacked, {
+      containers: [a],
+      parentOf: { [c]: a },
+    });
+    expect(withLeaves).toContainEqual(
+      expect.objectContaining({
+        code: "layout-hint-conflict",
+        path: `layout.stacks.${a}.align`,
+      }),
+    );
+    const withContainersOnly = validateLayoutHintsV2(stacked, {
+      containers: [a, c],
+      parentOf: { [c]: a },
+    });
+    expect(withContainersOnly).toEqual([]);
+  });
+
   it("reports in sorted order and handles non-JSON inputs without invoking getters", () => {
     const value = Object.freeze({ ...stage, extra: true, anchor: true });
     const findings = validateLayoutHintsV2(value);

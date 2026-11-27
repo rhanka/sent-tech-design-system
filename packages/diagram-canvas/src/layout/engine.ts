@@ -83,6 +83,7 @@ import {
   DEFAULT_LAYOUT_METRICS,
   MIN_ZOOM,
   PHONE_MAX_WIDTH,
+  refusedLayout,
   type FlowDirection,
   type LayoutMetrics,
   type LayoutOptions,
@@ -969,17 +970,13 @@ function buildView(
 
 export function layoutDocument(document: SemanticDocument, options: LayoutOptions): LayoutResult {
   if (!Number.isFinite(options.targetWidth) || options.targetWidth <= 0) {
-    return {
-      status: "refused",
-      refusals: [
-        {
-          code: "target-width-invalid",
-          path: "targetWidth",
-          message: `the target width is a positive number of CSS px, got ${String(options.targetWidth)}`,
-        },
-      ],
-      diagnostics: [],
-    };
+    return refusedLayout([
+      {
+        code: "target-width-invalid",
+        path: "targetWidth",
+        message: `the target width is a positive number of CSS px, got ${String(options.targetWidth)}`,
+      },
+    ]);
   }
   // M1-d (M3 §4.6–§4.8): a view with `presentation.diagram` takes the
   // fixed-footprint measurement path. Without it the pinned compatibility
@@ -987,14 +984,13 @@ export function layoutDocument(document: SemanticDocument, options: LayoutOption
   if (options.presentation !== undefined) return layoutMeasured(document, options);
   const diagnostics = [...validateDocument(document, { registry: options.registry }), ...validateFlows(document)];
   if (hasErrors(diagnostics)) {
-    return {
-      status: "refused",
-      refusals: [{ code: "document-invalid", path: "document", message: "diagram-core refuses this document" }],
+    return refusedLayout(
+      [{ code: "document-invalid", path: "document", message: "diagram-core refuses this document" }],
       diagnostics,
-    };
+    );
   }
   const read = readGraph(document);
-  if ("refusals" in read) return { status: "refused", refusals: read.refusals, diagnostics: [] };
+  if ("refusals" in read) return refusedLayout(read.refusals);
   const graph = read.graph;
 
   const metrics: LayoutMetrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics };
@@ -1067,29 +1063,24 @@ export function diagnoseLabels(
     }
   | { readonly status: "refused"; readonly refusals: readonly LayoutRefusal[]; readonly diagnostics: readonly Diagnostic[] } {
   if (!Number.isFinite(options.targetWidth) || options.targetWidth <= 0) {
-    return {
-      status: "refused",
-      refusals: [
-        {
-          code: "target-width-invalid",
-          path: "targetWidth",
-          message: `the target width is a positive number of CSS px, got ${String(options.targetWidth)}`,
-        },
-      ],
-      diagnostics: [],
-    };
+    return refusedLayout([
+      {
+        code: "target-width-invalid",
+        path: "targetWidth",
+        message: `the target width is a positive number of CSS px, got ${String(options.targetWidth)}`,
+      },
+    ]);
   }
   if (options.presentation !== undefined) return diagnoseMeasuredLabels(document, options);
   const diagnostics = [...validateDocument(document, { registry: options.registry }), ...validateFlows(document)];
   if (hasErrors(diagnostics)) {
-    return {
-      status: "refused",
-      refusals: [{ code: "document-invalid", path: "document", message: "diagram-core refuses this document" }],
+    return refusedLayout(
+      [{ code: "document-invalid", path: "document", message: "diagram-core refuses this document" }],
       diagnostics,
-    };
+    );
   }
   const read = readGraph(document);
-  if ("refusals" in read) return { status: "refused", refusals: read.refusals, diagnostics: [] };
+  if ("refusals" in read) return refusedLayout(read.refusals);
   const graph = read.graph;
   const metrics: LayoutMetrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics };
   const labelSizes = new Map<RelationRef, TextSize>();
@@ -1126,7 +1117,7 @@ function diagnoseMeasuredLabels(
   | { readonly status: "refused"; readonly refusals: readonly LayoutRefusal[]; readonly diagnostics: readonly Diagnostic[] } {
   const laid = layoutMeasured(document, options);
   if (laid.status !== "laid-out") {
-    return { status: "refused", refusals: laid.refusals, diagnostics: laid.diagnostics };
+    return refusedLayout(laid.refusals, laid.diagnostics);
   }
   const unplaced = new Set(
     laid.warnings.filter((warning) => warning.code === "label-unplaced").flatMap((warning) => warning.refs),

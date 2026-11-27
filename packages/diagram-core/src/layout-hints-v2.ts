@@ -352,7 +352,7 @@ function checkShape(value: JsonObject, report: Report): void {
   }
 }
 
-function checkIdentity(value: ComposedLayoutHints, report: Report): void {
+function checkIdentity(value: ComposedLayoutHints, report: Report, context?: LayoutHintsContext): void {
   const conflict = (path: string, message: string) => report("layout-hint-conflict", path, message);
   const grids = new Map(Object.entries(value.grids) as [string, LayoutGrid][]);
   const placed = new Set<EntityRef>();
@@ -475,6 +475,33 @@ function checkIdentity(value: ComposedLayoutHints, report: Report): void {
       }
     });
   }
+
+  for (const stackKey of Object.keys(value.stacks ?? {}).sort()) {
+    const stack = value.stacks?.[stackKey as EntityRef];
+    if (stack?.align !== "stretch") continue;
+    if (context?.containers !== undefined && context.parentOf !== undefined) {
+      const containerSet = context.containers instanceof Set ? context.containers : new Set(context.containers);
+      const entries = context.parentOf instanceof Map
+        ? [...context.parentOf.entries()]
+        : Object.entries(context.parentOf);
+      const hasLeafChild = entries.some(
+        ([child, parent]) => parent === stackKey && !containerSet.has(child as EntityRef),
+      );
+      if (hasLeafChild) {
+        conflict(
+          `stacks.${stackKey}.align`,
+          `stretch alignment is admitted on containers only, not leaves in stack ${stackKey}`,
+        );
+      }
+      continue;
+    }
+    if (stack.axis === "column" || context?.containers === undefined) {
+      conflict(
+        `stacks.${stackKey}.align`,
+        `stretch alignment on ${stack.axis} stack ${stackKey} is not admitted for card children (cards have fixed footprint); omit align or use start/center/end`,
+      );
+    }
+  }
 }
 
 /** Validate the closed @2 vocabulary, then verify identities and span occupancy. */
@@ -501,7 +528,7 @@ export function validateLayoutHintsV2(input: unknown, context?: LayoutHintsConte
         if (entry.code === "layout-hint-unknown" && samePath.length > 0) continue;
         found.push(entry);
       }
-      if (found.length === 0 && mode === "stage-columns") checkIdentity(value as unknown as ComposedLayoutHints, report);
+      if (found.length === 0 && mode === "stage-columns") checkIdentity(value as unknown as ComposedLayoutHints, report, context);
     }
   } catch {
     report("layout-hints-invalid", "", "expected a plain, acyclic layout-hint payload");

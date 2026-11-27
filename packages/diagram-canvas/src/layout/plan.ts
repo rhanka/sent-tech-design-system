@@ -216,6 +216,7 @@ export interface SubtreeNodeSnapshot {
   readonly entity: EntityRef;
   readonly runKey: string;
   readonly outerWidth: number;
+  readonly naturalWidth?: number;
   readonly packedSize: { readonly width: number; readonly height: number };
   readonly header?: HeaderMeasurement;
   readonly headerInput?: EntityMeasurementInput;

@@ -164,6 +164,7 @@ import {
   DEFAULT_LAYOUT_METRICS,
   MIN_ZOOM,
   PHONE_MAX_WIDTH,
+  refusedLayout,
   resolveRowPack,
   ROOT_LEVEL_KEY,
   validateRowPack,
@@ -769,7 +770,7 @@ export function layoutMeasured(
     sourceView,
   );
   if (relationStyleRefusals.length > 0) {
-    return { status: "refused", refusals: relationStyleRefusals, diagnostics: [] };
+    return refusedLayout(relationStyleRefusals);
   }
   if (document.profileRefs.length === 1 && document.profileRefs[0] === "erd@1") return layoutErd(document, options, sourceView);
   if (document.profileRefs.length === 1 && document.profileRefs[0] === "process@1") return layoutProcess(document, options, sourceView);
@@ -811,26 +812,20 @@ function layoutMeasuredPass(
   planCtx?: PlanExecutionContext,
 ): LayoutResult {
   if (!Number.isFinite(options.targetWidth) || options.targetWidth <= 0) {
-    return {
-      status: "refused",
-      refusals: [
-        {
-          code: "target-width-invalid",
-          path: "targetWidth",
-          message: `the target width is a positive number of CSS px, got ${String(options.targetWidth)}`,
-        },
-      ],
-      diagnostics: [],
-    };
+    return refusedLayout([
+      {
+        code: "target-width-invalid",
+        path: "targetWidth",
+        message: `the target width is a positive number of CSS px, got ${String(options.targetWidth)}`,
+      },
+    ]);
   }
-  if (sourceView !== undefined && Object.values(sourceView.entityOccurrences).some((occurrence) => document.entities[occurrence.entity]?.type === "flow-scenario")) return { status: "refused", refusals: [{ code: "document-invalid", path: "sourceView.entityOccurrences", message: "flow scenarios have no view occurrence" }], diagnostics: [] };
+  if (sourceView !== undefined && Object.values(sourceView.entityOccurrences).some((occurrence) => document.entities[occurrence.entity]?.type === "flow-scenario")) {
+    return refusedLayout([{ code: "document-invalid", path: "sourceView.entityOccurrences", message: "flow scenarios have no view occurrence" }]);
+  }
   const presentation = options.presentation;
   if (presentation === undefined) {
-    return {
-      status: "refused",
-      refusals: [{ code: "document-invalid", path: "presentation", message: "measured layout needs presentation.diagram" }],
-      diagnostics: [],
-    };
+    return refusedLayout([{ code: "document-invalid", path: "presentation", message: "measured layout needs presentation.diagram" }]);
   }
   /**
    * Per-occurrence pinned anatomy (DE-1): the presentation entry selects
@@ -842,17 +837,13 @@ function layoutMeasuredPass(
     diagramAnatomyOf(presentation, sourceView, occurrence);
   const cardWidthOf = (occurrence: OccurrenceRef): number => anatomyCardGeometry(occurrenceAnatomy(occurrence)).width;
   if (options.measureLines === undefined) {
-    return {
-      status: "refused",
-      refusals: [
-        {
-          code: "measure-lines-missing",
-          path: "measureLines",
-          message: "measured layout needs an injected LineMeasurer through options.measureLines",
-        },
-      ],
-      diagnostics: [],
-    };
+    return refusedLayout([
+      {
+        code: "measure-lines-missing",
+        path: "measureLines",
+        message: "measured layout needs an injected LineMeasurer through options.measureLines",
+      },
+    ]);
   }
   const measure = options.measureLines;
   const sceneBoxCache = planCtx?.shared?.sceneBoxCache ?? new Map<string, ReturnType<typeof measureSceneBox>>();
@@ -876,14 +867,13 @@ function layoutMeasuredPass(
       options.bindings === undefined ? { registry: options.registry } : { registry: options.registry, bindings: options.bindings };
     const diagnostics = [...validateDocument(document, validationOptions), ...validateFlows(document)];
     if (hasErrors(diagnostics)) {
-      return {
-        status: "refused",
-        refusals: [{ code: "document-invalid", path: "document", message: "diagram-core refuses this document" }],
+      return refusedLayout(
+        [{ code: "document-invalid", path: "document", message: "diagram-core refuses this document" }],
         diagnostics,
-      };
+      );
     }
     const read = readMeasuredGraph(document, options.registry);
-    if ("refusals" in read) return { status: "refused", refusals: read.refusals, diagnostics: [] };
+    if ("refusals" in read) return refusedLayout(read.refusals);
     graph = read.graph;
     if (planCtx?.shared !== undefined) planCtx.shared.graph = graph;
   }
@@ -937,7 +927,7 @@ function layoutMeasuredPass(
       for (const item of group.items) if (isLayoutGroup(item)) visitGap(item, `${path}.items.${item.id}`);
     };
     for (const group of hints.grouping ?? []) visitGap(group, `hints.grouping.${group.id}`);
-    if (refusals.length > 0) return { status: "refused", refusals, diagnostics: [] };
+    if (refusals.length > 0) return refusedLayout(refusals);
   }
 
   // Step 1 — resolve: the measured path never rebuilds occurrences or
@@ -1057,7 +1047,7 @@ function layoutMeasuredPass(
   const flowOccurrences = new Set<string>();
   for (const occurrence of Object.values(projected.relationOccurrences)) {
     if (document.relations[occurrence.relation]?.type !== "flow-step") continue;
-    if (flowOccurrences.has(occurrence.relation)) return { status: "refused", refusals: [{ code: "document-invalid", path: "sourceView.relationOccurrences", message: "one flow step must have at most one occurrence per view" }], diagnostics: [] };
+    if (flowOccurrences.has(occurrence.relation)) return refusedLayout([{ code: "document-invalid", path: "sourceView.relationOccurrences", message: "one flow step must have at most one occurrence per view" }]);
     flowOccurrences.add(occurrence.relation);
   }
   const flowPlan = planFlows(document, projected, options.registry, options, forced);
@@ -1146,7 +1136,7 @@ function layoutMeasuredPass(
     parentOf: new Map([...graph.nodes.values()].map((node) => [node.id, node.parent] as const)),
     containers: containerEntities,
   });
-  if (hintRefusals.length > 0) return { status: "refused", refusals: hintRefusals, diagnostics: [] };
+  if (hintRefusals.length > 0) return refusedLayout(hintRefusals);
 
   const childOrder = (parent: EntityRef, children: readonly EntityRef[]): EntityRef[] => {
     const live = children.filter(visible);
@@ -1583,10 +1573,12 @@ function layoutMeasuredPass(
       readonly shelves: readonly (readonly number[])[];
       readonly boxes: readonly PackBox[];
       readonly positions: readonly { readonly x: number; readonly y: number }[];
+      readonly width: number;
       readonly alongBase: number;
       readonly acrossBase: number;
     }
     const outerWidths = new Map<EntityRef, number>();
+    const naturalWidths = new Map<EntityRef, number>();
     const packedSizes = new Map<EntityRef, { width: number; height: number }>();
     const packedRuns = new Map<string, PackedRun>();
     const levelRuns = new Map<EntityRef, Run>();
@@ -1632,6 +1624,7 @@ function layoutMeasuredPass(
     const restoreMemoEntry = (entry: SubtreeMemoEntry): void => {
       for (const snap of entry.descendants) {
         outerWidths.set(snap.entity, snap.outerWidth);
+        if (snap.naturalWidth !== undefined) naturalWidths.set(snap.entity, snap.naturalWidth);
         packedSizes.set(snap.entity, { width: snap.packedSize.width, height: snap.packedSize.height });
         if (snap.header !== undefined) headers.set(snap.entity, snap.header);
         if (snap.headerInput !== undefined) headerInputs.set(snap.entity, snap.headerInput);
@@ -1660,10 +1653,12 @@ function layoutMeasuredPass(
         const chosenRun = chosen.get(runKey);
         const orient = orientationRecord.get(runKey);
         const packedSize = packedSizes.get(entity) ?? { width: 0, height: 0 };
+        const naturalWidth = naturalWidths.get(entity);
         return {
           entity,
           runKey,
           outerWidth: outerWidths.get(entity) ?? packedSize.width,
+          ...(naturalWidth === undefined ? {} : { naturalWidth }),
           packedSize: { width: packedSize.width, height: packedSize.height },
           ...(header === undefined ? {} : { header }),
           ...(headerInput === undefined ? {} : { headerInput }),
@@ -1720,6 +1715,7 @@ function layoutMeasuredPass(
         });
         run.items.forEach((item, slot) => {
           if (!("entity" in item) || !isStretchedBox(item.entity)) return;
+          naturalWidths.set(item.entity, boxes[slot]!.width);
           boxes[slot] = { width: widest, height: boxes[slot]!.height };
           outerWidths.set(item.entity, widest);
           packedSizes.set(item.entity, boxes[slot]!);
@@ -1859,7 +1855,7 @@ function layoutMeasuredPass(
           return Math.max(gapAfterOf(last) ?? acrossBase, activeWiden?.get(`${run.key}|across|${String(shelf)}`) ?? 0);
         },
       );
-      packedRuns.set(run.key, { run, rows, shelves, boxes, positions: seated.positions, alongBase, acrossBase });
+      packedRuns.set(run.key, { run, rows, shelves, boxes, positions: seated.positions, width: seated.width, alongBase, acrossBase });
       return { width: seated.width, height: seated.height };
     };
     const legendKeyCardWidth = (id: EntityRef): number => {
@@ -2210,6 +2206,7 @@ function layoutMeasuredPass(
     let rootRun: Run = { key: ROOT_LEVEL_KEY, mode: "auto", items: [], stretch: false };
     const sizeAll = (): void => {
       outerWidths.clear();
+      naturalWidths.clear();
       packedSizes.clear();
       packedRuns.clear();
       levelRuns.clear();
@@ -2412,13 +2409,13 @@ function layoutMeasuredPass(
         x, y: y + size.height - footerReserve - zoneGeo.borderWidth - ruleClearance,
         width: size.width, height: footerReserve + zoneGeo.borderWidth + ruleClearance,
       });
-      const contentX = x + contentInset;
+      const baseContentX = x + contentInset;
       const contentY = y + zoneGeo.headerInset + header.height + contentInset;
       if (kind === "legend-expanded") {
         legendInner.set(id, inner);
         orderedChildrenOf(id).forEach((key, index) => {
           rects.set(key, {
-            x: contentX,
+            x: baseContentX,
             y: contentY + index * (LEGEND_KEY_HEIGHT + gaps.cardGapY),
             width: inner,
             height: LEGEND_KEY_HEIGHT,
@@ -2428,16 +2425,33 @@ function layoutMeasuredPass(
       }
       const runKey = levelKeyOf(id);
       const gridLayout = composedGrids.get(runKey);
+      const stackLayout = composedStacks.get(runKey);
+      const run = levelRuns.get(id);
+      let offsetX = 0;
+      if (zoneRule && composition?.grids[id]?.stage_columns !== "inherit") {
+        const naturalWidth = naturalWidths.get(id) ?? natural.width;
+        const innerNaturalW =
+          gridLayout !== undefined
+            ? gridLayout.width
+            : stackLayout !== undefined
+              ? stackLayout.width
+              : run !== undefined
+                ? (packedRuns.get(run.key)?.width ?? 0)
+                : 0;
+        const innerAvailableW = Math.max(0, size.width - 2 * contentInset);
+        if (size.width > naturalWidth && innerAvailableW > innerNaturalW) {
+          offsetX = clean((innerAvailableW - innerNaturalW) / 2);
+        }
+      }
+      const contentX = baseContentX + offsetX;
       if (gridLayout !== undefined) {
         seatComposedGrid(gridLayout, contentX, contentY);
         return;
       }
-      const stackLayout = composedStacks.get(runKey);
       if (stackLayout !== undefined) {
         seatComposedStack(stackLayout, contentX, contentY);
         return;
       }
-      const run = levelRuns.get(id);
       if (run !== undefined) seatRun(run, contentX, contentY);
     };
     const rootGridLayout = composedGrids.get(ROOT_LEVEL_KEY);
@@ -4675,11 +4689,7 @@ export function layoutFolded(
   options: LayoutOptions,
 ): LayoutResult {
   if (sourceView.semanticDocumentId !== document.documentId) {
-    return {
-      status: "refused",
-      refusals: [{ code: "document-invalid", path: "sourceView", message: "the source view draws another document" }],
-      diagnostics: [],
-    };
+    return refusedLayout([{ code: "document-invalid", path: "sourceView", message: "the source view draws another document" }]);
   }
   return layoutMeasured(document, options, sourceView);
 }
