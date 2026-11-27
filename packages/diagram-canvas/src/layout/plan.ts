@@ -101,7 +101,7 @@ export function combineRootWithLegendBounds(
   gridWidth: number,
   gridHeight: number,
   legendSize: { readonly width: number; readonly height: number } | undefined,
-  anchor: SceneLinkLegendAnchor | "none",
+  anchor: SceneLinkLegendAnchor | "auto" | "none",
   legendInsideCell = false,
 ): { readonly width: number; readonly height: number } {
   if (legendSize === undefined || anchor === "none" || legendInsideCell) {
@@ -113,7 +113,7 @@ export function combineRootWithLegendBounds(
       height: gridHeight + LINK_LEGEND_GAP + legendSize.height,
     };
   }
-  // `"right"` (and `"free-cell"` fallback when no free cell exists)
+  // `"right"` (and fallback when `"auto"` or `"free-cell"` uses an edge strip)
   return {
     width: gridWidth + LINK_LEGEND_GAP + legendSize.width,
     height: Math.max(gridHeight, legendSize.height),

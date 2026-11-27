@@ -224,4 +224,63 @@ describe("H2.8 legend: 'free-cell' placement, track growth, fallback, and fold/u
     expect(u2.linkLegend).toEqual(u1.linkLegend);
     expect(canonicalise(u2.view, "view")).toBe(canonicalise(u1.view, "view"));
   });
+
+  it("DE3-L1b: auto legend uses free-cell when it fits natural track dimensions and falls back without track growth when too small", () => {
+    const hintsFits: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      grids: {
+        root: {
+          stage_columns: ["s1", "s2"],
+          transverse_bands: [
+            { id: "r1", items: [entityRef("a")] },
+            { id: "r2", items: [entityRef("b"), entityRef("c")] },
+          ],
+          cells: {
+            [entityRef("a")]: { column: "s1" },
+            [entityRef("b")]: { column: "s1" },
+            [entityRef("c")]: { column: "s2" },
+          },
+        },
+      },
+    };
+    const sceneFits = buildGenericScene({
+      id: "auto-free-cell-fits",
+      carries: ["DE3-L1b"],
+      hintsV2: hintsFits,
+      entities: [
+        { id: "a", title: "Alpha Service Node" },
+        { id: "b", title: "Beta Service Node" },
+        { id: "c", title: "Gamma Service Node With Wide Card Footprint" },
+      ],
+      relations: [
+        { id: "e1", source: "a", target: "b", strokeStyle: "solid" },
+        { id: "e2", source: "b", target: "c", strokeStyle: "dashed" },
+      ],
+    });
+    const resFits = mustLayOut(layoutMeasured(sceneFits.document, baseOptionsOf(sceneFits, { legend: "auto", legendTitle: "Key" })), "auto-fits");
+    expect(resFits.linkLegend).toBeDefined();
+    expect(resFits.linkLegend!.anchor).toBe("free-cell");
+
+    // Extremely wide legend title that would inflate s2 column must NOT force track growth under legend:"auto".
+    const resBaselineNone = mustLayOut(
+      layoutMeasured(sceneFits.document, baseOptionsOf(sceneFits, { legend: "none" })),
+      "baseline-none",
+    );
+    const resTooWide = mustLayOut(
+      layoutMeasured(
+        sceneFits.document,
+        baseOptionsOf(sceneFits, {
+          legend: "auto",
+          legendTitle: "Extraordinarily Wide Custom Connector Legend Heading Exceeding Natural Column Footprint",
+        }),
+      ),
+      "auto-too-wide",
+    );
+    expect(resTooWide.linkLegend).toBeDefined();
+    expect(resTooWide.linkLegend!.anchor).not.toBe("free-cell");
+    const baseS2 = resBaselineNone.composition!.grids["root"]!.columns.find((c) => c.id === "s2")!;
+    const wideS2 = resTooWide.composition!.grids["root"]!.columns.find((c) => c.id === "s2")!;
+    expect(wideS2.size).toBe(baseS2.size);
+  });
 });

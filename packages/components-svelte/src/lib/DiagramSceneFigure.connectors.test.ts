@@ -11,6 +11,7 @@ import { expectConnectorPaint, scenePaintOrder } from "../../../diagram-canvas/t
 import { flowFixture, flowMeasure } from "../../../diagram-canvas/test-support/flowFixture.js";
 import { nestedZoneFixture } from "../../../diagram-canvas/test-support/nestedZoneFixture.js";
 import { r7AuthoredLegendFixture } from "../../../diagram-canvas/test-support/r7AuthoredLegendFixture.js";
+import { r7ConnectorsFixture } from "../../../diagram-canvas/test-support/r7ConnectorsFixture.js";
 import DiagramSceneFigure, { type DiagramSceneFigureProps } from "./DiagramSceneFigure.svelte";
 
 beforeEach(() => {
@@ -459,5 +460,69 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     const v1MarkerPath = v1View.container.querySelector("defs marker path");
     expect(v1MarkerPath?.getAttribute("fill")).toBe("var(--st-component-diagramScene-edgeStroke, #64748b)");
     v1View.unmount();
+  });
+
+  it("D2D M1 feedback & DE3-L1b: paints r7 legend swatches, combined link rows, omits fold toggle on legend, and renders conditional marks", async () => {
+    const r7 = r7AuthoredLegendFixture(false);
+    const view = render(DiagramSceneFigure, {
+      document: r7.document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: r7.presentation,
+      measureLines: flowMeasure,
+      collapsed: [],
+    } as DiagramSceneFigureProps);
+    await tick();
+
+    const authored = view.container.querySelector<HTMLElement>("[data-authored-legend]")!;
+    expect(authored).not.toBeNull();
+    expect(view.container.querySelectorAll('[data-scene-kind="legend-key"] [data-legend-key-swatch]')).toHaveLength(2);
+    expect(authored.querySelectorAll("[data-legend-style]").length).toBeGreaterThanOrEqual(2);
+    expect(authored.querySelector("button[aria-expanded]")).toBeNull();
+    expect(view.container.querySelectorAll('[data-scene-occurrence="occurrence:e.zone-core"] button[aria-expanded]')).toHaveLength(1);
+    view.unmount();
+
+    // v1 authored legend keeps old behavior: no swatches, no fold suppression regression.
+    const v1View = render(DiagramSceneFigure, {
+      document: r7.document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: {
+        ...r7.presentation,
+        contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+        entities: Object.fromEntries(
+          Object.entries(r7.presentation.entities).map(([id, entry]) => {
+            const { anatomy: _ignored, ...rest } = entry as { anatomy?: unknown; form: string; text: unknown };
+            return [id, rest];
+          }),
+        ),
+        relations: {},
+      },
+      measureLines: flowMeasure,
+      collapsed: [],
+    } as DiagramSceneFigureProps);
+    await tick();
+    expect(v1View.container.querySelectorAll("[data-legend-key-swatch]")).toHaveLength(0);
+    v1View.unmount();
+
+    // Automatic r7 legend renders proposed and folded-zone marks when >= 2 connector styles exist.
+    const r7Folded = r7ConnectorsFixture(true);
+    const markView = render(DiagramSceneFigure, {
+      document: r7Folded.document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      collapsed: r7Folded.defaultFolds,
+      measureLines: flowMeasure,
+      presentation: {
+        ...r7Folded.presentation,
+        entities: {
+          ...r7Folded.presentation.entities,
+          "occurrence:e.gateway": { ...(r7Folded.presentation.entities["occurrence:e.gateway"] as Record<string, unknown>), status: "proposed" },
+        },
+      },
+    } as DiagramSceneFigureProps);
+    await tick();
+    expect(markView.container.querySelector('[data-scene-legend] [data-legend-mark="proposed"]')).not.toBeNull();
+    expect(markView.container.querySelector('[data-scene-legend] [data-legend-mark="folded-zone"]')).not.toBeNull();
   });
 });

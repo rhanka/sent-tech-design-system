@@ -12,14 +12,24 @@ import {
 import { describe, expect, it } from "vitest";
 import {
   buildSceneLinkLegend,
+  collectLegendEntityMarks,
   collectLinkLegendStyles,
+  defaultLegendMarkLabel,
+  defaultLegendTitle,
   defaultLinkStyleLabel,
   layoutMeasured,
+  LINK_LEGEND_CORNER_RADIUS,
   LINK_LEGEND_GAP,
+  LINK_LEGEND_HEADER_GAP,
+  LINK_LEGEND_HEADER_HEIGHT,
   LINK_LEGEND_MIN_WIDTH,
+  LINK_LEGEND_PADDING,
+  LINK_LEGEND_ROW_GAP,
+  LINK_LEGEND_ROW_HEIGHT,
   linkLegendSwatchGeometry,
   linkStyleKey,
   rectsIntersect,
+  resolveLegendKeySwatch,
 } from "../../src/index.js";
 import { cardLineMeasurer, defaultCardMeasure, sceneCardMeasure } from "../../src/presentation/diagramCardModel.js";
 import { layoutScene, resolveScene, sceneFit, type ScenePresentation } from "../../src/presentation/diagramSceneModel.js";
@@ -577,5 +587,294 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
         expect(overview.linkLegend!.rect.x).toBeGreaterThanOrEqual(maxLabelRight + LINK_LEGEND_GAP - 1);
       }
     }
+  });
+
+  it("DE3-L1b: enforces compact anatomy (<= 154 px for 3 rows, rx=8) and localized labels", () => {
+    expect(LINK_LEGEND_MIN_WIDTH).toBe(160);
+    expect(LINK_LEGEND_PADDING).toBe(12);
+    expect(LINK_LEGEND_HEADER_HEIGHT).toBe(24);
+    expect(LINK_LEGEND_HEADER_GAP).toBe(6);
+    expect(LINK_LEGEND_ROW_HEIGHT).toBe(24);
+    expect(LINK_LEGEND_ROW_GAP).toBe(6);
+    expect(LINK_LEGEND_CORNER_RADIUS).toBe(8);
+
+    const { document, presentation } = multiStyleFixture();
+    const threeStylePres = {
+      ...presentation,
+      relations: {
+        "relation:r-default": { strokeStyle: "solid", arrowhead: "arrow" },
+        "relation:r-proposed": { strokeStyle: "dashed", arrowhead: "arrow" },
+        "relation:r-dotted": { strokeStyle: "dotted", arrowhead: "arrow" },
+        "relation:r-emphasis": { strokeStyle: "solid", arrowhead: "arrow" },
+      },
+    } as ScenePresentation;
+    const rendered = renderSceneSvg({
+      document,
+      presentation: threeStylePres,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [],
+    });
+    const legend = rendered.scene.linkLegend!;
+    expect(legend.entries).toHaveLength(3);
+    expect(legend.rect.height).toBeLessThanOrEqual(154);
+    expect(rendered.svg).toContain('data-scene-legend=""');
+    expect(rendered.svg).toContain('rx="8"');
+
+    // French localization preserves canonical meanings.
+    expect(defaultLegendTitle("fr")).toBe("Légende");
+    expect(defaultLinkStyleLabel({ strokeStyle: "solid", arrowhead: "arrow", emphasis: "default" }, "fr")).toBe("Lien");
+    expect(defaultLinkStyleLabel({ strokeStyle: "dashed", arrowhead: "arrow", emphasis: "default" }, "fr")).toBe("Proposé (pointillés)");
+    expect(defaultLinkStyleLabel({ strokeStyle: "dotted", arrowhead: "arrow", emphasis: "default" }, "fr")).toBe("Pointillés");
+    expect(defaultLinkStyleLabel({ strokeStyle: "solid", arrowhead: "none", emphasis: "emphasis" }, "fr")).toBe("Principal · Non orienté");
+    expect(defaultLegendMarkLabel("proposed", "fr")).toBe("Proposé");
+    expect(defaultLegendMarkLabel("folded-zone", "fr")).toBe("Zone repliée [+]");
+
+    const frRendered = renderSceneSvg({
+      document,
+      presentation: threeStylePres,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      legendTitle: "Légende",
+      collapsed: [],
+    });
+    expect(frRendered.scene.linkLegend!.title).toBe("Légende");
+    expect(frRendered.scene.linkLegend!.entries.map((e) => e.label)).toEqual([
+      "Lien",
+      "Proposé (pointillés)",
+      "Pointillés",
+    ]);
+  });
+
+  it("DE3-L1b: emits conditional proposed/[+] marks only when >= 2 link styles exist, never on 1-style scenes", () => {
+    const { document, presentation } = multiStyleFixture();
+    const docWithSecondOutsideLink = {
+      ...document,
+      entities: {
+        ...document.entities,
+        "entity:ext2": { id: "entity:ext2", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "External 2" } } },
+      },
+      relations: {
+        ...document.relations,
+        "relation:r-ext-dotted": {
+          id: "relation:r-ext-dotted",
+          profile: "generic@2",
+          type: "link",
+          endpoints: [{ role: "source", target: "entity:ext" }, { role: "target", target: "entity:ext2" }],
+          attributes: { label: { kind: "text", value: "sync" } },
+        },
+      },
+    } as unknown as SemanticDocument;
+    const proposedAndFoldedPres = {
+      ...presentation,
+      entities: {
+        ...presentation.entities,
+        "occurrence:e.zone": { ...presentation.entities["occurrence:e.zone"], collapsed: false },
+        "occurrence:e.ext": { ...presentation.entities["occurrence:e.ext"], status: "proposed" },
+        "occurrence:e.ext2": { form: "card", text: { title: "External 2", body: "Peer 2" }, anatomy: "v2" },
+      },
+      relations: {
+        ...presentation.relations,
+        "relation:r-ext-dotted": { strokeStyle: "dotted", arrowhead: "arrow" },
+      },
+    } as unknown as ScenePresentation;
+
+    // Multiple link styles + collapsed zone + proposed entity => includes both marks cleanly inside linkLegend height.
+    const multi = renderSceneSvg({
+      document: docWithSecondOutsideLink,
+      presentation: proposedAndFoldedPres,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [occurrenceRef("e.zone")],
+    });
+    expect(multi.scene.linkLegend).toBeDefined();
+    expect(multi.scene.linkLegend!.entityMarks?.map((m) => m.kind)).toEqual(["proposed", "folded-zone"]);
+    expect(multi.svg).toContain('data-legend-mark="proposed"');
+    expect(multi.svg).toContain('data-legend-mark="folded-zone"');
+
+    // Pure collector check when 1 style vs >=2 styles: marks must never trigger a legend alone.
+    const marks = collectLegendEntityMarks(multi.scene.nodes, proposedAndFoldedPres, "en");
+    expect(marks.map((m) => m.kind)).toEqual(["proposed", "folded-zone"]);
+    const oneStylePres = {
+      ...proposedAndFoldedPres,
+      relations: {
+        "relation:r-solid": { strokeStyle: "solid", arrowhead: "arrow" },
+        "relation:r-proposed": { strokeStyle: "solid", arrowhead: "arrow" },
+        "relation:r-dotted": { strokeStyle: "solid", arrowhead: "arrow" },
+        "relation:r-ext-dotted": { strokeStyle: "solid", arrowhead: "arrow" },
+        "relation:r-emphasis": { strokeStyle: "solid", arrowhead: "arrow" },
+        "relation:r-default": { strokeStyle: "solid", arrowhead: "arrow" },
+      },
+    } as unknown as ScenePresentation;
+    const single = renderSceneSvg({
+      document: docWithSecondOutsideLink,
+      presentation: oneStylePres,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [occurrenceRef("e.zone")],
+    });
+    expect(single.scene.linkLegend).toBeUndefined();
+    expect(single.svg).not.toContain("data-scene-legend");
+  });
+
+  it("DE3-L1b: auto anchor selects a >= 24 px clear interior pocket on uncomposed r7 scenes and falls back to right otherwise", () => {
+    const doc = {
+      documentId: "document:r7-pocket-probe",
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 1,
+      profileRefs: ["generic@2"],
+      typeDefinitions: {},
+      entities: {
+        "entity:top-a": { id: "entity:top-a", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Top A" } } },
+        "entity:bot-a": { id: "entity:bot-a", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Bot A" } } },
+        "entity:bot-b": { id: "entity:bot-b", profile: "generic@2", type: "node", attributes: { name: { kind: "text", value: "Bot B" } } },
+      },
+      relations: {
+        "relation:r1": { id: "relation:r1", profile: "generic@2", type: "link", endpoints: [{ role: "source", target: "entity:top-a" }, { role: "target", target: "entity:bot-a" }], attributes: {} },
+        "relation:r2": { id: "relation:r2", profile: "generic@2", type: "link", endpoints: [{ role: "source", target: "entity:bot-a" }, { role: "target", target: "entity:bot-b" }], attributes: {} },
+      },
+      ports: {},
+      resources: {},
+      extensions: [],
+    } as unknown as SemanticDocument;
+    const pres = {
+      contractPin: { ...DIAGRAM_PRESENTATION_V2_CONTRACT_PIN },
+      entities: {
+        "occurrence:e.top-a": { form: "card", anatomy: "v2", text: { title: "Top Left" } },
+        "occurrence:e.bot-a": { form: "card", anatomy: "v2", text: { title: "Bottom Left" } },
+        "occurrence:e.bot-b": { form: "card", anatomy: "v2", text: { title: "Bottom Right" } },
+      },
+      relations: {
+        "relation:r1": { strokeStyle: "solid", arrowhead: "arrow" },
+        "relation:r2": { strokeStyle: "dashed", arrowhead: "arrow" },
+      },
+      legends: {},
+      categoryTokens: [],
+    } as unknown as ScenePresentation;
+
+    const autoLegend = buildSceneLinkLegend({
+      edges: [
+        { points: [{ x: 100, y: 120 }, { x: 100, y: 300 }], strokeStyle: "solid", arrowhead: "arrow", emphasis: "default" },
+        { points: [{ x: 200, y: 350 }, { x: 700, y: 350 }], strokeStyle: "dashed", arrowhead: "arrow", emphasis: "default" },
+      ],
+      nodes: [
+        { x: 0, y: 0, width: 220, height: 120 },
+        { x: 0, y: 300, width: 220, height: 120 },
+        { x: 700, y: 300, width: 220, height: 120 },
+      ],
+      labelBoxes: [],
+      contentBounds: { x: 0, y: 0, width: 920, height: 420 },
+      measureLines,
+      anchor: "auto",
+    });
+    expect(autoLegend).toBeDefined();
+    expect(autoLegend!.anchor).toBe("pocket");
+    expect(autoLegend!.rect.x).toBeGreaterThanOrEqual(0);
+    expect(autoLegend!.rect.x + autoLegend!.rect.width).toBeLessThanOrEqual(920);
+    expect(autoLegend!.rect.y).toBeGreaterThanOrEqual(0);
+    expect(autoLegend!.rect.y + autoLegend!.rect.height).toBeLessThanOrEqual(420);
+    // >= 24 px clear of top-left node (right=220) and bottom-right node (top=300)
+    expect(autoLegend!.rect.x).toBeGreaterThanOrEqual(220 + 24 - 0.1);
+    expect(autoLegend!.rect.y + autoLegend!.rect.height).toBeLessThanOrEqual(300 - 24 + 0.1);
+
+    // When contentBounds is tight around a single filled strip, auto falls back to right.
+    const laid = layoutScene({
+      document: doc,
+      presentation: pres,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      legend: "auto",
+      collapsed: [],
+    });
+    expect(laid.status).toBe("laid-out");
+    if (laid.status === "laid-out") {
+      const resolved = resolveScene(laid, { document: doc, presentation: pres, measureLines, legend: "auto" });
+      expect(resolved.linkLegend).toBeDefined();
+      expect(["pocket", "right"]).toContain(resolved.linkLegend!.anchor);
+    }
+  });
+
+  it("D2D M1 feedback: paints r7 legend-key swatches, combines link styles into authored legend, and omits fold button", () => {
+    expect(resolveLegendKeySwatch("accent.primary", "brand").fill).toContain("var(--");
+    expect(resolveLegendKeySwatch("st-semantic-data-category3", "ext").fill).toContain("var(--st-semantic-data-category3");
+
+    const r7 = r7AuthoredLegendFixture(false);
+    const rendered = renderSceneSvg({
+      document: r7.document,
+      presentation: r7.presentation,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [],
+    });
+
+    const authoredZone = rendered.scene.nodes.find((n) => n.presentation?.form === "legend");
+    expect(authoredZone).toBeDefined();
+    expect(authoredZone!.combinedLegend).toBeDefined();
+    expect(authoredZone!.combinedLegend!.entries.length).toBeGreaterThanOrEqual(2);
+
+    const keyNodes = rendered.scene.nodes.filter((n) => n.kind === "legend-key");
+    expect(keyNodes.length).toBeGreaterThanOrEqual(2);
+    for (const keyNode of keyNodes) {
+      expect(keyNode.swatch).toBeDefined();
+    }
+
+    // SVG paints swatches, combined link-style entries inside the single authored legend, and NO fold toggle inside legend.
+    expect(rendered.svg).toContain('data-legend-key-swatch=""');
+    expect(rendered.svg).toContain('data-legend-style=');
+    expect(rendered.svg).not.toContain('data-scene-legend');
+    const legendMatch = /<g data-authored-legend=""[\s\S]*?(?=<\/svg>)/.exec(rendered.svg)?.[0] ?? "";
+    expect(legendMatch).not.toContain("Collapse");
+    expect(legendMatch).not.toContain("Expand");
+
+    // Empty presentation.text on an r7 legend-key falls back to semantic entity name.
+    const fallbackPres = {
+      ...r7.presentation,
+      entities: {
+        ...r7.presentation.entities,
+        "occurrence:e.key-core": {
+          ...(r7.presentation.entities["occurrence:e.key-core"] as unknown as Record<string, unknown>),
+          text: {},
+        },
+      },
+    } as unknown as ScenePresentation;
+    const fallbackRendered = renderSceneSvg({
+      document: r7.document,
+      presentation: fallbackPres,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [],
+    });
+    const fallbackKey = fallbackRendered.scene.nodes.find((n) => n.occurrence === occurrenceRef("e.key-core"));
+    expect(fallbackKey?.text).toBe("Core Services");
+
+    // Frozen v1 authored legend never paints swatches or combined link styles.
+    const v1Presentation = {
+      ...r7.presentation,
+      contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+      entities: Object.fromEntries(
+        Object.entries(r7.presentation.entities).map(([id, entry]) => {
+          const { anatomy: _ignored, ...rest } = entry as { anatomy?: unknown; form: string; text: unknown };
+          return [id, rest];
+        }),
+      ),
+      relations: {},
+    } as unknown as ScenePresentation;
+    const v1 = renderSceneSvg({
+      document: r7.document,
+      presentation: v1Presentation,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      measureLines,
+      collapsed: [],
+    });
+    expect(v1.svg).not.toContain("data-legend-key-swatch");
+    expect(v1.svg).not.toContain("data-legend-style");
   });
 });

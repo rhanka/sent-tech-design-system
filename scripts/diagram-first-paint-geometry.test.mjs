@@ -222,6 +222,15 @@ test('should verify legend canonical order, right anchor, non-overlap, and omiss
   };
   const stageNode = [{ id: 'n1', left: 336, top: 0, right: 688, bottom: 154 }];
   assert.deepEqual(legendFindings({ legend: freeCellLegend, nodes: stageNode, expectedAnchor: 'free-cell', expectedStyles: freeCellLegend.styles }), []);
+
+  // DE3-L1b pocket legend sits inside an open corner >= 24 px clear without overlapping any box
+  const pocketLegend = {
+    id: 'legend',
+    left: 448, top: 24, right: 616, bottom: 154,
+    anchor: 'pocket',
+    styles: ['solid:arrow:default', 'dashed:arrow:default'],
+  };
+  assert.deepEqual(legendFindings({ legend: pocketLegend, nodes, expectedAnchor: 'pocket', expectedStyles: pocketLegend.styles }), []);
 });
 
 test('should enforce combined legend count <= 1 and zero overlap for authored legends (DE3-L1a)', () => {

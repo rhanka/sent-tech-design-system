@@ -355,7 +355,7 @@ const scenarioId = useId();
               </svg>
               <template v-else>
               <div v-for="node in layer.nodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :data-authored-legend="scene.r7Connectors && node.presentation?.form === 'legend' ? '' : undefined" :data-flow-state="stateOf(node.occurrence)" :style="boxStyle(node.rect)">
-                <SceneNode :node="node" :measure="measure" :container-padding="effectiveMetrics.containerPadding" :expand="strings.expand" :collapse="strings.collapse" :resolve-glyph="props.resolveGlyph ?? getDiagramGlyph" :select="() => selectNode(node)" :toggle="() => toggle(node)" />
+                <SceneNode :node="node" :measure="measure" :container-padding="effectiveMetrics.containerPadding" :hide-toggle="scene.r7Connectors && node.presentation?.form === 'legend'" :link-widths="effectiveMetrics" :expand="strings.expand" :collapse="strings.collapse" :resolve-glyph="props.resolveGlyph ?? getDiagramGlyph" :select="() => selectNode(node)" :toggle="() => toggle(node)" />
               </div>
               </template>
               </template>
@@ -384,6 +384,16 @@ const scenarioId = useId();
                       <path v-if="swatch.arrowPath !== undefined" :d="swatch.arrowPath" :fill="swatch.arrowFill" :stroke="swatch.arrowStroke" :stroke-width="swatch.arrowStrokeWidth" />
                     </svg>
                     <span class="st-diagramSceneFigure-legendLabel">{{ entry.label }}</span>
+                  </li>
+                  <li v-for="mark in scene.linkLegend.entityMarks ?? []" :key="mark.kind" class="st-diagramSceneFigure-legendItem" :data-legend-mark="mark.kind">
+                    <svg class="st-diagramSceneFigure-legendSwatch" :viewBox="`0 0 ${scene.linkLegend.swatchWidth} ${scene.linkLegend.swatchHeight}`" aria-hidden="true">
+                      <rect v-if="mark.kind === 'proposed'" x="10" y="1" width="24" height="14" rx="4" fill="none" stroke="var(--st-semantic-border-strong, #64748b)" stroke-width="1.5" stroke-dasharray="4 3" />
+                      <template v-else>
+                        <rect x="12" y="1" width="20" height="14" rx="3" fill="var(--st-semantic-surface-subtle, #f8fafc)" stroke="var(--st-semantic-border-strong, #64748b)" stroke-width="1.5" />
+                        <text x="22" y="12" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">+</text>
+                      </template>
+                    </svg>
+                    <span class="st-diagramSceneFigure-legendLabel">{{ mark.label }}</span>
                   </li>
                 </ul>
               </aside>

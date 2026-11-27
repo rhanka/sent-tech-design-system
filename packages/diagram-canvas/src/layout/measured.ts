@@ -114,6 +114,9 @@ import {
 import { measureSceneBox } from "./sceneMeasure.js";
 import { anatomyCardGeometry, anatomyZoneGeometry, ZONE_GEOMETRY, zoneDepthSurface, type DiagramAnatomy } from "../presentation/diagramCardModel.js";
 import {
+  collectLegendEntityMarks,
+  findLegendPocket,
+  inferLegendLocale,
   linkStyleKey,
   measureSceneLinkLegend,
   placeSceneLinkLegend,
@@ -508,7 +511,7 @@ interface PlanSizingReport {
   readonly capX: number;
   readonly capY: number;
   readonly legendSize?: { readonly width: number; readonly height: number };
-  readonly effectiveLegendAnchor: "right" | "bottom" | "free-cell" | "none";
+  readonly effectiveLegendAnchor: "right" | "bottom" | "free-cell" | "auto" | "none";
   readonly legendInsideCell: boolean;
 }
 
@@ -1437,7 +1440,7 @@ function layoutMeasuredPass(
   // `free-cell` legend contributes its measured box to its cell's tracks on
   // the very first sizing sweep — and a fold removing the second connector
   // style narrows that column on the same call, with memo on or off.
-  const effectiveLegendAnchor: "right" | "bottom" | "free-cell" | "none" =
+  const effectiveLegendAnchor: "right" | "bottom" | "free-cell" | "auto" | "none" =
     composition === undefined
       ? "none"
       : composition.legend === "host"
@@ -1448,9 +1451,8 @@ function layoutMeasuredPass(
     const kind = kinds.get(id);
     return kind === "legend-expanded" || kind === "legend-collapsed";
   });
-  const stateMeasuredLegend = (() => {
-    if (composition === undefined || effectiveLegendAnchor === "none" || hasVisibleAuthoredLegend) return undefined;
-    const legendEdges: LinkLegendEdgeInput[] = [];
+  const legendEdges: LinkLegendEdgeInput[] = [];
+  if (effectiveLegendAnchor !== "none" || hasVisibleAuthoredLegend) {
     for (const edge of drawnEdges) {
       const occurrence = projected.relationOccurrences[edge.occurrence];
       if (occurrence === undefined) continue;
@@ -1469,21 +1471,69 @@ function layoutMeasuredPass(
         ...(r7Routing && resolvedEmphasis === "emphasis" ? { emphasis: resolvedEmphasis } : {}),
       });
     }
-    return measureSceneLinkLegend({
-      edges: legendEdges,
-      measureLines: measure,
-      ...(options.legendTitle === undefined ? {} : { title: options.legendTitle }),
-      ...(options.legendLabels === undefined ? {} : { labels: options.legendLabels }),
-      ...(metrics.edgeLabelSize === undefined ? {} : { fontSize: metrics.edgeLabelSize }),
-    });
-  })();
+  }
+  const legendLocale = inferLegendLocale(
+    options.legendTitle ??
+      (() => {
+        for (const id of graph.nodes.keys()) {
+          if (!visible(id)) continue;
+          const k = kinds.get(id);
+          if (k === "legend-expanded" || k === "legend-collapsed") {
+            return presentation.entities[representativeOf(id)]?.text.title;
+          }
+        }
+        return undefined;
+      })(),
+  );
+  const visibleEntityMarks = r7Routing
+    ? collectLegendEntityMarks(
+        [...graph.nodes.keys()]
+          .filter((id) => visible(id))
+          .map((id) => {
+            const occurrence = representativeOf(id);
+            const k = kinds.get(id);
+            return {
+              occurrence,
+              entity: id,
+              kind: k === "container-collapsed" || k === "legend-collapsed" || k === "container-expanded" || k === "legend-expanded" ? "zone" : "card",
+              collapsed: k === "container-collapsed" || k === "legend-collapsed",
+            };
+          }),
+        presentation,
+        legendLocale,
+      )
+    : [];
+  const stateMeasuredLegend =
+    composition === undefined || effectiveLegendAnchor === "none" || hasVisibleAuthoredLegend
+      ? undefined
+      : measureSceneLinkLegend({
+          edges: legendEdges,
+          measureLines: measure,
+          ...(visibleEntityMarks.length === 0 ? {} : { entityMarks: visibleEntityMarks }),
+          locale: legendLocale,
+          ...(options.legendTitle === undefined ? {} : { title: options.legendTitle }),
+          ...(options.legendLabels === undefined ? {} : { labels: options.legendLabels }),
+          ...(metrics.edgeLabelSize === undefined ? {} : { fontSize: metrics.edgeLabelSize }),
+        });
+  const authoredCombinedLegendMeasure =
+    r7Routing && hasVisibleAuthoredLegend
+      ? measureSceneLinkLegend({
+          edges: legendEdges,
+          measureLines: measure,
+          ...(visibleEntityMarks.length === 0 ? {} : { entityMarks: visibleEntityMarks }),
+          locale: legendLocale,
+          ...(options.legendTitle === undefined ? {} : { title: options.legendTitle }),
+          ...(options.legendLabels === undefined ? {} : { labels: options.legendLabels }),
+          ...(metrics.edgeLabelSize === undefined ? {} : { fontSize: metrics.edgeLabelSize }),
+        })
+      : undefined;
   const resolvedLegendCell: { readonly bandId: string; readonly colId: string } | undefined =
-    composition !== undefined && effectiveLegendAnchor === "free-cell"
+    composition !== undefined && (effectiveLegendAnchor === "free-cell" || effectiveLegendAnchor === "auto")
       ? (planCtx?.mode === "state"
-          ? planCtx.plan?.legendCell
+          ? planCtx.plan?.legendCell ?? (effectiveLegendAnchor === "auto" ? findFirstEmptyRootCell(composition.grids.root, rootOrder) : undefined)
           : planCtx?.legendCellOverride ?? findFirstEmptyRootCell(composition.grids.root, rootOrder))
       : undefined;
-  if (planCtx?.mode === "nominal-plan" && planCtx.capture !== undefined && resolvedLegendCell !== undefined) {
+  if (planCtx?.mode === "nominal-plan" && planCtx.capture !== undefined && resolvedLegendCell !== undefined && (effectiveLegendAnchor === "free-cell" || effectiveLegendAnchor === "auto")) {
     planCtx.capture.legendCell = resolvedLegendCell;
   }
   const rootFreeCellItem: FreeCellItemSpec | undefined =
@@ -2116,9 +2166,21 @@ function layoutMeasuredPass(
       const headerHeight = headerHeightOf(id, floor);
       if (kind === "legend-expanded") {
         // A legend stays a single-column list of keys (DLR-341): exempt from packing.
-        outerWidths.set(id, floor);
+        let width = floor;
+        let extraH = 0;
+        if (r7Routing && authoredCombinedLegendMeasure !== undefined) {
+          const markCount = authoredCombinedLegendMeasure.entityMarks?.length ?? 0;
+          const rowCount = authoredCombinedLegendMeasure.entries.length + markCount;
+          const neededInnerW = authoredCombinedLegendMeasure.width - 2 * authoredCombinedLegendMeasure.padding;
+          width = Math.max(width, neededInnerW + 2 * contentInset);
+          const rowsH =
+            rowCount * authoredCombinedLegendMeasure.rowHeight +
+            Math.max(0, rowCount - 1) * authoredCombinedLegendMeasure.rowGap;
+          extraH = authoredCombinedLegendMeasure.headerGap + authoredCombinedLegendMeasure.rowGap + rowsH;
+        }
+        outerWidths.set(id, width);
         const keys = ordered.length * LEGEND_KEY_HEIGHT + Math.max(0, ordered.length - 1) * gaps.cardGapY;
-        const size = { width: floor, height: zoneGeo.headerInset + headerHeight + contentInset + keys + contentInset };
+        const size = { width, height: zoneGeo.headerInset + headerHeight + contentInset + keys + extraH + contentInset };
         packedSizes.set(id, size);
         return size;
       }
@@ -2242,6 +2304,29 @@ function layoutMeasuredPass(
       sizeAll();
       if (before.size === outerWidths.size && [...outerWidths].every(([id, width]) => before.get(id) === width)) break;
     }
+    let autoFreeCellRect: Rect | undefined;
+    if (
+      effectiveLegendAnchor === "auto" &&
+      stateMeasuredLegend !== undefined &&
+      resolvedLegendCell !== undefined
+    ) {
+      const rootGridLayout = composedGrids.get(ROOT_LEVEL_KEY);
+      const col = rootGridLayout?.columns.find((c) => c.id === resolvedLegendCell.colId);
+      const band = rootGridLayout?.bands.find((b) => b.id === resolvedLegendCell.bandId);
+      if (
+        col !== undefined &&
+        band !== undefined &&
+        col.size >= stateMeasuredLegend.width - 1 / 64 &&
+        band.size >= stateMeasuredLegend.height - 1 / 64
+      ) {
+        autoFreeCellRect = {
+          x: col.start + (col.size - stateMeasuredLegend.width) / 2,
+          y: band.start + (band.size - stateMeasuredLegend.height) / 2,
+          width: stateMeasuredLegend.width,
+          height: stateMeasuredLegend.height,
+        };
+      }
+    }
     if (planCtx?.sizingOnly === true && planCtx.capture !== undefined) {
       const rootGridLayout = composedGrids.get(ROOT_LEVEL_KEY);
       const legendSize =
@@ -2257,7 +2342,7 @@ function layoutMeasuredPass(
         capY: rowGaps.maxY,
         ...(legendSize === undefined ? {} : { legendSize }),
         effectiveLegendAnchor,
-        legendInsideCell: rootGridLayout?.freeCellRect !== undefined,
+        legendInsideCell: (rootGridLayout?.freeCellRect ?? autoFreeCellRect) !== undefined,
       };
       return {
         result: {
@@ -2970,7 +3055,7 @@ function layoutMeasuredPass(
     };
 
     // H2.7: fan-in / fan-out comb grouping and trunk reservation BEFORE plain docking & routing (§4.6).
-    const freeCellLegendRect = rootGridLayout?.freeCellRect;
+    const freeCellLegendRect = rootGridLayout?.freeCellRect ?? autoFreeCellRect;
     const sortedBarrierEntriesEarly = [...titleBands].sort(([left], [right]) => byString(left, right));
     const earlyAuditBarriers: { readonly entity?: string; readonly rect: Rect }[] = [
       ...sortedBarrierEntriesEarly.map(([entity, rect]) => ({ entity: String(entity), rect })),
@@ -4274,7 +4359,7 @@ function layoutMeasuredPass(
     };
     let linkLegend: SceneLinkLegend | undefined;
     if (hints.composition !== undefined && effectiveLegendAnchor !== "none" && stateMeasuredLegend !== undefined) {
-      if (effectiveLegendAnchor === "free-cell" && freeCellLegendRect !== undefined) {
+      if ((effectiveLegendAnchor === "free-cell" || effectiveLegendAnchor === "auto") && freeCellLegendRect !== undefined) {
         linkLegend = placeSceneLinkLegend(stateMeasuredLegend, "free-cell", freeCellLegendRect, freeCellLegendRect);
       } else {
         const paddedBoxes = new Map<RelationRef, Rect>();
@@ -4298,11 +4383,24 @@ function layoutMeasuredPass(
             width: legendUnion.width,
             height: legendUnion.height,
           };
-          linkLegend = placeSceneLinkLegend(
-            stateMeasuredLegend,
-            effectiveLegendAnchor === "free-cell" ? "right" : effectiveLegendAnchor,
-            contentBounds,
-          );
+          if (effectiveLegendAnchor === "auto") {
+            const pocket = findLegendPocket(
+              stateMeasuredLegend,
+              contentBounds,
+              [...rects.values(), ...paddedBoxes.values()],
+              [...retryRoutes.values()],
+            );
+            linkLegend =
+              pocket !== undefined
+                ? placeSceneLinkLegend(stateMeasuredLegend, "pocket", contentBounds, pocket)
+                : placeSceneLinkLegend(stateMeasuredLegend, "right", contentBounds);
+          } else {
+            linkLegend = placeSceneLinkLegend(
+              stateMeasuredLegend,
+              effectiveLegendAnchor === "free-cell" ? "right" : effectiveLegendAnchor,
+              contentBounds,
+            );
+          }
         }
       }
     }
