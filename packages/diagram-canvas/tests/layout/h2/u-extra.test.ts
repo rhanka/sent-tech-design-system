@@ -182,7 +182,7 @@ describe("V-S4 (REQ-R7-34 / DE3-L6a2): conditional south uExtra on r7 only when 
     const presBase = toV1Presentation(v1Base.presentation);
     const presLabel = toV1Presentation(v1Label.presentation);
     expect(isR7ConnectorPresentation(presLabel, undefined, v1Label.document)).toBe(false);
-    const v1Hints = lowerLayoutHints({ vocabulary: DS_LAYOUT_VOCABULARY, mode: "order", order: [entityRef("host")] });
+    const v1Hints = lowerLayoutHints({ vocabulary: DS_LAYOUT_VOCABULARY, mode: "auto-pack", rootOrder: [entityRef("host")] });
     const rBase = mustLayOut(layoutMeasured(v1Base.document, { ...baseOptionsOf(v1Base), presentation: presBase, hints: v1Hints }), "v1-base");
     const rLabel = mustLayOut(layoutMeasured(v1Label.document, { ...baseOptionsOf(v1Label), presentation: presLabel, hints: v1Hints }), "v1-label");
     const hBase = rBase.view.entityOccurrences[occurrenceRef("e.host")]!.geometry.height;

@@ -216,12 +216,12 @@ describe("H2.2 @2 auto-pack twin byte-identity (REQ-R7-28)", () => {
     const v1Auto = lowerLayoutHints({
       vocabulary: DS_LAYOUT_VOCABULARY,
       mode: "auto-pack",
-      order: [entityRef("Z"), entityRef("r0"), entityRef("r1")],
+      rootOrder: [entityRef("Z"), entityRef("r0"), entityRef("r1")],
     });
     const v2Auto = lowerLayoutHintsV2({
       vocabulary: DS_LAYOUT_V2_VOCABULARY,
       mode: "auto-pack",
-      order: [entityRef("Z"), entityRef("r0"), entityRef("r1")],
+      rootOrder: [entityRef("Z"), entityRef("r0"), entityRef("r1")],
     });
     const cache = createLayoutCache();
     const r1 = layoutMeasured(document, {

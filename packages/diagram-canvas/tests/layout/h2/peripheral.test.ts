@@ -105,6 +105,7 @@ describe("H2.3 peripheral columns", () => {
     }
 
     // V-S2 / T-30: when (top, tools) is free (legend: "right"), tools shifts up into empty cell so tool-1 aligns flush with j1.
+    if (example.hintsV2.mode !== "stage-columns") throw new Error("expected stage-columns hints on Example A");
     const freeCellAbove = layoutMeasured(example.document, {
       registry: example.registry,
       bindings: example.bindings,

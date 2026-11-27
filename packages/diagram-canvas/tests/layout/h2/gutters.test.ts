@@ -358,8 +358,8 @@ describe("H2.3 emitted gutters, strips and zoneRule on both routing paths", () =
       targetWidth: 800,
       hints: lowerLayoutHints({
         vocabulary: DS_LAYOUT_VOCABULARY,
-        mode: "order",
-        order: [entityRef("t1"), entityRef("t2"), entityRef("d1"), entityRef("d2")],
+        mode: "auto-pack",
+        rootOrder: [entityRef("t1"), entityRef("t2"), entityRef("d1"), entityRef("d2")],
       }),
       metrics: { trackSpacingBlock: 28 },
     });
@@ -404,8 +404,8 @@ describe("H2.3 emitted gutters, strips and zoneRule on both routing paths", () =
     // Authored `cardGapX: 48` (< default gapMin = 96): sets authoredBase=true so base=48 and expected=48 (not clamped up to 96).
     const baseHints = lowerLayoutHints({
       vocabulary: DS_LAYOUT_VOCABULARY,
-      mode: "order",
-      order: [entityRef("a"), entityRef("b")],
+      mode: "auto-pack",
+      rootOrder: [entityRef("a"), entityRef("b")],
     });
     const authoredRes = layoutMeasured(scene.document, {
       registry: scene.registry,
