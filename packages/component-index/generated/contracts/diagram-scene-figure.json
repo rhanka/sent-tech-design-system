@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:b15b84076ff683a719f8527af02a1c53bf8ee18ffa4f01b277e042c8e3f17701",
+  "digest": "sha256:db395edce8a34f09ee0ed3fb8aaa8146c1f692c81f63a0794f5558ee426a171e",
   "entryDigest": "sha256:a85b5dec79f7e1e9b8b4aec7f5dc475975e3dbd82a4a5ead83c3500d11bc337a",
   "format": "component-contract/v1",
   "frameworks": {
@@ -847,7 +847,16 @@
                   "layout-hint-forbidden",
                   "layout-hint-not-implemented",
                   "layout-hint-out-of-scope",
-                  "layout-hint-conflict"
+                  "layout-hint-conflict",
+                  "document-invalid",
+                  "target-width-invalid",
+                  "entity-profile-unsupported",
+                  "entity-type-unsupported",
+                  "relation-type-unsupported",
+                  "layout-hint-invalid",
+                  "measure-lines-missing",
+                  "stretch-unstable",
+                  "row-pack-invalid"
                 ]
               },
               "details": {
@@ -6555,7 +6564,16 @@
                   "layout-hint-forbidden",
                   "layout-hint-not-implemented",
                   "layout-hint-out-of-scope",
-                  "layout-hint-conflict"
+                  "layout-hint-conflict",
+                  "document-invalid",
+                  "target-width-invalid",
+                  "entity-profile-unsupported",
+                  "entity-type-unsupported",
+                  "relation-type-unsupported",
+                  "layout-hint-invalid",
+                  "measure-lines-missing",
+                  "stretch-unstable",
+                  "row-pack-invalid"
                 ]
               },
               "details": {
