@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:65e559a2cd19ed02774d6216e3d174d3e4ff9f6ce94f3ff758c5ca546c00a7a2",
-  "entryDigest": "sha256:e95e4f87f7eac1ad5dbe315e621c198d9dce795ec4402ae533277525973b1f52",
+  "digest": "sha256:3a65659e0c9945c5bb9f69371d60ed75494be2b0b08e6fb07c730d6b72a6232a",
+  "entryDigest": "sha256:5d2120326a051a23ff764bb03603bcf31f7c56a3ce6bc00ad2e5fb7a3176fc68",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -2199,6 +2199,33 @@
             ],
             "type": "object"
           },
+          "LegendEntityMark": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "proposed",
+                  "folded-zone"
+                ]
+              },
+              "label": {
+                "type": "string"
+              },
+              "rowHeight": {
+                "type": "number"
+              },
+              "rowY": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "kind",
+              "label",
+              "rowHeight",
+              "rowY"
+            ],
+            "type": "object"
+          },
           "LegendPresentation": {
             "additionalProperties": false,
             "properties": {
@@ -3240,8 +3267,16 @@
                 "enum": [
                   "right",
                   "bottom",
-                  "free-cell"
+                  "free-cell",
+                  "pocket"
                 ]
+              },
+              "entityMarks": {
+                "description": "Conditional entity marks (proposed status, folded `[+]` zone); omitted when none apply.",
+                "items": {
+                  "$ref": "#/$defs/LegendEntityMark"
+                },
+                "type": "array"
               },
               "entries": {
                 "description": "Visible styles in fixed canonical order (always length >= 2).",
@@ -3264,7 +3299,7 @@
               },
               "rect": {
                 "$ref": "#/$defs/Rect",
-                "description": "Outer bounding rectangle in world coordinates, outside the functional flow."
+                "description": "Outer bounding rectangle in world coordinates, outside the functional flow or in an open pocket/cell."
               },
               "rowGap": {
                 "type": "number"
@@ -4702,6 +4737,7 @@
           "legend": {
             "description": "Automatic link-style legend anchor (`\"right\"` default; `\"none\"` suppresses).",
             "enum": [
+              "auto",
               "none",
               "right",
               "bottom"
@@ -5166,7 +5202,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.49.0"
+        "version": "0.50.0"
       },
       "status": "partial",
       "unresolved": [
@@ -7916,6 +7952,33 @@
             ],
             "type": "object"
           },
+          "LegendEntityMark": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "proposed",
+                  "folded-zone"
+                ]
+              },
+              "label": {
+                "type": "string"
+              },
+              "rowHeight": {
+                "type": "number"
+              },
+              "rowY": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "kind",
+              "label",
+              "rowHeight",
+              "rowY"
+            ],
+            "type": "object"
+          },
           "LegendPresentation": {
             "additionalProperties": false,
             "properties": {
@@ -8970,8 +9033,16 @@
                 "enum": [
                   "right",
                   "bottom",
-                  "free-cell"
+                  "free-cell",
+                  "pocket"
                 ]
+              },
+              "entityMarks": {
+                "description": "Conditional entity marks (proposed status, folded `[+]` zone); omitted when none apply.",
+                "items": {
+                  "$ref": "#/$defs/LegendEntityMark"
+                },
+                "type": "array"
               },
               "entries": {
                 "description": "Visible styles in fixed canonical order (always length >= 2).",
@@ -8994,7 +9065,7 @@
               },
               "rect": {
                 "$ref": "#/$defs/Rect",
-                "description": "Outer bounding rectangle in world coordinates, outside the functional flow."
+                "description": "Outer bounding rectangle in world coordinates, outside the functional flow or in an open pocket/cell."
               },
               "rowGap": {
                 "type": "number"
@@ -10432,6 +10503,7 @@
           "legend": {
             "description": "Automatic link-style legend anchor (`\"right\"` default; `\"none\"` suppresses; single-style scenes never emit one).",
             "enum": [
+              "auto",
               "none",
               "right",
               "bottom"
@@ -10938,7 +11010,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.43.0-next.0"
+        "version": "0.44.0-next.0"
       },
       "status": "partial",
       "unresolved": [

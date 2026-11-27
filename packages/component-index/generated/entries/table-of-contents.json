@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TableOfContents.svelte",
-      "version": "0.49.0"
+      "version": "0.50.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TableOfContents.vue",
-      "version": "0.43.0-next.0"
+      "version": "0.44.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Page route menu with anchor links by level.",
     "fr": "Menu d’itinéraire de page avec liens ancres par niveau."
   },
-  "digest": "sha256:50f82a7e294e3c1b92c1ed89ce93e48ed074cf7cf117ed3dd468d6442e9ab456",
+  "digest": "sha256:05ff46123b262eba177d179a080c20bc13b5f5a69f39293e982578cb4f3d2d4c",
   "displayName": "TableOfContents",
   "format": "component-entry/v1",
   "frameworks": [

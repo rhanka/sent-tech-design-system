@@ -1,8 +1,8 @@
 {
   "componentId": "scatter-plot",
   "contractSource": "derived",
-  "digest": "sha256:0e75d0cdaa6aadff3bcbe8351f49f1dc175dcd77fb777272eb2bfcc64c9efb58",
-  "entryDigest": "sha256:dd6b281a518d383987aecba04d2e7f96910870c3668d36e10bfe4d94a22bf3f5",
+  "digest": "sha256:5f66c4f5217de19cb50b85b4c8a386f25371fac4846fe3e9ad698e578b81bd57",
+  "entryDigest": "sha256:2f256e8bb3b7acf19c5d57c00e4f03e0d987ad50d39a578f3af5363b4fad7c07",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1120,7 +1120,7 @@
         "declarationPath": "packages/components-svelte/dist/ScatterPlot.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ScatterPlotProps",
-        "version": "0.49.0"
+        "version": "0.50.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -1504,7 +1504,7 @@
         "declarationPath": "packages/components-vue/dist/ScatterPlot.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ScatterPlotProps",
-        "version": "0.43.0-next.0"
+        "version": "0.44.0-next.0"
       },
       "status": "partial",
       "unresolved": [],
