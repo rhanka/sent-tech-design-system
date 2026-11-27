@@ -2095,6 +2095,12 @@ function layoutMeasuredPass(
         rowGaps,
         zoneGutter,
         widen: hostWiden,
+        headerOffsetOf: (entity) => {
+          if (kinds.get(entity) !== "container-expanded") return 0;
+          const zg = anatomyZoneGeometry(occurrenceAnatomy(representativeOf(entity)));
+          const outer = outerWidths.get(entity) ?? headerFloorOf(entity);
+          return zg.headerInset + headerHeightOf(entity, outer) + contentInset;
+        },
         ...(isRootGrid && sigmaColsMap !== undefined ? { sigmaCols: sigmaColsMap } : {}),
         ...(isRootGrid && sigmaBandsMap !== undefined ? { sigmaBands: sigmaBandsMap } : {}),
         ...(freeCellItem === undefined ? {} : { freeCellItem }),

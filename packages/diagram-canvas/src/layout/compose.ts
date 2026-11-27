@@ -143,6 +143,11 @@ export interface GridLayoutInput {
   /** Optional `free-cell` legend box contributing to its assigned cell's tracks (H2.8). */
   readonly freeCellItem?: FreeCellItemSpec | undefined;
   /**
+   * Optional zone header + content inset offset above the first child card of an expanded
+   * container, used for T-30 upward peripheral header alignment (V-S2 / DE3-L6b).
+   */
+  readonly headerOffsetOf?: ((entity: EntityRef) => number) | undefined;
+  /**
    * Optional hook for staged host grids (H2.4 `inherit`): after resolving stage
    * column widths and positions, lay out inheriting child containers on those
    * shared column lines before finalizing band heights.
@@ -421,6 +426,7 @@ export function layoutGridScope(input: GridLayoutInput): GridLayoutResult {
     sigmaCols,
     sigmaBands,
     freeCellItem,
+    headerOffsetOf,
     inheritedContributions,
     onStageColumnsResolved,
   } = input;
@@ -514,6 +520,7 @@ export function layoutGridScope(input: GridLayoutInput): GridLayoutResult {
       sigmaCols,
       sigmaBands,
       freeCellItem,
+      headerOffsetOf,
       inheritedContributions,
       onStageColumnsResolved,
     });
@@ -537,7 +544,35 @@ export function layoutGridScope(input: GridLayoutInput): GridLayoutResult {
     sigmaCols,
     sigmaBands,
     freeCellItem,
+    headerOffsetOf,
   });
+}
+
+function resolvePeripheralTopY(
+  peripheral: ActivePeripheral,
+  bandStarts: readonly number[],
+  colIndex: number,
+  freeCellColIdx: number,
+  freeCellBandActive: number,
+  headerOffsetOf: ((entity: EntityRef) => number) | undefined,
+): number {
+  const defaultTopY = bandStarts.length > 0 ? bandStarts[peripheral.fromBandActive]! : 0;
+  const item0 = peripheral.items[0];
+  if (
+    peripheral.fromBandActive <= 0 ||
+    item0 === undefined ||
+    !item0.isExpanded ||
+    headerOffsetOf === undefined
+  ) {
+    return defaultTopY;
+  }
+  const freeCellBlocks =
+    freeCellColIdx === colIndex &&
+    freeCellBandActive >= 0 &&
+    freeCellBandActive < peripheral.fromBandActive;
+  if (freeCellBlocks) return defaultTopY;
+  const headerOffset = headerOffsetOf(item0.entity);
+  return headerOffset > 0 ? clean(Math.max(0, defaultTopY - headerOffset)) : defaultTopY;
 }
 
 function placePeripheralItems(
@@ -689,6 +724,7 @@ function layoutStagedGrid(args: {
   readonly sigmaCols?: ReadonlyMap<string, number> | undefined;
   readonly sigmaBands?: ReadonlyMap<string, number> | undefined;
   readonly freeCellItem?: FreeCellItemSpec | undefined;
+  readonly headerOffsetOf?: ((entity: EntityRef) => number) | undefined;
   readonly inheritedContributions?: readonly InheritedWidthContribution[] | undefined;
   readonly onStageColumnsResolved?: GridLayoutInput["onStageColumnsResolved"];
 }): GridLayoutResult {
@@ -711,6 +747,7 @@ function layoutStagedGrid(args: {
     sigmaCols,
     sigmaBands,
     freeCellItem,
+    headerOffsetOf,
     inheritedContributions,
     onStageColumnsResolved,
   } = args;
@@ -1043,11 +1080,18 @@ function layoutStagedGrid(args: {
     });
   }
 
-  // Place peripheral columns (§1.4, §4.3 step 7).
+  // Place peripheral columns (§1.4, §4.3 step 7, V-S2 / T-30 header alignment).
   let maxBottom = declaredBandsBottom;
   allCols.forEach((col, fullColIdx) => {
     if (col.peripheral === undefined) return;
-    const topY = bandCount > 0 ? bandStarts[col.peripheral.fromBandActive]! : 0;
+    const topY = resolvePeripheralTopY(
+      col.peripheral,
+      bandStarts,
+      fullColIdx,
+      freeCellColFull,
+      freeCellBandActive,
+      headerOffsetOf,
+    );
     const bottom = placePeripheralItems(
       col.peripheral,
       colStarts[fullColIdx]!,
@@ -1325,6 +1369,7 @@ function layoutUnstagedGrid(args: {
   readonly sigmaCols?: ReadonlyMap<string, number> | undefined;
   readonly sigmaBands?: ReadonlyMap<string, number> | undefined;
   readonly freeCellItem?: FreeCellItemSpec | undefined;
+  readonly headerOffsetOf?: ((entity: EntityRef) => number) | undefined;
 }): GridLayoutResult {
   const {
     scope,
@@ -1344,6 +1389,7 @@ function layoutUnstagedGrid(args: {
     sigmaCols,
     sigmaBands,
     freeCellItem,
+    headerOffsetOf,
   } = args;
 
   interface MeasuredBand {
@@ -1575,10 +1621,21 @@ function layoutUnstagedGrid(args: {
     }));
   }
 
+  const unstagedFreeColIdx =
+    freeCellItem === undefined || freeBandActive < 0
+      ? -1
+      : allCols.findIndex((c) => c.id === freeCellItem.colId);
   let maxBottom = declaredBandsBottom;
   allCols.forEach((col, fullColIdx) => {
     if (col.peripheral === undefined) return;
-    const topY = activeBands.length > 0 ? bandStarts[col.peripheral.fromBandActive]! : 0;
+    const topY = resolvePeripheralTopY(
+      col.peripheral,
+      bandStarts,
+      fullColIdx,
+      unstagedFreeColIdx,
+      freeBandActive,
+      headerOffsetOf,
+    );
     const bottom = placePeripheralItems(
       col.peripheral,
       colStarts[fullColIdx]!,

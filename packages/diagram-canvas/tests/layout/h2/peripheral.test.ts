@@ -1,4 +1,4 @@
-import { entityRef, occurrenceRef, type DsLayoutHintsV2 } from "@sentropic/diagram-core";
+import { entityRef, lowerLayoutHintsV2, occurrenceRef, type DsLayoutHintsV2 } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
 import { layoutMeasured } from "../../../src/index.js";
@@ -53,11 +53,16 @@ describe("H2.3 peripheral columns", () => {
     });
     expect(res.status).toBe("laid-out");
     if (res.status !== "laid-out") return;
+    const a1 = res.view.entityOccurrences[occurrenceRef("e.a1")]!.geometry;
     const a2 = res.view.entityOccurrences[occurrenceRef("e.a2")]!.geometry;
     const a3 = res.view.entityOccurrences[occurrenceRef("e.a3")]!.geometry;
     const panel = res.view.entityOccurrences[occurrenceRef("e.panel")]!.geometry;
-    // Starts at b2 top and stretches down to b3 bottom
-    expect(panel.y).toBe(a2.y);
+    const pOnly = res.view.entityOccurrences[occurrenceRef("e.p-only")]!.geometry;
+    // V-S2 / T-30 (DE3-L6b): cell (b1, side) is free so panel's header shifts up and p-only aligns flush with a2.y,
+    // while keeping panel bottom stretched down to b3 bottom.
+    expect(pOnly.y).toBe(a2.y);
+    expect(panel.y).toBeLessThan(a2.y);
+    expect(panel.y).toBeGreaterThanOrEqual(a1.y);
     expect(panel.y + panel.height).toBe(a3.y + a3.height);
     // Placed on the end (right) side after s1
     expect(panel.x).toBeGreaterThan(a2.x + a2.width);
@@ -97,6 +102,27 @@ describe("H2.3 peripheral columns", () => {
     expect(new Set(toolCards.map((r) => r.x)).size).toBe(1);
     for (let i = 1; i < toolCards.length; i += 1) {
       expect(toolCards[i]!.y).toBeGreaterThan(toolCards[i - 1]!.y + toolCards[i - 1]!.height);
+    }
+
+    // V-S2 / T-30: when (top, tools) is free (legend: "right"), tools shifts up into empty cell so tool-1 aligns flush with j1.
+    const freeCellAbove = layoutMeasured(example.document, {
+      registry: example.registry,
+      bindings: example.bindings,
+      presentation: example.presentation,
+      measureLines: example.measureLines,
+      measureText: () => ({ width: 80, height: 20 }),
+      targetWidth: 1440,
+      hints: lowerLayoutHintsV2({ ...example.hintsV2, legend: "right" }),
+    });
+    expect(freeCellAbove.status).toBe("laid-out");
+    if (freeCellAbove.status === "laid-out") {
+      const midBandFree = freeCellAbove.composition!.grids["root"]!.bands.find((b) => b.id === "mid")!;
+      const toolsFree = freeCellAbove.view.entityOccurrences[occurrenceRef("e.tools")]!.geometry;
+      const tool1Free = freeCellAbove.view.entityOccurrences[occurrenceRef("e.tool-1")]!.geometry;
+      const j1Free = freeCellAbove.view.entityOccurrences[occurrenceRef("e.j1")]!.geometry;
+      expect(toolsFree.y).toBeLessThan(midBandFree.start);
+      expect(toolsFree.y).toBeGreaterThanOrEqual(0);
+      expect(tool1Free.y).toBe(j1Free.y);
     }
   });
 });
