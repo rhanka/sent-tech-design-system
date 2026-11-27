@@ -937,17 +937,13 @@ function layoutStagedGrid(args: {
         return updated === undefined ? c : { ...c, width: updated.width, height: updated.height };
       });
 
-  // Single-span heights for bands (§4.3 step 4), including free-cell legend contribution.
+  // Single-span heights for bands (§4.3 step 4), then spanning bands.
   const bandHeights = Array.from({ length: bandCount }, () => 0);
   for (const c of finalCells) {
     if (c.bandStart === c.bandEnd) {
       bandHeights[c.bandStart] = Math.max(bandHeights[c.bandStart]!, c.height);
     }
   }
-  if (freeCellItem !== undefined && freeCellBandActive >= 0 && freeCellColFull >= 0) {
-    bandHeights[freeCellBandActive] = Math.max(bandHeights[freeCellBandActive]!, freeCellItem.height);
-  }
-  // Spanning heights for bands by increasing span length then declaration order (§4.3 steps 3–4).
   const bandSpanners = finalCells
     .filter((c) => c.bandEnd > c.bandStart)
     .sort((a, b) => (a.bandEnd - a.bandStart) - (b.bandEnd - b.bandStart) || a.declOrder - b.declOrder);
@@ -958,6 +954,44 @@ function layoutStagedGrid(args: {
       if (b < c.bandEnd) current += bandBoundaryInfo[b]!.gap;
     }
     distributeWholeExcess(bandHeights, c.bandStart, c.bandEnd, c.height - current);
+  }
+  // V-S3 (REQ-R7-34 / DE3-L6a2): span a tall free-cell legend into consecutive empty vertical
+  // cells in the same column before ever growing a band's height.
+  let freeCellBandStart = freeCellBandActive;
+  let freeCellBandEnd = freeCellBandActive;
+  const freeCellColMeta = freeCellColFull >= 0 ? allCols[freeCellColFull] : undefined;
+  const freeCellStageIdx =
+    freeCellColMeta?.kind === "stage" ? freeCellColMeta.stageIndex : undefined;
+  const isFreeCellBandEmpty = (b: number): boolean => {
+    if (freeCellColMeta === undefined) return false;
+    if (freeCellStageIdx !== undefined) {
+      return !finalCells.some(
+        (c) => c.bandStart <= b && b <= c.bandEnd && c.colStart <= freeCellStageIdx && freeCellStageIdx <= c.colEnd,
+      );
+    }
+    if (freeCellColMeta.peripheral !== undefined) {
+      return b < freeCellColMeta.peripheral.fromBandActive;
+    }
+    return false;
+  };
+  if (freeCellItem !== undefined && freeCellBandStart >= 0 && freeCellColFull >= 0) {
+    const spanHeight = (b0: number, b1: number): number => {
+      let total = 0;
+      for (let b = b0; b <= b1; b += 1) {
+        total += bandHeights[b]!;
+        if (b < b1) total += bandBoundaryInfo[b]!.gap;
+      }
+      return total;
+    };
+    while (
+      spanHeight(freeCellBandStart, freeCellBandEnd) < freeCellItem.height &&
+      freeCellBandEnd + 1 < bandCount &&
+      isFreeCellBandEmpty(freeCellBandEnd + 1)
+    ) {
+      freeCellBandEnd += 1;
+    }
+    const excess = freeCellItem.height - spanHeight(freeCellBandStart, freeCellBandEnd);
+    if (excess > 0) distributeWholeExcess(bandHeights, freeCellBandStart, freeCellBandEnd, excess);
   }
   // Apply optional plan σ to bands (§4.3 step 6).
   if (sigmaBands !== undefined) {
@@ -1171,9 +1205,11 @@ function layoutStagedGrid(args: {
       };
       for (let s = 0; s < stageCount; s += 1) {
         const cw = stageWidths[s]!;
-        const crossed = activeCells.some(
-          (c) => c.bandStart <= j && c.bandEnd >= j + 1 && c.colStart <= s && c.colEnd >= s,
-        );
+        const crossed =
+          (freeCellStageIdx === s && freeCellBandStart <= j && freeCellBandEnd >= j + 1) ||
+          activeCells.some(
+            (c) => c.bandStart <= j && c.bandEnd >= j + 1 && c.colStart <= s && c.colEnd >= s,
+          );
         if (crossed) {
           flush();
           continue;
@@ -1214,11 +1250,11 @@ function layoutStagedGrid(args: {
   ];
 
   let freeCellRect: Rect | undefined;
-  if (freeCellItem !== undefined && freeCellBandActive >= 0 && freeCellColFull >= 0) {
+  if (freeCellItem !== undefined && freeCellBandStart >= 0 && freeCellColFull >= 0) {
     const fx = colStarts[freeCellColFull]!;
     const fw = colWidths[freeCellColFull]!;
-    const fy = bandStarts[freeCellBandActive]!;
-    const fh = bandHeights[freeCellBandActive]!;
+    const fy = bandStarts[freeCellBandStart]!;
+    const fh = (bandStarts[freeCellBandEnd]! + bandHeights[freeCellBandEnd]!) - fy;
     freeCellRect = {
       x: clean(fx + Math.max(0, fw - freeCellItem.width) / 2),
       y: clean(fy + Math.max(0, fh - freeCellItem.height) / 2),
