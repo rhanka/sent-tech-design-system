@@ -112,6 +112,7 @@ import {
   type LayoutHints,
 } from "./hints.js";
 import { measureSceneBox } from "./sceneMeasure.js";
+import { DIAGRAM_SCENE_SPACING } from "./spacing.generated.js";
 import { anatomyCardGeometry, anatomyZoneGeometry, ZONE_GEOMETRY, zoneDepthSurface, type DiagramAnatomy } from "../presentation/diagramCardModel.js";
 import {
   collectLegendEntityMarks,
@@ -4212,11 +4213,17 @@ function layoutMeasuredPass(
       const labelled = intersecting.length > 0;
       const axis = gutter.horizontal ? 'vertical' as const : 'horizontal' as const;
       const parameters = channelMetrics(metrics, axis === 'horizontal');
+      // V-S8 (REQ-R7-34 / DE3-L6a1): cap pass-2 vertical widening under zoneRule at 144
+      // while preserving v1 (!zoneRule) gapMax = 240 and keeping gapMinBlock = 72.
+      const effectiveMax =
+        zoneRule && gutter.horizontal
+          ? Math.min(gutter.max, DIAGRAM_SCENE_SPACING.gapBlockMaxR7)
+          : gutter.max;
       const expected = zoneRule && gutter.zone
         ? gutter.base
         : (() => {
-            const placedFloor = Math.max(0, ...intersecting.map(box => (gutter.horizontal ? box.height : box.width) + 2 * metrics.labelMargin).filter(needed => needed <= gutter.max));
-            return Math.min(gutter.max, Math.max(placedFloor, channelGap(n, labelled, { ...parameters, gapMin: gutter.authoredBase ? gutter.base : Math.max(parameters.gapMin, gutter.base) })));
+            const placedFloor = Math.max(0, ...intersecting.map(box => (gutter.horizontal ? box.height : box.width) + 2 * metrics.labelMargin).filter(needed => needed <= effectiveMax));
+            return Math.min(effectiveMax, Math.max(placedFloor, channelGap(n, labelled, { ...parameters, gapMax: effectiveMax, gapMin: gutter.authoredBase ? gutter.base : Math.max(parameters.gapMin, gutter.base) })));
           })();
       return {
         id: gutter.id,
@@ -4264,8 +4271,12 @@ function layoutMeasuredPass(
         // change its geometry when a different level is folded.
         if (!gutter.id.startsWith(`${level}|`)) continue;
         if (!gutter.strips.some((strip) => rectsIntersect(strip, choice.box))) continue;
+        const effectiveMax =
+          zoneRule && gutter.horizontal
+            ? Math.min(gutter.max, DIAGRAM_SCENE_SPACING.gapBlockMaxR7)
+            : gutter.max;
         const needed = (gutter.horizontal ? entry.size.height : entry.size.width) + 2 * metrics.labelMargin;
-        if (needed > gutter.max || needed <= gutter.gap) continue;
+        if (needed > effectiveMax || needed <= gutter.gap) continue;
         requested.set(gutter.id, Math.max(requested.get(gutter.id) ?? 0, needed));
       }
     }
