@@ -62,6 +62,7 @@ export function stackedZonesWidenedFixture(options: StackedZonesWidenedOptions =
       [entityRef("zone-two")]: { axis: "column", ...stackAlign },
       [entityRef("zone-three")]: { axis: "column", ...stackAlign },
       [entityRef("sub-narrow")]: { axis: "column", ...stackAlign },
+      ...(options.nestedAutoPack ? {} : { [entityRef("sub-wide")]: { axis: "row" } }),
     },
   };
 
