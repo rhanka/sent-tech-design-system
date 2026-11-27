@@ -1557,6 +1557,7 @@ function layoutMeasuredPass(
     /** Gutter id → gap asked for it (label thickness plus its two margins), within the axis cap. */
     readonly widen: ReadonlyMap<string, number>;
     readonly external: ReadonlySet<string>;
+    readonly southUExtra?: ReadonlyMap<EntityRef, number>;
   }
   interface PassOutcome {
     readonly result: LayoutResult;
@@ -1566,6 +1567,7 @@ function layoutMeasuredPass(
     /** Widened gutters in which no placed label sits: empty lanes (§3.5). */
     readonly unused: readonly string[];
     readonly unplaced: number;
+    readonly southUDemand: ReadonlyMap<EntityRef, number>;
   }
 
   const nominalPlan = planCtx?.mode === "state" ? planCtx.plan : undefined;
@@ -2265,12 +2267,14 @@ function layoutMeasuredPass(
         2 * contentInset,
         zoneGeo.headerInset + headerHeight + contentInset + contentInset,
       );
-      // BF-6: reserve measured U-channel headroom for labelled edges on one
-      // shelf, including wrapped labels and parallel channels. This is
-      // container content below its children; sibling gutters keep their cap.
+      // V-S4 (REQ-R7-34 / DE3-L6a2): on r7, reserve south U-channel headroom only when
+      // a south U-channel actually runs (never unconditionally pre-added on Pass 1);
+      // v1 (!r7Routing) keeps exact legacy conditional uExtra unchanged.
       const packed = packedRuns.get(run.key);
       let uExtra = 0;
-      if (packed !== undefined) {
+      if (r7Routing) {
+        uExtra = plan?.southUExtra?.get(id) ?? 0;
+      } else if (packed !== undefined) {
         const zone = runHasZone(run);
         const baseGap = packed.rows ? (zone ? rowGaps.zoneX : rowGaps.cardX) : (zone ? rowGaps.zoneY : rowGaps.cardY);
         for (const edge of drawnEdges) {
@@ -2390,6 +2394,7 @@ function layoutMeasuredPass(
         requested: new Map(),
         unused: [],
         unplaced: 0,
+        southUDemand: new Map(),
       };
     }
     if (planCtx?.mode === "nominal-plan" && plan === undefined && planCtx.capture !== undefined) {
@@ -2732,6 +2737,8 @@ function layoutMeasuredPass(
     const sideOverrides = new Map<RelationRef, { readonly source: PortSide; readonly target: PortSide; readonly turn: boolean }>();
     const labelledPairs = new Map<string, number>();
     const usedUTracks = new Map<string, number>();
+    const southUDemand = new Map<EntityRef, number>();
+    const potentialSouthUDemand = new Map<string, { readonly containerId: EntityRef; readonly needed: number }>();
     for (const edge of [...drawnEdges].sort((left, right) => byString(left.occurrence, right.occurrence))) {
       const id = edge.occurrence as unknown as RelationRef;
       const size = routeSizes.get(id);
@@ -2779,7 +2786,7 @@ function layoutMeasuredPass(
       const depth = (sideBySide ? size.height : size.width) + 2 * probe;
       const pitch = Math.max(depth + 2 * metrics.labelMargin, routeSpacing > 0 ? routeSpacing : 0);
       const uEdgeClearance = routeSpacing > 0 ? borderClearance : 0;
-      const laneFreeRow = (side: "south" | "north", attempt: number): boolean => {
+      const laneFreeRow = (side: "south" | "north", attempt: number, ignoreWithinBottom = false): boolean => {
         const base = side === "south"
           ? Math.max(a.y + a.height, b.y + b.height) + uEdgeClearance
           : Math.min(a.y, b.y) - depth - uEdgeClearance;
@@ -2791,7 +2798,7 @@ function layoutMeasuredPass(
           (lane.x < within.x ||
             lane.y < within.y ||
             lane.x + lane.width > within.x + within.width ||
-            lane.y + lane.height > within.y + within.height)
+            (!ignoreWithinBottom && lane.y + lane.height > within.y + within.height))
         ) {
           return false;
         }
@@ -2855,9 +2862,34 @@ function layoutMeasuredPass(
               sideOverrides.set(id, { source: side, target: side, turn: true });
               usedUTracks.set(trackKey, attempt + 1);
               placed = true;
+              if (r7Routing && side === "south" && containerKey !== "root") {
+                const existing = plan?.southUExtra?.get(containerKey as EntityRef) ?? 0;
+                if (existing > 0) {
+                  southUDemand.set(
+                    containerKey as EntityRef,
+                    Math.max(southUDemand.get(containerKey as EntityRef) ?? 0, existing),
+                  );
+                }
+              }
             }
           }
           if (placed) break;
+        }
+        if (r7Routing && !placed && within !== undefined && containerKey !== "root") {
+          for (let attempt = used; attempt < used + 3; attempt += 1) {
+            if (laneFreeRow("south", attempt, true)) {
+              const southTop = Math.max(a.y + a.height, b.y + b.height) + uEdgeClearance + attempt * pitch;
+              const overflow = Math.ceil(southTop + depth - (within.y + within.height));
+              if (overflow > 0) {
+                const current = plan?.southUExtra?.get(containerKey as EntityRef) ?? 0;
+                potentialSouthUDemand.set(String(id), {
+                  containerId: containerKey as EntityRef,
+                  needed: current + overflow,
+                });
+              }
+              break;
+            }
+          }
         }
       } else {
         for (const side of ["east", "west"] as const) {
@@ -4256,6 +4288,13 @@ function layoutMeasuredPass(
     const requested = new Map<string, number>();
     const probed: Rect[] = [...taken];
     for (const entry of unplaced) {
+      const southNeeded = potentialSouthUDemand.get(entry.id);
+      if (southNeeded !== undefined) {
+        southUDemand.set(
+          southNeeded.containerId,
+          Math.max(southUDemand.get(southNeeded.containerId) ?? 0, southNeeded.needed),
+        );
+      }
       const probe = probeMarginOf(entry.size.height);
       if (probe < 0) continue;
       const choice = placePackedLabel(entry, fixedShapes, probed, metrics.labelMargin, probe);
@@ -4586,7 +4625,7 @@ function layoutMeasuredPass(
         ...(combPlan !== undefined && combPlan.groups.length > 0 ? { combGroups: combPlan.groups } : {}),
       }),
     };
-    return { result, chosen, requested, unused, unplaced: unplaced.length };
+    return { result, chosen, requested, unused, unplaced: unplaced.length, southUDemand };
   };
 
   // Freeze the figure arrangement, then solve channel demand from actual routes and labels.
@@ -4594,10 +4633,21 @@ function layoutMeasuredPass(
   const frozen = first.chosen;
   const widen = new Map<string, number>();
   const external = new Set<string>();
+  const southUExtra = new Map<EntityRef, number>();
+  const hasPendingSouthU = (outcomeToCheck: PassOutcome): boolean => {
+    for (const [cid, needed] of outcomeToCheck.southUDemand) {
+      if (needed > (southUExtra.get(cid) ?? 0)) return true;
+    }
+    return false;
+  };
   const seen = new Map<string, PassOutcome>();
   let outcome = first;
   let previous: PassOutcome | undefined;
-  for (let round = 0; round < 24 && (outcome.requested.size > 0 || outcome.unused.length > 0); round += 1) {
+  for (
+    let round = 0;
+    round < 24 && (outcome.requested.size > 0 || outcome.unused.length > 0 || hasPendingSouthU(outcome));
+    round += 1
+  ) {
     const signature = JSON.stringify(outcome.result.status === "laid-out" ? outcome.result.channels?.map(channel => [channel.id, channel.gap, channel.n, channel.labelled]) : []);
     const repeated = seen.get(signature);
     if (repeated !== undefined && outcome.result.status === "laid-out") {
@@ -4623,10 +4673,17 @@ function layoutMeasuredPass(
       seen.clear();
     }
     seen.set(signature, outcome);
+    const hasGutterChanges = outcome.unused.length > 0 || outcome.requested.size > 0;
     for (const id of outcome.unused) widen.delete(id);
     for (const [id, gap] of outcome.requested) widen.set(id, gap);
+    // Reserve south U-channel headroom only after gutter widening converges without placing inline.
+    if (!hasGutterChanges) {
+      for (const [cid, needed] of outcome.southUDemand) {
+        if (needed > (southUExtra.get(cid) ?? 0)) southUExtra.set(cid, needed);
+      }
+    }
     previous = outcome;
-    outcome = runPass({ frozen, widen, external });
+    outcome = runPass({ frozen, widen, external, ...(southUExtra.size > 0 ? { southUExtra } : {}) });
   }
   if (planCtx?.mode === "nominal-plan" && planCtx.capture !== undefined) {
     for (const [id, gap] of [...widen].sort(([left], [right]) => byString(left, right))) {
