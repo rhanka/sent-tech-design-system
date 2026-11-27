@@ -9,7 +9,7 @@ const { tmpdir } = await import('node:os');
 const { join } = await import('node:path');
 const { buildHarness, root } = await import('./build.mjs');
 const { cases, expectedLegendAnchor, expectedLegendStyles, expectedVisibleCounts, foldTargets } = await import('./scenes.js');
-const { segmentInterval, exposedSegments, centredBodyFindings, centredContainerContentFindings, combinedLegendFindings, compactCardFindings, connectorFindings, roundedElbowFindings, linkStrokeWidthFindings, legendFindings } = await import('./geometry.mjs');
+const { segmentInterval, exposedSegments, centredBodyFindings, centredContainerContentFindings, combinedLegendFindings, compactCardFindings, connectorFindings, headOverlapFindings, roundedElbowFindings, linkStrokeWidthFindings, legendFindings } = await import('./geometry.mjs');
 const { preview } = await import('vite');
 const { default: puppeteer } = await import('puppeteer-core');
 const assert = (await import('node:assert/strict')).default;
@@ -104,6 +104,17 @@ function measure() {
       const p = new DOMPoint(point.x, point.y).matrixTransform(ctm);
       return { x: p.x, y: p.y };
     });
+    let targetDock;
+    const tipAttr = element.dataset.edgeTip;
+    if (tipAttr) {
+      const [tx, ty] = tipAttr.split(',').map(Number);
+      if (Number.isFinite(tx) && Number.isFinite(ty)) {
+        const tp = new DOMPoint(tx, ty).matrixTransform(ctm);
+        targetDock = { x: tp.x, y: tp.y };
+      }
+    }
+    const rawPullback = element.dataset.edgePullback;
+    const pullbackWorld = rawPullback === undefined ? 0 : (Number(rawPullback) || 0);
     return {
       id: element.dataset.sceneEdge,
       d,
@@ -115,6 +126,15 @@ function measure() {
       flow: Boolean(element.dataset.flowStep || element.dataset.flowBundle),
       erd: false,
       points,
+      ...(targetDock === undefined ? {} : { targetDock }),
+      pullbackWorld,
+    };
+  });
+  const heads = [...figure.querySelectorAll('[data-connector-part="head"]')].map(element => {
+    const r = box(element);
+    return {
+      id: element.dataset.headFor ?? element.getAttribute('data-head-for') ?? 'head',
+      ...r,
     };
   });
   // Only a surface painted AFTER the connector layer hides a connector: no
@@ -205,7 +225,7 @@ function measure() {
       ...box(el),
     })),
     relations: window.__relations ?? null,
-    labels, paths, occluders };
+    labels, paths, heads, occluders };
 }
 
 async function settle(page) {
@@ -343,8 +363,9 @@ function check(state, scene) {
   assert.deepEqual(combinedLegendFindings({ legend: state.legend, authoredLegends: state.authoredLegends,
     nodes: state.nodes, labels: state.labels, paths: state.paths }), [], 'combined legend count <= 1 and zero overlap');
   if (scene.startsWith('r7-')) {
-    assert.deepEqual(roundedElbowFindings({ paths: state.paths, maxRadius: 12 }), [], 'r7 rounded elbow radius cap');
-    assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths }), [], 'r7 link stroke widths');
+    assert.deepEqual(roundedElbowFindings({ paths: state.paths, maxRadius: 16 }), [], 'r7 rounded elbow radius cap');
+    assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths, emphasisWidth: 5 }), [], 'r7 link stroke widths');
+    assert.deepEqual(headOverlapFindings({ heads: state.heads }), [], 'r7 arrowhead non-overlap');
     assert.ok(state.r7LabelSizes.length > 0, 'r7 edge labels must render');
     for (const size of state.r7LabelSizes) {
       assert.ok(size + epsilon >= 8, `r7 edge label renders at ${size} CSS px (< 8)`);
@@ -357,8 +378,9 @@ function check(state, scene) {
     const expectedStyles = expectedLegendStyles(scene);
     const expectedAnchor = expectedLegendAnchor(scene);
     if (expectedStyles !== null) {
-      assert.deepEqual(roundedElbowFindings({ paths: state.paths, maxRadius: 12 }), [], 'h2 rounded elbow radius cap');
-      assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths }), [], 'h2 link stroke widths');
+      assert.deepEqual(roundedElbowFindings({ paths: state.paths, maxRadius: 16 }), [], 'h2 rounded elbow radius cap');
+      assert.deepEqual(linkStrokeWidthFindings({ paths: state.paths, emphasisWidth: 5 }), [], 'h2 link stroke widths');
+      assert.deepEqual(headOverlapFindings({ heads: state.heads }), [], 'h2 arrowhead non-overlap');
       assert.deepEqual(legendFindings({ legend: state.legend, nodes: state.nodes, expectedAnchor: expectedAnchor ?? 'right', expectedStyles }),
         [], 'h2 link legend order and anchor');
     }

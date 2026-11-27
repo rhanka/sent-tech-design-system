@@ -45,12 +45,12 @@ const r7NestedFixture = () => {
 };
 
 describe("DE-2 link tokens, emphasis token and edge-label size", () => {
-  it("exports dedicated link stroke widths, emphasis width, corner radius and label size defaults", () => {
+  it("exports dedicated link stroke widths, 5px emphasis width (D-DE3-1), r=16 corner radius and label size defaults", () => {
     expect(DEFAULT_LINK_STROKE_WIDTH).toBe(3.5);
     expect(DEFAULT_LINK_RELATED_STROKE_WIDTH).toBe(3.5);
     expect(DEFAULT_LINK_PRIMARY_STROKE_WIDTH).toBe(3.5);
-    expect(DEFAULT_LINK_EMPHASIS_STROKE_WIDTH).toBe(3.5);
-    expect(DEFAULT_EDGE_CORNER_RADIUS).toBe(12);
+    expect(DEFAULT_LINK_EMPHASIS_STROKE_WIDTH).toBe(5);
+    expect(DEFAULT_EDGE_CORNER_RADIUS).toBe(16);
     expect(DEFAULT_EDGE_LABEL_SIZE).toBe(18);
   });
 
@@ -76,8 +76,10 @@ describe("DE-2 link tokens, emphasis token and edge-label size", () => {
     expect(base.svg).toContain("--st-component-diagramScene-linkStrokeWidth:3.5px");
     expect(base.svg).toContain("--st-component-diagramScene-linkRelatedStrokeWidth:3.5px");
     expect(base.svg).toContain("--st-component-diagramScene-linkEmphasisStroke:");
-    expect(base.svg).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth:3.5px");
+    expect(base.svg).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth:5px");
+    expect(base.svg).toContain("--st-component-diagramScene-edgeCornerRadius:16px");
     expect(base.svg).toContain("--st-component-diagramScene-edgeLabelSize:18px");
+    expect(base.svg).toContain('data-connector-part="head"');
     expect(base.svg).not.toContain('data-scene-edge="occurrence:lnk-0" d="');
     // Pin DE3-L2a r7 label positions under 3.5 px paintClearance.
     const baselineAt25 = resolveScene(layoutScene({ ...fixture, measureLines, collapsed: [], metrics: { linkStrokeWidth: 2.5 } }) as Extract<ReturnType<typeof layoutScene>, { status: "laid-out" }>, { ...fixture, measureLines, metrics: { linkStrokeWidth: 2.5 } });

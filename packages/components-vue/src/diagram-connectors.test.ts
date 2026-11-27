@@ -107,17 +107,22 @@ for (const host of ["base", "numbered-flow"] as const) {
       expect(markers[0]!.hasAttribute("data-arrowhead-kind")).toBe(false);
 
       const edgeEl = (occ: string) => view.container.querySelector(`path[data-scene-edge="${occ}"]`)!;
+      const headEl = (occ: string) => view.container.querySelector(`path[data-connector-part="head"][data-head-for="${occ}"]`);
       expect(edgeEl(r0!).getAttribute("stroke-dasharray")).toBe("2 5");
       expect(edgeEl(r0!).getAttribute("data-edge-stroke")).toBe("dotted");
-      expect(edgeEl(r0!).getAttribute("marker-end")).toMatch(/^url\(#diagram-arrow-[^)]+\)$/);
+      expect(edgeEl(r0!).getAttribute("marker-end")).toBeNull();
+      expect(edgeEl(r0!).getAttribute("data-edge-tip")).toBeTruthy();
+      expect(headEl(r0!)).not.toBeNull();
 
       expect(edgeEl(r1!).getAttribute("stroke-dasharray")).toBeNull();
       expect(edgeEl(r1!).getAttribute("marker-end")).toBeNull();
+      expect(headEl(r1!)).toBeNull();
       expect(edgeEl(r1!).getAttribute("data-edge-emphasis")).toBe("emphasis");
 
       expect(edgeEl(crossEdge).getAttribute("stroke-dasharray")).toBe("8 6");
       expect(edgeEl(crossEdge).getAttribute("data-edge-emphasis")).toBe("emphasis");
-      expect(edgeEl(crossEdge).getAttribute("marker-end")).toMatch(/-emphasis\)$/);
+      expect(edgeEl(crossEdge).getAttribute("marker-end")).toBeNull();
+      expect(headEl(crossEdge)?.getAttribute("data-edge-emphasis")).toBe("emphasis");
 
       const legendEl = () => view.container.querySelector<HTMLElement>("[data-scene-legend]");
       expect(legendEl()).not.toBeNull();
@@ -139,7 +144,8 @@ for (const host of ["base", "numbered-flow"] as const) {
       expect(foldedEdge.getAttribute("stroke-dasharray")).toBe("8 6");
       expect(foldedEdge.getAttribute("data-edge-stroke")).toBe("dashed");
       expect(foldedEdge.getAttribute("data-edge-emphasis")).toBe("emphasis");
-      expect(foldedEdge.getAttribute("marker-end")).toMatch(/-emphasis\)$/);
+      expect(foldedEdge.getAttribute("marker-end")).toBeNull();
+      expect(headEl(crossEdge)?.getAttribute("data-edge-emphasis")).toBe("emphasis");
 
       await fireEvent.click(toggle());
       await tick();

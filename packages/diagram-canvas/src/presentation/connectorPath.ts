@@ -1,10 +1,10 @@
 import type { Rect, Vec2 } from "../transform.js";
 
 /**
- * Default corner radius for rounded-elbow connectors, world units (DE-2).
- * Mirrors the `--st-component-diagramScene-edgeCornerRadius` token (`12px`).
+ * Default corner radius for rounded-elbow connectors, world units (DE3-L2b).
+ * Mirrors the `--st-component-diagramScene-edgeCornerRadius` token (`16px`).
  */
-export const DEFAULT_EDGE_CORNER_RADIUS = 12;
+export const DEFAULT_EDGE_CORNER_RADIUS = 16;
 
 const EPSILON = 1e-6;
 
@@ -17,7 +17,7 @@ function formatCoord(value: number): string {
  * Remove consecutive duplicate points and redundant forward-collinear interior
  * points while preserving the exact first and last dock coordinates.
  */
-function simplifyElbowPoints(points: readonly Vec2[]): Vec2[] {
+export function simplifyElbowPoints(points: readonly Vec2[]): Vec2[] {
   if (points.length <= 1) return points.map((p) => ({ x: p.x, y: p.y }));
   const dedup: Vec2[] = [{ x: points[0]!.x, y: points[0]!.y }];
   for (let i = 1; i < points.length; i += 1) {
@@ -73,6 +73,7 @@ function simplifyElbowPoints(points: readonly Vec2[]): Vec2[] {
 export function connectorPath(
   points: readonly Vec2[],
   cornerRadius: number = DEFAULT_EDGE_CORNER_RADIUS,
+  endTrim = 0,
 ): string {
   if (points.length < 2) return "";
   const simplified = simplifyElbowPoints(points);
@@ -116,7 +117,19 @@ export function connectorPath(
   }
 
   const end = simplified[simplified.length - 1]!;
-  parts.push(`L${formatCoord(end.x)} ${formatCoord(end.y)}`);
+  let finalX = end.x;
+  let finalY = end.y;
+  if (Number.isFinite(endTrim) && endTrim > EPSILON) {
+    const legDx = end.x - cursorX;
+    const legDy = end.y - cursorY;
+    const legLen = Math.hypot(legDx, legDy);
+    if (legLen > 1e-3) {
+      const safeTrim = Math.min(endTrim, Math.max(0, legLen - 1e-3));
+      finalX = end.x - (legDx / legLen) * safeTrim;
+      finalY = end.y - (legDy / legLen) * safeTrim;
+    }
+  }
+  parts.push(`L${formatCoord(finalX)} ${formatCoord(finalY)}`);
   return parts.join(" ");
 }
 

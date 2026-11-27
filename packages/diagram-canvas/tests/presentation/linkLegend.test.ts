@@ -145,7 +145,7 @@ describe("automatic link-style legend (DE-2 step 4)", () => {
     expect(swatch.arrowStroke).toBeUndefined();
     const undirected = linkLegendSwatchGeometry(forward[1]!);
     expect(undirected.arrowPath).toBeUndefined();
-    expect(undirected.strokeWidth).toBe(3.5);
+    expect(undirected.strokeWidth).toBe(5);
   });
 
   it("anchors on the right edge strip outside functional zones, joins bounds/fit, and recomputes across fold/unfold", () => {

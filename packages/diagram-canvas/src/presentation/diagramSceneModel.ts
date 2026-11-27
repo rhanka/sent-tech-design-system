@@ -101,7 +101,26 @@ import type { AlignPinned, AnatomyPinned, DepthPinned, DiagramAnatomy } from "./
 
 import { DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
 import { connectorStrokeWidth } from "./connectorStyle.js";
-export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
+import {
+  computeNeighborArrivalSpacing,
+  extractEdgeArrivalSegment,
+  resolveConnectorHead,
+  resolveConnectorHeadCssSpec,
+  type EdgeArrivalSegment,
+  type SceneEdgeHead,
+} from "../layout/connectorHead.js";
+export { connectorPath, parseConnectorPath, simplifyElbowPoints, DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
+export {
+  CONNECTOR_HEAD_SPECS,
+  computeNeighborArrivalSpacing,
+  extractEdgeArrivalSegment,
+  resolveConnectorHead,
+  resolveConnectorHeadCssSpec,
+  type ConnectorHeadCssSpec,
+  type ConnectorWeightTier,
+  type EdgeArrivalSegment,
+  type SceneEdgeHead,
+} from "../layout/connectorHead.js";
 export {
   ARROWHEAD_MARKER_GEOMETRY,
   connectorDashArray,
@@ -507,6 +526,8 @@ export interface SceneEdgeModel {
   readonly arrowhead?: ArrowheadKind;
   /** Closed link-emphasis word from the view/presentation (`default | emphasis`). */
   readonly emphasis?: LinkEmphasis;
+  /** Single-source trimmed arrowhead geometry computed at `clearanceZoom` (DE3-L2b). */
+  readonly head?: SceneEdgeHead;
 }
 
 export interface SceneLabelModel {
@@ -922,6 +943,45 @@ function resolveSceneAtZoom(
   }
   for (const arrows of Object.values(result.arrowBoxes ?? {})) for (const arrow of arrows) bounds = bounds === undefined ? arrow.box : rectUnion(bounds,arrow.box);
   const cornerRadius = r7Connectors ? (input.metrics?.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS) : 0;
+  const strokeMetrics =
+    isProcessDoc && input.metrics?.linkStrokeWidth === undefined
+      ? { ...input.metrics, linkStrokeWidth: 2.5, linkRelatedStrokeWidth: 2.5 }
+      : input.metrics;
+  const r7Arrivals: { readonly edgeIdx: number; readonly arrival: EdgeArrivalSegment; readonly strokeWidthCss: number }[] = [];
+  for (let idx = 0; idx < edges.length; idx += 1) {
+    const edge = edges[idx]!;
+    if (!edge.r7 || edge.arrowhead === "none") continue;
+    const arrival = extractEdgeArrivalSegment(String(edge.occurrence), edge.points, cornerRadius);
+    if (arrival === undefined) continue;
+    r7Arrivals.push({
+      edgeIdx: idx,
+      arrival,
+      strokeWidthCss: connectorStrokeWidth(edge, strokeMetrics),
+    });
+  }
+  if (r7Arrivals.length > 0) {
+    const arrivalList = r7Arrivals.map((entry) => entry.arrival);
+    for (const item of r7Arrivals) {
+      const edge = edges[item.edgeIdx]!;
+      const cssSpec = resolveConnectorHeadCssSpec({
+        ...(edge.emphasis === undefined ? {} : { emphasis: edge.emphasis }),
+        ...(edge.strokeStyle === undefined ? {} : { strokeStyle: edge.strokeStyle }),
+        strokeWidthCss: item.strokeWidthCss,
+      });
+      const neighborSpacing = computeNeighborArrivalSpacing(item.arrival, arrivalList);
+      const head = resolveConnectorHead({
+        points: edge.points,
+        cssSpec,
+        cornerRadius,
+        clearanceZoom,
+        neighborSpacing,
+      });
+      if (head !== undefined) {
+        edges[item.edgeIdx] = { ...edge, head };
+        bounds = bounds === undefined ? head.box : rectUnion(bounds, head.box);
+      }
+    }
+  }
   for (const { node, inner, lineHeight, bottom } of pendingCutouts) {
     if (!r7Connectors) {
       const pad = paintClearance + CONNECTOR_CUTOUT_SLACK;
@@ -973,11 +1033,8 @@ function resolveSceneAtZoom(
     ...(freeCellLegendRect === undefined ? [] : [freeCellLegendRect]),
     ...badges.map(badge => badge.box),
     ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box)),
+    ...edges.flatMap(edge => edge.head === undefined ? [] : [edge.head.box]),
   ];
-  const strokeMetrics =
-    isProcessDoc && input.metrics?.linkStrokeWidth === undefined
-      ? { ...input.metrics, linkStrokeWidth: 2.5, linkRelatedStrokeWidth: 2.5 }
-      : input.metrics;
   const clearedLabels = r7Connectors
     ? clearSceneLabels(labels, edges.map(edge => edge.points),
       allBlockers,

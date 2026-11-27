@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { borderDistance, centredBodyFindings, centredContainerContentFindings, combinedLegendFindings, compactCardFindings, connectorFindings, exposedSegments, legendFindings, linkStrokeWidthFindings, roundedElbowFindings, segmentInterval } from '../tools/diagram-first-paint/geometry.mjs';
+import { borderDistance, centredBodyFindings, centredContainerContentFindings, combinedLegendFindings, compactCardFindings, connectorFindings, exposedSegments, headOverlapFindings, legendFindings, linkStrokeWidthFindings, roundedElbowFindings, segmentInterval } from '../tools/diagram-first-paint/geometry.mjs';
 import { cases, expectedLegendAnchor, expectedLegendStyles, expectedVisibleCounts, foldTargets } from '../tools/diagram-first-paint/scenes.js';
 
 test('should clip a crossing connector against the stroke-inset badge disk', () => {
@@ -161,10 +161,11 @@ test('should include 3 r7 reference scenes and 3 H2 composed scenes with expecte
   assert.equal(expectedLegendAnchor('h2-aspect-16-9'), 'right');
 });
 
-test('should verify rounded elbow radius cap (<= 12 and <= half shorter leg)', () => {
+test('should verify rounded elbow radius cap (<= 16, <= half shorter leg) and trimmed final leg pullback', () => {
   assert.deepEqual(roundedElbowFindings({
     paths: [
-      { id: 'normal', d: 'M0 0 L88 0 Q100 0 100 12 L100 100' },
+      { id: 'normal', d: 'M0 0 L84 0 Q100 0 100 16 L100 100' },
+      { id: 'trimmed', d: 'M0 0 L84 0 Q100 0 100 16 L100 70', pullbackWorld: 30 },
       { id: 'short-leg', d: 'M0 0 L92 0 Q100 0 100 8 Q100 16 108 16 L200 16' },
       { id: 'straight', d: 'M0 0 L100 0' },
     ],
@@ -172,19 +173,19 @@ test('should verify rounded elbow radius cap (<= 12 and <= half shorter leg)', (
   const oversized = roundedElbowFindings({
     paths: [{ id: 'bad', d: 'M0 0 L80 0 Q100 0 100 20 L100 100' }],
   });
-  assert.ok(oversized.some(f => f.includes('> 12')));
+  assert.ok(oversized.some(f => f.includes('> 16')));
   const pastHalfLeg = roundedElbowFindings({
     paths: [{ id: 'short', d: 'M0 0 L90 0 Q100 0 100 10 L100 14' }],
   });
   assert.ok(pastHalfLeg.some(f => f.includes('half-leg cap')));
 });
 
-test('should verify resting (3.5px) and emphasis (3.5px) link stroke widths', () => {
+test('should verify resting (3.5px) and D-DE3-1 emphasis (5px) link stroke widths', () => {
   assert.deepEqual(linkStrokeWidthFindings({
     paths: [
       { id: 'rest', strokeWidthCss: 3.5, emphasis: 'default', flow: false, erd: false },
       { id: 'related', strokeWidthCss: 3.5, arrowhead: 'none', emphasis: 'default', flow: false, erd: false },
-      { id: 'emph', strokeWidthCss: 3.5, emphasis: 'emphasis', flow: false, erd: false },
+      { id: 'emph', strokeWidthCss: 5, emphasis: 'emphasis', flow: false, erd: false },
       { id: 'flow', strokeWidthCss: 1.5, emphasis: 'default', flow: true, erd: false },
     ],
   }), []);
@@ -292,4 +293,34 @@ test('should verify widened container horizontal centring and flag left-packed c
   });
   assert.equal(leftPacked.length, 1);
   assert.ok(leftPacked[0].includes('off-centre'));
+});
+
+test('should verify targetDock contact for trimmed shafts and flag overlapping arrowhead polygons (DE3-L2b)', () => {
+  const nodes = [
+    { id: 'occurrence:a', left: 0, top: 0, right: 100, bottom: 100 },
+    { id: 'occurrence:b', left: 200, top: 0, right: 300, bottom: 100 },
+  ];
+  // Trimmed shaft ends at x=180 (inside head), while data-edge-tip targetDock sits on box b left edge x=200.
+  assert.deepEqual(connectorFindings({
+    paths: [{ id: 'e1', stroke: 1.75, points: [{ x: 100, y: 50 }, { x: 180, y: 50 }], targetDock: { x: 200, y: 50 } }],
+    labels: [],
+    nodes,
+    occluders: nodes,
+    relations: [{ occurrence: 'e1', ends: ['occurrence:a', 'occurrence:b'] }],
+    tolerance: 1,
+  }), []);
+
+  assert.deepEqual(headOverlapFindings({
+    heads: [
+      { id: 'e1', left: 170, top: 38, right: 200, bottom: 60 },
+      { id: 'e2', left: 170, top: 62, right: 200, bottom: 84 },
+    ],
+  }), []);
+  const overlap = headOverlapFindings({
+    heads: [
+      { id: 'e1', left: 170, top: 38, right: 200, bottom: 66 },
+      { id: 'e2', left: 170, top: 58, right: 200, bottom: 86 },
+    ],
+  });
+  assert.ok(overlap.some(f => f.includes('overlap')));
 });

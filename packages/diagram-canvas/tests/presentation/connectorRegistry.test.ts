@@ -136,27 +136,31 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
       return match![0];
     };
 
-    // solid + arrow + default
+    // solid + arrow + default: DE3-L2b trims shaft and paints polygon [data-connector-part="head"] without marker-end
     const solidTag = edgeTag("occurrence:r.solid-default");
     expect(solidTag).not.toContain("stroke-dasharray");
     expect(solidTag).toContain('stroke="var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))"');
     expect(solidTag).toContain('stroke-width="3.5"');
-    expect(solidTag).toContain('marker-end="url(#scene-arrow)"');
+    expect(solidTag).not.toContain("marker-end");
+    expect(solidTag).toContain('data-edge-tip=');
+    expect(svg).toContain('data-connector-part="head" data-head-for="occurrence:r.solid-default"');
 
     // dotted + arrow
     const dottedTag = edgeTag("occurrence:r.dotted-open");
     expect(dottedTag).toContain('stroke-dasharray="2 5"');
     expect(dottedTag).toContain('data-edge-stroke="dotted"');
-    expect(dottedTag).toContain('marker-end="url(#scene-arrow)"');
+    expect(dottedTag).not.toContain("marker-end");
+    expect(svg).toContain('data-connector-part="head" data-head-for="occurrence:r.dotted-open"');
 
-    // emphasis + none: emphasis changes colour + width ONLY (NOT dash!), arrowhead none omits marker-end
+    // emphasis + none: emphasis changes colour + 5px width (D-DE3-1), arrowhead none omits head
     const emphasisTag = edgeTag("occurrence:r.emphasis-none");
     expect(emphasisTag).not.toContain("stroke-dasharray");
     expect(emphasisTag).not.toContain("marker-end");
+    expect(svg).not.toContain('data-head-for="occurrence:r.emphasis-none"');
     expect(emphasisTag).toContain('data-edge-emphasis="emphasis"');
     expect(emphasisTag).toContain('data-edge-arrowhead="none"');
     expect(emphasisTag).toContain('stroke="var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive, #001f33))"');
-    expect(emphasisTag).toContain('stroke-width="3.5"');
+    expect(emphasisTag).toContain('stroke-width="5"');
 
     // dashed (proposed) + arrow + emphasis: dash and emphasis compose cleanly
     const crossTag = edgeTag("occurrence:r.proposed-cross");
@@ -166,8 +170,9 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     expect(crossTag).toContain('data-edge-stroke="dashed"');
     expect(crossTag).toContain('data-edge-emphasis="emphasis"');
     expect(crossTag).toContain('stroke="var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive, #001f33))"');
-    expect(crossTag).toContain('stroke-width="3.5"');
-    expect(crossTag).toContain('marker-end="url(#scene-arrow-emphasis)"');
+    expect(crossTag).toContain('stroke-width="5"');
+    expect(crossTag).not.toContain('marker-end');
+    expect(svg).toContain('data-connector-part="head" data-head-for="occurrence:r.proposed-cross"');
 
     // Standalone SVG scopes token defaults to svg:root (preserving inline host dark-theme inheritance)
     // and aligns linkEmphasisStroke fallback to the core light token (#001f33).
@@ -196,8 +201,8 @@ describe("renderSceneSvg connector registries and fold preservation (DE-2 step 3
     expect(folded.svg).toContain('data-scene-edge="occurrence:r.proposed-cross"');
     expect(folded.svg).toContain('stroke-dasharray="8 6"');
     expect(folded.svg).toContain('stroke="var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive, #001f33))"');
-    expect(folded.svg).toContain('stroke-width="3.5"');
-    expect(folded.svg).toContain('marker-end="url(#scene-arrow-emphasis)"');
+    expect(folded.svg).toContain('stroke-width="5"');
+    expect(folded.svg).toContain('data-connector-part="head" data-head-for="occurrence:r.proposed-cross"');
     expect(folded.svg).not.toContain("<polyline");
 
     // Unfolding from the same retained source restores all 4 styled connectors.

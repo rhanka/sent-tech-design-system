@@ -27,7 +27,18 @@ export * from "./layout/index.js";
 
 export * from "./presentation/erd.js";
 export * from "./presentation/process.js";
-export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./presentation/connectorPath.js";
+export { connectorPath, parseConnectorPath, simplifyElbowPoints, DEFAULT_EDGE_CORNER_RADIUS } from "./presentation/connectorPath.js";
+export {
+  CONNECTOR_HEAD_SPECS,
+  computeNeighborArrivalSpacing,
+  extractEdgeArrivalSegment,
+  resolveConnectorHead,
+  resolveConnectorHeadCssSpec,
+  type ConnectorHeadCssSpec,
+  type ConnectorWeightTier,
+  type EdgeArrivalSegment,
+  type SceneEdgeHead,
+} from "./layout/connectorHead.js";
 export {
   ARROWHEAD_MARKER_GEOMETRY,
   connectorDashArray,

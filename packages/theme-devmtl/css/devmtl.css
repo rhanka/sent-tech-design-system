@@ -1081,10 +1081,10 @@
   --st-component-diagramScene-linkRelatedStrokeWidth: 3.5px;
   --st-component-diagramScene-linkPrimaryStrokeWidth: 3.5px;
   --st-component-diagramScene-linkEmphasisStroke: #01055e;
-  --st-component-diagramScene-linkEmphasisStrokeWidth: 3.5px;
+  --st-component-diagramScene-linkEmphasisStrokeWidth: 5px;
   --st-component-diagramScene-linkDashDashed: 8 6;
   --st-component-diagramScene-linkDashDotted: 2 5;
-  --st-component-diagramScene-edgeCornerRadius: 12px;
+  --st-component-diagramScene-edgeCornerRadius: 16px;
   --st-component-diagramScene-labelSurface: #ffffff;
   --st-component-diagramScene-labelBorder: #cbd5e1;
   --st-component-diagramScene-labelText: #172033;

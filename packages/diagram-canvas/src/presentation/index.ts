@@ -13,7 +13,18 @@ export {
   type LintZoneTagAcronymsInput,
   type ZoneTagLintEntry,
 } from "../layout/conventions.js";
-export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
+export { connectorPath, parseConnectorPath, simplifyElbowPoints, DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
+export {
+  CONNECTOR_HEAD_SPECS,
+  computeNeighborArrivalSpacing,
+  extractEdgeArrivalSegment,
+  resolveConnectorHead,
+  resolveConnectorHeadCssSpec,
+  type ConnectorHeadCssSpec,
+  type ConnectorWeightTier,
+  type EdgeArrivalSegment,
+  type SceneEdgeHead,
+} from "../layout/connectorHead.js";
 export {
   ARROWHEAD_MARKER_GEOMETRY,
   connectorDashArray,

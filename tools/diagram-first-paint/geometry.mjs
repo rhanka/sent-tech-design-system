@@ -188,7 +188,7 @@ export function connectorFindings({ paths, labels, nodes, occluders, relations, 
   for (const path of paths) {
     if (path.points.length < 2) { findings.push(`connector ${path.id} has no route`); continue; }
     const touching = point => nodes.filter(node => borderDistance(point, node) <= tolerance).map(node => node.id);
-    const first = touching(path.points[0]), last = touching(path.points[path.points.length - 1]);
+    const first = touching(path.points[0]), last = touching(path.targetDock ?? path.points[path.points.length - 1]);
     const expected = relations?.find(relation => relation.occurrence === path.id);
     if (relations !== undefined && expected === undefined) findings.push(`connector ${path.id} joins no expected relation`);
     if (expected !== undefined) {
@@ -230,7 +230,7 @@ function canonicalStyleRank(key) {
  * (`M`, `L`, `Q` in world coordinates) and verifies that every `Q` corner
  * radius is symmetric, `<= maxRadius` (12), and `<= half shorter adjacent leg`.
  */
-export function roundedElbowFindings({ paths, maxRadius = 12, tolerance = 0.5 }) {
+export function roundedElbowFindings({ paths, maxRadius = 16, tolerance = 0.5 }) {
   const findings = [];
   for (const path of paths) {
     if (typeof path.d !== 'string' || path.d.trim().length === 0) {
@@ -273,7 +273,9 @@ export function roundedElbowFindings({ paths, maxRadius = 12, tolerance = 0.5 })
         curr = end;
       }
     }
-    for (const bend of bends) {
+    const pullback = Number(path.pullbackWorld) || 0;
+    for (let bIdx = 0; bIdx < bends.length; bIdx += 1) {
+      const bend = bends[bIdx];
       const prev = verts[bend.cornerIndex - 1];
       const corner = verts[bend.cornerIndex];
       const next = verts[bend.cornerIndex + 1];
@@ -281,7 +283,7 @@ export function roundedElbowFindings({ paths, maxRadius = 12, tolerance = 0.5 })
       const rIn = lengthOf(bend.start, bend.ctrl);
       const rOut = lengthOf(bend.ctrl, bend.end);
       const inLen = lengthOf(prev, corner);
-      const outLen = lengthOf(corner, next);
+      const outLen = lengthOf(corner, next) + (bIdx === bends.length - 1 ? pullback : 0);
       const cap = Math.min(maxRadius, inLen / 2, outLen / 2);
       if (Math.abs(rIn - rOut) > tolerance) {
         findings.push(`connector ${path.id} asymmetric elbow radius: ${rIn} vs ${rOut}`);
@@ -292,16 +294,19 @@ export function roundedElbowFindings({ paths, maxRadius = 12, tolerance = 0.5 })
       if (rIn > cap + tolerance || rOut > cap + tolerance) {
         findings.push(`connector ${path.id} elbow radius ${Math.max(rIn, rOut)} > half-leg cap ${cap}`);
       }
+      if (bIdx === bends.length - 1 && pullback > 0 && pullback > outLen - rOut - 1 + tolerance) {
+        findings.push(`connector ${path.id} pullback ${pullback} encroaches into final bend (outLen=${outLen}, r=${rOut})`);
+      }
     }
   }
   return findings;
 }
 
 /**
- * DE-2 / DE3-L2a link-width gate: verifies that ordinary resting links paint at
- * `defaultWidth` (3.5 px), related links at `relatedWidth` (3.5 px), and emphasized links at `emphasisWidth` (3.5 px).
+ * DE-2 / DE3-L2b link-width gate: verifies that ordinary resting links paint at
+ * `defaultWidth` (3.5 px), related links at `relatedWidth` (3.5 px), and D-DE3-1 emphasized links at `emphasisWidth` (5 px).
  */
-export function linkStrokeWidthFindings({ paths, defaultWidth = 3.5, relatedWidth = 3.5, emphasisWidth = 3.5, tolerance = 0.05 }) {
+export function linkStrokeWidthFindings({ paths, defaultWidth = 3.5, relatedWidth = 3.5, emphasisWidth = 5, tolerance = 0.05 }) {
   const findings = [];
   for (const path of paths) {
     if (path.flow || path.erd) continue;
@@ -425,6 +430,34 @@ export function centredContainerContentFindings({ zones, tolerance = 1 }) {
     const rightGap = zone.right - maxRight;
     if (Math.abs(leftGap - rightGap) > tolerance) {
       findings.push(`zone ${zone.id} children off-centre: leftGap=${leftGap.toFixed(2)} rightGap=${rightGap.toFixed(2)}`);
+    }
+  }
+  return findings;
+}
+
+/**
+ * DE3-L2b: verifies pairwise non-overlap across rendered `[data-connector-part="head"]` polygons.
+ */
+export function headOverlapFindings({ heads = [], tolerance = 0.25 }) {
+  const findings = [];
+  for (let i = 0; i < heads.length; i += 1) {
+    const a = heads[i];
+    for (let j = i + 1; j < heads.length; j += 1) {
+      const b = heads[j];
+      const identical =
+        Math.abs(a.left - b.left) < tolerance &&
+        Math.abs(a.right - b.right) < tolerance &&
+        Math.abs(a.top - b.top) < tolerance &&
+        Math.abs(a.bottom - b.bottom) < tolerance;
+      if (identical) continue;
+      if (
+        a.left < b.right - tolerance &&
+        a.right > b.left + tolerance &&
+        a.top < b.bottom - tolerance &&
+        a.bottom > b.top + tolerance
+      ) {
+        findings.push(`arrowhead ${a.id} overlaps arrowhead ${b.id}`);
+      }
     }
   }
   return findings;

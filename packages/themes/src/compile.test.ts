@@ -55,8 +55,8 @@ describe("compileTheme", () => {
     expect(css).toContain("--st-component-diagramScene-linkStrokeWidth: 3.5px;");
     expect(css).toContain("--st-component-diagramScene-linkRelatedStrokeWidth: 3.5px;");
     expect(css).toContain("--st-component-diagramScene-linkEmphasisStroke: #001f33;");
-    expect(css).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth: 3.5px;");
-    expect(css).toContain("--st-component-diagramScene-edgeCornerRadius: 12px;");
+    expect(css).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth: 5px;");
+    expect(css).toContain("--st-component-diagramScene-edgeCornerRadius: 16px;");
     expect(css).toContain("--st-component-diagramScene-edgeLabelSize: 18px;");
     expect(css).toContain("--st-component-diagramScene-zoneGutter: 96px;");
     expect(css).toContain("--st-component-diagramScene-flowStrokeWidth: 1.5px;");

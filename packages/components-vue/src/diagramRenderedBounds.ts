@@ -134,7 +134,7 @@ function restingStrokeWidth(element: Element, style: CSSStyleDeclaration): numbe
         ? '--st-component-diagramScene-linkStrokeWidth'
         : '--st-component-diagramZone-borderWidth';
   const resting = parseFloat(style.getPropertyValue(token));
-  const fallbackWidth = isFlow || !isR7 ? RESTING_FLOW_STROKE_WIDTH : RESTING_EDGE_STROKE_WIDTH;
+  const fallbackWidth = isFlow || !isR7 ? RESTING_FLOW_STROKE_WIDTH : element.getAttribute('data-edge-emphasis') === 'emphasis' ? 5 : RESTING_EDGE_STROKE_WIDTH;
   return Number.isFinite(resting) ? resting : Math.min(width, fallbackWidth);
 }
 

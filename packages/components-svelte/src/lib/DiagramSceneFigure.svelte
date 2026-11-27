@@ -1298,8 +1298,8 @@
     `<svg xmlns="http://www.w3.org/2000/svg" class="st-diagramProcessCard" aria-hidden="true" width="100%" height="100%" viewBox="0 0 ${box.width} ${box.height}" style="font-family:var(--st-font-sans, Inter, system-ui, sans-serif)">${renderProcessBoxSvg(box)}</svg>`;
 
   const edgeCornerRadius = $derived(effectiveMetrics.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS);
-  const pathOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
-    connectorPath(points, edgeCornerRadius);
+  const pathOf = (points: readonly { readonly x: number; readonly y: number }[], endTrim = 0): string =>
+    connectorPath(points, edgeCornerRadius, endTrim);
   const pointsOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
     points.map((point) => `${point.x},${point.y}`).join(" ");
 
@@ -1535,7 +1535,10 @@
               <g data-scene-connectors="" mask={connectorMask === undefined ? undefined : `url(#${maskId})`}>
               {#each scene.edges as edge (edge.occurrence)}
                 {#if edge.r7}
-                  <path marker-end={connectorMarkerRef(edge, markerIds)} stroke-dasharray={connectorDashArray(edge.strokeStyle)} style={connectorDashPaint(edge.strokeStyle)} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-connector-mode="r7" data-edge-stroke={edge.strokeStyle} data-edge-arrowhead={edge.arrowhead} data-edge-emphasis={edge.emphasis} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} d={pathOf(edge.points)} />
+                  <path marker-end={edge.head === undefined ? connectorMarkerRef(edge, markerIds) : undefined} stroke-dasharray={connectorDashArray(edge.strokeStyle)} style={connectorDashPaint(edge.strokeStyle)} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-connector-mode="r7" data-edge-stroke={edge.strokeStyle} data-edge-arrowhead={edge.arrowhead} data-edge-emphasis={edge.emphasis} data-edge-tip={edge.head === undefined ? undefined : `${edge.head.tip.x},${edge.head.tip.y}`} data-edge-pullback={edge.head === undefined ? undefined : edge.head.pullbackWorld} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} d={pathOf(edge.points, edge.head?.pullbackWorld ?? 0)} />
+                  {#if edge.head !== undefined}
+                    <path class="st-diagramSceneFigure-edgeHead" data-connector-part="head" data-head-for={edge.occurrence} data-edge-emphasis={edge.emphasis} d={edge.head.path} fill={edge.emphasis === "emphasis" ? "var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive, #001f33))" : scene.processConnectors ? "var(--st-component-diagramScene-edgeStroke, #64748b)" : "var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))"} />
+                  {/if}
                 {:else}
                   <polyline marker-end={edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} points={pointsOf(edge.points)} />
                 {/if}
@@ -1848,7 +1851,7 @@
   }
   .st-diagramSceneFigure-edge[data-connector-mode="r7"][data-edge-emphasis="emphasis"] {
     stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
-    stroke-width: var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px));
+    stroke-width: var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 5px));
   }
   .st-diagramSceneFigure-edgeLabel {
     box-sizing: border-box;
@@ -1890,15 +1893,15 @@
     padding: var(--st-diagram-legend-padding);
     position: absolute;
   }
-  .st-diagramSceneFigure-legendKey { gap: 8px; }
+  .st-diagramSceneFigure-legendKey { gap: var(--st-spacing-2, 8px); }
   .st-diagramSceneFigure-legendKeySwatch {
-    border: 1px solid var(--st-semantic-border-default, #94a3b8);
-    border-radius: 4px;
+    border: var(--st-component-diagramScene-labelBorderWidth, 1px) solid var(--st-semantic-border-default, #94a3b8);
+    border-radius: var(--st-radius-sm, 4px);
     box-sizing: border-box;
     display: inline-block;
     flex: none;
-    height: 16px;
-    width: 24px;
+    height: var(--st-diagram-legend-swatch-height, 16px);
+    width: var(--st-spacing-6, 24px);
   }
   .st-diagramSceneFigure-authoredCombined {
     border-top: var(--st-component-diagramScene-labelBorderWidth, 1px) solid var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));

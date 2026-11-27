@@ -28,8 +28,8 @@ export const DEFAULT_LINK_STROKE_WIDTH = 3.5;
 export const DEFAULT_LINK_RELATED_STROKE_WIDTH = 3.5;
 /** Primary flow connector stroke width, CSS px (token `diagramScene.linkPrimaryStrokeWidth`, DE-2). */
 export const DEFAULT_LINK_PRIMARY_STROKE_WIDTH = 3.5;
-/** Emphasized connector stroke width, CSS px (token `diagramScene.linkEmphasisStrokeWidth`, DE-2 / G6). */
-export const DEFAULT_LINK_EMPHASIS_STROKE_WIDTH = 3.5;
+/** Emphasized connector stroke width, CSS px (token `diagramScene.linkEmphasisStrokeWidth`, D-DE3-1 `5 px`). */
+export const DEFAULT_LINK_EMPHASIS_STROKE_WIDTH = 5;
 /** Original DC-2a edge-label readability reference, CSS px. */
 export const MIN_EDGE_LABEL_CSS_PX = 8;
 /** Share of the window height a figure may take (§5.1 fit box). */
