@@ -881,12 +881,16 @@ describe('scene host DOM and camera/fold behavior', () => {
       const be = root.querySelector('path[data-scene-edge="occurrence:r.link.b.ext"]')!;
       const ae = root.querySelector('path[data-scene-edge="occurrence:r.link.a.ext"]')!;
       expect(ab.getAttribute('stroke-dasharray')).toBe('2 5');
-      expect(ab.getAttribute('marker-end')).toMatch(/^url\(#diagram-arrow-[^)]+\)$/);
+      expect(ab.getAttribute('marker-end')).toBeNull();
+      expect(ab.getAttribute('data-edge-tip')).toBeTruthy();
+      expect(root.querySelector('path[data-connector-part="head"][data-head-for="occurrence:r.link.a.b"]')).not.toBeNull();
       expect(be.getAttribute('stroke-dasharray')).toBeNull();
       expect(be.getAttribute('marker-end')).toBeNull();
+      expect(root.querySelector('path[data-connector-part="head"][data-head-for="occurrence:r.link.b.ext"]')).toBeNull();
       expect(be.getAttribute('data-edge-emphasis')).toBe('emphasis');
       expect(ae.getAttribute('stroke-dasharray')).toBe('8 6');
-      expect(ae.getAttribute('marker-end')).toMatch(/-emphasis\)$/);
+      expect(ae.getAttribute('marker-end')).toBeNull();
+      expect(root.querySelector('path[data-connector-part="head"][data-head-for="occurrence:r.link.a.ext"][data-edge-emphasis="emphasis"]')).not.toBeNull();
       expect(ae.getAttribute('data-edge-emphasis')).toBe('emphasis');
       const legend = root.querySelector('[data-scene-legend]');
       expect(legend).not.toBeNull();

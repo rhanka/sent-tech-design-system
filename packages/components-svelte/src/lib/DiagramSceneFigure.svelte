@@ -1280,11 +1280,12 @@
 
   const zonePropsOf = (node: SceneNodeModel, rect: Rect) => {
     const zoneTitle = node.presentation?.text.title ?? "";
+    const hideToggle = scene?.r7Connectors === true && node.presentation?.form === "legend";
     const projected = projectZoneProps(node.presentation, {
       containerPadding: effectiveMetrics.containerPadding,
       entityId: node.entity,
       collapsed: node.collapsed,
-      toggleLabel: node.collapsed ? strings.expand(zoneTitle) : strings.collapse(zoneTitle),
+      ...(hideToggle ? {} : { toggleLabel: node.collapsed ? strings.expand(zoneTitle) : strings.collapse(zoneTitle) }),
       ...(node.collapsed ? {} : { width: rect.width, height: rect.height }),
       ...(resolveGlyph === undefined ? {} : { resolveGlyph }),
     });
@@ -1297,8 +1298,8 @@
     `<svg xmlns="http://www.w3.org/2000/svg" class="st-diagramProcessCard" aria-hidden="true" width="100%" height="100%" viewBox="0 0 ${box.width} ${box.height}" style="font-family:var(--st-font-sans, Inter, system-ui, sans-serif)">${renderProcessBoxSvg(box)}</svg>`;
 
   const edgeCornerRadius = $derived(effectiveMetrics.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS);
-  const pathOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
-    connectorPath(points, edgeCornerRadius);
+  const pathOf = (points: readonly { readonly x: number; readonly y: number }[], endTrim = 0): string =>
+    connectorPath(points, edgeCornerRadius, endTrim);
   const pointsOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
     points.map((point) => `${point.x},${point.y}`).join(" ");
 
@@ -1444,6 +1445,68 @@
                   {#if zoneProps !== undefined}
                     <DiagramZone {...zoneProps} measure={effectiveMeasure} onSelect={(event) => selectNode(node, event)} onToggle={() => toggleFold(node)} />
                   {/if}
+                  {#if node.combinedLegend !== undefined}
+                    {@const cl = node.combinedLegend}
+                    <div
+                      class="st-diagramSceneFigure-authoredCombined"
+                      style={`top:${cl.topOffset - cl.rowGap}px;left:${cl.padding}px;right:${cl.padding}px;--st-diagram-legend-header-gap:${cl.headerGap}px;--st-diagram-legend-row-height:${cl.rowHeight}px;--st-diagram-legend-row-gap:${cl.rowGap}px;--st-diagram-legend-swatch-width:${cl.swatchWidth}px;--st-diagram-legend-swatch-height:${cl.swatchHeight}px;--st-diagram-legend-swatch-gap:${cl.swatchGap}px;--st-diagram-legend-font-size:${cl.fontSize}px`}
+                    >
+                      <ul class="st-diagramSceneFigure-legendList">
+                        {#each cl.entries as entry (entry.key)}
+                          {@const swatch = linkLegendSwatchGeometry(entry, effectiveMetrics)}
+                          <li
+                            class="st-diagramSceneFigure-legendItem"
+                            data-legend-style={entry.key}
+                            data-edge-stroke={entry.strokeStyle}
+                            data-edge-arrowhead={entry.arrowhead}
+                            data-edge-emphasis={entry.emphasis}
+                          >
+                            <svg class="st-diagramSceneFigure-legendSwatch" viewBox={swatch.viewBox} aria-hidden="true">
+                              <path
+                                data-legend-swatch={entry.key}
+                                d={swatch.linePath}
+                                fill="none"
+                                stroke={swatch.stroke}
+                                stroke-width={swatch.strokeWidth}
+                                stroke-dasharray={swatch.dashArray}
+                                style={connectorDashPaint(entry.strokeStyle)}
+                                vector-effect="non-scaling-stroke"
+                              />
+                              {#if swatch.arrowPath !== undefined}
+                                <path
+                                  d={swatch.arrowPath}
+                                  fill={swatch.arrowFill}
+                                  stroke={swatch.arrowStroke}
+                                  stroke-width={swatch.arrowStrokeWidth}
+                                />
+                              {/if}
+                            </svg>
+                            <span class="st-diagramSceneFigure-legendLabel">{entry.label}</span>
+                          </li>
+                        {/each}
+                        {#each cl.entityMarks ?? [] as mark (mark.kind)}
+                          <li class="st-diagramSceneFigure-legendItem" data-legend-mark={mark.kind}>
+                            <svg class="st-diagramSceneFigure-legendSwatch" viewBox={`0 0 ${cl.swatchWidth} ${cl.swatchHeight}`} aria-hidden="true">
+                              {#if mark.kind === "proposed"}
+                                <rect x="10" y="1" width="24" height="14" rx="4" fill="none" stroke="var(--st-semantic-border-strong, #64748b)" stroke-width="1.5" stroke-dasharray="4 3" />
+                              {:else}
+                                <rect x="12" y="1" width="20" height="14" rx="3" fill="var(--st-semantic-surface-subtle, #f8fafc)" stroke="var(--st-semantic-border-strong, #64748b)" stroke-width="1.5" />
+                                <text x="22" y="12" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">+</text>
+                              {/if}
+                            </svg>
+                            <span class="st-diagramSceneFigure-legendLabel">{mark.label}</span>
+                          </li>
+                        {/each}
+                      </ul>
+                    </div>
+                  {/if}
+                {:else if node.kind === "legend-key" && node.swatch !== undefined}
+                  <div class="st-diagramSceneFigure-label st-diagramSceneFigure-legendKey" data-entity={node.entity}><span
+                      class="st-diagramSceneFigure-legendKeySwatch"
+                      data-legend-key-swatch=""
+                      style={`background:${node.swatch.fill};border-color:${node.swatch.stroke}`}
+                      aria-hidden="true"
+                    ></span><span class="st-diagramSceneFigure-legendKeyText">{node.text}</span></div>
                 {:else}
                   <div class="st-diagramSceneFigure-label" data-entity={node.entity}>{node.text}</div>
                 {/if}
@@ -1469,7 +1532,10 @@
               <g data-scene-connectors="" mask={connectorMask === undefined ? undefined : `url(#${maskId})`}>
               {#each scene.edges as edge (edge.occurrence)}
                 {#if edge.r7}
-                  <path marker-end={connectorMarkerRef(edge, markerIds)} stroke-dasharray={connectorDashArray(edge.strokeStyle)} style={connectorDashPaint(edge.strokeStyle)} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-connector-mode="r7" data-edge-stroke={edge.strokeStyle} data-edge-arrowhead={edge.arrowhead} data-edge-emphasis={edge.emphasis} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} d={pathOf(edge.points)} />
+                  <path marker-end={edge.head === undefined ? connectorMarkerRef(edge, markerIds) : undefined} stroke-dasharray={connectorDashArray(edge.strokeStyle)} style={connectorDashPaint(edge.strokeStyle)} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-connector-mode="r7" data-edge-stroke={edge.strokeStyle} data-edge-arrowhead={edge.arrowhead} data-edge-emphasis={edge.emphasis} data-edge-tip={edge.head === undefined ? undefined : `${edge.head.tip.x},${edge.head.tip.y}`} data-edge-pullback={edge.head === undefined ? undefined : edge.head.pullbackWorld} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} d={pathOf(edge.points, edge.head?.pullbackWorld ?? 0)} />
+                  {#if edge.head !== undefined}
+                    <path class="st-diagramSceneFigure-edgeHead" data-connector-part="head" data-head-for={edge.occurrence} data-edge-emphasis={edge.emphasis} d={edge.head.path} fill={edge.emphasis === "emphasis" ? "var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive, #001f33))" : scene.processConnectors ? "var(--st-component-diagramScene-edgeStroke, #64748b)" : "var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))"} />
+                  {/if}
                 {:else}
                   <polyline marker-end={edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} points={pointsOf(edge.points)} />
                 {/if}
@@ -1565,6 +1631,19 @@
                         {/if}
                       </svg>
                       <span class="st-diagramSceneFigure-legendLabel">{entry.label}</span>
+                    </li>
+                  {/each}
+                  {#each scene.linkLegend.entityMarks ?? [] as mark (mark.kind)}
+                    <li class="st-diagramSceneFigure-legendItem" data-legend-mark={mark.kind}>
+                      <svg class="st-diagramSceneFigure-legendSwatch" viewBox={`0 0 ${scene.linkLegend.swatchWidth} ${scene.linkLegend.swatchHeight}`} aria-hidden="true">
+                        {#if mark.kind === "proposed"}
+                          <rect x="10" y="1" width="24" height="14" rx="4" fill="none" stroke="var(--st-semantic-border-strong, #64748b)" stroke-width="1.5" stroke-dasharray="4 3" />
+                        {:else}
+                          <rect x="12" y="1" width="20" height="14" rx="3" fill="var(--st-semantic-surface-subtle, #f8fafc)" stroke="var(--st-semantic-border-strong, #64748b)" stroke-width="1.5" />
+                          <text x="22" y="12" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">+</text>
+                        {/if}
+                      </svg>
+                      <span class="st-diagramSceneFigure-legendLabel">{mark.label}</span>
                     </li>
                   {/each}
                 </ul>
@@ -1769,7 +1848,7 @@
   }
   .st-diagramSceneFigure-edge[data-connector-mode="r7"][data-edge-emphasis="emphasis"] {
     stroke: var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive));
-    stroke-width: var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 3.5px));
+    stroke-width: var(--st-diagram-link-emphasis-stroke-width, var(--st-component-diagramScene-linkEmphasisStrokeWidth, 5px));
   }
   .st-diagramSceneFigure-edgeLabel {
     box-sizing: border-box;
@@ -1798,7 +1877,8 @@
   .st-diagramSceneFigure-bundleRelation div { display: flex; flex-direction: column; }
   .st-diagramSceneFigure-legend {
     background: var(--st-component-diagramScene-labelSurface, var(--st-semantic-surface-raised));
-    box-shadow: inset 0 0 0 var(--st-component-diagramScene-labelBorderWidth, 1px) var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
+    border-radius: var(--st-diagram-legend-radius, 8px);
+    box-shadow: inset 0 0 0 var(--st-component-diagramZone-borderWidth, 1.5px) var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
     box-sizing: border-box;
     color: var(--st-component-diagramScene-labelText, var(--st-semantic-text-primary));
     display: flex;
@@ -1808,6 +1888,24 @@
     gap: var(--st-diagram-legend-header-gap);
     line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
     padding: var(--st-diagram-legend-padding);
+    position: absolute;
+  }
+  .st-diagramSceneFigure-legendKey { gap: var(--st-spacing-2, 8px); }
+  .st-diagramSceneFigure-legendKeySwatch {
+    border: var(--st-component-diagramScene-labelBorderWidth, 1px) solid var(--st-semantic-border-default, #94a3b8);
+    border-radius: var(--st-radius-sm, 4px);
+    box-sizing: border-box;
+    display: inline-block;
+    flex: none;
+    height: var(--st-diagram-legend-swatch-height, 16px);
+    width: var(--st-spacing-6, 24px);
+  }
+  .st-diagramSceneFigure-authoredCombined {
+    border-top: var(--st-component-diagramScene-labelBorderWidth, 1px) solid var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
+    box-sizing: border-box;
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
+    font-size: var(--st-diagram-legend-font-size, var(--st-component-diagramScene-edgeLabelSize, 18px));
+    padding-top: max(0px, calc(var(--st-diagram-legend-row-gap, 6px) - var(--st-component-diagramScene-labelBorderWidth, 1px)));
     position: absolute;
   }
   .st-diagramSceneFigure-legendTitle {

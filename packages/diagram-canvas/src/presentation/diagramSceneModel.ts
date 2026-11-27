@@ -61,6 +61,7 @@ import {
   layoutMeasured,
   placeEdgeLabels,
   rectUnion,
+  rectsIntersect,
   relationRoute,
   scaleEdgeLabelMeasurer,
   sceneNodes,
@@ -82,14 +83,46 @@ import { measureBundleLabel, type BundleLabelGroup } from "../layout/bundleLabel
 import { LABEL_CLEARANCE_REFERENCE_SCALE } from "../layout/labels.js";
 import { getDiagramGlyph } from "./registry.js";
 import { anatomyZoneGeometry, lineBoxHeight, ZONE_GEOMETRY } from "./diagramCardModel.js";
-import { buildSceneLinkLegend, LINK_LEGEND_GAP, placeSceneLinkLegend, type LinkLegendAnchor, type SceneLinkLegend } from "./linkLegend.js";
+import {
+  buildSceneLinkLegend,
+  collectLegendEntityMarks,
+  findLegendPocket,
+  inferLegendLocale,
+  LINK_LEGEND_GAP,
+  measureSceneLinkLegend,
+  placeSceneLinkLegend,
+  resolveLegendKeySwatch,
+  type AuthoredCombinedLegend,
+  type AuthoredLegendKeySwatch,
+  type LinkLegendAnchor,
+  type SceneLinkLegend,
+} from "./linkLegend.js";
 import { clearSceneLabels } from "./sceneLabelClearance.js";
 import type { EntityPresentation } from "@sentropic/diagram-core";
 import type { AlignPinned, AnatomyPinned, DepthPinned, DiagramAnatomy } from "./diagramCardModel.js";
 
 import { DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
 import { connectorStrokeWidth } from "./connectorStyle.js";
-export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
+import {
+  computeNeighborArrivalSpacing,
+  extractEdgeArrivalSegment,
+  resolveConnectorHead,
+  resolveConnectorHeadCssSpec,
+  type EdgeArrivalSegment,
+  type SceneEdgeHead,
+} from "../layout/connectorHead.js";
+export { connectorPath, parseConnectorPath, simplifyElbowPoints, DEFAULT_EDGE_CORNER_RADIUS } from "./connectorPath.js";
+export {
+  CONNECTOR_HEAD_SPECS,
+  computeNeighborArrivalSpacing,
+  extractEdgeArrivalSegment,
+  resolveConnectorHead,
+  resolveConnectorHeadCssSpec,
+  type ConnectorHeadCssSpec,
+  type ConnectorWeightTier,
+  type EdgeArrivalSegment,
+  type SceneEdgeHead,
+} from "../layout/connectorHead.js";
 export {
   ARROWHEAD_MARKER_GEOMETRY,
   connectorDashArray,
@@ -105,9 +138,15 @@ export {
 export {
   ALL_LINK_LEGEND_STYLES,
   buildSceneLinkLegend,
+  collectLegendEntityMarks,
   collectLinkLegendStyles,
+  defaultLegendMarkLabel,
+  defaultLegendTitle,
   defaultLinkStyleLabel,
+  findLegendPocket,
+  inferLegendLocale,
   LINK_LEGEND_ARROWHEAD_ORDER,
+  LINK_LEGEND_CORNER_RADIUS,
   LINK_LEGEND_EMPHASIS_ORDER,
   LINK_LEGEND_FONT_SIZE,
   LINK_LEGEND_GAP,
@@ -115,6 +154,7 @@ export {
   LINK_LEGEND_HEADER_HEIGHT,
   LINK_LEGEND_MIN_WIDTH,
   LINK_LEGEND_PADDING,
+  LINK_LEGEND_POCKET_CLEARANCE,
   LINK_LEGEND_ROW_GAP,
   LINK_LEGEND_ROW_HEIGHT,
   LINK_LEGEND_STROKE_ORDER,
@@ -127,7 +167,13 @@ export {
   measureLegendProbe,
   measureSceneLinkLegend,
   placeSceneLinkLegend,
+  resolveLegendKeySwatch,
+  type AuthoredCombinedLegend,
+  type AuthoredLegendKeySwatch,
   type BuildSceneLinkLegendInput,
+  type LegendEntityMark,
+  type LegendEntityMarkKind,
+  type LegendLocale,
   type LinkLegendAnchor,
   type LinkLegendEdgeInput,
   type LinkLegendEntry,
@@ -334,6 +380,10 @@ export interface SceneLayoutInput {
 export function layoutScene(input: SceneLayoutInput): LayoutResult {
   const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, input.view, input.resolveGlyph,
     input.depthParityStart === undefined ? {} : { depthParityStart: input.depthParityStart });
+  const hasAuthoredLegend =
+    isR7ConnectorPresentation(resolved.presentation, input.view, input.document) &&
+    Object.values(resolved.presentation.entities).some((entry) => entry.form === "legend");
+  const forwardLegendMeta = input.hints?.composition !== undefined || hasAuthoredLegend;
   const options: LayoutOptions = {
     registry: input.registry,
     ...(input.flows === undefined ? {} : { flows: input.flows }),
@@ -360,8 +410,8 @@ export function layoutScene(input: SceneLayoutInput): LayoutResult {
     ...(input.reportSurfaceSame === undefined ? {} : { reportSurfaceSame: input.reportSurfaceSame }),
     ...(input.conventions === undefined ? {} : { conventions: input.conventions }),
     ...(input.hints?.composition !== undefined && input.legend !== undefined ? { legend: input.legend } : {}),
-    ...(input.hints?.composition !== undefined && input.legendTitle !== undefined ? { legendTitle: input.legendTitle } : {}),
-    ...(input.hints?.composition !== undefined && input.legendLabels !== undefined ? { legendLabels: input.legendLabels } : {}),
+    ...(forwardLegendMeta && input.legendTitle !== undefined ? { legendTitle: input.legendTitle } : {}),
+    ...(forwardLegendMeta && input.legendLabels !== undefined ? { legendLabels: input.legendLabels } : {}),
   };
   const result = input.cache !== undefined
     ? (input.view === undefined
@@ -396,6 +446,10 @@ export interface SceneNodeModel {
   readonly presentation?: EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned;
   /** Text of a node with no card form (L-R12 label) or of a legend key. */
   readonly text: string;
+  /** Resolved category fill & stroke swatch for `r7` `legend-key` items. */
+  readonly swatch?: AuthoredLegendKeySwatch;
+  /** Combined link-style & entity-mark legend entries painted inside an `r7` authored legend frame. */
+  readonly combinedLegend?: AuthoredCombinedLegend;
   readonly erd?: ErdCard;
   readonly processBox?: ProcessBoxModel;
 }
@@ -478,6 +532,8 @@ export interface SceneEdgeModel {
   readonly arrowhead?: ArrowheadKind;
   /** Closed link-emphasis word from the view/presentation (`default | emphasis`). */
   readonly emphasis?: LinkEmphasis;
+  /** Single-source trimmed arrowhead geometry computed at `clearanceZoom` (DE3-L2b). */
+  readonly head?: SceneEdgeHead;
 }
 
 export interface SceneLabelModel {
@@ -591,6 +647,8 @@ function resolveSceneAtZoom(
   const visibleEdges = new Set(items.filter(item => item.kind === "edge").map(item => item.occurrence as string));
   const collapsed = new Set<string>(collapsedOccurrencesOf(view));
   const rawNodes = sceneNodes(frame);
+  const erdDoc = input.document.profileRefs.length === 1 && input.document.profileRefs[0] === "erd@1";
+  const r7Connectors = !erdDoc && (result.routeSpacing !== undefined || isR7ConnectorPresentation(input.presentation, input.view ?? view, input.document));
   const isProcessDoc = input.document.profileRefs.length === 1 && input.document.profileRefs[0] === "process@1";
   const processDirection: "left-to-right" | "top-to-bottom" =
     result.fit.direction === "top-to-bottom" ? "top-to-bottom" : "left-to-right";
@@ -610,6 +668,18 @@ function resolveSceneAtZoom(
         byCodeUnit(a.entity, b.entity),
       )
       .forEach((laneNode, idx) => laneBandIndexByEntity.set(laneNode.entity, idx));
+  }
+  const legendParentByKeyEntity = new Map<string, string>();
+  if (r7Connectors) {
+    for (const rel of Object.values(input.document.relations)) {
+      const baseRelType = rel.type.includes(":") ? rel.type.split(":").pop() : rel.type;
+      if (baseRelType !== "contains") continue;
+      const parentEndpoint = rel.endpoints.find((ep) => ep.role === "parent")?.target;
+      const childEndpoint = rel.endpoints.find((ep) => ep.role === "child")?.target;
+      if (parentEndpoint !== undefined && childEndpoint !== undefined) {
+        legendParentByKeyEntity.set(childEndpoint, parentEndpoint);
+      }
+    }
   }
   const nodes: SceneNodeModel[] = rawNodes.map((node) => {
     const presentation = resolved.presentation.entities[node.occurrence] as (EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned) | undefined;
@@ -640,6 +710,26 @@ function resolveSceneAtZoom(
           measureLines: input.measureLines,
         })
       : undefined;
+    const readStringAttr = (key: string): string | undefined => {
+      const attr = entity?.attributes[key];
+      if (attr === undefined || typeof attr !== "object" || !("value" in attr)) return undefined;
+      return typeof attr.value === "string" && attr.value.length > 0 ? attr.value : undefined;
+    };
+    const keyFallbackName = r7Connectors && kind === "legend-key" ? readStringAttr("name") : undefined;
+    const swatch = (() => {
+      if (!r7Connectors || kind !== "legend-key") return undefined;
+      const category = readStringAttr("category");
+      const parentLegend = legendParentByKeyEntity.get(node.entity);
+      const tokenEntry = category === undefined
+        ? undefined
+        : resolved.presentation.categoryTokens.find(
+            (entry) =>
+              entry.category === category &&
+              (parentLegend === undefined || entry.legendRef === parentLegend),
+          ) ??
+          resolved.presentation.categoryTokens.find((entry) => entry.category === category);
+      return resolveLegendKeySwatch(tokenEntry?.token, category);
+    })();
     return {
       occurrence: node.occurrence,
       entity: node.entity,
@@ -649,7 +739,8 @@ function resolveSceneAtZoom(
       ...(processBox === undefined ? {} : { processBox }),
       rect: node.rect,
       ...(presentation === undefined ? {} : { presentation }),
-      text: processBox?.title ?? presentation?.text.title ?? presentation?.text.body ?? "",
+      ...(swatch === undefined ? {} : { swatch }),
+      text: processBox?.title ?? (presentation?.text.title || undefined) ?? (presentation?.text.body || undefined) ?? keyFallbackName ?? "",
     };
   });
 
@@ -665,8 +756,7 @@ function resolveSceneAtZoom(
     (result.measurements?.slots ?? []).filter((slot) => slot.role === "footer").map((slot) => [slot.occurrence as string, slot.layout.width] as const),
   );
   const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
-  const erd = input.document.profileRefs.length === 1 && input.document.profileRefs[0] === 'erd@1';
-  const r7Connectors = !erd && (result.routeSpacing !== undefined || isR7ConnectorPresentation(input.presentation, input.view ?? view, input.document));
+  const erd = erdDoc;
   const processDefaultLabelSize = isProcessDoc ? 12 : undefined;
   const effectiveInputLabelSize = input.metrics?.edgeLabelSize ?? processDefaultLabelSize;
   const edgeLabelMeasure = scaleEdgeLabelMeasurer(input.measureLines, r7Connectors ? effectiveInputLabelSize : undefined, DEFAULT_EDGE_LABEL_SIZE);
@@ -858,6 +948,45 @@ function resolveSceneAtZoom(
   }
   for (const arrows of Object.values(result.arrowBoxes ?? {})) for (const arrow of arrows) bounds = bounds === undefined ? arrow.box : rectUnion(bounds,arrow.box);
   const cornerRadius = r7Connectors ? (input.metrics?.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS) : 0;
+  const strokeMetrics =
+    isProcessDoc && input.metrics?.linkStrokeWidth === undefined
+      ? { ...input.metrics, linkStrokeWidth: 2.5, linkRelatedStrokeWidth: 2.5 }
+      : input.metrics;
+  const r7Arrivals: { readonly edgeIdx: number; readonly arrival: EdgeArrivalSegment; readonly strokeWidthCss: number }[] = [];
+  for (let idx = 0; idx < edges.length; idx += 1) {
+    const edge = edges[idx]!;
+    if (!edge.r7 || edge.arrowhead === "none") continue;
+    const arrival = extractEdgeArrivalSegment(String(edge.occurrence), edge.points, cornerRadius);
+    if (arrival === undefined) continue;
+    r7Arrivals.push({
+      edgeIdx: idx,
+      arrival,
+      strokeWidthCss: connectorStrokeWidth(edge, strokeMetrics),
+    });
+  }
+  if (r7Arrivals.length > 0) {
+    const arrivalList = r7Arrivals.map((entry) => entry.arrival);
+    for (const item of r7Arrivals) {
+      const edge = edges[item.edgeIdx]!;
+      const cssSpec = resolveConnectorHeadCssSpec({
+        ...(edge.emphasis === undefined ? {} : { emphasis: edge.emphasis }),
+        ...(edge.strokeStyle === undefined ? {} : { strokeStyle: edge.strokeStyle }),
+        strokeWidthCss: item.strokeWidthCss,
+      });
+      const neighborSpacing = computeNeighborArrivalSpacing(item.arrival, arrivalList);
+      const head = resolveConnectorHead({
+        points: edge.points,
+        cssSpec,
+        cornerRadius,
+        clearanceZoom,
+        neighborSpacing,
+      });
+      if (head !== undefined) {
+        edges[item.edgeIdx] = { ...edge, head };
+        bounds = bounds === undefined ? head.box : rectUnion(bounds, head.box);
+      }
+    }
+  }
   for (const { node, inner, lineHeight, bottom } of pendingCutouts) {
     if (!r7Connectors) {
       const pad = paintClearance + CONNECTOR_CUTOUT_SLACK;
@@ -899,21 +1028,20 @@ function resolveSceneAtZoom(
     });
   }
   const hasVisibleAuthoredLegend = nodes.some((node) => node.presentation?.form === "legend");
-  const effectiveLegendAnchor = input.legend ?? (isProcessDoc ? "none" : undefined);
-  const freeCellLegendRect =
-    !hasVisibleAuthoredLegend && result.legendResolved && result.linkLegend?.anchor === "free-cell"
+  const effectiveLegendAnchor = input.legend ?? (isProcessDoc ? "none" : r7Connectors ? "auto" : "right");
+  const interiorLegendRect =
+    !hasVisibleAuthoredLegend &&
+    result.legendResolved &&
+    (result.linkLegend?.anchor === "free-cell" || result.linkLegend?.anchor === "pocket")
       ? result.linkLegend.rect
       : undefined;
   const allBlockers = [
     ...blockers,
-    ...(freeCellLegendRect === undefined ? [] : [freeCellLegendRect]),
+    ...(interiorLegendRect === undefined ? [] : [interiorLegendRect]),
     ...badges.map(badge => badge.box),
     ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box)),
+    ...edges.flatMap(edge => edge.head === undefined ? [] : [edge.head.box]),
   ];
-  const strokeMetrics =
-    isProcessDoc && input.metrics?.linkStrokeWidth === undefined
-      ? { ...input.metrics, linkStrokeWidth: 2.5, linkRelatedStrokeWidth: 2.5 }
-      : input.metrics;
   const clearedLabels = r7Connectors
     ? clearSceneLabels(labels, edges.map(edge => edge.points),
       allBlockers,
@@ -924,35 +1052,137 @@ function resolveSceneAtZoom(
     : clearSceneLabels(labels, edges.map(edge => edge.points),
       allBlockers,
       paintClearance);
-  for (const { box } of clearedLabels) {
-    const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
+  const clearedLabelBoxes = clearedLabels.map(({ box }) => ({
+    x: box.x - margin,
+    y: box.y - margin,
+    width: box.width + 2 * margin,
+    height: box.height + 2 * margin,
+  }));
+  for (const padded of clearedLabelBoxes) {
     bounds = bounds === undefined ? padded : rectUnion(bounds, padded);
   }
+  const pocketLegendCollides =
+    result.legendResolved &&
+    result.linkLegend?.anchor === "pocket" &&
+    clearedLabelBoxes.some((labelBox) => rectsIntersect(labelBox, result.linkLegend!.rect));
   const legendNeedsReposition =
     result.legendResolved
     && result.linkLegend !== undefined
     && result.linkLegend.anchor !== "free-cell"
     && bounds !== undefined
     && (
-      overviewEdgeLabelSize !== undefined
-      || (result.linkLegend.anchor === "right" && bounds.x + bounds.width + LINK_LEGEND_GAP > result.linkLegend.rect.x)
-      || (result.linkLegend.anchor === "bottom" && bounds.y + bounds.height + LINK_LEGEND_GAP > result.linkLegend.rect.y)
+      result.linkLegend.anchor === "pocket"
+        ? pocketLegendCollides
+        : (
+            overviewEdgeLabelSize !== undefined
+            || (result.linkLegend.anchor === "right" && bounds.x + bounds.width + LINK_LEGEND_GAP > result.linkLegend.rect.x)
+            || (result.linkLegend.anchor === "bottom" && bounds.y + bounds.height + LINK_LEGEND_GAP > result.linkLegend.rect.y)
+          )
     );
+  const legendLocale = inferLegendLocale(
+    input.legendTitle ?? nodes.find((n) => n.presentation?.form === "legend")?.presentation?.text.title,
+  );
+  const entityMarks = r7Connectors
+    ? collectLegendEntityMarks(nodes, resolved.presentation, legendLocale)
+    : [];
+  const authoredCombinedMeasure =
+    r7Connectors && hasVisibleAuthoredLegend
+      ? measureSceneLinkLegend({
+          edges,
+          measureLines: input.measureLines,
+          ...(input.legendTitle === undefined ? {} : { title: input.legendTitle }),
+          ...(input.legendLabels === undefined ? {} : { labels: input.legendLabels }),
+          ...(effectiveInputLabelSize === undefined ? {} : { fontSize: effectiveInputLabelSize }),
+          ...(entityMarks.length === 0 ? {} : { entityMarks }),
+          locale: legendLocale,
+        })
+      : undefined;
+  const finalNodes: SceneNodeModel[] =
+    authoredCombinedMeasure === undefined
+      ? nodes
+      : nodes.map((node) => {
+          if (node.presentation?.form !== "legend" || node.collapsed) return node;
+          const memberKeys = nodes.filter(
+            (candidate) =>
+              candidate.kind === "legend-key" &&
+              (legendParentByKeyEntity.get(candidate.entity) === node.entity ||
+                (candidate.rect.x >= node.rect.x - 1 &&
+                  candidate.rect.x + candidate.rect.width <= node.rect.x + node.rect.width + 1 &&
+                  candidate.rect.y >= node.rect.y - 1 &&
+                  candidate.rect.y + candidate.rect.height <= node.rect.y + node.rect.height + 1)),
+          );
+          const containerInset = input.metrics?.containerPadding ?? 28;
+          const headerBottom =
+            anatomyZoneGeometry(node.presentation.anatomy === "v2" ? "v2" : "v1").headerInset +
+            (headerHeights.get(node.occurrence) ?? 0) +
+            containerInset;
+          const maxKeyRelBottom =
+            memberKeys.length > 0
+              ? Math.max(...memberKeys.map((keyNode) => keyNode.rect.y + keyNode.rect.height - node.rect.y))
+              : headerBottom;
+          const topOffset = maxKeyRelBottom + authoredCombinedMeasure.headerGap + authoredCombinedMeasure.rowGap;
+          const adjustRowY = (rowY: number): number =>
+            rowY - authoredCombinedMeasure.padding - authoredCombinedMeasure.headerHeight - authoredCombinedMeasure.headerGap;
+          return {
+            ...node,
+            combinedLegend: {
+              entries: authoredCombinedMeasure.entries.map((entry) => ({
+                ...entry,
+                rowY: adjustRowY(entry.rowY),
+              })),
+              ...(authoredCombinedMeasure.entityMarks === undefined
+                ? {}
+                : {
+                    entityMarks: authoredCombinedMeasure.entityMarks.map((mark) => ({
+                      ...mark,
+                      rowY: adjustRowY(mark.rowY),
+                    })),
+                  }),
+              padding: containerInset,
+              headerGap: authoredCombinedMeasure.headerGap,
+              rowHeight: authoredCombinedMeasure.rowHeight,
+              rowGap: authoredCombinedMeasure.rowGap,
+              swatchWidth: authoredCombinedMeasure.swatchWidth,
+              swatchHeight: authoredCombinedMeasure.swatchHeight,
+              swatchGap: authoredCombinedMeasure.swatchGap,
+              fontSize: authoredCombinedMeasure.fontSize,
+              topOffset,
+            },
+          };
+        });
   const linkLegend = hasVisibleAuthoredLegend
     ? undefined
     : result.legendResolved
       ? (legendNeedsReposition
-          ? placeSceneLinkLegend(
-              { ...result.linkLegend!, width: result.linkLegend!.rect.width, height: result.linkLegend!.rect.height },
-              result.linkLegend!.anchor,
-              bounds!,
-            )
+          ? (() => {
+              const measuredLegend = {
+                ...result.linkLegend!,
+                width: result.linkLegend!.rect.width,
+                height: result.linkLegend!.rect.height,
+              };
+              if (result.linkLegend!.anchor === "pocket") {
+                const pocket = findLegendPocket(
+                  measuredLegend,
+                  bounds!,
+                  [...nodes.map((n) => n.rect), ...clearedLabelBoxes],
+                  edges.map((e) => e.points),
+                );
+                return pocket !== undefined
+                  ? placeSceneLinkLegend(measuredLegend, "pocket", bounds!, pocket)
+                  : placeSceneLinkLegend(measuredLegend, "right", bounds!);
+              }
+              return placeSceneLinkLegend(measuredLegend, result.linkLegend!.anchor, bounds!);
+            })()
           : result.linkLegend)
       : buildSceneLinkLegend({
           edges,
           contentBounds: bounds,
           measureLines: input.measureLines,
-          ...(effectiveLegendAnchor === undefined ? {} : { anchor: effectiveLegendAnchor }),
+          nodes: nodes.map((n) => n.rect),
+          labelBoxes: clearedLabelBoxes,
+          ...(entityMarks.length === 0 ? {} : { entityMarks }),
+          locale: legendLocale,
+          anchor: effectiveLegendAnchor,
           ...(input.legendTitle === undefined ? {} : { title: input.legendTitle }),
           ...(input.legendLabels === undefined ? {} : { labels: input.legendLabels }),
           ...(effectiveInputLabelSize === undefined ? {} : { fontSize: effectiveInputLabelSize }),
@@ -964,12 +1194,12 @@ function resolveSceneAtZoom(
     const x = Math.floor(bounds.x * 64) / 64, y = Math.floor(bounds.y * 64) / 64;
     bounds = { x, y, width: Math.ceil((bounds.x + bounds.width) * 64) / 64 - x, height: Math.ceil((bounds.y + bounds.height) * 64) / 64 - y };
   }
-  const nodeTargets = nodes.filter((node) => Object.values(flowEnds).some((ends) => ends.some((id) => id === node.occurrence || (flowAncestors[id] ?? []).includes(node.occurrence)))).map((node) => ({ occurrence: node.occurrence, entity: node.entity, anchor: { x: node.rect.x, y: node.rect.y } }));
+  const nodeTargets = finalNodes.filter((node) => Object.values(flowEnds).some((ends) => ends.some((id) => id === node.occurrence || (flowAncestors[id] ?? []).includes(node.occurrence)))).map((node) => ({ occurrence: node.occurrence, entity: node.entity, anchor: { x: node.rect.x, y: node.rect.y } }));
   return {
     badges, flows, flowTargets, nodeTargets, flowEnds, flowRepresentatives, flowAncestors,
     flowSummaryLabels: Object.fromEntries(Object.entries(view.summaryLabels ?? {}).map(([id,definition]) => [id,definition.label])),
     contentSize: sceneContentSize(result),
-    nodes,
+    nodes: finalNodes,
     edges,
     labels: clearedLabels,
     ...(overviewEdgeLabelSize === undefined ? {} : { overviewEdgeLabelSize }),

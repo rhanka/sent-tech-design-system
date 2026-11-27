@@ -129,7 +129,7 @@ describe("fit-to-window host framing (DE-2 ask 9)", () => {
     expect(fit.pans).toBe(false);
     const expectedWidths: readonly [string, number][] = [
       ["occurrence:r.r-solid", 3.5],
-      ["occurrence:r.r-emph", 3.5],
+      ["occurrence:r.r-emph", 5],
       ["occurrence:r.r-dashed", 3.5],
       ["occurrence:r.r-dotted", 3.5],
     ];
@@ -141,7 +141,7 @@ describe("fit-to-window host framing (DE-2 ask 9)", () => {
     }
     const expectedSwatchWidths: readonly [string, number][] = [
       ["solid:arrow:default", 3.5],
-      ["solid:none:emphasis", 3.5],
+      ["solid:none:emphasis", 5],
       ["dashed:arrow:default", 3.5],
       ["dotted:arrow:default", 3.5],
     ];

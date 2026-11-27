@@ -1,8 +1,8 @@
 {
   "componentId": "donut-chart",
   "contractSource": "derived",
-  "digest": "sha256:2df8bfc462644b5eb61ec79387b8a86589c73608aa75b87b62ddc771cc22781d",
-  "entryDigest": "sha256:07733c4d27ad564f5a9703debdc7062b16e40215ada71c190347804e4ad47264",
+  "digest": "sha256:91f4909f46643a72a28d11ad57d29abf85b3e822a9fb44d79cf1cedc39e1ed5b",
+  "entryDigest": "sha256:5fb1c6dc4d7b35c7959299ccc0e187cafd3295f08a79e33a41d5c8d381686e40",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -360,7 +360,7 @@
         "declarationPath": "packages/components-svelte/dist/DonutChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DonutChartProps",
-        "version": "0.49.0"
+        "version": "0.50.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -479,7 +479,7 @@
         "declarationPath": "packages/components-vue/dist/DonutChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DonutChartProps",
-        "version": "0.43.0-next.0"
+        "version": "0.44.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

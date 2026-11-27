@@ -33,8 +33,12 @@ export function expectedLegendStyles(name) {
 export function expectedLegendAnchor(name) {
   if (name === 'r7-authored-legend' || name.startsWith('r7-authored-legend--folded')) return null;
   if (name === 'h2-example-b--folded:occurrence:e.layer-b') return null;
+  if (name === 'r7-nested-styles--folded:occurrence:e.zone-platform') return null;
   if (name === 'h2-example-a' || name.startsWith('h2-example-a--folded')) return 'free-cell';
-  if (name === 'h2-example-b' || name.startsWith('h2-example-b--folded') || name === 'h2-aspect-16-9' || name.startsWith('h2-aspect-16-9--folded') || name === 'h2-stacked-zones' || name.startsWith('h2-stacked-zones--folded') || name.startsWith('r7-')) return 'right';
+  if (name === 'h2-stacked-zones' || name.startsWith('h2-stacked-zones--folded')) return 'free-cell';
+  if (name === 'r7-connectors-folded' || name === 'r7-connectors--folded' || name === 'r7-nested-styles') return 'pocket';
+  if (name === 'h2-example-b--folded:occurrence:e.layer-a' || name === 'h2-aspect-16-9' || name.startsWith('h2-aspect-16-9--folded')) return 'pocket';
+  if (name === 'h2-example-b' || name === 'r7-connectors' || name === 'r7-nested-styles--folded:occurrence:e.zone-core') return 'right';
   return null;
 }
 

@@ -101,7 +101,7 @@ export function combineRootWithLegendBounds(
   gridWidth: number,
   gridHeight: number,
   legendSize: { readonly width: number; readonly height: number } | undefined,
-  anchor: SceneLinkLegendAnchor | "none",
+  anchor: SceneLinkLegendAnchor | "auto" | "none",
   legendInsideCell = false,
 ): { readonly width: number; readonly height: number } {
   if (legendSize === undefined || anchor === "none" || legendInsideCell) {
@@ -113,7 +113,7 @@ export function combineRootWithLegendBounds(
       height: gridHeight + LINK_LEGEND_GAP + legendSize.height,
     };
   }
-  // `"right"` (and `"free-cell"` fallback when no free cell exists)
+  // `"right"` (and fallback when `"auto"` or `"free-cell"` uses an edge strip)
   return {
     width: gridWidth + LINK_LEGEND_GAP + legendSize.width,
     height: Math.max(gridHeight, legendSize.height),
@@ -389,8 +389,12 @@ export function buildLayoutKeyRecord(args: {
   readonly registryDigest: readonly unknown[];
   readonly bindingsDigest: string | undefined;
   readonly includeTargetWidth: boolean;
+  readonly r7Routing?: boolean;
 }): Record<string, unknown> {
   const { options, measured } = args;
+  const hasAuthoredLegend =
+    args.r7Routing === true &&
+    Object.values(options.presentation?.entities ?? {}).some((entry) => entry.form === "legend");
   const metrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics };
   const edgeLabelSize =
     metrics.edgeLabelSize !== undefined && Number.isFinite(metrics.edgeLabelSize) && metrics.edgeLabelSize > 0
@@ -423,11 +427,13 @@ export function buildLayoutKeyRecord(args: {
     bindings: args.bindingsDigest,
     ...(options.reportSurfaceSame === true ? { reportSurfaceSame: true } : {}),
     ...(options.conventions === undefined ? {} : { conventions: options.conventions }),
-    ...(options.hints?.composition === undefined
+    ...(options.hints?.composition === undefined && !hasAuthoredLegend
       ? {}
       : {
           legend: {
-            anchor: options.legend ?? "right",
+            ...(options.hints?.composition === undefined
+              ? {}
+              : { anchor: options.legend ?? (args.r7Routing ? "auto" : "right") }),
             title: options.legendTitle ?? "Legend",
             labels: options.legendLabels ?? {},
           },
@@ -485,6 +491,7 @@ export function computeCompositionPlanKey(
     registryDigest,
     bindingsDigest,
     includeTargetWidth: false,
+    r7Routing,
   });
   const encoded = tryCanonicalise(record);
   if (!encoded.ok) return undefined;

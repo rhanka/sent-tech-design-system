@@ -1,5 +1,38 @@
 # Changelog
 
+## Unreleased — DE-3 Milestone 2 (DE3-L1b, DE3-L2b)
+
+- diagram-canvas, Svelte and Vue `DiagramSceneFigure` (`DE3-L1b` + D2D M1
+  feedback): compact legend anatomy (`MIN_WIDTH = 160`, `PADDING = 12`,
+  `ROW_HEIGHT = 24`, `SWATCH_WIDTH = 44`, `CORNER_RADIUS = 8`), localized
+  defaults (`LegendLocale`: `"en"` / `"fr"`), `collectLegendEntityMarks`
+  (`proposed`, `folded-zone`), pocket auto-placement (`findLegendPocket`,
+  `"auto"` / `"pocket"` anchors without inflating `free-cell` or mutating
+  `diagram-core` `ds-layout-hints@2`), painted `[data-legend-key-swatch]` on
+  `r7` `legend-key` nodes (with `entity.attributes.name` fallback), combined
+  link styles and category swatches in `r7` `authored` legend frames
+  (`combinedLegend`), and no fold toggle on `r7` `form: "legend"` frames.
+- tokens and themes (`DE3-L2b`, `D-DE3-1`): set `linkEmphasisStrokeWidth` to
+  `5px` (keeping default `r7` links at `3.5px`) and `edgeCornerRadius` to
+  `16px` across regenerated theme CSS (`sent-tech`, `entropic`, `forge`, and
+  `devmtl`).
+- diagram-canvas, diagram-codecs, Svelte and Vue `DiagramSceneFigure`
+  (`DE3-L2b`, `D-DE3-1`): trimmed connector shafts (`endTrim` /
+  `pullbackWorld`), 5 weight-tiered clamped polygon arrowheads
+  (`resolveConnectorHead` in `layout/connectorHead.ts`, omitted `marker-end`
+  for headed `r7` edges, `[data-connector-part="head"]`, `data-edge-tip`,
+  `data-edge-pullback`), `r=16` elbow bends, `5px` emphasis links in
+  scene/SVG/Svelte/Vue/draw.io `r7` export (`v1` byte-identical), and updated
+  `tools/diagram-first-paint` browser/geometry gates.
+- Bump `@sentropic/design-system-tokens` to `0.18.0`,
+  `@sentropic/design-system-themes` to `0.18.0`, `@sentropic/diagram-canvas`
+  to `0.10.0`, `@sentropic/diagram-codecs` to `0.3.0`,
+  `@sentropic/design-system-svelte` to `0.50.0`, and
+  `@sentropic/design-system-vue` to `0.44.0-next.0`, and align workspace pins
+  (`theme-devmtl`, `elements`, `artifact-shell`, `dataviz-svelte`,
+  `dataviz-vue`, `apps/docs`), `package-lock.json`, `component-index`
+  artifacts, notices, and `docs/graph-dataviz-m1-provenance.json`.
+
 ## Unreleased — @sentropic/diagram-canvas 0.9.0 & @sentropic/diagram-core 0.7.0
 
 - diagram-canvas (`DE3-L7` / `REQ-R7-35`): centre inner content horizontally

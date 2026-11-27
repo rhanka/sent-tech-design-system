@@ -5,6 +5,7 @@ import {
   DEFAULT_EDGE_CORNER_RADIUS,
   parseConnectorPath,
 } from "../../src/presentation/connectorPath.js";
+import { resolveConnectorHead, resolveConnectorHeadCssSpec } from "../../src/layout/connectorHead.js";
 import { cardLineMeasurer, defaultCardMeasure, sceneCardMeasure } from "../../src/presentation/diagramCardModel.js";
 import { renderSceneSvg } from "../../src/presentation/renderSceneSvg.js";
 import { nestedZoneFixture } from "../../test-support/nestedZoneFixture.js";
@@ -26,17 +27,25 @@ describe("connectorPath — DE-2 rounded elbows", () => {
     expect(parseConnectorPath("M10 20 L150 20")).toEqual([{ x: 10, y: 20 }, { x: 150, y: 20 }]);
   });
 
-  it("rounds a 90-degree elbow with the default radius of 12 world units", () => {
-    expect(DEFAULT_EDGE_CORNER_RADIUS).toBe(12);
+  it("rounds a 90-degree elbow with the default radius of 16 world units and trims only the final L leg when endTrim > 0 (DE3-L2b)", () => {
+    expect(DEFAULT_EDGE_CORNER_RADIUS).toBe(16);
     const d = connectorPath([
       { x: 0, y: 0 },
       { x: 100, y: 0 },
       { x: 100, y: 80 },
     ]);
-    expect(d).toBe("M0 0 L88 0 Q100 0 100 12 L100 80");
+    expect(d).toBe("M0 0 L84 0 Q100 0 100 16 L100 80");
     const parsed = parseConnectorPath(d);
     expect(parsed[0]).toEqual({ x: 0, y: 0 });
     expect(parsed[parsed.length - 1]).toEqual({ x: 100, y: 80 });
+
+    // DE3-L2b: endTrim pulls back only the final L arrival point while keeping every Q bend at untrimmed corners.
+    const trimmed = connectorPath([
+      { x: 0, y: 0 },
+      { x: 100, y: 0 },
+      { x: 100, y: 80 },
+    ], 16, 20);
+    expect(trimmed).toBe("M0 0 L84 0 Q100 0 100 16 L100 60");
   });
 
   it("caps corner radius at half the shorter adjoining leg so bends never overshoot", () => {
@@ -74,7 +83,7 @@ describe("connectorPath — DE-2 rounded elbows", () => {
       { x: 100, y: 0 },
       { x: 100, y: 60 },
     ]);
-    expect(d).toBe("M0 0 L88 0 Q100 0 100 12 L100 60");
+    expect(d).toBe("M0 0 L84 0 Q100 0 100 16 L100 60");
   });
 
   it("renders rounded <path> connectors (never <polyline>) on r7 scenes in renderSceneSvg touching both docks across fold states while keeping <polyline> on v1 (REQ-R7-11 / REQ-R7-28)", () => {
@@ -102,19 +111,20 @@ describe("connectorPath — DE-2 rounded elbows", () => {
         const occurrence = match[1]!;
         const d = match[2]!;
         const edge = scene.edges.find((e) => e.occurrence === occurrence)!;
-        expect(d).toBe(connectorPath(edge.points));
+        expect(d).toBe(connectorPath(edge.points, DEFAULT_EDGE_CORNER_RADIUS, edge.head?.pullbackWorld ?? 0));
         if (d.includes("Q")) bentCount += 1;
         const parsed = parseConnectorPath(d);
         expect(parsed[0]!.x).toBeCloseTo(edge.points[0]!.x, 6);
         expect(parsed[0]!.y).toBeCloseTo(edge.points[0]!.y, 6);
-        expect(parsed[parsed.length - 1]!.x).toBeCloseTo(edge.points[edge.points.length - 1]!.x, 6);
-        expect(parsed[parsed.length - 1]!.y).toBeCloseTo(edge.points[edge.points.length - 1]!.y, 6);
+        const targetDock = edge.head?.tip ?? parsed[parsed.length - 1]!;
+        expect(targetDock.x).toBeCloseTo(edge.points[edge.points.length - 1]!.x, 6);
+        expect(targetDock.y).toBeCloseTo(edge.points[edge.points.length - 1]!.y, 6);
         const relOcc = result.view.relationOccurrences[occurrence as keyof typeof result.view.relationOccurrences]!;
         const ends = [...relOcc.endpoints]
           .sort((a, b) => (a.role < b.role ? -1 : a.role > b.role ? 1 : 0))
           .map((end) => result.view.portOccurrences[end.occurrence]?.ownerOccurrence ?? end.occurrence);
         expect(borderDistance(parsed[0]!, rects.get(ends[0]!)!)).toBeLessThanOrEqual(0.01);
-        expect(borderDistance(parsed[parsed.length - 1]!, rects.get(ends[ends.length - 1]!)!)).toBeLessThanOrEqual(0.01);
+        expect(borderDistance(targetDock, rects.get(ends[ends.length - 1]!)!)).toBeLessThanOrEqual(0.01);
       }
       expect(bentCount).toBeGreaterThan(0);
     }
@@ -132,7 +142,48 @@ describe("connectorPath — DE-2 rounded elbows", () => {
     const foldedPoints = parseConnectorPath(foldedMatch[2]!);
     expect(foldedPoints[0]!.x).toBeCloseTo(folded.scene.edges[0]!.points[0]!.x, 6);
     expect(foldedPoints[0]!.y).toBeCloseTo(folded.scene.edges[0]!.points[0]!.y, 6);
-    expect(foldedPoints[foldedPoints.length - 1]!.x).toBeCloseTo(folded.scene.edges[0]!.points[folded.scene.edges[0]!.points.length - 1]!.x, 6);
-    expect(foldedPoints[foldedPoints.length - 1]!.y).toBeCloseTo(folded.scene.edges[0]!.points[folded.scene.edges[0]!.points.length - 1]!.y, 6);
+    const foldedDock = folded.scene.edges[0]!.head?.tip ?? foldedPoints[foldedPoints.length - 1]!;
+    expect(foldedDock.x).toBeCloseTo(folded.scene.edges[0]!.points[folded.scene.edges[0]!.points.length - 1]!.x, 6);
+    expect(foldedDock.y).toBeCloseTo(folded.scene.edges[0]!.points[folded.scene.edges[0]!.points.length - 1]!.y, 6);
+  });
+
+  it("DE3-L2b: computes single-source clamped trimmed arrowheads across zooms 0.30, 0.50, 1.0 without swallowing bends or overlapping 24u neighbours", () => {
+    const defSpec = resolveConnectorHeadCssSpec({ emphasis: "default", strokeWidthCss: 3.5 });
+    expect([defSpec.lengthCss, defSpec.widthCss, defSpec.pullbackCss]).toEqual([14.8, 12.4, 13.5]);
+    const emphSpec = resolveConnectorHeadCssSpec({ emphasis: "emphasis", strokeWidthCss: 5 });
+    expect([emphSpec.lengthCss, emphSpec.widthCss, emphSpec.pullbackCss]).toEqual([17.0, 14.3, 15.5]);
+
+    const longElbow = [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 200 }];
+    for (const paintZoom of [0.30, 0.50, 1.0]) {
+      const clearanceZoom = Math.min(0.45, paintZoom);
+      const iso = resolveConnectorHead({ points: longElbow, cssSpec: defSpec, cornerRadius: 16, clearanceZoom })!;
+      expect(iso).toBeDefined();
+      expect(iso.tip).toEqual({ x: 100, y: 200 });
+      expect(iso.widthWorld).toBeCloseTo(12.4 / clearanceZoom, 3);
+      expect(iso.pullbackWorld).toBeLessThanOrEqual(200 - 16 - 1 + 1e-6);
+
+      // Neighbour track separated by 24 u must clamp width <= 22 u so parallel heads never touch.
+      const packed = resolveConnectorHead({
+        points: longElbow,
+        cssSpec: emphSpec,
+        cornerRadius: 16,
+        clearanceZoom,
+        neighborSpacing: 24,
+      })!;
+      expect(packed.widthWorld).toBeLessThanOrEqual(22 + 1e-6);
+    }
+
+    // Short last leg (40 u with r=16): head length + pullback never swallows the Q bend!
+    const shortElbow = [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 40 }];
+    const clampedShort = resolveConnectorHead({
+      points: shortElbow,
+      cssSpec: emphSpec,
+      cornerRadius: 16,
+      clearanceZoom: 0.30,
+    })!;
+    expect(clampedShort.lengthWorld).toBeLessThanOrEqual(40 - 16 - 1 + 1e-6);
+    expect(clampedShort.pullbackWorld).toBeLessThanOrEqual(40 - 16 - 1 + 1e-6);
+    const shortPath = connectorPath(shortElbow, 16, clampedShort.pullbackWorld);
+    expect(shortPath).toContain("Q100 0 100 16");
   });
 });

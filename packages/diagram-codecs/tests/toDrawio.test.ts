@@ -187,7 +187,7 @@ describe("toDrawio", () => {
     expect(drive).toContain('source="occurrence:e.planner"');
     expect(drive).toContain('target="occurrence:e.renderer"');
     expect(drive).toContain("strokeColor=#001f33;");
-    expect(drive).toContain("strokeWidth=3.5;");
+    expect(drive).toContain("strokeWidth=5;");
     expect(drive).toContain("dashed=1;dashPattern=8 6;");
     expect(drive).toContain("endArrow=classic;");
 

@@ -283,7 +283,7 @@ const pointerEnd = (event: PointerEvent) => { touches.delete(event.pointerId); p
 onBeforeUnmount(() => { touches.clear(); ownedCache.dispose(); });
 
 const edgeCornerRadius = computed(() => effectiveMetrics.value.edgeCornerRadius ?? DEFAULT_EDGE_CORNER_RADIUS);
-const pathOf = (items: readonly { readonly x: number; readonly y: number }[]) => connectorPath(items, edgeCornerRadius.value);
+const pathOf = (items: readonly { readonly x: number; readonly y: number }[], endTrim = 0) => connectorPath(items, edgeCornerRadius.value, endTrim);
 const pointsOf = (items: readonly { readonly x: number; readonly y: number }[]) => items.map((point) => `${point.x},${point.y}`).join(" ");
 const boxStyle = (rect: Rect) => `left:${rect.x}px;top:${rect.y}px;width:${rect.width}px;height:${rect.height}px`;
 
@@ -339,7 +339,10 @@ const scenarioId = useId();
                 <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" :markerUnits="scene.r7Connectors ? 'userSpaceOnUse' : undefined" :markerWidth="scene.r7Connectors ? '10.5' : '7'" :markerHeight="scene.r7Connectors ? '10.5' : '7'" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" :fill="scene.r7Connectors && !scene.processConnectors ? 'var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))' : 'var(--st-component-diagramScene-edgeStroke, #64748b)'" /></marker><marker v-for="marker in extraMarkers" :key="marker.id" :id="marker.id" :data-arrowhead-kind="marker.kind" :data-arrowhead-emphasis="marker.emphasis" :viewBox="marker.viewBox" :refX="marker.refX" :refY="marker.refY" :markerUnits="marker.markerUnits" :markerWidth="marker.markerWidth" :markerHeight="marker.markerHeight" :orient="marker.orient"><path :d="marker.path" :fill="marker.fill" :stroke="marker.stroke" :stroke-width="marker.strokeWidth" /></marker><mask v-if="connectorMask !== undefined" :id="maskId" maskUnits="userSpaceOnUse" :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height"><rect :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height" fill="#fff" /><rect v-for="(cutout, index) in connectorMask.cutouts" :key="index" :data-scene-cutout="index" :x="cutout.x" :y="cutout.y" :width="cutout.width" :height="cutout.height" fill="#000" /></mask></defs>
                 <g data-scene-connectors="" :mask="connectorMask === undefined ? undefined : `url(#${maskId})`">
                 <template v-for="edge in scene.edges" :key="edge.occurrence">
-                  <path v-if="edge.r7" :marker-end="connectorMarkerRef(edge, markerIds)" :stroke-dasharray="connectorDashArray(edge.strokeStyle)" :style="connectorDashPaint(edge.strokeStyle)" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" data-connector-mode="r7" :data-edge-stroke="edge.strokeStyle" :data-edge-arrowhead="edge.arrowhead" :data-edge-emphasis="edge.emphasis" :data-flow-step="edge.flow?.relation" :data-flow-bundle="edge.bundle?.id" :data-flow-state="stateOf(edge.occurrence)" :d="pathOf(edge.points)" />
+                  <template v-if="edge.r7">
+                    <path :marker-end="edge.head === undefined ? connectorMarkerRef(edge, markerIds) : undefined" :stroke-dasharray="connectorDashArray(edge.strokeStyle)" :style="connectorDashPaint(edge.strokeStyle)" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" data-connector-mode="r7" :data-edge-stroke="edge.strokeStyle" :data-edge-arrowhead="edge.arrowhead" :data-edge-emphasis="edge.emphasis" :data-edge-tip="edge.head === undefined ? undefined : `${edge.head.tip.x},${edge.head.tip.y}`" :data-edge-pullback="edge.head === undefined ? undefined : edge.head.pullbackWorld" :data-flow-step="edge.flow?.relation" :data-flow-bundle="edge.bundle?.id" :data-flow-state="stateOf(edge.occurrence)" :d="pathOf(edge.points, edge.head?.pullbackWorld ?? 0)" />
+                    <path v-if="edge.head !== undefined" class="st-diagramSceneFigure-edgeHead" data-connector-part="head" :data-head-for="edge.occurrence" :data-edge-emphasis="edge.emphasis" :d="edge.head.path" :fill="edge.emphasis === 'emphasis' ? 'var(--st-component-diagramScene-linkEmphasisStroke, var(--st-semantic-border-interactive, #001f33))' : scene.processConnectors ? 'var(--st-component-diagramScene-edgeStroke, #64748b)' : 'var(--st-component-diagramScene-linkStroke, var(--st-semantic-text-primary, #0f172a))'" />
+                  </template>
                   <polyline v-else :marker-end="edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :data-flow-step="edge.flow?.relation" :data-flow-bundle="edge.bundle?.id" :data-flow-state="stateOf(edge.occurrence)" :points="pointsOf(edge.points)" />
                   <template v-if="edge.directed">
                     <polyline class="st-diagramSceneFigure-flowHit" :data-flow-hit="edge.occurrence" :points="pointsOf(edge.points)" />
@@ -355,7 +358,7 @@ const scenarioId = useId();
               </svg>
               <template v-else>
               <div v-for="node in layer.nodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :data-authored-legend="scene.r7Connectors && node.presentation?.form === 'legend' ? '' : undefined" :data-flow-state="stateOf(node.occurrence)" :style="boxStyle(node.rect)">
-                <SceneNode :node="node" :measure="measure" :container-padding="effectiveMetrics.containerPadding" :expand="strings.expand" :collapse="strings.collapse" :resolve-glyph="props.resolveGlyph ?? getDiagramGlyph" :select="() => selectNode(node)" :toggle="() => toggle(node)" />
+                <SceneNode :node="node" :measure="measure" :container-padding="effectiveMetrics.containerPadding" :hide-toggle="scene.r7Connectors && node.presentation?.form === 'legend'" :link-widths="effectiveMetrics" :expand="strings.expand" :collapse="strings.collapse" :resolve-glyph="props.resolveGlyph ?? getDiagramGlyph" :select="() => selectNode(node)" :toggle="() => toggle(node)" />
               </div>
               </template>
               </template>
@@ -384,6 +387,16 @@ const scenarioId = useId();
                       <path v-if="swatch.arrowPath !== undefined" :d="swatch.arrowPath" :fill="swatch.arrowFill" :stroke="swatch.arrowStroke" :stroke-width="swatch.arrowStrokeWidth" />
                     </svg>
                     <span class="st-diagramSceneFigure-legendLabel">{{ entry.label }}</span>
+                  </li>
+                  <li v-for="mark in scene.linkLegend.entityMarks ?? []" :key="mark.kind" class="st-diagramSceneFigure-legendItem" :data-legend-mark="mark.kind">
+                    <svg class="st-diagramSceneFigure-legendSwatch" :viewBox="`0 0 ${scene.linkLegend.swatchWidth} ${scene.linkLegend.swatchHeight}`" aria-hidden="true">
+                      <rect v-if="mark.kind === 'proposed'" x="10" y="1" width="24" height="14" rx="4" fill="none" stroke="var(--st-semantic-border-strong, #64748b)" stroke-width="1.5" stroke-dasharray="4 3" />
+                      <template v-else>
+                        <rect x="12" y="1" width="20" height="14" rx="3" fill="var(--st-semantic-surface-subtle, #f8fafc)" stroke="var(--st-semantic-border-strong, #64748b)" stroke-width="1.5" />
+                        <text x="22" y="12" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">+</text>
+                      </template>
+                    </svg>
+                    <span class="st-diagramSceneFigure-legendLabel">{{ mark.label }}</span>
                   </li>
                 </ul>
               </aside>

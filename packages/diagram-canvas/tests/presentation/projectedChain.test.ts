@@ -172,13 +172,14 @@ describe("projected model chain E1 engine & SVG contract", () => {
     expect(svg, "depth-1 inner zone uses surface2").toContain("var(--st-component-diagramZone-surface2");
 
     for (const edge of direct.scene.edges) {
-      const expectedD = connectorPath(edge.points, DEFAULT_EDGE_CORNER_RADIUS);
+      const expectedD = connectorPath(edge.points, DEFAULT_EDGE_CORNER_RADIUS, edge.head?.pullbackWorld ?? 0);
       expect(svg, `${edge.occurrence} id`).toContain(`data-scene-edge="${edge.occurrence}"`);
       expect(svg, `${edge.occurrence} path d`).toContain(`d="${expectedD}"`);
     }
     expect(svg, "dashed emphasis edge").toContain('stroke-dasharray="8 6"');
     expect(svg, "dotted edge").toContain('stroke-dasharray="2 5"');
-    expect(svg, "emphasis marker").toContain('data-arrowhead-emphasis="emphasis"');
+    expect(svg, "emphasis head").toContain('data-connector-part="head"');
+    expect(svg, "emphasis attribute").toContain('data-edge-emphasis="emphasis"');
     expect(svg, "right legend").toContain('data-scene-legend="" data-legend-anchor="right"');
     for (const key of ["solid:arrow:default", "dashed:arrow:emphasis", "dotted:none:default"]) {
       expect(svg, `legend entry ${key}`).toContain(`data-legend-style="${key}"`);

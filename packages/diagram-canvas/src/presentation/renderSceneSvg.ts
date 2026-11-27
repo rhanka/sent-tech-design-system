@@ -19,6 +19,7 @@ import {
   DEFAULT_LINK_STROKE_WIDTH,
   extraConnectorMarkers,
   layoutScene,
+  LINK_LEGEND_CORNER_RADIUS,
   linkLegendSwatchGeometry,
   resolveScene,
   sceneConnectorMask,
@@ -68,11 +69,13 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
     const stroke=emphasized?LINK_EMPHASIS_STROKE:restingInk;
     const strokeWidth=connectorStrokeWidth(edge,processMetrics);
     const dash=connectorDashArray(edge.strokeStyle);
-    const markerRef=connectorMarkerRef(edge,markerIds);
+    const markerRef=edge.head===undefined?connectorMarkerRef(edge,markerIds):undefined;
+    const endTrim=edge.head?.pullbackWorld??0;
     const attrs=[
       `data-scene-edge="${escape(edge.occurrence)}"`,
       'data-connector-mode="r7"',
-      `d="${connectorPath(edge.points,cornerRadius)}"`,
+      `d="${connectorPath(edge.points,cornerRadius,endTrim)}"`,
+      ...(edge.head===undefined?[]:[`data-edge-tip="${edge.head.tip.x},${edge.head.tip.y}"`,`data-edge-pullback="${edge.head.pullbackWorld}"`]),
       ...(edge.strokeStyle===undefined?[]:[`data-edge-stroke="${escape(edge.strokeStyle)}"`]),
       ...(edge.arrowhead===undefined?[]:[`data-edge-arrowhead="${escape(edge.arrowhead)}"`]),
       ...(edge.emphasis===undefined?[]:[`data-edge-emphasis="${escape(edge.emphasis)}"`]),
@@ -84,19 +87,62 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
       ...(dash===undefined?[]:[`stroke-dasharray="${dash}"`,`style="${connectorDashPaint(edge.strokeStyle)}"`]),
       ...(markerRef===undefined?[]:[`marker-end="${markerRef}"`]),
     ].join(' ');
-    return `<path ${attrs}/>${edge.markers??''}`;
+    const headSvg=edge.head===undefined?'':`<path data-connector-part="head" data-head-for="${escape(edge.occurrence)}"${edge.emphasis===undefined?'':` data-edge-emphasis="${escape(edge.emphasis)}"`} d="${edge.head.path}" fill="${stroke}"/>`;
+    return `<path ${attrs}/>${headSvg}${edge.markers??''}`;
   }).join('');
+  const drawLegendRowsSvg=(
+    rows:readonly {key:string;strokeStyle:any;arrowhead:any;emphasis:any;label:string;rowY:number;rowHeight:number}[],
+    marks:readonly {kind:'proposed'|'folded-zone';label:string;rowY:number;rowHeight:number}[]|undefined,
+    cfg:{padding:number;swatchWidth:number;swatchHeight:number;swatchGap:number;fontSize:number},
+  )=>{
+    const styleRows=rows.map(entry=>{
+      const swatch=linkLegendSwatchGeometry(entry,input.metrics);
+      const swatchY=entry.rowY+(entry.rowHeight-swatch.height)/2;
+      const lineAttrs=[
+        `data-legend-swatch="${escape(entry.key)}"`,
+        `d="${swatch.linePath}"`,
+        'fill="none"',
+        `stroke="${escape(swatch.stroke)}"`,
+        `stroke-width="${swatch.strokeWidth}"`,
+        'vector-effect="non-scaling-stroke"',
+        ...(swatch.dashArray===undefined?[]:[`stroke-dasharray="${escape(swatch.dashArray)}"`,`style="${connectorDashPaint(entry.strokeStyle)}"`]),
+      ].join(' ');
+      const arrow=swatch.arrowPath===undefined?'':`<path d="${swatch.arrowPath}" fill="${escape(swatch.arrowFill??swatch.stroke)}"${swatch.arrowStroke===undefined?'':` stroke="${escape(swatch.arrowStroke)}" stroke-width="${swatch.arrowStrokeWidth??1.5}"`}/>`;
+      const textX=cfg.padding+cfg.swatchWidth+cfg.swatchGap;
+      const textY=entry.rowY+entry.rowHeight/2+cfg.fontSize*0.35;
+      return `<g data-legend-style="${escape(entry.key)}" data-edge-stroke="${escape(entry.strokeStyle)}" data-edge-arrowhead="${escape(entry.arrowhead)}" data-edge-emphasis="${escape(entry.emphasis)}"><g transform="translate(${cfg.padding} ${swatchY})"><path ${lineAttrs}/>${arrow}</g><text x="${textX}" y="${textY}" font-size="${cfg.fontSize}" fill="var(--st-component-diagramScene-labelText, #172033)">${escape(entry.label)}</text></g>`;
+    }).join('');
+    const markRows=(marks??[]).map(mark=>{
+      const swatchY=mark.rowY+(mark.rowHeight-cfg.swatchHeight)/2;
+      const icon=mark.kind==='proposed'
+        ?'<rect x="10" y="1" width="24" height="14" rx="4" fill="none" stroke="var(--st-semantic-border-strong, #64748b)" stroke-width="1.5" stroke-dasharray="4 3"/>'
+        :'<rect x="12" y="1" width="20" height="14" rx="3" fill="var(--st-semantic-surface-subtle, #f8fafc)" stroke="var(--st-semantic-border-strong, #64748b)" stroke-width="1.5"/><text x="22" y="12" text-anchor="middle" font-size="11" font-weight="700" fill="var(--st-component-diagramScene-labelText, #172033)">+</text>';
+      const textX=cfg.padding+cfg.swatchWidth+cfg.swatchGap;
+      const textY=mark.rowY+mark.rowHeight/2+cfg.fontSize*0.35;
+      return `<g data-legend-mark="${escape(mark.kind)}"><g transform="translate(${cfg.padding} ${swatchY})">${icon}</g><text x="${textX}" y="${textY}" font-size="${cfg.fontSize}" fill="var(--st-component-diagramScene-labelText, #172033)">${escape(mark.label)}</text></g>`;
+    }).join('');
+    return styleRows+markRows;
+  };
   const drawNode=(node:SceneNodeModel)=>{
     const authoredLegendAttr=scene.r7Connectors&&node.presentation?.form==='legend'?' data-authored-legend=""':'';
     const measure=measureFor(node.collapsed);
     if(node.kind==='erd'&&node.erd!==undefined)return `<g data-scene-occurrence="${escape(node.occurrence)}"${authoredLegendAttr} transform="translate(${node.rect.x} ${node.rect.y})">${renderErdCardSvg(node.erd)}</g>`;
     if(node.kind==='process'&&node.processBox!==undefined)return `<g data-scene-occurrence="${escape(node.occurrence)}"${authoredLegendAttr} transform="translate(${node.rect.x} ${node.rect.y})">${renderProcessBoxSvg(node.processBox)}</g>`;
     const props={entityId:node.entity,resolveGlyph:input.resolveGlyph??getDiagramGlyph};
-    const projected=node.kind==='zone'?projectZoneProps(node.presentation,{...props,collapsed:node.collapsed,...(input.metrics?.containerPadding===undefined?{}:{containerPadding:input.metrics.containerPadding}),width:node.rect.width,height:node.rect.height,toggleLabel:node.collapsed?'Expand':'Collapse'}):projectCardProps(node.presentation,props);
-    if(projected.kind==='label')return authoredLegendAttr?`<text data-scene-occurrence="${escape(node.occurrence)}"${authoredLegendAttr} x="${node.rect.x}" y="${node.rect.y+24}">${escape(node.text)}</text>`:`<text x="${node.rect.x}" y="${node.rect.y+24}">${escape(node.text)}</text>`;
+    const hideLegendToggle=scene.r7Connectors&&node.presentation?.form==='legend';
+    const projected=node.kind==='zone'?projectZoneProps(node.presentation,{...props,collapsed:node.collapsed,...(input.metrics?.containerPadding===undefined?{}:{containerPadding:input.metrics.containerPadding}),width:node.rect.width,height:node.rect.height,...(hideLegendToggle?{}:{toggleLabel:node.collapsed?'Expand':'Collapse'})}):projectCardProps(node.presentation,props);
+    if(projected.kind==='label'){
+      if(node.kind==='legend-key'&&node.swatch!==undefined){
+        const swY=(node.rect.height-16)/2;
+        return `<g data-scene-occurrence="${escape(node.occurrence)}" transform="translate(${node.rect.x} ${node.rect.y})"><rect data-legend-key-swatch="" x="0" y="${swY}" width="24" height="16" rx="4" fill="${escape(node.swatch.fill)}" stroke="${escape(node.swatch.stroke)}" stroke-width="1"/><text x="32" y="${node.rect.height/2+7}" fill="var(--st-component-diagramCard-text, #172033)">${escape(node.text)}</text></g>`;
+      }
+      return authoredLegendAttr?`<text data-scene-occurrence="${escape(node.occurrence)}"${authoredLegendAttr} x="${node.rect.x}" y="${node.rect.y+24}">${escape(node.text)}</text>`:`<text x="${node.rect.x}" y="${node.rect.y+24}">${escape(node.text)}</text>`;
+    }
     const rendered=projected.kind==='zone'?renderZoneSvg({...projected.props,autoSize:true},{measure}):renderCardSvg({...projected.props,autoSize:true,height:node.rect.height},measure);
     if(rendered.kind!=='rendered')throw new Error('Content must never refuse a component');
-    return `<g data-scene-occurrence="${escape(node.occurrence)}"${authoredLegendAttr} transform="translate(${node.rect.x} ${node.rect.y})">${rendered.svg}</g>`;
+    const cl=node.combinedLegend;
+    const combinedSvg=cl===undefined?'':`<g transform="translate(0 ${cl.topOffset-cl.rowGap})"><path d="M${cl.padding} 0.5H${node.rect.width-cl.padding}" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)"/><g transform="translate(0 ${cl.rowGap})">${drawLegendRowsSvg(cl.entries,cl.entityMarks,{padding:cl.padding,swatchWidth:cl.swatchWidth,swatchHeight:cl.swatchHeight,swatchGap:cl.swatchGap,fontSize:cl.fontSize})}</g></g>`;
+    return `<g data-scene-occurrence="${escape(node.occurrence)}"${authoredLegendAttr} transform="translate(${node.rect.x} ${node.rect.y})">${rendered.svg}${combinedSvg}</g>`;
   };
   // Expanded zone surfaces are opaque: they paint under the connectors, the boxes above them.
   // The connector layer is masked over the footer text the frames paint themselves.
@@ -132,25 +178,9 @@ export function renderSceneSvg(input: SceneLayoutInput, options: { measure?: Car
     const r=l.rect;
     const ruleY=l.padding+l.headerHeight-0.5;
     const titleY=l.padding+l.headerHeight/2+l.fontSize*0.35;
-    const rows=l.entries.map(entry=>{
-      const swatch=linkLegendSwatchGeometry(entry,input.metrics);
-      const swatchY=entry.rowY+(entry.rowHeight-swatch.height)/2;
-      const lineAttrs=[
-        `data-legend-swatch="${escape(entry.key)}"`,
-        `d="${swatch.linePath}"`,
-        'fill="none"',
-        `stroke="${escape(swatch.stroke)}"`,
-        `stroke-width="${swatch.strokeWidth}"`,
-        'vector-effect="non-scaling-stroke"',
-        ...(swatch.dashArray===undefined?[]:[`stroke-dasharray="${escape(swatch.dashArray)}"`,`style="${connectorDashPaint(entry.strokeStyle)}"`]),
-      ].join(' ');
-      const arrow=swatch.arrowPath===undefined?'':`<path d="${swatch.arrowPath}" fill="${escape(swatch.arrowFill??swatch.stroke)}"${swatch.arrowStroke===undefined?'':` stroke="${escape(swatch.arrowStroke)}" stroke-width="${swatch.arrowStrokeWidth??1.5}"`}/>`;
-      const textX=l.padding+l.swatchWidth+l.swatchGap;
-      const textY=entry.rowY+entry.rowHeight/2+l.fontSize*0.35;
-      return `<g data-legend-style="${escape(entry.key)}" data-edge-stroke="${escape(entry.strokeStyle)}" data-edge-arrowhead="${escape(entry.arrowhead)}" data-edge-emphasis="${escape(entry.emphasis)}"><g transform="translate(${l.padding} ${swatchY})"><path ${lineAttrs}/>${arrow}</g><text x="${textX}" y="${textY}" font-size="${l.fontSize}" fill="var(--st-component-diagramScene-labelText, #172033)">${escape(entry.label)}</text></g>`;
-    }).join('');
-    return `<g data-scene-legend="" data-legend-anchor="${escape(l.anchor)}" transform="translate(${r.x} ${r.y})"><rect width="${r.width}" height="${r.height}" fill="var(--st-component-diagramScene-labelSurface, #ffffff)" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)"/><text x="${l.padding}" y="${titleY}" font-size="${l.fontSize}" font-weight="700" fill="var(--st-component-diagramScene-labelText, #172033)">${escape(l.title)}</text><path d="M${l.padding} ${ruleY}H${r.width-l.padding}" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)"/>${rows}</g>`;
+    const rows=drawLegendRowsSvg(l.entries,l.entityMarks,l);
+    return `<g data-scene-legend="" data-legend-anchor="${escape(l.anchor)}" transform="translate(${r.x} ${r.y})"><rect width="${r.width}" height="${r.height}" rx="${LINK_LEGEND_CORNER_RADIUS}" fill="var(--st-component-diagramScene-labelSurface, #ffffff)" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)" stroke-width="1.5"/><text x="${l.padding}" y="${titleY}" font-size="${l.fontSize}" font-weight="700" fill="var(--st-component-diagramScene-labelText, #172033)">${escape(l.title)}</text><path d="M${l.padding} ${ruleY}H${r.width-l.padding}" stroke="var(--st-component-diagramScene-labelBorder, #cbd5e1)"/>${rows}</g>`;
   })();
-  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box.x-2} ${box.y-2} ${box.width+4} ${box.height+4}" width="${(box.width+4)*fit.zoom}" height="${(box.height+4)*fit.zoom}" data-viewport-width="${viewportWidth}" data-display-scale="${fit.zoom}" role="img" aria-label="${escape(options.title??input.document.documentId)}" font-family="Inter, system-ui, sans-serif"><title>${escape(options.title??input.document.documentId)}</title><style>${scene.r7Connectors ? `@font-face{font-family:Inter;src:local('Inter');font-weight:100 900}svg:root{--st-font-sans:Inter,system-ui,sans-serif;--st-semantic-surface-raised:#fff;--st-semantic-surface-subtle:#f8fafc;--st-component-diagramZone-surface1:#fff;--st-component-diagramZone-surface2:#f8fafc;--st-semantic-text-primary:#172033;--st-semantic-text-secondary:#475569;--st-semantic-border-strong:#64748b;--st-semantic-border-subtle:#cbd5e1;--st-semantic-border-interactive:#2563eb;--st-semantic-feedback-info:#2563eb;--st-component-diagramScene-edgeStroke:#64748b;--st-component-diagramScene-linkStroke:${LINK_STROKE_FALLBACK};--st-component-diagramScene-linkStrokeWidth:3.5px;--st-component-diagramScene-linkRelatedStrokeWidth:3.5px;--st-component-diagramScene-linkPrimaryStrokeWidth:3.5px;--st-component-diagramScene-linkEmphasisStroke:${LINK_EMPHASIS_STROKE_FALLBACK};--st-component-diagramScene-linkEmphasisStrokeWidth:3.5px;--st-component-diagramScene-linkDashDashed:8 6;--st-component-diagramScene-linkDashDotted:2 5;--st-component-diagramScene-edgeCornerRadius:12px;--st-component-diagramScene-edgeLabelSize:18px}` : "@font-face{font-family:Inter;src:local('Inter');font-weight:100 900}svg:root{--st-font-sans:Inter,system-ui,sans-serif;--st-semantic-surface-raised:#fff;--st-semantic-surface-subtle:#f8fafc;--st-component-diagramZone-surface1:#fff;--st-component-diagramZone-surface2:#f8fafc;--st-semantic-text-primary:#172033;--st-semantic-text-secondary:#475569;--st-semantic-border-strong:#64748b;--st-semantic-border-subtle:#cbd5e1;--st-semantic-feedback-info:#2563eb}"}</style><defs>${defaultMarker}${extraMarkerDefs}${maskDef}</defs>${frames}${connectors}${boxes}${labels}${legend}</svg>`;
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box.x-2} ${box.y-2} ${box.width+4} ${box.height+4}" width="${(box.width+4)*fit.zoom}" height="${(box.height+4)*fit.zoom}" data-viewport-width="${viewportWidth}" data-display-scale="${fit.zoom}" role="img" aria-label="${escape(options.title??input.document.documentId)}" font-family="Inter, system-ui, sans-serif"><title>${escape(options.title??input.document.documentId)}</title><style>${scene.r7Connectors ? `@font-face{font-family:Inter;src:local('Inter');font-weight:100 900}svg:root{--st-font-sans:Inter,system-ui,sans-serif;--st-semantic-surface-raised:#fff;--st-semantic-surface-subtle:#f8fafc;--st-component-diagramZone-surface1:#fff;--st-component-diagramZone-surface2:#f8fafc;--st-semantic-text-primary:#172033;--st-semantic-text-secondary:#475569;--st-semantic-border-strong:#64748b;--st-semantic-border-subtle:#cbd5e1;--st-semantic-border-interactive:#2563eb;--st-semantic-feedback-info:#2563eb;--st-component-diagramScene-edgeStroke:#64748b;--st-component-diagramScene-linkStroke:${LINK_STROKE_FALLBACK};--st-component-diagramScene-linkStrokeWidth:3.5px;--st-component-diagramScene-linkRelatedStrokeWidth:3.5px;--st-component-diagramScene-linkPrimaryStrokeWidth:3.5px;--st-component-diagramScene-linkEmphasisStroke:${LINK_EMPHASIS_STROKE_FALLBACK};--st-component-diagramScene-linkEmphasisStrokeWidth:5px;--st-component-diagramScene-linkDashDashed:8 6;--st-component-diagramScene-linkDashDotted:2 5;--st-component-diagramScene-edgeCornerRadius:16px;--st-component-diagramScene-edgeLabelSize:18px}` : "@font-face{font-family:Inter;src:local('Inter');font-weight:100 900}svg:root{--st-font-sans:Inter,system-ui,sans-serif;--st-semantic-surface-raised:#fff;--st-semantic-surface-subtle:#f8fafc;--st-component-diagramZone-surface1:#fff;--st-component-diagramZone-surface2:#f8fafc;--st-semantic-text-primary:#172033;--st-semantic-text-secondary:#475569;--st-semantic-border-strong:#64748b;--st-semantic-border-subtle:#cbd5e1;--st-semantic-feedback-info:#2563eb}"}</style><defs>${defaultMarker}${extraMarkerDefs}${maskDef}</defs>${frames}${connectors}${boxes}${labels}${legend}</svg>`;
   return {svg,result,scene};
 }

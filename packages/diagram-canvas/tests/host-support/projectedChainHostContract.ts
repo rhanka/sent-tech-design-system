@@ -404,7 +404,7 @@ export function expectSnapshotMatchesEngine(
     const actual = snapshot.edges[String(edge.occurrence)]!;
     expect(actual.mode, `${label} ${edge.occurrence} r7 mode`).toBe("r7");
     expect(actual.d, `${label} ${edge.occurrence} path d`).toBe(
-      connectorPath(edge.points, DEFAULT_EDGE_CORNER_RADIUS),
+      connectorPath(edge.points, DEFAULT_EDGE_CORNER_RADIUS, edge.head?.pullbackWorld ?? 0),
     );
     expect(actual.stroke, `${label} ${edge.occurrence} stroke`).toBe(edge.strokeStyle ?? null);
     expect(actual.dasharray, `${label} ${edge.occurrence} dasharray`).toBe(connectorDashArray(edge.strokeStyle) ?? null);
@@ -413,7 +413,12 @@ export function expectSnapshotMatchesEngine(
     );
     expect(actual.arrowhead, `${label} ${edge.occurrence} arrowhead`).toBe(edge.arrowhead ?? null);
     expect(actual.emphasis, `${label} ${edge.occurrence} emphasis`).toBe(edge.emphasis ?? null);
-    const expectedMarker = edge.arrowhead === "none" ? "none" : edge.emphasis === "emphasis" ? "emphasis" : "default";
+    const expectedMarker =
+      edge.head !== undefined || edge.arrowhead === "none"
+        ? "none"
+        : edge.emphasis === "emphasis"
+          ? "emphasis"
+          : "default";
     expect(actual.markerKind, `${label} ${edge.occurrence} marker`).toBe(expectedMarker);
   }
 

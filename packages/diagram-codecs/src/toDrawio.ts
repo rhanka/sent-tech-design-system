@@ -159,7 +159,7 @@ function edgeStyle(edge: SceneEdgeModel): string {
   const restingWidth = edge.r7 === true ? "3.5" : edge.arrowhead === "none" ? "3" : "2.5";
   let style = "edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;";
   style += `strokeColor=${emphasized ? EMPHASIS_STROKE : restingStroke};`;
-  style += `strokeWidth=${emphasized ? "3.5" : restingWidth};`;
+  style += `strokeWidth=${emphasized ? (edge.r7 === true ? "5" : "3.5") : restingWidth};`;
   const dash = connectorDashArray(edge.strokeStyle);
   if (dash !== undefined) style += `dashed=1;dashPattern=${dash};`;
   // Flow and ERD markers are drawn by the scene as extra geometry; like the

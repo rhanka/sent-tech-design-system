@@ -1,8 +1,8 @@
 {
   "componentId": "candlestick-chart",
   "contractSource": "derived",
-  "digest": "sha256:a2673dfd1687cc978d6829efda40f3546bc83379b4fc6696ab7a375cb3c6a16a",
-  "entryDigest": "sha256:64a40bdf0f1c0b312e473f7809f6470873635847d128159100f01aab00a8edeb",
+  "digest": "sha256:8dd41d3452b5ab7ef391707758b4224c3deeef900650446efeed17553cba4f18",
+  "entryDigest": "sha256:7cc1e6b50c7222f63e49d55f41161e97820a16c2724617b8ac9b15bdb7e5dc6f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -955,7 +955,7 @@
         "declarationPath": "packages/components-svelte/dist/CandlestickChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CandlestickChartProps",
-        "version": "0.49.0"
+        "version": "0.50.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -1287,7 +1287,7 @@
         "declarationPath": "packages/components-vue/dist/CandlestickChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CandlestickChartProps",
-        "version": "0.43.0-next.0"
+        "version": "0.44.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

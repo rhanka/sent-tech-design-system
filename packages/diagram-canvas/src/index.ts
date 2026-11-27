@@ -27,7 +27,18 @@ export * from "./layout/index.js";
 
 export * from "./presentation/erd.js";
 export * from "./presentation/process.js";
-export { connectorPath, parseConnectorPath, DEFAULT_EDGE_CORNER_RADIUS } from "./presentation/connectorPath.js";
+export { connectorPath, parseConnectorPath, simplifyElbowPoints, DEFAULT_EDGE_CORNER_RADIUS } from "./presentation/connectorPath.js";
+export {
+  CONNECTOR_HEAD_SPECS,
+  computeNeighborArrivalSpacing,
+  extractEdgeArrivalSegment,
+  resolveConnectorHead,
+  resolveConnectorHeadCssSpec,
+  type ConnectorHeadCssSpec,
+  type ConnectorWeightTier,
+  type EdgeArrivalSegment,
+  type SceneEdgeHead,
+} from "./layout/connectorHead.js";
 export {
   ARROWHEAD_MARKER_GEOMETRY,
   connectorDashArray,
@@ -42,9 +53,15 @@ export {
 export {
   ALL_LINK_LEGEND_STYLES,
   buildSceneLinkLegend,
+  collectLegendEntityMarks,
   collectLinkLegendStyles,
+  defaultLegendMarkLabel,
+  defaultLegendTitle,
   defaultLinkStyleLabel,
+  findLegendPocket,
+  inferLegendLocale,
   LINK_LEGEND_ARROWHEAD_ORDER,
+  LINK_LEGEND_CORNER_RADIUS,
   LINK_LEGEND_EMPHASIS_ORDER,
   LINK_LEGEND_FONT_SIZE,
   LINK_LEGEND_GAP,
@@ -52,6 +69,7 @@ export {
   LINK_LEGEND_HEADER_HEIGHT,
   LINK_LEGEND_MIN_WIDTH,
   LINK_LEGEND_PADDING,
+  LINK_LEGEND_POCKET_CLEARANCE,
   LINK_LEGEND_ROW_GAP,
   LINK_LEGEND_ROW_HEIGHT,
   LINK_LEGEND_STROKE_ORDER,
@@ -64,7 +82,13 @@ export {
   measureLegendProbe,
   measureSceneLinkLegend,
   placeSceneLinkLegend,
+  resolveLegendKeySwatch,
+  type AuthoredCombinedLegend,
+  type AuthoredLegendKeySwatch,
   type BuildSceneLinkLegendInput,
+  type LegendEntityMark,
+  type LegendEntityMarkKind,
+  type LegendLocale,
   type LinkLegendAnchor,
   type LinkLegendEdgeInput,
   type LinkLegendEntry,

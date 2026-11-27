@@ -11,6 +11,7 @@ import { expectConnectorPaint, scenePaintOrder } from "../../../diagram-canvas/t
 import { flowFixture, flowMeasure } from "../../../diagram-canvas/test-support/flowFixture.js";
 import { nestedZoneFixture } from "../../../diagram-canvas/test-support/nestedZoneFixture.js";
 import { r7AuthoredLegendFixture } from "../../../diagram-canvas/test-support/r7AuthoredLegendFixture.js";
+import { r7ConnectorsFixture } from "../../../diagram-canvas/test-support/r7ConnectorsFixture.js";
 import DiagramSceneFigure, { type DiagramSceneFigureProps } from "./DiagramSceneFigure.svelte";
 
 beforeEach(() => {
@@ -95,17 +96,22 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     expect(markers[1]!.getAttribute("data-arrowhead-emphasis")).toBe("emphasis");
 
     const edgeEl = (occ: string) => view.container.querySelector(`path[data-scene-edge="${occ}"]`)!;
+    const headEl = (occ: string) => view.container.querySelector(`path[data-connector-part="head"][data-head-for="${occ}"]`);
     expect(edgeEl(r0!).getAttribute("stroke-dasharray")).toBe("2 5");
     expect(edgeEl(r0!).getAttribute("data-edge-stroke")).toBe("dotted");
-    expect(edgeEl(r0!).getAttribute("marker-end")).toMatch(/^url\(#diagram-arrow-[^)]+\)$/);
+    expect(edgeEl(r0!).getAttribute("marker-end")).toBeNull();
+    expect(edgeEl(r0!).getAttribute("data-edge-tip")).toBeTruthy();
+    expect(headEl(r0!)).not.toBeNull();
 
     expect(edgeEl(r1!).getAttribute("stroke-dasharray")).toBeNull();
     expect(edgeEl(r1!).getAttribute("marker-end")).toBeNull();
+    expect(headEl(r1!)).toBeNull();
     expect(edgeEl(r1!).getAttribute("data-edge-emphasis")).toBe("emphasis");
 
     expect(edgeEl(crossEdge).getAttribute("stroke-dasharray")).toBe("8 6");
     expect(edgeEl(crossEdge).getAttribute("data-edge-emphasis")).toBe("emphasis");
-    expect(edgeEl(crossEdge).getAttribute("marker-end")).toMatch(/-emphasis\)$/);
+    expect(edgeEl(crossEdge).getAttribute("marker-end")).toBeNull();
+    expect(headEl(crossEdge)?.getAttribute("data-edge-emphasis")).toBe("emphasis");
 
     // Automatic link-style legend lists the 4 active styles in fixed canonical order on the right strip.
     const legendEl = () => view.container.querySelector<HTMLElement>("[data-scene-legend]");
@@ -129,7 +135,8 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     expect(foldedEdge.getAttribute("stroke-dasharray")).toBe("8 6");
     expect(foldedEdge.getAttribute("data-edge-stroke")).toBe("dashed");
     expect(foldedEdge.getAttribute("data-edge-emphasis")).toBe("emphasis");
-    expect(foldedEdge.getAttribute("marker-end")).toMatch(/-emphasis\)$/);
+    expect(foldedEdge.getAttribute("marker-end")).toBeNull();
+    expect(headEl(crossEdge)?.getAttribute("data-edge-emphasis")).toBe("emphasis");
 
     // Unfold: all styled edges and the 4-entry legend return intact.
     await fireEvent.click(toggle());
@@ -459,5 +466,94 @@ describe("DiagramSceneFigure connectors in nested zones — Svelte", () => {
     const v1MarkerPath = v1View.container.querySelector("defs marker path");
     expect(v1MarkerPath?.getAttribute("fill")).toBe("var(--st-component-diagramScene-edgeStroke, #64748b)");
     v1View.unmount();
+  });
+
+  it("D2D M1 feedback & DE3-L1b: paints r7 legend swatches, combined link rows, omits fold toggle on legend, and renders conditional marks", async () => {
+    const r7 = r7AuthoredLegendFixture(false);
+    const view = render(DiagramSceneFigure, {
+      document: r7.document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: r7.presentation,
+      measureLines: flowMeasure,
+      collapsed: [],
+    } as DiagramSceneFigureProps);
+    await tick();
+
+    const authored = view.container.querySelector<HTMLElement>("[data-authored-legend]")!;
+    expect(authored).not.toBeNull();
+    expect(view.container.querySelectorAll('[data-scene-kind="legend-key"] [data-legend-key-swatch]')).toHaveLength(2);
+    expect(view.container.querySelector('[data-scene-kind="legend-key"] .st-diagramSceneFigure-legendKey')?.textContent).toBe("Core Services");
+    expect(authored.querySelectorAll("[data-legend-style]").length).toBeGreaterThanOrEqual(2);
+    expect(authored.querySelector("button[aria-expanded]")).toBeNull();
+    expect(view.container.querySelectorAll('[data-scene-occurrence="occurrence:e.zone-core"] button[aria-expanded]')).toHaveLength(1);
+    view.unmount();
+
+    // v1 authored legend keeps old behavior: no swatches, no fold suppression regression.
+    const v1View = render(DiagramSceneFigure, {
+      document: r7.document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: {
+        ...r7.presentation,
+        contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },
+        entities: Object.fromEntries(
+          Object.entries(r7.presentation.entities).map(([id, entry]) => {
+            const { anatomy: _ignored, ...rest } = entry as { anatomy?: unknown; form: string; text: unknown };
+            return [id, rest];
+          }),
+        ),
+        relations: {},
+      },
+      measureLines: flowMeasure,
+      collapsed: [],
+    } as DiagramSceneFigureProps);
+    await tick();
+    expect(v1View.container.querySelectorAll("[data-legend-key-swatch]")).toHaveLength(0);
+    v1View.unmount();
+
+    // Automatic r7 legend renders proposed and folded-zone marks when >= 2 connector styles exist.
+    const r7Folded = r7ConnectorsFixture(true);
+    const markView = render(DiagramSceneFigure, {
+      document: r7Folded.document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      collapsed: r7Folded.defaultFolds,
+      measureLines: flowMeasure,
+      presentation: {
+        ...r7Folded.presentation,
+        entities: {
+          ...r7Folded.presentation.entities,
+          "occurrence:e.gateway": { ...(r7Folded.presentation.entities["occurrence:e.gateway"] as Record<string, unknown>), status: "proposed" },
+        },
+      },
+    } as DiagramSceneFigureProps);
+    await tick();
+    expect(markView.container.querySelector('[data-scene-legend] [data-legend-mark="proposed"]')).not.toBeNull();
+    expect(markView.container.querySelector('[data-scene-legend] [data-legend-mark="folded-zone"]')).not.toBeNull();
+  });
+
+  it("PR #356 P1 #2: places .st-diagramSceneFigure-authoredCombined divider at topOffset - rowGap so first row aligns with topOffset", async () => {
+    const r7 = r7AuthoredLegendFixture(false);
+    const view = render(DiagramSceneFigure, {
+      document: r7.document,
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation: r7.presentation,
+      measureLines: flowMeasure,
+      collapsed: [],
+    } as DiagramSceneFigureProps);
+    await tick();
+    const combined = view.container.querySelector<HTMLElement>("[data-authored-legend] .st-diagramSceneFigure-authoredCombined")!;
+    expect(combined).not.toBeNull();
+    const rowGap = parseFloat(combined.style.getPropertyValue("--st-diagram-legend-row-gap"));
+    const topPx = parseFloat(combined.style.top);
+    const keyNodes = [...view.container.querySelectorAll<HTMLElement>('[data-scene-kind="legend-key"]')];
+    const authoredNode = view.container.querySelector<HTMLElement>("[data-authored-legend]")!;
+    const maxKeyRelBottom = Math.max(...keyNodes.map((el) => parseFloat(el.style.top) + parseFloat(el.style.height))) - parseFloat(authoredNode.style.top);
+    const headerGap = parseFloat(combined.style.getPropertyValue("--st-diagram-legend-header-gap"));
+    // Divider sits at maxKeyRelBottom + headerGap (= topOffset - rowGap), not topOffset.
+    expect(topPx).toBe(maxKeyRelBottom + headerGap);
+    expect(rowGap).toBe(6);
   });
 });

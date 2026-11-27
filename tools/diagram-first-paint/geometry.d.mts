@@ -5,7 +5,7 @@ export function segmentInterval(box: PaintBox | PaintDisk, a: PaintPoint, b: Pai
 export function exposedSegments(a: PaintPoint, b: PaintPoint, occluders: readonly (PaintBox | PaintDisk)[], stroke: number): [PaintPoint, PaintPoint][];
 export function borderDistance(point: PaintPoint, box: PaintBox): number;
 export function connectorFindings(input: {
-  readonly paths: readonly { readonly id: string; readonly stroke: number; readonly points: readonly PaintPoint[] }[];
+  readonly paths: readonly { readonly id: string; readonly stroke: number; readonly points: readonly PaintPoint[]; readonly targetDock?: PaintPoint; readonly pullbackWorld?: number }[];
   readonly labels: readonly string[];
   readonly nodes: readonly (PaintBox & { readonly id: string })[];
   readonly occluders: readonly (PaintBox | PaintDisk)[];
@@ -13,7 +13,7 @@ export function connectorFindings(input: {
   readonly tolerance: number;
 }): string[];
 export function roundedElbowFindings(input: {
-  readonly paths: readonly { readonly id: string; readonly d: string | null }[];
+  readonly paths: readonly { readonly id: string; readonly d: string | null; readonly pullbackWorld?: number }[];
   readonly maxRadius?: number;
   readonly tolerance?: number;
 }): string[];
@@ -48,5 +48,9 @@ export function combinedLegendFindings(input: {
 }): string[];
 export function centredContainerContentFindings(input: {
   readonly zones: readonly (PaintBox & { readonly id: string; readonly children: readonly PaintBox[] })[];
+  readonly tolerance?: number;
+}): string[];
+export function headOverlapFindings(input: {
+  readonly heads?: readonly (PaintBox & { readonly id: string })[];
   readonly tolerance?: number;
 }): string[];

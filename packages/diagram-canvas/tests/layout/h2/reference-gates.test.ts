@@ -208,7 +208,7 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
       readonly name: string;
       readonly scene: H2ReferenceScene;
       readonly expectR7: boolean;
-      readonly expectedAnchor?: "free-cell" | "right";
+      readonly expectedAnchor?: "free-cell" | "pocket" | "right";
       readonly expectedStyles?: readonly string[];
       readonly expectAspect16x9?: boolean;
     }[] = [
@@ -230,7 +230,7 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
         name: "h2-aspect-16-9",
         scene: buildAppctxArchitecture16x9(),
         expectR7: true,
-        expectedAnchor: "right",
+        expectedAnchor: "pocket",
         expectedStyles: ["solid:arrow:default", "dashed:arrow:default"],
         expectAspect16x9: true,
       },

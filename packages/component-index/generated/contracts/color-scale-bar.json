@@ -1,8 +1,8 @@
 {
   "componentId": "color-scale-bar",
   "contractSource": "derived",
-  "digest": "sha256:074285fd1f26b89cc46446b9c536551ff25ee61ae0ca63fe14d4328aef2c8a16",
-  "entryDigest": "sha256:34d00fed01c451277d745d131c2ec72373e4d0aa95c5b3611a868e32268d535c",
+  "digest": "sha256:054f1587353b029f803039fd1745db7a9b4c76b4e2036ef826a27f653401384a",
+  "entryDigest": "sha256:5b2ec9328724c6722cf498d94c88fec4d274367603ed89c174cdbda0317c89fe",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -192,7 +192,7 @@
         "declarationPath": "packages/components-svelte/dist/ColorScaleBar.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ColorScaleBarProps",
-        "version": "0.49.0"
+        "version": "0.50.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -252,7 +252,7 @@
         "declarationPath": "packages/components-vue/dist/ColorScaleBar.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ColorScaleBarProps",
-        "version": "0.43.0-next.0"
+        "version": "0.44.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

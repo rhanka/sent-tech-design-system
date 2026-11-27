@@ -135,10 +135,10 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     linkStrokeWidth: "3.5px",
     linkRelatedStrokeWidth: "3.5px",
     linkPrimaryStrokeWidth: "3.5px",
-    linkEmphasisStrokeWidth: "3.5px",
+    linkEmphasisStrokeWidth: "5px",
     linkDashDashed: "8 6",
     linkDashDotted: "2 5",
-    edgeCornerRadius: "12px",
+    edgeCornerRadius: "16px",
     edgeLabelSize: "18px",
     edgeLabelFontSize: "18px",
     edgeLabelLineHeight: "22px",
@@ -213,8 +213,8 @@ describe("diagram tokens — frozen Appendix A values", () => {
     expect(css).toContain("--st-component-diagramScene-linkRelatedStrokeWidth: 3.5px;");
     expect(css).toContain("--st-component-diagramScene-linkPrimaryStrokeWidth: 3.5px;");
     expect(css).toContain(`--st-component-diagramScene-linkEmphasisStroke: ${component.diagramScene.linkEmphasisStroke};`);
-    expect(css).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth: 3.5px;");
-    expect(css).toContain("--st-component-diagramScene-edgeCornerRadius: 12px;");
+    expect(css).toContain("--st-component-diagramScene-linkEmphasisStrokeWidth: 5px;");
+    expect(css).toContain("--st-component-diagramScene-edgeCornerRadius: 16px;");
     expect(css).toContain("--st-component-diagramScene-edgeLabelSize: 18px;");
   });
 
