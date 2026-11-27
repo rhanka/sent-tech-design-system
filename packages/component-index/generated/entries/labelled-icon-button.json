@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/LabelledIconButton.svelte",
-      "version": "0.50.0"
+      "version": "0.51.0"
     },
     {
       "channel": "source",
@@ -17,14 +17,14 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/LabelledIconButton.vue",
-      "version": "0.44.0-next.0"
+      "version": "0.45.0-next.0"
     }
   ],
   "description": {
     "en": "Labelled icon button: the hover tooltip and the aria-label share the same label.",
     "fr": "Bouton icône étiqueté : infobulle au survol et aria-label partagent le même libellé."
   },
-  "digest": "sha256:4d26f08a4e06c17805b69bfe7e3be9740f3677fcb6b379219a9d17cc6fc58dec",
+  "digest": "sha256:f9aee0ea617a9511d3882ee58402e11a8af081a747b3ff822cb8b9e41b7bba8e",
   "displayName": "LabelledIconButton",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:45559650094597871457a79684a801581a669749a01d70a69d4535c7f5c1d904",
-  "entryDigest": "sha256:ab79198b1599b0153341134c6a7fd0b9f32b675806471b967cfde250bbd03fe5",
+  "digest": "sha256:6dd2c377314cad8ebbb34949e8dd4792be2414c44b9928d7bbd932dd55d6b223",
+  "entryDigest": "sha256:1ba9b0e61c7c288ae9623bd8e0a4acf7ea18fc05a32a952411bf5a849faa2898",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -652,6 +652,12 @@
               "columns": {
                 "items": {
                   "$ref": "#/$defs/ComposedTrackLine"
+                },
+                "type": "array"
+              },
+              "omittedBandIds": {
+                "items": {
+                  "type": "string"
                 },
                 "type": "array"
               },
@@ -5203,7 +5209,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.50.0"
+        "version": "0.51.0"
       },
       "status": "partial",
       "unresolved": [
@@ -6406,6 +6412,12 @@
               "columns": {
                 "items": {
                   "$ref": "#/$defs/ComposedTrackLine"
+                },
+                "type": "array"
+              },
+              "omittedBandIds": {
+                "items": {
+                  "type": "string"
                 },
                 "type": "array"
               },
@@ -11012,7 +11024,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.44.0-next.0"
+        "version": "0.45.0-next.0"
       },
       "status": "partial",
       "unresolved": [

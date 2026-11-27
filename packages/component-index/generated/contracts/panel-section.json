@@ -1,8 +1,8 @@
 {
   "componentId": "panel-section",
   "contractSource": "derived",
-  "digest": "sha256:b764459080429005652d4fea69e9664a0b86b881797bf22e220b293822272786",
-  "entryDigest": "sha256:e8b6a5088b38ae18de5b70c5fbd2d7e903af987fa495ecfb443225199d77bbfa",
+  "digest": "sha256:db048c1ffeb7df3aa138736681120999d9f9d08dba4b7f9733cae6d98f1d08fa",
+  "entryDigest": "sha256:d544bb7a786dcb5e3807a0f01892fc80cd66e7c5ad0ed7b5dd427ec1d11cc8f6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -157,7 +157,7 @@
         "declarationPath": "packages/components-svelte/dist/PanelSection.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PanelSectionProps",
-        "version": "0.50.0"
+        "version": "0.51.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -203,7 +203,7 @@
         "declarationPath": "packages/components-vue/dist/PanelSection.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PanelSectionProps",
-        "version": "0.44.0-next.0"
+        "version": "0.45.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

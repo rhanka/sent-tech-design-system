@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Notification.svelte",
-      "version": "0.50.0"
+      "version": "0.51.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Notification.vue",
-      "version": "0.44.0-next.0"
+      "version": "0.45.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Inline/actionable notification with info/success/warning/error tones.",
     "fr": "Notification inline/actionable avec tonalités info/success/warning/error."
   },
-  "digest": "sha256:c88dc9f0530bf41cfb99c45ee19f48e8ca0ecce50de8fd4340ac8b01d6dac4ce",
+  "digest": "sha256:a72623ffd6f8a34482e1fcd34500bb9427e162a5c4488f7a149af78ec9246681",
   "displayName": "Notification",
   "format": "component-entry/v1",
   "frameworks": [

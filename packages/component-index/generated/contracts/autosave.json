@@ -1,8 +1,8 @@
 {
   "componentId": "autosave",
   "contractSource": "derived",
-  "digest": "sha256:bfbf521142a4ad6acb0fb720c71b63816e5043dbc949cb3d4f23be4163692483",
-  "entryDigest": "sha256:d09d1304bb242948abc331e157ce87304602e9440f97fe8491b794149d402407",
+  "digest": "sha256:dcb82a0ece180c92066ca6eef8547786ceb7417261384f14d9ef1b197970ecf6",
+  "entryDigest": "sha256:a56a37fa028648cee86c985724e53075ed2b1e6a7df6dd439720ebc4b7bc1b89",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -288,7 +288,7 @@
         "declarationPath": "packages/components-svelte/dist/Autosave.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AutosaveProps",
-        "version": "0.50.0"
+        "version": "0.51.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -390,7 +390,7 @@
         "declarationPath": "packages/components-vue/dist/Autosave.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AutosaveProps",
-        "version": "0.44.0-next.0"
+        "version": "0.45.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

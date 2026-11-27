@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/UnorderedList.svelte",
-      "version": "0.50.0"
+      "version": "0.51.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/UnorderedList.vue",
-      "version": "0.44.0-next.0"
+      "version": "0.45.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Bulleted unordered list, with nesting.",
     "fr": "Liste à puces, avec imbrication."
   },
-  "digest": "sha256:4d18198102d83528d4aed0ba5f081b724116debdfbfd43d3aeaf4f70f26cc990",
+  "digest": "sha256:1b835cc150f980e7c119b0491f36c5aa64b19922e16a8392378e26de77ee41ad",
   "displayName": "UnorderedList",
   "format": "component-entry/v1",
   "frameworks": [

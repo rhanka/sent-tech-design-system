@@ -1,8 +1,8 @@
 {
   "componentId": "trace-waterfall-chart",
   "contractSource": "derived",
-  "digest": "sha256:053914cab6eda0f0202bfebc0c33e4ba07f9bdc906e23fcf746e3c747b8b7bdd",
-  "entryDigest": "sha256:ea03bcdc155255c3c33d4846f61b5528d1a1bd5df93974483a37e2c1f9ff871a",
+  "digest": "sha256:baebc26b674b0f4a4bfb95f6d19b044e516ae61110e2c4b365ccc96ce4eac34d",
+  "entryDigest": "sha256:2d6c75ee04eb01f90b9ece5d25c5e9a9fd76bad63e096a1f6631b2dc815b3e91",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -275,7 +275,7 @@
         "declarationPath": "packages/components-svelte/dist/TraceWaterfallChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TraceWaterfallChartProps",
-        "version": "0.50.0"
+        "version": "0.51.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -367,7 +367,7 @@
         "declarationPath": "packages/components-vue/dist/TraceWaterfallChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TraceWaterfallChartProps",
-        "version": "0.44.0-next.0"
+        "version": "0.45.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

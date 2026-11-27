@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/BoxPlotChart.svelte",
-      "version": "0.50.0"
+      "version": "0.51.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/BoxPlotChart.vue",
-      "version": "0.44.0-next.0"
+      "version": "0.45.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Box plots for comparing distributions and outliers.",
     "fr": "Boîtes à moustaches pour comparer des distributions et leurs valeurs atypiques."
   },
-  "digest": "sha256:524a7c1a89e0d6f7028be0dfc3288a64af74afd81768f29b3bfc39a0b5441e0a",
+  "digest": "sha256:ac2816f511d0486a16c89d5e54bd41ba68e87ff6d44a1e36fd8ae304c1024e0b",
   "displayName": "BoxPlotChart",
   "format": "component-entry/v1",
   "frameworks": [
