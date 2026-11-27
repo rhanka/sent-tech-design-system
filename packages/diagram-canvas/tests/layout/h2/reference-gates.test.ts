@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { DS_LAYOUT_V2_VOCABULARY, lowerLayoutHintsV2 } from "@sentropic/diagram-core";
+import { DS_LAYOUT_V2_VOCABULARY, entityRef, lowerLayoutHintsV2 } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -191,7 +191,20 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
     expect(Math.abs(mr3.t49AndT50!.t50DeltaFromL5L6CenterY)).toBeLessThanOrEqual(TOL);
 
     // T-37 (ref 1, NE-1): root sources vs host local triggers vertical drift measured per lane
+    // V-S6 (REQ-R7-34): span-only empty band r3 is omitted on ref-1 (single gutter between r2 and r4).
     const r1 = all13.get("ref-1")!;
+    const r1Unfolded = mustLayOut(layoutMeasured(r1.document, baseOptionsOf(r1, { collapsed: [] })), "ref-1:unfolded");
+    const r1Root = r1Unfolded.composition!.grids["root"]!;
+    expect(r1Root.bands.map((b) => b.id)).toEqual(["r1", "r2", "r4", "r5"]);
+    expect(r1Root.omittedBandIds).toEqual(["r3"]);
+    const boxOfR1 = (id: string) =>
+      r1Root.cells.find((c) => c.entity === entityRef(id))!.boxRect;
+    const gapBC = boxOfR1("source-c").y - (boxOfR1("source-b").y + boxOfR1("source-b").height);
+    const r2Band = r1Root.bands.find((b) => b.id === "r2")!;
+    const r4Band = r1Root.bands.find((b) => b.id === "r4")!;
+    const g24 = r1Unfolded.channels!.find((c) => c.id === "root|across|r2")!;
+    expect(r4Band.start - (r2Band.start + r2Band.size)).toBe(g24.gap);
+    expect(gapBC).toBeLessThan(280.5);
     const mr1 = measureH2SceneResiduals("ref-1", mustLayOut(layoutMeasured(r1.document, baseOptionsOf(r1)), "ref-1"));
     expect(mr1.t37).toBeDefined();
     expect(mr1.t37).toHaveLength(4);
