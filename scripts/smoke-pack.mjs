@@ -310,7 +310,7 @@ const packages = [
     // DC-2a BF-5: the headless scene, camera and layout engine, publishable
     // because design-system-svelte depends on it. Same tarball promise as
     // diagram-core: entry points present, no maps, no build stamp.
-    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/camera.js", "dist/layout/index.js"],
+    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/camera.js", "dist/layout/index.js", "dist/focus-bridge.js", "dist/focus-bridge.d.ts"],
     absentPatterns: ["\\.map$", "\\.srchash$"],
   },
   {

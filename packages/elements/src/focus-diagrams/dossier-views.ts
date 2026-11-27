@@ -1,6 +1,6 @@
 import { baseDigest, canonicalJson } from "@sentropic/focus/editing";
 import { assertFocusDocument } from "@sentropic/focus/validate";
-import type { SceneDocument, SceneView } from "@sentropic/diagram-canvas/diagramSceneModel";
+import type { SceneDocument, SceneView } from "@sentropic/diagram-canvas/focus-bridge";
 import { prepareDossierDiagram } from "./diagram-layout.js";
 import { isRecord, resolveDossierScene } from "./diagram-source.js";
 

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { baseDigest, canonicalJson } from "@sentropic/focus/editing";
-import { shippedSceneBindings, shippedSceneRegistry, validateSceneDocument, type SceneDocument } from "@sentropic/diagram-canvas/diagramSceneModel";
+import { shippedSceneBindings, shippedSceneRegistry, validateSceneDocument, type SceneDocument } from "@sentropic/diagram-canvas/focus-bridge";
 import { mountDossier } from "../src/element/dom/dossier-mount.js";
 import { FOCUS_PROCESS_TARGET_WIDTH, prepareDossierDiagram } from "../src/focus-diagrams/diagram-layout.js";
 import { DossierDiagramError, readDossierScene, resolveDossierScene } from "../src/focus-diagrams/diagram-source.js";

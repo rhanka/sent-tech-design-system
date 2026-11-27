@@ -3,8 +3,20 @@
 ## @sentropic/design-system-svelte 0.49.0 — Survey v2 questionnaire (S-3b)
 
 - **S-3b (PR #349)**: upgrade the keynote survey kit to `SurveyDefinition` v2 (`schemaVersion: 1 | 2`, backwards-compatible with v1) with `entry` framing (`enterprise | personal | both`, `fast` / `deep` modes), `themes`, question tiers (`core`, `deep`, `closing`), `ai_effect` question type (`DEFAULT_AI_EFFECT_OPTIONS`, `DEFAULT_AI_EFFECT_NEUTRAL_ID`, `DEFAULT_AI_EFFECT_NON_SUBSTANTIVE`, `resolveAiEffectOptions`), scoped answers (`ScopedAnswerValue`, `isScopedAnswerValue`), and `fromKeynoteQuestionnaire` v2 support (`keynote-poll/questionnaires@2`).
-- **S-3b (`LikertScale`, `SurveyQuestionCard`, `SurveyForm`, `survey-flow`, `survey-storage`)**: add `scaleKind="bipolar"` with neutral midpoint (`neutralOptionId`), symmetric step badges (`−−`, `−`, `0`, `+`, `++`), and visually separated `nonSubstantive` option (`"I don't know"`) inside one `radiogroup`; add per-question `contextual` orientation toggle on `SurveyQuestionCard`; implement two-screen entry framing, `deep_themes` milestone, dual-answer side-by-side `both` mode, `ai_effect` rendering, optional closing `Textarea` with character counter, 30 min v2 draft persistence, and magic-link return / validation hardening.
-- Align `@sentropic/design-system-svelte` `0.49.0` pins in `dataviz-svelte`, `artifact-shell`, and `apps/docs`, regenerate lockfile and `component-index` artifacts, and update `docs/graph-dataviz-m1-provenance.json`.
+- **S-3b (`LikertScale`, `SurveyQuestionCard`, `SurveyForm`, `Textarea`, `survey-flow`, `survey-storage`)**: add `scaleKind="bipolar"` with neutral midpoint (`neutralOptionId`), symmetric step badges (`−−`, `−`, `0`, `+`, `++`), and visually separated `nonSubstantive` option (`"I don't know"`) inside one `radiogroup`; add per-question `contextual` orientation toggle on `SurveyQuestionCard`; implement two-screen entry framing, `deep_themes` milestone, dual-answer side-by-side `both` mode, `ai_effect` rendering, optional closing `Textarea` with character counter, `aria-describedby` linking (`errorText` / `helperText`) on `Textarea`, 30 min v2 draft persistence, and magic-link return / validation hardening.
+- Align `@sentropic/design-system-svelte` `0.49.0` pins in `dataviz-svelte`, `artifact-shell`, and `apps/docs` (keeping `@sentropic/diagram-canvas` `0.8.0`), regenerate lockfile and `component-index` artifacts, and update `docs/graph-dataviz-m1-provenance.json`.
+
+## Unreleased — @sentropic/diagram-canvas 0.8.0 (focus-bridge subpath)
+
+- diagram-canvas: publish `@sentropic/diagram-canvas/focus-bridge` subpath
+  re-exporting `validateSceneDocument`, `layoutScene`, `renderProcessTable`,
+  `shippedSceneRegistry`, `shippedSceneBindings` and scene types without DOM
+  or side effects.
+- design-system-elements: switch Focus dossier diagram imports to
+  `@sentropic/diagram-canvas/focus-bridge`.
+- Bump `@sentropic/diagram-canvas` to `0.8.0` and update exact pins in
+  `design-system-elements`, `design-system-svelte`, `design-system-vue`, and
+  `diagram-codecs` plus `package-lock.json`.
 
 ## @sentropic/design-system-svelte 0.48.0 — Survey kit (S-1..S-4)
 
