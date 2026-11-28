@@ -428,6 +428,8 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
           maxVerticalGap: 144,
           nodes: resolved.nodes.map((n) => ({
             id: String(n.occurrence),
+            left: n.rect.x,
+            right: n.rect.x + n.rect.width,
             top: n.rect.y,
             bottom: n.rect.y + n.rect.height,
           })),
@@ -439,4 +441,20 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
     }
     expect(violations, violations.join("\n")).toEqual([]);
   }, 90_000);
+
+  it("proves verticalEconomyFindings detects > 144 px adjacent-column voids even when a spanning container encloses children", () => {
+    const findings = verticalEconomyFindings({
+      scale: 1,
+      maxVerticalGap: 144,
+      nodes: [
+        { left: 360, right: 760, top: 0, bottom: 720 },
+        { left: 0, right: 280, top: 0, bottom: 154 },
+        { left: 400, right: 680, top: 40, bottom: 154 },
+        { left: 0, right: 280, top: 434.5, bottom: 588.5 },
+        { left: 400, right: 680, top: 434.5, bottom: 588.5 },
+      ],
+    });
+    expect(findings).toHaveLength(1);
+    expect(findings[0]).toContain("280.5 world px");
+  });
 });

@@ -118,6 +118,7 @@ import {
   collectLegendEntityMarks,
   findLegendPocket,
   inferLegendLocale,
+  LINK_LEGEND_GAP,
   linkStyleKey,
   measureSceneLinkLegend,
   placeSceneLinkLegend,
@@ -519,6 +520,7 @@ interface PlanSizingReport {
 interface PlanPassCapture {
   autoPackLevels: Record<string, FrozenAutoPackLevel>;
   innerWiden: Record<string, number>;
+  southUExtra?: Record<string, number>;
   sizingReport?: PlanSizingReport;
   paintedBounds?: { readonly width: number; readonly height: number };
   legendCell?: { readonly bandId: string; readonly colId: string };
@@ -589,6 +591,10 @@ export function computeNominalCompositionPlan(
     const innerWiden = Object.fromEntries(
       Object.entries(capture.innerWiden).sort(([left], [right]) => byString(left, right)),
     );
+    const southUExtra =
+      capture.southUExtra !== undefined && Object.keys(capture.southUExtra).length > 0
+        ? Object.fromEntries(Object.entries(capture.southUExtra).sort(([left], [right]) => byString(left, right)))
+        : undefined;
     const sigmaCols: Record<string, number> = {};
     const sigmaBands: Record<string, number> = {};
     const legendCell = capture.legendCell;
@@ -596,6 +602,7 @@ export function computeNominalCompositionPlan(
       tau,
       autoPackLevels,
       innerWiden,
+      ...(southUExtra === undefined ? {} : { southUExtra }),
       sigmaCols,
       sigmaBands,
       ...(legendCell === undefined ? {} : { legendCell }),
@@ -607,6 +614,7 @@ export function computeNominalCompositionPlan(
         tau,
         autoPackLevels,
         innerWiden,
+        ...(southUExtra === undefined ? {} : { southUExtra }),
         sigmaCols,
         sigmaBands,
         ...(legendCell === undefined ? {} : { legendCell }),
@@ -733,6 +741,10 @@ export function computeNominalCompositionPlan(
   const innerWiden = Object.fromEntries(
     Object.entries(bestCapture.innerWiden).sort(([left], [right]) => byString(left, right)),
   );
+  const southUExtra =
+    bestCapture.southUExtra !== undefined && Object.keys(bestCapture.southUExtra).length > 0
+      ? Object.fromEntries(Object.entries(bestCapture.southUExtra).sort(([left], [right]) => byString(left, right)))
+      : undefined;
   const nominalAspect = clean(Math.round(bestRatio * 1_000_000) / 1_000_000);
   const unreached = Math.abs(bestRatio / ASPECT_16_9_TARGET - 1) > ASPECT_16_9_TOLERANCE;
   const finalLegendCell = capturedLegendCell ?? bestCapture.legendCell;
@@ -740,6 +752,7 @@ export function computeNominalCompositionPlan(
     tau: chosenTau.tau,
     autoPackLevels,
     innerWiden,
+    ...(southUExtra === undefined ? {} : { southUExtra }),
     sigmaCols: bestSigmaCols,
     sigmaBands: bestSigmaBands,
     ...(finalLegendCell === undefined ? {} : { legendCell: finalLegendCell }),
@@ -751,6 +764,7 @@ export function computeNominalCompositionPlan(
       tau: chosenTau.tau,
       autoPackLevels,
       innerWiden,
+      ...(southUExtra === undefined ? {} : { southUExtra }),
       sigmaCols: bestSigmaCols,
       sigmaBands: bestSigmaBands,
       ...(finalLegendCell === undefined ? {} : { legendCell: finalLegendCell }),
@@ -1574,6 +1588,10 @@ function layoutMeasuredPass(
   const subtreeMemo = planCtx?.mode === "state" ? planCtx.memo : undefined;
   const innerWidenMap: ReadonlyMap<string, number> | undefined =
     nominalPlan === undefined ? undefined : new Map(Object.entries(nominalPlan.innerWiden));
+  const nominalSouthUExtraMap: ReadonlyMap<EntityRef, number> | undefined =
+    nominalPlan?.southUExtra === undefined
+      ? undefined
+      : new Map(Object.entries(nominalPlan.southUExtra) as [EntityRef, number][]);
   const expandedRootStageTrackIds = (): ReadonlySet<string> => {
     const out = new Set<string>();
     const rootGrid = composition?.grids.root;
@@ -1683,6 +1701,7 @@ function layoutMeasuredPass(
       }
       return plan?.widen;
     };
+    const activeSouthUExtra = plan?.southUExtra ?? nominalSouthUExtraMap;
     const visibleDescendantsOf = (rootEntity: EntityRef): EntityRef[] => {
       const result: EntityRef[] = [];
       const visit = (parent: EntityRef): void => {
@@ -1704,8 +1723,25 @@ function layoutMeasuredPass(
       folded.sort(byString);
       return folded.join(",");
     };
-    const memoKeyFor = (entity: EntityRef, inheritedKey?: string): string =>
-      `${nominalPlan!.planDigest}|${entity}|${descendantFoldKey(entity)}|${inheritedKey ?? ""}`;
+    const southUExtraKey = (rootEntity: EntityRef, southUExtraMap?: ReadonlyMap<EntityRef, number>): string => {
+      if (southUExtraMap === undefined || southUExtraMap.size === 0) return "";
+      const entries: string[] = [];
+      for (const node of [rootEntity, ...visibleDescendantsOf(rootEntity)]) {
+        const val = southUExtraMap.get(node);
+        if (val !== undefined && val > 0) entries.push(`${node}=${String(val)}`);
+      }
+      entries.sort(byString);
+      return entries.join(",");
+    };
+    const memoKeyFor = (
+      entity: EntityRef,
+      inheritedKey?: string,
+      southUExtraMap?: ReadonlyMap<EntityRef, number>,
+    ): string => {
+      const uKey = southUExtraKey(entity, southUExtraMap);
+      const base = `${nominalPlan!.planDigest}|${entity}|${descendantFoldKey(entity)}|${inheritedKey ?? ""}`;
+      return uKey === "" ? base : `${base}|u=${uKey}`;
+    };
     const restoreMemoEntry = (entry: SubtreeMemoEntry): void => {
       for (const snap of entry.descendants) {
         outerWidths.set(snap.entity, snap.outerWidth);
@@ -1965,6 +2001,12 @@ function layoutMeasuredPass(
     ): GridLayoutResult => {
       const hostWiden = widenForScope(gridRunKey);
       const isRootGrid = gridScope === "root";
+      const headerOffsetOf = (entity: EntityRef): number => {
+        if (kinds.get(entity) !== "container-expanded") return 0;
+        const zg = anatomyZoneGeometry(occurrenceAnatomy(representativeOf(entity)));
+        const outer = outerWidths.get(entity) ?? headerFloorOf(entity);
+        return zg.headerInset + headerHeightOf(entity, outer) + contentInset;
+      };
       if (!Array.isArray(hostGrid.stage_columns)) {
         return layoutGridScope({
           scope: gridScope,
@@ -1977,6 +2019,7 @@ function layoutMeasuredPass(
           rowGaps,
           zoneGutter,
           widen: hostWiden,
+          headerOffsetOf,
           ...(isRootGrid && sigmaColsMap !== undefined ? { sigmaCols: sigmaColsMap } : {}),
           ...(isRootGrid && sigmaBandsMap !== undefined ? { sigmaBands: sigmaBandsMap } : {}),
           ...(freeCellItem === undefined ? {} : { freeCellItem }),
@@ -2095,12 +2138,7 @@ function layoutMeasuredPass(
         rowGaps,
         zoneGutter,
         widen: hostWiden,
-        headerOffsetOf: (entity) => {
-          if (kinds.get(entity) !== "container-expanded") return 0;
-          const zg = anatomyZoneGeometry(occurrenceAnatomy(representativeOf(entity)));
-          const outer = outerWidths.get(entity) ?? headerFloorOf(entity);
-          return zg.headerInset + headerHeightOf(entity, outer) + contentInset;
-        },
+        headerOffsetOf,
         ...(isRootGrid && sigmaColsMap !== undefined ? { sigmaCols: sigmaColsMap } : {}),
         ...(isRootGrid && sigmaBandsMap !== undefined ? { sigmaBands: sigmaBandsMap } : {}),
         ...(freeCellItem === undefined ? {} : { freeCellItem }),
@@ -2113,7 +2151,7 @@ function layoutMeasuredPass(
             const lastActive = resolvedCols.declColToActive.get(meta.lastDecl)!;
             const inheritedSpanKey = `${resolvedCols.colIds.slice(firstActive, lastActive + 1).join(",")};${resolvedCols.colWidths.slice(firstActive, lastActive + 1).join(",")};${resolvedCols.colGaps.slice(firstActive, lastActive).join(",")};${String(meta.containerSlotInset)}`;
             if (subtreeMemo !== undefined && nominalPlan !== undefined) {
-              const key = memoKeyFor(containerId, inheritedSpanKey);
+              const key = memoKeyFor(containerId, inheritedSpanKey, activeSouthUExtra);
               const hit = subtreeMemo.get(key);
               if (hit !== undefined) {
                 restoreMemoEntry(hit);
@@ -2190,7 +2228,7 @@ function layoutMeasuredPass(
         kind === "container-expanded" &&
         composition?.grids[id]?.stage_columns !== "inherit"
       ) {
-        const key = memoKeyFor(id);
+        const key = memoKeyFor(id, undefined, activeSouthUExtra);
         const hit = subtreeMemo.get(key);
         if (hit !== undefined) {
           restoreMemoEntry(hit);
@@ -2280,7 +2318,7 @@ function layoutMeasuredPass(
       const packed = packedRuns.get(run.key);
       let uExtra = 0;
       if (r7Routing && composition !== undefined) {
-        uExtra = plan?.southUExtra?.get(id) ?? 0;
+        uExtra = activeSouthUExtra?.get(id) ?? 0;
       } else if (packed !== undefined) {
         const zone = runHasZone(run);
         const baseGap = packed.rows ? (zone ? rowGaps.zoneX : rowGaps.cardX) : (zone ? rowGaps.zoneY : rowGaps.cardY);
@@ -2356,19 +2394,54 @@ function layoutMeasuredPass(
     ) {
       const rootGridLayout = composedGrids.get(ROOT_LEVEL_KEY);
       const col = rootGridLayout?.columns.find((c) => c.id === resolvedLegendCell.colId);
-      const band = rootGridLayout?.bands.find((b) => b.id === resolvedLegendCell.bandId);
+      const bandIdx = rootGridLayout?.bands.findIndex((b) => b.id === resolvedLegendCell.bandId) ?? -1;
       if (
+        rootGridLayout !== undefined &&
         col !== undefined &&
-        band !== undefined &&
-        col.size >= stateMeasuredLegend.width - 1 / 64 &&
-        band.size >= stateMeasuredLegend.height - 1 / 64
+        bandIdx >= 0 &&
+        col.size >= stateMeasuredLegend.width - 1 / 64
       ) {
-        autoFreeCellRect = {
-          x: col.start + (col.size - stateMeasuredLegend.width) / 2,
-          y: band.start + (band.size - stateMeasuredLegend.height) / 2,
-          width: stateMeasuredLegend.width,
-          height: stateMeasuredLegend.height,
+        const cellRectIntersectsPlacement = (rect: Rect, padY = 0): boolean =>
+          rootGridLayout.placements.some(
+            (p) =>
+              p.relX < rect.x + rect.width - 1 / 64 &&
+              rect.x < p.relX + p.width - 1 / 64 &&
+              p.relY < rect.y + rect.height + padY - 1 / 64 &&
+              rect.y - padY < p.relY + p.height - 1 / 64,
+          );
+        const startBand = rootGridLayout.bands[bandIdx]!;
+        let endBandIdx = bandIdx;
+        const bandEmpty = (b: number): boolean => {
+          const band = rootGridLayout.bands[b]!;
+          return (
+            band.kind === "band" &&
+            !cellRectIntersectsPlacement({ x: col.start, y: band.start, width: col.size, height: band.size })
+          );
         };
+        if (bandEmpty(bandIdx)) {
+          while (
+            endBandIdx + 1 < rootGridLayout.bands.length &&
+            rootGridLayout.bands[endBandIdx]!.start + rootGridLayout.bands[endBandIdx]!.size - startBand.start <
+              stateMeasuredLegend.height - 1 / 64 &&
+            bandEmpty(endBandIdx + 1)
+          ) {
+            endBandIdx += 1;
+          }
+          const endBand = rootGridLayout.bands[endBandIdx]!;
+          const spanHeight = endBand.start + endBand.size - startBand.start;
+          if (spanHeight >= stateMeasuredLegend.height - 1 / 64) {
+            const candidate: Rect = {
+              x: col.start + (col.size - stateMeasuredLegend.width) / 2,
+              y: startBand.start + (spanHeight - stateMeasuredLegend.height) / 2,
+              width: stateMeasuredLegend.width,
+              height: stateMeasuredLegend.height,
+            };
+            // Keep auto free-cell clear of upward-shifted peripheral headers (V-S2 / T-30).
+            if (!cellRectIntersectsPlacement(candidate, Math.min(LINK_LEGEND_GAP, rowGaps.cardY))) {
+              autoFreeCellRect = candidate;
+            }
+          }
+        }
       }
     }
     if (planCtx?.sizingOnly === true && planCtx.capture !== undefined) {
@@ -2870,7 +2943,7 @@ function layoutMeasuredPass(
               usedUTracks.set(trackKey, attempt + 1);
               placed = true;
               if (r7Routing && composition !== undefined && side === "south" && containerKey !== "root") {
-                const existing = plan?.southUExtra?.get(containerKey as EntityRef) ?? 0;
+                const existing = activeSouthUExtra?.get(containerKey as EntityRef) ?? 0;
                 if (existing > 0) {
                   southUDemand.set(
                     containerKey as EntityRef,
@@ -2888,7 +2961,7 @@ function layoutMeasuredPass(
               const southTop = Math.max(a.y + a.height, b.y + b.height) + uEdgeClearance + attempt * pitch;
               const overflow = Math.ceil(southTop + depth - (within.y + within.height));
               if (overflow > 0) {
-                const current = plan?.southUExtra?.get(containerKey as EntityRef) ?? 0;
+                const current = activeSouthUExtra?.get(containerKey as EntityRef) ?? 0;
                 potentialSouthUDemand.set(String(id), {
                   containerId: containerKey as EntityRef,
                   needed: current + overflow,
@@ -4640,7 +4713,7 @@ function layoutMeasuredPass(
   const frozen = first.chosen;
   const widen = new Map<string, number>();
   const external = new Set<string>();
-  const southUExtra = new Map<EntityRef, number>();
+  const southUExtra = new Map<EntityRef, number>(nominalSouthUExtraMap ?? []);
   const hasPendingSouthU = (outcomeToCheck: PassOutcome): boolean => {
     for (const [cid, needed] of outcomeToCheck.southUDemand) {
       if (needed > (southUExtra.get(cid) ?? 0)) return true;
@@ -4697,6 +4770,11 @@ function layoutMeasuredPass(
       if (!id.startsWith(`${ROOT_LEVEL_KEY}|`)) {
         planCtx.capture.innerWiden[id] = gap;
       }
+    }
+    if (southUExtra.size > 0) {
+      planCtx.capture.southUExtra = Object.fromEntries(
+        [...southUExtra].sort(([left], [right]) => byString(left, right)),
+      );
     }
   }
   // When strict route spacing reports channel capacity overflow inside an

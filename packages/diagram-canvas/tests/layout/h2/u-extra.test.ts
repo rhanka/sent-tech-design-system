@@ -1,4 +1,5 @@
 import {
+  canonicalise,
   DIAGRAM_PRESENTATION_CONTRACT_PIN,
   DS_LAYOUT_VOCABULARY,
   entityRef,
@@ -9,6 +10,7 @@ import {
 import { describe, expect, it } from "vitest";
 
 import {
+  createLayoutCache,
   isR7ConnectorPresentation,
   layoutMeasured,
   type LayoutOptions,
@@ -141,6 +143,60 @@ describe("V-S4 (REQ-R7-34 / DE3-L6a2): conditional south uExtra on r7 only when 
     expect(hLabelled).toBeGreaterThan(hUnlabelled);
     // Bounded to single U-channel headroom (+borderClearance 15 + labelBand 30 = +45 px max, never unbounded sum)
     expect(hLabelled - hUnlabelled).toBeLessThanOrEqual(45);
+  });
+
+  it("preserves southUExtra, label placement, and F-4 cache parity through createLayoutCache() with subtreeMemo enabled", () => {
+    const hintsV2: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      grids: {
+        root: {
+          stage_columns: ["s1"],
+          transverse_bands: [{ id: "r1", items: [entityRef("outer")] }],
+          cells: { [entityRef("outer")]: { column: "s1" } },
+        },
+      },
+    };
+    const labelled = buildGenericScene({
+      id: "vs4-nested-cached",
+      carries: ["V-S4", "F-4", "REQ-R7-34"],
+      hintsV2,
+      entities: [
+        { id: "outer", container: true, title: "Outer Zone" },
+        { id: "z1", parent: "outer", container: true, title: "Left Subzone" },
+        { id: "z1a", parent: "z1", title: "Left Leaf" },
+        { id: "z2", parent: "outer", container: true, title: "Right Subzone" },
+        { id: "z2a", parent: "z2", title: "Right Leaf" },
+      ],
+      relations: [{ id: "e1", source: "z1", target: "z2", label: "synchronizes state" }],
+    });
+
+    const uncached = mustLayOut(layoutMeasured(labelled.document, baseOptionsOf(labelled)), "uncached");
+    const cacheOn = createLayoutCache({ maxEntries: 32, subtreeMemo: true });
+    const cacheOff = createLayoutCache({ maxEntries: 32, subtreeMemo: false });
+
+    const cachedNominal = mustLayOut(cacheOn.layout(labelled.document, baseOptionsOf(labelled, { collapsed: [] })), "cached-nominal");
+    const offNominal = mustLayOut(cacheOff.layout(labelled.document, baseOptionsOf(labelled, { collapsed: [] })), "off-nominal");
+
+    expect(cachedNominal.warnings.some((w) => w.code === "label-unplaced")).toBe(false);
+    expect(Object.keys(cachedNominal.labelBoxes ?? {})).toHaveLength(1);
+    expect(cachedNominal.view.entityOccurrences[occurrenceRef("e.outer")]!.geometry.height).toBe(
+      uncached.view.entityOccurrences[occurrenceRef("e.outer")]!.geometry.height,
+    );
+    expect(canonicalise(cachedNominal.view, "view")).toBe(canonicalise(uncached.view, "view"));
+    expect(canonicalise(cachedNominal.view, "view")).toBe(canonicalise(offNominal.view, "view"));
+
+    const cachedFolded = mustLayOut(
+      cacheOn.layout(labelled.document, baseOptionsOf(labelled, { collapsed: [occurrenceRef("e.z1")] })),
+      "cached-folded",
+    );
+    const offFolded = mustLayOut(
+      cacheOff.layout(labelled.document, baseOptionsOf(labelled, { collapsed: [occurrenceRef("e.z1")] })),
+      "off-folded",
+    );
+    expect(cachedFolded.warnings.some((w) => w.code === "label-unplaced")).toBe(false);
+    expect(Object.keys(cachedFolded.labelBoxes ?? {})).toHaveLength(1);
+    expect(canonicalise(cachedFolded.view, "view")).toBe(canonicalise(offFolded.view, "view"));
   });
 
   it("preserves v1 (!r7) conditional uExtra headroom verbatim (REQ-R7-28)", () => {

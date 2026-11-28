@@ -366,4 +366,102 @@ describe("H2.8 legend: 'free-cell' placement, track growth, fallback, and fold/u
       expect(rectsOverlap(lr, box), id).toBe(false);
     }
   });
+
+  it("V-S3: spans tall free-cell legend across empty bands on unstaged grids and under legend: 'auto'", () => {
+    const unstagedHints: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      legend: "free-cell",
+      grids: {
+        root: {
+          transverse_bands: [
+            { id: "r1", items: [entityRef("a")] },
+            { id: "r2", items: [entityRef("b")] },
+            { id: "r3", items: [entityRef("c")] },
+          ],
+          peripheral_columns: [
+            { id: "side", side: "end", items: [entityRef("p")], from_band: "r3" },
+          ],
+        },
+      },
+    };
+    const unstagedScene = buildGenericScene({
+      id: "unstaged-free-cell-span",
+      carries: ["V-S3", "REQ-R7-34"],
+      hintsV2: unstagedHints,
+      entities: [
+        { id: "a", title: "Alpha" },
+        { id: "b", title: "Beta" },
+        { id: "c", title: "Gamma" },
+        { id: "p", title: "Side Card" },
+      ],
+      relations: [
+        { id: "e1", source: "a", target: "b", strokeStyle: "solid", arrowhead: "arrow", emphasis: "default" },
+        { id: "e2", source: "b", target: "c", strokeStyle: "solid", arrowhead: "arrow", emphasis: "emphasis" },
+        { id: "e3", source: "c", target: "p", strokeStyle: "dashed", arrowhead: "arrow", emphasis: "default" },
+        { id: "e4", source: "a", target: "p", strokeStyle: "dotted", arrowhead: "arrow", emphasis: "default" },
+        { id: "e5", source: "b", target: "p", strokeStyle: "solid", arrowhead: "none", emphasis: "default" },
+      ],
+    });
+    const unstagedRes = mustLayOut(
+      layoutMeasured(unstagedScene.document, baseOptionsOf(unstagedScene, { legendTitle: "Key" })),
+      "unstaged-span",
+    );
+    expect(unstagedRes.linkLegend!.anchor).toBe("free-cell");
+    const uGrid = unstagedRes.composition!.grids["root"]!;
+    expect(uGrid.bands.find((b) => b.id === "r1")!.size).toBe(154);
+    expect(uGrid.bands.find((b) => b.id === "r2")!.size).toBe(154);
+
+    const autoHints: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      grids: {
+        root: {
+          stage_columns: ["s1", "s2"],
+          transverse_bands: [
+            { id: "r1", items: [entityRef("a")] },
+            { id: "r2", items: [entityRef("b")] },
+            { id: "r3", items: [entityRef("c"), entityRef("d")] },
+          ],
+          cells: {
+            [entityRef("a")]: { column: "s1" },
+            [entityRef("b")]: { column: "s1" },
+            [entityRef("c")]: { column: "s1" },
+            [entityRef("d")]: { column: "s2" },
+          },
+        },
+      },
+    };
+    const autoScene = buildGenericScene({
+      id: "auto-free-cell-span",
+      carries: ["V-S3", "DE3-L1b", "REQ-R7-34"],
+      hintsV2: autoHints,
+      entities: [
+        { id: "a", title: "Alpha" },
+        { id: "b", title: "Beta" },
+        { id: "c", title: "Gamma" },
+        { id: "d", title: "Delta Service Node With Wide Natural Column Footprint" },
+      ],
+      relations: [
+        { id: "e1", source: "a", target: "b", strokeStyle: "solid", arrowhead: "arrow", emphasis: "default" },
+        { id: "e2", source: "b", target: "c", strokeStyle: "solid", arrowhead: "arrow", emphasis: "emphasis" },
+        { id: "e3", source: "c", target: "d", strokeStyle: "dashed", arrowhead: "arrow", emphasis: "default" },
+        { id: "e4", source: "a", target: "d", strokeStyle: "dotted", arrowhead: "arrow", emphasis: "default" },
+        { id: "e5", source: "b", target: "d", strokeStyle: "solid", arrowhead: "none", emphasis: "default" },
+      ],
+    });
+    const autoRes = mustLayOut(
+      layoutMeasured(autoScene.document, baseOptionsOf(autoScene, { legend: "auto", legendTitle: "Key" })),
+      "auto-span",
+    );
+    expect(autoRes.linkLegend!.anchor).toBe("free-cell");
+    expect(autoRes.linkLegend!.rect.height).toBeGreaterThan(154);
+    const aGrid = autoRes.composition!.grids["root"]!;
+    const ar1 = aGrid.bands.find((b) => b.id === "r1")!;
+    const ar2 = aGrid.bands.find((b) => b.id === "r2")!;
+    expect(ar1.size).toBe(154);
+    expect(ar2.size).toBe(154);
+    expect(autoRes.linkLegend!.rect.y).toBeGreaterThanOrEqual(ar1.start - TOL);
+    expect(autoRes.linkLegend!.rect.y + autoRes.linkLegend!.rect.height).toBeLessThanOrEqual(ar2.start + ar2.size + TOL);
+  });
 });

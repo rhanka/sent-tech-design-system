@@ -55,7 +55,12 @@ export function headOverlapFindings(input: {
   readonly tolerance?: number;
 }): string[];
 export function verticalEconomyFindings(input: {
-  readonly nodes?: readonly { readonly top: number; readonly bottom: number }[];
+  readonly nodes?: readonly {
+    readonly left?: number;
+    readonly right?: number;
+    readonly top: number;
+    readonly bottom: number;
+  }[];
   readonly scale?: number;
   readonly maxVerticalGap?: number;
   readonly tolerance?: number;
