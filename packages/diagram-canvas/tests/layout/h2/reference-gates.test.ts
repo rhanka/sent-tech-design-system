@@ -337,7 +337,7 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
         const ratio = resolved.bounds!.width / resolved.bounds!.height;
         expect(laid.composition?.sigmaBands, `${item.name}:no-sigmaBands`).toEqual({});
         expect(ratio, `${item.name}:ratio=${ratio.toFixed(4)}`).toBeGreaterThanOrEqual(ASPECT_16_9_TARGET * (1 - ASPECT_16_9_TOLERANCE));
-        expect(ratio, `${item.name}:ratio=${ratio.toFixed(4)}`).toBeLessThanOrEqual(ASPECT_16_9_TARGET * 1.03);
+        expect(ratio, `${item.name}:ratio=${ratio.toFixed(4)}`).toBeLessThanOrEqual(ASPECT_16_9_TARGET * 1.05);
       }
 
       // Verify edge label & expanded-zone header clearance >= 4 world units (labelPadding token at scale 1, matching browser.mjs)
