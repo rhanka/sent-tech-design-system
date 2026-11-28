@@ -9,6 +9,7 @@
 export const DIAGRAM_SCENE_SPACING = {
   gapMin: 96, gapMinBlock: 72, gapBase: 64, gapBaseBlock: 8,
   trackSpacing: 14, trackSpacingBlock: 7, labelBand: 30, gapMax: 240,
+  gapBlockMaxR7: 144,
   containerPadding: 16,
   zoneGutter: 96,
   routeSpacing: 24,

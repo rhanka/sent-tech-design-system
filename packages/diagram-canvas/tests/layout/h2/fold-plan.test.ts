@@ -93,12 +93,12 @@ function relativeChildrenSignature(
   return JSON.stringify(children);
 }
 
-function containerWidthOf(
+function containerSizeOf(
   res: Extract<LayoutResult, { status: "laid-out" }>,
   entity: EntityRef,
-): number | undefined {
+): { readonly width: number; readonly height: number } | undefined {
   for (const occ of Object.values(res.view.entityOccurrences)) {
-    if (occ.entity === entity) return occ.geometry.width;
+    if (occ.entity === entity) return { width: occ.geometry.width, height: occ.geometry.height };
   }
   return undefined;
 }
@@ -562,31 +562,38 @@ describe("H2.5 fold-aware nominal plan, plan cache, subtree memo (D-6), invarian
       expect(pStats.planMisses, `${scene.id}:planMisses`).toBe(1);
       expect(pStats.planHits, `${scene.id}:planHits`).toBe(states.length - 1);
 
-      // F-3 Locality: toggling a single container from nominal leaves every untouched non-inheriting container's
-      // internal layout (child rects relative to container origin) byte-identical.
+      // F-3 Locality (PR #327 P2 #4): across single AND multi-fold states (collapsed.length >= 1),
+      // every untouched non-toggled container whose width did not change stays byte-identical locally;
+      // inheriting containers are exempt ONLY when their covered host column width changed.
       const occToEntity = new Map<OccurrenceRef, EntityRef>();
       for (const occ of Object.values(nominal.view.entityOccurrences)) {
         occToEntity.set(occ.id, occ.entity);
       }
       for (const collapsed of states) {
-        if (collapsed.length !== 1) continue;
-        const toggledOcc = collapsed[0]!;
-        const toggledEntity = occToEntity.get(toggledOcc);
-        if (toggledEntity === undefined) continue;
+        if (collapsed.length === 0) continue;
         const foldedRes = resultsByKey.get(collapsed.join(","))!;
-        const ancestors = ancestorsOf(scene.document, toggledEntity);
-        const descendants = descendantsOf(scene.document, toggledEntity);
-        const f3Changed = new Set<EntityRef>([toggledEntity, ...ancestors, ...descendants, ...inheritors]);
+        const f3Changed = new Set<EntityRef>();
+        for (const toggledOcc of collapsed) {
+          const toggledEntity = occToEntity.get(toggledOcc);
+          if (toggledEntity === undefined) continue;
+          f3Changed.add(toggledEntity);
+          for (const a of ancestorsOf(scene.document, toggledEntity)) f3Changed.add(a);
+          for (const d of descendantsOf(scene.document, toggledEntity)) f3Changed.add(d);
+        }
 
         for (const container of scene.containers) {
           if (f3Changed.has(container)) continue;
-          const widthChanged = containerWidthOf(nominal, container) !== containerWidthOf(foldedRes, container);
+          const nomSize = containerSizeOf(nominal, container);
+          const foldSize = containerSizeOf(foldedRes, container);
+          const widthChanged = nomSize?.width !== foldSize?.width;
+          if (inheritors.has(container) && (widthChanged || nomSize?.height !== foldSize?.height)) continue;
           const sigNom = relativeChildrenSignature(nominal, container, scene.document, widthChanged);
           const sigFold = relativeChildrenSignature(foldedRes, container, scene.document, widthChanged);
-          expect(sigFold, `${scene.id}:F-3:${toggledEntity}->${container}`).toBe(sigNom);
+          expect(sigFold, `${scene.id}:F-3:${collapsed.join(",")}->${container}`).toBe(sigNom);
         }
 
-        // R-3 route-locality metric (reported, not gated)
+        if (collapsed.length !== 1) continue;
+        // R-3 route-locality metric (reported on single-fold transitions, not gated)
         for (const relOcc of Object.values(nominal.view.relationOccurrences)) {
           const foldedRel = foldedRes.view.relationOccurrences[relOcc.id];
           if (relOcc.waypoints === undefined || foldedRel?.waypoints === undefined) continue;
@@ -812,6 +819,33 @@ describe("H2.5 fold-aware nominal plan, plan cache, subtree memo (D-6), invarian
     const capConflicts = (folded.routeSpacing?.conflicts ?? []).filter((c) => c.kind === "channel-capacity-exceeded");
     expect(capConflicts.length).toBeGreaterThan(0);
     expect(folded.warnings.some((w) => w.code === "channel-capacity-exceeded")).toBe(true);
+
+    // PR #327 P2 #5: when a partial nominal plan omits hostKey from autoPackLevels (simulating an unplanned
+    // auto-packed container inside a composed scene), post-pass orientation retry IS allowed per-level on hostKey
+    // while keeping planned levels frozen!
+    const unplannedOrient = mustLayOut(
+      layoutMeasured(
+        scene.document,
+        baseOptionsOf(scene, {
+          collapsed: [occurrenceRef("e.a"), occurrenceRef("e.b")],
+          metrics: tightMetrics,
+        }),
+        scene.sourceView,
+        {
+          plan: {
+            planDigest: "partial-plan-p2-5",
+            tau: 1.78,
+            autoPackLevels: {},
+            innerWiden: {},
+            sigmaCols: {},
+            sigmaBands: {},
+          },
+          memo: createSubtreeMemo(),
+        },
+      ),
+      "f2:unplanned-level",
+    );
+    expect(unplannedOrient.status).toBe("laid-out");
   });
 
   it("re-seats inheriting siblings and preserves non-inheriting stretched container internals across fold/unfold/refold with memo on & off (F-3, D-6)", () => {

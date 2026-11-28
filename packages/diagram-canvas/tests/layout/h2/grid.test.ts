@@ -139,8 +139,8 @@ describe("H2.3 grids, spans, alignment, holes and trailing band", () => {
     expect(b.x - (a.x + a.width)).toBe(96);
   });
 
-  it("I-13 span-only empty band: takes split excess height when positive, and stays non-collapsed with distinct gutters when excess is zero (Review P2)", () => {
-    // Case 1: positive excess — tall container spanning r2..r3 with r3 empty (items: [])
+  it("V-S6 (REQ-R7-34 / DE3-L6a1): omits span-only empty bands, avoids phantom double gutters, and clamps to_band to last active band", () => {
+    // Case 1: container/card spanning r2..r3 with r3 empty (items: [])
     const positiveHints: DsLayoutHintsV2 = {
       vocabulary: "ds-layout-hints@2",
       mode: "stage-columns",
@@ -162,8 +162,8 @@ describe("H2.3 grids, spans, alignment, holes and trailing band", () => {
       },
     };
     const positiveScene = buildGenericScene({
-      id: "i13-positive",
-      carries: ["I-13"],
+      id: "vs6-positive",
+      carries: ["V-S6", "REQ-R7-34"],
       hintsV2: positiveHints,
       entities: [
         { id: "top", title: "Top" },
@@ -173,16 +173,16 @@ describe("H2.3 grids, spans, alignment, holes and trailing band", () => {
       relations: [],
     });
     const posRes = lay(positiveScene);
-    const posBands = posRes.composition!.grids["root"]!.bands;
-    expect(posBands.map((b) => b.id)).toEqual(["r1", "r2", "r3", "r4"]);
+    const posGrid = posRes.composition!.grids["root"]!;
+    const posBands = posGrid.bands;
+    expect(posBands.map((b) => b.id)).toEqual(["r1", "r2", "r4"]);
+    expect(posGrid.omittedBandIds).toEqual(["r3"]);
     const posR2 = posBands.find((b) => b.id === "r2")!;
-    const posR3 = posBands.find((b) => b.id === "r3")!;
-    // Card height 154 vs 72 gutter -> excess 82 split 41 / 41 across r2 and r3
-    expect(posR2.size).toBe(41);
-    expect(posR3.size).toBe(41);
-    expect(posR3.start - (posR2.start + posR2.size)).toBe(72);
+    const posR4 = posBands.find((b) => b.id === "r4")!;
+    expect(posR2.size).toBe(154);
+    expect(posR4.start - (posR2.start + posR2.size)).toBe(72);
 
-    // Case 2 (Review P2): zero excess — r2 already has a single-span card so the card spanning r2..r3 fits in r2 + gutter
+    // Case 2: r2 already has another card alongside spanner(r2..r3) -> single 72px gutter r2|r4 (not 72+0+72 = 144px)
     const zeroExcessHints: DsLayoutHintsV2 = {
       vocabulary: "ds-layout-hints@2",
       mode: "stage-columns",
@@ -205,8 +205,8 @@ describe("H2.3 grids, spans, alignment, holes and trailing band", () => {
       },
     };
     const zeroScene = buildGenericScene({
-      id: "i13-zero-excess",
-      carries: ["I-13"],
+      id: "vs6-zero-excess",
+      carries: ["V-S6", "REQ-R7-34"],
       hintsV2: zeroExcessHints,
       entities: [
         { id: "top", title: "Top" },
@@ -217,26 +217,59 @@ describe("H2.3 grids, spans, alignment, holes and trailing band", () => {
       relations: [],
     });
     const zeroRes = lay(zeroScene);
-    const zeroBands = zeroRes.composition!.grids["root"]!.bands;
-    // r3 does NOT collapse: remains in bands list with height 0, and BOTH boundary gutters r2|r3 and r3|r4 exist!
-    expect(zeroBands.map((b) => b.id)).toEqual(["r1", "r2", "r3", "r4"]);
+    const zeroGrid = zeroRes.composition!.grids["root"]!;
+    const zeroBands = zeroGrid.bands;
+    expect(zeroBands.map((b) => b.id)).toEqual(["r1", "r2", "r4"]);
+    expect(zeroGrid.omittedBandIds).toEqual(["r3"]);
     const zR2 = zeroBands.find((b) => b.id === "r2")!;
-    const zR3 = zeroBands.find((b) => b.id === "r3")!;
     const zR4 = zeroBands.find((b) => b.id === "r4")!;
     expect(zR2.size).toBe(154);
-    expect(zR3.size).toBe(0);
-    expect(zR3.start).toBe(zR2.start + zR2.size + 72);
-    expect(zR4.start).toBe(zR3.start + zR3.size + 72);
-    // Distinct emitted gutters for r2|r3 (interrupted on s1 by spanner, usable on s2) and r3|r4 (usable on both s1 and s2)
-    const g23 = zeroRes.channels!.find((c) => c.id === "root|across|r2")!;
-    const g34 = zeroRes.channels!.find((c) => c.id === "root|across|r3")!;
-    expect(g23).toBeDefined();
-    expect(g34).toBeDefined();
-    expect(g23.gap).toBe(72);
-    expect(g34.gap).toBe(72);
-    expect(g23.strips).toHaveLength(1); // s1 crossed by spanner, s2 free
-    expect(g34.strips).toHaveLength(1); // neither s1 nor s2 crossed -> spans full s1..s2 width
-    expect(g34.strips[0]!.width).toBeGreaterThan(g23.strips[0]!.width);
+    expect(zR4.start).toBe(zR2.start + zR2.size + 72);
+    const g24 = zeroRes.channels!.find((c) => c.id === "root|across|r2")!;
+    expect(g24).toBeDefined();
+    expect(g24.gap).toBe(72);
+    expect(zeroRes.channels!.find((c) => c.id === "root|across|r3")).toBeUndefined();
+    const spannerCell = zeroGrid.cells.find((c) => c.entity === entityRef("spanner"))!;
+    expect(spannerCell.bandStart).toBe(1);
+    expect(spannerCell.bandEnd).toBe(1);
+
+    // Case 3: span covering an interior active band and a trailing empty band (r1..r4 with r2 & r4 empty)
+    const interiorSpanHints: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      grids: {
+        root: {
+          stage_columns: ["s1", "s2"],
+          transverse_bands: [
+            { id: "r1", items: [entityRef("spanner")] },
+            { id: "r2", items: [] },
+            { id: "r3", items: [entityRef("mid")] },
+            { id: "r4", items: [] },
+          ],
+          cells: {
+            [entityRef("spanner")]: { column: "s1", to_band: "r4" },
+            [entityRef("mid")]: { column: "s2" },
+          },
+        },
+      },
+    };
+    const interiorScene = buildGenericScene({
+      id: "vs6-interior-span",
+      carries: ["V-S6", "REQ-R7-34"],
+      hintsV2: interiorSpanHints,
+      entities: [
+        { id: "spanner", title: "Spanning Card" },
+        { id: "mid", title: "Mid Card" },
+      ],
+      relations: [],
+    });
+    const intRes = lay(interiorScene);
+    const intGrid = intRes.composition!.grids["root"]!;
+    expect(intGrid.bands.map((b) => b.id)).toEqual(["r1", "r3"]);
+    expect(intGrid.omittedBandIds).toEqual(["r2", "r4"]);
+    const intCell = intGrid.cells.find((c) => c.entity === entityRef("spanner"))!;
+    expect(intCell.bandStart).toBe(0);
+    expect(intCell.bandEnd).toBe(1);
   });
 
   it("places omitted visible children in a trailing band with composition-unplaced info warning", () => {

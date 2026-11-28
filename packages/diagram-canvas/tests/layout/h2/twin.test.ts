@@ -210,4 +210,42 @@ describe("H2.2 @2 auto-pack twin byte-identity (REQ-R7-28)", () => {
     // Pinned against shipped origin/main DE-2 (bdbddd859) across all 52 r7 fold states.
     expect(sha256(chunks.join("\n"))).toBe("1e60c2ba4b00106f550139303d8606cba403b1547be988fd91d89e8a0c7c330c");
   }, 60_000);
+
+  it("PR #327 P2 #6: preserves @1/@2 auto-pack twin parity on grouped containers (dc2a/grouping & m1d-hints shape)", () => {
+    const { document, presentation } = buildGroupedDoc();
+    const v1Auto = lowerLayoutHints({
+      vocabulary: DS_LAYOUT_VOCABULARY,
+      mode: "auto-pack",
+      rootOrder: [entityRef("Z"), entityRef("r0"), entityRef("r1")],
+    });
+    const v2Auto = lowerLayoutHintsV2({
+      vocabulary: DS_LAYOUT_V2_VOCABULARY,
+      mode: "auto-pack",
+      rootOrder: [entityRef("Z"), entityRef("r0"), entityRef("r1")],
+    });
+    const cache = createLayoutCache();
+    const r1 = layoutMeasured(document, {
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation,
+      measureLines: pinnedMeasurer,
+      measureText: measure,
+      targetWidth: 1440,
+      hints: v1Auto,
+    });
+    const r2 = cache.layout(document, {
+      registry: m3ProfileRegistry,
+      bindings: shippedExecutorBindings,
+      presentation,
+      measureLines: pinnedMeasurer,
+      measureText: measure,
+      targetWidth: 1440,
+      hints: v2Auto,
+    });
+    expect(r1.status).toBe("laid-out");
+    expect(r2.status).toBe("laid-out");
+    if (r1.status === "laid-out" && r2.status === "laid-out") {
+      expect(canonicalise(r2.view, "view")).toBe(canonicalise(r1.view, "view"));
+    }
+  });
 });

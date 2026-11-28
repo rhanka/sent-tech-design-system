@@ -54,3 +54,14 @@ export function headOverlapFindings(input: {
   readonly heads?: readonly (PaintBox & { readonly id: string })[];
   readonly tolerance?: number;
 }): string[];
+export function verticalEconomyFindings(input: {
+  readonly nodes?: readonly {
+    readonly left?: number;
+    readonly right?: number;
+    readonly top: number;
+    readonly bottom: number;
+  }[];
+  readonly scale?: number;
+  readonly maxVerticalGap?: number;
+  readonly tolerance?: number;
+}): string[];

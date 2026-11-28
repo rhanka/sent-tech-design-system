@@ -9,7 +9,7 @@ const { tmpdir } = await import('node:os');
 const { join } = await import('node:path');
 const { buildHarness, root } = await import('./build.mjs');
 const { cases, expectedLegendAnchor, expectedLegendStyles, expectedVisibleCounts, foldTargets } = await import('./scenes.js');
-const { segmentInterval, exposedSegments, centredBodyFindings, centredContainerContentFindings, combinedLegendFindings, compactCardFindings, connectorFindings, headOverlapFindings, roundedElbowFindings, linkStrokeWidthFindings, legendFindings } = await import('./geometry.mjs');
+const { segmentInterval, exposedSegments, centredBodyFindings, centredContainerContentFindings, combinedLegendFindings, compactCardFindings, connectorFindings, headOverlapFindings, roundedElbowFindings, linkStrokeWidthFindings, legendFindings, verticalEconomyFindings } = await import('./geometry.mjs');
 const { preview } = await import('vite');
 const { default: puppeteer } = await import('puppeteer-core');
 const assert = (await import('node:assert/strict')).default;
@@ -393,6 +393,8 @@ function check(state, scene) {
       ...(expectedStyles === null ? {} : { expectedStyles }) }), [], 'r7 link legend order and anchor');
   }
   if (scene.startsWith('h2-')) {
+    assert.deepEqual(verticalEconomyFindings({ nodes: state.nodes, scale: state.scale, maxVerticalGap: 144 }),
+      [], 'h2 vertical economy: no empty vertical band gap > 144 px');
     const expectedStyles = expectedLegendStyles(scene);
     const expectedAnchor = expectedLegendAnchor(scene);
     if (expectedStyles !== null) {
@@ -426,8 +428,10 @@ function check(state, scene) {
       const top = Math.min(...drawing.map(p => p.top));
       const bottom = Math.max(...drawing.map(p => p.bottom));
       const ratio = (right - left) / (bottom - top);
-      assert.ok(Math.abs(ratio / (16 / 9) - 1) <= 0.02,
-        `h2-aspect-16-9 nominal ratio ${ratio.toFixed(4)} outside 16:9 ± 2%`);
+      // DE3-L6a1 Rule V-1: zero empty vertical sigmaBands slack (Node: ~1.8201; Chrome DOM text metrics: ~1.8534;
+      // pinned <= 1.05x consistently with reference-gates.test.ts).
+      assert.ok(ratio >= (16 / 9) * 0.98 && ratio <= (16 / 9) * 1.05,
+        `h2-aspect-16-9 nominal ratio ${ratio.toFixed(4)} outside expected [1.742, 1.867] range without sigmaBands`);
     }
   }
   // Label placement reserves the non-scaling stroke in world units at 0.45.

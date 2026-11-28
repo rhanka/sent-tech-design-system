@@ -178,10 +178,10 @@ export function computeAspectSlack(args: {
     const { map, capReached } = distribute(deltaW, args.xTrackIds, args.capX);
     return { sigmaCols: map, sigmaBands: {}, capReached, ratio };
   }
-  // Too wide: add height across root bands
-  const deltaH = Math.round(args.width / target - args.height);
-  const { map, capReached } = distribute(deltaH, args.yTrackIds, args.capY);
-  return { sigmaCols: {}, sigmaBands: map, capReached, ratio };
+  // Too wide: Rule V-1 (DE3-L6a1 / REQ-R7-34) bans injecting internal vertical
+  // slack (`sigmaBands = {}`); wide scenes emit informational `aspect-unreached`
+  // when still above 16:9 + 2%.
+  return { sigmaCols: {}, sigmaBands: {}, capReached: false, ratio };
 }
 
 export interface FrozenAutoPackLevel {
@@ -198,6 +198,8 @@ export interface NominalCompositionPlan {
   readonly autoPackLevels: Readonly<Record<string, FrozenAutoPackLevel>>;
   /** Label/channel widenings frozen for inner gutters (every level below `"root"`), S-1 step 6. */
   readonly innerWiden: Readonly<Record<string, number>>;
+  /** Bounded south U-channel headroom per expanded container frozen at nominal (V-S4 / F-4). */
+  readonly southUExtra?: Readonly<Record<string, number>>;
   /** Frozen root x-track slack σ (H2.6, 16:9 only; empty when `"free"`). */
   readonly sigmaCols: Readonly<Record<string, number>>;
   /** Frozen root band slack σ (H2.6, 16:9 only; empty when `"free"`). */
@@ -344,6 +346,7 @@ export function computePlanDigest(fields: {
   readonly tau: number;
   readonly autoPackLevels: Readonly<Record<string, FrozenAutoPackLevel>>;
   readonly innerWiden: Readonly<Record<string, number>>;
+  readonly southUExtra?: Readonly<Record<string, number>>;
   readonly sigmaCols: Readonly<Record<string, number>>;
   readonly sigmaBands: Readonly<Record<string, number>>;
   readonly legendCell?: { readonly bandId: string; readonly colId: string };

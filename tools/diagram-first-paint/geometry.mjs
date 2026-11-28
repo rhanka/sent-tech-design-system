@@ -462,3 +462,62 @@ export function headOverlapFindings({ heads = [], tolerance = 0.25 }) {
   }
   return findings;
 }
+
+/**
+ * REQ-R7-34 / DE3-L6c: sweep-line vertical gap check in rendered DOM or world coordinates.
+ * Merges vertical intervals of visible boxes into disjoint occupied bands and flags any
+ * full-width empty vertical gap exceeding `maxVerticalGap * scale + tolerance` (allowing
+ * `96 px` zone gutters and `<= 144 px` capped vertical widening, catching `sigmaBands`,
+ * `I-13` double-gutters, and uncapped vertical channel bloat).
+ */
+export function verticalEconomyFindings({ nodes = [], scale = 1, maxVerticalGap = 144, tolerance = 1 }) {
+  if (!(scale > 0) || nodes.length < 2) return [];
+  const valid = nodes.filter(n => Number.isFinite(n.top) && Number.isFinite(n.bottom) && n.bottom > n.top);
+  const intervals = [];
+  for (let i = 0; i < valid.length; i += 1) {
+    const outer = valid[i];
+    const hasBounds = Number.isFinite(outer.left) && Number.isFinite(outer.right);
+    const children = !hasBounds ? [] : valid.filter((inner, j) =>
+      j !== i &&
+      Number.isFinite(inner.left) &&
+      Number.isFinite(inner.right) &&
+      outer.left <= inner.left + tolerance &&
+      outer.right >= inner.right - tolerance &&
+      outer.top <= inner.top + tolerance &&
+      outer.bottom >= inner.bottom - tolerance,
+    );
+    if (children.length === 0) {
+      intervals.push({ top: outer.top, bottom: outer.bottom });
+    } else {
+      const minChildTop = Math.min(...children.map(c => c.top));
+      const maxChildBottom = Math.max(...children.map(c => c.bottom));
+      const headerBottom = Math.min(minChildTop, outer.top + 96 * scale);
+      if (headerBottom > outer.top) intervals.push({ top: outer.top, bottom: headerBottom });
+      const footerTop = Math.max(maxChildBottom, outer.bottom - 32 * scale);
+      if (outer.bottom > footerTop) intervals.push({ top: footerTop, bottom: outer.bottom });
+    }
+  }
+  intervals.sort((a, b) => a.top - b.top || a.bottom - b.bottom);
+  if (intervals.length < 2) return [];
+  const merged = [{ ...intervals[0] }];
+  for (let i = 1; i < intervals.length; i += 1) {
+    const cur = intervals[i];
+    const last = merged[merged.length - 1];
+    if (cur.top <= last.bottom + tolerance) {
+      last.bottom = Math.max(last.bottom, cur.bottom);
+    } else {
+      merged.push({ ...cur });
+    }
+  }
+  const findings = [];
+  const maxScaled = maxVerticalGap * scale;
+  for (let i = 1; i < merged.length; i += 1) {
+    const gapScaled = merged[i].top - merged[i - 1].bottom;
+    if (gapScaled > maxScaled + tolerance) {
+      findings.push(
+        `empty vertical band gap ${(gapScaled / scale).toFixed(1)} world px exceeds ${maxVerticalGap} px`,
+      );
+    }
+  }
+  return findings;
+}

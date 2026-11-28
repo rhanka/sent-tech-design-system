@@ -1,8 +1,12 @@
-import { entityRef, occurrenceRef, type DsLayoutHintsV2 } from "@sentropic/diagram-core";
+import { entityRef, lowerLayoutHintsV2, occurrenceRef, type DsLayoutHintsV2 } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
-import { layoutMeasured } from "../../../src/index.js";
+import { layoutMeasured, type Rect } from "../../../src/index.js";
 import { buildExampleA, buildGenericScene } from "./fixtures/referenceSet.js";
+
+function rectsOverlap(a: Rect, b: Rect): boolean {
+  return a.x < b.x + b.width - 1e-4 && b.x < a.x + a.width - 1e-4 && a.y < b.y + b.height - 1e-4 && b.y < a.y + a.height - 1e-4;
+}
 
 describe("H2.3 peripheral columns", () => {
   it("stretches a shorter peripheral expanded container down to the last band bottom", () => {
@@ -53,11 +57,16 @@ describe("H2.3 peripheral columns", () => {
     });
     expect(res.status).toBe("laid-out");
     if (res.status !== "laid-out") return;
+    const a1 = res.view.entityOccurrences[occurrenceRef("e.a1")]!.geometry;
     const a2 = res.view.entityOccurrences[occurrenceRef("e.a2")]!.geometry;
     const a3 = res.view.entityOccurrences[occurrenceRef("e.a3")]!.geometry;
     const panel = res.view.entityOccurrences[occurrenceRef("e.panel")]!.geometry;
-    // Starts at b2 top and stretches down to b3 bottom
-    expect(panel.y).toBe(a2.y);
+    const pOnly = res.view.entityOccurrences[occurrenceRef("e.p-only")]!.geometry;
+    // V-S2 / T-30 (DE3-L6b): cell (b1, side) is free so panel's header shifts up and p-only aligns flush with a2.y,
+    // while keeping panel bottom stretched down to b3 bottom.
+    expect(pOnly.y).toBe(a2.y);
+    expect(panel.y).toBeLessThan(a2.y);
+    expect(panel.y).toBeGreaterThanOrEqual(a1.y);
     expect(panel.y + panel.height).toBe(a3.y + a3.height);
     // Placed on the end (right) side after s1
     expect(panel.x).toBeGreaterThan(a2.x + a2.width);
@@ -98,5 +107,148 @@ describe("H2.3 peripheral columns", () => {
     for (let i = 1; i < toolCards.length; i += 1) {
       expect(toolCards[i]!.y).toBeGreaterThan(toolCards[i - 1]!.y + toolCards[i - 1]!.height);
     }
+
+    // V-S2 / T-30: when (top, tools) is free (legend: "right"), tools shifts up into empty cell so tool-1 aligns flush with j1.
+    if (example.hintsV2.mode !== "stage-columns") throw new Error("expected stage-columns hints on Example A");
+    const freeCellAbove = layoutMeasured(example.document, {
+      registry: example.registry,
+      bindings: example.bindings,
+      presentation: example.presentation,
+      measureLines: example.measureLines,
+      measureText: () => ({ width: 80, height: 20 }),
+      targetWidth: 1440,
+      hints: lowerLayoutHintsV2({ ...example.hintsV2, legend: "right" }),
+    });
+    expect(freeCellAbove.status).toBe("laid-out");
+    if (freeCellAbove.status === "laid-out") {
+      const midBandFree = freeCellAbove.composition!.grids["root"]!.bands.find((b) => b.id === "mid")!;
+      const toolsFree = freeCellAbove.view.entityOccurrences[occurrenceRef("e.tools")]!.geometry;
+      const tool1Free = freeCellAbove.view.entityOccurrences[occurrenceRef("e.tool-1")]!.geometry;
+      const j1Free = freeCellAbove.view.entityOccurrences[occurrenceRef("e.j1")]!.geometry;
+      expect(toolsFree.y).toBeLessThan(midBandFree.start);
+      expect(toolsFree.y).toBeGreaterThanOrEqual(0);
+      expect(tool1Free.y).toBe(j1Free.y);
+    }
+  });
+
+  it("never collides V-S2 (T-30) upward peripheral header shift with default r7 'auto' legend placement", () => {
+    const hintsV2: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      grids: {
+        root: {
+          stage_columns: ["s1"],
+          transverse_bands: [
+            { id: "b1", items: [entityRef("a1")] },
+            { id: "b2", items: [entityRef("a2")] },
+            { id: "b3", items: [entityRef("a3")] },
+          ],
+          peripheral_columns: [
+            { id: "side", side: "end", items: [entityRef("panel")], from_band: "b2" },
+          ],
+          cells: {
+            [entityRef("a1")]: { column: "s1" },
+            [entityRef("a2")]: { column: "s1" },
+            [entityRef("a3")]: { column: "s1" },
+          },
+        },
+      },
+      stacks: { [entityRef("panel")]: { axis: "column" } },
+    };
+    const scene = buildGenericScene({
+      id: "peripheral-short-auto-legend",
+      carries: ["V-S2", "REQ-R7-34"],
+      hintsV2,
+      entities: [
+        { id: "a1", title: "Band 1" },
+        { id: "a2", title: "Band 2" },
+        { id: "a3", title: "Band 3" },
+        {
+          id: "panel",
+          container: true,
+          kicker: "Peripheral Runtime",
+          title: "Dedicated Long Wrapping Side Panel Header Title",
+        },
+        { id: "p-only", parent: "panel", title: "Single Item" },
+      ],
+      relations: [
+        { id: "e1", source: "a1", target: "a2", strokeStyle: "solid" },
+        { id: "e2", source: "a2", target: "a3", strokeStyle: "dashed" },
+      ],
+    });
+    const res = layoutMeasured(scene.document, {
+      registry: scene.registry,
+      bindings: scene.bindings,
+      presentation: scene.presentation,
+      measureLines: scene.measureLines,
+      measureText: () => ({ width: 80, height: 20 }),
+      targetWidth: 1440,
+      hints: scene.hints,
+    });
+    expect(res.status).toBe("laid-out");
+    if (res.status !== "laid-out") return;
+    expect(res.linkLegend).toBeDefined();
+    const legendRect = res.linkLegend!.rect;
+    for (const occ of Object.values(res.view.entityOccurrences)) {
+      expect(rectsOverlap(legendRect, occ.geometry), String(occ.id)).toBe(false);
+    }
+    const a2 = res.view.entityOccurrences[occurrenceRef("e.a2")]!.geometry;
+    const a3 = res.view.entityOccurrences[occurrenceRef("e.a3")]!.geometry;
+    const panel = res.view.entityOccurrences[occurrenceRef("e.panel")]!.geometry;
+    const pOnly = res.view.entityOccurrences[occurrenceRef("e.p-only")]!.geometry;
+    expect(pOnly.y).toBe(a2.y);
+    expect(panel.y + panel.height).toBe(a3.y + a3.height);
+  });
+
+  it("applies V-S2 (T-30) upward peripheral header shift on unstaged root grids", () => {
+    const hintsV2: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      legend: "none",
+      grids: {
+        root: {
+          transverse_bands: [
+            { id: "b1", items: [entityRef("a1")] },
+            { id: "b2", items: [entityRef("a2")] },
+            { id: "b3", items: [entityRef("a3")] },
+          ],
+          peripheral_columns: [
+            { id: "side", side: "end", items: [entityRef("panel")], from_band: "b2" },
+          ],
+        },
+      },
+      stacks: { [entityRef("panel")]: { axis: "column" } },
+    };
+    const scene = buildGenericScene({
+      id: "unstaged-peripheral-short",
+      carries: ["V-S2", "REQ-R7-34"],
+      hintsV2,
+      entities: [
+        { id: "a1", title: "Band 1" },
+        { id: "a2", title: "Band 2" },
+        { id: "a3", title: "Band 3" },
+        { id: "panel", container: true, title: "Side Panel" },
+        { id: "p-only", parent: "panel", title: "Single Item" },
+      ],
+      relations: [],
+    });
+    const res = layoutMeasured(scene.document, {
+      registry: scene.registry,
+      bindings: scene.bindings,
+      presentation: scene.presentation,
+      measureLines: scene.measureLines,
+      measureText: () => ({ width: 80, height: 20 }),
+      targetWidth: 1440,
+      hints: scene.hints,
+    });
+    expect(res.status).toBe("laid-out");
+    if (res.status !== "laid-out") return;
+    const a2 = res.view.entityOccurrences[occurrenceRef("e.a2")]!.geometry;
+    const a3 = res.view.entityOccurrences[occurrenceRef("e.a3")]!.geometry;
+    const panel = res.view.entityOccurrences[occurrenceRef("e.panel")]!.geometry;
+    const pOnly = res.view.entityOccurrences[occurrenceRef("e.p-only")]!.geometry;
+    expect(pOnly.y).toBe(a2.y);
+    expect(panel.y).toBeLessThan(a2.y);
+    expect(panel.y + panel.height).toBe(a3.y + a3.height);
   });
 });

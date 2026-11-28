@@ -58,6 +58,7 @@ export interface ComposedGridReport {
   readonly runKey: string;
   readonly columns: readonly ComposedTrackLine[];
   readonly bands: readonly ComposedTrackLine[];
+  readonly omittedBandIds?: readonly string[];
   readonly cells: readonly {
     readonly entity: EntityRef;
     readonly slotRect: Rect;
@@ -142,6 +143,11 @@ export interface GridLayoutInput {
   /** Optional `free-cell` legend box contributing to its assigned cell's tracks (H2.8). */
   readonly freeCellItem?: FreeCellItemSpec | undefined;
   /**
+   * Optional zone header + content inset offset above the first child card of an expanded
+   * container, used for T-30 upward peripheral header alignment (V-S2 / DE3-L6b).
+   */
+  readonly headerOffsetOf?: ((entity: EntityRef) => number) | undefined;
+  /**
    * Optional hook for staged host grids (H2.4 `inherit`): after resolving stage
    * column widths and positions, lay out inheriting child containers on those
    * shared column lines before finalizing band heights.
@@ -177,6 +183,7 @@ export interface GridLayoutResult {
   readonly height: number;
   readonly columns: readonly ComposedTrackLine[];
   readonly bands: readonly ComposedTrackLine[];
+  readonly omittedBandIds?: readonly string[];
   readonly placements: readonly ComposedCellPlacement[];
   readonly unplaced: readonly EntityRef[];
   /** Placed grid-relative rect of `freeCellItem` when seated inside its assigned cell (H2.8). */
@@ -329,10 +336,12 @@ export function findFirstEmptyRootCell(
         const c1 = cell.to_column === undefined ? c0 : stageCols.indexOf(cell.to_column);
         const b1 = cell.to_band === undefined ? bandIdx : bandIds.indexOf(cell.to_band);
         if (c0 < 0 || c1 < c0 || b1 < bandIdx) continue;
+        // V-S6 (REQ-R7-34): only bands with starting visible items become active tracks;
+        // spanning cells still mark any crossed active bands as occupied.
+        coveredBands.add(bandIdx);
+        for (let c = c0; c <= c1; c += 1) coveredCols.add(c);
         for (let b = bandIdx; b <= b1; b += 1) {
-          coveredBands.add(b);
           for (let c = c0; c <= c1; c += 1) {
-            coveredCols.add(c);
             occupiedStage.add(`${String(b)}|${String(c)}`);
           }
         }
@@ -397,11 +406,10 @@ export function findFirstEmptyRootCell(
 /**
  * Lay out one grid scope (`root` or container) without column inheritance.
  *
- * I-13 zero-excess span invariant: a staged band listed with `items: []` that
- * is covered by a visible cell's `to_band` span stays in the active band list
- * (it does NOT collapse and its two surrounding gutters remain distinct). When
- * spanning cells already fit in earlier bands + gutters (excess === 0), that
- * band has height `0` with both boundary gutters preserved at their token widths.
+ * V-S6 (REQ-R7-34 / DE3-L6a1): staged bands with zero visible starting items
+ * (`items: []` or all folded) are omitted from active tracks and listed in
+ * `omittedBandIds`; `to_band` spans clamp to the last active band `<= bandEndDecl`,
+ * preventing phantom zero-height bands and double boundary gutters.
  */
 export function layoutGridScope(input: GridLayoutInput): GridLayoutResult {
   const {
@@ -418,6 +426,7 @@ export function layoutGridScope(input: GridLayoutInput): GridLayoutResult {
     sigmaCols,
     sigmaBands,
     freeCellItem,
+    headerOffsetOf,
     inheritedContributions,
     onStageColumnsResolved,
   } = input;
@@ -511,6 +520,7 @@ export function layoutGridScope(input: GridLayoutInput): GridLayoutResult {
       sigmaCols,
       sigmaBands,
       freeCellItem,
+      headerOffsetOf,
       inheritedContributions,
       onStageColumnsResolved,
     });
@@ -534,7 +544,64 @@ export function layoutGridScope(input: GridLayoutInput): GridLayoutResult {
     sigmaCols,
     sigmaBands,
     freeCellItem,
+    headerOffsetOf,
   });
+}
+
+/** V-S3 (REQ-R7-34 / DE3-L6a2): span a tall free-cell item across consecutive empty vertical cells before growing bands. */
+function spanFreeCellBands(
+  bandHeights: number[],
+  bandBoundaryInfo: readonly { readonly gap: number }[],
+  startBand: number,
+  requiredHeight: number,
+  isBandEmpty: (bandIdx: number) => boolean,
+): number {
+  const spanHeight = (b0: number, b1: number): number => {
+    let total = 0;
+    for (let b = b0; b <= b1; b += 1) {
+      total += bandHeights[b]!;
+      if (b < b1) total += bandBoundaryInfo[b]!.gap;
+    }
+    return total;
+  };
+  let endBand = startBand;
+  while (
+    spanHeight(startBand, endBand) < requiredHeight &&
+    endBand + 1 < bandHeights.length &&
+    isBandEmpty(endBand + 1)
+  ) {
+    endBand += 1;
+  }
+  const excess = requiredHeight - spanHeight(startBand, endBand);
+  if (excess > 0) distributeWholeExcess(bandHeights, startBand, endBand, excess);
+  return endBand;
+}
+
+function resolvePeripheralTopY(
+  peripheral: ActivePeripheral,
+  bandStarts: readonly number[],
+  colIndex: number,
+  freeCellColIdx: number,
+  freeCellBandActive: number,
+  headerOffsetOf: ((entity: EntityRef) => number) | undefined,
+): number {
+  const defaultTopY = bandStarts.length > 0 ? bandStarts[peripheral.fromBandActive]! : 0;
+  const item0 = peripheral.items[0];
+  if (
+    peripheral.fromBandActive <= 0 ||
+    item0 === undefined ||
+    !item0.isExpanded ||
+    headerOffsetOf === undefined
+  ) {
+    return defaultTopY;
+  }
+  const freeCellBlocks =
+    freeCellColIdx === colIndex &&
+    freeCellBandActive >= 0 &&
+    freeCellBandActive < peripheral.fromBandActive;
+  if (freeCellBlocks) return defaultTopY;
+  const headerOffset = headerOffsetOf(item0.entity);
+  return headerOffset > 0 ? clean(Math.max(0, defaultTopY - headerOffset)) : defaultTopY;
 }
 
 function placePeripheralItems(
@@ -651,6 +718,18 @@ function layoutTrailingBand(
   return { width: cursorX, height, hasContainer, items, gaps };
 }
 
+function lastActiveBandAtOrBefore(
+  declBandToActive: ReadonlyMap<number, number>,
+  bandStartDecl: number,
+  bandEndDecl: number,
+): number {
+  for (let b = bandEndDecl; b >= bandStartDecl; b -= 1) {
+    const active = declBandToActive.get(b);
+    if (active !== undefined) return active;
+  }
+  return declBandToActive.get(bandStartDecl)!;
+}
+
 function layoutStagedGrid(args: {
   readonly scope: string;
   readonly runKey: string;
@@ -674,6 +753,7 @@ function layoutStagedGrid(args: {
   readonly sigmaCols?: ReadonlyMap<string, number> | undefined;
   readonly sigmaBands?: ReadonlyMap<string, number> | undefined;
   readonly freeCellItem?: FreeCellItemSpec | undefined;
+  readonly headerOffsetOf?: ((entity: EntityRef) => number) | undefined;
   readonly inheritedContributions?: readonly InheritedWidthContribution[] | undefined;
   readonly onStageColumnsResolved?: GridLayoutInput["onStageColumnsResolved"];
 }): GridLayoutResult {
@@ -696,6 +776,7 @@ function layoutStagedGrid(args: {
     sigmaCols,
     sigmaBands,
     freeCellItem,
+    headerOffsetOf,
     inheritedContributions,
     onStageColumnsResolved,
   } = args;
@@ -730,12 +811,12 @@ function layoutStagedGrid(args: {
     }
   });
 
-  // Determine covered columns and covered bands (including I-13 span-only bands and inherited cells).
+  // Determine covered columns and covered bands (V-S6: omit span-only empty bands).
   const coveredCols = new Set<number>();
   const coveredBands = new Set<number>();
   for (const c of cells) {
     for (let col = c.colStartDecl; col <= c.colEndDecl; col += 1) coveredCols.add(col);
-    for (let b = c.bandStartDecl; b <= c.bandEndDecl; b += 1) coveredBands.add(b);
+    coveredBands.add(c.bandStartDecl);
   }
   for (const contrib of inheritedContributions ?? []) {
     for (let col = contrib.colStartDecl; col <= contrib.colEndDecl; col += 1) coveredCols.add(col);
@@ -743,6 +824,9 @@ function layoutStagedGrid(args: {
 
   const activeStageDeclIndices = [...coveredCols].sort((a, b) => a - b);
   const activeBandDeclIndices = [...coveredBands].sort((a, b) => a - b);
+  const omittedBandIds = grid.transverse_bands
+    .filter((_, b) => !coveredBands.has(b))
+    .map((b) => b.id);
   const declColToActive = new Map<number, number>(activeStageDeclIndices.map((decl, active) => [decl, active]));
   const declBandToActive = new Map<number, number>(activeBandDeclIndices.map((decl, active) => [decl, active]));
 
@@ -751,7 +835,7 @@ function layoutStagedGrid(args: {
     colStart: declColToActive.get(c.colStartDecl)!,
     colEnd: declColToActive.get(c.colEndDecl)!,
     bandStart: declBandToActive.get(c.bandStartDecl)!,
-    bandEnd: declBandToActive.get(c.bandEndDecl)!,
+    bandEnd: lastActiveBandAtOrBefore(declBandToActive, c.bandStartDecl, c.bandEndDecl),
   }));
 
   const startPeripherals = startPeripheralsRaw
@@ -919,17 +1003,13 @@ function layoutStagedGrid(args: {
         return updated === undefined ? c : { ...c, width: updated.width, height: updated.height };
       });
 
-  // Single-span heights for bands (§4.3 step 4), including free-cell legend contribution.
+  // Single-span heights for bands (§4.3 step 4), then spanning bands.
   const bandHeights = Array.from({ length: bandCount }, () => 0);
   for (const c of finalCells) {
     if (c.bandStart === c.bandEnd) {
       bandHeights[c.bandStart] = Math.max(bandHeights[c.bandStart]!, c.height);
     }
   }
-  if (freeCellItem !== undefined && freeCellBandActive >= 0 && freeCellColFull >= 0) {
-    bandHeights[freeCellBandActive] = Math.max(bandHeights[freeCellBandActive]!, freeCellItem.height);
-  }
-  // Spanning heights for bands by increasing span length then declaration order (§4.3 steps 3–4).
   const bandSpanners = finalCells
     .filter((c) => c.bandEnd > c.bandStart)
     .sort((a, b) => (a.bandEnd - a.bandStart) - (b.bandEnd - b.bandStart) || a.declOrder - b.declOrder);
@@ -940,6 +1020,34 @@ function layoutStagedGrid(args: {
       if (b < c.bandEnd) current += bandBoundaryInfo[b]!.gap;
     }
     distributeWholeExcess(bandHeights, c.bandStart, c.bandEnd, c.height - current);
+  }
+  // V-S3 (REQ-R7-34 / DE3-L6a2): span a tall free-cell legend into consecutive empty vertical
+  // cells in the same column before ever growing a band's height.
+  let freeCellBandStart = freeCellBandActive;
+  let freeCellBandEnd = freeCellBandStart;
+  const freeCellColMeta = freeCellColFull >= 0 ? allCols[freeCellColFull] : undefined;
+  const freeCellStageIdx =
+    freeCellColMeta?.kind === "stage" ? freeCellColMeta.stageIndex : undefined;
+  const isFreeCellBandEmpty = (b: number): boolean => {
+    if (freeCellColMeta === undefined) return false;
+    if (freeCellStageIdx !== undefined) {
+      return !finalCells.some(
+        (c) => c.bandStart <= b && b <= c.bandEnd && c.colStart <= freeCellStageIdx && freeCellStageIdx <= c.colEnd,
+      );
+    }
+    if (freeCellColMeta.peripheral !== undefined) {
+      return b < freeCellColMeta.peripheral.fromBandActive;
+    }
+    return false;
+  };
+  if (freeCellItem !== undefined && freeCellBandStart >= 0 && freeCellColFull >= 0) {
+    freeCellBandEnd = spanFreeCellBands(
+      bandHeights,
+      bandBoundaryInfo,
+      freeCellBandStart,
+      freeCellItem.height,
+      isFreeCellBandEmpty,
+    );
   }
   // Apply optional plan σ to bands (§4.3 step 6).
   if (sigmaBands !== undefined) {
@@ -991,11 +1099,18 @@ function layoutStagedGrid(args: {
     });
   }
 
-  // Place peripheral columns (§1.4, §4.3 step 7).
+  // Place peripheral columns (§1.4, §4.3 step 7, V-S2 / T-30 header alignment).
   let maxBottom = declaredBandsBottom;
   allCols.forEach((col, fullColIdx) => {
     if (col.peripheral === undefined) return;
-    const topY = bandCount > 0 ? bandStarts[col.peripheral.fromBandActive]! : 0;
+    const topY = resolvePeripheralTopY(
+      col.peripheral,
+      bandStarts,
+      fullColIdx,
+      freeCellColFull,
+      freeCellBandActive,
+      headerOffsetOf,
+    );
     const bottom = placePeripheralItems(
       col.peripheral,
       colStarts[fullColIdx]!,
@@ -1153,9 +1268,11 @@ function layoutStagedGrid(args: {
       };
       for (let s = 0; s < stageCount; s += 1) {
         const cw = stageWidths[s]!;
-        const crossed = activeCells.some(
-          (c) => c.bandStart <= j && c.bandEnd >= j + 1 && c.colStart <= s && c.colEnd >= s,
-        );
+        const crossed =
+          (freeCellStageIdx === s && freeCellBandStart <= j && freeCellBandEnd >= j + 1) ||
+          activeCells.some(
+            (c) => c.bandStart <= j && c.bandEnd >= j + 1 && c.colStart <= s && c.colEnd >= s,
+          );
         if (crossed) {
           flush();
           continue;
@@ -1196,11 +1313,11 @@ function layoutStagedGrid(args: {
   ];
 
   let freeCellRect: Rect | undefined;
-  if (freeCellItem !== undefined && freeCellBandActive >= 0 && freeCellColFull >= 0) {
+  if (freeCellItem !== undefined && freeCellBandStart >= 0 && freeCellColFull >= 0) {
     const fx = colStarts[freeCellColFull]!;
     const fw = colWidths[freeCellColFull]!;
-    const fy = bandStarts[freeCellBandActive]!;
-    const fh = bandHeights[freeCellBandActive]!;
+    const fy = bandStarts[freeCellBandStart]!;
+    const fh = (bandStarts[freeCellBandEnd]! + bandHeights[freeCellBandEnd]!) - fy;
     freeCellRect = {
       x: clean(fx + Math.max(0, fw - freeCellItem.width) / 2),
       y: clean(fy + Math.max(0, fh - freeCellItem.height) / 2),
@@ -1225,6 +1342,7 @@ function layoutStagedGrid(args: {
       runKey,
       columns: columns.map((c) => ({ ...c, start: clean(originX + c.start) })),
       bands: bands.map((b) => ({ ...b, start: clean(originY + b.start) })),
+      ...(omittedBandIds.length > 0 ? { omittedBandIds } : {}),
       cells: placements.map((p) => ({
         entity: p.entity,
         slotRect: {
@@ -1270,6 +1388,7 @@ function layoutUnstagedGrid(args: {
   readonly sigmaCols?: ReadonlyMap<string, number> | undefined;
   readonly sigmaBands?: ReadonlyMap<string, number> | undefined;
   readonly freeCellItem?: FreeCellItemSpec | undefined;
+  readonly headerOffsetOf?: ((entity: EntityRef) => number) | undefined;
 }): GridLayoutResult {
   const {
     scope,
@@ -1289,6 +1408,7 @@ function layoutUnstagedGrid(args: {
     sigmaCols,
     sigmaBands,
     freeCellItem,
+    headerOffsetOf,
   } = args;
 
   interface MeasuredBand {
@@ -1310,10 +1430,14 @@ function layoutUnstagedGrid(args: {
   }
 
   const activeBands: MeasuredBand[] = [];
+  const omittedBandIds: string[] = [];
   const declBandToActive = new Map<number, number>();
   grid.transverse_bands.forEach((band, declIdx) => {
     const visibleItems = band.items.filter((item) => visibleSet.has(item));
-    if (visibleItems.length === 0) return;
+    if (visibleItems.length === 0) {
+      omittedBandIds.push(band.id);
+      return;
+    }
     declBandToActive.set(declIdx, activeBands.length);
     const measured = visibleItems.map((entity) => {
       const sz = sizeOf(entity);
@@ -1375,14 +1499,17 @@ function layoutUnstagedGrid(args: {
     readonly hasContainer: boolean;
     readonly peripheral?: ActivePeripheral;
   }
+  const bandHeights = activeBands.map((b) => b.height);
+  const bandBoundaryInfo: { readonly id: string; readonly gap: number; readonly base: number; readonly zone: boolean }[] = [];
+  for (let j = 0; j < activeBands.length - 1; j += 1) {
+    const z = activeBands[j]!.hasContainer || activeBands[j + 1]!.hasContainer;
+    const id = `${runKey}|across|${activeBands[j]!.id}`;
+    const { gap, base } = resolveBoundaryGap(id, z, rowGaps.cardY, zoneGutter, rowGaps.maxY, widen);
+    bandBoundaryInfo.push({ id, gap, base, zone: z });
+  }
   const freeBandActive =
     freeCellItem === undefined ? -1 : activeBands.findIndex((b) => b.id === freeCellItem.bandId);
-  if (freeCellItem !== undefined && freeBandActive >= 0) {
-    const cur = activeBands[freeBandActive]!;
-    if (freeCellItem.height > cur.height) {
-      activeBands[freeBandActive] = { ...cur, height: freeCellItem.height };
-    }
-  }
+  let freeBandEnd = freeBandActive;
   const allCols: ColMeta[] = [
     ...startPeripherals.map((p) => ({
       id: p.column.id,
@@ -1402,6 +1529,21 @@ function layoutUnstagedGrid(args: {
       peripheral: p,
     })),
   ];
+  const unstagedFreeColIdx =
+    freeCellItem === undefined || freeBandActive < 0
+      ? -1
+      : allCols.findIndex((c) => c.id === freeCellItem.colId);
+  const freeColMeta = unstagedFreeColIdx >= 0 ? allCols[unstagedFreeColIdx] : undefined;
+  if (freeCellItem !== undefined && freeBandActive >= 0 && freeColMeta?.peripheral !== undefined) {
+    const fromBandActive = freeColMeta.peripheral.fromBandActive;
+    freeBandEnd = spanFreeCellBands(
+      bandHeights,
+      bandBoundaryInfo,
+      freeBandActive,
+      freeCellItem.height,
+      (b) => b < fromBandActive,
+    );
+  }
 
   const colBoundaryInfo: { readonly id: string; readonly gap: number; readonly base: number; readonly zone: boolean }[] = [];
   for (let i = 0; i < allCols.length - 1; i += 1) {
@@ -1421,19 +1563,12 @@ function layoutUnstagedGrid(args: {
   const mainColIdx = allCols.findIndex((c) => c.kind === "stage");
   const mainOriginX = mainColIdx >= 0 ? colStarts[mainColIdx]! : 0;
 
-  const bandBoundaryInfo: { readonly id: string; readonly gap: number; readonly base: number; readonly zone: boolean }[] = [];
   const bandStarts: number[] = [];
   let cursorY = 0;
   for (let j = 0; j < activeBands.length; j += 1) {
     bandStarts.push(cursorY);
-    cursorY += activeBands[j]!.height;
-    if (j < activeBands.length - 1) {
-      const z = activeBands[j]!.hasContainer || activeBands[j + 1]!.hasContainer;
-      const id = `${runKey}|across|${activeBands[j]!.id}`;
-      const { gap, base } = resolveBoundaryGap(id, z, rowGaps.cardY, zoneGutter, rowGaps.maxY, widen);
-      bandBoundaryInfo.push({ id, gap, base, zone: z });
-      cursorY += gap;
-    }
+    cursorY += bandHeights[j]!;
+    if (j < bandBoundaryInfo.length) cursorY += bandBoundaryInfo[j]!.gap;
   }
   const declaredBandsBottom = cursorY;
 
@@ -1442,6 +1577,7 @@ function layoutUnstagedGrid(args: {
 
   activeBands.forEach((band, bandIdx) => {
     const by = bandStarts[bandIdx]!;
+    const bandHeight = bandHeights[bandIdx]!;
     // When σ adds width to an unstaged root grid (`__main__`), expanded containers
     // in the band absorb the extra width in whole world units while keeping every
     // gutter at its exact token width (§4.2 S-1 step 5).
@@ -1466,14 +1602,14 @@ function layoutUnstagedGrid(args: {
     band.items.forEach((item, idx) => {
       const w = itemWidths[idx]!;
       const relX = cursorItemX;
-      const alignedY = alignWithin(by, band.height, item.height, item.align, item.isExpanded);
+      const alignedY = alignWithin(by, bandHeight, item.height, item.align, item.isExpanded);
       placements.push({
         entity: item.entity,
         relX: clean(mainOriginX + relX),
         relY: clean(alignedY.pos),
         width: w,
         height: alignedY.size,
-        slotRelRect: { x: clean(mainOriginX + relX), y: clean(by), width: w, height: band.height },
+        slotRelRect: { x: clean(mainOriginX + relX), y: clean(by), width: w, height: bandHeight },
         stretchX: itemStretchedX[idx]!,
         stretchY: alignedY.stretched,
         isPeripheral: false,
@@ -1489,7 +1625,7 @@ function layoutUnstagedGrid(args: {
         gutterCollectors.push((originX, originY) => ({
           id: g.id,
           horizontal: false,
-          strips: [{ x: originX + mainOriginX + gx, y: originY + by, width: g.gap, height: band.height }],
+          strips: [{ x: originX + mainOriginX + gx, y: originY + by, width: g.gap, height: bandHeight }],
           gap: g.gap,
           base: g.base,
           authoredBase: false,
@@ -1503,7 +1639,7 @@ function layoutUnstagedGrid(args: {
 
   for (let j = 0; j < bandBoundaryInfo.length; j += 1) {
     const info = bandBoundaryInfo[j]!;
-    const gy = bandStarts[j]! + activeBands[j]!.height;
+    const gy = bandStarts[j]! + bandHeights[j]!;
     gutterCollectors.push((originX, originY) => ({
       id: info.id,
       horizontal: true,
@@ -1519,7 +1655,14 @@ function layoutUnstagedGrid(args: {
   let maxBottom = declaredBandsBottom;
   allCols.forEach((col, fullColIdx) => {
     if (col.peripheral === undefined) return;
-    const topY = activeBands.length > 0 ? bandStarts[col.peripheral.fromBandActive]! : 0;
+    const topY = resolvePeripheralTopY(
+      col.peripheral,
+      bandStarts,
+      fullColIdx,
+      unstagedFreeColIdx,
+      freeBandActive,
+      headerOffsetOf,
+    );
     const bottom = placePeripheralItems(
       col.peripheral,
       colStarts[fullColIdx]!,
@@ -1617,25 +1760,22 @@ function layoutUnstagedGrid(args: {
     size: c.width,
   }));
   const bands: ComposedTrackLine[] = [
-    ...activeBands.map((b, j) => ({ id: b.id, kind: "band" as const, start: bandStarts[j]!, size: b.height })),
+    ...activeBands.map((b, j) => ({ id: b.id, kind: "band" as const, start: bandStarts[j]!, size: bandHeights[j]! })),
     ...extraBands,
   ];
 
   let freeCellRect: Rect | undefined;
-  if (freeCellItem !== undefined && freeBandActive >= 0) {
-    const colIdx = allCols.findIndex((c) => c.id === freeCellItem.colId);
-    if (colIdx >= 0) {
-      const fx = colStarts[colIdx]!;
-      const fw = allCols[colIdx]!.width;
-      const fy = bandStarts[freeBandActive]!;
-      const fh = activeBands[freeBandActive]!.height;
-      freeCellRect = {
-        x: clean(fx + Math.max(0, fw - freeCellItem.width) / 2),
-        y: clean(fy + Math.max(0, fh - freeCellItem.height) / 2),
-        width: freeCellItem.width,
-        height: freeCellItem.height,
-      };
-    }
+  if (freeCellItem !== undefined && freeBandActive >= 0 && unstagedFreeColIdx >= 0) {
+    const fx = colStarts[unstagedFreeColIdx]!;
+    const fw = allCols[unstagedFreeColIdx]!.width;
+    const fy = bandStarts[freeBandActive]!;
+    const fh = bandStarts[freeBandEnd]! + bandHeights[freeBandEnd]! - fy;
+    freeCellRect = {
+      x: clean(fx + Math.max(0, fw - freeCellItem.width) / 2),
+      y: clean(fy + Math.max(0, fh - freeCellItem.height) / 2),
+      width: freeCellItem.width,
+      height: freeCellItem.height,
+    };
   }
 
   return {
@@ -1654,6 +1794,7 @@ function layoutUnstagedGrid(args: {
       runKey,
       columns: columns.map((c) => ({ ...c, start: clean(originX + c.start) })),
       bands: bands.map((b) => ({ ...b, start: clean(originY + b.start) })),
+      ...(omittedBandIds.length > 0 ? { omittedBandIds } : {}),
       cells: placements.map((p) => ({
         entity: p.entity,
         slotRect: {
@@ -1747,16 +1888,19 @@ export function layoutInheritedGridScope(input: InheritedGridLayoutInput): GridL
 
   const coveredBands = new Set<number>();
   for (const c of cells) {
-    for (let b = c.bandStartDecl; b <= c.bandEndDecl; b += 1) coveredBands.add(b);
+    coveredBands.add(c.bandStartDecl);
   }
   const activeBandDeclIndices = [...coveredBands].sort((a, b) => a - b);
+  const omittedBandIds = grid.transverse_bands
+    .filter((_, b) => !coveredBands.has(b))
+    .map((b) => b.id);
   const declBandToActive = new Map<number, number>(activeBandDeclIndices.map((decl, active) => [decl, active]));
   const activeCells = cells.map((c) => ({
     ...c,
     colStart: c.colStartDecl - firstColIdx,
     colEnd: c.colEndDecl - firstColIdx,
     bandStart: declBandToActive.get(c.bandStartDecl)!,
-    bandEnd: declBandToActive.get(c.bandEndDecl)!,
+    bandEnd: lastActiveBandAtOrBefore(declBandToActive, c.bandStartDecl, c.bandEndDecl),
   }));
 
   const localColCount = lastColIdx - firstColIdx + 1;
@@ -2022,6 +2166,7 @@ export function layoutInheritedGridScope(input: InheritedGridLayoutInput): GridL
       runKey,
       columns: columns.map((c) => ({ ...c, start: clean(originX + c.start) })),
       bands: bands.map((b) => ({ ...b, start: clean(originY + b.start) })),
+      ...(omittedBandIds.length > 0 ? { omittedBandIds } : {}),
       cells: placements.map((p) => ({
         entity: p.entity,
         slotRect: {

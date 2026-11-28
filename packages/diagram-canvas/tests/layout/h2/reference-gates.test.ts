@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { DS_LAYOUT_V2_VOCABULARY, lowerLayoutHintsV2 } from "@sentropic/diagram-core";
+import { DS_LAYOUT_V2_VOCABULARY, entityRef, lowerLayoutHintsV2 } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -23,6 +23,7 @@ import {
   linkStrokeWidthFindings,
   roundedElbowFindings,
   segmentInterval,
+  verticalEconomyFindings,
 } from "../../../../../tools/diagram-first-paint/geometry.mjs";
 import {
   buildAll13ReferenceScenes,
@@ -31,6 +32,7 @@ import {
   buildExampleA,
   buildExampleB,
   buildGenericScene,
+  enumerateVisibleFoldStates,
   runZeroConflictGate,
   type H2ReferenceScene,
 } from "./fixtures/referenceSet.js";
@@ -159,8 +161,13 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
     expect(laid.combGroups?.some((g) => g.kind === "fan-in" && g.members.length === 4)).toBe(true);
     expect(laid.warnings.filter((w) => w.code === "comb-fallback" && w.details?.reason === "v1-path")).toHaveLength(0);
     expect(laid.linkLegend).toBeDefined();
-    expect(Math.abs(m.aspectRatio / ASPECT_16_9_TARGET - 1)).toBeLessThanOrEqual(ASPECT_16_9_TOLERANCE);
-    expect(laid.warnings.filter((w) => w.code === "aspect-unreached")).toHaveLength(0);
+    expect(laid.composition?.sigmaBands).toEqual({});
+    expect(laid.composition?.sigmaCols).toEqual({});
+    // Before V-S1 removal: 3654.70 x 2056 (ratio 1.7776, sigmaBands={main: 48}).
+    // After V-S1 removal: 3654.70 x 2008 (ratio 1.8201, +2.38%, zero vertical slack, informational aspect-unreached).
+    expect(m.paintedHeight).toBe(2008);
+    expect(m.aspectRatio).toBeCloseTo(3654.703125 / 2008, 3);
+    expect(laid.warnings.filter((w) => w.code === "aspect-unreached")).toHaveLength(1);
     expect(m.conflictCount).toBe(0);
     expect(m.unplacedLabelCount).toBe(0);
   });
@@ -186,7 +193,20 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
     expect(Math.abs(mr3.t49AndT50!.t50DeltaFromL5L6CenterY)).toBeLessThanOrEqual(TOL);
 
     // T-37 (ref 1, NE-1): root sources vs host local triggers vertical drift measured per lane
+    // V-S6 (REQ-R7-34): span-only empty band r3 is omitted on ref-1 (single gutter between r2 and r4).
     const r1 = all13.get("ref-1")!;
+    const r1Unfolded = mustLayOut(layoutMeasured(r1.document, baseOptionsOf(r1, { collapsed: [] })), "ref-1:unfolded");
+    const r1Root = r1Unfolded.composition!.grids["root"]!;
+    expect(r1Root.bands.map((b) => b.id)).toEqual(["r1", "r2", "r4", "r5"]);
+    expect(r1Root.omittedBandIds).toEqual(["r3"]);
+    const boxOfR1 = (id: string) =>
+      r1Root.cells.find((c) => c.entity === entityRef(id))!.boxRect;
+    const gapBC = boxOfR1("source-c").y - (boxOfR1("source-b").y + boxOfR1("source-b").height);
+    const r2Band = r1Root.bands.find((b) => b.id === "r2")!;
+    const r4Band = r1Root.bands.find((b) => b.id === "r4")!;
+    const g24 = r1Unfolded.channels!.find((c) => c.id === "root|across|r2")!;
+    expect(r4Band.start - (r2Band.start + r2Band.size)).toBe(g24.gap);
+    expect(gapBC).toBeLessThan(280.5);
     const mr1 = measureH2SceneResiduals("ref-1", mustLayOut(layoutMeasured(r1.document, baseOptionsOf(r1)), "ref-1"));
     expect(mr1.t37).toBeDefined();
     expect(mr1.t37).toHaveLength(4);
@@ -315,9 +335,9 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
       if (item.expectAspect16x9 === true) {
         expect(resolved.bounds, `${item.name}:bounds`).toBeDefined();
         const ratio = resolved.bounds!.width / resolved.bounds!.height;
-        expect(Math.abs(ratio / ASPECT_16_9_TARGET - 1), `${item.name}:ratio=${ratio.toFixed(4)}`).toBeLessThanOrEqual(
-          ASPECT_16_9_TOLERANCE,
-        );
+        expect(laid.composition?.sigmaBands, `${item.name}:no-sigmaBands`).toEqual({});
+        expect(ratio, `${item.name}:ratio=${ratio.toFixed(4)}`).toBeGreaterThanOrEqual(ASPECT_16_9_TARGET * (1 - ASPECT_16_9_TOLERANCE));
+        expect(ratio, `${item.name}:ratio=${ratio.toFixed(4)}`).toBeLessThanOrEqual(ASPECT_16_9_TARGET * 1.05);
       }
 
       // Verify edge label & expanded-zone header clearance >= 4 world units (labelPadding token at scale 1, matching browser.mjs)
@@ -368,5 +388,73 @@ describe("H2.9 final reference scenes, residual measurements (T-09, T-49/T-50, T
     const v1Schema = readFileSync(new URL("../../../../diagram-core/schemas/ds-layout-hints-1.json", import.meta.url), "utf8");
     expect(v1Schema).toContain("ds-layout-hints@1");
     expect(v1Schema).not.toContain("ds-layout-hints@2");
+  });
+
+  it("BLOCKING DE3-L6c VERTICAL ECONOMY GATE: zero sigmaBands, zero I-13 spanner overlap, all vertical gutters <= 144, and zero empty vertical bands > 144 across ALL 14 H2 reference scenes and ALL 108 fold states", () => {
+    const all14: readonly H2ReferenceScene[] = [...buildAll13ReferenceScenes(), buildAppctxArchitecture16x9()];
+    const violations: string[] = [];
+    for (const scene of all14) {
+      const states = enumerateVisibleFoldStates(scene.document, scene.containers, scene.sourceView);
+      for (const collapsed of states) {
+        const res = mustLayOut(
+          layoutMeasured(scene.document, baseOptionsOf(scene, { collapsed }), scene.sourceView),
+          `${scene.id}:ve:${collapsed.join(",")}`,
+        );
+        if (Object.keys(res.composition?.sigmaBands ?? {}).length > 0) {
+          violations.push(`${scene.id}[${collapsed.join(",")}]: non-empty sigmaBands`);
+        }
+        for (const ch of res.channels ?? []) {
+          if (ch.axis === "vertical" && ch.gap > 144 + TOL) {
+            violations.push(`${scene.id}[${collapsed.join(",")}]: channel ${ch.id} gap=${ch.gap} > 144`);
+          }
+        }
+        for (const [scope, grid] of Object.entries(res.composition?.grids ?? {})) {
+          for (const cell of grid.cells) {
+            if (cell.bandEnd > cell.bandStart && cell.bandEnd + 1 < grid.bands.length) {
+              const nextBand = grid.bands[cell.bandEnd + 1]!;
+              if (cell.boxRect.y + cell.boxRect.height > nextBand.start + TOL) {
+                violations.push(`${scene.id}[${collapsed.join(",")}]: ${scope} ${cell.entity} overlaps band ${nextBand.id}`);
+              }
+            }
+          }
+        }
+        const resolved = resolveScene(res, {
+          document: scene.document,
+          presentation: scene.presentation,
+          measureLines: scene.measureLines,
+        });
+        const bandVoids = verticalEconomyFindings({
+          scale: 1,
+          maxVerticalGap: 144,
+          nodes: resolved.nodes.map((n) => ({
+            id: String(n.occurrence),
+            left: n.rect.x,
+            right: n.rect.x + n.rect.width,
+            top: n.rect.y,
+            bottom: n.rect.y + n.rect.height,
+          })),
+        });
+        for (const f of bandVoids) {
+          violations.push(`${scene.id}[${collapsed.join(",")}]: ${f}`);
+        }
+      }
+    }
+    expect(violations, violations.join("\n")).toEqual([]);
+  }, 90_000);
+
+  it("proves verticalEconomyFindings detects > 144 px adjacent-column voids even when a spanning container encloses children", () => {
+    const findings = verticalEconomyFindings({
+      scale: 1,
+      maxVerticalGap: 144,
+      nodes: [
+        { left: 360, right: 760, top: 0, bottom: 720 },
+        { left: 0, right: 280, top: 0, bottom: 154 },
+        { left: 400, right: 680, top: 40, bottom: 154 },
+        { left: 0, right: 280, top: 434.5, bottom: 588.5 },
+        { left: 400, right: 680, top: 434.5, bottom: 588.5 },
+      ],
+    });
+    expect(findings).toHaveLength(1);
+    expect(findings[0]).toContain("280.5 world px");
   });
 });

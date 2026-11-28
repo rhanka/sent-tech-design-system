@@ -319,6 +319,24 @@ git push origin diagram-codecs-v0.1.0
 
 Guards: `scripts/verify-deps-published.test.mjs` (both gates, their position before `npm publish`, and the exact pin on `diagram-canvas`) and `scripts/verify-workflow-invariants.test.mjs` (OIDC, declared bootstrap, tag-on-default-branch).
 
+### DE-3 Milestone 3 (`REQ-R7-34`, `DE3-L6`)
+
+Minor bumps for removing unjustified vertical gaps on `r7` (`DE3-L6a1` `V-S1`/
+`V-S6`/`V-S8`, `DE3-L6a2` `V-S3`/`V-S4`, `DE3-L6b` `V-S2` `T-30`, and `DE3-L6c`
+hardening + vertical-economy gates): `tokens` `0.19.0`, `themes` `0.19.0`
+(`theme-devmtl` `0.1.0` pins aligned), `diagram-canvas` `0.11.0` (with
+`@sentropic/diagram-core@0.7.0` unchanged), `diagram-codecs` `0.4.0`,
+`design-system-svelte` `0.51.0`, and `design-system-vue` `0.45.0-next.0` on the
+`next` dist-tag (`elements@0.5.0` pin aligned to `@sentropic/diagram-canvas@0.11.0`).
+Keeps `v1` frozen semantics and non-composed `DE-2` auto-pack byte-identical.
+Tag order after merge (each waiting for the previous `post-publish-check` to
+turn green):
+
+1. `core-v0.19.0` (`npm-publish.yml`: `@sentropic/design-system-tokens` then `@sentropic/design-system-themes`)
+2. `diagram-canvas-v0.11.0` (`diagram-canvas-publish.yml`)
+3. `svelte-v0.51.0` (`svelte-publish.yml`) and `vue-v0.45.0-next.0` (`vue-publish.yml`)
+4. `diagram-codecs-v0.4.0` (`diagram-codecs-publish.yml`, requires `@sentropic/diagram-canvas@0.11.0`)
+
 ### DE-3 Milestone 2 (`DE3-L1b`, `DE3-L2b`, `D-DE3-1`)
 
 Minor bumps for compact `r7` legend anatomy and D2D M1 feedback (`DE3-L1b`),

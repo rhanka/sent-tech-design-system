@@ -283,4 +283,185 @@ describe("H2.8 legend: 'free-cell' placement, track growth, fallback, and fold/u
     const wideS2 = resTooWide.composition!.grids["root"]!.columns.find((c) => c.id === "s2")!;
     expect(wideS2.size).toBe(baseS2.size);
   });
+
+  it("V-S3 (REQ-R7-34 / DE3-L6a2): spans a tall (>=5-row) free-cell legend across adjacent empty vertical cells in the same column before inflating a band", () => {
+    const hintsV2: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      legend: "free-cell",
+      grids: {
+        root: {
+          stage_columns: ["s1", "s2"],
+          transverse_bands: [
+            { id: "r1", items: [entityRef("a")] },
+            { id: "r2", items: [entityRef("b")] },
+            { id: "r3", items: [entityRef("c"), entityRef("d")] },
+          ],
+          cells: {
+            [entityRef("a")]: { column: "s1" },
+            [entityRef("b")]: { column: "s1" },
+            [entityRef("c")]: { column: "s1" },
+            [entityRef("d")]: { column: "s2" },
+          },
+        },
+      },
+    };
+    // 5 distinct link styles produce a tall legend (> 154 px card height, <= 154 + 72 + 154 = 380 px two-band span)
+    const scene = buildGenericScene({
+      id: "free-cell-multi-band-span",
+      carries: ["V-S3", "REQ-R7-34"],
+      hintsV2,
+      entities: [
+        { id: "a", title: "Alpha" },
+        { id: "b", title: "Beta" },
+        { id: "c", title: "Gamma" },
+        { id: "d", title: "Delta" },
+      ],
+      relations: [
+        { id: "e1", source: "a", target: "b", strokeStyle: "solid", arrowhead: "arrow", emphasis: "default" },
+        { id: "e2", source: "b", target: "c", strokeStyle: "solid", arrowhead: "arrow", emphasis: "emphasis" },
+        { id: "e3", source: "c", target: "d", strokeStyle: "dashed", arrowhead: "arrow", emphasis: "default" },
+        { id: "e4", source: "a", target: "d", strokeStyle: "dotted", arrowhead: "arrow", emphasis: "default" },
+        { id: "e5", source: "b", target: "d", strokeStyle: "solid", arrowhead: "none", emphasis: "default" },
+      ],
+    });
+    const baseNone = mustLayOut(
+      layoutMeasured(scene.document, baseOptionsOf(scene, { legend: "none" })),
+      "baseline-none",
+    );
+    const res = mustLayOut(
+      layoutMeasured(
+        scene.document,
+        baseOptionsOf(scene, {
+          legend: "free-cell",
+          legendTitle: "Connector Legend Heading With Extra Wrapped Lines For Height",
+        }),
+      ),
+      "tall-free-cell",
+    );
+    expect(res.linkLegend).toBeDefined();
+    expect(res.linkLegend!.anchor).toBe("free-cell");
+    expect(res.linkLegend!.rect.height).toBeGreaterThan(154);
+
+    const baseR1 = baseNone.composition!.grids["root"]!.bands.find((b) => b.id === "r1")!;
+    const baseR2 = baseNone.composition!.grids["root"]!.bands.find((b) => b.id === "r2")!;
+    expect(baseR1.size).toBe(154);
+    expect(baseR2.size).toBe(154);
+    const rootGrid = res.composition!.grids["root"]!;
+    const r1 = rootGrid.bands.find((b) => b.id === "r1")!;
+    const r2 = rootGrid.bands.find((b) => b.id === "r2")!;
+    const s2 = rootGrid.columns.find((c) => c.id === "s2")!;
+    // Spans (r1..r2, s2) so r1 and r2 keep their exact 154 px band height with zero inflation.
+    expect(r1.size).toBe(154);
+    expect(r2.size).toBe(154);
+    const lr = res.linkLegend!.rect;
+    expect(lr.x).toBeGreaterThanOrEqual(s2.start - TOL);
+    expect(lr.x + lr.width).toBeLessThanOrEqual(s2.start + s2.size + TOL);
+    expect(lr.y).toBeGreaterThanOrEqual(r1.start - TOL);
+    expect(lr.y + lr.height).toBeLessThanOrEqual(r2.start + r2.size + TOL);
+    for (const occ of Object.values(res.view.entityOccurrences)) {
+      expect(rectsOverlap(lr, occ.geometry), String(occ.id)).toBe(false);
+    }
+    for (const [id, box] of Object.entries(res.labelBoxes ?? {})) {
+      expect(rectsOverlap(lr, box), id).toBe(false);
+    }
+  });
+
+  it("V-S3: spans tall free-cell legend across empty bands on unstaged grids and under legend: 'auto'", () => {
+    const unstagedHints: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      legend: "free-cell",
+      grids: {
+        root: {
+          transverse_bands: [
+            { id: "r1", items: [entityRef("a")] },
+            { id: "r2", items: [entityRef("b")] },
+            { id: "r3", items: [entityRef("c")] },
+          ],
+          peripheral_columns: [
+            { id: "side", side: "end", items: [entityRef("p")], from_band: "r3" },
+          ],
+        },
+      },
+    };
+    const unstagedScene = buildGenericScene({
+      id: "unstaged-free-cell-span",
+      carries: ["V-S3", "REQ-R7-34"],
+      hintsV2: unstagedHints,
+      entities: [
+        { id: "a", title: "Alpha" },
+        { id: "b", title: "Beta" },
+        { id: "c", title: "Gamma" },
+        { id: "p", title: "Side Card" },
+      ],
+      relations: [
+        { id: "e1", source: "a", target: "b", strokeStyle: "solid", arrowhead: "arrow", emphasis: "default" },
+        { id: "e2", source: "b", target: "c", strokeStyle: "solid", arrowhead: "arrow", emphasis: "emphasis" },
+        { id: "e3", source: "c", target: "p", strokeStyle: "dashed", arrowhead: "arrow", emphasis: "default" },
+        { id: "e4", source: "a", target: "p", strokeStyle: "dotted", arrowhead: "arrow", emphasis: "default" },
+        { id: "e5", source: "b", target: "p", strokeStyle: "solid", arrowhead: "none", emphasis: "default" },
+      ],
+    });
+    const unstagedRes = mustLayOut(
+      layoutMeasured(unstagedScene.document, baseOptionsOf(unstagedScene, { legendTitle: "Key" })),
+      "unstaged-span",
+    );
+    expect(unstagedRes.linkLegend!.anchor).toBe("free-cell");
+    const uGrid = unstagedRes.composition!.grids["root"]!;
+    expect(uGrid.bands.find((b) => b.id === "r1")!.size).toBe(154);
+    expect(uGrid.bands.find((b) => b.id === "r2")!.size).toBe(154);
+
+    const autoHints: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      grids: {
+        root: {
+          stage_columns: ["s1", "s2"],
+          transverse_bands: [
+            { id: "r1", items: [entityRef("a")] },
+            { id: "r2", items: [entityRef("b")] },
+            { id: "r3", items: [entityRef("c"), entityRef("d")] },
+          ],
+          cells: {
+            [entityRef("a")]: { column: "s1" },
+            [entityRef("b")]: { column: "s1" },
+            [entityRef("c")]: { column: "s1" },
+            [entityRef("d")]: { column: "s2" },
+          },
+        },
+      },
+    };
+    const autoScene = buildGenericScene({
+      id: "auto-free-cell-span",
+      carries: ["V-S3", "DE3-L1b", "REQ-R7-34"],
+      hintsV2: autoHints,
+      entities: [
+        { id: "a", title: "Alpha" },
+        { id: "b", title: "Beta" },
+        { id: "c", title: "Gamma" },
+        { id: "d", title: "Delta Service Node With Wide Natural Column Footprint" },
+      ],
+      relations: [
+        { id: "e1", source: "a", target: "b", strokeStyle: "solid", arrowhead: "arrow", emphasis: "default" },
+        { id: "e2", source: "b", target: "c", strokeStyle: "solid", arrowhead: "arrow", emphasis: "emphasis" },
+        { id: "e3", source: "c", target: "d", strokeStyle: "dashed", arrowhead: "arrow", emphasis: "default" },
+        { id: "e4", source: "a", target: "d", strokeStyle: "dotted", arrowhead: "arrow", emphasis: "default" },
+        { id: "e5", source: "b", target: "d", strokeStyle: "solid", arrowhead: "none", emphasis: "default" },
+      ],
+    });
+    const autoRes = mustLayOut(
+      layoutMeasured(autoScene.document, baseOptionsOf(autoScene, { legend: "auto", legendTitle: "Key" })),
+      "auto-span",
+    );
+    expect(autoRes.linkLegend!.anchor).toBe("free-cell");
+    expect(autoRes.linkLegend!.rect.height).toBeGreaterThan(154);
+    const aGrid = autoRes.composition!.grids["root"]!;
+    const ar1 = aGrid.bands.find((b) => b.id === "r1")!;
+    const ar2 = aGrid.bands.find((b) => b.id === "r2")!;
+    expect(ar1.size).toBe(154);
+    expect(ar2.size).toBe(154);
+    expect(autoRes.linkLegend!.rect.y).toBeGreaterThanOrEqual(ar1.start - TOL);
+    expect(autoRes.linkLegend!.rect.y + autoRes.linkLegend!.rect.height).toBeLessThanOrEqual(ar2.start + ar2.size + TOL);
+  });
 });

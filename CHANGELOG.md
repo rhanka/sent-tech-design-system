@@ -1,5 +1,43 @@
 # Changelog
 
+## Unreleased — DE-3 Milestone 3 (REQ-R7-34, DE3-L6)
+
+- tokens and diagram-canvas (`REQ-R7-34`, `DE3-L6a1` / `DE3-L6a2` / `DE3-L6b` /
+  `DE3-L6c`):
+  - Remove `16:9` `sigmaBands` vertical slack injection (`plan.ts`, `V-S1`) and
+    drop folded root column `sigmaCols` when no expanded occupant remains
+    (`F-6`, `measured.ts`).
+  - Omit `I-13` span-only empty staged bands (`items: []`) before sizing across
+    `layoutStagedGrid`, `layoutInheritedGridScope`, and `findFirstEmptyRootCell`,
+    clamping `to_band` spans to the last active band `<= bandEndDecl` and
+    exposing `omittedBandIds` (`compose.ts`, `V-S6`).
+  - Keep `gapMinBlock = 72` (`A9`) and `v1` `gapMax = 240` (`REQ-R7-28`), and add
+    `DIAGRAM_SCENE_SPACING.gapBlockMaxR7 = 144` (`packages/tokens/src/diagramSpacing.ts`)
+    to cap pass-2 vertical non-zone channel widening under `zoneRule`
+    (`measured.ts`, `V-S8`).
+  - Remove unconditional bottom `uExtra` pre-allocation on composed `r7` scenes
+    (`measured.ts`, `V-S4`), reserving south U-channel headroom only when an
+    otherwise unplaced inner label requires it, while preserving `v1` and
+    `composition === undefined` (`DE-2`) bytes verbatim.
+  - Span tall `free-cell` legends across adjacent empty vertical cells in the
+    same column before inflating band height (`compose.ts`, `V-S3`).
+  - Keep `"stretch"` band/peripheral alignment by design (`REQ-R7-28`) and add
+    `T-30` upward peripheral frame-header alignment when the upper cell is free
+    (`compose.ts`, `measured.ts`, `V-S2`).
+  - Add PR `#327` `P2` hardening (`#4` multi-fold & narrowed `inherit` `F-3`,
+    `#5` per-level orientation retry gating, `#6` `authoredBase` / twin parity
+    checks), the 14-scene H2 vertical-economy Vitest gate, and
+    `verticalEconomyFindings` in `tools/diagram-first-paint/geometry.mjs` +
+    `browser.mjs`.
+- Bump `@sentropic/design-system-tokens` to `0.19.0`,
+  `@sentropic/design-system-themes` to `0.19.0`, `@sentropic/diagram-canvas`
+  to `0.11.0`, `@sentropic/diagram-codecs` to `0.4.0`,
+  `@sentropic/design-system-svelte` to `0.51.0`, and
+  `@sentropic/design-system-vue` to `0.45.0-next.0`, and align workspace pins
+  (`theme-devmtl`, `elements`, `artifact-shell`, `dataviz-svelte`,
+  `dataviz-vue`, `apps/docs`), `package-lock.json`, `component-index`
+  artifacts, notices, and `docs/graph-dataviz-m1-provenance.json`.
+
 ## Unreleased — DE-3 Milestone 2 (DE3-L1b, DE3-L2b)
 
 - diagram-canvas, Svelte and Vue `DiagramSceneFigure` (`DE3-L1b` + D2D M1

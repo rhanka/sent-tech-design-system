@@ -1,8 +1,8 @@
 {
   "componentId": "typography",
   "contractSource": "derived",
-  "digest": "sha256:5f23e9e7ace6743f3e35b514ea059d7ebb315df7b62c91f8d39e5f8eb90c9662",
-  "entryDigest": "sha256:72690b103b14a2d0f4a8b21b2a11f4bb1ad2df86b94d19a7229a24e72ae381a8",
+  "digest": "sha256:4aa7c3d4356176626bc38b6d0c4e4bd68a8e1bbc02ff275418b4a37795c17851",
+  "entryDigest": "sha256:f2235c4b3a642f9639cfc9ba775df819bcd7be300bc918f8ca9190fb3a8f87d1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -258,7 +258,7 @@
         "declarationPath": "packages/components-svelte/dist/Typography.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TypographyProps",
-        "version": "0.50.0"
+        "version": "0.51.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -339,7 +339,7 @@
         "declarationPath": "packages/components-vue/dist/Typography.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TypographyProps",
-        "version": "0.44.0-next.0"
+        "version": "0.45.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

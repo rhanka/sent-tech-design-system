@@ -244,4 +244,195 @@ describe("H2.3 emitted gutters, strips and zoneRule on both routing paths", () =
       expect(canonicalise(v2AutoPack.view, "view")).toBe(canonicalise(v1AutoPack.view, "view"));
     }
   });
+
+  it("V-S8 (REQ-R7-34 / DE3-L6a1): caps pass-2 vertical non-zone widening at 144 under zoneRule while keeping gapMinBlock = 72 and v1 (!zoneRule) at 240", () => {
+    // 6 labelled vertical edges (3 per pair, non-crossing) with trackSpacingBlock=28 ask channelGap for
+    // 8 + 6*28 + 30 = 206 px (> 144, <= 240) across the band boundary.
+    const relations = Array.from({ length: 6 }, (_, idx) => ({
+      id: `e${String(idx + 1)}`,
+      source: idx % 2 === 0 ? "t1" : "t2",
+      target: idx % 2 === 0 ? "d1" : "d2",
+      label: `l${String(idx + 1)}`,
+    }));
+
+    const r7Hints: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      grids: {
+        root: {
+          stage_columns: ["s1", "s2"],
+          transverse_bands: [
+            { id: "b1", items: [entityRef("t1"), entityRef("t2")] },
+            { id: "b2", items: [entityRef("d1"), entityRef("d2")] },
+          ],
+          cells: {
+            [entityRef("t1")]: { column: "s1" },
+            [entityRef("t2")]: { column: "s2" },
+            [entityRef("d1")]: { column: "s1" },
+            [entityRef("d2")]: { column: "s2" },
+          },
+        },
+      },
+    };
+    const r7Scene = buildGenericScene({
+      id: "vs8-vertical-cap-r7",
+      carries: ["V-S8", "REQ-R7-34"],
+      hintsV2: r7Hints,
+      entities: [
+        { id: "t1", title: "Top Left" },
+        { id: "t2", title: "Top Right" },
+        { id: "d1", title: "Bottom Left" },
+        { id: "d2", title: "Bottom Right" },
+      ],
+      relations,
+    });
+    // 1. r7 (@2 composed, zoneRule = true): vertical non-zone gutter widens past 72 but caps at 144
+    const r7Res = layoutMeasured(r7Scene.document, {
+      registry: r7Scene.registry,
+      bindings: r7Scene.bindings,
+      presentation: r7Scene.presentation,
+      measureLines: r7Scene.measureLines,
+      measureText: () => ({ width: 80, height: 20 }),
+      targetWidth: 1440,
+      hints: r7Scene.hints,
+      metrics: { trackSpacingBlock: 28 },
+    });
+    expect(r7Res.status).toBe("laid-out");
+    if (r7Res.status !== "laid-out") return;
+    const r7Across = r7Res.channels!.find((c) => c.id === "root|across|b1")!;
+    expect(r7Across).toBeDefined();
+    expect(r7Across.zone).toBe(false);
+    expect(r7Across.gap).toBeGreaterThan(72);
+    expect(r7Across.gap).toBeLessThanOrEqual(144);
+    expect(r7Across.expected).toBeLessThanOrEqual(144);
+
+    // 2. Unlabelled r7 pair keeps gapMinBlock = 72 unchanged (A9: never add base vertical space)
+    const unlabelledScene = buildGenericScene({
+      id: "vs8-unlabelled-r7",
+      carries: ["V-S9", "REQ-R7-34"],
+      hintsV2: r7Hints,
+      entities: [
+        { id: "t1", title: "Top Left" },
+        { id: "t2", title: "Top Right" },
+        { id: "d1", title: "Bottom Left" },
+        { id: "d2", title: "Bottom Right" },
+      ],
+      relations: [],
+    });
+    const unlabelledRes = layoutMeasured(unlabelledScene.document, {
+      registry: unlabelledScene.registry,
+      bindings: unlabelledScene.bindings,
+      presentation: unlabelledScene.presentation,
+      measureLines: unlabelledScene.measureLines,
+      measureText: () => ({ width: 80, height: 20 }),
+      targetWidth: 1440,
+      hints: unlabelledScene.hints,
+    });
+    expect(unlabelledRes.status).toBe("laid-out");
+    if (unlabelledRes.status === "laid-out") {
+      expect(unlabelledRes.channels!.find((c) => c.id === "root|across|b1")!.gap).toBe(72);
+    }
+
+    // 3. v1 (!zoneRule, @1 auto-pack): identical corridor demand widens past 144 up to 240
+    const v1Scene = buildGenericScene({
+      id: "vs8-vertical-cap-v1",
+      carries: ["V-S8", "REQ-R7-28"],
+      anatomy: "v1",
+      hintsV2: r7Hints,
+      entities: [
+        { id: "t1", title: "Top Left" },
+        { id: "t2", title: "Top Right" },
+        { id: "d1", title: "Bottom Left" },
+        { id: "d2", title: "Bottom Right" },
+      ],
+      relations,
+    });
+    const v1Presentation = toV1Presentation(v1Scene.presentation);
+    expect(isR7ConnectorPresentation(v1Presentation, undefined, v1Scene.document)).toBe(false);
+    const v1Res = layoutMeasured(v1Scene.document, {
+      registry: v1Scene.registry,
+      bindings: v1Scene.bindings,
+      presentation: v1Presentation,
+      measureLines: v1Scene.measureLines,
+      measureText: () => ({ width: 80, height: 20 }),
+      targetWidth: 800,
+      hints: lowerLayoutHints({
+        vocabulary: DS_LAYOUT_VOCABULARY,
+        mode: "auto-pack",
+        rootOrder: [entityRef("t1"), entityRef("t2"), entityRef("d1"), entityRef("d2")],
+      }),
+      metrics: { trackSpacingBlock: 28 },
+    });
+    expect(v1Res.status).toBe("laid-out");
+    if (v1Res.status === "laid-out") {
+      const topRect = v1Res.view.entityOccurrences[occurrenceRef("e.t1")]!.geometry;
+      const bottomRect = v1Res.view.entityOccurrences[occurrenceRef("e.d1")]!.geometry;
+      const [upper, lower] = topRect.y <= bottomRect.y ? [topRect, bottomRect] : [bottomRect, topRect];
+      const v1Gap = lower.y - (upper.y + upper.height);
+      expect(v1Gap).toBeGreaterThan(144);
+      expect(v1Gap).toBeLessThanOrEqual(240);
+    }
+  });
+
+  it("PR #327 P2 #6: honours explicit @1 authored gap below axis baseGap (authoredBase) vs default min gap", () => {
+    const hintsV2: DsLayoutHintsV2 = {
+      vocabulary: "ds-layout-hints@2",
+      mode: "stage-columns",
+      grids: {
+        root: {
+          stage_columns: ["s1", "s2"],
+          transverse_bands: [{ id: "r1", items: [entityRef("a"), entityRef("b")] }],
+          cells: {
+            [entityRef("a")]: { column: "s1" },
+            [entityRef("b")]: { column: "s2" },
+          },
+        },
+      },
+    };
+    const scene = buildGenericScene({
+      id: "p2-6-authored-base",
+      carries: ["P2-6"],
+      anatomy: "v1",
+      hintsV2,
+      entities: [
+        { id: "a", title: "Card A" },
+        { id: "b", title: "Card B" },
+      ],
+      relations: [],
+    });
+    const v1Presentation = toV1Presentation(scene.presentation);
+    // Authored `cardGapX: 48` (< default gapMin = 96): sets authoredBase=true so base=48 and expected=48 (not clamped up to 96).
+    const baseHints = lowerLayoutHints({
+      vocabulary: DS_LAYOUT_VOCABULARY,
+      mode: "auto-pack",
+      rootOrder: [entityRef("a"), entityRef("b")],
+    });
+    const authoredRes = layoutMeasured(scene.document, {
+      registry: scene.registry,
+      bindings: scene.bindings,
+      presentation: v1Presentation,
+      measureLines: scene.measureLines,
+      measureText: () => ({ width: 80, height: 20 }),
+      targetWidth: 1440,
+      hints: { ...baseHints, cardGapX: 48 },
+    });
+    const defaultRes = layoutMeasured(scene.document, {
+      registry: scene.registry,
+      bindings: scene.bindings,
+      presentation: v1Presentation,
+      measureLines: scene.measureLines,
+      measureText: () => ({ width: 80, height: 20 }),
+      targetWidth: 1440,
+      hints: baseHints,
+    });
+    expect(authoredRes.status).toBe("laid-out");
+    expect(defaultRes.status).toBe("laid-out");
+    if (authoredRes.status === "laid-out" && defaultRes.status === "laid-out") {
+      const aRect = authoredRes.view.entityOccurrences[occurrenceRef("e.a")]!.geometry;
+      const bRect = authoredRes.view.entityOccurrences[occurrenceRef("e.b")]!.geometry;
+      expect(bRect.x - (aRect.x + aRect.width)).toBe(48);
+      expect(authoredRes.channels![0]!.expected).toBe(48);
+      expect(defaultRes.channels![0]!.expected).toBe(96);
+    }
+  });
 });

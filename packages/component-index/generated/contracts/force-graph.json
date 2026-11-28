@@ -1,8 +1,8 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:936970e4c5188d875c11b4eda2cdbd153ea74b05bbb2eff791a60865115bdbf8",
-  "entryDigest": "sha256:5d40649a39eb4973cc3be78ddd307e0cced36687fc8acb0ca3b1e5fe6a54839e",
+  "digest": "sha256:c7de09f46f8affc56d0977025e7cd364f9b8b1d62868f6dc21bcf836ec2679fb",
+  "entryDigest": "sha256:c9501904a673c1a36b0d1fde1244e1fac05f226a841e11437dc49f34c5bc1aaf",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1000,7 +1000,7 @@
         "declarationPath": "packages/components-svelte/dist/ForceGraph.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ForceGraphProps",
-        "version": "0.50.0"
+        "version": "0.51.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -1425,7 +1425,7 @@
         "declarationPath": "packages/components-vue/dist/ForceGraph.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ForceGraphProps",
-        "version": "0.44.0-next.0"
+        "version": "0.45.0-next.0"
       },
       "status": "partial",
       "unresolved": [],
